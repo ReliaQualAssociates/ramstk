@@ -9,10 +9,10 @@
 All rights reserved. -->
 
 <root>
-    <tree name="Risk">
+    <tree name="HazOps">
         <column>
-            <defaulttitle>Risk ID</defaulttitle>
-            <usertitle>Risk ID</usertitle>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
             <widget>text</widget>
@@ -20,22 +20,22 @@ All rights reserved. -->
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Assembly</defaulttitle>
-            <usertitle>Assembly</usertitle>
-            <datatype>gchararray</datatype>
+            <defaulttitle>Hardware ID</defaulttitle>
+            <usertitle>Hardware ID</usertitle>
+            <datatype>gint</datatype>
             <position>1</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Failure Intensity</defaulttitle>
-            <usertitle>Failure Intensity</usertitle>
-            <datatype>gfloat</datatype>
+            <defaulttitle>Hazard ID</defaulttitle>
+            <usertitle>Hazard ID</usertitle>
+            <datatype>gint</datatype>
             <position>2</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>Potential Hazard</defaulttitle>
@@ -260,7 +260,7 @@ All rights reserved. -->
             <position>27</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>Result 2</defaulttitle>
@@ -269,7 +269,7 @@ All rights reserved. -->
             <position>28</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>Result 3</defaulttitle>
@@ -278,7 +278,7 @@ All rights reserved. -->
             <position>29</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>Result 4</defaulttitle>
@@ -287,7 +287,7 @@ All rights reserved. -->
             <position>30</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>Result 5</defaulttitle>
@@ -296,7 +296,7 @@ All rights reserved. -->
             <position>31</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Memo 1</defaulttitle>
@@ -305,7 +305,7 @@ All rights reserved. -->
             <position>32</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Memo 2</defaulttitle>
@@ -314,7 +314,7 @@ All rights reserved. -->
             <position>33</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Memo 3</defaulttitle>
@@ -323,7 +323,7 @@ All rights reserved. -->
             <position>34</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Float 1</defaulttitle>
@@ -332,7 +332,7 @@ All rights reserved. -->
             <position>35</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Float 2</defaulttitle>
@@ -341,7 +341,7 @@ All rights reserved. -->
             <position>36</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Float 3</defaulttitle>
@@ -350,7 +350,7 @@ All rights reserved. -->
             <position>37</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Integer 1</defaulttitle>
@@ -359,7 +359,7 @@ All rights reserved. -->
             <position>38</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Integer 2</defaulttitle>
@@ -368,7 +368,7 @@ All rights reserved. -->
             <position>39</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>User Integer 3</defaulttitle>
@@ -377,7 +377,7 @@ All rights reserved. -->
             <position>40</position>
             <widget>text</widget>
             <editable>1</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
     </tree>
 </root>

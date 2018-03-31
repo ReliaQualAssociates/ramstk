@@ -408,7 +408,7 @@ class Configuration(object):
             'stakeholderfg'
         ]
         self._lst_format_files = [
-            'allocation', 'revision', 'function', 'requirement', 'hardware', 'software', 'incident', 'validation', 'testing', 'part', 'sia', 'fmeca', 'rgincident', 'stakeholder', 'dataset', 'risk', 'ffmeca', 'sfmeca'
+            'allocation', 'fmeca', 'ffmeca', 'function', 'hardware', 'hazops', 'requirement', 'revision', 'software', 'incident', 'validation', 'testing', 'part', 'sia', 'rgincident', 'stakeholder', 'dataset', 'risk', 'sfmeca'
         ]
 
         if name == 'posix':
