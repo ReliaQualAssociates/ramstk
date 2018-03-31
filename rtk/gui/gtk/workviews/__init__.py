@@ -9,15 +9,16 @@
 from .WorkView import RTKWorkView
 
 from .Allocation import Allocation as wvwAllocation
-from .Revision import GeneralData as wvwRevisionGD
-from .Revision import AssessmentResults as wvwRevisionAR
 from .Function import GeneralData as wvwFunctionGD
 from .Function import AssessmentResults as wvwFunctionAR
 from .FMEA import FMEA as wvwFMEA
-from .Requirement import GeneralData as wvwRequirementGD
-from .Requirement import RequirementAnalysis as wvwRequirementAnalysis
 from .Hardware import GeneralData as wvwHardwareGD
 from .Hardware import AssessmentInputs as wvwHardwareAI
 from .Hardware import AssessmentResults as wvwHardwareAR
+from .HazOps import HazOps as wvwHazOps
+from .Requirement import GeneralData as wvwRequirementGD
+from .Requirement import RequirementAnalysis as wvwRequirementAnalysis
+from .Revision import GeneralData as wvwRevisionGD
+from .Revision import AssessmentResults as wvwRevisionAR
 from .Validation import GeneralData as wvwValidationGD
 from .Validation import BurndownCurve as wvwBurndownCurve

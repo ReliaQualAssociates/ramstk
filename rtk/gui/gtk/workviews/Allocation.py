@@ -204,7 +204,7 @@ class Allocation(RTKWorkView):
             elif position == self._lst_col_order[5]:
                 _allocation.n_sub_elements = int(new_text)
             elif position == self._lst_col_order[6]:
-                _allocation.missiont_time = float(new_text)
+                _allocation.mission_time = float(new_text)
             elif position == self._lst_col_order[7]:
                 _allocation.duty_cycle = float(new_text)
             elif position == self._lst_col_order[8]:

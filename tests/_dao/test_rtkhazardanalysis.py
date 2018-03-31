@@ -20,12 +20,12 @@ ATTRIBUTES = {
     'user_blob_3': '',
     'user_blob_2': '',
     'user_blob_1': '',
-    'system_severity_id': 4,
+    'system_severity': 'Medium',
     'result_2': 0.0,
     'result_3': 0.0,
-    'assembly_probability_id': 5,
-    'system_probability_id': 5,
-    'system_probability_id_f': 5,
+    'assembly_probability': 'Level A - Frequent',
+    'system_probability': 'Level A - Frequent',
+    'system_probability_f': 'Level A - Frequent',
     'assembly_hri': 20,
     'system_hri': 20,
     'system_effect': u'',
@@ -38,8 +38,8 @@ ATTRIBUTES = {
     'hazard_id': 1,
     'system_hri_f': 20,
     'result_5': 0.0,
-    'assembly_severity_id': 4,
-    'assembly_probability_id_f': 5,
+    'assembly_severity': 'Medium',
+    'assembly_probability_f': 'Level A - Frequent',
     'assembly_hri_f': 4,
     'assembly_effect': u'',
     'function_4': u'',
@@ -51,8 +51,8 @@ ATTRIBUTES = {
     'function_1': u'',
     'user_int_3': 0,
     'user_int_2': 0,
-    'assembly_severity_id_f': 4,
-    'system_severity_id_f': 4,
+    'assembly_severity_f': 'Medium',
+    'system_severity_f': 'Medium',
     'assembly_mitigation': '',
     'function_5': u'',
     'result_1': 0.0,
@@ -80,12 +80,12 @@ def test_rtkallocation_create(test_dao):
     assert DUT.potential_hazard == ''
     assert DUT.potential_cause == ''
     assert DUT.assembly_effect == ''
-    assert DUT.assembly_severity_id == 4
-    assert DUT.assembly_probability_id == 5
+    assert DUT.assembly_severity == 'Major'
+    assert DUT.assembly_probability == 'Level A - Frequent'
     assert DUT.assembly_hri == 20
     assert DUT.assembly_mitigation == ''
-    assert DUT.assembly_severity_id_f == 4
-    assert DUT.assembly_probability_id_f == 5
+    assert DUT.assembly_severity_f == 'Major'
+    assert DUT.assembly_probability_f == 'Level A - Frequent'
     assert DUT.assembly_hri_f == 20
     assert DUT.function_1 == ''
     assert DUT.function_2 == ''
@@ -99,12 +99,12 @@ def test_rtkallocation_create(test_dao):
     assert DUT.result_4 == 0.0
     assert DUT.result_5 == 0.0
     assert DUT.system_effect == ''
-    assert DUT.system_severity_id == 4
-    assert DUT.system_probability_id == 5
+    assert DUT.system_severity == 'Major'
+    assert DUT.system_probability == 'Level A - Frequent'
     assert DUT.system_hri == 20
     assert DUT.system_mitigation == ''
-    assert DUT.system_severity_id_f == 4
-    assert DUT.system_probability_id_f == 5
+    assert DUT.system_severity_f == 'Major'
+    assert DUT.system_probability_f == 'Level A - Frequent'
     assert DUT.system_hri_f == 20
     assert DUT.user_blob_1 == ''
     assert DUT.user_blob_2 == ''
@@ -137,12 +137,12 @@ def test_get_attributes(test_dao):
     assert _attributes['potential_hazard'] == ''
     assert _attributes['potential_cause'] == ''
     assert _attributes['assembly_effect'] == ''
-    assert _attributes['assembly_severity_id'] == 4
-    assert _attributes['assembly_probability_id'] == 5
+    assert _attributes['assembly_severity'] == 'Major'
+    assert _attributes['assembly_probability'] == 'Level A - Frequent'
     assert _attributes['assembly_hri'] == 20
     assert _attributes['assembly_mitigation'] == ''
-    assert _attributes['assembly_severity_id_f'] == 4
-    assert _attributes['assembly_probability_id_f'] == 5
+    assert _attributes['assembly_severity_f'] == 'Major'
+    assert _attributes['assembly_probability_f'] == 'Level A - Frequent'
     assert _attributes['assembly_hri_f'] == 20
     assert _attributes['function_1'] == ''
     assert _attributes['function_2'] == ''
@@ -156,12 +156,12 @@ def test_get_attributes(test_dao):
     assert _attributes['result_4'] == 0.0
     assert _attributes['result_5'] == 0.0
     assert _attributes['system_effect'] == ''
-    assert _attributes['system_severity_id'] == 4
-    assert _attributes['system_probability_id'] == 5
+    assert _attributes['system_severity'] == 'Major'
+    assert _attributes['system_probability'] == 'Level A - Frequent'
     assert _attributes['system_hri'] == 20
     assert _attributes['system_mitigation'] == ''
-    assert _attributes['system_severity_id_f'] == 4
-    assert _attributes['system_probability_id_f'] == 5
+    assert _attributes['system_severity_f'] == 'Major'
+    assert _attributes['system_probability_f'] == 'Level A - Frequent'
     assert _attributes['system_hri_f'] == 20
     assert _attributes['user_blob_1'] == ''
     assert _attributes['user_blob_2'] == ''
@@ -204,12 +204,12 @@ def test_set_attributes_too_few_passed(test_dao):
         'user_blob_3': '',
         'user_blob_2': '',
         'user_blob_1': '',
-        'system_severity_id': 4,
+        'system_severity': 'Medium',
         'result_2': 0.0,
         'result_3': 0.0,
-        'assembly_probability_id': 5,
-        'system_probability_id': 5,
-        'system_probability_id_f': 5,
+        'assembly_probability': 'Level A - Frequent',
+        'system_probability': 'Level A - Frequent',
+        'system_probability_f': 'Level A - Frequent',
         'assembly_hri': 20,
         'system_hri': 20,
         'system_effect': u'',
@@ -222,8 +222,8 @@ def test_set_attributes_too_few_passed(test_dao):
         'hazard_id': 1,
         'system_hri_f': 20,
         'result_5': 0.0,
-        'assembly_severity_id': 4,
-        'assembly_probability_id_f': 5,
+        'assembly_severity': 'Medium',
+        'assembly_probability_f': 'Level A - Frequent',
         'assembly_hri_f': 4,
         'assembly_effect': u'',
         'function_4': u'',
@@ -235,8 +235,8 @@ def test_set_attributes_too_few_passed(test_dao):
         'function_1': u'',
         'user_int_3': 0,
         'user_int_2': 0,
-        'assembly_severity_id_f': 4,
-        'system_severity_id_f': 4,
+        'assembly_severity_f': 'Medium',
+        'system_severity_f': 'Medium',
         'assembly_mitigation': '',
         'function_5': u'',
         'result_1': 0.0
@@ -258,14 +258,14 @@ def test_calculate_hri(test_dao):
     DUT = _session.query(RTKHazardAnalysis).filter(
         RTKHazardAnalysis.hardware_id == 2).all()[0]
 
-    DUT.assembly_severity_id = 4
-    DUT.assembly_probability_id = 5
-    DUT.assembly_severity_id_f = 2
-    DUT.assembly_probability_id_f = 3
-    DUT.system_severity_id = 4
-    DUT.system_probability_id = 4
-    DUT.system_severity_id_f = 3
-    DUT.system_probability_id_f = 2
+    DUT.assembly_severity = 'Medium'
+    DUT.assembly_probability = 'Level A - Frequent'
+    DUT.assembly_severity_f = 'Slight'
+    DUT.assembly_probability_f = 'Level C - Occasional'
+    DUT.system_severity = 'Medium'
+    DUT.system_probability = 'Level B - Reasonably Probable'
+    DUT.system_severity_f = 'Low'
+    DUT.system_probability_f = 'Level D - Remote'
 
     assert not DUT.calculate()
     assert DUT.assembly_hri == 20
@@ -285,6 +285,14 @@ def test_calculate_user_defined(test_dao):
     DUT = _session.query(RTKHazardAnalysis).filter(
         RTKHazardAnalysis.hardware_id == 2).all()[0]
 
+    DUT.assembly_severity = 'Medium'
+    DUT.assembly_probability = 'Level A - Frequent'
+    DUT.assembly_severity_f = 'Slight'
+    DUT.assembly_probability_f = 'Level C - Occasional'
+    DUT.system_severity = 'Medium'
+    DUT.system_probability = 'Level B - Reasonably Probable'
+    DUT.system_severity_f = 'Low'
+    DUT.system_probability_f = 'Level D - Remote'
     DUT.user_float_1 = 4.4
     DUT.user_float_2 = 6.0
     DUT.user_int_1 = 2

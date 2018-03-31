@@ -105,17 +105,30 @@ class HazardAnalysisDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedHazardAnalysis')
 
-    def request_update_all(self):
+    def request_update_all(self, node_id):
         """
         Request to update all records in the RTKHazardAnalysis table.
 
+        :param int node_id: the ID of the Hardware item to update the HazOps
+                            for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.update_all(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
+
+    def request_select_children(self, hardware_id):
+        """
+        Request the child nodes of the selected Hardware ID.
+
+        :param int hardware_id: the ID of the Hardware item to select the
+                                child nodes for.
+        :return: a list of the immediate child nodes of the passed Hardware ID.
+        :rtype: list
+        """
+        return self._dtm_data_model.select_children(hardware_id)
 
     def request_calculate(self, node_id):
         """
