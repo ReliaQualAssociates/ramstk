@@ -45,15 +45,18 @@ class RTKHazardAnalysis(RTK_BASE):
     potential_hazard = Column('fld_potential_hazard', String(256), default='')
     potential_cause = Column('fld_potential_cause', String(512), default='')
     assembly_effect = Column('fld_assembly_effect', String(512), default='')
-    assembly_severity_id = Column('fld_assembly_severity', Integer, default=4)
-    assembly_probability_id = Column(
-        'fld_assembly_probability', Integer, default=5)
+    assembly_severity = Column(
+        'fld_assembly_severity', String(256), default='Major')
+    assembly_probability = Column(
+        'fld_assembly_probability', String(256), default='Level A - Frequent')
     assembly_hri = Column('fld_assembly_hri', Integer, default=20)
     assembly_mitigation = Column('fld_assembly_mitigation', BLOB, default='')
-    assembly_severity_id_f = Column(
-        'fld_assembly_severity_f', Integer, default=4)
-    assembly_probability_id_f = Column(
-        'fld_assembly_probability_f', Integer, default=5)
+    assembly_severity_f = Column(
+        'fld_assembly_severity_f', String(256), default='Major')
+    assembly_probability_f = Column(
+        'fld_assembly_probability_f',
+        String(256),
+        default='Level A - Frequent')
     assembly_hri_f = Column('fld_assembly_hri_f', Integer, default=20)
     function_1 = Column('fld_function_1', String(128), default='')
     function_2 = Column('fld_function_2', String(128), default='')
@@ -67,14 +70,16 @@ class RTKHazardAnalysis(RTK_BASE):
     result_4 = Column('fld_result_4', Float, default=0.0)
     result_5 = Column('fld_result_5', Float, default=0.0)
     system_effect = Column('fld_system_effect', String(512), default='')
-    system_severity_id = Column('fld_system_severity', Integer, default=4)
-    system_probability_id = Column(
-        'fld_system_probability', Integer, default=5)
+    system_severity = Column(
+        'fld_system_severity', String(256), default='Major')
+    system_probability = Column(
+        'fld_system_probability', String(256), default='Level A - Frequent')
     system_hri = Column('fld_system_hri', Integer, default=20)
     system_mitigation = Column('fld_system_mitigation', BLOB, default='')
-    system_severity_id_f = Column('fld_system_severity_f', Integer, default=4)
-    system_probability_id_f = Column(
-        'fld_system_probability_f', Integer, default=5)
+    system_severity_f = Column(
+        'fld_system_severity_f', String(256), default='Major')
+    system_probability_f = Column(
+        'fld_system_probability_f', String(256), default='Level A - Frequent')
     system_hri_f = Column('fld_system_hri_f', Integer, default=20)
     user_blob_1 = Column('fld_user_blob_1', BLOB, default='')
     user_blob_2 = Column('fld_user_blob_2', BLOB, default='')
@@ -115,20 +120,20 @@ class RTKHazardAnalysis(RTK_BASE):
             'potential_hazard': self.potential_hazard,
             'potential_cause': self.potential_cause,
             'assembly_effect': self.assembly_effect,
-            'assembly_severity_id': self.assembly_severity_id,
-            'assembly_probability_id': self.assembly_probability_id,
+            'assembly_severity': self.assembly_severity,
+            'assembly_probability': self.assembly_probability,
             'assembly_hri': self.assembly_hri,
             'assembly_mitigation': self.assembly_mitigation,
-            'assembly_severity_id_f': self.assembly_severity_id_f,
-            'assembly_probability_id_f': self.assembly_probability_id_f,
+            'assembly_severity_f': self.assembly_severity_f,
+            'assembly_probability_f': self.assembly_probability_f,
             'assembly_hri_f': self.assembly_hri_f,
             'system_effect': self.system_effect,
-            'system_severity_id': self.system_severity_id,
-            'system_probability_id': self.system_probability_id,
+            'system_severity': self.system_severity,
+            'system_probability': self.system_probability,
             'system_hri': self.system_hri,
             'system_mitigation': self.system_mitigation,
-            'system_severity_id_f': self.system_severity_id_f,
-            'system_probability_id_f': self.system_probability_id_f,
+            'system_severity_f': self.system_severity_f,
+            'system_probability_f': self.system_probability_f,
             'system_hri_f': self.system_hri_f,
             'remarks': self.remarks,
             'function_1': self.function_1,
@@ -174,33 +179,33 @@ class RTKHazardAnalysis(RTK_BASE):
                 none_to_default(attributes['potential_cause'], ''))
             self.assembly_effect = str(
                 none_to_default(attributes['assembly_effect'], ''))
-            self.assembly_severity_id = int(
-                none_to_default(attributes['assembly_severity_id'], 0))
-            self.assembly_probability_id = int(
-                none_to_default(attributes['assembly_probability_id'], 0))
+            self.assembly_severity = str(
+                none_to_default(attributes['assembly_severity'], ''))
+            self.assembly_probability = str(
+                none_to_default(attributes['assembly_probability'], ''))
             self.assembly_hri = int(
                 none_to_default(attributes['assembly_hri'], 0))
             self.assembly_mitigation = str(
                 none_to_default(attributes['assembly_mitigation'], ''))
-            self.assembly_severity_id_f = int(
-                none_to_default(attributes['assembly_severity_id_f'], 0))
-            self.assembly_probability_id_f = int(
-                none_to_default(attributes['assembly_probability_id_f'], 0))
+            self.assembly_severity_f = str(
+                none_to_default(attributes['assembly_severity_f'], ''))
+            self.assembly_probability_f = str(
+                none_to_default(attributes['assembly_probability_f'], ''))
             self.assembly_hri_f = int(
                 none_to_default(attributes['assembly_hri_f'], 0))
             self.system_effect = str(
                 none_to_default(attributes['system_effect'], ''))
-            self.system_severity_id = int(
-                none_to_default(attributes['system_severity_id'], 0))
-            self.system_probability_id = int(
-                none_to_default(attributes['system_probability_id'], 0))
+            self.system_severity = str(
+                none_to_default(attributes['system_severity'], ''))
+            self.system_probability = str(
+                none_to_default(attributes['system_probability'], ''))
             self.system_hri = int(none_to_default(attributes['system_hri'], 0))
             self.system_mitigation = str(
                 none_to_default(attributes['system_mitigation'], ''))
-            self.system_severity_id_f = int(
-                none_to_default(attributes['system_severity_id_f'], 0))
-            self.system_probability_id_f = int(
-                none_to_default(attributes['system_probability_id_f'], 0))
+            self.system_severity_f = str(
+                none_to_default(attributes['system_severity_f'], ''))
+            self.system_probability_f = str(
+                none_to_default(attributes['system_probability_f'], ''))
             self.system_hri_f = int(
                 none_to_default(attributes['system_hri_f'], 0))
             self.remarks = str(none_to_default(attributes['remarks'], ''))
@@ -254,6 +259,22 @@ class RTKHazardAnalysis(RTK_BASE):
         """
         _return = False
 
+        _severity = {
+            'Insignificant': 1,
+            'Slight': 2,
+            'Low': 3,
+            'Medium': 4,
+            'High': 5,
+            'Major': 6
+        }
+        _probability = {
+            'Level E - Extremely Unlikely': 1,
+            'Level D - Remote': 2,
+            'Level C - Occasional': 3,
+            'Level B - Reasonably Probable': 4,
+            'Level A - Frequent': 5
+        }
+
         # Create list of safe functions.
         _safe_list = [
             'uf1', 'uf2', 'uf3', 'ui1', 'ui2', 'ui3', 'equation1', 'equation2',
@@ -265,15 +286,33 @@ class RTKHazardAnalysis(RTK_BASE):
         _calculations = dict([(k, locals().get(k, None)) for k in _safe_list])
 
         # Calculate the MIL-STD-882 hazard risk indices.
-        self.assembly_hri = (
-            self.assembly_probability_id * self.assembly_severity_id)
-        self.assembly_hri_f = (
-            self.assembly_probability_id_f * self.assembly_severity_id_f)
+        try:
+            self.assembly_hri = (_probability[self.assembly_probability] *
+                                 _severity[self.assembly_severity])
+        except KeyError:
+            self.assembly_hri = 30
+            _return = True
 
-        self.system_hri = (
-            self.system_probability_id * self.system_severity_id)
-        self.system_hri_f = (
-            self.system_probability_id_f * self.system_severity_id_f)
+        try:
+            self.assembly_hri_f = (_probability[self.assembly_probability_f] *
+                                   _severity[self.assembly_severity_f])
+        except KeyError:
+            self.assembly_hri_f = 30
+            _return = True
+
+        try:
+            self.system_hri = (_probability[self.system_probability] *
+                               _severity[self.system_severity])
+        except KeyError:
+            self.system_hri = 30
+            _return = True
+
+        try:
+            self.system_hri_f = (_probability[self.system_probability_f] *
+                                 _severity[self.system_severity_f])
+        except KeyError:
+            self.system_hri_f = 30
+            _return = True
 
         # Get the user-defined float and integer values.
         _calculations['uf1'] = self.user_float_1
