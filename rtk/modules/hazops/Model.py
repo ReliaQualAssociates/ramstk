@@ -146,9 +146,9 @@ class HazardAnalysisDataModel(RTKDataModel):
 
     def update(self, node_id):
         """
-        Update the record in the RTKHazardAnalysis table.
+        Update the selected HazOps in the RTKHazardAnalysis table.
 
-        :param int node_id: the HazardAnalysis ID to save to the RTK Program
+        :param int node_id: the HazOps ID to save to the RTK Program
                             database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -162,21 +162,22 @@ class HazardAnalysisDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def update_all(self, module_id):
         """
-        Update all RTKHazardAnalysis records.
+        Update all RTKHazardAnalysis records for the selected Hardware item.
 
+        :param int module_id: the ID of the Hardware item to save the HazOps for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _error_code = 0
         _msg = ''
 
-        for _node in self.tree.all_nodes():
+        for _node in self.select_children(module_id):
             try:
                 _id = '{0:d}.{1:d}'.format(_node.data.hardware_id,
                                            _node.data.hazard_id)
-                _error_code, _msg = self.update(_id)
+                _error_code, _err_msg = self.update(_id)
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
@@ -184,24 +185,26 @@ class HazardAnalysisDataModel(RTKDataModel):
                           'rtk.analyses.hazard_analysis.Model.update_all().'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.hazard_analysis.Model.update_all().'
+                if _node.data is None:
+                    _msg = _msg + ('RTK ERROR: No data package for Node ID: '
+                                   '{0:d}.\n').format(_node.identifier)
+                else:
+                    _msg = _msg + ('RTK ERROR: Attempt to save Node ID: '
+                                   '{0:d}.{1:d} failed.\n').format(
+                                       _node.data.hardware_id,
+                                       _node.data.hazard_id)
 
         return _error_code, _msg
 
     def calculate(self, node_id):
         """
-        Calculate and allocate the goals for the selected hardware item.
+        Calculate the HRIs for the selected hazard.
 
-        :param int node_id: the Node (Hardware) ID of the hardware item whose
+        :param int node_id: the Node (Hazard) ID of the hardware item whose
                             goal is to be allocated.
-        :param list hazard_rates: the hazard rates of the parent hardware item
-                                  to be allocated and each of the child items
-                                  (only needed for ARINC apportionment).  Index
-                                  0 is the parent hazard rate.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _hazard_analysis = self.select(node_id)
+        _hazard = self.select(node_id)
 
-        return _hazard_analysis.calculate()
+        return _hazard.calculate()

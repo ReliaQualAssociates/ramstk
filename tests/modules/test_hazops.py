@@ -57,7 +57,7 @@ def test_select(test_dao):
     assert isinstance(_hazard_analysis, RTKHazardAnalysis)
     assert _hazard_analysis.hardware_id == 2
     assert _hazard_analysis.hazard_id == 2
-    assert _hazard_analysis.assembly_severity_id == 4
+    assert _hazard_analysis.assembly_severity == 'Major'
 
 
 @pytest.mark.integration
@@ -101,7 +101,7 @@ def test_insert(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
                     "Program database.")
-    assert DUT.last_id == 8
+    assert DUT.last_id == 9
 
 
 @pytest.mark.integration
@@ -117,6 +117,7 @@ def test_delete(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
                     "database.")
+    assert DUT.last_id == '8.8'
 
 
 @pytest.mark.integration
@@ -143,7 +144,7 @@ def test_update(test_dao):
     DUT.select_all(1)
 
     _hazard_analysis = DUT.select('3.3')
-    _hazard_analysis.assembly_probability_id = 2
+    _hazard_analysis.assembly_probability = 'Level D - Remote'
 
     _error_code, _msg = DUT.update('3.3')
 
@@ -190,14 +191,14 @@ def test_calculate_hri(test_dao):
     DUT.select_all(1)
 
     _hazard_analysis = DUT.select('3.3')
-    _hazard_analysis.assembly_severity_id = 4
-    _hazard_analysis.assembly_probability_id = 5
-    _hazard_analysis.assembly_severity_id_f = 2
-    _hazard_analysis.assembly_probability_id_f = 3
-    _hazard_analysis.system_severity_id = 4
-    _hazard_analysis.system_probability_id = 4
-    _hazard_analysis.system_severity_id_f = 3
-    _hazard_analysis.system_probability_id_f = 2
+    _hazard_analysis.assembly_severity = 'Medium'
+    _hazard_analysis.assembly_probability = 'Level A - Frequent'
+    _hazard_analysis.assembly_severity_f = 'Slight'
+    _hazard_analysis.assembly_probability_f = 'Level C - Occasional'
+    _hazard_analysis.system_severity = 'Medium'
+    _hazard_analysis.system_probability = 'Level B - Reasonably Probable'
+    _hazard_analysis.system_severity_f = 'Low'
+    _hazard_analysis.system_probability_f = 'Level D - Remote'
 
     assert not DUT.calculate('3.3')
     assert _hazard_analysis.assembly_hri == 20
