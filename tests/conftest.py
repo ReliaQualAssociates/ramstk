@@ -4,9 +4,9 @@ import rtk.Utilities as Utilities
 from rtk.Configuration import Configuration
 from rtk.dao import DAO
 
-TESTDB_PATH = '/tmp/TestDB.rtk'
+TEST_PROGRAM_DB_PATH = '/tmp/TestDB.rtk'
 TEST_COMMON_DB_PATH = '/tmp/TestCommonDB.rtk'
-TEST_DATABASE_URI = 'sqlite:///' + TESTDB_PATH
+TEST_DATABASE_URI = 'sqlite:///' + TEST_PROGRAM_DB_PATH
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
 
 
