@@ -172,6 +172,10 @@ class DAO(object):
         self._db_table_create(RTKProgramStatus.__table__)
 
         self._db_table_create(RTKRevision.__table__)
+        self._db_table_create(RTKFailureDefinition.__table__)
+        self._db_table_create(RTKMission.__table__)
+        self._db_table_create(RTKMissionPhase.__table__)
+        self._db_table_create(RTKEnvironment.__table__)
         _revision = RTKRevision()
         _revision.revision_id = 1
         _revision.description = _(u"Test Revision")
@@ -180,28 +184,27 @@ class DAO(object):
         ], self.session)
         self.session.commit()
 
-        self._db_table_create(RTKMission.__table__)
+        _definition = RTKFailureDefinition()
+        _definition.revision_id = _revision.revision_id
+        _definition.definition = 'Failure Definition'
+
         _mission = RTKMission()
         _mission.revision_id = _revision.revision_id
         _mission.mission_id = 1
-        _mission.description = _(u"Test Mission")
+        _mission.description = "Test Mission"
         self.db_add([
-            _mission,
+            _definition, _mission,
         ], self.session)
         self.session.commit()
 
-        self._db_table_create(RTKMissionPhase.__table__)
         _phase = RTKMissionPhase()
         _phase.mission_id = _mission.mission_id
         _phase.phase_id = 1
-        _phase.description = _(u"Test Mission Phase 1")
+        _phase.description = "Test Mission Phase 1"
         self.db_add([
             _phase,
         ], self.session)
         self.session.commit()
-
-        self._db_table_create(RTKEnvironment.__table__)
-        self._db_table_create(RTKFailureDefinition.__table__)
 
         self._db_table_create(RTKFunction.__table__)
         self._db_table_create(RTKMode.__table__)
