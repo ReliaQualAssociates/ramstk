@@ -3,10 +3,9 @@
 #       tests.dao.programdb.test_rtkallocation.py is part of The RTK Project
 #
 # All rights reserved.
-"""Test class for testing the RTKAllocation module algorithms and models."""
+""" Test class for testing the RTKAllocation module algorithms and models. """
 
 import pytest
-from _pytest.mark import MarkInfo
 
 from rtk.dao.RTKAllocation import RTKAllocation
 

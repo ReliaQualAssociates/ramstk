@@ -98,7 +98,7 @@ class FailureDefinitionDataModel(RTKDataModel):
                 _definition.definition_id,
                 parent=0,
                 data=_definition)
-            self._last_id = _definition.definition_id  # pylint: disable=W0201
+            self.last_id = _definition.definition_id
 
         return _error_code, _msg
 
