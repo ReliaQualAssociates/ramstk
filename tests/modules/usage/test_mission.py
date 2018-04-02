@@ -1,21 +1,17 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.usage.TestMission.py is part of The RTK Project
+#       rtk.tests.modules.usage.test_mission.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing Mission module algorithms and models."""
 
-import unittest
-from nose.plugins.attrib import attr
-
-from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-import rtk.Utilities as Utilities
-from rtk.Configuration import Configuration
-from rtk.usage import dtmMission
+import pytest
+
+from rtk.modules.usage import dtmMission
 from rtk.dao import DAO
 from rtk.dao import RTKMission
 
@@ -25,160 +21,144 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestMissionDataModel(unittest.TestCase):
-    """
-    Class for testing the Mission model class.
-    """
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_create_data_model(test_dao):
+    """ __init__() should return a Mission data model. """
+    DUT = dtmMission(test_dao)
 
-    def setUp(self):
-        """
-        Method to setup the test fixture for the Mission class.
-        """
-        self.Configuration = Configuration()
+    assert isinstance(DUT, dtmMission)
+    assert isinstance(DUT.tree, Tree)
+    assert isinstance(DUT.dao, DAO)
 
-        self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {
-            'host': 'localhost',
-            'socket': 3306,
-            'database': '/tmp/TestDB.rtk',
-            'user': '',
-            'password': ''
-        }
 
-        self.Configuration.DEBUG_LOG = \
-            Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
-        self.Configuration.USER_LOG = \
-            Utilities.create_logger("RTK.user", 'INFO', '/tmp/RTK_user.log')
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_select_all(test_dao):
+    """ select_all() should return a Tree() object populated with RTKMission instances on success. """
+    DUT = dtmMission(test_dao)
 
-        # Create a data access object and connect to a test database.
-        self.dao = DAO()
-        _database = self.Configuration.RTK_BACKEND + ':///' + \
-                    self.Configuration.RTK_PROG_INFO['database']
-        self.dao.db_connect(_database)
+    _tree = DUT.select_all(1)
 
-        self.dao.RTK_SESSION.configure(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
-        self.session = scoped_session(self.dao.RTK_SESSION)
+    assert isinstance(_tree, Tree)
+    assert isinstance(_tree.get_node(1).data, RTKMission)
 
-        self.DUT = dtmMission(self.dao)
 
-    @attr(all=True, unit=True)
-    def test00_create(self):
-        """
-        (TestMissionModel) __init__ should return a Mission model
-        """
-        self.assertTrue(isinstance(self.DUT, dtmMission))
-        self.assertTrue(isinstance(self.DUT.tree, Tree))
-        self.assertTrue(isinstance(self.DUT.dao, DAO))
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_select(test_dao):
+    """ select() should return an instance of the RTKMission data model on success. """
+    DUT = dtmMission(test_dao)
+    DUT.select_all(1)
 
-    @attr(all=True, unit=True)
-    def test01a_select_all(self):
-        """
-        (TestMissionModel): select_all() should return a Tree() object populated with RTKMission instances on success.
-        """
-        _tree = self.DUT.select_all(1)
+    _mission = DUT.select(1)
 
-        self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMission))
+    assert isinstance(_mission, RTKMission)
+    assert _mission.mission_id == 1
+    assert _mission.description == 'Test Mission'
 
-    @attr(all=True, unit=True)
-    def test02a_select(self):
-        """
-        (TestMissionModel): select() should return an instance of the RTKMission data model on success.
-        """
-        self.DUT.select_all(1)
-        _mission = self.DUT.select(1)
 
-        self.assertTrue(isinstance(_mission, RTKMission))
-        self.assertEqual(_mission.mission_id, 1)
-        self.assertEqual(_mission.description, 'Test Mission Description')
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_select_non_existent_id(test_dao):
+    """ select() should return None when passed a Mission ID that doesn't exist. """
+    DUT = dtmMission(test_dao)
+    DUT.select_all(1)
 
-    @attr(all=True, unit=True)
-    def test02b_select_non_existent_id(self):
-        """
-        (TestMissionModel): select should return None when passed a Mission ID that doesn't exist.
-        """
-        self.DUT.select_all(1)
-        self.assertEqual(self.DUT.select(100), None)
+    assert DUT.select(100) is None
 
-    @attr(all=True, unit=True)
-    def test03a_insert(self):
-        """
-        (TestMissionModel): insert() should return a zero error code on success.
-        """
-        self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(revision_id=1)
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_insert(test_dao):
+    """ insert() should return a zero error code on success. """
+    DUT = dtmMission(test_dao)
+    DUT.select_all(1)
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                         'the RTK Program database.')
-        self.assertEqual(self.DUT.last_id, 2)
+    _error_code, _msg = DUT.insert(revision_id=1)
 
-    @attr(all=True, unit=True)
-    def test04a_delete(self):
-        """
-        (TestMissionModel): delete() should return False on success.
-        """
-        self.DUT.select_all(1)
+    assert _error_code == 0
+    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+                    'database.')
+    assert DUT.last_id == 2
 
-        _error_code, _msg = self.DUT.delete(2)
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
-                         'Program database.')
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_delete(test_dao):
+    """ delete() should return False on success. """
+    DUT = dtmMission(test_dao)
+    DUT.select_all(1)
 
-    @attr(all=True, unit=True)
-    def test04b_delete_non_existent_id(self):
-        """
-        (TestMissionModel): delete() should return True when passed a Mission ID that doesn't exist.
-        """
-        self.DUT.select_all(1)
+    _error_code, _msg = DUT.delete(DUT.last_id)
 
-        _error_code, _msg = self.DUT.delete(300)
+    assert _error_code == 0
+    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+                    'database.')
 
-        self.assertEqual(_error_code, 2005)
-        self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                         'Mission ID 300.')
 
-    @attr(all=True, unit=True)
-    def test_05a_update(self):
-        """
-        (TestMissionModel): update() should return a zero error code on success.
-        """
-        self.DUT.select_all(1)
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_delete_non_existent_id(test_dao):
+    """ delete() should return True when passed a Mission ID that doesn't exist. """
+    DUT = dtmMission(test_dao)
+    DUT.select_all(1)
 
-        _mission = self.DUT.tree.get_node(1).data
-        _mission.description = 'Test Mission Description'
+    _error_code, _msg = DUT.delete(300)
 
-        _error_code, _msg = self.DUT.update(1)
+    assert _error_code == 2005
+    assert _msg == ('  RTK ERROR: Attempted to delete non-existent Mission ID '
+                    '300.')
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         'RTK SUCCESS: Updating the RTK Program database.')
 
-    @attr(all=True, unit=True)
-    def test_05b_update_non_existent_id(self):
-        """
-        (TestMissionModel): update() should return a non-zero error code when passed a Mission ID that doesn't exist.
-        """
-        self.DUT.select_all(1)
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_update(test_dao):
+    """ update() should return a zero error code on success. """
+    DUT = dtmMission(test_dao)
+    DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.update(100)
+    _mission = DUT.select(1)
+    _mission.description = 'Test Mission Description'
 
-        self.assertEqual(_error_code, 2006)
-        self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                         'Mission ID 100.')
+    _error_code, _msg = DUT.update(1)
 
-    @attr(all=True, unit=True)
-    def test_06a_update_all(self):
-        """
-        (TestMissionModel): update_all() should return a zero error code on success.
-        """
-        self.DUT.select_all(1)
+    assert _error_code == 0
+    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
 
-        _error_code, _msg = self.DUT.update_all()
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         'RTK SUCCESS: Updating the RTK Program database.')
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_update_non_existent_id(test_dao):
+    """ update() should return a non-zero error code when passed a Mission ID that doesn't exist. """
+    DUT = dtmMission(test_dao)
+    DUT.select_all(1)
+
+    _error_code, _msg = DUT.update(100)
+
+    assert _error_code == 2006
+    assert _msg == ('RTK ERROR: Attempted to save non-existent Mission ID '
+                    '100.')
+
+
+@pytest.mark.integration
+@pytest.mark.revision
+@pytest.mark.usage
+def test_update_all(test_dao):
+    """ update_all() should return a zero error code on success. """
+    DUT = dtmMission(test_dao)
+    DUT.select_all(1)
+
+    _error_code, _msg = DUT.update_all()
+
+    assert _error_code == 0
+    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
