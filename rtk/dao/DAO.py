@@ -206,6 +206,9 @@ class DAO(object):
         ], self.session)
         self.session.commit()
 
+        _environment = RTKEnvironment()
+        _environment.phase_id = _phase.phase_id
+
         self._db_table_create(RTKFunction.__table__)
         self._db_table_create(RTKMode.__table__)
         self._db_table_create(RTKControl.__table__)
@@ -215,7 +218,7 @@ class DAO(object):
             _function = RTKFunction()
             _function.revision_id = _revision.revision_id
             _function.function_code = "FUNC-000{0:d}".format(i)
-            self.db_add([_function], self.session)
+            self.db_add([_environment, _function], self.session)
 
             _mode = RTKMode()
             _mode.function_id = _function.function_id
