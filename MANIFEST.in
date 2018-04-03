@@ -12,7 +12,6 @@ exclude docs/api/_build
 exclude docs/api/_temp
 exclude docs/api/source
 exclude tests
-exclude tools
 
 recursive-include .circleci *.yml
 recursive-include data *.conf *.desktop *.ico *.png *.xml
@@ -23,4 +22,3 @@ recursive-include locale *.pot
 recursive-include rtk *.py
 
 recursive-exclude tests *
-recursive-exclude tools *
