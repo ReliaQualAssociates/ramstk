@@ -1,16 +1,12 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests._dao.TestRTKStakeholder.py is part of The RTK Project
+#       tests.dao.programdb.test_rtkstakeholder.py is part of The RTK Project
 #
 # All rights reserved.
 """Test class for testing the RTKStakeholder module algorithms and models."""
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-import unittest
-from nose.plugins.attrib import attr
+import pytest
 
 from rtk.dao.RTKStakeholder import RTKStakeholder
 
@@ -19,15 +15,11 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
-
-class TestRTKStakeholder(unittest.TestCase):
-    """Class for testing the RTKStakeholder class."""
-
-    _attributes = {
+ATTRIBUTES = {
         'user_float_1': 0.0,
         'priority': 1,
         'group': u'',
-        'description': 'Stakeholder Input',
+        'description': 'Test Stakeholder Input',
         'planned_rank': 1,
         'stakeholder': u'',
         'improvement': 0.0,
@@ -42,67 +34,85 @@ class TestRTKStakeholder(unittest.TestCase):
         'requirement_id': 0
     }
 
-    def setUp(self):
-        """Set up the test fixture for the RTKStakeholder class."""
-        engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
-        session = scoped_session(sessionmaker())
 
-        session.remove()
-        session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.requirement
+@pytest.mark.stakeholder
+def test_rtkstakeholder_create(test_dao):
+    """ __init__() should create an RTKStakeholder model. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKStakeholder).first()
 
-        self.DUT = session.query(RTKStakeholder).first()
-        self.DUT.description = self._attributes['description']
+    assert isinstance(DUT, RTKStakeholder)
 
-        session.commit()
+    # Verify class attributes are properly initialized.
+    assert DUT.__tablename__ == 'rtk_stakeholder'
+    assert DUT.revision_id == 1
+    assert DUT.stakeholder_id == 1
+    assert DUT.customer_rank == 1
+    assert DUT.description == 'Test Stakeholder Input'
+    assert DUT.group == ''
+    assert DUT.improvement == 0.0
+    assert DUT.overall_weight == 0.0
+    assert DUT.planned_rank == 1
+    assert DUT.priority == 1
+    assert DUT.requirement_id == 0
+    assert DUT.stakeholder == ''
+    assert DUT.user_float_1 == 0.0
+    assert DUT.user_float_2 == 0.0
+    assert DUT.user_float_3 == 0.0
+    assert DUT.user_float_4 == 0.0
+    assert DUT.user_float_5 == 0.0
 
-    @attr(all=True, unit=True)
-    def test00_rtkstakeholder_create(self):
-        """(TestRTKStakeholder) __init__ should create an RTKStakeholder model."""
-        self.assertTrue(isinstance(self.DUT, RTKStakeholder))
 
-        # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'rtk_stakeholder')
-        self.assertEqual(self.DUT.revision_id, 1)
-        self.assertEqual(self.DUT.stakeholder_id, 1)
-        self.assertEqual(self.DUT.customer_rank, 1)
-        self.assertEqual(self.DUT.description, 'Stakeholder Input')
-        self.assertEqual(self.DUT.group, '')
-        self.assertEqual(self.DUT.improvement, 0.0)
-        self.assertEqual(self.DUT.overall_weight, 0.0)
-        self.assertEqual(self.DUT.planned_rank, 1)
-        self.assertEqual(self.DUT.priority, 1)
-        self.assertEqual(self.DUT.requirement_id, 0)
-        self.assertEqual(self.DUT.stakeholder, '')
-        self.assertEqual(self.DUT.user_float_1, 0.0)
-        self.assertEqual(self.DUT.user_float_2, 0.0)
-        self.assertEqual(self.DUT.user_float_3, 0.0)
-        self.assertEqual(self.DUT.user_float_4, 0.0)
-        self.assertEqual(self.DUT.user_float_5, 0.0)
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.requirement
+@pytest.mark.stakeholder
+def test_get_attributes(test_dao):
+    """ get_attributes() should return a tuple of attribute values. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKStakeholder).first()
 
-    @attr(all=True, unit=True)
-    def test01_get_attributes(self):
-        """(TestRTKStakeholder) get_attributes should return a tuple of attribute values."""
-        self.assertEqual(self.DUT.get_attributes(), self._attributes)
+    assert DUT.get_attributes() == ATTRIBUTES
 
-    @attr(all=True, unit=True)
-    def test02a_set_attributes(self):
-        """(TestRTKStakeholder) set_attributes should return a zero error code on success."""
-        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKStakeholder {0:d} "
-                         "attributes.".format(self.DUT.stakeholder_id))
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.requirement
+@pytest.mark.stakeholder
+def test_set_attributes(test_dao):
+    """ set_attributes() should return a zero error code on success. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKStakeholder).first()
 
-    @attr(all=True, unit=True)
-    def test02b_set_attributes_missing_key(self):
-        """(TestRTKStakeholder) set_attributes should return a 40 error code when passed a dict with a missing key."""
-        self._attributes.pop('user_float_1')
+    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
-        _error_code, _msg = self.DUT.set_attributes(self._attributes)
+    assert _error_code == 0
+    assert _msg == ("RTK SUCCESS: Updating RTKStakeholder {0:d} "
+                    "attributes.".format(DUT.stakeholder_id))
 
-        self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'user_float_1' "
-                         "in attribute dictionary passed to "
-                         "RTKStakeholder.set_attributes().")
 
-        self._attributes['user_float_1'] = 0.0
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.requirement
+@pytest.mark.stakeholder
+def test_set_attributes_missing_key(test_dao):
+    """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKStakeholder).first()
+
+    ATTRIBUTES.pop('user_float_1')
+
+    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+
+    assert _error_code == 40
+    assert _msg == ("RTK ERROR: Missing attribute 'user_float_1' in attribute "
+                    "dictionary passed to RTKStakeholder.set_attributes().")
+
+    ATTRIBUTES['user_float_1'] = 0.0
