@@ -244,6 +244,13 @@ class DAO(object):
         self._db_table_create(RTKRequirement.__table__)
         self._db_table_create(RTKStakeholder.__table__)
         self._db_table_create(RTKMatrix.__table__)
+        _requirement = RTKRequirement()
+        _requirement.revision_id = _revision.revision_id
+        _requirement.requirement_code = 'REL-0001'
+        self.db_add([
+            _requirement,
+        ], self.session)
+        self.session.commit()
 
         # Create tables for Hardware analyses.
         self._db_table_create(RTKHardware.__table__)
@@ -415,6 +422,15 @@ class DAO(object):
         self.session.commit()
 
         for _ckey in _dic_cols:
+            _matrix = RTKMatrix()
+            _matrix.revision_id = _revision.revision_id
+            _matrix.matrix_id = 2
+            _matrix.matrix_type = 'rqrmnt_hrdwr'
+            _matrix.column_id = _ckey
+            _matrix.column_item_id = _dic_cols[_ckey]
+            _matrix.row_id = _ckey
+            _matrix.row_item_id = 1
+            self.db_add([_matrix], self.session)
             for _rkey in _dic_rows:
                 _matrix = RTKMatrix()
                 _matrix.revision_id = _revision.revision_id
