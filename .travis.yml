@@ -1,6 +1,7 @@
 language: python
 python:
     - "2.7"
+sudo: False
 
 # Command to install dependencies.
 before_install:
