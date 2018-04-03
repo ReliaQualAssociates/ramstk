@@ -59,8 +59,8 @@ if __name__ == '__main__':
         entry_points={
             'console_scripts': ['rtk = rtk.RTK:main'],
         },
-        data_files=[('share/applications', 'data/RTK.desktop'),
-                    ('share/icons', 'data/icons/RTK.png')],
+        data_files=[('share/applications', ['data/RTK.desktop']),
+                    ('share/pixmaps', ['data/icons/RTK.png'])],
         package_data={},
         dependency_links=[],
         zip_safe=True,

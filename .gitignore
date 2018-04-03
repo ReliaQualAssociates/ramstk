@@ -15,6 +15,7 @@
 *.geany
 
 # Python specific directories and files to ignore
+build/
 dist/
 .pytest_cache/
 target/
