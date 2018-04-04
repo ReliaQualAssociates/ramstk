@@ -74,7 +74,7 @@ class RequirementDataModel(RTKDataModel):
             self.last_id = max(self.last_id, _requirement.requirement_id)
 
         _session.close()
-        self.tree.show()
+
         return self.tree
 
     def insert(self, **kwargs):  # pylint: disable=unused-argument

@@ -62,7 +62,7 @@ from rtk.modules.failure_definition import dtcFailureDefinition
 from rtk.modules.function import dtcFunction
 from rtk.modules.fmea import dtcFMEA
 from rtk.modules.requirement import dtcRequirement
-from rtk.stakeholder import dtcStakeholder
+from rtk.modules.stakeholder import dtcStakeholder
 from rtk.hardware import dtcHardwareBoM
 from rtk.modules.allocation import dtcAllocation
 from rtk.modules.hazops import dtcHazardAnalysis
