@@ -466,6 +466,11 @@ class DAO(object):
 
         # Create table for Verification and Validation.
         self._db_table_create(RTKValidation.__table__)
+        _validation = RTKValidation()
+        _validation.revision_id = _revision.revision_id
+        _validation.description = 'Test Validation'
+        self.db_add([_validation], self.session)
+        self.session.commit()
 
         return False
 

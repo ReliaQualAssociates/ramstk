@@ -171,7 +171,7 @@ class HazardAnalysisDataModel(RTKDataModel):
         :rtype: bool
         """
         _error_code = 0
-        _msg = ''
+        _msg = "RTK SUCCESS: Updating the RTK Program database."
 
         for _node in self.select_children(module_id):
             try:
