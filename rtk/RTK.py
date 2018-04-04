@@ -71,7 +71,7 @@ from rtk.modules.pof import dtcPoF
 # from rtk.software.BoM import BoM as SoftwareBoM
 # from rtk.testing.Testing import Testing
 # from rtk.testing.growth.Growth import Growth
-from rtk.validation import dtcValidation
+from rtk.modules.validation import dtcValidation
 # from rtk.incident.Incident import Incident
 # from rtk.incident.action.Action import Action
 # from rtk.incident.component.Component import Component
