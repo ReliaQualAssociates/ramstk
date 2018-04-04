@@ -247,8 +247,11 @@ class DAO(object):
         _requirement = RTKRequirement()
         _requirement.revision_id = _revision.revision_id
         _requirement.requirement_code = 'REL-0001'
+        _stakeholder = RTKStakeholder()
+        _stakeholder.revision_id = _revision.revision_id
+        _stakeholder.description = 'Test Stakeholder Input'
         self.db_add([
-            _requirement,
+            _requirement, _stakeholder
         ], self.session)
         self.session.commit()
 

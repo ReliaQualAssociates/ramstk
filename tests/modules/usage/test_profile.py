@@ -84,7 +84,7 @@ def test_select(test_dao):
     _entity = DUT.select(1)
 
     assert isinstance(_entity, RTKMission)
-    assert _entity.description == 'Test Mission'
+    assert _entity.description == 'Test Mission Description'
 
 
 @pytest.mark.integration
@@ -162,7 +162,7 @@ def test_delete_environment(test_dao):
     DUT = dtmUsageProfile(test_dao)
     DUT.select_all(1)
 
-    _error_code, _msg = DUT.delete(222)
+    _error_code, _msg = DUT.delete(223)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
@@ -341,7 +341,7 @@ def test_request_last_environment_id(test_dao, test_configuration):
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
     DUT.request_select_all(1)
 
-    assert DUT.request_last_id('environment') == 1
+    assert DUT.request_last_id('environment') == 2
 
 
 @pytest.mark.integration
