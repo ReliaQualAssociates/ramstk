@@ -97,12 +97,12 @@ def test_insert(test_dao):
     DUT = dtmSimilarItem(test_dao)
     DUT.select_all(1)
 
-    _error_code, _msg = DUT.insert(revision_id=1, hardware_id=5, parent_id=1)
+    _error_code, _msg = DUT.insert(revision_id=1, hardware_id=15, parent_id=1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
                     "Program database.")
-    assert DUT.last_id == 8
+    assert DUT.last_id == 15
 
 
 @pytest.mark.integration

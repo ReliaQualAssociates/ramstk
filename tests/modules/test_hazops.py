@@ -176,7 +176,7 @@ def test_update_all(test_dao):
     DUT = dtmHazardAnalysis(test_dao)
     DUT.select_all(1)
 
-    _error_code, _msg = DUT.update_all()
+    _error_code, _msg = DUT.update_all(1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
@@ -316,7 +316,7 @@ def test_request_update_all(test_dao, test_configuration):
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
     DUT.request_select_all(1)
 
-    assert not DUT.request_update_all()
+    assert not DUT.request_update_all(1)
 
 
 @pytest.mark.integration
