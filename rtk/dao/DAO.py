@@ -286,6 +286,8 @@ class DAO(object):
         _reliability.hardware_id = _system.hardware_id
         _mil_hdbk_217 = RTKMilHdbkF()
         _mil_hdbk_217.hardware_id = _system.hardware_id
+        _nswc = RTKNSWC()
+        _nswc.hardware_id = _system.hardware_id
         _design_electric = RTKDesignElectric()
         _design_electric.hardware_id = _system.hardware_id
         _design_mechanic = RTKDesignMechanic()
@@ -306,7 +308,7 @@ class DAO(object):
         _mode.hardware_id = _system.hardware_id
         _mode.description = 'System Test Failure Mode'
         self.db_add([
-            _reliability, _mil_hdbk_217, _design_electric, _design_mechanic,
+            _reliability, _mil_hdbk_217, _nswc, _design_electric, _design_mechanic,
             _allocation, _similaritem, _hazardanalysis, _mode
         ], self.session)
 
@@ -387,13 +389,15 @@ class DAO(object):
             _reliability.hardware_id = i + 1
             _mil_hdbk_217 = RTKMilHdbkF()
             _mil_hdbk_217.hardware_id = i + 1
+            _nswc = RTKNSWC()
+            _nswc.hardware_id = i + 1
             _design_electric = RTKDesignElectric()
             _design_electric.hardware_id = i + 1
             _design_mechanic = RTKDesignMechanic()
             _design_mechanic.hardware_id = i + 1
             self.db_add([
                 _allocation, _similaritem, _hazardanalysis, _reliability,
-                _mil_hdbk_217, _design_electric, _design_mechanic
+                _mil_hdbk_217, _nswc, _design_electric, _design_mechanic
             ], self.session)
 
         for i in [5, 6, 7]:
@@ -413,13 +417,15 @@ class DAO(object):
             _reliability.hardware_id = i + 1
             _mil_hdbk_217 = RTKMilHdbkF()
             _mil_hdbk_217.hardware_id = i + 1
+            _nswc = RTKNSWC()
+            _nswc.hardware_id = i + 1
             _design_electric = RTKDesignElectric()
             _design_electric.hardware_id = i + 1
             _design_mechanic = RTKDesignMechanic()
             _design_mechanic.hardware_id = i + 1
             self.db_add([
                 _allocation, _similaritem, _hazardanalysis, _reliability,
-                _mil_hdbk_217, _design_electric, _design_mechanic
+                _mil_hdbk_217, _nswc, _design_electric, _design_mechanic
             ], self.session)
 
         self.session.commit()

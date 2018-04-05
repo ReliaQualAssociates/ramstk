@@ -1,17 +1,11 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.unit._dao.TestRTKNSWC.py is part of The RTK Project
+#       tests.dao.programdb.test_rtknswc.py is part of The RTK Project
 #
 # All rights reserved.
-"""Test class for testing the RTKNSWC module algorithms and models."""
+"""Test class for testing the RTKNSWC module algorithms and models. """
 
-import unittest
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-from nose.plugins.attrib import attr
+import pytest
 
 from rtk.dao.RTKNSWC import RTKNSWC
 
@@ -20,174 +14,184 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
+ATTRIBUTES = {
+    'Clc': 0.0,
+    'Crd': 0.0,
+    'Cac': 0.0,
+    'Cmu': 0.0,
+    'Ck': 0.0,
+    'Ci': 0.0,
+    'Ch': 0.0,
+    'Cn': 0.0,
+    'Cm': 0.0,
+    'Cl': 0.0,
+    'Cc': 0.0,
+    'Cb': 0.0,
+    'Cg': 0.0,
+    'Cf': 0.0,
+    'Ce': 0.0,
+    'Cd': 0.0,
+    'Cy': 0.0,
+    'Cbv': 0.0,
+    'Cbt': 0.0,
+    'Cs': 0.0,
+    'Cr': 0.0,
+    'Cq': 0.0,
+    'Cp': 0.0,
+    'Cw': 0.0,
+    'Cv': 0.0,
+    'Ct': 0.0,
+    'Cnw': 0.0,
+    'Cnp': 0.0,
+    'Csf': 0.0,
+    'Calt': 0.0,
+    'Csc': 0.0,
+    'Cbl': 0.0,
+    'Csz': 0.0,
+    'Cst': 0.0,
+    'Csw': 0.0,
+    'Csv': 0.0,
+    'Cgl': 0.0,
+    'Cga': 0.0,
+    'hardware_id': 1,
+    'Cgp': 0.0,
+    'Cgs': 0.0,
+    'Cgt': 0.0,
+    'Cgv': 0.0,
+    'Ccw': 0.0,
+    'Ccv': 0.0,
+    'Cpd': 0.0,
+    'Ccp': 0.0,
+    'Cpf': 0.0,
+    'Ccs': 0.0,
+    'Ccf': 0.0,
+    'Cpv': 0.0,
+    'Cdc': 0.0,
+    'Cdl': 0.0,
+    'Cdt': 0.0,
+    'Cdw': 0.0,
+    'Cdp': 0.0,
+    'Cds': 0.0,
+    'Cdy': 0.0
+}
 
-class TestRTKNSWC(unittest.TestCase):
-    """Class for testing the RTKNSWC class."""
 
-    _attributes = {
-        'Clc': 0.0,
-        'Crd': 0.0,
-        'Cac': 0.0,
-        'Cmu': 0.0,
-        'Ck': 0.0,
-        'Ci': 0.0,
-        'Ch': 0.0,
-        'Cn': 0.0,
-        'Cm': 0.0,
-        'Cl': 0.0,
-        'Cc': 0.0,
-        'Cb': 0.0,
-        'Cg': 0.0,
-        'Cf': 0.0,
-        'Ce': 0.0,
-        'Cd': 0.0,
-        'Cy': 0.0,
-        'Cbv': 0.0,
-        'Cbt': 0.0,
-        'Cs': 0.0,
-        'Cr': 0.0,
-        'Cq': 0.0,
-        'Cp': 0.0,
-        'Cw': 0.0,
-        'Cv': 0.0,
-        'Ct': 0.0,
-        'Cnw': 0.0,
-        'Cnp': 0.0,
-        'Csf': 0.0,
-        'Calt': 0.0,
-        'Csc': 0.0,
-        'Cbl': 0.0,
-        'Csz': 0.0,
-        'Cst': 0.0,
-        'Csw': 0.0,
-        'Csv': 0.0,
-        'Cgl': 0.0,
-        'Cga': 0.0,
-        'hardware_id': 1,
-        'Cgp': 0.0,
-        'Cgs': 0.0,
-        'Cgt': 0.0,
-        'Cgv': 0.0,
-        'Ccw': 0.0,
-        'Ccv': 0.0,
-        'Cpd': 0.0,
-        'Ccp': 0.0,
-        'Cpf': 0.0,
-        'Ccs': 0.0,
-        'Ccf': 0.0,
-        'Cpv': 0.0,
-        'Cdc': 0.0,
-        'Cdl': 0.0,
-        'Cdt': 0.0,
-        'Cdw': 0.0,
-        'Cdp': 0.0,
-        'Cds': 0.0,
-        'Cdy': 0.0
-    }
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+def test_rtknswc_create(test_dao):
+    """ __init__() should create an RTKNSWC model. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKNSWC).first()
 
-    def setUp(self):
-        """(TestRTKNSWC) Set up the test fixture for the RTKNSWC class."""
-        engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
-        session = scoped_session(sessionmaker())
+    assert isinstance(DUT, RTKNSWC)
 
-        session.remove()
-        session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+    # Verify class attributes are properly initialized.
+    assert DUT.__tablename__ == 'rtk_nswc'
+    assert DUT.hardware_id == 1
+    assert DUT.Cac == 0.0
+    assert DUT.Calt == 0.0
+    assert DUT.Cb == 0.0
+    assert DUT.Cbl == 0.0
+    assert DUT.Cbt == 0.0
+    assert DUT.Cbv == 0.0
+    assert DUT.Cc == 0.0
+    assert DUT.Ccf == 0.0
+    assert DUT.Ccp == 0.0
+    assert DUT.Ccs == 0.0
+    assert DUT.Ccv == 0.0
+    assert DUT.Ccw == 0.0
+    assert DUT.Cd == 0.0
+    assert DUT.Cdc == 0.0
+    assert DUT.Cdl == 0.0
+    assert DUT.Cdp == 0.0
+    assert DUT.Cds == 0.0
+    assert DUT.Cdt == 0.0
+    assert DUT.Cdw == 0.0
+    assert DUT.Cdy == 0.0
+    assert DUT.Ce == 0.0
+    assert DUT.Cf == 0.0
+    assert DUT.Cg == 0.0
+    assert DUT.Cga == 0.0
+    assert DUT.Cgl == 0.0
+    assert DUT.Cgp == 0.0
+    assert DUT.Cgs == 0.0
+    assert DUT.Cgt == 0.0
+    assert DUT.Cgv == 0.0
+    assert DUT.Ch == 0.0
+    assert DUT.Ci == 0.0
+    assert DUT.Ck == 0.0
+    assert DUT.Cl == 0.0
+    assert DUT.Clc == 0.0
+    assert DUT.Cm == 0.0
+    assert DUT.Cmu == 0.0
+    assert DUT.Cn == 0.0
+    assert DUT.Cnp == 0.0
+    assert DUT.Cnw == 0.0
+    assert DUT.Cp == 0.0
+    assert DUT.Cpd == 0.0
+    assert DUT.Cpf == 0.0
+    assert DUT.Cpv == 0.0
+    assert DUT.Cq == 0.0
+    assert DUT.Cr == 0.0
+    assert DUT.Crd == 0.0
+    assert DUT.Cs == 0.0
+    assert DUT.Csc == 0.0
+    assert DUT.Csf == 0.0
+    assert DUT.Cst == 0.0
+    assert DUT.Csv == 0.0
+    assert DUT.Csw == 0.0
+    assert DUT.Csz == 0.0
+    assert DUT.Ct == 0.0
+    assert DUT.Cv == 0.0
+    assert DUT.Cw == 0.0
+    assert DUT.Cy == 0.0
 
-        self.DUT = session.query(RTKNSWC).first()
-        self.DUT.env_factor = 10
 
-        session.commit()
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+def test_get_attributes(test_dao):
+    """ get_attributes() should return a tuple of attribute values. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKNSWC).first()
 
-    @attr(all=True, unit=True)
-    def test00_rtknswc_create(self):
-        """(TestRTKNSWC)  __init__ should create an RTKNSWC model."""
-        self.assertTrue(isinstance(self.DUT, RTKNSWC))
+    assert DUT.get_attributes() == ATTRIBUTES
 
-        # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'rtk_nswc')
-        self.assertEqual(self.DUT.hardware_id, 1)
-        self.assertEqual(self.DUT.Cac, 0.0)
-        self.assertEqual(self.DUT.Calt, 0.0)
-        self.assertEqual(self.DUT.Cb, 0.0)
-        self.assertEqual(self.DUT.Cbl, 0.0)
-        self.assertEqual(self.DUT.Cbt, 0.0)
-        self.assertEqual(self.DUT.Cbv, 0.0)
-        self.assertEqual(self.DUT.Cc, 0.0)
-        self.assertEqual(self.DUT.Ccf, 0.0)
-        self.assertEqual(self.DUT.Ccp, 0.0)
-        self.assertEqual(self.DUT.Ccs, 0.0)
-        self.assertEqual(self.DUT.Ccv, 0.0)
-        self.assertEqual(self.DUT.Ccw, 0.0)
-        self.assertEqual(self.DUT.Cd, 0.0)
-        self.assertEqual(self.DUT.Cdc, 0.0)
-        self.assertEqual(self.DUT.Cdl, 0.0)
-        self.assertEqual(self.DUT.Cdp, 0.0)
-        self.assertEqual(self.DUT.Cds, 0.0)
-        self.assertEqual(self.DUT.Cdt, 0.0)
-        self.assertEqual(self.DUT.Cdw, 0.0)
-        self.assertEqual(self.DUT.Cdy, 0.0)
-        self.assertEqual(self.DUT.Ce, 0.0)
-        self.assertEqual(self.DUT.Cf, 0.0)
-        self.assertEqual(self.DUT.Cg, 0.0)
-        self.assertEqual(self.DUT.Cga, 0.0)
-        self.assertEqual(self.DUT.Cgl, 0.0)
-        self.assertEqual(self.DUT.Cgp, 0.0)
-        self.assertEqual(self.DUT.Cgs, 0.0)
-        self.assertEqual(self.DUT.Cgt, 0.0)
-        self.assertEqual(self.DUT.Cgv, 0.0)
-        self.assertEqual(self.DUT.Ch, 0.0)
-        self.assertEqual(self.DUT.Ci, 0.0)
-        self.assertEqual(self.DUT.Ck, 0.0)
-        self.assertEqual(self.DUT.Cl, 0.0)
-        self.assertEqual(self.DUT.Clc, 0.0)
-        self.assertEqual(self.DUT.Cm, 0.0)
-        self.assertEqual(self.DUT.Cmu, 0.0)
-        self.assertEqual(self.DUT.Cn, 0.0)
-        self.assertEqual(self.DUT.Cnp, 0.0)
-        self.assertEqual(self.DUT.Cnw, 0.0)
-        self.assertEqual(self.DUT.Cp, 0.0)
-        self.assertEqual(self.DUT.Cpd, 0.0)
-        self.assertEqual(self.DUT.Cpf, 0.0)
-        self.assertEqual(self.DUT.Cpv, 0.0)
-        self.assertEqual(self.DUT.Cq, 0.0)
-        self.assertEqual(self.DUT.Cr, 0.0)
-        self.assertEqual(self.DUT.Crd, 0.0)
-        self.assertEqual(self.DUT.Cs, 0.0)
-        self.assertEqual(self.DUT.Csc, 0.0)
-        self.assertEqual(self.DUT.Csf, 0.0)
-        self.assertEqual(self.DUT.Cst, 0.0)
-        self.assertEqual(self.DUT.Csv, 0.0)
-        self.assertEqual(self.DUT.Csw, 0.0)
-        self.assertEqual(self.DUT.Csz, 0.0)
-        self.assertEqual(self.DUT.Ct, 0.0)
-        self.assertEqual(self.DUT.Cv, 0.0)
-        self.assertEqual(self.DUT.Cw, 0.0)
-        self.assertEqual(self.DUT.Cy, 0.0)
 
-    @attr(all=True, unit=True)
-    def test01_get_attributes(self):
-        """(TestRTKNSWC) get_attributes should return a tuple of attribute values."""
-        self.assertEqual(self.DUT.get_attributes(), self._attributes)
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+def test_set_attributes(test_dao):
+    """ set_attributes() should return a zero error code on success. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKNSWC).first()
 
-    @attr(all=True, unit=True)
-    def test02a_set_attributes(self):
-        """(TestRTKNSWC) set_attributes should return a zero error code on success."""
-        _error_code, _msg = self.DUT.set_attributes(self._attributes)
+    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKNSWC {0:d} "
-                         "attributes.".format(self.DUT.hardware_id))
+    assert _error_code == 0
+    assert _msg == ("RTK SUCCESS: Updating RTKNSWC {0:d} "
+                    "attributes.".format(DUT.hardware_id))
 
-    @attr(all=True, unit=True)
-    def test02b_set_attributes_missing_key(self):
-        """(TestRTKNSWC) set_attributes should return a 40 error code when passed a dict with a missing key."""
-        self._attributes.pop('Csz')
 
-        _error_code, _msg = self.DUT.set_attributes(self._attributes)
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+def test_set_attributes_missing_key(test_dao):
+    """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKNSWC).first()
 
-        self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'Csz' in "
-                               "attribute dictionary passed to "
-                               "RTKNSWC.set_attributes().")
+    ATTRIBUTES.pop('Csz')
 
-        self._attributes['Csz'] = 0.0
+    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+
+    assert _error_code == 40
+    assert _msg == ("RTK ERROR: Missing attribute 'Csz' in attribute "
+                    "dictionary passed to RTKNSWC.set_attributes().")
+
+    ATTRIBUTES['Csz'] = 0.0
