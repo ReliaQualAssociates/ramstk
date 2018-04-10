@@ -344,6 +344,8 @@ class DAO(object):
         _testmethod.description = 'Test Test Method'
         self.db_add([_testmethod], self.session)
 
+        # Create a dictionary to use for creating X_hrdwr and hrdwr_X matrices.
+        # Key is row or column ID; value is row item or column item ID.
         _dic_cols = {1: _system.hardware_id}
         for i in [1, 2, 3, 4]:
             _subsystem = RTKHardware()
@@ -476,6 +478,27 @@ class DAO(object):
         _validation.revision_id = _revision.revision_id
         _validation.description = 'Test Validation'
         self.db_add([_validation], self.session)
+        self.session.commit()
+
+        for _ckey in _dic_cols:
+            _matrix = RTKMatrix()
+            _matrix.revision_id = _revision.revision_id
+            _matrix.matrix_id = 3
+            _matrix.matrix_type = 'hrdwr_rqrmnt'
+            _matrix.column_id = 1
+            _matrix.column_item_id = 1
+            _matrix.row_id = _ckey
+            _matrix.row_item_id = _dic_cols[_ckey]
+            self.db_add([_matrix], self.session)
+            _matrix = RTKMatrix()
+            _matrix.revision_id = _revision.revision_id
+            _matrix.matrix_id = 4
+            _matrix.matrix_type = 'hrdwr_vldtn'
+            _matrix.column_id = 1
+            _matrix.column_item_id = 1
+            _matrix.row_id = _ckey
+            _matrix.row_item_id = _dic_cols[_ckey]
+            self.db_add([_matrix], self.session)
         self.session.commit()
 
         return False

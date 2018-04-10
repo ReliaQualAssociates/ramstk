@@ -63,19 +63,19 @@ from rtk.modules.function import dtcFunction
 from rtk.modules.fmea import dtcFMEA
 from rtk.modules.requirement import dtcRequirement
 from rtk.modules.stakeholder import dtcStakeholder
-from rtk.hardware import dtcHardwareBoM
+from rtk.modules.hardware import dtcHardwareBoM
 from rtk.modules.allocation import dtcAllocation
 from rtk.modules.hazops import dtcHazardAnalysis
 from rtk.modules.similar_item import dtcSimilarItem
 from rtk.modules.pof import dtcPoF
-# from rtk.software.BoM import BoM as SoftwareBoM
-# from rtk.testing.Testing import Testing
+# from rtk.modules.software.BoM import BoM as SoftwareBoM
+# from rtk.modules.testing.Testing import Testing
 # from rtk.testing.growth.Growth import Growth
 from rtk.modules.validation import dtcValidation
-# from rtk.incident.Incident import Incident
+# from rtk.modules.incident.Incident import Incident
 # from rtk.incident.action.Action import Action
 # from rtk.incident.component.Component import Component
-# from rtk.survival.Survival import Survival
+# from rtk.modules.survival.Survival import Survival
 
 import rtk.gui.gtk.rtk.Widget as Widgets
 from rtk.gui.gtk.mwi import ListBook
