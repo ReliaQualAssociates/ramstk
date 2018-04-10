@@ -11,7 +11,7 @@ from pubsub import pub
 # Import other RTK modules.
 from rtk.datamodels import RTKDataController
 from rtk.datamodels import RTKDataMatrix
-from rtk.dao import RTKHardware, RTKTest, RTKValidation
+from rtk.dao import RTKHardware, RTKRequirement, RTKTest, RTKValidation
 from . import dtmHardwareBoM
 
 
@@ -46,6 +46,8 @@ class HardwareBoMDataController(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._dmx_hw_rqrmnt_matrix = RTKDataMatrix(dao, RTKHardware,
+                                                   RTKRequirement)
         self._dmx_hw_tstng_matrix = RTKDataMatrix(dao, RTKHardware, RTKTest)
         self._dmx_hw_vldtn_matrix = RTKDataMatrix(dao, RTKHardware,
                                                   RTKValidation)
@@ -77,6 +79,7 @@ class HardwareBoMDataController(RTKDataController):
         :param int matrix_type: the type of the Matrix to retrieve.  Current
                                 Hardware matrix types are:
 
+                                hrdwr_rqrmnt = Hardware:Requirement
                                 hrdwr_tstng = Hardware:Testing
                                 hrdwr_vldtn = Hardware:Validation
 
@@ -89,7 +92,19 @@ class HardwareBoMDataController(RTKDataController):
         _column_hdrs = []
         _row_hdrs = []
 
-        if matrix_type == 'hrdwr_tstng':
+        if matrix_type == 'hrdwr_rqrmnt':
+            self._dmx_hw_rqrmnt_matrix.select_all(
+                revision_id,
+                matrix_type,
+                rkey='hardware_id',
+                ckey='requirement_id',
+                rheader='comp_ref_des',
+                cheader='requirement_code')
+            _matrix = self._dmx_hw_rqrmnt_matrix.dtf_matrix
+            _column_hdrs = self._dmx_hw_rqrmnt_matrix.dic_column_hdrs
+            _row_hdrs = self._dmx_hw_rqrmnt_matrix.dic_row_hdrs
+
+        elif matrix_type == 'hrdwr_tstng':
             self._dmx_hw_tstng_matrix.select_all(
                 revision_id,
                 matrix_type,
@@ -128,6 +143,13 @@ class HardwareBoMDataController(RTKDataController):
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
 
+            _hardware_id = self.request_last_id()
+            _heading = self.request_select(_hardware_id, 'general').ref_des
+
+            for _matrix in ['hrdwr_rqrmnt', 'hrdwr_vldtn']:
+                self.request_insert_matrix(
+                    _matrix, _hardware_id, heading=_heading, row=True)
+
             if not self._test:
                 pub.sendMessage(
                     'insertedHardware',
@@ -158,11 +180,15 @@ class HardwareBoMDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        if matrix_type == 'hrdwr_rqrmnt':
+            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.insert(
+                item_id, heading, row=row)
+
         if matrix_type == 'hrdwr_tstng':
             _error_code, _msg = self._dmx_hw_tstng_matrix.insert(
                 item_id, heading, row=row)
 
-        elif matrix_type == 'hrdwr_vldtn':
+        if matrix_type == 'hrdwr_vldtn':
             _error_code, _msg = self._dmx_hw_vldtn_matrix.insert(
                 item_id, heading, row=row)
 
@@ -206,6 +232,10 @@ class HardwareBoMDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        if matrix_type == 'hrdwr_rqrmnt':
+            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.delete(
+                item_id, row=row)
+
         if matrix_type == 'hrdwr_tstng':
             _error_code, _msg = self._dmx_hw_tstng_matrix.delete(
                 item_id, row=row)
@@ -245,7 +275,11 @@ class HardwareBoMDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if matrix_type == 'hrdwr_tstng':
+        if matrix_type == 'hrdwr_rqrmnt':
+            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.update(
+                revision_id, matrix_type)
+
+        elif matrix_type == 'hrdwr_tstng':
             _error_code, _msg = self._dmx_hw_tstng_matrix.update(
                 revision_id, matrix_type)
 
@@ -329,6 +363,15 @@ class HardwareBoMDataController(RTKDataController):
             self, _error_code, _msg, None))
 
         return _return
+
+    def request_last_id(self):
+        """
+        Request the last Hardware ID used.
+
+        :return: _last_id; the last Hardware ID used.
+        :rtype: int
+        """
+        return self._dtm_data_model.last_id
 
     def request_make_composite_reference_designator(self, node_id=1):
         """
