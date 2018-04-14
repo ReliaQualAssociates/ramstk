@@ -177,16 +177,12 @@ def missing_to_default(field, default):
              otherwise.
     :rtype: any
     """
-
-    if field == '':
-        return default
-    else:
-        return field
+    return none_to_default(field, default)
 
 
 def none_to_default(field, default):
     """
-    Function to convert None values into default values.
+    Convert None values into default values.
 
     :param field: the original value that may be None.
     :param default: the new, default, value.
@@ -194,7 +190,6 @@ def none_to_default(field, default):
              otherwise.
     :rtype: any
     """
-
     if field is None:
         return default
     else:

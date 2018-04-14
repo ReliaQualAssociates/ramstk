@@ -786,7 +786,8 @@ class RTK(object):
                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['hazops'] = dtcHazardAnalysis(
                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['similaritem'] = dtcSimilarItem()
+            self.dic_controllers['similaritem'] = dtcSimilarItem(
+               self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             # self.dic_controllers['fmea'] = dtcFMEA()
             # self.dic_controllers['pof'] = dtcPoF()
             # self.dic_controllers['growth'] = Growth()

@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Similar Item Analysis Data Model."""
 
+from treelib.exceptions import NodeIDAbsentError
+
 # Import other RTK modules.
 from rtk.datamodels import RTKDataModel
 from rtk.dao import RTKSimilarItem
@@ -87,7 +89,12 @@ class SimilarItemDataModel(RTKDataModel):
                  (Hardware) ID.
         :rtype: list
         """
-        return self.tree.children(node_id)
+        try:
+            _children = self.tree.children(node_id)
+        except NodeIDAbsentError:
+            _children = []
+
+        return _children
 
     def insert(self, **kwargs):
         """
@@ -186,10 +193,8 @@ class SimilarItemDataModel(RTKDataModel):
 
         :param int node_id: the Node (Hardware) ID of the hardware item whose
                             goal is to be allocated.
-        :param list hazard_rates: the hazard rates of the parent hardware item
-                                  to be allocated and each of the child items
-                                  (only needed for ARINC apportionment).  Index
-                                  0 is the parent hazard rate.
+        :param float hazard_rate: the current hazard rate of the hardware item
+                                  to be calculated.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

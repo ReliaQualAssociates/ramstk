@@ -289,6 +289,9 @@ class RTKSimilarItem(RTK_BASE):
             _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
                    "RTKSimilarItem.set_attributes().".format(_err)
+        except ValueError as _err:
+            # FIXME: Handle ValueError in RTKSimilarItem.set_attrobutes().
+            print _err
 
         return _error_code, _msg
 
@@ -501,8 +504,8 @@ class RTKSimilarItem(RTK_BASE):
         _sia['equation5'] = self.function_5
 
         # Get the existing results.  This allows the use of the results
-        # fields to be manually set to a float values by the user.
-        # Essentially creating five more user-defined float values.
+        # fields to be manually set to float values by the user essentially
+        # creating five more user-defined float values.
         _sia['res1'] = self.result_1
         _sia['res2'] = self.result_2
         _sia['res3'] = self.result_3

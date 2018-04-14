@@ -1,17 +1,17 @@
 <!--
 -*- coding: utf-8 -*-
 
-      sia_format.xml is part of the RTK Project
+      data/layouts/SimilarItem.xml is part of the RTK Project
 
-      Copyright (C) 2010-2014 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright (C) 2010-2018 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 All rights reserved. -->
 
 <root>
-    <tree name="SIA">
+    <tree name="SimilarItem">
         <column>
-            <defaulttitle>Hardware ID</defaulttitle>
-            <usertitle>Hardware ID</usertitle>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
             <widget>text</widget>
@@ -19,8 +19,8 @@ All rights reserved. -->
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>SIA ID</defaulttitle>
-            <usertitle>SIA ID</usertitle>
+            <defaulttitle>Hardware ID</defaulttitle>
+            <usertitle>Hardware ID</usertitle>
             <datatype>gint</datatype>
             <position>1</position>
             <widget>text</widget>
@@ -48,36 +48,36 @@ All rights reserved. -->
         <column>
             <defaulttitle>From Quality</defaulttitle>
             <usertitle>From Quality</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>4</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
             <defaulttitle>To Quality</defaulttitle>
             <usertitle>To Quality</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>5</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
             <defaulttitle>From Environment</defaulttitle>
             <usertitle>From Environment</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>6</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
             <defaulttitle>To Environment</defaulttitle>
             <usertitle>To Environment</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>7</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>

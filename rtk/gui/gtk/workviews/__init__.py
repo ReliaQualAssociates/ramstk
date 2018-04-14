@@ -20,5 +20,6 @@ from .Requirement import GeneralData as wvwRequirementGD
 from .Requirement import RequirementAnalysis as wvwRequirementAnalysis
 from .Revision import GeneralData as wvwRevisionGD
 from .Revision import AssessmentResults as wvwRevisionAR
+from .SimilarItem import SimilarItem as wvwSimilarItem
 from .Validation import GeneralData as wvwValidationGD
 from .Validation import BurndownCurve as wvwBurndownCurve

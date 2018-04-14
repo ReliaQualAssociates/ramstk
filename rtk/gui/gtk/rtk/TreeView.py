@@ -56,8 +56,10 @@ class RTKTreeView(gtk.TreeView):
         # Initialize public dictionary instance attributes.
 
         # Initialize public list instance attributes.
-        self.order = []
+        self.editable = []
         self.korder = []
+        self.order = []
+        self.visible = []
 
         # Initialize public scalar instance attributes.
 
@@ -74,10 +76,10 @@ class RTKTreeView(gtk.TreeView):
         _widgets = lxml.parse(fmt_file).xpath(fmt_path + "/widget")
 
         # Retrieve whether or not the column is editable from the format file.
-        _editable = lxml.parse(fmt_file).xpath(fmt_path + "/editable")
+        self.editable = lxml.parse(fmt_file).xpath(fmt_path + "/editable")
 
         # Retrieve whether or not the column is visible from the format file.
-        _visible = lxml.parse(fmt_file).xpath(fmt_path + "/visible")
+        self.visible = lxml.parse(fmt_file).xpath(fmt_path + "/visible")
 
         _keys = lxml.parse(fmt_file).xpath(fmt_path + "/key")
 
@@ -87,9 +89,9 @@ class RTKTreeView(gtk.TreeView):
             _datatypes[i] = _datatypes[i].text
             _headings[i] = _headings[i].text.replace("  ", "\n")
             _widgets[i] = _widgets[i].text
-            _editable[i] = int(_editable[i].text)
+            self.editable[i] = int(self.editable[i].text)
             _position[i] = int(_position[i].text)
-            _visible[i] = int(_visible[i].text)
+            self.visible[i] = int(self.visible[i].text)
             _types.append(gobject.type_from_name(_datatypes[i]))
             try:
                 _keys[i] = _keys[i].text
@@ -102,8 +104,8 @@ class RTKTreeView(gtk.TreeView):
         _datatypes = [x for _, x in sorted(zip(_position, _datatypes))]
         _headings = [x for _, x in sorted(zip(_position, _headings))]
         _widgets = [x for _, x in sorted(zip(_position, _widgets))]
-        _editable = [x for _, x in sorted(zip(_position, _editable))]
-        _visible = [x for _, x in sorted(zip(_position, _visible))]
+        self.editable = [x for _, x in sorted(zip(_position, self.editable))]
+        self.visible = [x for _, x in sorted(zip(_position, self.visible))]
         _types = [x for _, x in sorted(zip(_position, _types))]
         self.korder = [x for _, x in sorted(zip(_position, _keys))]
 
@@ -114,9 +116,9 @@ class RTKTreeView(gtk.TreeView):
             _headings.append('')
             _types.append(gtk.gdk.Pixbuf)
             _widgets.append('pixbuf')
-            _editable.append(0)
+            self.editable.append(0)
             _position.append(len(_position))
-            _visible.append(1)
+            self.visible.append(1)
         # FIXME: What is this for?  It'll become obvious later...maybe.
         elif fmt_idx in [15, 16]:
             print fmt_file
@@ -133,9 +135,9 @@ class RTKTreeView(gtk.TreeView):
             _headings.append('')
             _types.append(gobject.TYPE_STRING)
             _widgets.append('text')
-            _editable.append(0)
+            self.editable.append(0)
             _position.append(len(_position))
-            _visible.append(0)
+            self.visible.append(0)
 
         # Create the model.
         _model = gtk.TreeStore(*_types)
@@ -152,30 +154,30 @@ class RTKTreeView(gtk.TreeView):
 
             if _widgets[i] == 'combo':
                 _cell = self._do_make_combo_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
             elif _widgets[i] == 'spin':
                 _cell = self._do_make_spin_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
             elif _widgets[i] == 'toggle':
-                _cell = self._do_make_toggle_cell(_editable[i])
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
+                _cell = self._do_make_toggle_cell(self.editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
             elif _widgets[i] == 'blob':
                 _cell = self._do_make_text_cell(True)
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
             else:
                 _cell = self._do_make_text_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
 
             if pixbuf and i == 0:
                 _pbcell = gtk.CellRendererPixbuf()
                 _pbcell.set_property('xalign', 0.5)
-                _column = self._do_make_column([_pbcell, _cell], _visible[i],
+                _column = self._do_make_column([_pbcell, _cell], self.visible[i],
                                                _headings[i])
                 _column.set_attributes(_pbcell, pixbuf=_n_cols)
             else:
                 _column = self._do_make_column([
                     _cell,
-                ], _visible[i], _headings[i])
+                ], self.visible[i], _headings[i])
             _column.set_cell_data_func(_cell, self._format_cell,
                                        (_position[i], _datatypes[i]))
 

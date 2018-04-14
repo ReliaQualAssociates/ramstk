@@ -94,7 +94,7 @@ class SimilarItemDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedSimilarItem')
 
-    def request_update(self, definition_id):
+    def request_update(self, hardware_id):
         """
         Request to update an RTKSimilarItem table record.
 
@@ -102,7 +102,7 @@ class SimilarItemDataController(RTKDataController):
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update(definition_id)
+        _error_code, _msg = self._dtm_data_model.update(hardware_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedSimilarItem')
@@ -119,17 +119,26 @@ class SimilarItemDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_calculate(self, node_id, hazard_rates=None):
+    def request_select_children(self, hardware_id):
+        """
+        Request the child nodes of the selected Hardware ID.
+
+        :param int hardware_id: the ID of the Hardware item to select the
+                                child nodes for.
+        :return: a list of the immediate child nodes of the passed Hardware ID.
+        :rtype: list
+        """
+        return self._dtm_data_model.select_children(hardware_id)
+
+    def request_calculate(self, node_id, hazard_rate=0.0):
         """
         Request the similar_item calculations be performed.
 
         :param int node_id: the Node (Hardware) ID of the hardware item whose
                             goal is to be allocated.
-        :param list hazard_rates: the hazard rates of the parent hardware item
-                                  to be allocated and each of the child items
-                                  (only needed for ARINC apportionment).  Index
-                                  0 is the parent hazard rate.
+        :param float hazard_rate: the current hazard rate of the hardware item
+                                  to be calculated.
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-        return self._dtm_data_model.calculate(node_id, hazard_rates)
+        return self._dtm_data_model.calculate(node_id, hazard_rate)

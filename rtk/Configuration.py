@@ -408,7 +408,7 @@ class Configuration(object):
             'stakeholderfg'
         ]
         self._lst_format_files = [
-            'allocation', 'fmeca', 'ffmeca', 'function', 'hardware', 'hazops', 'requirement', 'revision', 'software', 'incident', 'validation', 'testing', 'part', 'sia', 'rgincident', 'stakeholder', 'dataset', 'risk', 'sfmeca'
+            'allocation', 'fmeca', 'ffmeca', 'function', 'hardware', 'hazops', 'requirement', 'revision', 'software', 'incident', 'validation', 'testing', 'part', 'similaritem', 'rgincident', 'stakeholder', 'dataset', 'risk', 'sfmeca'
         ]
 
         if name == 'posix':
@@ -626,7 +626,7 @@ class Configuration(object):
         _config.set('Files', 'requirement', 'requirement_format.xml')
         _config.set('Files', 'revision', 'revision_format.xml')
         _config.set('Files', 'risk', 'risk_format.xml')
-        _config.set('Files', 'sia', 'sia_format.xml')
+        _config.set('Files', 'similaritem', 'SimilarItem.xml')
         _config.set('Files', 'software', 'software_format.xml')
         _config.set('Files', 'stakeholder', 'stakeholder_format.xml')
         _config.set('Files', 'testing', 'testing_format.xml')
