@@ -137,7 +137,7 @@ def test_select_control_functional(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=True)
 
-    _entity = DUT.select('0.1.01')
+    _entity = DUT.select('0.1.1c')
 
     assert isinstance(_entity, RTKControl)
     assert _entity.description == ("Test Functional FMEA Control #1")
@@ -150,7 +150,7 @@ def test_select_control_hardware(test_dao):
     """ select() should return an instance of RTKControl when selecting from a hardware FMEA on success. """
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
-    _entity = DUT.select('0.4.1.1.04')
+    _entity = DUT.select('0.4.1.1.4c')
 
     assert isinstance(_entity, RTKControl)
     assert _entity.description == 'Functional FMEA control.'
@@ -164,7 +164,7 @@ def test_select_action_functional(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=True)
 
-    _entity = DUT.select('0.1.1')
+    _entity = DUT.select('0.1.1a')
 
     assert isinstance(_entity, RTKAction)
     assert _entity.action_recommended == ("Test Functional FMEA Recommended "
@@ -179,7 +179,7 @@ def test_select_action_hardware(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
 
-    _entity = DUT.select('0.4.1.1.4')
+    _entity = DUT.select('0.4.1.1.4a')
     print DUT.tree.nodes
     assert isinstance(_entity, RTKAction)
     assert _entity.action_recommended == 'Do this stuff and do it now!!'
@@ -323,7 +323,7 @@ def test_insert_control_functional(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
                     "database.")
-    _node_id = '0.1.0' + str(DUT.dtm_control.last_id)
+    _node_id = '0.1.' + str(DUT.dtm_control.last_id) + 'c'
 
     _control = DUT.select(_node_id)
 
@@ -350,7 +350,7 @@ def test_insert_control_hardware(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
                     "database.")
-    _node_id = '0.4.1.1.0' + str(DUT.dtm_control.last_id)
+    _node_id = '0.4.1.1.' + str(DUT.dtm_control.last_id) + 'c'
 
     _control = DUT.select(_node_id)
 
@@ -377,7 +377,7 @@ def test_insert_action_functional(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
                     "database.")
-    _node_id = '0.1.' + str(DUT.dtm_action.last_id)
+    _node_id = '0.1.' + str(DUT.dtm_action.last_id) + 'a'
 
     _action = DUT.select(_node_id)
 
@@ -404,7 +404,7 @@ def test_insert_action_hardware(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
                     "database.")
-    _node_id = '0.4.1.1.' + str(DUT.dtm_action.last_id)
+    _node_id = '0.4.1.1.' + str(DUT.dtm_action.last_id) +'a'
 
     _action = DUT.select(_node_id)
 
@@ -460,7 +460,7 @@ def test_delete_control_functional(test_dao):
     DUT.select_all(1, functional=True)
     DUT.insert(entity_id=1, parent_id='0.1', level='control')
 
-    _node_id = '0.1.0' + str(DUT.dtm_control.last_id)
+    _node_id = '0.1.' + str(DUT.dtm_control.last_id) + 'c'
 
     _error_code, _msg = DUT.delete(_node_id)
 
@@ -668,7 +668,7 @@ def test_request_delete_control_functional(test_dao, test_configuration):
     """ request_delete() should return False on success when removing a Control from a functional FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
     DUT.request_select_all(1, functional=True)
-    _node_id = '0.1.0' + str(DUT._dtm_data_model.dtm_control.last_id)
+    _node_id = '0.1.' + str(DUT._dtm_data_model.dtm_control.last_id) + 'c'
 
     assert not DUT.request_delete(_node_id)
 
