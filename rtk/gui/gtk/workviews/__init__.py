@@ -11,7 +11,8 @@ from .WorkView import RTKWorkView
 from .Allocation import Allocation as wvwAllocation
 from .Function import GeneralData as wvwFunctionGD
 from .Function import AssessmentResults as wvwFunctionAR
-from .FMEA import FMEA as wvwFMEA
+from .FMEA import FFMEA as wvwFFMEA
+from .FMEA import DFMECA as wvwDFMECA
 from .Hardware import GeneralData as wvwHardwareGD
 from .Hardware import AssessmentInputs as wvwHardwareAI
 from .Hardware import AssessmentResults as wvwHardwareAR

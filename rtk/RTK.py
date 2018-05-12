@@ -435,18 +435,18 @@ class Model(object):
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKRPN).\
                 filter(RTKRPN.rpn_type == 'detection').all():
-            configuration.RTK_RPN_DETECTION[_record.rpn_id] = \
-                _record.get_attributes()[1:]
+            configuration.RTK_RPN_DETECTION[_record.value] = \
+                _record.get_attributes()
 
         for _record in self.site_session.query(RTKRPN).\
                 filter(RTKRPN.rpn_type == 'occurrence').all():
-            configuration.RTK_RPN_OCCURRENCE[_record.rpn_id] = \
-                _record.get_attributes()[1:]
+            configuration.RTK_RPN_OCCURRENCE[_record.value] = \
+                _record.get_attributes()
 
         for _record in self.site_session.query(RTKRPN). \
                 filter(RTKRPN.rpn_type == 'severity').all():
-            configuration.RTK_RPN_SEVERITY[_record.rpn_id] = \
-                _record.get_attributes()[1:]
+            configuration.RTK_RPN_SEVERITY[_record.value] = \
+                _record.get_attributes()
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKStatus.                                   #
@@ -464,13 +464,6 @@ class Model(object):
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKType.                                     #
         # ------------------------------------------------------------------- #
-        configuration.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
-
-        for _record in self.site_session.query(RTKType). \
-                filter(RTKType.type_type == 'cost').all():
-            configuration.RTK_COST_TYPE[_record.type_id] = \
-                _record.get_attributes()[1:]
-
         for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'incident').all():
             configuration.RTK_INCIDENT_TYPE[_record.type_id] = \
@@ -788,7 +781,8 @@ class RTK(object):
                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['similaritem'] = dtcSimilarItem(
                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['fmea'] = dtcFMEA()
+            self.dic_controllers['dfmeca'] = dtcFMEA(
+               self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False, functional=False)
             # self.dic_controllers['pof'] = dtcPoF()
             # self.dic_controllers['growth'] = Growth()
             # self.dic_controllers['action'] = Action()
