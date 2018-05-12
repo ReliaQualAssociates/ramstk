@@ -8,11 +8,11 @@
 
 
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKControl(RTK_BASE):
@@ -43,7 +43,7 @@ class RTKControl(RTK_BASE):
         nullable=False)
 
     description = Column('fld_description', String(512), default='')
-    type_id = Column('fld_type_id', Integer, default=0)
+    type_id = Column('fld_type_id', String(512), default='')
 
     # Define the relationships to other tables in the RTK Program database.
     mode = relationship('RTKMode', back_populates='control')
@@ -87,7 +87,7 @@ class RTKControl(RTK_BASE):
         try:
             self.description = str(
                 none_to_default(attributes['description'], ''))
-            self.type_id = int(none_to_default(attributes['type_id'], 0))
+            self.type_id = str(none_to_default(attributes['type_id'], ''))
         except KeyError as _err:
             _error_code = 40
             _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \

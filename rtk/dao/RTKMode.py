@@ -39,11 +39,13 @@ class RTKMode(RTK_BASE):
         'fld_function_id',
         Integer,
         ForeignKey('rtk_function.fld_function_id'),
+        default=-1,
         nullable=False)
     hardware_id = Column(
         'fld_hardware_id',
         Integer,
         ForeignKey('rtk_hardware.fld_hardware_id'),
+        default=-1,
         nullable=False)
     mode_id = Column(
         'fld_mode_id',
@@ -74,8 +76,8 @@ class RTKMode(RTK_BASE):
     other_indications = Column(
         'fld_other_indications', String(512), default='')
     remarks = Column('fld_remarks', BLOB, default='')
-    rpn_severity = Column('fld_rpn_severity', String(64), default='')
-    rpn_severity_new = Column('fld_rpn_severity_new', String(64), default='')
+    rpn_severity = Column('fld_rpn_severity', Integer, default=1)
+    rpn_severity_new = Column('fld_rpn_severity_new', Integer, default=1)
     severity_class = Column('fld_severity_class', String(64), default='')
     single_point = Column('fld_single_point', Integer, default=0)
     type_id = Column('fld_type_id', Integer, default=0)
@@ -197,10 +199,10 @@ class RTKMode(RTK_BASE):
             self.other_indications = str(
                 none_to_default(attributes['other_indications'], ''))
             self.remarks = str(none_to_default(attributes['remarks'], ''))
-            self.rpn_severity = str(
-                none_to_default(attributes['rpn_severity'], ''))
-            self.rpn_severity_new = str(
-                none_to_default(attributes['rpn_severity_new'], ''))
+            self.rpn_severity = int(
+                none_to_default(attributes['rpn_severity'], 1))
+            self.rpn_severity_new = int(
+                none_to_default(attributes['rpn_severity_new'], 1))
             self.severity_class = str(
                 none_to_default(attributes['severity_class'], ''))
             self.single_point = int(
