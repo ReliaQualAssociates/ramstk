@@ -74,12 +74,36 @@ class FMEA(RTKWorkView):
             self._functional = True
         else:
             self._functional = False
+        self._item_hazard_rate = 0.0
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.chkCriticality = rtk.RTKCheckButton(
+            label=_(u"Calculate Criticality"),
+            tooltip=_(
+                u"Select this option to calculate the (D)FME(C)A MIL-STD-1629, "
+                u"Task 102 criticality analysis."))
+        self.chkRPN = rtk.RTKCheckButton(
+            label=_(u"Calculate RPNs"),
+            tooltip=_(
+                u"Select this option to calculate the (D)FME(C)A risk priority "
+                u"numbers (RPN)."))
+        self.txtItemCriticality = rtk.RTKTextView(
+            gtk.TextBuffer(),
+            height=75,
+            tooltip=_(
+                u"Displays the MIL-SD-1629, Taks 102 item criticality for the "
+                u"selected hardware item."))
+        self.txtItemCriticality.set_editable(False)
+        _bg_color = gtk.gdk.Color('#ADD8E6')
+        self.txtItemCriticality.modify_base(gtk.STATE_NORMAL, _bg_color)
+        self.txtItemCriticality.modify_base(gtk.STATE_ACTIVE, _bg_color)
+        self.txtItemCriticality.modify_base(gtk.STATE_PRELIGHT, _bg_color)
+        self.txtItemCriticality.modify_base(gtk.STATE_SELECTED, _bg_color)
+        self.txtItemCriticality.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
 
     def _do_get_cell_model(self, column):
         """
@@ -110,10 +134,14 @@ class FMEA(RTKWorkView):
         if row is not None:
             _node_id = _model.get_value(row, 43)
             _level = self._do_get_level(_node_id)
+            _node = self._dtc_data_controller.request_select(_node_id)
 
-            if _level == 'mechanism' or _level == 'cause':
-                _node = self._dtc_data_controller.request_select(_node_id)
-
+            if _level == 'mode':
+                _model.set_value(row, self._lst_col_order[17],
+                                 _node.mode_hazard_rate)
+                _model.set_value(row, self._lst_col_order[19],
+                                 _node.mode_criticality)
+            elif _level == 'mechanism' or _level == 'cause':
                 _model.set_value(row, self._lst_col_order[24], _node.rpn)
                 _model.set_value(row, self._lst_col_order[37], _node.rpn_new)
 
@@ -123,6 +151,17 @@ class FMEA(RTKWorkView):
                 _row = _model.iter_next(row)
 
             self._do_refresh_view(_row)
+
+        if not self._functional:
+            _str_item_crit = ""
+            _dic_item_crit = self._dtc_data_controller.request_item_criticality(
+            )
+            for _key in _dic_item_crit:
+                _str_item_crit = (_str_item_crit + _(u"{0:s}: {1:g}\n").format(
+                    _key, _dic_item_crit[_key]))
+
+            self.txtItemCriticality.do_get_buffer().set_text(
+                str(_str_item_crit))
 
         return _return
 
@@ -136,7 +175,10 @@ class FMEA(RTKWorkView):
         """
         _return = False
 
-        if not self._dtc_data_controller.request_calculate():
+        _criticality = self.chkCriticality.get_active()
+        _rpn = self.chkRPN.get_active()
+        if not self._dtc_data_controller.request_calculate(
+                self._item_hazard_rate, criticality=_criticality, rpn=_rpn):
             _model = self.treeview.get_model()
             _row = _model.get_iter_root()
             while _row is not None:
@@ -189,13 +231,10 @@ class FMEA(RTKWorkView):
         """
         return self._do_request_insert(sibling=False)
 
-    def _do_request_insert(self, sibling=True, **kwargs):
+    def _do_request_insert(self, **kwargs):
         """
         Request to insert a new entity to the FMEA.
 
-        :param bool sibling: indicator variable that determines whether a
-                             sibling entity be added (default) or a child
-                             entity be added to the currently selected entity.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -705,7 +744,6 @@ class FFMEA(FMEA):
         # the TreeView.
         if (not _return and not FMEA._do_request_insert(
                 self,
-                sibling,
                 entity_id=_entity_id,
                 parent_id=_parent_id,
                 level=_level,
@@ -771,6 +809,7 @@ class DFMECA(FMEA):
 
         # Initialize private scalar attributes.
         self._hardware_id = None
+        self._n_columns = 0
 
         # Initialize public dictionary attributes.
 
@@ -811,7 +850,7 @@ class DFMECA(FMEA):
         self.hbx_tab_label.pack_start(_label)
 
         self.pack_start(self._make_buttonbox(), False, True)
-        self.pack_end(self._make_treeview(), True, True)
+        self.pack_end(self._make_dfmea(), True, True)
         self.show_all()
 
         pub.subscribe(self._do_load_missions, 'selectedRevision')
@@ -1188,8 +1227,9 @@ class DFMECA(FMEA):
                     _entity.hazard_rate_source, _entity.mode_probability,
                     _entity.effect_probability, _entity.mode_ratio,
                     _entity.mode_hazard_rate, _entity.mode_op_time,
-                    _entity.mode_criticality, '', _severity, 0, 0, 0, '', '',
-                    '', '', '', 0, '', 0, '', _severity_new, 0, 0, 0,
+                    _entity.mode_criticality, '', _severity, _occurrence,
+                    _detection, 0, '', '', '', '', '', 0, '', 0, '',
+                    _severity_new, _occurrence_new, _detection_new, 0,
                     _entity.critical_item, _entity.single_point, 0,
                     _entity.remarks, _icon, _node.identifier
                 ]
@@ -1200,10 +1240,10 @@ class DFMECA(FMEA):
                 _data = [
                     _entity.mechanism_id, _entity.description, '', '', '', '',
                     '', '', '', '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0,
-                    0.0, '', 0, _occurrence, _detection, _entity.rpn, '', '',
-                    '', '', '', 0, '', 0, '', 0, _occurrence_new,
-                    _detection_new, _entity.rpn_new, 0, 0, _entity.pof_include,
-                    '', _icon, _node.identifier
+                    0.0, '', _severity, _occurrence, _detection, _entity.rpn,
+                    '', '', '', '', '', 0, '', 0, '', _severity_new,
+                    _occurrence_new, _detection_new, _entity.rpn_new, 0, 0,
+                    _entity.pof_include, '', _icon, _node.identifier
                 ]
             elif _entity.is_cause:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
@@ -1211,9 +1251,10 @@ class DFMECA(FMEA):
                 _data = [
                     _entity.cause_id, _entity.description, '', '', '', '', '',
                     '', '', '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0,
-                    '', 0, _occurrence, _detection, _entity.rpn, '', '', '',
-                    '', '', 0, '', 0, '', 0, _occurrence_new, _detection_new,
-                    _entity.rpn_new, 0, 0, 0, '', _icon, _node.identifier
+                    '', _severity, _occurrence, _detection, _entity.rpn, '',
+                    '', '', '', '', 0, '', 0, '', _severity_new,
+                    _occurrence_new, _detection_new, _entity.rpn_new, 0, 0, 0,
+                    '', _icon, _node.identifier
                 ]
             elif _entity.is_control and row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
@@ -1221,8 +1262,10 @@ class DFMECA(FMEA):
                 _data = [
                     _entity.control_id, _entity.description, '', '', '', '',
                     '', '', '', '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0,
-                    0.0, _entity.type_id, 0, 0, 0, 0, '', '', '', '', '', 0,
-                    '', 0, '', 0, 0, 0, 0, 0, 0, 0, '', _icon, _node.identifier
+                    0.0, _entity.type_id, _severity, _occurrence, _detection, 0,
+                    '', '', '', '', '', 0, '', 0, '', _severity_new,
+                    _occurrence_new, _detection_new, 0, 0, 0, 0, '', _icon,
+                    _node.identifier
                 ]
             elif _entity.is_action and row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
@@ -1230,12 +1273,13 @@ class DFMECA(FMEA):
                 _data = [
                     _entity.action_id, _entity.action_recommended, '', '', '',
                     '', '', '', '', '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0,
-                    0.0, '', 0, 0, 0, 0, _entity.action_category,
-                    _entity.action_owner, _entity.action_due_date,
-                    _entity.action_status, _entity.action_taken,
-                    _entity.action_approved, _entity.action_approve_date,
-                    _entity.action_closed, _entity.action_close_date, 0, 0, 0,
-                    0, 0, 0, 0, '', _icon, _node.identifier
+                    0.0, '', _severity, _occurrence, _detection, 0,
+                    _entity.action_category, _entity.action_owner,
+                    _entity.action_due_date, _entity.action_status,
+                    _entity.action_taken, _entity.action_approved,
+                    _entity.action_approve_date, _entity.action_closed,
+                    _entity.action_close_date, _severity_new, _occurrence_new,
+                    _detection_new, 0, 0, 0, 0, '', _icon, _node.identifier
                 ]
 
             try:
@@ -1245,13 +1289,16 @@ class DFMECA(FMEA):
                 print "FIXME: Handle TypeError in " \
                       "gtk.gui.workviews.FMEA.FMEA._do_load_tree() for ID: " \
                       "{0:s}.".format(_node.identifier)
+                _row = None
             except ValueError:
                 print "FIXME: Handle ValueError in " \
-                      "gtk.gui.workviews.FMEA.FMEA._do_load_tree."
+                      "gtk.gui.workviews.FMEA.FMEA._do_load_tree() for ID: " \
+                      "{0:s}.".format(_node.identifier)
+                _row = None
 
         except AttributeError:
             print "FIXME: Handle AttributeError in " \
-                  "gtk.gui.workviews.FMEA.FMEA._do_load_tree."
+                  "gtk.gui.workviews.FMEA.FMEA._do_load_tree()."
             _row = None
 
         for _n in tree.children(_node.identifier):
@@ -1320,7 +1367,6 @@ class DFMECA(FMEA):
         # the TreeView.
         if (not _return and not FMEA._do_request_insert(
                 self,
-                sibling,
                 entity_id=_entity_id,
                 parent_id=_parent_id,
                 level=_level,
@@ -1331,6 +1377,30 @@ class DFMECA(FMEA):
             _return = True
 
         return _return
+
+    def _make_dfmea(self):
+        """
+        Make the (D)FME(C)A option box.
+
+        :return:
+        :rtype:
+        """
+        _vbox = gtk.VBox()
+
+        _fixed = gtk.Fixed()
+        _vbox.pack_start(_fixed, False, True)
+
+        _fixed.put(self.chkCriticality, 5, 5)
+        _fixed.put(self.chkRPN, 5, 35)
+        _fixed.put(self.txtItemCriticality.scrollwindow, 550, 5)
+
+        _vbox.pack_end(self._make_treeview(), True, True)
+
+        # By default, calculate both Task 102 and RPN.
+        self.chkCriticality.set_active(True)
+        self.chkRPN.set_active(True)
+
+        return _vbox
 
     def _make_treeview(self):
         """
@@ -1408,8 +1478,7 @@ class DFMECA(FMEA):
                 (self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_STATUS[_item][0], ))
 
         for i in self._lst_col_order:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
+            _cell = self.treeview.get_column(self._lst_col_order[i]).get_cell_renderers()
 
             if isinstance(_cell[0], gtk.CellRendererPixbuf):
                 pass
@@ -1434,6 +1503,9 @@ class DFMECA(FMEA):
         :rtype: None
         """
         self._hardware_id = module_id
+        self._item_hazard_rate = self._mdcRTK.dic_controllers[
+            'hardware'].request_select(self._hardware_id,
+                                       'reliability').hazard_rate_logistics
 
         _model = self.treeview.get_model()
         _model.clear()

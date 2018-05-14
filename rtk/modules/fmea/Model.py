@@ -860,6 +860,7 @@ class FMEADataModel(RTKDataModel):
         self._functional = False
 
         # Initialize public dictionary attributes.
+        self.item_criticality = {}
 
         # Initialize public list attributes.
 
@@ -1171,14 +1172,19 @@ class FMEADataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
+        self.item_criticality = {}
         for _node in self.tree.children(0):
             _error_code, _msg = _node.data.calculate_criticality(item_hr)
+            try:
+                self.item_criticality[_node.data.severity_class] += _node.data.mode_criticality
+            except KeyError:
+                self.item_criticality[_node.data.severity_class] = _node.data.mode_criticality
 
         return _error_code, _msg
 
     def calculate_rpn(self):
         """
-        Calculate the Risk Priority NUmber (RPN).
+        Calculate the Risk Priority Number (RPN).
 
         :param int node_id: the ID of the treelib Node to calculate the RPN.
         :param int severity: the severity of the failure Mode the Mechanism is
@@ -1191,18 +1197,21 @@ class FMEADataModel(RTKDataModel):
         _error_code = 0
         _msg = 'RTK INFO: Success calculating (D)FME(C)A.'
 
-        for _node in self.tree.all_nodes():
+        for _node in self.tree.children(0):
             if _node.data is None:
-                _msg = "Node ID: {0:s} has no data package.".format(str(_node.identifier))
+                _msg = "Node ID: {0:s} has no data package.".format(
+                    str(_node.identifier))
             elif _node.data.is_mode:
-                for _child in self.tree.children(_node.identifier):
+                for _child in self.tree.subtree(_node.identifier).all_nodes():
                     try:
                         _error_code, _msg = _child.data.calculate_rpn(
-                            _node.data.rpn_severity, _node.data.rpn_severity_new)
+                            _node.data.rpn_severity,
+                            _node.data.rpn_severity_new)
                     except OutOfRangeError as e:
                         _error_code = 1
                         _msg = e.message
                     except AttributeError:
-                        _msg = "Node ID: {0:s} is not a Mechanism or Cause.".format(str(_child.identifier))
+                        _msg = ("Node ID: {0:s} is not a Mechanism or "
+                                "Cause.").format(str(_child.identifier))
 
         return _error_code, _msg
