@@ -145,7 +145,7 @@ class FMEA(RTKWorkView):
                 _model.set_value(row, self._lst_col_order[24], _node.rpn)
                 _model.set_value(row, self._lst_col_order[37], _node.rpn_new)
 
-            if _model.iter_has_child(row):
+            if _model.iter_has_child(row) and _level != 'cause':
                 _row = _model.iter_children(row)
             else:
                 _row = _model.iter_next(row)
@@ -1285,7 +1285,6 @@ class DFMECA(FMEA):
             try:
                 _row = _model.append(row, _data)
             except TypeError:
-                print _data
                 print "FIXME: Handle TypeError in " \
                       "gtk.gui.workviews.FMEA.FMEA._do_load_tree() for ID: " \
                       "{0:s}.".format(_node.identifier)
@@ -1382,8 +1381,8 @@ class DFMECA(FMEA):
         """
         Make the (D)FME(C)A option box.
 
-        :return:
-        :rtype:
+        :return: _vbox
+        :rtype: :class:`gtk.VBox`
         """
         _vbox = gtk.VBox()
 
