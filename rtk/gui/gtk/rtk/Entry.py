@@ -91,7 +91,6 @@ class RTKTextView(gtk.TextView):
         :return: _scrollwindow
         :rtype: gtk.ScrolledWindow
         """
-
         gtk.TextView.__init__(self)
 
         self.set_tooltip_markup(tooltip)
@@ -105,6 +104,8 @@ class RTKTextView(gtk.TextView):
         self.scrollwindow.props.width_request = width
         self.scrollwindow.props.height_request = height
         self.scrollwindow.add_with_viewport(self)
+
+        self.tag_bold = txvbuffer.create_tag('bold', weight=pango.WEIGHT_BOLD)
 
     def do_get_buffer(self):
         """

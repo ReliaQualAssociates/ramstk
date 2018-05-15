@@ -43,6 +43,7 @@ RTK_HR_DISTRIBUTIONS = [[_(u"1P Exponential")], [_(u"2P Exponential")],
                         [_(u"Gaussian")], [_(u"Lognormal")],
                         [_(u"2P Weibull")], [_(u"3P Weibull")]]
 
+RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
 RTK_COST_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
 
 
@@ -323,6 +324,8 @@ class Configuration(object):
         'workbook': 'bottom'
     }
 
+    # The following global dicts are loaded from information in the RTK
+    # Common database.
     RTK_ACTION_CATEGORY = {}
     RTK_INCIDENT_CATEGORY = {}
     RTK_SEVERITY = {}
@@ -335,7 +338,6 @@ class Configuration(object):
     RTK_SW_TEST_METHODS = {}
     RTK_ALLOCATION_MODELS = {}
     RTK_DAMAGE_MODELS = {}
-    RTK_HR_MODEL = {}
     RTK_LIFECYCLE = {}
     RTK_SW_DEV_PHASES = {}
     RTK_RPN_DETECTION = {}
@@ -343,7 +345,6 @@ class Configuration(object):
     RTK_RPN_OCCURRENCE = {}
     RTK_ACTION_STATUS = {}
     RTK_INCIDENT_STATUS = {}
-    RTK_COST_TYPE = {}
     RTK_HR_TYPE = {}
     RTK_INCIDENT_TYPE = {}
     RTK_MTTR_TYPE = {}
@@ -366,7 +367,6 @@ class Configuration(object):
     RTK_PAGE_NUMBER = {}
 
     # Define global list class attributes.
-    RTK_CONTROL_TYPES = []
     RTK_RISK_POINTS = [4, 10]
 
     # Define public scalare class attributes.
@@ -408,7 +408,10 @@ class Configuration(object):
             'stakeholderfg'
         ]
         self._lst_format_files = [
-            'allocation', 'fmeca', 'ffmeca', 'function', 'hardware', 'hazops', 'requirement', 'revision', 'software', 'incident', 'validation', 'testing', 'part', 'similaritem', 'rgincident', 'stakeholder', 'dataset', 'risk', 'sfmeca'
+            'allocation', 'ffmea', 'dfmeca', 'function', 'hardware', 'hazops',
+            'requirement', 'revision', 'software', 'incident', 'validation',
+            'testing', 'similaritem', 'rgincident', 'stakeholder', 'dataset',
+            'risk'
         ]
 
         if name == 'posix':

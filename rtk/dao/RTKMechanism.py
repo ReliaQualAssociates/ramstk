@@ -146,28 +146,28 @@ class RTKMechanism(RTK_BASE):
 
         if not 0 < severity < 11:
             _error_code = 2020
-            raise OutOfRangeError(
-                _(u"RPN severity is outside the range [1, 10]."))
+            _msg = _(u"RPN severity is outside the range [1, 10].")
+            raise OutOfRangeError(_msg)
         if not 0 < self.rpn_occurrence < 11:
             _error_code = 2020
-            raise OutOfRangeError(
-                _(u"RPN occurrence is outside the range [1, 10]."))
+            _msg = _(u"RPN occurrence is outside the range [1, 10].")
+            raise OutOfRangeError(_msg)
         if not 0 < self.rpn_detection < 11:
             _error_code = 2020
-            raise OutOfRangeError(
-                _(u"RPN detection is outside the range [1, 10]."))
+            _msg = _(u"RPN detection is outside the range [1, 10].")
+            raise OutOfRangeError(_msg)
         if not 0 < severity_new < 11:
             _error_code = 2020
-            raise OutOfRangeError(
-                _(u"RPN new severity is outside the range [1, 10]."))
+            _msg = _(u"RPN new severity is outside the range [1, 10].")
+            raise OutOfRangeError(_msg)
         if not 0 < self.rpn_occurrence_new < 11:
             _error_code = 2020
-            raise OutOfRangeError(
-                _(u"RPN new occurrence is outside the range [1, 10]."))
+            _msg = _(u"RPN new occurrence is outside the range [1, 10].")
+            raise OutOfRangeError(_msg)
         if not 0 < self.rpn_detection_new < 11:
             _error_code = 2020
-            raise OutOfRangeError(
-                _(u"RPN new detection is outside the range [1, 10]."))
+            _msg = _(u"RPN new detection is outside the range [1, 10].")
+            raise OutOfRangeError(_msg)
 
         self.rpn = int(severity) \
             * int(self.rpn_occurrence) \

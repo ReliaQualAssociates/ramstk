@@ -9,6 +9,7 @@
 from treelib import tree
 
 # Import other RTK modules.
+from rtk.Utilities import OutOfRangeError
 from rtk.datamodels import RTKDataModel
 from rtk.dao import RTKAction, RTKCause, RTKControl, RTKMechanism, RTKMode
 
@@ -859,6 +860,7 @@ class FMEADataModel(RTKDataModel):
         self._functional = False
 
         # Initialize public dictionary attributes.
+        self.item_criticality = {}
 
         # Initialize public list attributes.
 
@@ -980,7 +982,7 @@ class FMEADataModel(RTKDataModel):
                 # Since Controls and Actions are at the same level in the FMEA
                 # tree, we prepend a zero to the Control ID to differentiate it
                 # from an Action.
-                _node_id = parent_id + '.0' + str(_control.control_id)
+                _node_id = parent_id + '.' + str(_control.control_id) + 'c'
                 self.tree.create_node(
                     tag=_control.description,
                     identifier=_node_id,
@@ -1006,7 +1008,7 @@ class FMEADataModel(RTKDataModel):
         for _key in _actions:
             _action = _actions[_key].data
             if _action is not None:
-                _node_id = parent_id + '.' + str(_action.action_id)
+                _node_id = parent_id + '.' + str(_action.action_id) + 'a'
                 self.tree.create_node(
                     tag=_action.action_category,
                     identifier=_node_id,
@@ -1044,7 +1046,6 @@ class FMEADataModel(RTKDataModel):
         _entity_id = kwargs['entity_id']
         _parent_id = kwargs['parent_id']
         _level = kwargs['level']
-
         if self._functional:
             _function_id = _entity_id
             _hardware_id = -1
@@ -1077,13 +1078,13 @@ class FMEADataModel(RTKDataModel):
                 mode_id=_mode_id, cause_id=_cause_id)
             _entity = self.dtm_control.select(self.dtm_control.last_id)
             _tag = 'Control'
-            _node_id = _parent_id + '.0' + str(self.dtm_control.last_id)
+            _node_id = _parent_id + '.' + str(self.dtm_control.last_id) + 'c'
         elif _level == 'action':
             _error_code, _msg = self.dtm_action.insert(
                 mode_id=_mode_id, cause_id=_cause_id)
             _entity = self.dtm_action.select(self.dtm_action.last_id)
             _tag = 'Action'
-            _node_id = _parent_id + '.' + str(self.dtm_action.last_id)
+            _node_id = _parent_id + '.' + str(self.dtm_action.last_id) + 'a'
         else:
             _error_code = 2005
             _msg = 'RTK ERROR: Attempted to add an item to the FMEA with ' \
@@ -1168,17 +1169,24 @@ class FMEADataModel(RTKDataModel):
 
         :param float item_hr: the hazard rate of the item the criticality is
                               being calculated for.
-        :return:
-        :rtype:
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
+        self.item_criticality = {}
         for _node in self.tree.children(0):
             _error_code, _msg = _node.data.calculate_criticality(item_hr)
+            try:
+                self.item_criticality[
+                    _node.data.severity_class] += _node.data.mode_criticality
+            except KeyError:
+                self.item_criticality[
+                    _node.data.severity_class] = _node.data.mode_criticality
 
         return _error_code, _msg
 
-    def calculate_rpn(self, node_id, severity, severity_new):
+    def calculate_rpn(self):
         """
-        Calculate the Risk Priority NUmber (RPN).
+        Calculate the Risk Priority Number (RPN).
 
         :param int node_id: the ID of the treelib Node to calculate the RPN.
         :param int severity: the severity of the failure Mode the Mechanism is
@@ -1189,11 +1197,23 @@ class FMEADataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK INFO: No failure mechanisms or causes for Node ' \
-               'ID {0:s}'.format(node_id)
+        _msg = 'RTK INFO: Success calculating (D)FME(C)A.'
 
-        for _node in self.tree.children(node_id):
-            _error_code, _msg = _node.data.calculate_rpn(
-                severity, severity_new)
+        for _node in self.tree.children(0):
+            if _node.data is None:
+                _msg = "Node ID: {0:s} has no data package.".format(
+                    str(_node.identifier))
+            elif _node.data.is_mode:
+                for _child in self.tree.subtree(_node.identifier).all_nodes():
+                    try:
+                        _error_code, _msg = _child.data.calculate_rpn(
+                            _node.data.rpn_severity,
+                            _node.data.rpn_severity_new)
+                    except OutOfRangeError as _error:
+                        _error_code = 1
+                        _msg = _error.message
+                    except AttributeError:
+                        _msg = ("Node ID: {0:s} is not a Mechanism or "
+                                "Cause.").format(str(_child.identifier))
 
         return _error_code, _msg

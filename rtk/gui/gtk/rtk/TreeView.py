@@ -57,6 +57,7 @@ class RTKTreeView(gtk.TreeView):
 
         # Initialize public list instance attributes.
         self.editable = []
+        self.headings = []
         self.korder = []
         self.order = []
         self.visible = []
@@ -64,7 +65,7 @@ class RTKTreeView(gtk.TreeView):
         # Initialize public scalar instance attributes.
 
         # Retrieve the column heading text from the format file.
-        _headings = lxml.parse(fmt_file).xpath(fmt_path + "/usertitle")
+        self.headings = lxml.parse(fmt_file).xpath(fmt_path + "/usertitle")
 
         # Retrieve the column datatype from the format file.
         _datatypes = lxml.parse(fmt_file).xpath(fmt_path + "/datatype")
@@ -87,7 +88,7 @@ class RTKTreeView(gtk.TreeView):
         _types = []
         for i in range(len(_datatypes)):  # pylint: disable=C0200
             _datatypes[i] = _datatypes[i].text
-            _headings[i] = _headings[i].text.replace("  ", "\n")
+            self.headings[i] = self.headings[i].text.replace("  ", "\n")
             _widgets[i] = _widgets[i].text
             self.editable[i] = int(self.editable[i].text)
             _position[i] = int(_position[i].text)
@@ -102,7 +103,7 @@ class RTKTreeView(gtk.TreeView):
         # the _position list.  This is necessary to all for user-specific
         # ordering of columns in the RTKTreeView.
         _datatypes = [x for _, x in sorted(zip(_position, _datatypes))]
-        _headings = [x for _, x in sorted(zip(_position, _headings))]
+        self.headings = [x for _, x in sorted(zip(_position, self.headings))]
         _widgets = [x for _, x in sorted(zip(_position, _widgets))]
         self.editable = [x for _, x in sorted(zip(_position, self.editable))]
         self.visible = [x for _, x in sorted(zip(_position, self.visible))]
@@ -113,7 +114,7 @@ class RTKTreeView(gtk.TreeView):
         # icon at the beginning of the row (Usage Profile, Hardware, etc.)
         if pixbuf:
             _datatypes.append('pixbuf')
-            _headings.append('')
+            self.headings.append('')
             _types.append(gtk.gdk.Pixbuf)
             _widgets.append('pixbuf')
             self.editable.append(0)
@@ -132,7 +133,7 @@ class RTKTreeView(gtk.TreeView):
         # FIXME: Are we using this?  If not, we need to eliminate.
         if indexed:
             _datatypes.append('text')
-            _headings.append('')
+            self.headings.append('')
             _types.append(gobject.TYPE_STRING)
             _widgets.append('text')
             self.editable.append(0)
@@ -172,12 +173,12 @@ class RTKTreeView(gtk.TreeView):
                 _pbcell = gtk.CellRendererPixbuf()
                 _pbcell.set_property('xalign', 0.5)
                 _column = self._do_make_column([_pbcell, _cell], self.visible[i],
-                                               _headings[i])
+                                               self.headings[i])
                 _column.set_attributes(_pbcell, pixbuf=_n_cols)
             else:
                 _column = self._do_make_column([
                     _cell,
-                ], self.visible[i], _headings[i])
+                ], self.visible[i], self.headings[i])
             _column.set_cell_data_func(_cell, self._format_cell,
                                        (_position[i], _datatypes[i]))
 

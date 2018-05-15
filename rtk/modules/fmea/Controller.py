@@ -9,6 +9,7 @@
 from pubsub import pub
 
 # Import other RTK modules.
+from rtk.Utilities import OutOfRangeError
 from rtk.datamodels import RTKDataController
 from . import dtmFMEA
 
@@ -75,7 +76,7 @@ class FMEADataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.insert(
             entity_id=entity_id, parent_id=parent_id, level=level)
-        self._dtm_data_model.tree.show()
+
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
         else:
@@ -113,3 +114,36 @@ class FMEADataController(RTKDataController):
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
+
+    def request_calculate(self, item_hr, criticality=True, rpn=True):
+        """
+        Request the (D)FME(C)A be calculated.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Calculating (D)FME(C)A.'
+
+        try:
+            if rpn:
+                _error_code, _msg = self._dtm_data_model.calculate_rpn()
+            if criticality:
+                _error_code, _msg = self._dtm_data_model.calculate_criticality(
+                    item_hr)
+        except OutOfRangeError:
+            _error_code = 50
+            _msg = ("RTK WARNING: OutOfRangeError raised when calculating "
+                    "(D)FME(C)A.")
+
+        return RTKDataController.do_handle_results(self, _error_code, _msg,
+                                                   None)
+
+    def request_item_criticality(self):
+        """
+        Request the item criticality.
+
+        :return: _item_criticality
+        :rtype: float
+        """
+        return self._dtm_data_model.item_criticality

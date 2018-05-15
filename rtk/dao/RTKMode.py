@@ -39,11 +39,13 @@ class RTKMode(RTK_BASE):
         'fld_function_id',
         Integer,
         ForeignKey('rtk_function.fld_function_id'),
+        default=-1,
         nullable=False)
     hardware_id = Column(
         'fld_hardware_id',
         Integer,
         ForeignKey('rtk_hardware.fld_hardware_id'),
+        default=-1,
         nullable=False)
     mode_id = Column(
         'fld_mode_id',
@@ -74,8 +76,8 @@ class RTKMode(RTK_BASE):
     other_indications = Column(
         'fld_other_indications', String(512), default='')
     remarks = Column('fld_remarks', BLOB, default='')
-    rpn_severity = Column('fld_rpn_severity', String(64), default='')
-    rpn_severity_new = Column('fld_rpn_severity_new', String(64), default='')
+    rpn_severity = Column('fld_rpn_severity', Integer, default=1)
+    rpn_severity_new = Column('fld_rpn_severity_new', Integer, default=1)
     severity_class = Column('fld_severity_class', String(64), default='')
     single_point = Column('fld_single_point', Integer, default=0)
     type_id = Column('fld_type_id', Integer, default=0)
@@ -197,10 +199,10 @@ class RTKMode(RTK_BASE):
             self.other_indications = str(
                 none_to_default(attributes['other_indications'], ''))
             self.remarks = str(none_to_default(attributes['remarks'], ''))
-            self.rpn_severity = str(
-                none_to_default(attributes['rpn_severity'], ''))
-            self.rpn_severity_new = str(
-                none_to_default(attributes['rpn_severity_new'], ''))
+            self.rpn_severity = int(
+                none_to_default(attributes['rpn_severity'], 1))
+            self.rpn_severity_new = int(
+                none_to_default(attributes['rpn_severity_new'], 1))
             self.severity_class = str(
                 none_to_default(attributes['severity_class'], ''))
             self.single_point = int(
@@ -232,28 +234,22 @@ class RTKMode(RTK_BASE):
 
         if item_hr < 0.0:
             _error_code = 2010
-            _msg = 'RTK ERROR: Item hazard rate has a negative value.'
-            raise OutOfRangeError(_(u"Item hazard rate has a negative value."))
+            _msg = _(u"RTK ERROR: Item hazard rate has a negative value.")
+            raise OutOfRangeError(_msg)
         if not 0.0 <= self.mode_ratio <= 1.0:
             _error_code = 2010
-            _msg = 'RTK ERROR: Failure mode ratio is outside the range of ' \
-                   '[0.0, 1.0].'
-            raise OutOfRangeError(
-                _(u"Failure mode ratio is outside the range "
-                  u"of [0.0, 1.0]."))
+            _msg = _(u"RTK ERROR: Failure mode ratio is outside the range of "
+                     u"[0.0, 1.0].")
+            raise OutOfRangeError(_msg)
         if self.mode_op_time < 0.0:
             _error_code = 2010
-            _msg = 'Failure mode operating time has a negative value.'
-            raise OutOfRangeError(
-                _(u"Failure mode operating time has a "
-                  u"negative value."))
+            _msg = _(u"Failure mode operating time has a negative value.")
+            raise OutOfRangeError(_msg)
         if not 0.0 <= self.effect_probability <= 1.0:
             _error_code = 2010
-            _msg = 'Failure effect probability is outside the range ' \
-                   '[0.0, 1.0].'
-            raise OutOfRangeError(
-                _(u"Failure effect probability is outside "
-                  u"the range [0.0, 1.0]."))
+            _msg = _(u"Failure effect probability is outside the range "
+                     u"[0.0, 1.0].")
+            raise OutOfRangeError(_msg)
 
         self.mode_hazard_rate = item_hr * self.mode_ratio
         self.mode_criticality = self.mode_hazard_rate \
@@ -261,15 +257,11 @@ class RTKMode(RTK_BASE):
 
         if self.mode_hazard_rate < 0.0:
             _error_code = 2010
-            _msg = 'Failure mode hazard rate has a negative value.'
-            raise OutOfRangeError(
-                _(u"Failure mode hazard rate has a negative "
-                  u"value."))
+            _msg = _(u"Failure mode hazard rate has a negative value.")
+            raise OutOfRangeError(_msg)
         if self.mode_criticality < 0.0:
             _error_code = 2010
-            _msg = 'Failure mode criticality has a negative value.'
-            raise OutOfRangeError(
-                _(u"Failure mode criticality has a negative "
-                  u"value."))
+            _msg = _(u"Failure mode criticality has a negative value.")
+            raise OutOfRangeError(_msg)
 
         return _error_code, _msg

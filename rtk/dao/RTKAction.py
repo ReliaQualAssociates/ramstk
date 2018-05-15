@@ -8,7 +8,6 @@
 
 from datetime import date, timedelta
 
-
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -45,11 +44,11 @@ class RTKAction(RTK_BASE):
         nullable=False)
 
     action_recommended = Column('fld_action_recommended', BLOB, default='')
-    action_category = Column('fld_action_category', Integer, default=0)
-    action_owner = Column('fld_action_owner', String(512), default=0)
+    action_category = Column('fld_action_category', String(512), default='')
+    action_owner = Column('fld_action_owner', String(512), default='')
     action_due_date = Column(
         'fld_action_due_date', Date, default=date.today() + timedelta(days=30))
-    action_status = Column('fld_action_status', String(512), default=0)
+    action_status = Column('fld_action_status', String(512), default='')
     action_taken = Column('fld_action_taken', BLOB, default='')
     action_approved = Column('fld_action_approved', Integer, default=0)
     action_approve_date = Column(
@@ -119,8 +118,8 @@ class RTKAction(RTK_BASE):
         try:
             self.action_recommended = str(
                 none_to_default(attributes['action_recommended'], ''))
-            self.action_category = int(
-                none_to_default(attributes['action_category'], 0))
+            self.action_category = str(
+                none_to_default(attributes['action_category'], ''))
             self.action_owner = str(
                 none_to_default(attributes['action_owner'], 0))
             self.action_due_date = none_to_default(

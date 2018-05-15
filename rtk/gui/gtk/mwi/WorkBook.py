@@ -15,7 +15,7 @@ from pubsub import pub
 from rtk.gui.gtk.rtk import RTKBook
 
 from rtk.gui.gtk.workviews import wvwAllocation
-from rtk.gui.gtk.workviews import wvwFMEA
+from rtk.gui.gtk.workviews import wvwFFMEA, wvwDFMECA
 from rtk.gui.gtk.workviews import wvwHazOps
 from rtk.gui.gtk.workviews import wvwSimilarItem
 from rtk.gui.gtk.workviews import wvwFunctionGD, wvwFunctionAR
@@ -51,7 +51,7 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
                          wvwRevisionAR(controller)],
             'function': [
                 wvwFunctionGD(controller),
-                wvwFMEA(controller),
+                wvwFFMEA(controller),
                 wvwFunctionAR(controller)
             ],
             'requirement':
@@ -62,7 +62,8 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
                          wvwHazOps(controller),
                          wvwSimilarItem(controller),
                          wvwHardwareAI(controller),
-                         wvwHardwareAR(controller)],
+                         wvwHardwareAR(controller),
+                         wvwDFMECA(controller)],
             'validation':
             [wvwValidationGD(controller),
              wvwBurndownCurve(controller)]

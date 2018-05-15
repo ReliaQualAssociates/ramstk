@@ -8,14 +8,13 @@
 
 import gettext
 
-
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
 
 from rtk.Utilities import none_to_default, OutOfRangeError
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 _ = gettext.gettext
 
@@ -132,39 +131,39 @@ class RTKCause(RTK_BASE):
         :rtype: bool
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Calculating failure cause {0:d} RPN.'.\
-            format(self.cause_id)
+        _msg = ("RTK SUCCESS: Calculating failure cause {0:d} "
+                "RPN.").format(self.cause_id)
 
         if not 0 < severity < 11:
             _error_code = 2020
             raise OutOfRangeError(
                 _(u"RPN severity is outside the range "
-                  u"[1, 10]."))
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < self.rpn_occurrence < 11:
             _error_code = 2020
             raise OutOfRangeError(
                 _(u"RPN occurrence is outside the range "
-                  u"[1, 10]."))
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < self.rpn_detection < 11:
             _error_code = 2020
             raise OutOfRangeError(
                 _(u"RPN detection is outside the range "
-                  u"[1, 10]."))
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < severity_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
                 _(u"RPN new severity is outside the range "
-                  u"[1, 10]."))
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < self.rpn_occurrence_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
                 _(u"RPN new occurrence is outside the range "
-                  u"[1, 10]."))
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < self.rpn_detection_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
                 _(u"RPN new detection is outside the range "
-                  u"[1, 10]."))
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
 
         self.rpn = int(severity) \
             * int(self.rpn_occurrence) \
@@ -175,15 +174,17 @@ class RTKCause(RTK_BASE):
 
         if self.rpn < 1:
             _error_code = 2030
-            _msg = 'Failure cause RPN has a value less than 1.'
+            _msg = ("Failure cause RPN has a value less than 1 for Cause "
+                    "ID: {0:d}").format(self.cause_id)
             raise OutOfRangeError(
-                _(u"Failure cause RPN has a value less "
-                  u"than 1."))
+                _(u"Failure cause RPN has a value less than 1 for Cause ID: "
+                  u"{0:d}.").format(self.cause_id))
         if self.rpn_new > 1000:
             _error_code = 2030
-            _msg = 'Failure cause RPN has a value greater than 1000.'
+            _msg = ("Failure cause RPN has a value greater than 1000 for "
+                    "Cause ID: {0:d}.").format(self.cause_id)
             raise OutOfRangeError(
-                _(u"Failure cause RPN has a value "
-                  u"greater than 1000."))
+                _(u"Failure cause RPN has a value greater than 1000 for Cause "
+                  u"ID: {0:d}.").format(self.cause_id))
 
         return _error_code, _msg

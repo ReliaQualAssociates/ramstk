@@ -1,7 +1,7 @@
 <!--
 -*- coding: utf-8 -*-
 
-      ffmeca_format.xml is part of the RTK Project
+      FFMEA.xml is part of the RTK Project
 
       Copyright 2010-2013 Andrew "Weibullguy" Rowland
                           <darowland@ieee.org>
@@ -14,7 +14,7 @@ various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
 <root>
-    <tree name="FFMECA">
+    <tree name="FFMEA">
         <column>
             <defaulttitle>Entity ID</defaulttitle>
             <usertitle>Entity ID</usertitle>

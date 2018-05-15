@@ -287,8 +287,9 @@ class Allocation(RTKWorkView):
         _model = self.treeview.get_model()
         _model.clear()
 
-        if self._dtc_data_controller is not None:
-            _parent = self._dtc_data_controller.request_select(self._parent_id)
+        _parent = self._dtc_data_controller.request_select(self._parent_id)
+
+        if _parent is not None:
             self.cmbAllocationMethod.set_active(_parent.method_id)
             self.cmbAllocationGoal.set_active(_parent.goal_measure_id)
             self.txtHazardRateGoal.set_text(
