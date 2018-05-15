@@ -554,21 +554,28 @@ def test_calculate_mechanism_rpn(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
 
-    for _node in DUT.tree.children('0.4'):
-        _mechanism = _node.data
-        _attributes = _mechanism.get_attributes()
-        _attributes['rpn_detection'] = 4
-        _attributes['rpn_occurrence'] = 7
-        _attributes['rpn_detection_new'] = 3
-        _attributes['rpn_occurrence_new'] = 5
-        _mechanism.set_attributes(_attributes)
+    for _node in DUT.tree.all_nodes():
+        try:
+            _attributes = _node.data.get_attributes()
+            if _node.data.is_mode:
+                _attributes['rpn_severity'] = 7
+                _attributes['rpn_severity_new'] = 4
+            if _node.data.is_mechanism or _node.data.is_cause:
+                _attributes['rpn_detection'] = 4
+                _attributes['rpn_occurrence'] = 7
+                _attributes['rpn_detection_new'] = 3
+                _attributes['rpn_occurrence_new'] = 5
 
-    _error_code, _msg = DUT.calculate_rpn('0.4', 7, 4)
+            _node.data.set_attributes(_attributes)
+        except AttributeError:
+            pass
+
+    _error_code, _msg = DUT.calculate_rpn()
+    _node = DUT.tree.get_node('0.4.1').data
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Calculating failure mechanism 2 RPN.")
-    assert _mechanism.rpn == 196
-    assert _mechanism.rpn_new == 60
+    assert _node.rpn == 196
+    assert _node.rpn_new == 60
 
 
 @pytest.mark.integration
@@ -579,22 +586,29 @@ def test_calculate_cause_rpn(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
 
-    for _node in DUT.tree.children('0.4.1'):
-        _cause = _node.data
-        _attributes = _cause.get_attributes()
-        _attributes['rpn_detection'] = 4
-        _attributes['rpn_occurrence'] = 7
-        _attributes['rpn_detection_new'] = 3
-        _attributes['rpn_occurrence_new'] = 5
-        _cause.set_attributes(_attributes)
+    for _node in DUT.tree.all_nodes():
+        try:
+            _attributes = _node.data.get_attributes()
+            if _node.data.is_mode:
+                _attributes['rpn_severity'] = 7
+                _attributes['rpn_severity_new'] = 4
+            if _node.data.is_mechanism or _node.data.is_cause:
+                _attributes['rpn_detection'] = 4
+                _attributes['rpn_occurrence'] = 7
+                _attributes['rpn_detection_new'] = 3
+                _attributes['rpn_occurrence_new'] = 5
 
-    _error_code, _msg = DUT.calculate_rpn('0.4.1', 7, 4)
+            _node.data.set_attributes(_attributes)
+        except AttributeError:
+            pass
+
+    _error_code, _msg = DUT.calculate_rpn()
+    _node = DUT.tree.get_node('0.4.1.1').data
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Calculating failure cause {0:d} RPN.").\
-                         format(DUT.dtm_cause.last_id)
-    assert _cause.rpn == 196
-    assert _cause.rpn_new == 60
+    assert _node.rpn == 196
+    assert _node.rpn_new == 60
+
 
 
 @pytest.mark.integration
