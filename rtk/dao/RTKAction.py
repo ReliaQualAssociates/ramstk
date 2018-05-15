@@ -8,7 +8,6 @@
 
 from datetime import date, timedelta
 
-
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 

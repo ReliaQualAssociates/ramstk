@@ -1176,9 +1176,11 @@ class FMEADataModel(RTKDataModel):
         for _node in self.tree.children(0):
             _error_code, _msg = _node.data.calculate_criticality(item_hr)
             try:
-                self.item_criticality[_node.data.severity_class] += _node.data.mode_criticality
+                self.item_criticality[
+                    _node.data.severity_class] += _node.data.mode_criticality
             except KeyError:
-                self.item_criticality[_node.data.severity_class] = _node.data.mode_criticality
+                self.item_criticality[
+                    _node.data.severity_class] = _node.data.mode_criticality
 
         return _error_code, _msg
 
@@ -1207,9 +1209,9 @@ class FMEADataModel(RTKDataModel):
                         _error_code, _msg = _child.data.calculate_rpn(
                             _node.data.rpn_severity,
                             _node.data.rpn_severity_new)
-                    except OutOfRangeError as e:
+                    except OutOfRangeError as _error:
                         _error_code = 1
-                        _msg = e.message
+                        _msg = _error.message
                     except AttributeError:
                         _msg = ("Node ID: {0:s} is not a Mechanism or "
                                 "Cause.").format(str(_child.identifier))

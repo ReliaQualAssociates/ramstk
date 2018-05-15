@@ -1262,8 +1262,8 @@ class DFMECA(FMEA):
                 _data = [
                     _entity.control_id, _entity.description, '', '', '', '',
                     '', '', '', '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0,
-                    0.0, _entity.type_id, _severity, _occurrence, _detection, 0,
-                    '', '', '', '', '', 0, '', 0, '', _severity_new,
+                    0.0, _entity.type_id, _severity, _occurrence, _detection,
+                    0, '', '', '', '', '', 0, '', 0, '', _severity_new,
                     _occurrence_new, _detection_new, 0, 0, 0, 0, '', _icon,
                     _node.identifier
                 ]
@@ -1477,7 +1477,8 @@ class DFMECA(FMEA):
                 (self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_STATUS[_item][0], ))
 
         for i in self._lst_col_order:
-            _cell = self.treeview.get_column(self._lst_col_order[i]).get_cell_renderers()
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
 
             if isinstance(_cell[0], gtk.CellRendererPixbuf):
                 pass
