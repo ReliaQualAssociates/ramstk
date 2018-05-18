@@ -59,6 +59,7 @@ class ModeDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKMode data models.
         :rtype: :class:`treelib.Tree`
         """
+        # ISSUE #98: select_all() Method Definitions Are Not Identical
         _functional = kwargs['functional']
 
         _session = RTKDataModel.select_all(self)
@@ -217,6 +218,7 @@ class MechanismDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKMechanism data mechanismls.
         :rtype: :class:`treelib.Tree`
         """
+        # ISSUE #98: select_all() Method Definitions Are Not Identical
         _session = RTKDataModel.select_all(self)
 
         _mechanisms = _session.query(RTKMechanism).filter(
@@ -361,7 +363,7 @@ class CauseDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id):
+    def select_all(self, **kwargs):
         """
         Retrieve all the failure Causes from the RTK Program database.
 
@@ -374,10 +376,17 @@ class CauseDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKCause data causels.
         :rtype: :class:`treelib.Tree`
         """
+        _parent_id = kwargs['parent_id']
+        _functional = kwargs['functional']
+
         _session = RTKDataModel.select_all(self)
 
-        _causes = _session.query(RTKCause).filter(
-            RTKCause.mechanism_id == parent_id).all()
+        if _functional:
+            _causes = _session.query(RTKCause).filter(
+                RTKCause.mode_id == _parent_id).all()
+        else:
+            _causes = _session.query(RTKCause).filter(
+                RTKCause.mechanism_id == _parent_id).all()
 
         for _cause in _causes:
             # We get and then set the attributes to replace any None values
@@ -525,16 +534,11 @@ class ControlDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKControl data models.
         :rtype: :class:`treelib.Tree`
         """
-        _functional = kwargs['functional']
-
+        # ISSUE #98: select_all() Method Definitions Are Not Identical
         _session = RTKDataModel.select_all(self)
 
-        if _functional:
-            _controls = _session.query(RTKControl).filter(
-                RTKControl.mode_id == parent_id).all()
-        else:
-            _controls = _session.query(RTKControl).filter(
-                RTKControl.cause_id == parent_id).all()
+        _controls = _session.query(RTKControl).filter(
+            RTKControl.cause_id == parent_id).all()
 
         for _control in _controls:
             # We get and then set the attributes to replace any None values
@@ -689,16 +693,11 @@ class ActionDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKAction data models.
         :rtype: :class:`treelib.Tree`
         """
-        _functional = kwargs['functional']
-
+        # ISSUE #98: select_all() Method Definitions Are Not Identical
         _session = RTKDataModel.select_all(self)
 
-        if _functional:
-            _actions = _session.query(RTKAction).filter(
-                RTKAction.mode_id == parent_id).all()
-        else:
-            _actions = _session.query(RTKAction).filter(
-                RTKAction.cause_id == parent_id).all()
+        _actions = _session.query(RTKAction).filter(
+            RTKAction.cause_id == parent_id).all()
 
         for _action in _actions:
             # We get and then set the attributes to replace any None values
@@ -884,6 +883,7 @@ class FMEADataModel(RTKDataModel):
         :return: tree; the FMEA treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
+        # ISSUE #98: select_all() Method Definitions Are Not Identical
         self._functional = kwargs['functional']
 
         RTKDataModel.select_all(self)
@@ -901,8 +901,7 @@ class FMEADataModel(RTKDataModel):
                     parent=0,
                     data=_mode)
                 if self._functional:
-                    self._do_add_controls(_mode.mode_id, _node_id)
-                    self._do_add_actions(_mode.mode_id, _node_id)
+                    self._do_add_causes(_mode.mode_id, _node_id, True)
                 else:
                     self._do_add_mechanisms(_mode.mode_id, _node_id)
 
@@ -930,30 +929,32 @@ class FMEADataModel(RTKDataModel):
                     parent=parent_id,
                     data=_mechanism)
 
-                self._do_add_causes(_mechanism.mechanism_id, _node_id)
+                self._do_add_causes(_mechanism.mechanism_id, _node_id, False)
 
         return _return
 
-    def _do_add_causes(self, mechanism_id, parent_id):
+    def _do_add_causes(self, parent_id, parent_node, functional):
         """
         Add the failure causes to the FMEA tree for Mechanism ID.
 
-        :param int mechanism_id: the Mechanism ID to add the failure causes to.
-        :param str parent_id: the Node ID to add the failure causes to.
+        :param int parent_id: the Mode ID (functional FMEA) or Mechanism ID
+                              (hardware FMEA) to add the failure causes to.
+        :param str parent_node: the Node ID to add the failure causes to.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _causes = self.dtm_cause.select_all(mechanism_id).nodes
+        _causes = self.dtm_cause.select_all(
+            parent_id=parent_id, functional=functional).nodes
         for _key in _causes:
             _cause = _causes[_key].data
             if _cause is not None:
-                _node_id = parent_id + '.' + str(_cause.cause_id)
+                _node_id = parent_node + '.' + str(_cause.cause_id)
                 self.tree.create_node(
                     tag=_cause.description,
                     identifier=_node_id,
-                    parent=parent_id,
+                    parent=parent_node,
                     data=_cause)
 
                 self._do_add_controls(_cause.cause_id, _node_id)
@@ -1147,7 +1148,7 @@ class FMEADataModel(RTKDataModel):
         """
         _error_code = 0
         _msg = 'RTK SUCCESS: Saving all Controls in the FMEA.'
-
+        # ISSUE #78: Handle Non-Zero Error Codes in FMEA update_all() Method
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.identifier)

@@ -31,6 +31,11 @@ class RTKCause(RTK_BASE):
     __tablename__ = 'rtk_cause'
     __table_args__ = {'extend_existing': True}
 
+    mode_id = Column(
+        'fld_mode_id',
+        Integer,
+        ForeignKey('rtk_mode.fld_mode_id'),
+        nullable=False)
     mechanism_id = Column(
         'fld_mechanism_id',
         Integer,
@@ -52,6 +57,7 @@ class RTKCause(RTK_BASE):
     rpn_occurrence_new = Column('fld_rpn_occurrence_new', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
+    mode = relationship('RTKMode', back_populates='cause')
     mechanism = relationship('RTKMechanism', back_populates='cause')
     control = relationship('RTKControl', back_populates='cause')
     action = relationship('RTKAction', back_populates='cause')
@@ -72,6 +78,7 @@ class RTKCause(RTK_BASE):
         :rtype: tuple
         """
         _attributes = {
+            'mode_id': self.mode_id,
             'mechanism_id': self.mechanism_id,
             'cause_id': self.cause_id,
             'description': self.description,

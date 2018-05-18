@@ -87,12 +87,8 @@ class RTKMode(RTK_BASE):
     hardware = relationship('RTKHardware', back_populates='mode')
     mechanism = relationship(
         'RTKMechanism', back_populates='mode', cascade='all,delete')
-
-    # The following are required for functional FMEA.
-    control = relationship(
-        'RTKControl', back_populates='mode', cascade='all,delete')
-    action = relationship(
-        'RTKAction', back_populates='mode', cascade='all,delete')
+    cause  = relationship(
+        'RTKCause', back_populates='mode', cascade='all,delete')
 
     is_mode = True
     is_mechanism = False

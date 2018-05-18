@@ -318,15 +318,14 @@ class DAO(object):
         _mechanism.description = 'Test Failure Mechanism #1'
         self.db_add([_mechanism], self.session)
         _cause = RTKCause()
+        _cause.mode_id = _mode.mode_id
         _cause.mechanism_id = _mechanism.mechanism_id
         _cause.description = 'Test Failure Cause #1'
         self.db_add([_cause], self.session)
         _control = RTKControl()
-        _control.mode_id = -1
         _control.cause_id = _cause.cause_id
         _control.description = 'Test FMEA Control #1'
         _action = RTKAction()
-        _action.mode_id = -1
         _action.cause_id = _cause.cause_id
         _action.action_recommended = 'Test FMEA Recommended Action #1'
 

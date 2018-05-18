@@ -16,7 +16,6 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'cause_id': 1,
-    'mode_id': 1,
     'description': 'Test Control',
     'control_id': 1,
     'type_id': 'Detection'
@@ -39,7 +38,6 @@ def test_rtkcontrol_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_control'
-    assert DUT.mode_id == 1
     assert DUT.cause_id == -1
     assert DUT.control_id == 1
     assert DUT.description == 'Test Functional FMEA Control #1'
@@ -62,7 +60,6 @@ def test_get_attributes(test_dao):
 
     assert isinstance(_attributes, dict)
 
-    assert _attributes['mode_id'] == 1
     assert _attributes['cause_id'] == -1
     assert _attributes['control_id'] == 1
     assert _attributes['description'] == 'Test Functional FMEA Control #1'
