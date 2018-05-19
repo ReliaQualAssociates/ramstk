@@ -509,9 +509,9 @@ def test_update_non_existent_node_id(test_dao):
 
     _error_code, _msg = DUT.update('mode_1000')
 
-    assert _error_code == 2006
-    assert _msg == ("RTK ERROR: Attempted to save non-existent entity with "
-                    "Node ID mode_1000.")
+    assert _error_code == 1
+    assert _msg == ("RTK ERROR: Attempted to save non-existent Functional "
+                    "FMEA entity with Node ID mode_1000.")
 
 
 @pytest.mark.integration
@@ -525,7 +525,7 @@ def test_update_all(test_dao):
     _error_code, _msg = DUT.update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all line items in the FMEA.")
 
 
 @pytest.mark.integration

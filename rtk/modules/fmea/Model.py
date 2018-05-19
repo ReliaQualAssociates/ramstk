@@ -1131,34 +1131,43 @@ class FMEADataModel(RTKDataModel):
         _error_code, _msg = RTKDataModel.update(self, node_id)
 
         if _error_code != 0:
-            _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent entity with ' \
-                   'Node ID {0:s}.'.format(node_id)
+            _error_code = 1
+            if self._functional:
+                _msg = "RTK ERROR: Attempted to save non-existent " \
+                       "Functional FMEA entity with Node ID " \
+                       "{0:s}.".format(node_id)
+            else:
+                _msg = "RTK ERROR: Attempted to save non-existent " \
+                       "Hardware FMEA entity with Node ID " \
+                       "{0:s}.".format(node_id)
 
         return _error_code, _msg
 
     def update_all(self):
         """
-        Update all RTKControl table records in the RTK Program database.
+        Update all FMEA table records in the RTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all Controls in the FMEA.'
-        # ISSUE #78: Handle Non-Zero Error Codes in FMEA update_all() Method
+        _msg = ''
+
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.identifier)
+                _err_code, _debug_msg = self.update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.fmea.Model.FMEADataModel.update_all().'
+                if _err_code != 0:
+                    _error_code = 1
+                    _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.fmea.Model.FMEADataModel.update_all().'
+                _error_code = 1
+                _msg = "RTK ERROR: One or more line items in the FMEA did " \
+                       "not update."
+
+        if _error_code == 0:
+            _msg = 'RTK SUCCESS: Updating all line items in the FMEA.'
 
         return _error_code, _msg
 
