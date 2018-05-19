@@ -18,11 +18,6 @@ from pubsub import pub  # pylint: disable=E0401
 from treelib import Tree  # pylint: disable=E0401
 
 try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
     import gtk
 except ImportError:
     sys.exit(1)
