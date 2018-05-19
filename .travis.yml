@@ -21,8 +21,7 @@ install:
     - conda info -a
 
     # Replace dep1 dep2 ... with your dependencies
-    - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION defusedxml lifelines lxml matplotlib==1.4.3 numpy pandas scipy sortedcontainers sqlalchemy sqlalchemy-utils statsmodels xlrd xlwt coverage pytest pytest-cov python-coveralls nose
-    - conda install -n test-environment -c jochym pygtk pcre
+    - conda create -q -n test-environment -c rogerramos python=$TRAVIS_PYTHON_VERSION pygtk defusedxml lifelines lxml matplotlib==1.4.3 numpy pandas scipy sortedcontainers sqlalchemy sqlalchemy-utils statsmodels xlrd xlwt coverage pytest pytest-cov python-coveralls nose
     - source activate test-environment
     - pip install pypubsub==3.3.0 treelib codacy-coverage
     - python setup.py install
