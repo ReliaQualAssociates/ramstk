@@ -20,7 +20,21 @@ tests_require = [
 
 class install(_install):
     def pre_install_script(self):
-        pass
+        import os, shutil
+
+        _builddir = os.path.abspath('.') + '/build'
+        print ("Cleaning build directory: {0:s}...").format(_builddir)
+        if os.path.isdir(_builddir):
+            for _file in os.listdir(_builddir):
+                _file_path = os.path.join(_builddir, _file)
+                try:
+                    if os.path.isfile(_file_path):
+                        os.unlink(_file_path)
+                    elif os.path.isdir(_file_path):
+                        shutil.rmtree(_file_path)
+                except Exception as e:
+                    print (e)
+
 
     def post_install_script(self):
         pass
