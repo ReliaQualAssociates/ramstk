@@ -6,11 +6,7 @@
 # All rights reserved.
 """Test class for testing the RTKMode module algorithms and models."""
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-import unittest
-from nose.plugins.attrib import attr
+import pytest
 
 from rtk.dao.RTKMode import RTKMode
 from rtk.Utilities import OutOfRangeError
@@ -21,12 +17,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
-class TestRTKMode(unittest.TestCase):
-    """
-    Class for testing the RTKMode class.
-    """
-
-    _attributes = {
+ATTRIBUTES = {
         'mode_id': 1,
         'effect_local': u'',
         'mission': u'Default Mission',
@@ -38,16 +29,16 @@ class TestRTKMode(unittest.TestCase):
         'rpn_severity_new': 1,
         'effect_next': u'',
         'detection_method': u'',
-        'hardware_id': 3,
+        'hardware_id': -1,
         'operator_actions': '',
         'critical_item': 0,
         'hazard_rate_source': u'',
         'severity_class': u'',
-        'description': 'Test Failure Mode #1',
+        'description': 'Test Functional Failure Mode #1',
         'mission_phase': u'',
         'mode_probability': u'',
         'remarks': '',
-        'function_id': 3,
+        'function_id': 1,
         'mode_ratio': 0.0,
         'mode_hazard_rate': 0.0,
         'rpn_severity': 1,
@@ -57,166 +48,219 @@ class TestRTKMode(unittest.TestCase):
         'effect_probability': 0.0
     }
 
-    def setUp(self):
-        """
-        Sets up the test fixture for the RTKMode class.
-        """
-        engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
-        session = scoped_session(sessionmaker())
 
-        session.remove()
-        session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_rtkmode_create(test_dao):
+    """ __init__() should create an RTKMode model. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
 
-        self.DUT = session.query(RTKMode).first()
-        self.DUT.description = self._attributes['description']
+    assert isinstance(DUT, RTKMode)
 
-        session.commit()
+    # Verify class attributes are properly initialized.
+    assert DUT.__tablename__ == 'rtk_mode'
+    assert DUT.function_id == 1
+    assert DUT.hardware_id == -1
+    assert DUT.mode_id == 1
+    assert DUT.critical_item == 0
+    assert DUT.description == 'Test Functional Failure Mode #1'
+    assert DUT.design_provisions == ''
+    assert DUT.detection_method == ''
+    assert DUT.effect_end == ''
+    assert DUT.effect_local == ''
+    assert DUT.effect_next == ''
+    assert DUT.effect_probability == 0.0
+    assert DUT.hazard_rate_source == ''
+    assert DUT.isolation_method == ''
+    assert DUT.mission == 'Default Mission'
+    assert DUT.mission_phase == ''
+    assert DUT.mode_criticality == 0.0
+    assert DUT.mode_hazard_rate == 0.0
+    assert DUT.mode_op_time == 0.0
+    assert DUT.mode_probability == ''
+    assert DUT.mode_ratio == 0.0
+    assert DUT.operator_actions == ''
+    assert DUT.other_indications == ''
+    assert DUT.remarks == ''
+    assert DUT.rpn_severity == 1
+    assert DUT.rpn_severity_new == 1
+    assert DUT.severity_class == ''
+    assert DUT.single_point == 0
+    assert DUT.type_id == 0
 
-    @attr(all=True, unit=True)
-    def test00_rtkmode_create(self):
-        """
-        (TestRTKMode) DUT should create an RTKMode model.
-        """
-        self.assertTrue(isinstance(self.DUT, RTKMode))
 
-        # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'rtk_mode')
-        self.assertEqual(self.DUT.function_id, 3)
-        self.assertEqual(self.DUT.hardware_id, 3)
-        self.assertEqual(self.DUT.mode_id, 1)
-        self.assertEqual(self.DUT.critical_item, 0)
-        self.assertEqual(self.DUT.description, 'Test Failure Mode #1')
-        self.assertEqual(self.DUT.design_provisions, '')
-        self.assertEqual(self.DUT.detection_method, '')
-        self.assertEqual(self.DUT.effect_end, '')
-        self.assertEqual(self.DUT.effect_local, '')
-        self.assertEqual(self.DUT.effect_next, '')
-        self.assertEqual(self.DUT.effect_probability, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_source, '')
-        self.assertEqual(self.DUT.isolation_method, '')
-        self.assertEqual(self.DUT.mission, 'Default Mission')
-        self.assertEqual(self.DUT.mission_phase, '')
-        self.assertEqual(self.DUT.mode_criticality, 0.0)
-        self.assertEqual(self.DUT.mode_hazard_rate, 0.0)
-        self.assertEqual(self.DUT.mode_op_time, 0.0)
-        self.assertEqual(self.DUT.mode_probability, '')
-        self.assertEqual(self.DUT.mode_ratio, 0.0)
-        self.assertEqual(self.DUT.operator_actions, '')
-        self.assertEqual(self.DUT.other_indications, '')
-        self.assertEqual(self.DUT.remarks, '')
-        self.assertEqual(self.DUT.rpn_severity, '')
-        self.assertEqual(self.DUT.rpn_severity_new, '')
-        self.assertEqual(self.DUT.severity_class, '')
-        self.assertEqual(self.DUT.single_point, 0)
-        self.assertEqual(self.DUT.type_id, 0)
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_get_attributes(test_dao):
+    """ get_attributes() should return a dict of attribute name:value pairs. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
 
-    @attr(all=True, unit=True)
-    def test01_get_attributes(self):
-        """
-        (TestRTKMode) get_attributes should return a dict of attribute name:value pairs.
-        """
-        self.assertEqual(self.DUT.get_attributes(), self._attributes)
+    assert DUT.get_attributes() == ATTRIBUTES
 
-    @attr(all=True, unit=True)
-    def test02a_set_attributes(self):
-        """
-        (TestRTKMode) set_attributes should return a zero error code on success
-        """
-        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKMode {0:d} " \
-                               "attributes.".format(self.DUT.hardware_id))
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_set_attributes(test_dao):
+    """ set_attributes() should return a zero error code on success. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
 
-    @attr(all=True, unit=True)
-    def test02b_set_attributes_missing_key(self):
-        """
-        (TestRTKMode) set_attributes should return a 40 error code when passed a dict with a missing key.
-        """
-        self._attributes.pop('remarks')
+    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
-        _error_code, _msg = self.DUT.set_attributes(self._attributes)
+    assert _error_code == 0
+    assert _msg == ("RTK SUCCESS: Updating RTKMode {0:d} "
+                    "attributes.".format(DUT.hardware_id))
 
-        self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'remarks' in "
-                         "attribute dictionary passed to "
-                         "RTKMode.set_attributes().")
 
-    @attr(all=True, unit=True)
-    def test03a_calculate_criticality(self):
-        """
-        (TestRTKMode) calculate_criticality should return False on success
-        """
-        self.DUT.mode_ratio = 0.5
-        self.DUT.mode_op_time = 5.8
-        self.DUT.effect_probability = 0.43
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_set_attributes_missing_key(test_dao):
+    """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
 
-        _error_code, _msg = self.DUT.calculate_criticality(0.0000563)
+    ATTRIBUTES.pop('remarks')
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure mode 1 '
-                         'criticality.')
-        self.assertAlmostEqual(self.DUT.mode_hazard_rate, 2.815e-05)
-        self.assertAlmostEqual(self.DUT.mode_criticality, 7.02061e-05)
+    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
-    @attr(all=False, unit=True)
-    def test03b_calculate_criticality_out_of_range_hazard_rate_input(self):
-        """
-        (TestRTKMode) calculate_criticality raises OutOfRangeError for item_hr < 0.0
-        """
-        self.DUT.mode_ratio = 1.0
-        self.DUT.mode_op_time = 1.0
-        self.DUT.effect_probability = 1.0
+    assert _error_code == 40
+    assert _msg == ("RTK ERROR: Missing attribute 'remarks' in attribute "
+                    "dictionary passed to RTKMode.set_attributes().")
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_criticality,
-                          -0.000015)
 
-    @attr(all=False, unit=True)
-    def test03c_calculate_criticality_out_of_range_ratio_input(self):
-        """
-        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0.0 > ratio > 1.0
-        """
-        self.DUT.mode_ratio = -0.1
-        self.DUT.mode_op_time = 1.0
-        self.DUT.effect_probability = 1.0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_criticality, 1.1)
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_calculate_criticality(test_dao):
+    """ calculate_criticality() should return False on success. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
 
-    @attr(all=False, unit=True)
-    def test03d_calculate_criticality_out_of_range_op_time_input(self):
-        """
-        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0.0 > operating time
-        """
-        self.DUT.mode_ratio = 0.5
-        self.DUT.mode_op_time = -1.2
-        self.DUT.effect_probability = 1.0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_criticality, 1)
+    DUT.mode_ratio = 0.5
+    DUT.mode_op_time = 5.8
+    DUT.effect_probability = 0.43
 
-    @attr(all=False, unit=True)
-    def test03e_calculate_criticality_out_of_range_eff_prob_input(self):
-        """
-        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0.0 <= effect probability =< 1.0
-        """
-        self.DUT.mode_ratio = 11.0
-        self.DUT.mode_op_time = 1.0
-        self.DUT.effect_probability = 2.3
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_criticality, 1)
+    _error_code, _msg = DUT.calculate_criticality(0.0000563)
 
-    @attr(all=False, unit=True)
-    def test03f_calculate_criticality_out_of_range_mode_hazard_rate(self):
-        """
-        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0 > mode hazard rate
-        """
-        self.DUT.mode_ratio = -0.5
-        self.DUT.mode_op_time = 1.0
-        self.DUT.effect_probability = 1.0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_criticality, 1)
+    assert _error_code == 0
+    assert _msg == ("RTK SUCCESS: Calculating failure mode 1 criticality.")
 
-    @attr(all=False, unit=True)
-    def test03g_calculate_criticality_out_of_range_mode_criticaility(self):
-        """
-        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0 > mode criticality
-        """
-        self.DUT.mode_ratio = -0.5
-        self.DUT.mode_op_time = 1.0
-        self.DUT.effect_probability = 1.0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_criticality, 1)
+    pytest.approx(DUT.mode_hazard_rate, 2.815e-05)
+    pytest.approx(DUT.mode_criticality, 7.02061e-05)
+
+
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_calculate_criticality_out_of_range_hazard_rate_input(test_dao):
+    """ calculate_criticality() raises OutOfRangeError for item_hr < 0.0. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
+
+    DUT.mode_ratio = 1.0
+    DUT.mode_op_time = 1.0
+    DUT.effect_probability = 1.0
+
+    pytest.raises(OutOfRangeError, DUT.calculate_criticality, -0.000015)
+
+
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_calculate_criticality_out_of_range_ratio_input(test_dao):
+    """ calculate_criticality() raises OutOfRangeError for 0.0 > ratio > 1.0. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
+
+    DUT.mode_ratio = -0.1
+    DUT.mode_op_time = 1.0
+    DUT.effect_probability = 1.0
+
+    pytest.raises(OutOfRangeError, DUT.calculate_criticality, 1.1)
+
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_calculate_criticality_out_of_range_op_time_input(test_dao):
+    """ calculate_criticality() raises OutOfRangeError for 0.0 > operating time. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
+
+    DUT.mode_ratio = 0.5
+    DUT.mode_op_time = -1.2
+    DUT.effect_probability = 1.0
+
+    pytest.raises(OutOfRangeError, DUT.calculate_criticality, 1)
+
+
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_calculate_criticality_out_of_range_eff_prob_input(test_dao):
+    """ calculate_criticality() raises OutOfRangeError for 0.0 <= effect probability =< 1.0. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
+
+    DUT.mode_ratio = 11.0
+    DUT.mode_op_time = 1.0
+    DUT.effect_probability = 2.3
+
+    pytest.raises(OutOfRangeError, DUT.calculate_criticality, 1)
+
+
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_calculate_criticality_out_of_range_mode_hazard_rate(test_dao):
+    """ calculate_criticality() raises OutOfRangeError for 0 > mode hazard rate. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
+
+    DUT.mode_ratio = -0.5
+    DUT.mode_op_time = 1.0
+    DUT.effect_probability = 1.0
+
+    pytest.raises(OutOfRangeError, DUT.calculate_criticality, 1)
+
+
+@pytest.mark.integration
+@pytest.mark.database
+@pytest.mark.hardware
+@pytest.mark.fmea
+def test_calculate_criticality_out_of_range_mode_criticality(test_dao):
+    """ calculate_criticality() raises OutOfRangeError for 0 > mode criticality. """
+    _session = test_dao.RTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKMode).first()
+
+    DUT.mode_ratio = -0.5
+    DUT.mode_op_time = 1.0
+    DUT.effect_probability = 1.0
+
+    pytest.raises(OutOfRangeError, DUT.calculate_criticality, 1)

@@ -26,11 +26,6 @@ class RTKAction(RTK_BASE):
     __tablename__ = 'rtk_action'
     __table_args__ = {'extend_existing': True}
 
-    mode_id = Column(
-        'fld_mode_id',
-        Integer,
-        ForeignKey('rtk_mode.fld_mode_id'),
-        nullable=False)
     cause_id = Column(
         'fld_cause_id',
         Integer,
@@ -62,9 +57,6 @@ class RTKAction(RTK_BASE):
         default=date.today() + timedelta(days=30))
 
     # Define the relationships to other tables in the RTK Program database.
-    # The first relationship is for functional FMEAs and the second is for
-    # hardware FMEAs.
-    mode = relationship('RTKMode', back_populates='action')
     cause = relationship('RTKCause', back_populates='action')
 
     is_mode = False
@@ -77,7 +69,7 @@ class RTKAction(RTK_BASE):
         """
         Retrieve the current values of the RTKAction data model attributes.
 
-        :return: {mode_id, cause_id, action_id, action_recommended,
+        :return: {cause_id, action_id, action_recommended,
                   action_category, action_owner, action_due_date,
                   action_status, action_taken, action_approved,
                   action_approved_date, action_closed,
@@ -85,7 +77,6 @@ class RTKAction(RTK_BASE):
         :rtype: dict
         """
         _attributes = {
-            'mode_id': self.mode_id,
             'cause_id': self.cause_id,
             'action_id': self.action_id,
             'action_recommended': self.action_recommended,

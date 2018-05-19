@@ -211,6 +211,8 @@ class DAO(object):
 
         self._db_table_create(RTKFunction.__table__)
         self._db_table_create(RTKMode.__table__)
+        self._db_table_create(RTKMechanism.__table__)
+        self._db_table_create(RTKCause.__table__)
         self._db_table_create(RTKControl.__table__)
         self._db_table_create(RTKAction.__table__)
         _dic_rows = {}
@@ -228,16 +230,22 @@ class DAO(object):
             self.db_add([
                 _mode,
             ], self.session)
+            _cause = RTKCause()
+            _cause.mode_id = _mode.mode_id
+            _cause.mechanism_id = -1
+            _cause.description = ("Test Functional FMEA Cause "
+                                  "#{0:d} for Mode ID {1:d}").format(i, _mode.mode_id)
+            self.db_add([
+                _cause,
+            ], self.session)
             _control = RTKControl()
-            _control.mode_id = _mode.mode_id
-            _control.cause_id = -1
+            _control.cause_id = _cause.cause_id
             _control.description = (
-                "Test Functional FMEA Control #{0:d}").format(i)
+                "Test Functional FMEA Control #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
             _action = RTKAction()
-            _action.mode_id = _mode.mode_id
-            _action.cause_id = -1
+            _action.cause_id = _cause.cause_id
             _action.action_recommended = ("Test Functional FMEA Recommended "
-                                          "Action #{0:d}").format(i)
+                                          "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
             self.db_add([_control, _action], self.session)
             _dic_rows[i] = _function.function_id
 
@@ -277,8 +285,6 @@ class DAO(object):
         self._db_table_create(RTKAllocation.__table__)
         self._db_table_create(RTKSimilarItem.__table__)
         self._db_table_create(RTKHazardAnalysis.__table__)
-        self._db_table_create(RTKMechanism.__table__)
-        self._db_table_create(RTKCause.__table__)
         self._db_table_create(RTKOpLoad.__table__)
         self._db_table_create(RTKOpStress.__table__)
         self._db_table_create(RTKTestMethod.__table__)
@@ -315,20 +321,19 @@ class DAO(object):
         # Build a Hardware FMEA for the system.
         _mechanism = RTKMechanism()
         _mechanism.mode_id = _mode.mode_id
-        _mechanism.description = 'Test Failure Mechanism #1'
+        _mechanism.description = 'Test Failure Mechanism #1 for Mode ID {0:d}'.format(_mode.mode_id)
         self.db_add([_mechanism], self.session)
         _cause = RTKCause()
+        _cause.mode_id = _mode.mode_id
         _cause.mechanism_id = _mechanism.mechanism_id
-        _cause.description = 'Test Failure Cause #1'
+        _cause.description = 'Test Failure Cause #1 for Mechanism ID {0:d}'.format(_mechanism.mechanism_id)
         self.db_add([_cause], self.session)
         _control = RTKControl()
-        _control.mode_id = -1
         _control.cause_id = _cause.cause_id
-        _control.description = 'Test FMEA Control #1'
+        _control.description = 'Test FMEA Control #1 for Cause ID {0:d}'.format(_cause.cause_id)
         _action = RTKAction()
-        _action.mode_id = -1
         _action.cause_id = _cause.cause_id
-        _action.action_recommended = 'Test FMEA Recommended Action #1'
+        _action.action_recommended = 'Test FMEA Recommended Action #1 for Cause ID {0:d}'.format(_cause.cause_id)
 
         # Build the PoF for the system.
         _opload = RTKOpLoad()

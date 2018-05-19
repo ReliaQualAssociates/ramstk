@@ -33,10 +33,10 @@ def test_create_data_model(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test_select_all_functional(test_dao):
-    """ select_all() should return a Tree() object populated with RTKControl instances on success. """
+def test_do_select_all(test_dao):
+    """ do_select_all() should return a Tree() object populated with RTKControl instances on success. """
     DUT = dtmControl(test_dao)
-    _tree = DUT.select_all(1, functional=True)
+    _tree = DUT.do_select_all(parent_id=1)
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(1).data, RTKControl)
@@ -45,26 +45,14 @@ def test_select_all_functional(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test_select_all_hardware(test_dao):
-    """ select_all() should return a Tree() object populated with RTKControl instances on success. """
-    DUT = dtmControl(test_dao)
-    _tree = DUT.select_all(1, functional=False)
-
-    assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(4).data, RTKControl)
-
-
-@pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select(test_dao):
     """ select() should return an instance of the RTKControl data model on success. """
     DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=False)
-    _control = DUT.select(4)
+    DUT.do_select_all(parent_id=1)
+    _control = DUT.select(1)
 
     assert isinstance(_control, RTKControl)
-    assert _control.control_id == 4
+    assert _control.control_id == 1
 
 
 @pytest.mark.integration
@@ -73,7 +61,7 @@ def test_select(test_dao):
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Control ID is requested. """
     DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1)
     _control = DUT.select(100)
 
     assert _control is None
@@ -82,27 +70,12 @@ def test_select_non_existent_id(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test_insert_functional_control(test_dao):
-    """ insert() should return False on success when inserting a Control into a functional FMEA. """
-    DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=True)
-
-    _error_code, _msg = DUT.insert(mode_id=1, cause_id=-1)
-
-    assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
-                    "database.")
-
-
-@pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-def test_insert_hardware_control(test_dao):
+def test_insert_control(test_dao):
     """ insert() should return False on success when inserting a Control into a hardware FMEA. """
     DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1)
 
-    _error_code, _msg = DUT.insert(mode_id=-1, cause_id=1)
+    _error_code, _msg = DUT.do_insert(mode_id=-1, cause_id=1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
@@ -115,7 +88,7 @@ def test_insert_hardware_control(test_dao):
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.delete(DUT.last_id)
 
@@ -130,7 +103,7 @@ def test_delete(test_dao):
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Control ID that doesn't exist. """
     DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.delete(300)
 
@@ -145,12 +118,12 @@ def test_delete_non_existent_id(test_dao):
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1)
 
-    _control = DUT.select(4)
-    _control.description = 'Functional FMEA control.'
+    _control = DUT.select(1)
+    _control.description = 'Test Functional FMEA Control #1 for Cause ID 1'
 
-    _error_code, _msg = DUT.update(4)
+    _error_code, _msg = DUT.update(1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
@@ -162,7 +135,7 @@ def test_update(test_dao):
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Control ID that doesn't exist. """
     DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.update(100)
 
@@ -177,7 +150,7 @@ def test_update_non_existent_id(test_dao):
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmControl(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.update_all()
 

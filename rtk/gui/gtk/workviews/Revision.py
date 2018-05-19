@@ -14,6 +14,7 @@ from pubsub import pub
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from .WorkView import RTKWorkView
+
 # from Assistants import AddRevision
 
 
@@ -405,6 +406,7 @@ class AssessmentResults(RTKWorkView):
 
         _title = _(u"RTK Work Book: Revision "
                    u"(Analyzing {0:s})").format(_revision.name)
-        RTKWorkView._on_select(self, self._revision_id, title=_title)
+        RTKWorkView.on_select(
+            self, title=_title, error_code=0, user_msg='', debug_msg='')
 
         return _return

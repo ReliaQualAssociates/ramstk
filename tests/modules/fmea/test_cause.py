@@ -33,35 +33,36 @@ def test_cause_create(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test01a_select_all(test_dao):
-    """ select_all() should return a Tree() object populated with RTKCause instances on success. """
+def test_do_select_all(test_dao):
+    """ do_select_all() should return a Tree() object populated with RTKCause instances on success. """
     DUT = dtmCause(test_dao)
-    _tree = DUT.select_all(1)
+    _tree = DUT.do_select_all(parent_id=1, functional=False)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RTKCause)
+    assert isinstance(_tree.get_node(4).data, RTKCause)
 
 
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test02a_select(test_dao):
+def test_select(test_dao):
     """ select() should return an instance of the RTKCause data model on success. """
     DUT = dtmCause(test_dao)
-    DUT.select_all(1)
-    _cause = DUT.select(1)
+    DUT.do_select_all(parent_id=1, functional=False)
+    _cause = DUT.select(4)
 
     assert isinstance(_cause, RTKCause)
-    assert _cause.cause_id == 1
-    assert _cause.description == 'Test Failure Cause #1'
+    assert _cause.cause_id == 4
+    assert _cause.description == 'Test Failure Cause #1 for Mechanism ID 1'
 
 
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test02b_select_non_existent_id(test_dao):
+def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Cause ID is requested. """
     DUT = dtmCause(test_dao)
+    DUT.do_select_all(parent_id=1, functional=False)
     _cause = DUT.select(100)
 
     assert _cause is None
@@ -70,12 +71,12 @@ def test02b_select_non_existent_id(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test03a_insert(test_dao):
+def test_insert(test_dao):
     """ insert() should return a zero error code on success when inserting a hardware failure Cause. """
     DUT = dtmCause(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1, functional=False)
 
-    _error_code, _msg = DUT.insert(mechanism_id=1)
+    _error_code, _msg = DUT.do_insert(mode_id=-1, mechanism_id=1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
@@ -85,10 +86,10 @@ def test03a_insert(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test04a_delete(test_dao):
+def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmCause(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.delete(DUT.last_id)
 
@@ -100,10 +101,10 @@ def test04a_delete(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test04b_delete_non_existent_id(test_dao):
+def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Cause ID that doesn't exist. """
     DUT = dtmCause(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.delete(300)
 
@@ -115,15 +116,15 @@ def test04b_delete_non_existent_id(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test_05a_update(test_dao):
+def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmCause(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1, functional=False)
 
-    _cause = DUT.tree.get_node(1).data
-    _cause.description = 'Test Failure Cause #1'
+    _cause = DUT.tree.get_node(4).data
+    _cause.description = 'Test Failure Cause #1 for Mechanism ID 1'
 
-    _error_code, _msg = DUT.update(1)
+    _error_code, _msg = DUT.update(4)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
@@ -132,10 +133,10 @@ def test_05a_update(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test_05b_update_non_existent_id(test_dao):
+def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Cause ID that doesn't exist. """
     DUT = dtmCause(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.update(100)
 
@@ -146,10 +147,10 @@ def test_05b_update_non_existent_id(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test06a_update_all(test_dao):
+def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmCause(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.update_all()
 

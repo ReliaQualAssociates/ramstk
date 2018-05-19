@@ -24,11 +24,6 @@ class RTKControl(RTK_BASE):
     __tablename__ = 'rtk_control'
     __table_args__ = {'extend_existing': True}
 
-    mode_id = Column(
-        'fld_mode_id',
-        Integer,
-        ForeignKey('rtk_mode.fld_mode_id'),
-        nullable=False)
     cause_id = Column(
         'fld_cause_id',
         Integer,
@@ -45,7 +40,6 @@ class RTKControl(RTK_BASE):
     type_id = Column('fld_type_id', String(512), default='')
 
     # Define the relationships to other tables in the RTK Program database.
-    mode = relationship('RTKMode', back_populates='control')
     cause = relationship('RTKCause', back_populates='control')
 
     is_mode = False
@@ -58,11 +52,10 @@ class RTKControl(RTK_BASE):
         """
         Retrieve the current values of the RTKControl data model attributes.
 
-        :return: {mode_id, cause_id, control_id, description, type_id} pairs.
+        :return: {cause_id, control_id, description, type_id} pairs.
         :rtype: dict
         """
         _attributes = {
-            'mode_id': self.mode_id,
             'cause_id': self.cause_id,
             'control_id': self.control_id,
             'description': self.description,

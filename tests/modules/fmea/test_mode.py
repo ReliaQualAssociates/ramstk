@@ -32,10 +32,10 @@ def test_create(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test_select_all_functional(test_dao):
-    """ select_all() should return a Tree() object populated with RTKMode instances on success. """
+def test_do_select_all_functional(test_dao):
+    """ do_select_all() should return a Tree() object populated with RTKMode instances on success. """
     DUT = dtmMode(test_dao)
-    _tree = DUT.select_all(1, functional=True)
+    _tree = DUT.do_select_all(parent_id=1, functional=True)
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(1).data, RTKMode)
@@ -44,10 +44,10 @@ def test_select_all_functional(test_dao):
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.fmea
-def test_select_all_hardware(test_dao):
-    """ select_all() should return a Tree() object populated with RTKMode instances on success. """
+def test_do_select_all_hardware(test_dao):
+    """ do_select_all() should return a Tree() object populated with RTKMode instances on success. """
     DUT = dtmMode(test_dao)
-    _tree = DUT.select_all(1, functional=False)
+    _tree = DUT.do_select_all(parent_id=1, functional=False)
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(4).data, RTKMode)
@@ -59,7 +59,7 @@ def test_select_all_hardware(test_dao):
 def test_select(test_dao):
     """ select() should return an instance of the RTKMode data model on success. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1, functional=False)
     _mode = DUT.select(4)
 
     assert isinstance(_mode, RTKMode)
@@ -73,7 +73,7 @@ def test_select(test_dao):
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Mode ID is requested. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1, functional=False)
     _mode = DUT.select(100)
 
     assert _mode is None
@@ -85,9 +85,9 @@ def test_select_non_existent_id(test_dao):
 def test_insert_functional_mode(test_dao):
     """ insert() should return a zero error code on success when inserting a functional failure Mode. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=True)
+    DUT.do_select_all(parent_id=1, functional=True)
 
-    _error_code, _msg = DUT.insert(function_id=1, hardware_id=-1)
+    _error_code, _msg = DUT.do_insert(function_id=1, hardware_id=-1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
@@ -100,9 +100,9 @@ def test_insert_functional_mode(test_dao):
 def test_insert_hardware_mode(test_dao):
     """ insert() should return a zero error code on success when inserting a hardware failure Mode. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1, functional=False)
 
-    _error_code, _msg = DUT.insert(function_id=-1, hardware_id=1)
+    _error_code, _msg = DUT.do_insert(function_id=-1, hardware_id=1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
@@ -115,8 +115,8 @@ def test_insert_hardware_mode(test_dao):
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=False)
-    DUT.insert(function_id=-1, hardware_id=1)
+    DUT.do_select_all(parent_id=1, functional=False)
+    DUT.do_insert(function_id=-1, hardware_id=1)
 
     _error_code, _msg = DUT.delete(DUT.last_id)
 
@@ -131,7 +131,7 @@ def test_delete(test_dao):
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Mode ID that doesn't exist. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.delete(300)
 
@@ -146,7 +146,7 @@ def test_delete_non_existent_id(test_dao):
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1, functional=False)
 
     _mode = DUT.select(4)
     _mode.isolation_method = 'Method to isolate the failure.'
@@ -163,7 +163,7 @@ def test_update(test_dao):
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Mode ID that doesn't exist. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.update(100)
 
@@ -177,7 +177,7 @@ def test_update_non_existent_id(test_dao):
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmMode(test_dao)
-    DUT.select_all(1, functional=False)
+    DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.update_all()
 

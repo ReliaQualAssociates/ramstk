@@ -26,6 +26,7 @@ ATTRIBUTES = {
         'rpn_detection_new': 0,
         'rpn_detection': 0,
         'mechanism_id': 1,
+        'mode_id': 1,
         'rpn': 0
     }
 
@@ -44,6 +45,7 @@ def test_rtkcause_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_cause'
+    assert DUT.mode_id == 4
     assert DUT.cause_id == 1
     assert DUT.description == 'Test Failure Cause #1'
     assert DUT.rpn == 0
@@ -67,6 +69,7 @@ def test_get_attributes(test_dao):
     _attributes = DUT.get_attributes()
 
     assert isinstance(_attributes, dict)
+    assert _attributes['mode_id'] == 4
     assert _attributes['mechanism_id'] == 1
     assert _attributes['cause_id'] == 1
     assert _attributes['description'] == 'Test Failure Cause #1'

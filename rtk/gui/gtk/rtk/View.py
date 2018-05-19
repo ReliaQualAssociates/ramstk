@@ -101,10 +101,10 @@ class RTKBaseView(object):
             self.treeview = None
         else:
             try:
-                _bg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module
-                                                                    + 'bg']
-                _fg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module
-                                                                    + 'fg']
+                _bg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module +
+                                                                    'bg']
+                _fg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module +
+                                                                    'fg']
                 _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
                     '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE[module]
                 _fmt_path = "/root/tree[@name='" + module.title() + "']/column"

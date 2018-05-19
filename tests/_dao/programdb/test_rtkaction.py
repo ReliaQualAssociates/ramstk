@@ -17,7 +17,6 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'mode_id': 1,
     'action_due_date': date.today() + timedelta(days=30),
     'action_approve_date': date.today() + timedelta(days=30),
     'action_status': '',
@@ -49,7 +48,6 @@ def test_rtkaction_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_action'
-    assert DUT.mode_id == 1
     assert DUT.cause_id == -1
     assert DUT.action_id == 1
     assert DUT.action_recommended == (

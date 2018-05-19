@@ -6,8 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Controller."""
 
-from pubsub import pub
-
 # Import other RTK modules.
 from rtk.Utilities import OutOfRangeError
 from rtk.datamodels import RTKDataController
@@ -52,7 +50,7 @@ class FMEADataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_select_all(self, parent_id, **kwargs):
+    def request_do_select_all(self, parent_id, **kwargs):
         """
         Load the entire FMEA for a Function or Hardware item.
 
@@ -64,24 +62,28 @@ class FMEADataController(RTKDataController):
         """
         _functional = kwargs['functional']
 
-        return self._dtm_data_model.select_all(
-            parent_id, functional=_functional)
+        return self._dtm_data_model.do_select_all(
+            parent_id=parent_id, functional=_functional)
 
-    def request_insert(self, entity_id, parent_id, level):
+    def request_do_insert(self, **kwargs):
         """
         Request to add a FMEA table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(
-            entity_id=entity_id, parent_id=parent_id, level=level)
+        _entity_id = kwargs['entity_id']
+        _parent_id = kwargs['parent_id']
+        _level = kwargs['level']
+
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            entity_id=_entity_id, parent_id=_parent_id, level=_level)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
         else:
             _msg = _msg + '  Failed to add a new {0:s} to the RTK ' \
-                'Program database.'.format(level)
+                'Program database.'.format(_level)
             self._configuration.RTK_DEBUG_LOG.error(_msg)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
@@ -101,7 +103,7 @@ class FMEADataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_update_all(self):
+    def request_update_all(self, **kwargs):  # pylint: disable=W0613
         """
         Request all (D)FME(C)A entities be saved to the RTK Program database.
 
