@@ -6,7 +6,7 @@ Failure Definition Package
 Failure Definition Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.failure_definition.Model
+.. automodule:: rtk.modules.failure_definition.Model
     :members:
     :undoc-members:
     :private-members:
@@ -15,7 +15,7 @@ Failure Definition Data Model
 Failure Definition Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.failure_definition.Controller
+.. automodule:: rtk.modules.failure_definition.Controller
     :members:
     :undoc-members:
     :private-members:

@@ -6,7 +6,7 @@ Revision Package
 Revision Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.revision.Model
+.. automodule:: rtk.modules.revision.Model
     :members:
     :private-members:
     :undoc-members:
@@ -15,7 +15,7 @@ Revision Data Model
 Revision Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.revision.Controller
+.. automodule:: rtk.modules.revision.Controller
     :members:
     :private-members:
     :undoc-members:

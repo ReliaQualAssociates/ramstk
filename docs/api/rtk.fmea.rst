@@ -6,7 +6,7 @@ FMEA Package
 FMEA Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.analyses.fmea.Model
+.. automodule:: rtk.modules.fmea.Model
     :members:
     :private-members:
     :undoc-members:
@@ -15,7 +15,7 @@ FMEA Data Models
 FMEA Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.analyses.fmea.Controller
+.. automodule:: rtk.modules.fmea.Controller
     :members:
     :private-members:
     :undoc-members:

@@ -6,7 +6,7 @@ Usage Profile Package
 Usage Profile Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.usage.Model
+.. automodule:: rtk.modules.usage.Model
     :members:
     :undoc-members:
     :private-members:
@@ -15,7 +15,7 @@ Usage Profile Data Models
 Usage Profile Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.usage.Controller
+.. automodule:: rtk.modules.usage.Controller
     :members:
     :undoc-members:
     :private-members:

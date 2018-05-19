@@ -6,7 +6,7 @@ Function Package
 Function Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.function.Model
+.. automodule:: rtk.modules.function.Model
     :members:
     :private-members:
     :undoc-members:
@@ -15,7 +15,7 @@ Function Data Model
 Function Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.function.Controller
+.. automodule:: rtk.modules.function.Controller
     :members:
     :private-members:
     :undoc-members:

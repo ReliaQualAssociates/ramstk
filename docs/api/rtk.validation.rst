@@ -6,7 +6,7 @@ Validation Package
 Validation Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.validation.Model
+.. automodule:: rtk.modules.validation.Model
     :members:
     :private-members:
     :undoc-members:
@@ -15,7 +15,7 @@ Validation Data Model
 Validation Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.validation.Controller
+.. automodule:: rtk.modules.validation.Controller
     :members:
     :private-members:
     :undoc-members:

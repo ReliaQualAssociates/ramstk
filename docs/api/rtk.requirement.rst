@@ -6,7 +6,7 @@ Requirement Package
 Requirement Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.requirement.Model
+.. automodule:: rtk.modules.requirement.Model
     :members:
     :private-members:
     :undoc-members:
@@ -15,7 +15,7 @@ Requirement Data Model
 Requirement Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.requirement.Controller
+.. automodule:: rtk.modules.requirement.Controller
     :members:
     :private-members:
     :undoc-members:
