@@ -12,7 +12,7 @@ TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
 
 @pytest.fixture(scope='session')
 def test_common_dao():
-    """Create a test DAO object for testing against an RTK Common DB."""
+    """ Create a test DAO object for testing against an RTK Common DB. """
     # Create and populate an RTK Program test database.
     dao = DAO()
     dao.db_connect(TEST_COMMON_DB_URI)
@@ -23,7 +23,7 @@ def test_common_dao():
 
 @pytest.fixture(scope='session')
 def test_dao():
-    """Create a test DAO object for testing against an RTK Program DB."""
+    """ Create a test DAO object for testing against an RTK Program DB. """
     # Create and populate an RTK Program test database.
     dao = DAO()
     dao.db_connect(TEST_DATABASE_URI)
@@ -34,7 +34,7 @@ def test_dao():
 
 @pytest.fixture(scope='session')
 def test_configuration():
-    """Create loggers to use for testing."""
+    """ Create loggers to use for testing. """
     configuration = Configuration()
 
     configuration.RTK_DEBUG_LOG = \

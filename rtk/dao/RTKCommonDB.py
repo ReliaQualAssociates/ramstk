@@ -116,12 +116,6 @@ RTK_CATEGORIES = {
     42: ('VANDV', 'Verification & Validation', 'action', 1)
 }
 
-RTK_ENVIRONS = {
-    17: ('ORG', 'Organic', 'development', 1.0, 0.76),
-    18: ('SD', 'Semi-Detached', 'development', 1.0, 1.0),
-    19: ('EMB', 'Embedded', 'development', 1.0, 1.3)
-}
-
 RTK_GROUPS = {
     0: ('Engineering, Design', 'workgroup'),
     1: ('Engineering, Logistics Support', 'workgroup'),
@@ -132,17 +126,6 @@ RTK_GROUPS = {
     6: ('Reliability', 'affinity'),
     7: ('Durability', 'affinity'),
     8: ('Cost', 'affinity')
-}
-
-RTK_LEVELS = {
-    0: ('Software System', 'software', 0),
-    1: ('Software Module', 'software', 0),
-    2: ('Software Unit', 'software', 0),
-    3: ('Level A - Frequent', 'probability', 5),
-    4: ('Level B - Reasonably Probable', 'probability', 4),
-    5: ('Level C - Occasional', 'probability', 3),
-    6: ('Level D - Remote', 'probability', 2),
-    7: ('Level E - Extremely Unlikely', 'probability', 1)
 }
 
 RTK_METHODS = {
@@ -168,22 +151,6 @@ RTK_MODELS = {
     2: ('AGREE Apportionment', 'allocation'),
     3: ('Feasibility of Objectives', 'allocation'),
     4: ('Repairable Systems Apportionment', 'allocation')
-}
-
-RTK_PHASES = {
-    0: ('Concept/Planning (PCP)', 'development'),
-    1: ('Requirements Analysis (SRA)', 'development'),
-    2: ('Preliminary Design Review (PDR)', 'development'),
-    3: ('Critical Design Review (CDR)', 'development'),
-    4: ('Test Readiness Review (TRR)', 'development'),
-    5: ('Released', 'development'),
-    6: ('Design', 'lifecycle'),
-    7: ('Reliability Growth', 'lifecycle'),
-    8: ('Reliability Qualification', 'lifecycle'),
-    9: ('Production', 'lifecycle'),
-    10: ('Storage', 'lifecycle'),
-    11: ('Operation', 'lifecycle'),
-    12: ('Disposal', 'lifecycle')
 }
 
 RTK_RPNS = {
@@ -387,47 +354,6 @@ RTK_TYPES = {
     45: ('THA', 'System Engineering, Thermal Analysis', 'validation'),
     46: ('TOL', 'System Engineering, Tolerance Analysis', 'validation'),
     47: ('WCA', 'System Engineering, Worst Case Analysis', 'validation')
-}
-
-RTK_APPLICATIONS = {
-    0: ('Airborne', 0.0128, 6.28),
-    1: ('Strategic', 0.0092, 1.2),
-    2: ('Tactical', 0.0078, 13.8),
-    3: ('Process Control', 0.0018, 3.8),
-    4: ('Production Center', 0.0085, 23.0),
-    5: ('Developmental', 0.0123, 132.6)
-}
-
-RTK_CRITICALITIES = {
-    0: ('Catastrophic', 'Could result in death, permanent total disability, '
-        'loss exceeding $1M, or irreversible severe '
-        'environmental damage that violates law or '
-        'regulation.', 'I', 4),
-    1: ('Critical', 'Could result in permanent partial disability, '
-        'injuries or occupational illness that may result in '
-        'hospitalization of at least three personnel, loss '
-        'exceeding $200K but less than $1M, or reversible '
-        'environmental damage causing a violation of law or '
-        'regulation.', 'II', 3),
-    2: ('Marginal', 'Could result in injury or occupational illness '
-        'resulting in one or more lost work days(s), loss '
-        'exceeding $10K but less than $200K, or mitigatible '
-        'environmental damage without violation of law or '
-        'regulation where restoration activities can be '
-        'accomplished.', 'III', 2),
-    3: ('Negligble', 'Could result in injury or illness not resulting in a '
-        'lost work day, loss exceeding $2K but less than '
-        '$10K, or minimal environmental damage not violating '
-        'law or regulation.', 'IV', 1)
-}
-
-RTK_DISTRIBUTIONS = {
-    0: ('Constant Probability', 'statistical'),
-    1: ('Exponential', 'statistical'),
-    2: ('Gaussian', 'statistical'),
-    3: ('LogNormal', 'statistical'),
-    4: ('Uniform', 'statistical'),
-    5: ('Weibull', 'statistical')
 }
 
 RTK_HAZARDS = {
@@ -739,10 +665,10 @@ RTK_HISTORIES = {
 
 def create_common_db(**kwargs):
     """Create and populate the RTK Common database."""
-    from rtk.dao import (RTKSiteInfo, RTKUser, RTKGroup, RTKEnviron, RTKModel,
-                         RTKType, RTKCategory, RTKSubCategory, RTKPhase,
-                         RTKDistribution, RTKManufacturer, RTKUnit, RTKMethod,
-                         RTKCriticality, RTKRPN, RTKLevel, RTKApplication,
+    from rtk.dao import (RTKSiteInfo, RTKUser, RTKGroup, RTKModel,
+                         RTKType, RTKCategory, RTKSubCategory,
+                         RTKManufacturer, RTKUnit, RTKMethod,
+                         RTKRPN,
                          RTKHazards, RTKStakeholders, RTKStatus, RTKCondition,
                          RTKFailureMode, RTKMeasurement, RTKLoadHistory)
 
@@ -759,20 +685,14 @@ def create_common_db(**kwargs):
     RTKSiteInfo.__table__.create(bind=engine)
     RTKUser.__table__.create(bind=engine)
     RTKGroup.__table__.create(bind=engine)
-    RTKEnviron.__table__.create(bind=engine)
     RTKModel.__table__.create(bind=engine)
     RTKType.__table__.create(bind=engine)
     RTKCategory.__table__.create(bind=engine)
     RTKSubCategory.__table__.create(bind=engine)
-    RTKPhase.__table__.create(bind=engine)
-    RTKDistribution.__table__.create(bind=engine)
     RTKManufacturer.__table__.create(bind=engine)
     RTKUnit.__table__.create(bind=engine)
     RTKMethod.__table__.create(bind=engine)
-    RTKCriticality.__table__.create(bind=engine)
     RTKRPN.__table__.create(bind=engine)
-    RTKLevel.__table__.create(bind=engine)
-    RTKApplication.__table__.create(bind=engine)
     RTKHazards.__table__.create(bind=engine)
     RTKStakeholders.__table__.create(bind=engine)
     RTKStatus.__table__.create(bind=engine)
@@ -809,15 +729,6 @@ def create_common_db(**kwargs):
         _record.group_type = _value[1]
         session.add(_record)
 
-    for __, _value in RTK_ENVIRONS.items():
-        _record = RTKEnviron()
-        _record.code = _value[0]
-        _record.description = _value[1]
-        _record.environ_type = _value[2]
-        _record.pi_e = _value[3]
-        _record.do = _value[4]
-        session.add(_record)
-
     for __, _value in RTK_MODELS.items():
         _record = RTKModel()
         _record.description = _value[0]
@@ -828,12 +739,6 @@ def create_common_db(**kwargs):
         _record = RTKType()
         _record.description = _value[0]
         _record.model_type = _value[1]
-        session.add(_record)
-
-    for __, _value in RTK_PHASES.items():
-        _record = RTKPhase()
-        _record.description = _value[0]
-        _record.phase_type = _value[1]
         session.add(_record)
 
     for __, _value in RTK_DISTRIBUTIONS.items():
@@ -856,34 +761,12 @@ def create_common_db(**kwargs):
         _record.method_type = _value[2]
         session.add(_record)
 
-    for __, _value in RTK_CRITICALITIES.items():
-        _record = RTKCriticality()
-        _record.name = _value[0]
-        _record.description = _value[1]
-        _record.category = _value[2]
-        _record.value = _value[3]
-        session.add(_record)
-
     for __, _value in RTK_RPNS.items():
         _record = RTKRPN()
         _record.name = _value[0]
         _record.description = _value[1]
         _record.rpn_type = _value[2]
         _record.value = _value[3]
-        session.add(_record)
-
-    for __, _value in RTK_LEVELS.items():
-        _record = RTKLevel()
-        _record.description = _value[0]
-        _record.level_type = _value[1]
-        _record.value = _value[2]
-        session.add(_record)
-
-    for __, _value in RTK_APPLICATIONS.items():
-        _record = RTKApplication()
-        _record.description = _value[0]
-        _record.fault_density = _value[1]
-        _record.transformation_ratio = _value[2]
         session.add(_record)
 
     for __, _value in RTK_RPNS.items():

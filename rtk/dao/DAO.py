@@ -19,20 +19,14 @@ import rtk.dao.RTKCommonDB
 # Import tables objects for the RTK Common database.
 from .RTKUser import RTKUser
 from .RTKGroup import RTKGroup
-from .RTKEnviron import RTKEnviron
 from .RTKModel import RTKModel
 from .RTKType import RTKType
 from .RTKCategory import RTKCategory
 from .RTKSubCategory import RTKSubCategory
-from .RTKPhase import RTKPhase
-from .RTKDistribution import RTKDistribution
 from .RTKManufacturer import RTKManufacturer
 from .RTKUnit import RTKUnit
 from .RTKMethod import RTKMethod
-from .RTKCriticality import RTKCriticality
 from .RTKRPN import RTKRPN
-from .RTKLevel import RTKLevel
-from .RTKApplication import RTKApplication
 from .RTKHazards import RTKHazards
 from .RTKStakeholders import RTKStakeholders
 from .RTKStatus import RTKStatus
@@ -138,6 +132,19 @@ class DAO(object):
 
         return False
 
+    def db_close(self):
+        """
+        Close the current session.
+
+        :return: False if successful, True if an error occurs.
+        :rtype: bool
+        """
+        self.session.close()
+        self.engine.dispose()
+        self.metadata = None
+
+        return False
+
     def _db_table_create(self, table):
         """
         Check if the passed table exists and create it if not.
@@ -170,6 +177,12 @@ class DAO(object):
 
         self._db_table_create(RTKProgramInfo.__table__)
         self._db_table_create(RTKProgramStatus.__table__)
+        _program_info = RTKProgramInfo()
+        _program_info.revision_prefix = "REV"
+        _program_info.revision_next_id = 0
+        self.db_add([
+            _program_info,
+        ], self.session)
 
         self._db_table_create(RTKRevision.__table__)
         self._db_table_create(RTKFailureDefinition.__table__)
@@ -193,7 +206,8 @@ class DAO(object):
         _mission.mission_id = 1
         _mission.description = "Test Mission"
         self.db_add([
-            _definition, _mission,
+            _definition,
+            _mission,
         ], self.session)
         self.session.commit()
 
@@ -234,18 +248,21 @@ class DAO(object):
             _cause.mode_id = _mode.mode_id
             _cause.mechanism_id = -1
             _cause.description = ("Test Functional FMEA Cause "
-                                  "#{0:d} for Mode ID {1:d}").format(i, _mode.mode_id)
+                                  "#{0:d} for Mode ID {1:d}").format(
+                                      i, _mode.mode_id)
             self.db_add([
                 _cause,
             ], self.session)
             _control = RTKControl()
             _control.cause_id = _cause.cause_id
             _control.description = (
-                "Test Functional FMEA Control #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
+                "Test Functional FMEA Control #{0:d} for Cause ID {1:d}"
+            ).format(i, _cause.cause_id)
             _action = RTKAction()
             _action.cause_id = _cause.cause_id
-            _action.action_recommended = ("Test Functional FMEA Recommended "
-                                          "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
+            _action.action_recommended = (
+                "Test Functional FMEA Recommended "
+                "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
             self.db_add([_control, _action], self.session)
             _dic_rows[i] = _function.function_id
 
@@ -258,9 +275,7 @@ class DAO(object):
         _stakeholder = RTKStakeholder()
         _stakeholder.revision_id = _revision.revision_id
         _stakeholder.description = 'Test Stakeholder Input'
-        self.db_add([
-            _requirement, _stakeholder
-        ], self.session)
+        self.db_add([_requirement, _stakeholder], self.session)
         self.session.commit()
 
         # Create tables for Hardware analyses.
@@ -314,26 +329,30 @@ class DAO(object):
         _mode.hardware_id = _system.hardware_id
         _mode.description = 'System Test Failure Mode'
         self.db_add([
-            _reliability, _mil_hdbk_217, _nswc, _design_electric, _design_mechanic,
-            _allocation, _similaritem, _hazardanalysis, _mode
+            _reliability, _mil_hdbk_217, _nswc, _design_electric,
+            _design_mechanic, _allocation, _similaritem, _hazardanalysis, _mode
         ], self.session)
 
         # Build a Hardware FMEA for the system.
         _mechanism = RTKMechanism()
         _mechanism.mode_id = _mode.mode_id
-        _mechanism.description = 'Test Failure Mechanism #1 for Mode ID {0:d}'.format(_mode.mode_id)
+        _mechanism.description = 'Test Failure Mechanism #1 for Mode ID {0:d}'.format(
+            _mode.mode_id)
         self.db_add([_mechanism], self.session)
         _cause = RTKCause()
         _cause.mode_id = _mode.mode_id
         _cause.mechanism_id = _mechanism.mechanism_id
-        _cause.description = 'Test Failure Cause #1 for Mechanism ID {0:d}'.format(_mechanism.mechanism_id)
+        _cause.description = 'Test Failure Cause #1 for Mechanism ID {0:d}'.format(
+            _mechanism.mechanism_id)
         self.db_add([_cause], self.session)
         _control = RTKControl()
         _control.cause_id = _cause.cause_id
-        _control.description = 'Test FMEA Control #1 for Cause ID {0:d}'.format(_cause.cause_id)
+        _control.description = 'Test FMEA Control #1 for Cause ID {0:d}'.format(
+            _cause.cause_id)
         _action = RTKAction()
         _action.cause_id = _cause.cause_id
-        _action.action_recommended = 'Test FMEA Recommended Action #1 for Cause ID {0:d}'.format(_cause.cause_id)
+        _action.action_recommended = 'Test FMEA Recommended Action #1 for Cause ID {0:d}'.format(
+            _cause.cause_id)
 
         # Build the PoF for the system.
         _opload = RTKOpLoad()

@@ -35,6 +35,11 @@ RTK_ACTIVE_ENVIRONMENTS = [[_(u"Ground, Benign")], [_(u"Ground, Fixed")], [
 RTK_DORMANT_ENVIRONMENTS = [[_(u"Airborne")], [_(u"Ground")], [_(u"Naval")],
                             [_(u"Space")]]
 
+RTK_ALLOCATION_MODELS = [[u'Equal Apportionment'], [u'ARINC Apportionment'], [
+    u'AGREE Apportionment'
+], [u'Feasibility of Objectives'],
+                         [u'Repairable Systems Apportionment', u'allocation']]
+
 RTK_HR_TYPES = [[_(u"Assessed")], [_(u"Defined, Hazard Rate")],
                 [_(u"Defined, MTBF")], [_(u"Defined, Distribution")]]
 RTK_HR_MODELS = [[_(u"MIL-HDBK-217F Parts Count")],
@@ -45,6 +50,71 @@ RTK_HR_DISTRIBUTIONS = [[_(u"1P Exponential")], [_(u"2P Exponential")],
 
 RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
 RTK_COST_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
+RTK_MTTR_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
+
+RTK_CRITICALITY = [[
+    _(u"Catastrophic"),
+    _(u"Could result in death, permanent total disability, loss exceeding "
+      u"$1M, or irreversible severe environmental damage that violates law "
+      u"or regulation."), "I", 4
+], [
+    _(u"Critical"),
+    _(u"Could result in permanent partial disability, injuries or "
+      u"occupational illness that may result in hospitalization of at least "
+      u"three personnel, loss exceeding $200K but less than $1M, or "
+      u"reversible environmental damage causing a violation of law or "
+      u"regulation."), "II", 3
+], [
+    _(u"Marginal"),
+    _(u"Could result in injury or occupational illness resulting in one or "
+      u"more lost work days(s), loss exceeding $10K but less than $200K, or "
+      u"mitigatible environmental damage without violation of law or "
+      u"regulation where restoration activities can be accomplished."), "III",
+    2
+], [
+    _(u"Negligble"),
+    _(u"Could result in injury or illness not resulting in a lost work day, "
+      u"loss exceeding $2K but less than $10K, or minimal environmental "
+      u"damage not violating law or regulation."), "IV", 1
+]]
+RTK_FAILURE_PROBABILITY = [[_(u"Level E - Extremely Unlikely"),
+                            1], [_(u"Level D - Remote"),
+                                 2], [_(u"Level C - Occasional"), 3],
+                           [_(u"Level B - Reasonably Probable"),
+                            4], [_(u"Level A - Frequent"), 5]]
+
+RTK_SW_DEV_ENVIRONMENTS = [[_(u"Organic"), 1.0,
+                            0.76], [_(u"Semi-Detached"), 1.0, 1.0],
+                           [_(u"Embedded"), 1.0, 1.3]]
+RTK_SW_DEV_PHASES = [[_(u"Concept/Planning (PCP)")], [
+    _(u"Requirements Analysis (SRA)")
+], [_(u"Preliminary Design Review (PDR)")],
+                     [_(u"Critical Design Review (CDR)")],
+                     [_(u"Test Readiness Review (TRR)")], [_(u"Released")]]
+RTK_SW_LEVELS = [[_(u"Software System"), 0], [_(u"Software Module"), 0],
+                 [_(u"Software Unit"), 0]]
+RTK_SW_APPLICATION = [[_(u"Airborne"), 0.0128,
+                       6.28], [_(u"Strategic"), 0.0092,
+                               1.2], [_(u"Tactical"), 0.0078, 13.8],
+                      [_(u"Process Control"), 0.0018,
+                       3.8], [_(u"Production Center"), 0.0085,
+                              23.0], [_(u"Developmental"), 0.0123, 132.6]]
+RTK_SW_TEST_METHODS = [[
+    _(u"Code Reviews"),
+    _(u"Code review is a systematic examination (often known as peer review) "
+      u"of computer source code.")
+], [_(u"Error/Anomaly Detection"), _(u"")], [_(u"Structure Analysis"),
+                                             _(u"")],
+                       [_(u"Random Testing"),
+                        _(u"")], [_(u"Functional Testing"),
+                                  _(u"")], [_(u"Branch Testing"),
+                                            _(u"")]]
+
+RTK_LIFECYCLE = [[_(u"Design")], [_(u"Reliability Growth")],
+                 [_(u"Reliability Qualification")], [_(u"Production")],
+                 [_(u"Storage")], [_(u"Operation")], [_(u"Disposal")]]
+RTK_S_DIST = [["Constant Probability"], ["Exponential"], ["Gaussian"],
+              ["LogNormal"], ["Uniform"], ["Weibull"]]
 
 
 class Configuration(object):
@@ -151,8 +221,7 @@ class Configuration(object):
                            +------------+---------------+----------+
                            |  workbook  | List Book     | *bottom* |
                            +------------+---------------+----------+
-    :cvar dict RTK_FAILURE_PROBABILITY: Dictionary for qualitative failure
-                                        probability categories.
+
     :cvar dict RTK_SEVERITY: Dictionary for failure severity categories.
     :cvar dict RTK_HAZARDS: Dictionary for potential hazards.
     :cvar dict RTK_REQUIREMENT_TYPES: Dictionary of requirement types.
@@ -327,44 +396,32 @@ class Configuration(object):
     # The following global dicts are loaded from information in the RTK
     # Common database.
     RTK_ACTION_CATEGORY = {}
-    RTK_INCIDENT_CATEGORY = {}
-    RTK_SEVERITY = {}
-    RTK_SW_DEV_ENVIRONMENTS = {}
-    RTK_AFFINITY_GROUPS = {}
-    RTK_WORKGROUPS = {}
-    RTK_FAILURE_PROBABILITY = {}
-    RTK_SW_LEVELS = {}
-    RTK_DETECTION_METHODS = {}
-    RTK_SW_TEST_METHODS = {}
-    RTK_ALLOCATION_MODELS = {}
-    RTK_DAMAGE_MODELS = {}
-    RTK_LIFECYCLE = {}
-    RTK_SW_DEV_PHASES = {}
-    RTK_RPN_DETECTION = {}
-    RTK_RPN_SEVERITY = {}
-    RTK_RPN_OCCURRENCE = {}
     RTK_ACTION_STATUS = {}
-    RTK_INCIDENT_STATUS = {}
-    RTK_HR_TYPE = {}
-    RTK_INCIDENT_TYPE = {}
-    RTK_MTTR_TYPE = {}
-    RTK_REQUIREMENT_TYPE = {}
-    RTK_VALIDATION_TYPE = {}
-    RTK_SW_APPLICATION = {}
+    RTK_AFFINITY_GROUPS = {}
     RTK_CATEGORIES = {}
-    RTK_CRITICALITY = {}
+    RTK_DAMAGE_MODELS = {}
+    RTK_DETECTION_METHODS = {}
     RTK_FAILURE_MODES = {}  # Default failure modes.
     RTK_HAZARDS = {}
+    RTK_INCIDENT_CATEGORY = {}
+    RTK_INCIDENT_STATUS = {}
+    RTK_INCIDENT_TYPE = {}
     RTK_MANUFACTURERS = {}
     RTK_MEASUREMENT_UNITS = {}
+    RTK_MODULES = {}
     RTK_OPERATING_PARAMETERS = {}  # TODO: Add table to common db for this.
-    RTK_S_DIST = {}
+    RTK_PAGE_NUMBER = {}
+    RTK_PREFIX = {}
+    RTK_REQUIREMENT_TYPE = {}
+    RTK_RPN_DETECTION = {}
+    RTK_RPN_OCCURRENCE = {}
+    RTK_RPN_SEVERITY = {}
+    RTK_SEVERITY = {}
     RTK_STAKEHOLDERS = {}
     RTK_SUBCATEGORIES = {}
     RTK_USERS = {}
-    RTK_PREFIX = {}
-    RTK_MODULES = {}
-    RTK_PAGE_NUMBER = {}
+    RTK_VALIDATION_TYPE = {}
+    RTK_WORKGROUPS = {}
 
     # Define global list class attributes.
     RTK_RISK_POINTS = [4, 10]

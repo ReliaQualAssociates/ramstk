@@ -15,7 +15,6 @@ from datetime import date
 
 from sqlalchemy.orm import scoped_session  # pylint: disable=E0401
 from pubsub import pub  # pylint: disable=E0401
-from sortedcontainers import SortedDict  # pylint: disable=E0401
 from treelib import Tree  # pylint: disable=E0401
 
 try:
@@ -34,19 +33,12 @@ from Configuration import Configuration
 import Utilities
 from rtk.dao.DAO import DAO
 from rtk.dao.RTKProgramInfo import RTKProgramInfo
-from rtk.dao.RTKApplication import RTKApplication
 from rtk.dao.RTKCategory import RTKCategory
-from rtk.dao.RTKCriticality import RTKCriticality
-from rtk.dao.RTKDistribution import RTKDistribution
-from rtk.dao.RTKEnviron import RTKEnviron
 from rtk.dao.RTKFailureMode import RTKFailureMode
 from rtk.dao.RTKGroup import RTKGroup
 from rtk.dao.RTKHazards import RTKHazards
-from rtk.dao.RTKLevel import RTKLevel
 from rtk.dao.RTKManufacturer import RTKManufacturer
 from rtk.dao.RTKMethod import RTKMethod
-from rtk.dao.RTKModel import RTKModel
-from rtk.dao.RTKPhase import RTKPhase
 from rtk.dao.RTKRPN import RTKRPN
 from rtk.dao.RTKSiteInfo import RTKSiteInfo
 from rtk.dao.RTKStakeholders import RTKStakeholders
@@ -221,8 +213,8 @@ class Model(object):
             autoflush=False,
             expire_on_commit=False)
 
-        if self.program_dao.db_create_program(database, _session):
-            _error_code = 1001
+        if self.program_dao.db_create_program(database):
+            _error_code = 1
             _msg = 'RTK ERROR: Failed to create RTK Program database {0:s}.'.\
                 format(database)
 
@@ -363,14 +355,6 @@ class Model(object):
                 _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
-        # Load dictionaries from RTKEnviron.                                  #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.environ_type == 'development').all():
-            configuration.RTK_SW_DEV_ENVIRONMENTS[_record.environ_id] = \
-                _record.get_attributes()[1:]
-
-        # ------------------------------------------------------------------- #
         # Load dictionaries from RTKGroup.                                    #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKGroup).\
@@ -384,50 +368,11 @@ class Model(object):
                 _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
-        # Load dictionaries from RTKLevel.                                    #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RTKLevel).\
-                filter(RTKLevel.level_type == 'probability').all():
-            configuration.RTK_FAILURE_PROBABILITY[_record.level_id] = \
-                _record.get_attributes()[1:]
-
-        for _record in self.site_session.query(RTKLevel).\
-                filter(RTKLevel.level_type == 'software').all():
-            configuration.RTK_SW_LEVELS[_record.level_id] = \
-                _record.get_attributes()[1:]
-
-        # ------------------------------------------------------------------- #
         # Load the dictionaries from RTKMethod.                               #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKMethod).\
                 filter(RTKMethod.method_type == 'detection').all():
             configuration.RTK_DETECTION_METHODS[_record.method_id] = \
-                _record.get_attributes()[1:]
-
-        for _record in self.site_session.query(RTKMethod).\
-                filter(RTKMethod.method_type == 'test').all():
-            configuration.RTK_SW_TEST_METHODS[_record.method_id] = \
-                _record.get_attributes()[1:]
-
-        # ------------------------------------------------------------------- #
-        # Load dictionaries from RTKModel.                                    #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RTKModel).\
-                filter(RTKModel.model_type == 'allocation').all():
-            configuration.RTK_ALLOCATION_MODELS[_record.model_id] = \
-                _record.get_attributes()[1:]
-
-        # ------------------------------------------------------------------- #
-        # Load the dictionaries from RTKPhase.                                #
-        # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RTKPhase).\
-                filter(RTKPhase.phase_type == 'lifecycle').all():
-            configuration.RTK_LIFECYCLE[_record.phase_id] = \
-                _record.get_attributes()[1:]
-
-        for _record in self.site_session.query(RTKPhase).\
-                filter(RTKPhase.phase_type == 'development').all():
-            configuration.RTK_SW_DEV_PHASES[_record.phase_id] = \
                 _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
@@ -470,11 +415,6 @@ class Model(object):
                 _record.get_attributes[1:]
 
         for _record in self.site_session.query(RTKType).\
-                filter(RTKType.type_type == 'mttr').all():
-            configuration.RTK_MTTR_TYPE[_record.type_id] = \
-                _record.get_attributes()[1:]
-
-        for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'requirement').all():
             configuration.RTK_REQUIREMENT_TYPE[_record.type_id] = \
                 _record.get_attributes()[1:]
@@ -487,18 +427,6 @@ class Model(object):
         # ------------------------------------------------------------------- #
         # Load dictionaries from tables not requiring a filter.               #
         # ------------------------------------------------------------------- #
-        for _record in self.site_session.query(RTKApplication).all():
-            configuration.RTK_SW_APPLICATION[_record.application_id] = \
-                _record.get_attributes()[1:]
-
-        for _record in self.site_session.query(RTKCriticality).all():
-            configuration.RTK_CRITICALITY[_record.criticality_id] = \
-                _record.get_attributes()[1:]
-
-        for _record in self.site_session.query(RTKDistribution).all():
-            configuration.RTK_S_DIST[_record.distribution_id] = \
-                _record.get_attributes()[1:]
-
         for _record in self.site_session.query(RTKHazards).all():
             configuration.RTK_HAZARDS[_record.hazard_id] = \
                 _record.get_attributes()[1:]
@@ -776,13 +704,16 @@ class RTK(object):
             self.dic_controllers['stakeholder'] = dtcStakeholder(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['allocation'] = dtcAllocation(
-               self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['hazops'] = dtcHazardAnalysis(
-               self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['similaritem'] = dtcSimilarItem(
-               self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['dfmeca'] = dtcFMEA(
-               self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False, functional=False)
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False,
+                functional=False)
             # self.dic_controllers['pof'] = dtcPoF()
             # self.dic_controllers['growth'] = Growth()
             # self.dic_controllers['action'] = Action()

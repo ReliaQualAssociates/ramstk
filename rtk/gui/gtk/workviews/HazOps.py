@@ -10,6 +10,7 @@ from sortedcontainers import SortedDict
 from pubsub import pub
 
 # Import other RTK modules.
+from rtk.Configuration import RTK_FAILURE_PROBABILITY
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk, gobject
 from .WorkView import RTKWorkView
@@ -91,11 +92,8 @@ class HazOps(RTKWorkView):
         # Load the failure probabilities into the gtk.CellRendererCombo().
         for i in [7, 11, 15, 19]:
             _model = self._do_get_cell_model(i)
-            for _key in SortedDict(
-                    controller.RTK_CONFIGURATION.RTK_FAILURE_PROBABILITY):
-                _model.append(
-                    (controller.RTK_CONFIGURATION.RTK_FAILURE_PROBABILITY[_key]
-                     [0], ))
+            for _item in RTK_FAILURE_PROBABILITY:
+                _model.append((_item[0], ))
 
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))

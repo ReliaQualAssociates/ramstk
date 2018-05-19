@@ -11,7 +11,7 @@ from sortedcontainers import SortedDict
 from pubsub import pub
 
 # Import other RTK modules.
-from rtk.Configuration import RTK_CONTROL_TYPES
+from rtk.Configuration import RTK_CONTROL_TYPES, RTK_FAILURE_PROBABILITY
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk.assistants import AddControlAction
@@ -1668,10 +1668,8 @@ class DFMECA(FMEA):
 
         # Load the failure probabilities into the gtk.CellRendererCombo().
         _model = self._do_get_cell_model(self._lst_col_order[14])
-        for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_FAILURE_PROBABILITY:
-            _model.append(
-                (self._mdcRTK.RTK_CONFIGURATION.RTK_FAILURE_PROBABILITY[_item][
-                    0], ))
+        for _item in RTK_FAILURE_PROBABILITY:
+            _model.append((_item[0], ))
 
         # Load the control type gtk.CellRendererCombo().
         _model = self._do_get_cell_model(self._lst_col_order[20])
