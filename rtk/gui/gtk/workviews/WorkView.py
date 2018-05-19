@@ -376,7 +376,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
 
-    def _on_select(self, **kwargs):  # pylint: disable=W0613
+    def on_select(self, **kwargs):  # pylint: disable=W0613
         """
         Respond to load the Work View gtk.Notebook() widgets.
 

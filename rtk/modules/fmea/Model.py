@@ -1052,7 +1052,8 @@ class FMEADataModel(RTKDataModel):
             _tag = 'Mode'
             _node_id = '0.' + str(self.dtm_mode.last_id)
         elif _level == 'mechanism':
-            _error_code, _msg = self.dtm_mechanism.do_insert(mode_id=_entity_id)
+            _error_code, _msg = self.dtm_mechanism.do_insert(
+                mode_id=_entity_id)
             _entity = self.dtm_mechanism.select(self.dtm_mechanism.last_id)
             _tag = 'Mechanism'
             _node_id = _parent_id + '.' + str(self.dtm_mechanism.last_id)

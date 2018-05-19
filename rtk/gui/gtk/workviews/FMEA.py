@@ -70,10 +70,7 @@ class FMEA(RTKWorkView):
 
         # Initialize private scalar attributes.
         self._dtc_data_controller = None
-        if module == 'FFMEA':
-            self._functional = True
-        else:
-            self._functional = False
+        self._functional = bool(module == 'FFMEA')
         self._item_hazard_rate = 0.0
 
         # Initialize public dictionary attributes.
@@ -709,12 +706,11 @@ class FFMEA(FMEA):
                 _error_code = 1
                 _user_msg = _(
                     u"One or more Functional FMEA line items was missing some "
-                    u"of it's data and is not displayed in the FMEA form."
-                )
+                    u"of it's data and is not displayed in the FMEA form.")
                 _debug_msg = (
                     "RTK ERROR: Too few fields for FMEA ID {0:s} for Function "
-                    "ID {1:s}.".
-                    format(str(_node.identifier), str(self._function_id)))
+                    "ID {1:s}.".format(
+                        str(_node.identifier), str(self._function_id)))
                 _row = None
 
         except AttributeError:
@@ -900,7 +896,7 @@ class FFMEA(FMEA):
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
 
-        RTKWorkView._on_select(
+        RTKWorkView.on_select(
             self,
             title=_(u"Analyzing FMEA for Function ID {0:d}").format(
                 self._function_id),
@@ -1404,12 +1400,11 @@ class DFMECA(FMEA):
                 _error_code = 1
                 _user_msg = _(
                     u"One or more Hardware FMEA line items was missing some "
-                    u"of it's data and is not displayed in the FMEA form."
-                )
+                    u"of it's data and is not displayed in the FMEA form.")
                 _debug_msg = (
                     "RTK ERROR: Too few fields for FMEA ID {0:s} for Hardware "
-                    "ID {1:s}.".
-                    format(str(_node.identifier), str(self._hardware_id)))
+                    "ID {1:s}.".format(
+                        str(_node.identifier), str(self._hardware_id)))
                 _row = None
 
         except AttributeError:

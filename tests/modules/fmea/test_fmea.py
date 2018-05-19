@@ -329,8 +329,7 @@ def test_insert_control_functional(test_dao):
     _control = DUT.select(_node_id)
 
     assert isinstance(_control, RTKControl)
-    assert _control.mode_id == 1
-    assert _control.cause_id == -1
+    assert _control.cause_id == 1
 
     _tree_control = DUT.tree.get_node(_node_id)
     assert isinstance(_tree_control.data, RTKControl)
@@ -346,7 +345,7 @@ def test_insert_control_hardware(test_dao):
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id='0.4.1.4', level='control')
+        entity_id=4, parent_id='0.4.1.4', level='control')
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
@@ -356,8 +355,7 @@ def test_insert_control_hardware(test_dao):
     _control = DUT.select(_node_id)
 
     assert isinstance(_control, RTKControl)
-    assert _control.mode_id == -1
-    assert _control.cause_id == 1
+    assert _control.cause_id == 4
 
     _tree_control = DUT.tree.get_node(_node_id)
     assert isinstance(_tree_control.data, RTKControl)
@@ -383,8 +381,7 @@ def test_insert_action_functional(test_dao):
     _action = DUT.select(_node_id)
 
     assert isinstance(_action, RTKAction)
-    assert _action.mode_id == 1
-    assert _action.cause_id == -1
+    assert _action.cause_id == 1
 
     _tree_action = DUT.tree.get_node(_node_id)
     assert isinstance(_tree_action.data, RTKAction)
@@ -400,7 +397,7 @@ def test_insert_action_hardware(test_dao):
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id='0.4.1.4', level='action')
+        entity_id=4, parent_id='0.4.1.4', level='action')
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
@@ -410,8 +407,7 @@ def test_insert_action_hardware(test_dao):
     _action = DUT.select(_node_id)
 
     assert isinstance(_action, RTKAction)
-    assert _action.mode_id == -1
-    assert _action.cause_id == 1
+    assert _action.cause_id == 4
 
     _tree_action = DUT.tree.get_node(_node_id)
     assert isinstance(_tree_action.data, RTKAction)

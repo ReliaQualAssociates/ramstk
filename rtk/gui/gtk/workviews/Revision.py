@@ -406,7 +406,7 @@ class AssessmentResults(RTKWorkView):
 
         _title = _(u"RTK Work Book: Revision "
                    u"(Analyzing {0:s})").format(_revision.name)
-        RTKWorkView._on_select(
+        RTKWorkView.on_select(
             self, title=_title, error_code=0, user_msg='', debug_msg='')
 
         return _return
