@@ -1,23 +1,23 @@
-Revision Package
+Usage Profile Package
 ===============================================================================
 
 .. toctree::
 
-Revision Data Model
+Usage Profile Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.revision.Model
+.. automodule:: rtk.modules.usage.Model
     :members:
-    :private-members:
     :undoc-members:
+    :private-members:
     :show-inheritance:
 
-Revision Data Controller
+Usage Profile Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.revision.Controller
+.. automodule:: rtk.modules.usage.Controller
     :members:
-    :private-members:
     :undoc-members:
+    :private-members:
     :show-inheritance:
 

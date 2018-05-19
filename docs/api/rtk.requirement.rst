@@ -1,21 +1,21 @@
-FMEA Package
+Requirement Package
 ===============================================================================
 
 .. toctree::
 
-FMEA Data Models
+Requirement Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.analyses.fmea.Model
+.. automodule:: rtk.modules.requirement.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-FMEA Data Controller
+Requirement Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.analyses.fmea.Controller
+.. automodule:: rtk.modules.requirement.Controller
     :members:
     :private-members:
     :undoc-members:

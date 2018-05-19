@@ -1,22 +1,23 @@
-Validation Package
+FMEA Package
 ===============================================================================
 
 .. toctree::
 
-Validation Data Model
+FMEA Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.validation.Model
+.. automodule:: rtk.modules.fmea.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-Validation Data Controller
+FMEA Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.validation.Controller
+.. automodule:: rtk.modules.fmea.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
+

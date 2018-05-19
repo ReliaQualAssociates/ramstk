@@ -1,23 +1,22 @@
-Function Package
+Validation Package
 ===============================================================================
 
 .. toctree::
 
-Function Data Model
+Validation Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.function.Model
+.. automodule:: rtk.modules.validation.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-Function Data Controller
+Validation Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.function.Controller
+.. automodule:: rtk.modules.validation.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
-

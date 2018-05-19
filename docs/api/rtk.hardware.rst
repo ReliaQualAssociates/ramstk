@@ -6,7 +6,7 @@ Hardware Package
 Hardware Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.hardware.Model
+.. automodule:: rtk.modules.hardware.Model
     :members:
     :private-members:
     :undoc-members:
@@ -15,7 +15,7 @@ Hardware Data Model
 Hardware Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.hardware.Controller
+.. automodule:: rtk.modules.hardware.Controller
     :members:
     :private-members:
     :undoc-members:

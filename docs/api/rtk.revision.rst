@@ -1,23 +1,23 @@
-Failure Definition Package
+Revision Package
 ===============================================================================
 
 .. toctree::
 
-Failure Definition Data Model
+Revision Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.failure_definition.Model
+.. automodule:: rtk.modules.revision.Model
     :members:
-    :undoc-members:
     :private-members:
+    :undoc-members:
     :show-inheritance:
 
-Failure Definition Data Controller
+Revision Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.failure_definition.Controller
+.. automodule:: rtk.modules.revision.Controller
     :members:
-    :undoc-members:
     :private-members:
+    :undoc-members:
     :show-inheritance:
 

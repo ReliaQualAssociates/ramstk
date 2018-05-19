@@ -1,23 +1,23 @@
-Requirement Package
+Failure Definition Package
 ===============================================================================
 
 .. toctree::
 
-Requirement Data Model
+Failure Definition Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.requirement.Model
+.. automodule:: rtk.modules.failure_definition.Model
     :members:
-    :private-members:
     :undoc-members:
+    :private-members:
     :show-inheritance:
 
-Requirement Data Controller
+Failure Definition Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.requirement.Controller
+.. automodule:: rtk.modules.failure_definition.Controller
     :members:
-    :private-members:
     :undoc-members:
+    :private-members:
     :show-inheritance:
 

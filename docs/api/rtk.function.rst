@@ -1,23 +1,23 @@
-Usage Profile Package
+Function Package
 ===============================================================================
 
 .. toctree::
 
-Usage Profile Data Models
+Function Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.usage.Model
+.. automodule:: rtk.modules.function.Model
     :members:
-    :undoc-members:
     :private-members:
+    :undoc-members:
     :show-inheritance:
 
-Usage Profile Data Controller
+Function Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.usage.Controller
+.. automodule:: rtk.modules.function.Controller
     :members:
-    :undoc-members:
     :private-members:
+    :undoc-members:
     :show-inheritance:
 

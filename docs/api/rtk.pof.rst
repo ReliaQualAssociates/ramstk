@@ -3,31 +3,31 @@ RTK Physics of Failure Analysis Sub-Package
 
 .. toctree::
 
-.. automodule:: rtk.analyses.pof.PhysicsOfFailure
+.. automodule:: rtk.modules.pof.PhysicsOfFailure
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.analyses.pof.Mechanism
+.. automodule:: rtk.modules.pof.Mechanism
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.analyses.pof.Load
+.. automodule:: rtk.modules.pof.Load
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.analyses.pof.Stress
+.. automodule:: rtk.modules.pof.Stress
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.analyses.pof.Method
+.. automodule:: rtk.modules.pof.Method
     :members:
     :private-members:
     :undoc-members:
