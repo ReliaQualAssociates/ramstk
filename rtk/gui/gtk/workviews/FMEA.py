@@ -287,8 +287,8 @@ class FMEA(RTKWorkView):
         # Insert the new entity into the RTK Program database and then refresh
         # the TreeView.
         if (not _undefined and not _return
-                and not self._dtc_data_controller.request_insert(
-                    _entity_id, _parent_id, _level)):
+                and not self._dtc_data_controller.request_do_insert(
+                    entity_id=_entity_id, parent_id=_parent_id, level=_level)):
             if self._functional:
                 self._on_select(module_id=self._function_id)
             else:
@@ -843,7 +843,7 @@ class FFMEA(FMEA):
 
         self._dtc_data_controller = self._mdcRTK.dic_controllers['ffmea']
 
-        _fmea = self._dtc_data_controller.request_select_all(
+        _fmea = self._dtc_data_controller.request_do_select_all(
             self._function_id, functional=True)
         (_error_code, _user_msg, _debug_msg) = self._do_load_tree(_fmea)
 
@@ -1692,7 +1692,7 @@ class DFMECA(FMEA):
 
         self._dtc_data_controller = self._mdcRTK.dic_controllers['dfmeca']
 
-        _fmea = self._dtc_data_controller.request_select_all(
+        _fmea = self._dtc_data_controller.request_do_select_all(
             self._hardware_id, functional=False)
         self._do_load_tree(_fmea)
 
