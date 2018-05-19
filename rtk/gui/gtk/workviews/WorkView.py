@@ -376,20 +376,25 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
 
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=W0613
+    def _on_select(self, **kwargs):  # pylint: disable=W0613
         """
         Respond to load the Work View gtk.Notebook() widgets.
 
-        :param int revision_id: the ID of the newly selected Revision.
-        :param str title: the title to display on the Work Book titlebar.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         _title = kwargs['title']
+        _error_code = kwargs['error_code']
+        _user_msg = kwargs['user_msg']
+        _debug_msg = kwargs['debug_msg']
 
         _workbook = self.get_parent().get_parent()
         _workbook.set_title(_title)
 
-        return _return
+        if _error_code != 0:
+            _dialog = rtk.RTKMessageDialog(_user_msg, self._dic_icons['error'],
+                                           'error')
+            if _dialog.do_run() == gtk.RESPONSE_OK:
+                _dialog.destroy()
+
+        return None

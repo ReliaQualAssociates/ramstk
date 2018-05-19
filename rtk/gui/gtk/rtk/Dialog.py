@@ -97,7 +97,6 @@ class RTKMessageDialog(gtk.MessageDialog):
         :keyword gtk.Window _parent: the parent gtk.Window(), if any, for the
                                      dialog.
         """
-
         _image = gtk.Image()
         _image.set_from_file(icon)
 
@@ -145,14 +144,12 @@ class RTKMessageDialog(gtk.MessageDialog):
         """
         Method to run the RTK Message Dialog.
         """
-
         return self.run()
 
     def do_destroy(self):
         """
         Method to destroy the RTK Message Dialog.
         """
-
         self.destroy()
 
 

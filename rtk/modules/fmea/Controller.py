@@ -74,6 +74,7 @@ class FMEADataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        # ISSUE #103: FMEA Data Controller Methods Not Consistently Defined
         _error_code, _msg = self._dtm_data_model.insert(
             entity_id=entity_id, parent_id=parent_id, level=level)
 
@@ -108,6 +109,7 @@ class FMEADataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        # ISSUE #103: FMEA Data Controller Methods Not Consistently Defined
         _return = False
 
         _error_code, _msg = self._dtm_data_model.update_all()
