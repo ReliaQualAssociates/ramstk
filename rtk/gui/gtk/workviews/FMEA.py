@@ -241,7 +241,7 @@ class FMEA(RTKWorkView):
         """
         return self._do_request_insert(sibling=False)
 
-    def _do_request_insert(self, **kwargs):
+    def do_request_insert(self, **kwargs):
         """
         Request to insert a new entity to the FMEA.
 
@@ -286,14 +286,9 @@ class FMEA(RTKWorkView):
 
         # Insert the new entity into the RTK Program database and then refresh
         # the TreeView.
-        if (not _undefined and not _return
-                and not self._dtc_data_controller.request_do_insert(
+        if (_undefined or _return
+                or self._dtc_data_controller.request_do_insert(
                     entity_id=_entity_id, parent_id=_parent_id, level=_level)):
-            if self._functional:
-                self._on_select(module_id=self._function_id)
-            else:
-                self._on_select(module_id=self._hardware_id)
-        else:
             _return = True
 
         return _return
@@ -390,11 +385,58 @@ class FMEA(RTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            # ISSUE #91: Add code to FMEA WorkView _on_button_press() Method
-            print "FIXME: Rick clicking should launch a pop-up menu with " \
-                  "options to insert sibling, insert child, delete " \
-                  "(selected), save (selected), and save all in " \
-                  "rtk.gui.gtk.moduleviews.FMEA._on_button_press()."
+            _menu = gtk.Menu()
+            _menu.popup(None, None, None, event.button, event.time)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_sibling'])
+            _menu_item.set_label(_(u"Add Sibling"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert_sibling)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_child'])
+            _menu_item.set_label(_(u"Add Child"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert_child)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['remove'])
+            _menu_item.set_label(_(u"Remove Selected"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_delete)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['calculate'])
+            _menu_item.set_label(_(u"Calculate FMEA"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_calculate)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save'])
+            _menu_item.set_label(_(u"Save"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update_all)
+            _menu_item.show()
+            _menu.append(_menu_item)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -694,7 +736,7 @@ class FFMEA(FMEA):
 
         return _error_code, _user_msg, _debug_msg
 
-    def _do_request_insert(self, sibling=True):
+    def _do_request_insert(self, **kwargs):
         """
         Request to insert a new entity to the Functional FMEA.
 
@@ -707,6 +749,7 @@ class FFMEA(FMEA):
         _return = False
         _choose = False
         _undefined = False
+        _sibling = kwargs['sibling']
 
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
@@ -723,7 +766,7 @@ class FFMEA(FMEA):
         # to add the new entity to.  The _parent_id is the Node ID of the
         # parent node in the treelib Tree().
         _level = self._get_level(_node_id)
-        if sibling:
+        if _sibling:
             if _level == 'mode':
                 _entity_id = self._function_id
                 _parent_id = 0
@@ -732,23 +775,25 @@ class FFMEA(FMEA):
                 _parent_id = _model.get_value(_prow, 18)
             if _level == 'control' or _level == 'action':
                 _choose = True
-        elif not sibling:
-            _entity_id = _model.get_value(_row, 0)  # Mode ID.
-            _parent_id = _node_id
-            if _level == 'cause':
+        elif not _sibling:
+            if _level == 'mode':
+                _level = 'cause'
+            elif _level == 'cause':
                 _choose = True
             elif _level == 'control' or _level == 'action':
                 _undefined = True
+            _entity_id = _model.get_value(_row, 0)
+            _parent_id = _node_id
 
         # Insert the new entity into the RTK Program database and then refresh
         # the TreeView.
-        if (not _undefined and not _return and not FMEA._do_request_insert(
+        if not FMEA.do_request_insert(
                 self,
                 entity_id=_entity_id,
                 parent_id=_parent_id,
                 level=_level,
                 choose=_choose,
-                undefined=_undefined)):
+                undefined=_undefined):
             self._on_select(module_id=self._function_id)
         else:
             _return = True
@@ -1385,19 +1430,17 @@ class DFMECA(FMEA):
 
         return None
 
-    def _do_request_insert(self, sibling=True, **kwargs):
+    def _do_request_insert(self, **kwargs):
         """
         Request to insert a new entity to the FMEA.
 
-        :param bool sibling: indicator variable that determines whether a
-                             sibling entity be added (default) or a child
-                             entity be added to the currently selected entity.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
         _choose = False
         _undefined = False
+        _sibling = kwargs['sibling']
 
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
@@ -1412,33 +1455,37 @@ class DFMECA(FMEA):
             _level = 'mode'
             _prow = None
 
-        if sibling:
+        if _sibling:
+            if _level == 'control' or _level == 'action':
+                _choose = True
             try:
                 _entity_id = _model.get_value(_prow, 0)
                 _parent_id = _model.get_value(_prow, 43)
             except TypeError:
                 _entity_id = self._hardware_id
                 _parent_id = _node_id
-            if _level == 'control' or _level == 'action':
-                _choose = True
 
-        elif not sibling:
+        elif not _sibling:
+            if _level == 'mode':
+                _level = 'mechanism'
+            elif _level == 'mechanism':
+                _level = 'cause'
+            elif _level == 'cause':
+                _choose = True
+            elif _level == 'control' or _level == 'action':
+                _undefined = True
             _entity_id = _model.get_value(_row, 0)
             _parent_id = _node_id
-            if _level == 'cause':
-                _choose = True
-            if _level == 'control' or _level == 'action':
-                _undefined = True
 
         # Insert the new entity into the RTK Program database and then refresh
         # the TreeView.
-        if (not _undefined and not _return and not FMEA._do_request_insert(
+        if not FMEA.do_request_insert(
                 self,
                 entity_id=_entity_id,
                 parent_id=_parent_id,
                 level=_level,
                 choose=_choose,
-                undefined=_undefined)):
+                undefined=_undefined):
             self._on_select(module_id=self._hardware_id)
         else:
             _return = True

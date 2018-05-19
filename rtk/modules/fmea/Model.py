@@ -567,7 +567,6 @@ class ControlDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _control = RTKControl()
-        _control.mode_id = kwargs['mode_id']
         _control.cause_id = kwargs['cause_id']
         _error_code, _msg = RTKDataModel.insert(
             self, entities=[
@@ -724,7 +723,6 @@ class ActionDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _action = RTKAction()
-        _action.mode_id = kwargs['mode_id']
         _action.cause_id = kwargs['cause_id']
         _error_code, _msg = RTKDataModel.insert(
             self, entities=[
@@ -1043,13 +1041,9 @@ class FMEADataModel(RTKDataModel):
         if self._functional:
             _function_id = _entity_id
             _hardware_id = -1
-            _mode_id = _entity_id
-            _cause_id = -1
         else:
             _function_id = -1
             _hardware_id = _entity_id
-            _mode_id = -1
-            _cause_id = _entity_id
 
         if _level == 'mode':
             _error_code, _msg = self.dtm_mode.do_insert(
@@ -1073,14 +1067,12 @@ class FMEADataModel(RTKDataModel):
             _tag = 'Cause'
             _node_id = _parent_id + '.' + str(self.dtm_cause.last_id)
         elif _level == 'control':
-            _error_code, _msg = self.dtm_control.do_insert(
-                mode_id=_mode_id, cause_id=_cause_id)
+            _error_code, _msg = self.dtm_control.do_insert(cause_id=_entity_id)
             _entity = self.dtm_control.select(self.dtm_control.last_id)
             _tag = 'Control'
             _node_id = _parent_id + '.' + str(self.dtm_control.last_id) + 'c'
         elif _level == 'action':
-            _error_code, _msg = self.dtm_action.do_insert(
-                mode_id=_mode_id, cause_id=_cause_id)
+            _error_code, _msg = self.dtm_action.do_insert(cause_id=_entity_id)
             _entity = self.dtm_action.select(self.dtm_action.last_id)
             _tag = 'Action'
             _node_id = _parent_id + '.' + str(self.dtm_action.last_id) + 'a'
