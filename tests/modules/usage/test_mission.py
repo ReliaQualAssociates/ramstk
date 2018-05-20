@@ -127,7 +127,7 @@ def test_update(test_dao):
     DUT.select_all(1)
 
     _mission = DUT.select(1)
-    _mission.description = 'Test Mission Description'
+    _mission.description = 'Test Mission'
 
     _error_code, _msg = DUT.update(1)
 

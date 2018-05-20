@@ -24,7 +24,7 @@ ATTRIBUTES = {
     'mission_id': 1,
     'revision_id': 1,
     'mission_time': 72.0,
-    'description': 'Test Mission Description',
+    'description': 'Test Mission',
     'time_units': u'minutes'
 }
 
@@ -84,7 +84,7 @@ def test_select(test_dao):
     _entity = DUT.select(1)
 
     assert isinstance(_entity, RTKMission)
-    assert _entity.description == 'Test Mission Description'
+    assert _entity.description == 'Test Mission'
 
 
 @pytest.mark.integration

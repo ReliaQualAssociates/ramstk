@@ -141,7 +141,7 @@ def test_update(test_dao):
     DUT.select_all(1)
 
     _phase = DUT.select(1)
-    _phase.description = 'Test Mission Phase Description'
+    _phase.description = 'Test Mission Phase 1'
 
     _error_code, _msg = DUT.update(1)
 
