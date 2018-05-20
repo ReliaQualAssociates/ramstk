@@ -25,7 +25,7 @@ class install(_install):
         import os, shutil
 
         _builddir = os.path.abspath('.') + '/build'
-        print ("Cleaning build directory: {0:s}...").format(_builddir)
+        print("Cleaning build directory: {0:s}...").format(_builddir)
         if os.path.isdir(_builddir):
             for _file in os.listdir(_builddir):
                 _file_path = os.path.join(_builddir, _file)
@@ -35,8 +35,7 @@ class install(_install):
                     elif os.path.isdir(_file_path):
                         shutil.rmtree(_file_path)
                 except Exception as e:
-                    print (e)
-
+                    print(e)
 
     def post_install_script(self):
         pass
@@ -56,7 +55,7 @@ class Sdist(sdist):
         try:
             self.run_command('compile_catalog')
         except Exception as e:
-            print ('No messages catalogs found.')
+            print('No messages catalogs found.')
 
         sdist.run(self)
 
@@ -91,5 +90,8 @@ if __name__ == '__main__':
         package_data={},
         dependency_links=[],
         zip_safe=True,
-        cmdclass={'install': install, 'sdist': Sdist},
+        cmdclass={
+            'install': install,
+            'sdist': Sdist
+        },
     )
