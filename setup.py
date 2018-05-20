@@ -4,6 +4,7 @@ import sys
 
 from setuptools import find_packages, setup
 from setuptools.command.install import install as _install
+from setuptools.command.sdist import sdist
 
 if not sys.version_info[0] == 2:
     sys.exit("Sorry, Python 3 is not supported (yet)")
@@ -47,6 +48,18 @@ class install(_install):
         self.post_install_script()
 
 
+class Sdist(sdist):
+    """Custom ``sdist`` command to ensure that mo files are always created. """
+
+    def run(self):
+        try:
+            self.run_command('compile_catalog')
+        except Exception as e:
+            print ('No messages catalogs found.')
+
+        sdist.run(self)
+
+
 if __name__ == '__main__':
     setup(
         name='RTK',
@@ -60,7 +73,7 @@ if __name__ == '__main__':
         url='https://github.com/weibullguy/rtk',
         python_requires='>=2.7, <4',
         install_requires=install_requires,
-        setup_requires=['pytest_runner'],
+        setup_requires=['pytest_runner', 'Babel'],
         tests_require=tests_require,
         keywords='reliability RAMS engineering quality safety',
         scripts=[],
@@ -77,5 +90,5 @@ if __name__ == '__main__':
         package_data={},
         dependency_links=[],
         zip_safe=True,
-        cmdclass={'install': install},
+        cmdclass={'install': install, 'sdist': Sdist},
     )
