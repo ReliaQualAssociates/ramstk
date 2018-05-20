@@ -1,3 +1,4 @@
 sphinx
 sphinxcontrib-issuetracker
 sphinxcontrib-spelling
+Babel
