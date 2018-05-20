@@ -4,6 +4,7 @@ language: python
 
 python:
     - "2.7"
+# Gotta use site packages so pygtk is available.
 virtualenv:
   system_site_packages: true
 
@@ -24,6 +25,7 @@ install:
 script:
     - python setup.py test
 
+# What's the environment look like if the build fails silently.
 after_failure:
     - pip freeze
     - ls ~/virtualenv/python$TRAVIS_PYTHON_VERSION/lib/python2.7/site-packages
