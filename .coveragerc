@@ -33,5 +33,5 @@ exclude_lines =
 show_missing = True
 
 [html]
-directory = tools/reports/coverage/html
+directory = .reports/coverage/html
 title = "RTK Test Coverage Report"

@@ -12,6 +12,7 @@ try:
     from matplotlib.figure import Figure  # pylint: disable=E0401
     from matplotlib.lines import Line2D  # pylint: disable=E0401
 except RuntimeError:
+    # This is necessary to have the tests pass on headless servers.
     pass
 
 # Import other RTK Widget classes.

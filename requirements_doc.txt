@@ -2,3 +2,4 @@ sphinx
 sphinxcontrib-issuetracker
 sphinxcontrib-spelling
 Babel
+sphinx_rtd_theme
