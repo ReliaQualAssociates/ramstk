@@ -24,3 +24,4 @@ script:
 after_failure:
     - pip freeze
     - ls ~/virtualenv/python$TRAVIS_PYTHON_VERSION/lib/python2.7/site-packages
+    - dpkg -L python-gtk2
