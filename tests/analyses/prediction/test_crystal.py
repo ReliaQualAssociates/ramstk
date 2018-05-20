@@ -8,6 +8,7 @@
 """Test class for the crystal module."""
 
 import pytest
+from pytest import approx
 
 from rtk.analyses.data import HARDWARE_ATTRIBUTES
 from rtk.analyses.prediction import Crystal
@@ -113,10 +114,10 @@ def test_calculate_mil_hdbk_217f_part_stress():
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
-    assert pytest.approx(_attributes['lambda_b'], 0.02207717)
+    assert approx(_attributes['lambda_b'], 0.02207717)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 6.0
-    assert pytest.approx(_attributes['hazard_rate_active'], 0.1324630)
+    assert approx(_attributes['hazard_rate_active'], 0.1324630)
 
 
 @pytest.mark.unit
@@ -134,10 +135,10 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_frequency():
     assert isinstance(_attributes, dict)
     assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
                     'crystal, hardware ID: 6')
-    assert pytest.approx(_attributes['lambda_b'], 0.0)
+    assert approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 6.0
-    assert pytest.approx(_attributes['hazard_rate_active'], 0.0)
+    assert approx(_attributes['hazard_rate_active'], 0.0)
 
 
 @pytest.mark.unit
@@ -155,10 +156,10 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     assert isinstance(_attributes, dict)
     assert _msg == ('RTK WARNING: piQ is 0.0 when calculating crystal, '
                     'hardware ID: 6')
-    assert pytest.approx(_attributes['lambda_b'], 0.02207717)
+    assert approx(_attributes['lambda_b'], 0.02207717)
     assert _attributes['piQ'] == 0.0
     assert _attributes['piE'] == 6.0
-    assert pytest.approx(_attributes['hazard_rate_active'], 0.0)
+    assert approx(_attributes['hazard_rate_active'], 0.0)
 
 
 @pytest.mark.unit
@@ -176,7 +177,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     assert isinstance(_attributes, dict)
     assert _msg == ('RTK WARNING: piE is 0.0 when calculating crystal, '
                     'hardware ID: 6')
-    assert pytest.approx(_attributes['lambda_b'], 0.02207717)
+    assert approx(_attributes['lambda_b'], 0.02207717)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 0.0
-    assert pytest.approx(_attributes['hazard_rate_active'], 0.0)
+    assert approx(_attributes['hazard_rate_active'], 0.0)
