@@ -46,3 +46,6 @@ install:
 # Command to run tests.
 script:
     - python setup.py test
+
+after_failure:
+    - /opt/pyenv/shims/python2.7-config --includes
