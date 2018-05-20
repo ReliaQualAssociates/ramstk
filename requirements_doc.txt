@@ -1,0 +1,3 @@
+sphinx
+sphinxcontrib-issuetracker
+sphinxcontrib-spelling

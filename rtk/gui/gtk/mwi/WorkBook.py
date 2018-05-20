@@ -57,13 +57,15 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
             'requirement':
             [wvwRequirementGD(controller),
              wvwRequirementAnalysis(controller)],
-            'hardware': [wvwHardwareGD(controller),
-                         wvwAllocation(controller),
-                         wvwHazOps(controller),
-                         wvwSimilarItem(controller),
-                         wvwHardwareAI(controller),
-                         wvwHardwareAR(controller),
-                         wvwDFMECA(controller)],
+            'hardware': [
+                wvwHardwareGD(controller),
+                wvwAllocation(controller),
+                wvwHazOps(controller),
+                wvwSimilarItem(controller),
+                wvwHardwareAI(controller),
+                wvwHardwareAR(controller),
+                wvwDFMECA(controller)
+            ],
             'validation':
             [wvwValidationGD(controller),
              wvwBurndownCurve(controller)]

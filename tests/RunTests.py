@@ -54,7 +54,10 @@ import glob
 from optparse import OptionParser
 
 # We prefer to use the tools in the virtual environment.
-VIRTBIN = glob.glob(os.environ['VIRTUALENVWRAPPER_HOOK_DIR'] + '/RTK*/bin')[0]
+try:
+    VIRTBIN = glob.glob(os.environ['VIRTUAL_ENV'] + '/bin')[0]
+except KeyError:
+    VIRTBIN = glob.glob(os.environ['WORKON_HOME'] + '/rtk/bin')[0]
 LOCALBIN = os.environ['HOME'] + '/.local/bin'
 SYSBIN = '/usr/bin'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

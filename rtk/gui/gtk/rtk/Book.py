@@ -27,12 +27,6 @@ try:
     import gtk
 except ImportError:
     sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
-# Import other RTK modules.
 
 _ = gettext.gettext
 

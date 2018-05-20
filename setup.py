@@ -15,7 +15,8 @@ install_requires = [
     'SQLAlchemy-Utils', 'statsmodels', 'treelib', 'xlrd', 'xlwt'
 ]
 tests_require = [
-    'pytest', 'pytest-cov', 'coverage', 'codacy-coverage', 'python-coveralls'
+    'pytest', 'pytest-cov', 'coverage==4.0.3', 'codacy-coverage',
+    'python-coveralls'
 ]
 
 

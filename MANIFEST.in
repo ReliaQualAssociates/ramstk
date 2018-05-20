@@ -5,7 +5,6 @@ include *.txt
 include .coveragerc
 include .pylintrc
 include pytest.ini
-include Pipfile
 include LICENSE
 
 exclude docs/api/_build
