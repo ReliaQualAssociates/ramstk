@@ -47,7 +47,7 @@ def test_rtkmechanism_create(test_dao):
     assert DUT.__tablename__ == 'rtk_mechanism'
     assert DUT.mode_id == 4
     assert DUT.mechanism_id == 1
-    assert DUT.description == 'Test Failure Mechanism #1'
+    assert DUT.description == 'Test Failure Mechanism #1 for Mode ID 4'
     assert DUT.pof_include == 1
     assert DUT.rpn == 0
     assert DUT.rpn_detection == 0
@@ -74,7 +74,8 @@ def test_get_attributes(test_dao):
 
     assert _attributes['mode_id'] == 4
     assert _attributes['mechanism_id'] == 1
-    assert _attributes['description'] == 'Test Failure Mechanism #1'
+    assert _attributes['description'] == ('Test Failure Mechanism #1 for Mode '
+                                          'ID 4')
     assert _attributes['pof_include'] == 1
     assert _attributes['rpn'] == 0
     assert _attributes['rpn_detection'] == 0

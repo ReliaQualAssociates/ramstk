@@ -38,9 +38,9 @@ def test_rtkcontrol_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_control'
-    assert DUT.cause_id == -1
+    assert DUT.cause_id == 1
     assert DUT.control_id == 1
-    assert DUT.description == 'Test Functional FMEA Control #1'
+    assert DUT.description == 'Test Functional FMEA Control #1 for Cause ID 1'
     assert DUT.type_id == ''
 
 
@@ -60,9 +60,10 @@ def test_get_attributes(test_dao):
 
     assert isinstance(_attributes, dict)
 
-    assert _attributes['cause_id'] == -1
+    assert _attributes['cause_id'] == 1
     assert _attributes['control_id'] == 1
-    assert _attributes['description'] == 'Test Functional FMEA Control #1'
+    assert _attributes['description'] == ('Test Functional FMEA Control #1 '
+                                          'for Cause ID 1')
     assert _attributes['type_id'] == ''
 
 

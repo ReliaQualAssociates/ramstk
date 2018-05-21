@@ -18,23 +18,6 @@ import rtk.dao.RTKCommonDB
 
 # Import tables objects for the RTK Common database.
 from .RTKCommonDB import create_common_db
-from .RTKUser import RTKUser
-from .RTKGroup import RTKGroup
-from .RTKModel import RTKModel
-from .RTKType import RTKType
-from .RTKCategory import RTKCategory
-from .RTKSubCategory import RTKSubCategory
-from .RTKManufacturer import RTKManufacturer
-from .RTKUnit import RTKUnit
-from .RTKMethod import RTKMethod
-from .RTKRPN import RTKRPN
-from .RTKHazards import RTKHazards
-from .RTKStakeholders import RTKStakeholders
-from .RTKStatus import RTKStatus
-from .RTKCondition import RTKCondition
-from .RTKFailureMode import RTKFailureMode
-from .RTKMeasurement import RTKMeasurement
-from .RTKLoadHistory import RTKLoadHistory
 
 # Import RTK Program database table objects.
 from .RTKAction import RTKAction

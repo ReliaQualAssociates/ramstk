@@ -48,10 +48,10 @@ def test_rtkaction_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_action'
-    assert DUT.cause_id == -1
+    assert DUT.cause_id == 1
     assert DUT.action_id == 1
     assert DUT.action_recommended == (
-        'Test Functional FMEA Recommended Action #1')
+        'Test Functional FMEA Recommended Action #1 for Cause ID 1')
     assert DUT.action_category == ''
     assert DUT.action_owner == ''
     assert DUT.action_due_date == date.today() + timedelta(days=30)
