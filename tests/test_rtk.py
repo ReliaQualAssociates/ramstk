@@ -173,12 +173,12 @@ def test_load_globals(test_common_dao, test_dao):
     }
 
     assert _configuration.RTK_DETECTION_METHODS == {
-        7: (u'Code Reviews', u'', u'detection'),
-        8: (u'Error/Anomaly Detection', u'', u'detection'),
-        9: (u'Structure Analysis', u'', u'detection'),
-        10: (u'Random Testing', u'', u'detection'),
-        11: (u'Functional Testing', u'', u'detection'),
-        12: (u'Branch Testing', u'', u'detection')
+        1: (u'Code Reviews', u'', u'detection'),
+        2: (u'Error/Anomaly Detection', u'', u'detection'),
+        3: (u'Structure Analysis', u'', u'detection'),
+        4: (u'Random Testing', u'', u'detection'),
+        5: (u'Functional Testing', u'', u'detection'),
+        6: (u'Branch Testing', u'', u'detection')
     }
 
     assert _configuration.RTK_DAMAGE_MODELS == {}
@@ -605,21 +605,29 @@ def test_load_globals(test_common_dao, test_dao):
         186: (u'Unannunciated Utility Outages', u'Ventilation')
     }
     assert _configuration.RTK_MANUFACTURERS == {
-        1: (u'Manufacturer Description', u'unknown', u'CAGE Code')
+        1: ('Sprague', 'New Hampshire', '13606'),
+        2: ('Xilinx', '', ''),
+        3: ('National Semiconductor', 'California', '27014')
     }
     assert _configuration.RTK_MEASUREMENT_UNITS == {
-        1: (u'lbf', u'Pounds Force', u'measurement'),
-        2: (u'hrs', u'hours', u'measurement'),
-        3: (u'N', u'Newtons', u'measurement'),
-        4: (u'mins', u'minutes', u'measurement'),
-        5: (u'secs', u'seconds', u'measurement'),
-        6: (u'g', u'grams', u'measurement'),
-        7: (u'oz', u'ounces', u'measurement'),
-        8: (u'A', u'Amperes', u'measurement'),
-        9: (u'V', u'Volts', u'measurement')
+        1: ('lbf', 'Pounds Force', 'measurement'),
+        2: ('lbm', 'Pounds Mass', 'measurement'),
+        3: ('hrs', 'hours', 'measurement'),
+        4: ('N', 'Newtons', 'measurement'),
+        5: ('mins', 'minutes', 'measurement'),
+        6: ('secs', 'seconds', 'measurement'),
+        7: ('g', 'grams', 'measurement'),
+        8: ('oz', 'ounces', 'measurement'),
+        9: ('A', 'Amperes', 'measurement'),
+        10: ('V', 'Volts', 'measurement')
     }
     assert _configuration.RTK_OPERATING_PARAMETERS == {}
-    assert _configuration.RTK_STAKEHOLDERS == {1: (u'Customer', )}
+    assert _configuration.RTK_STAKEHOLDERS == {
+        1: ('Customer', ),
+        2: ('Service', ),
+        3: ('Manufacturing', ),
+        4: ('Management', )
+    }
     assert _configuration.RTK_SUBCATEGORIES == {
         1: {
             1: u'Linear',
@@ -739,7 +747,8 @@ def test_load_globals(test_common_dao, test_dao):
         }
     }
     assert _configuration.RTK_USERS == {
-        1: (u'Last Name', u'First Name', u'EMail', u'867.5309', u'0')
+        1: (u'Tester', u'Johnny', u'tester.johnny@reliaqual.com',
+            u'+1.269.867.5309', '1')
     }
 
 
@@ -748,8 +757,7 @@ def test_validate_license(test_common_dao, test_dao):
     """ validate_license() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
 
-    (_error_code,
-     _msg) = DUT.validate_license('9490059723f3a743fb961d092d3283422f4f2d13')
+    (_error_code, _msg) = DUT.validate_license('0000')
 
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Validating RTK License.')

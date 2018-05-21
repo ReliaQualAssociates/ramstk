@@ -17,6 +17,7 @@ from sqlalchemy_utils import create_database
 import rtk.dao.RTKCommonDB
 
 # Import tables objects for the RTK Common database.
+from .RTKCommonDB import create_common_db
 from .RTKUser import RTKUser
 from .RTKGroup import RTKGroup
 from .RTKModel import RTKModel
@@ -160,6 +161,21 @@ class DAO(object):
             table.create(bind=self.engine)
 
         return _return
+
+    def db_create_common(self, database, **kwargs):
+        """
+        Create a new RTK Common database.
+
+        :param str database: the RFC1738 URL path to the database to connect
+                             with.
+        :return: False if successful or True if an error occurs.
+        :rtype: bool
+        """
+        _test = kwargs['test']
+        try:
+            return create_common_db(database=database, test=_test)
+        except IOError:
+            return True
 
     def db_create_program(self, database):
         """

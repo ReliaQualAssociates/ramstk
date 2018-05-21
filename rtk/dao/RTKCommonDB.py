@@ -116,6 +116,65 @@ RTK_CATEGORIES = {
     42: ('VANDV', 'Verification & Validation', 'action', 1)
 }
 
+RTK_CONDITIONS = {
+    0: ('Cavitation', 'operating'),
+    1: ('Cold Start', 'operating'),
+    2: ('Contaminated Oil', 'operating'),
+    3: ('Cyclic Loading, Low Cycle', 'operating'),
+    4: ('Cyclic Loading, High Cycle', 'operating'),
+    5: ('Emergency Stop', 'operating'),
+    6: ('Full Load', 'operating'),
+    7: ('High Idle', 'operating'),
+    8: ('Hot Shutdown', 'operating'),
+    9: ('Idle', 'operating'),
+    10: ('Low End Torque', 'operating'),
+    11: ('Mechanical Shock', 'operating'),
+    12: ('Oil Pressure Fluctuations', 'operating'),
+    13: ('Overload', 'operating'),
+    14: ('Overspeed', 'operating'),
+    15: ('Pressure Pulsations', 'operating'),
+    16: ('Short Term Overload', 'operating'),
+    17: ('Start-Stop', 'operating'),
+    18: ('System Cool Down', 'operating'),
+    19: ('System Warm Up', 'operating'),
+    20: ('Thermal Cycling', 'operating'),
+    21: ('Vibration', 'operating'),
+    22: ('Abrasion', 'environmental'),
+    23: ('Acceleration', 'environmental'),
+    24: ('Corona', 'environmental'),
+    25: ('Contamination, Chemicals', 'environmental'),
+    26: ('Contamination, Dirt/Dust', 'environmental'),
+    27: ('Contamination, Salt Spray', 'environmental'),
+    28: ('Electrostatic Discharge', 'environmental'),
+    29: ('Fungus', 'environmental'),
+    30: ('Gas, Ionized', 'environmental'),
+    31: ('Geomagnetics', 'environmental'),
+    32: ('Humidity', 'environmental'),
+    33: ('Ozone', 'environmental'),
+    34: ('Pressure, Atmospheric', 'environmental'),
+    35: ('Pressure', 'environmental'),
+    36: ('Radiation, Alpha', 'environmental'),
+    37: ('Radiation, Electromagnetic', 'environmental'),
+    38: ('Radiation, Gamma', 'environmental'),
+    39: ('Radiation, Neutron', 'environmental'),
+    40: ('Radiation, Solar', 'environmental'),
+    41: ('Shock, Mechnical', 'environmental'),
+    42: ('Shock, Thermal', 'environmental'),
+    43: ('Temperature', 'environmental'),
+    44: ('Thermal Cycles', 'environmental'),
+    45: ('Vibration, Acoustic', 'environmental'),
+    46: ('Vibration, Mechanical', 'environmental'),
+    47: ('Weather, Fog', 'environmental'),
+    48: ('Weather, Freezing Rain', 'environmental'),
+    49: ('Weather, Frost', 'environmental'),
+    50: ('Weather, Hail', 'environmental'),
+    51: ('Weather, Ice', 'environmental'),
+    52: ('Weather, Rain', 'environmental'),
+    53: ('Weather, Sleet', 'environmental'),
+    54: ('Weather, Snow', 'environmental'),
+    55: ('Weather, Wind', 'environmental')
+}
+
 RTK_GROUPS = {
     0: ('Engineering, Design', 'workgroup'),
     1: ('Engineering, Logistics Support', 'workgroup'),
@@ -126,234 +185,6 @@ RTK_GROUPS = {
     6: ('Reliability', 'affinity'),
     7: ('Durability', 'affinity'),
     8: ('Cost', 'affinity')
-}
-
-RTK_METHODS = {
-    0: ('Code Reviews',
-        'Code review is a systematic examination (often known as '
-        'peer review) of computer source code.', 'test'),
-    1: ('Error/Anomaly Detection', '', 'test'),
-    2: ('Structure Analysis', '', 'test'),
-    3: ('Random Testing', '', 'test'),
-    4: ('Functional Testing', '', 'test'),
-    5: ('Branch Testing', '', 'test'),
-    6: ('Code Reviews', '', 'detection'),
-    7: ('Error/Anomaly Detection', '', 'detection'),
-    8: ('Structure Analysis', '', 'detection'),
-    9: ('Random Testing', '', 'detection'),
-    10: ('Functional Testing', '', 'detection'),
-    11: ('Branch Testing', '', 'detection')
-}
-
-RTK_MODELS = {
-    0: ('Equal Apportionment', 'allocation'),
-    1: ('ARINC Apportionment', 'allocation'),
-    2: ('AGREE Apportionment', 'allocation'),
-    3: ('Feasibility of Objectives', 'allocation'),
-    4: ('Repairable Systems Apportionment', 'allocation')
-}
-
-RTK_RPNS = {
-    0: ('None', 'No effect.', 'severity', 1),
-    1: ('Very Minor', 'System operable with minimal interference.', 'severity',
-        2),
-    2: ('Minor', 'System operable with some degradation of '
-        'performance.', 'severity', 3),
-    3: ('Very Low', 'System operable with significant degradation of '
-        'performance.', 'severity', 4),
-    4: ('Low', 'System inoperable without damage.', 'severity', 5),
-    5: ('Moderate', 'System inoperable with minor damage.', 'severity', 6),
-    6: ('High', 'System inoperable with system damage.', 'severity', 7),
-    7: ('Very High', 'System inoperable with destructive failure '
-        'without compromising safety.', 'severity', 8),
-    8: ('Hazardous, with warning',
-        'Failure effects safe system operation with warning.', 'severity', 9),
-    9:
-    ('Hazardous, without warning',
-     'Failure effects safe system operation without warning.', 'severity', 10),
-    10: ('Remote', 'Failure rate is 1 in 1,500,000.', 'occurrence', 1),
-    11: ('Very Low', 'Failure rate is 1 in 150,000.', 'occurrence', 2),
-    12: ('Low', 'Failure rate is 1 in 15,000', 'occurrence', 3),
-    13: ('Moderately Low', 'Failure rate is 1 in 2000.', 'occurrence', 4),
-    14: ('Moderate', 'Failure rate is 1 in 400.', 'occurrence', 5),
-    15: ('Moderately High', 'Failure rate is 1 in 80.', 'occurrence', 6),
-    16: ('High', 'Failure rate is 1 in 20.', 'occurrence', 7),
-    17: ('Very High', 'Failure rate is 1 in 8.', 'occurrence', 8),
-    18: ('Extremely High', 'Failure rate is 1 in 3.', 'occurrence', 9),
-    19: ('Dangerously High', 'Failure rate is > 1 in 2.', 'occurrence', 10),
-    20: ('Almost Certain',
-         'Design control will almost certainly detect a potential '
-         'mechanism/cause and subsequent failure mode.', 'detection', 1),
-    21: ('Very High', 'Very high chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 2),
-    22: ('High', 'High chance the existing design controls will or '
-         'can detect a potential mechanism/cause and subsequent '
-         'failure mode.', 'detection', 3),
-    23: ('Moderately High', 'Moderately high chance the existing '
-         'design controls will or can detect a potential '
-         'mechanism/cause and subsequent failure mode.', 'detection', 4),
-    24: ('Moderate', 'Moderate chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 5),
-    25: ('Low', 'Low chance the existing design controls will or can '
-         'detect a potential mechanism/cause and subsequent failure '
-         'mode.', 'detection', 6),
-    26: ('Very Low', 'Very low chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 7),
-    27: ('Remote', 'Remote chance the existing design controls will '
-         'or can detect a potential mechanism/cause and subsequent '
-         'failure mode.', 'detection', 8),
-    28: ('Very Remote', 'Very remote chance the existing design '
-         'controls will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 9),
-    29: ('Absolute Uncertainty', 'Existing design controls will not '
-         'or cannot detect a potential mechanism/cause and subsequent '
-         'failure mode; there is no design control.', 'detection', 10)
-}
-
-RTK_STATUSES = {
-    0: ('Initiated', 'Incident has been initiated.', 'incident'),
-    1: ('Reviewed', 'Incident has been reviewed.', 'incident'),
-    2: ('Analysis', 'Incident has been assigned and is being analyzed.',
-        'incident'),
-    3: ('Solution Identified',
-        'A solution to the reported problem has been identified.', 'incident'),
-    4:
-    ('Solution Implemented',
-     'A solution to the reported problem has been implemented.', 'incident'),
-    5: ('Solution Verified',
-        'A solution to the reported problem has been verified.', 'incident'),
-    6: ('Ready for Approval', 'Incident analysis is ready to be approved.',
-        'incident'),
-    7: ('Approved', 'Incident analysis has been approved.', 'incident'),
-    8: ('Ready for Closure', 'Incident is ready to be closed.', 'incident'),
-    9: ('Closed', 'Incident has been closed.', 'incident'),
-    10: ('Initiated', 'Action has been initiated.', 'action'),
-    11: ('Reviewed', 'Action has been reviewed.', 'action'),
-    12: ('Approved', 'Action has been approved.', 'action'),
-    13: ('Ready for Closure', 'Action is ready to be closed.', 'action'),
-    14: ('Closed', 'Action has been closed.', 'action')
-}
-
-RTK_SUBCATEGORIES = [
-    (1, 1, 'Linear'), (1, 2, 'Logic'), (1, 3, 'PAL, PLA'),
-    (1, 4, 'Microprocessor, Microcontroller'), (1, 5, 'Memory, ROM'),
-    (1, 6, 'Memory, EEPROM'), (1, 7, 'Memory, DRAM'), (1, 8, 'Memory, SRAM'),
-    (1, 9, 'GaAs'), (1, 10, 'VHSIC, VLSI'), (2, 12, 'Diode, Low Frequency'),
-    (2, 13, 'Diode, High Frequency'), (2, 14,
-                                       'Transistor, Low Frequency, Bipolar'),
-    (2, 15, 'Transistor, Low Frequency, Si FET'), (2, 16,
-                                                   'Transistor, Unijunction'),
-    (2, 17, 'Transistor, High Frequency, Low Noise, Bipolar'),
-    (2, 18, 'Transistor, High Frequency, High Power, Bipolar'),
-    (2, 19, 'Transistor, High Frequency, GaAs FET'),
-    (2, 20, 'Transistor, High Frequency, Si FET'), (2, 21, 'Thyristor, SCR'),
-    (2, 22, 'Optoelectronic, Detector, Isolator, Emitter'),
-    (2, 23, 'Optoelectronic, Alphanumeric Display'),
-    (2, 24, 'Optoelectronic, Laser Diode'), (3, 25,
-                                             'Fixed, Composition (RC, RCR)'),
-    (3, 26, 'Fixed, Film (RL, RLR, RN, RNC, RNN, RNR)'),
-    (3, 27, 'Fixed, Film, Power (RD)'), (3, 28, 'Fixed, Film, Network (RZ)'),
-    (3, 29,
-     'Fixed, Wirewound (RB, RBR)'), (3, 30,
-                                     'Fixed, Wirewound, Power (RW, RWR)'),
-    (3, 31, 'Fixed, Wirewound, Power, Chassis-Mounted (RE, RER)'),
-    (3, 32, 'Thermistor (RTH)'), (3, 33, 'Variable, Wirewound (RT, RTR)'),
-    (3, 34, 'Variable, Wirewound, Precision (RR)'),
-    (3, 35, 'Variable, Wirewound, Semiprecision (RA, RK)'),
-    (3, 36, 'Variable, Wirewound, Power (RP)'),
-    (3, 37,
-     'Variable, Non-Wirewound (RJ, RJR)'), (3, 38,
-                                            'Variable, Composition (RV)'),
-    (3, 39, 'Variable, Non-Wirewound, Film and Precision (RQ, RVC)'),
-    (4, 40,
-     'Fixed, Paper, Bypass (CA, CP)'), (4, 41,
-                                        'Fixed, Feed-Through (CZ, CZR)'),
-    (4, 42, 'Fixed, Paper and Plastic Film (CPV, CQ, CQR)'),
-    (4, 43, 'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)'),
-    (4, 44, 'Fixed, Plastic and Metallized Plastic'),
-    (4, 45, 'Fixed, Super-Metallized Plastic (CRH)'),
-    (4, 46, 'Fixed, Mica (CM, CMR)'), (4, 47, 'Fixed, Mica, Button (CB)'),
-    (4, 48,
-     'Fixed, Glass (CY, CYR)'), (4, 49,
-                                 'Fixed, Ceramic, General Purpose (CK, CKR)'),
-    (4, 50,
-     'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)'),
-    (4, 51, 'Fixed, Electrolytic, Tantalum, Solid (CSR)'),
-    (4, 52, 'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)'),
-    (4, 53, 'Fixed, Electrolytic, Aluminum (CU, CUR)'),
-    (4, 54,
-     'Fixed, Electrolytic (Dry), Aluminum (CE)'), (4, 55,
-                                                   'Variable, Ceramic (CV)'),
-    (4, 56, 'Variable, Piston Type (PC)'), (4, 57,
-                                            'Variable, Air Trimmer (CT)'),
-    (4, 58, 'Variable and Fixed, Gas or Vacuum (CG)'), (5, 62, 'Transformer'),
-    (5, 63, 'Coil'), (6, 64,
-                      'Mechanical'), (6, 65,
-                                      'Solid State'), (7, 67,
-                                                       'Toggle or Pushbutton'),
-    (7, 68, 'Sensitive'), (7, 69,
-                           'Rotary'), (7, 70,
-                                       'Thumbwheel'), (7, 71,
-                                                       'Circuit Breaker'),
-    (8, 72,
-     'Multi-Pin'), (8, 73,
-                    'PCB Edge'), (8, 74,
-                                  'IC Socket'), (8, 75,
-                                                 'Plated Through Hole (PTH)'),
-    (8, 76, 'Connection, Non-PTH'), (9, 77, 'Elapsed Time'), (9, 78, 'Panel'),
-    (10, 80, 'Crystal'), (10, 81,
-                          'Filter, Non-Tunable Electronic'), (10, 82,
-                                                              'Fuse'), (10, 83,
-                                                                        'Lamp')
-]
-
-RTK_TYPES = {
-    5: ('ASS', 'Assessed', 'mttr'),
-    6: ('DEF', 'Defined', 'mttr'),
-    7: ('PLN', 'Planning', 'incident'),
-    8: ('CON', 'Concept', 'incident'),
-    9: ('RQMT', 'Requirement', 'incident'),
-    10: ('DES', 'Design', 'incident'),
-    11: ('COD', 'Coding', 'incident'),
-    12: ('DB', 'Database', 'incident'),
-    13: ('TI', 'Test Information', 'incident'),
-    14: ('MAN', 'Manuals', 'incident'),
-    15: ('OTH', 'Other', 'incident'),
-    16: ('FUN', 'Functional', 'requirement'),
-    17: ('PRF', 'Performance', 'requirement'),
-    18: ('REG', 'Regulatory', 'requirement'),
-    19: ('REL', 'Reliability', 'requirement'),
-    20: ('SAF', 'Safety', 'requirement'),
-    21: ('SVC', 'Serviceability', 'requirement'),
-    22: ('USE', 'Useability', 'requirement'),
-    23: ('DOE', 'Manufacturing Test, DOE', 'validation'),
-    24: ('ESS', 'Manufacturing Test, ESS', 'validation'),
-    25: ('HSS', 'Manufacturing Test, HASS', 'validation'),
-    26: ('PRT', 'Manufacturing Test, PRAT', 'validation'),
-    27: ('RAA', 'Reliability, Assessment', 'validation'),
-    28: ('RDA', 'Reliability, Durability Analysis', 'validation'),
-    29: ('RFF', 'Reliability, FFMEA', 'validation'),
-    30: ('RDF', 'Reliability, (D)FMEA', 'validation'),
-    31: ('RCA', 'Reliability, Root Cause Analysis', 'validation'),
-    32: ('RSA', 'Reliability, Survival Analysis', 'validation'),
-    33: ('ALT', 'Reliability Test, ALT', 'validation'),
-    34: ('RDT', 'Reliability Test, Demonstration', 'validation'),
-    35: ('HLT', 'Reliability Test, HALT', 'validation'),
-    36: ('RGT', 'Reliability Test, Growth', 'validation'),
-    37: ('FTA', 'Safety, Fault Tree Analysis', 'validation'),
-    38: ('PHA', 'Safety, Hazards Analysis', 'validation'),
-    39: ('EMA', 'System Engineering, Electromagnetic Analysis', 'validation'),
-    40: ('FEA', 'System Engineering, FEA', 'validation'),
-    41: ('2DM', 'System Engineering, 2D Model', 'validation'),
-    42: ('3DM', 'System Engineering, 3D Model', 'validation'),
-    43: ('SRD', 'System Engineering, Robust Design', 'validation'),
-    44: ('SCA', 'System Engineering, Sneak Circuit Analysis', 'validation'),
-    45: ('THA', 'System Engineering, Thermal Analysis', 'validation'),
-    46: ('TOL', 'System Engineering, Tolerance Analysis', 'validation'),
-    47: ('WCA', 'System Engineering, Worst Case Analysis', 'validation')
 }
 
 RTK_HAZARDS = {
@@ -548,83 +379,22 @@ RTK_HAZARDS = {
     186: ('Unannunciated Utility Outages', 'Ventilation')
 }
 
+RTK_HISTORIES = {
+    0: ('Cycle Counts', ),
+    1: ('Histogram', ),
+    2: ('Histogram, Bivariate', ),
+    3: ('Level Crossing', ),
+    4: ('Rain Flow Count', ),
+    5: ('Time at Level', ),
+    6: ('Time at Load', ),
+    7: ('Time at Maximum', ),
+    8: ('Time at Minimum', )
+}
+
 RTK_MANUFACTURERS = {
     0: ('Sprague', 'New Hampshire', '13606'),
     1: ('Xilinx', '', ''),
     2: ('National Semiconductor', 'California', '27014')
-}
-
-RTK_UNITS = {
-    0: ('lbf', 'Pounds Force', 'measurement'),
-    1: ('hrs', 'hours', 'measurement'),
-    2: ('N', 'Newtons', 'measurement'),
-    3: ('mins', 'minutes', 'measurement'),
-    4: ('secs', 'seconds', 'measurement'),
-    5: ('g', 'grams', 'measurement'),
-    6: ('oz', 'ounces', 'measurement'),
-    7: ('A', 'Amperes', 'measurement'),
-    8: ('V', 'Volts', 'measurement')
-}
-
-RTK_STAKEHOLDERS = {0: ('Customer', )}
-
-RTK_CONDITIONS = {
-    0: ('Cavitation', 'operating'),
-    1: ('Cold Start', 'operating'),
-    2: ('Contaminated Oil', 'operating'),
-    3: ('Cyclic Loading, Low Cycle', 'operating'),
-    4: ('Cyclic Loading, High Cycle', 'operating'),
-    5: ('Emergency Stop', 'operating'),
-    6: ('Full Load', 'operating'),
-    7: ('High Idle', 'operating'),
-    8: ('Hot Shutdown', 'operating'),
-    9: ('Idle', 'operating'),
-    10: ('Low End Torque', 'operating'),
-    11: ('Mechanical Shock', 'operating'),
-    12: ('Oil Pressure Fluctuations', 'operating'),
-    13: ('Overload', 'operating'),
-    14: ('Overspeed', 'operating'),
-    15: ('Pressure Pulsations', 'operating'),
-    16: ('Short Term Overload', 'operating'),
-    17: ('Start-Stop', 'operating'),
-    18: ('System Cool Down', 'operating'),
-    19: ('System Warm Up', 'operating'),
-    20: ('Thermal Cycling', 'operating'),
-    21: ('Vibration', 'operating'),
-    22: ('Abrasion', 'environmental'),
-    23: ('Acceleration', 'environmental'),
-    24: ('Corona', 'environmental'),
-    25: ('Contamination, Chemicals', 'environmental'),
-    26: ('Contamination, Dirt/Dust', 'environmental'),
-    27: ('Contamination, Salt Spray', 'environmental'),
-    28: ('Electrostatic Discharge', 'environmental'),
-    29: ('Fungus', 'environmental'),
-    30: ('Gas, Ionized', 'environmental'),
-    31: ('Geomagnetics', 'environmental'),
-    32: ('Humidity', 'environmental'),
-    33: ('Ozone', 'environmental'),
-    34: ('Pressure, Atmospheric', 'environmental'),
-    35: ('Pressure', 'environmental'),
-    36: ('Radiation, Alpha', 'environmental'),
-    37: ('Radiation, Electromagnetic', 'environmental'),
-    38: ('Radiation, Gamma', 'environmental'),
-    39: ('Radiation, Neutron', 'environmental'),
-    40: ('Radiation, Solar', 'environmental'),
-    41: ('Shock, Mechnical', 'environmental'),
-    42: ('Shock, Thermal', 'environmental'),
-    43: ('Temperature', 'environmental'),
-    44: ('Thermal Cycles', 'environmental'),
-    45: ('Vibration, Acoustic', 'environmental'),
-    46: ('Vibration, Mechanical', 'environmental'),
-    47: ('Weather, Fog', 'environmental'),
-    48: ('Weather, Freezing Rain', 'environmental'),
-    49: ('Weather, Frost', 'environmental'),
-    50: ('Weather, Hail', 'environmental'),
-    51: ('Weather, Ice', 'environmental'),
-    52: ('Weather, Rain', 'environmental'),
-    53: ('Weather, Sleet', 'environmental'),
-    54: ('Weather, Snow', 'environmental'),
-    55: ('Weather, Wind', 'environmental')
 }
 
 RTK_MEASUREMENTS = {
@@ -650,29 +420,271 @@ RTK_MEASUREMENTS = {
     19: ('Torque', )
 }
 
-RTK_HISTORIES = {
-    0: ('Cycle Counts', ),
-    1: ('Histogram', ),
-    2: ('Histogram, Bivariate', ),
-    3: ('Level Crossing', ),
-    4: ('Rain Flow Count', ),
-    5: ('Time at Level', ),
-    6: ('Time at Load', ),
-    7: ('Time at Maximum', ),
-    8: ('Time at Minimum', )
+RTK_METHODS = {
+    0: ('Code Reviews', '', 'detection'),
+    1: ('Error/Anomaly Detection', '', 'detection'),
+    2: ('Structure Analysis', '', 'detection'),
+    3: ('Random Testing', '', 'detection'),
+    4: ('Functional Testing', '', 'detection'),
+    5: ('Branch Testing', '', 'detection')
+}
+
+RTK_MODELS = {
+    0: ('Adhesion Wear Model for Bearings', 'damage'),
+    1: ('Arrhenius', 'damage'),
+    2: ('Coffin-Manson', 'damage'),
+    3: ('Empirical/DOE', 'damage'),
+    4: ('Eyring', 'damage'),
+    5: ('Inverse Power Law (IPL)', 'damage'),
+    6: ('IPL - Arrhenius', 'damage'),
+    7: ('Time Fraction of Damaging Operating Conditions', 'damage')
+}
+
+RTK_RPNS = {
+    0: ('None', 'No effect.', 'severity', 1),
+    1: ('Very Minor', 'System operable with minimal interference.', 'severity',
+        2),
+    2: ('Minor', 'System operable with some degradation of '
+        'performance.', 'severity', 3),
+    3: ('Very Low', 'System operable with significant degradation of '
+        'performance.', 'severity', 4),
+    4: ('Low', 'System inoperable without damage.', 'severity', 5),
+    5: ('Moderate', 'System inoperable with minor damage.', 'severity', 6),
+    6: ('High', 'System inoperable with system damage.', 'severity', 7),
+    7: ('Very High', 'System inoperable with destructive failure '
+        'without compromising safety.', 'severity', 8),
+    8: ('Hazardous, with warning',
+        'Failure effects safe system operation with warning.', 'severity', 9),
+    9:
+    ('Hazardous, without warning',
+     'Failure effects safe system operation without warning.', 'severity', 10),
+    10: ('Remote', 'Failure rate is 1 in 1,500,000.', 'occurrence', 1),
+    11: ('Very Low', 'Failure rate is 1 in 150,000.', 'occurrence', 2),
+    12: ('Low', 'Failure rate is 1 in 15,000', 'occurrence', 3),
+    13: ('Moderately Low', 'Failure rate is 1 in 2000.', 'occurrence', 4),
+    14: ('Moderate', 'Failure rate is 1 in 400.', 'occurrence', 5),
+    15: ('Moderately High', 'Failure rate is 1 in 80.', 'occurrence', 6),
+    16: ('High', 'Failure rate is 1 in 20.', 'occurrence', 7),
+    17: ('Very High', 'Failure rate is 1 in 8.', 'occurrence', 8),
+    18: ('Extremely High', 'Failure rate is 1 in 3.', 'occurrence', 9),
+    19: ('Dangerously High', 'Failure rate is > 1 in 2.', 'occurrence', 10),
+    20: ('Almost Certain',
+         'Design control will almost certainly detect a potential '
+         'mechanism/cause and subsequent failure mode.', 'detection', 1),
+    21: ('Very High', 'Very high chance the existing design controls '
+         'will or can detect a potential mechanism/cause and '
+         'subsequent failure mode.', 'detection', 2),
+    22: ('High', 'High chance the existing design controls will or '
+         'can detect a potential mechanism/cause and subsequent '
+         'failure mode.', 'detection', 3),
+    23: ('Moderately High', 'Moderately high chance the existing '
+         'design controls will or can detect a potential '
+         'mechanism/cause and subsequent failure mode.', 'detection', 4),
+    24: ('Moderate', 'Moderate chance the existing design controls '
+         'will or can detect a potential mechanism/cause and '
+         'subsequent failure mode.', 'detection', 5),
+    25: ('Low', 'Low chance the existing design controls will or can '
+         'detect a potential mechanism/cause and subsequent failure '
+         'mode.', 'detection', 6),
+    26: ('Very Low', 'Very low chance the existing design controls '
+         'will or can detect a potential mechanism/cause and '
+         'subsequent failure mode.', 'detection', 7),
+    27: ('Remote', 'Remote chance the existing design controls will '
+         'or can detect a potential mechanism/cause and subsequent '
+         'failure mode.', 'detection', 8),
+    28: ('Very Remote', 'Very remote chance the existing design '
+         'controls will or can detect a potential mechanism/cause and '
+         'subsequent failure mode.', 'detection', 9),
+    29: ('Absolute Uncertainty', 'Existing design controls will not '
+         'or cannot detect a potential mechanism/cause and subsequent '
+         'failure mode; there is no design control.', 'detection', 10)
+}
+
+RTK_STAKEHOLDERS = {
+    0: ('Customer', ),
+    1: ('Service', ),
+    2: ('Manufacturing', ),
+    3: ('Management', )
+}
+
+RTK_STATUSES = {
+    0: ('Initiated', 'Incident has been initiated.', 'incident'),
+    1: ('Reviewed', 'Incident has been reviewed.', 'incident'),
+    2: ('Analysis', 'Incident has been assigned and is being analyzed.',
+        'incident'),
+    3: ('Solution Identified',
+        'A solution to the reported problem has been identified.', 'incident'),
+    4:
+    ('Solution Implemented',
+     'A solution to the reported problem has been implemented.', 'incident'),
+    5: ('Solution Verified',
+        'A solution to the reported problem has been verified.', 'incident'),
+    6: ('Ready for Approval', 'Incident analysis is ready to be approved.',
+        'incident'),
+    7: ('Approved', 'Incident analysis has been approved.', 'incident'),
+    8: ('Ready for Closure', 'Incident is ready to be closed.', 'incident'),
+    9: ('Closed', 'Incident has been closed.', 'incident'),
+    10: ('Initiated', 'Action has been initiated.', 'action'),
+    11: ('Reviewed', 'Action has been reviewed.', 'action'),
+    12: ('Approved', 'Action has been approved.', 'action'),
+    13: ('Ready for Closure', 'Action is ready to be closed.', 'action'),
+    14: ('Closed', 'Action has been closed.', 'action')
+}
+
+RTK_SUBCATEGORIES = [
+    (1, 1, 'Linear'), (1, 2, 'Logic'), (1, 3, 'PAL, PLA'),
+    (1, 4, 'Microprocessor, Microcontroller'), (1, 5, 'Memory, ROM'),
+    (1, 6, 'Memory, EEPROM'), (1, 7, 'Memory, DRAM'), (1, 8, 'Memory, SRAM'),
+    (1, 9, 'GaAs'), (1, 10, 'VHSIC, VLSI'), (2, 12, 'Diode, Low Frequency'),
+    (2, 13, 'Diode, High Frequency'), (2, 14,
+                                       'Transistor, Low Frequency, Bipolar'),
+    (2, 15, 'Transistor, Low Frequency, Si FET'), (2, 16,
+                                                   'Transistor, Unijunction'),
+    (2, 17, 'Transistor, High Frequency, Low Noise, Bipolar'),
+    (2, 18, 'Transistor, High Frequency, High Power, Bipolar'),
+    (2, 19, 'Transistor, High Frequency, GaAs FET'),
+    (2, 20, 'Transistor, High Frequency, Si FET'), (2, 21, 'Thyristor, SCR'),
+    (2, 22, 'Optoelectronic, Detector, Isolator, Emitter'),
+    (2, 23, 'Optoelectronic, Alphanumeric Display'),
+    (2, 24, 'Optoelectronic, Laser Diode'), (3, 25,
+                                             'Fixed, Composition (RC, RCR)'),
+    (3, 26, 'Fixed, Film (RL, RLR, RN, RNC, RNN, RNR)'),
+    (3, 27, 'Fixed, Film, Power (RD)'), (3, 28, 'Fixed, Film, Network (RZ)'),
+    (3, 29,
+     'Fixed, Wirewound (RB, RBR)'), (3, 30,
+                                     'Fixed, Wirewound, Power (RW, RWR)'),
+    (3, 31, 'Fixed, Wirewound, Power, Chassis-Mounted (RE, RER)'),
+    (3, 32, 'Thermistor (RTH)'), (3, 33, 'Variable, Wirewound (RT, RTR)'),
+    (3, 34, 'Variable, Wirewound, Precision (RR)'),
+    (3, 35, 'Variable, Wirewound, Semiprecision (RA, RK)'),
+    (3, 36, 'Variable, Wirewound, Power (RP)'),
+    (3, 37,
+     'Variable, Non-Wirewound (RJ, RJR)'), (3, 38,
+                                            'Variable, Composition (RV)'),
+    (3, 39, 'Variable, Non-Wirewound, Film and Precision (RQ, RVC)'),
+    (4, 40,
+     'Fixed, Paper, Bypass (CA, CP)'), (4, 41,
+                                        'Fixed, Feed-Through (CZ, CZR)'),
+    (4, 42, 'Fixed, Paper and Plastic Film (CPV, CQ, CQR)'),
+    (4, 43, 'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)'),
+    (4, 44, 'Fixed, Plastic and Metallized Plastic'),
+    (4, 45, 'Fixed, Super-Metallized Plastic (CRH)'),
+    (4, 46, 'Fixed, Mica (CM, CMR)'), (4, 47, 'Fixed, Mica, Button (CB)'),
+    (4, 48,
+     'Fixed, Glass (CY, CYR)'), (4, 49,
+                                 'Fixed, Ceramic, General Purpose (CK, CKR)'),
+    (4, 50,
+     'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)'),
+    (4, 51, 'Fixed, Electrolytic, Tantalum, Solid (CSR)'),
+    (4, 52, 'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)'),
+    (4, 53, 'Fixed, Electrolytic, Aluminum (CU, CUR)'),
+    (4, 54,
+     'Fixed, Electrolytic (Dry), Aluminum (CE)'), (4, 55,
+                                                   'Variable, Ceramic (CV)'),
+    (4, 56, 'Variable, Piston Type (PC)'), (4, 57,
+                                            'Variable, Air Trimmer (CT)'),
+    (4, 58, 'Variable and Fixed, Gas or Vacuum (CG)'), (5, 62, 'Transformer'),
+    (5, 63, 'Coil'), (6, 64,
+                      'Mechanical'), (6, 65,
+                                      'Solid State'), (7, 67,
+                                                       'Toggle or Pushbutton'),
+    (7, 68, 'Sensitive'), (7, 69,
+                           'Rotary'), (7, 70,
+                                       'Thumbwheel'), (7, 71,
+                                                       'Circuit Breaker'),
+    (8, 72,
+     'Multi-Pin'), (8, 73,
+                    'PCB Edge'), (8, 74,
+                                  'IC Socket'), (8, 75,
+                                                 'Plated Through Hole (PTH)'),
+    (8, 76, 'Connection, Non-PTH'), (9, 77, 'Elapsed Time'), (9, 78, 'Panel'),
+    (10, 80, 'Crystal'), (10, 81,
+                          'Filter, Non-Tunable Electronic'), (10, 82,
+                                                              'Fuse'), (10, 83,
+                                                                        'Lamp')
+]
+
+RTK_TYPES = {
+    1: ('PLN', 'Planning', 'incident'),
+    2: ('CON', 'Concept', 'incident'),
+    3: ('RQMT', 'Requirement', 'incident'),
+    4: ('DES', 'Design', 'incident'),
+    5: ('COD', 'Coding', 'incident'),
+    6: ('DB', 'Database', 'incident'),
+    7: ('TI', 'Test Information', 'incident'),
+    8: ('MAN', 'Manuals', 'incident'),
+    9: ('OTH', 'Other', 'incident'),
+    10: ('FUN', 'Functional', 'requirement'),
+    11: ('PRF', 'Performance', 'requirement'),
+    12: ('REG', 'Regulatory', 'requirement'),
+    13: ('REL', 'Reliability', 'requirement'),
+    14: ('SAF', 'Safety', 'requirement'),
+    15: ('SVC', 'Serviceability', 'requirement'),
+    16: ('USE', 'Useability', 'requirement'),
+    17: ('DOE', 'Manufacturing Test, DOE', 'validation'),
+    18: ('ESS', 'Manufacturing Test, ESS', 'validation'),
+    19: ('HSS', 'Manufacturing Test, HASS', 'validation'),
+    20: ('PRT', 'Manufacturing Test, PRAT', 'validation'),
+    21: ('RAA', 'Reliability, Assessment', 'validation'),
+    22: ('RDA', 'Reliability, Durability Analysis', 'validation'),
+    23: ('RFF', 'Reliability, FFMEA', 'validation'),
+    24: ('RDF', 'Reliability, (D)FMEA', 'validation'),
+    25: ('RCA', 'Reliability, Root Cause Analysis', 'validation'),
+    26: ('RSA', 'Reliability, Survival Analysis', 'validation'),
+    27: ('ALT', 'Reliability Test, ALT', 'validation'),
+    28: ('RDT', 'Reliability Test, Demonstration', 'validation'),
+    29: ('HLT', 'Reliability Test, HALT', 'validation'),
+    30: ('RGT', 'Reliability Test, Growth', 'validation'),
+    31: ('FTA', 'Safety, Fault Tree Analysis', 'validation'),
+    32: ('PHA', 'Safety, Hazards Analysis', 'validation'),
+    33: ('EMA', 'System Engineering, Electromagnetic Analysis', 'validation'),
+    34: ('FEA', 'System Engineering, FEA', 'validation'),
+    35: ('2DM', 'System Engineering, 2D Model', 'validation'),
+    36: ('3DM', 'System Engineering, 3D Model', 'validation'),
+    37: ('SRD', 'System Engineering, Robust Design', 'validation'),
+    38: ('SCA', 'System Engineering, Sneak Circuit Analysis', 'validation'),
+    39: ('THA', 'System Engineering, Thermal Analysis', 'validation'),
+    40: ('TOL', 'System Engineering, Tolerance Analysis', 'validation'),
+    41: ('WCA', 'System Engineering, Worst Case Analysis', 'validation')
+}
+
+RTK_UNITS = {
+    0: ('lbf', 'Pounds Force', 'measurement'),
+    1: ('lbm', 'Pounds Mass', 'measurement'),
+    2: ('hrs', 'hours', 'measurement'),
+    3: ('N', 'Newtons', 'measurement'),
+    4: ('mins', 'minutes', 'measurement'),
+    5: ('secs', 'seconds', 'measurement'),
+    6: ('g', 'grams', 'measurement'),
+    7: ('oz', 'ounces', 'measurement'),
+    8: ('A', 'Amperes', 'measurement'),
+    9: ('V', 'Volts', 'measurement')
 }
 
 
 def create_common_db(**kwargs):
     """Create and populate the RTK Common database."""
-    from rtk.dao import (RTKSiteInfo, RTKUser, RTKGroup, RTKModel,
-                         RTKType, RTKCategory, RTKSubCategory,
-                         RTKManufacturer, RTKUnit, RTKMethod,
-                         RTKRPN,
+    import os
+    from datetime import date, timedelta
+
+    from rtk.dao import (RTKSiteInfo, RTKCategory, RTKCondition, RTKUser,
+                         RTKGroup, RTKModel, RTKType, RTKSubCategory,
+                         RTKManufacturer, RTKUnit, RTKMethod, RTKRPN,
                          RTKHazards, RTKStakeholders, RTKStatus, RTKCondition,
                          RTKFailureMode, RTKMeasurement, RTKLoadHistory)
 
+    __test = kwargs['test']
     uri = kwargs['database']
+
+    _cwd = os.getcwd()
+    try:
+        license_file = open(_cwd + '/license.key', 'r')
+        _license_key = license_file.read()[0]
+        _expire_date = license_file.read()[1]
+        license_file.close()
+    except IOError:
+        _license_key = '0000'
+        _expire_date = date.today() + timedelta(days=30)
 
     # Create and populate the RTK Common test database.
     engine = create_engine(uri, echo=False)
@@ -683,31 +695,29 @@ def create_common_db(**kwargs):
 
     # Create all the tables in the RTK Common database.
     RTKSiteInfo.__table__.create(bind=engine)
-    RTKUser.__table__.create(bind=engine)
-    RTKGroup.__table__.create(bind=engine)
-    RTKModel.__table__.create(bind=engine)
-    RTKType.__table__.create(bind=engine)
     RTKCategory.__table__.create(bind=engine)
-    RTKSubCategory.__table__.create(bind=engine)
-    RTKManufacturer.__table__.create(bind=engine)
-    RTKUnit.__table__.create(bind=engine)
-    RTKMethod.__table__.create(bind=engine)
-    RTKRPN.__table__.create(bind=engine)
-    RTKHazards.__table__.create(bind=engine)
-    RTKStakeholders.__table__.create(bind=engine)
-    RTKStatus.__table__.create(bind=engine)
     RTKCondition.__table__.create(bind=engine)
     RTKFailureMode.__table__.create(bind=engine)
-    RTKMeasurement.__table__.create(bind=engine)
+    RTKGroup.__table__.create(bind=engine)
+    RTKHazards.__table__.create(bind=engine)
     RTKLoadHistory.__table__.create(bind=engine)
+    RTKManufacturer.__table__.create(bind=engine)
+    RTKMeasurement.__table__.create(bind=engine)
+    RTKMethod.__table__.create(bind=engine)
+    RTKModel.__table__.create(bind=engine)
+    RTKRPN.__table__.create(bind=engine)
+    RTKStakeholders.__table__.create(bind=engine)
+    RTKStatus.__table__.create(bind=engine)
+    RTKSubCategory.__table__.create(bind=engine)
+    RTKType.__table__.create(bind=engine)
+    RTKUnit.__table__.create(bind=engine)
+    RTKUser.__table__.create(bind=engine)
 
-    # Create the site information table and add the product key.
+    # Add the product key and expiration date to the site info table.
     _site_info = RTKSiteInfo()
-    _site_info.product_key = '9490059723f3a743fb961d092d3283422f4f2d13'
+    _site_info.product_key = _license_key
+    _site_info.expire_on = _expire_date
     session.add(_site_info)
-
-    session.add(RTKUser())
-    session.add(RTKManufacturer())
 
     for __, _value in RTK_CATEGORIES.items():
         _record = RTKCategory()
@@ -723,37 +733,47 @@ def create_common_db(**kwargs):
         _record.description = _value[2]
         session.add(_record)
 
+    # TODO: Populate failure mode table.
+
+    # Environmental conditions, operating conditions, measurable parameters,
+    # and load histories for PoF analysis.
+    for __, _value in RTK_CONDITIONS.items():
+        _record = RTKCondition()
+        _record.description = _value[0]
+        _record.cond_type = _value[1]
+        session.add(_record)
+    for __, _value in RTK_MEASUREMENTS.items():
+        _record = RTKMeasurement()
+        _record.description = _value[0]
+        session.add(_record)
+    for __, _value in RTK_HISTORIES.items():
+        _record = RTKLoadHistory()
+        _record.description = _value[0]
+        session.add(_record)
+
+    # Workgroups and affinity groups.
     for __, _value in RTK_GROUPS.items():
         _record = RTKGroup()
         _record.description = _value[0]
         _record.group_type = _value[1]
         session.add(_record)
 
-    for __, _value in RTK_MODELS.items():
-        _record = RTKModel()
+    # Hazards for hazard analysis.
+    for __, _value in RTK_HAZARDS.items():
+        _record = RTKHazards()
+        _record.category = _value[0]
+        _record.subcategory = _value[1]
+        session.add(_record)
+
+    # Manufacturers.
+    for __, _value in RTK_MANUFACTURERS.items():
+        _record = RTKManufacturer()
         _record.description = _value[0]
-        _record.model_type = _value[1]
+        _record.location = _value[1]
+        _record.cage_code = _value[2]
         session.add(_record)
 
-    for __, _value in RTK_MODELS.items():
-        _record = RTKType()
-        _record.description = _value[0]
-        _record.model_type = _value[1]
-        session.add(_record)
-
-    for __, _value in RTK_DISTRIBUTIONS.items():
-        _record = RTKDistribution()
-        _record.description = _value[0]
-        _record.dist_type = _value[1]
-        session.add(_record)
-
-    for __, _value in RTK_UNITS.items():
-        _record = RTKUnit()
-        _record.code = _value[0]
-        _record.description = _value[1]
-        _record.unit_type = _value[2]
-        session.add(_record)
-
+    # Detection methods for incident reports.
     for __, _value in RTK_METHODS.items():
         _record = RTKMethod()
         _record.name = _value[0]
@@ -761,6 +781,14 @@ def create_common_db(**kwargs):
         _record.method_type = _value[2]
         session.add(_record)
 
+    # Damage models.
+    for __, _value in RTK_MODELS.items():
+        _record = RTKModel()
+        _record.description = _value[0]
+        _record.model_type = _value[1]
+        session.add(_record)
+
+    # This table needs to be moved to the RTK Program database.
     for __, _value in RTK_RPNS.items():
         _record = RTKRPN()
         _record.name = _value[0]
@@ -769,25 +797,13 @@ def create_common_db(**kwargs):
         _record.value = _value[3]
         session.add(_record)
 
-    for __, _value in RTK_RPNS.items():
-        _record = RTKRPN()
-        _record.name = _value[0]
-        _record.description = _value[1]
-        _record.rpn_type = _value[2]
-        _record.value = _value[3]
-        session.add(_record)
-
-    for __, _value in RTK_HAZARDS.items():
-        _record = RTKHazards()
-        _record.category = _value[0]
-        _record.subcategory = _value[1]
-        session.add(_record)
-
+    # Stakeholders.
     for __, _value in RTK_STAKEHOLDERS.items():
         _record = RTKStakeholders()
         _record.stakeholder = _value[0]
         session.add(_record)
 
+    # Action and incident statuses.
     for __, _value in RTK_STATUSES.items():
         _record = RTKStatus()
         _record.name = _value[0]
@@ -795,21 +811,43 @@ def create_common_db(**kwargs):
         _record.status_type = _value[2]
         session.add(_record)
 
-    for __, _value in RTK_CONDITIONS.items():
-        _record = RTKCondition()
+    # Incident, requirement, and validation types.
+    for __, _value in RTK_TYPES.items():
+        _record = RTKType()
         _record.description = _value[0]
-        _record.cond_type = _value[1]
+        _record.model_type = _value[1]
         session.add(_record)
 
-    for __, _value in RTK_MEASUREMENTS.items():
-        _record = RTKMeasurement()
-        _record.description = _value[0]
+    # Measurement units.
+    for __, _value in RTK_UNITS.items():
+        _record = RTKUnit()
+        _record.code = _value[0]
+        _record.description = _value[1]
+        _record.unit_type = _value[2]
         session.add(_record)
 
-    for __, _value in RTK_HISTORIES.items():
-        _record = RTKLoadHistory()
-        _record.description = _value[0]
-        session.add(_record)
+    _user = RTKUser()
+    if not __test:
+        _yn = raw_input(
+            _(u"Would you like to add an RTK Administrator? ([y]/n): ")) or 'y'
+
+        if _yn.lower() == 'y':
+            _user.user_lname = raw_input(
+                _(u"Enter the RTK Administrator's last name (surname): "))
+            _user.user_fname = raw_input(
+                _(u"Enter the RTK Administrator's first name (given name): "))
+            _user.user_email = raw_input(
+                _(u"Enter the RTK Administrator's e-mail address: "))
+            _user.user_phone = raw_input(
+                _(u"Enter the RTK Administrator's phone number: "))
+            _user.user_group_id = '1'
+    else:
+        _user.user_lname = 'Tester'
+        _user.user_fname = 'Johnny'
+        _user.user_email = 'tester.johnny@reliaqual.com'
+        _user.user_phone = '+1.269.867.5309'
+        _user.user_group_id = '1'
+    session.add(_user)
 
     session.commit()
 

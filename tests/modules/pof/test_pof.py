@@ -73,7 +73,7 @@ def test_select_mechanism(test_dao):
     _entity = DUT.select('0.1')
 
     assert isinstance(_entity, RTKMechanism)
-    assert _entity.description == 'Test Failure Mechanism #1'
+    assert _entity.description == 'Test Failure Mechanism #1 for Mode ID 4'
 
 
 @pytest.mark.integration
