@@ -37,7 +37,6 @@ PART_STRESS_PIE = [
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("environment_active_id",
                          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
@@ -57,7 +56,6 @@ def test_calculate_mil_hdbk_217f_part_count(environment_active_id):
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -73,7 +71,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -89,7 +86,6 @@ def test_calculate_mil_hdbk_217f_part_stress():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     """calculate_mil_hdbk_217f_part_stress() should return a zero active hazard rate and a non-empty message when the environment ID is missing."""

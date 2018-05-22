@@ -326,10 +326,9 @@ class Model(Testing):  # pylint: disable=R0902, R0904
                 elif _time == int(self.lst_p_test_time[0]):
                     _ideal.append(np.nan)
                 else:
-                    _ideal.append(
-                        (self.lst_i_mtbfa[0] *
-                         (float(_time) / self.lst_p_test_time[0]
-                          )**self.avg_growth) / (1.0 - self.avg_growth))
+                    _ideal.append((self.lst_i_mtbfa[0] *
+                                   (float(_time) / self.lst_p_test_time[0])**
+                                   self.avg_growth) / (1.0 - self.avg_growth))
 
             # Convert to failure intensity if that has been called for.
             if not mtbf:
@@ -476,9 +475,8 @@ class Model(Testing):  # pylint: disable=R0902, R0904
         # per week.
         for _phase in range(self.n_phases):
             # Assess logistics of test plan.
-            _weeks = (
-                self.lst_p_end_date[_phase] - self.lst_p_start_date[_phase]
-            ) / 7.0
+            _weeks = (self.lst_p_end_date[_phase] -
+                      self.lst_p_start_date[_phase]) / 7.0
 
             try:
                 self.lst_p_tpu[_phase] = self.lst_p_test_time[_phase] / \

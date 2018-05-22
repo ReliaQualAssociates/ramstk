@@ -40,7 +40,6 @@ PART_COUNT_LAMBDA_B = {
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("application_id", [1, 2])
 @pytest.mark.parametrize("environment_active_id",
@@ -53,8 +52,8 @@ def test_calculate_mil_hdbk_217f_part_count(application_id,
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     try:
-        lambda_b = PART_COUNT_LAMBDA_B[application_id][environment_active_id
-                                                       - 1]
+        lambda_b = PART_COUNT_LAMBDA_B[application_id][environment_active_id -
+                                                       1]
     except (KeyError, IndexError):
         lambda_b = 0.0
 
@@ -72,7 +71,6 @@ def test_calculate_mil_hdbk_217f_part_count(application_id,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -91,7 +89,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""

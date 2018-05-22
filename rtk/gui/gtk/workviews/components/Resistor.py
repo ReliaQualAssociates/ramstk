@@ -136,7 +136,8 @@ class ResistorAssessmentInputs(AssessmentInputs):
                                 resistor.
         :param int subcategory_id: the ID of the resistor subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id, subcategory_id)
+        AssessmentInputs.__init__(self, controller, hardware_id,
+                                  subcategory_id)
 
         # Initialize private dictionary attributes.
 
@@ -235,7 +236,8 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
         # Load the style RTKComboBox().
         try:
-            _data = self._dic_styles[_attributes['subcategory_id']][_attributes['specification_id']]
+            _data = self._dic_styles[_attributes['subcategory_id']][
+                _attributes['specification_id']]
         except (KeyError, IndexError):
             _data = []
         self.cmbStyle.do_load_combo(_data)
@@ -521,7 +523,8 @@ class ResistorAssessmentResults(AssessmentResults):
                                 resistor.
         :param int subcategory_id: the ID of the resistor subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id, subcategory_id)
+        AssessmentResults.__init__(self, controller, hardware_id,
+                                   subcategory_id)
 
         # Initialize private dictionary attributes.
 
@@ -534,8 +537,9 @@ class ResistorAssessmentResults(AssessmentResults):
         self._lst_labels.append(u"\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
-        self._lblModel.set_tooltip_markup(_(u"The assessment model used to calculate the resistor "
-                      u"failure rate."))
+        self._lblModel.set_tooltip_markup(
+            _(u"The assessment model used to calculate the resistor "
+              u"failure rate."))
 
         # Initialize public dictionary attributes.
 

@@ -545,7 +545,8 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         """
         RTKDataModel.select_all(self)
 
-        _mechanisms = self.dtm_mechanism.do_select_all(parent_id=parent_id).nodes
+        _mechanisms = self.dtm_mechanism.do_select_all(
+            parent_id=parent_id).nodes
 
         for _key in _mechanisms:
             _mechanism = _mechanisms[_key].data

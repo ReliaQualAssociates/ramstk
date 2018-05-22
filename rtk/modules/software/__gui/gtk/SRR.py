@@ -514,8 +514,8 @@ class RiskAnalysis(gtk.VPaned):
         _fixed2.put(self.chkSRRQCQ27, _x_pos, _y_pos2[27])
 
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _("Requirements\nReview") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _("Requirements\nReview") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_angle(0)

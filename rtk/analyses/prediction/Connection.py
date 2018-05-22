@@ -349,19 +349,19 @@ def calculate_217f_part_stress(**attributes):
 
     # Calculate the active hazard rate.
     if attributes['subcategory_id'] == 3:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piP'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piP'] * attributes['piE']
     elif attributes['subcategory_id'] == 4:
         attributes['hazard_rate_active'] = attributes['lambda_b'] * (
             attributes['n_wave_soldered'] * attributes['piC'] +
             attributes['n_hand_soldered'] *
             (attributes['piC'] + 13.0)) * attributes['piQ'] * attributes['piE']
     elif attributes['subcategory_id'] == 5:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
     else:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piK'] * attributes['piP'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piK'] * attributes['piP'] * attributes['piE']
 
     return attributes, _msg
 
@@ -433,6 +433,7 @@ def overstressed(**attributes):
     attributes['reason'] = _reason
 
     return attributes
+
 
 def do_calculate_insert_temperature(**attributes):
     """Calculate the insert temperature."""

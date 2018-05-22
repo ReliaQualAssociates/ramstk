@@ -761,8 +761,8 @@ class BoM(object):
         """
 
         for _software in self.dicSoftware.values():
-            (_results, _error_code) = self.save_software_item(
-                _software.software_id)
+            (_results,
+             _error_code) = self.save_software_item(_software.software_id)
 
         return False
 

@@ -20,8 +20,6 @@ __copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_cause_create(test_dao):
     """ __init__() should return instance of Cause data model. """
     DUT = dtmCause(test_dao)
@@ -31,8 +29,6 @@ def test_cause_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_do_select_all(test_dao):
     """ do_select_all() should return a Tree() object populated with RTKCause instances on success. """
     DUT = dtmCause(test_dao)
@@ -43,8 +39,6 @@ def test_do_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select(test_dao):
     """ select() should return an instance of the RTKCause data model on success. """
     DUT = dtmCause(test_dao)
@@ -57,8 +51,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Cause ID is requested. """
     DUT = dtmCause(test_dao)
@@ -69,8 +61,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_insert(test_dao):
     """ insert() should return a zero error code on success when inserting a hardware failure Cause. """
     DUT = dtmCause(test_dao)
@@ -84,8 +74,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmCause(test_dao)
@@ -99,8 +87,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Cause ID that doesn't exist. """
     DUT = dtmCause(test_dao)
@@ -114,8 +100,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmCause(test_dao)
@@ -131,8 +115,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Cause ID that doesn't exist. """
     DUT = dtmCause(test_dao)
@@ -145,8 +127,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmCause(test_dao)

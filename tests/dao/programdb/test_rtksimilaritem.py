@@ -74,9 +74,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_rtkallocation_create(test_dao):
     """__init__() should create an RTKSimilarItem model."""
     _session = test_dao.RTK_SESSION(
@@ -145,9 +142,6 @@ def test_rtkallocation_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_get_attributes(test_dao):
     """get_attributes() should return a dict of attribute values."""
     _session = test_dao.RTK_SESSION(
@@ -215,9 +209,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_set_attributes(test_dao):
     """set_attributes() should return a zero error code on success."""
     _session = test_dao.RTK_SESSION(
@@ -231,9 +222,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_set_attributes_too_few_passed(test_dao):
     """set_attributes() should return a 40 error code when passed a dict with missing attributes."""
     _session = test_dao.RTK_SESSION(
@@ -302,9 +290,6 @@ def test_set_attributes_too_few_passed(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_topic_633(test_dao):
     """topic_633() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -327,9 +312,6 @@ def test_topic_633(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_topic_633_quality_key_error(test_dao):
     """topic_633() should return True when passed a quality ID that isn't in the dict."""
     _session = test_dao.RTK_SESSION(
@@ -352,9 +334,6 @@ def test_topic_633_quality_key_error(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_topic_633_environment_key_error(test_dao):
     """topic_633() should return True when passed an environment ID that isn't in the dict."""
     _session = test_dao.RTK_SESSION(
@@ -377,9 +356,6 @@ def test_topic_633_environment_key_error(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_topic_633_temperature_key_error(test_dao):
     """topic_633() should return True when passed a temperature that can't be converted to a key in the dict."""
     _session = test_dao.RTK_SESSION(
@@ -402,9 +378,6 @@ def test_topic_633_temperature_key_error(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_user_defined(test_dao):
     """user_defined() should return False on success."""
     _session = test_dao.RTK_SESSION(

@@ -52,7 +52,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_create_data_model(test_dao):
     """ __init__() should return a Revision data model. """
     DUT = dtmRevision(test_dao)
@@ -63,7 +62,6 @@ def test_create_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_select_all(test_dao):
     """ select_all() should return a Tree() object populated with RTKRevision instances on success. """
     DUT = dtmRevision(test_dao)
@@ -74,7 +72,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_select(test_dao):
     """  select() should return an instance of the RTKRevision data model on success. """
     DUT = dtmRevision(test_dao)
@@ -88,7 +85,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Revision ID is requested. """
     DUT = dtmRevision(test_dao)
@@ -100,7 +96,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_insert(test_dao):
     """ insert() should return False on success. """
     DUT = dtmRevision(test_dao)
@@ -115,7 +110,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
@@ -130,7 +124,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Revision ID that doesn't exist. """
     DUT = dtmRevision(test_dao)
@@ -144,7 +137,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
@@ -160,7 +152,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Revision ID that doesn't exist. """
     DUT = dtmRevision(test_dao)
@@ -174,7 +165,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
@@ -187,7 +177,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_calculate_hazard_rate(test_dao):
     """ calculate_hazard_rate() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
@@ -207,7 +196,6 @@ def test_calculate_hazard_rate(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_calculate_mtbf(test_dao):
     """ calculate_mtbf() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
@@ -228,7 +216,6 @@ def test_calculate_mtbf(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_calculate_reliability_divide_by_zero(test_dao):
     """ calculate_reliability() should return a non-zero error code when attempting to divide by zero. """
     DUT = dtmRevision(test_dao)
@@ -248,7 +235,6 @@ def test_calculate_reliability_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_calculate_availability(test_dao):
     """ calculate_availability() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
@@ -271,7 +257,6 @@ def test_calculate_availability(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_calculate_availability_divide_by_zero(test_dao):
     """ calculate_availability() should return a non-zero error code when attempting to divide by zero. """
     DUT = dtmRevision(test_dao)
@@ -290,7 +275,6 @@ def test_calculate_availability_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_calculate_costs(test_dao):
     """ calculate_costs() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
@@ -309,7 +293,6 @@ def test_calculate_costs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_calculate_costs_divide_by_zero(test_dao):
     """ calculate_costs() should return a non-zero error code when attempting to divide by zero. """
     DUT = dtmRevision(test_dao)
@@ -327,7 +310,6 @@ def test_calculate_costs_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_create_data_controller(test_dao, test_configuration):
     """ __init__() should return a Revision Data Controller. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -337,7 +319,6 @@ def test_create_data_controller(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RTKRevision models. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -347,7 +328,6 @@ def test_request_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_select(test_dao, test_configuration):
     """ request_select() should return an RTKRevision model. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -359,7 +339,6 @@ def test_request_select(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_non_existent_id(test_dao, test_configuration):
     """ request_select() should return None when requesting a Revision that doesn't exist. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -369,7 +348,6 @@ def test_request_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -382,7 +360,6 @@ def test_request_get_attributes(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -395,7 +372,6 @@ def test_request_set_attributes(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_last_id(test_dao, test_configuration):
     """ request_last_id() should return the last Revision ID used in the RTK Program database. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -407,7 +383,6 @@ def test_request_last_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_insert(test_dao, test_configuration):
     """ request_insert() should return False on success."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -419,7 +394,6 @@ def test_request_insert(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_delete(test_dao, test_configuration):
     """ request_delete() should return False on success."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -430,7 +404,6 @@ def test_request_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_delete_non_existent_id(test_dao, test_configuration):
     """ request_delete() should return True when attempting to delete a non-existent Revision."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -440,7 +413,6 @@ def test_request_delete_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_update(test_dao, test_configuration):
     """ request_update() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -450,7 +422,6 @@ def test_request_update(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_update_non_existent_id(test_dao, test_configuration):
     """ request_update() should return True when attempting to save a non-existent Revision. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -460,7 +431,6 @@ def test_request_update_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_update_all(test_dao, test_configuration):
     """ request_update_all() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -470,7 +440,6 @@ def test_request_update_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_calculate_reliability(test_dao, test_configuration):
     """ request_calculate_reliability() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -500,7 +469,6 @@ def test_request_calculate_reliability(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_calculate_availability(test_dao, test_configuration):
     """ request_calculate_availability() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
@@ -526,7 +494,6 @@ def test_request_calculate_availability(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
 def test_request_calculate_cost(test_dao, test_configuration):
     """ request_calculate_cost() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)

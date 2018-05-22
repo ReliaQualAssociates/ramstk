@@ -81,9 +81,12 @@ def fisher_information(model, p0, X, noise=1.0):  # pylint: disable=C0103
     _D = np.zeros((len(p0), X.size))
 
     for i, argname in enumerate(_labels):
-        _D[i, :] = [misc.derivative(
-            lambda p: model(x, **dict(_p0dict, **{argname: p})),
-            _p0dict[argname], dx=1.0e-6) for x in X]
+        _D[i, :] = [
+            misc.derivative(
+                lambda p: model(x, **dict(_p0dict, **{argname: p})),
+                _p0dict[argname],
+                dx=1.0e-6) for x in X
+        ]
 
     _fisher = 1.0 / noise**2 * np.einsum('mk, nk', _D, _D)
 
@@ -256,8 +259,8 @@ class Exponential(object):
         _interval_n = data[np.where(
             np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
-        _interval_ll = np.sum(_interval_n * ((-theta * _interval_lt) -
-                                             (-theta * _interval_rt)))
+        _interval_ll = np.sum(
+            _interval_n * ((-theta * _interval_lt) - (-theta * _interval_rt)))
 
         _logLik = _event_ll - _right_ll + _interval_ll
 
@@ -832,9 +835,8 @@ class Gaussian(object):
         # Calculate the value of the log-likelihood for the event observations.
         _event_t = data[np.where(data[:, 3] == 1)][:, 1]
         _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-        _event_sigma = np.sum(_event_n *
-                              (((_event_t - pars[0]) / pars[1]**3.0) -
-                               (1.0 / pars[1])))
+        _event_sigma = np.sum(_event_n * ((
+            (_event_t - pars[0]) / pars[1]**3.0) - (1.0 / pars[1])))
         _event_mu = (1.0 / pars[1]**2.0) * np.sum(_event_n *
                                                   (_event_t - pars[0]))
 
@@ -1302,9 +1304,8 @@ class LogNormal(object):
         # Calculate the value of the log-likelihood for the event observations.
         _event_t = data[np.where(data[:, 3] == 1)][:, 1]
         _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-        _event_sigma = np.sum(_event_n *
-                              (((np.log(_event_t) - pars[0]) / pars[1]**3.0) -
-                               (1.0 / pars[1])))
+        _event_sigma = np.sum(_event_n * ((
+            (np.log(_event_t) - pars[0]) / pars[1]**3.0) - (1.0 / pars[1])))
         _event_mu = (1.0 / pars[1]**2.0) * np.sum(_event_n *
                                                   (np.log(_event_t) - pars[0]))
 
@@ -1630,10 +1631,9 @@ class Weibull(object):
         # Calculate the value of the log-likelihood for the event observations.
         _event_t = data[np.where(data[:, 3] == 1)][:, 1]
         _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-        _event_ll = np.sum(_event_n * np.log(
-            (pars[1] / pars[0]) *
-            ((_event_t / pars[0])**
-             (pars[1] - 1.0)) * np.exp(-(_event_t / pars[0])**pars[1])))
+        _event_ll = np.sum(_event_n * np.log((pars[1] / pars[0]) * (
+            (_event_t / pars[0])**
+            (pars[1] - 1.0)) * np.exp(-(_event_t / pars[0])**pars[1])))
 
         # Calculate the value of the log-likelihood for the right-censored
         # observations.

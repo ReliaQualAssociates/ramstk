@@ -30,8 +30,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_create_data_model(test_dao):
     """ __init__ should return instance of a FailureDefition data model. """
     DUT = dtmFailureDefinition(test_dao)
@@ -42,8 +40,6 @@ def test_create_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_select_all(test_dao):
     """ select_all() should return a Tree() object populated with RTKFailureDefinitions instances on success. """
     DUT = dtmFailureDefinition(test_dao)
@@ -54,8 +50,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_select(test_dao):
     """ select() should return an instance of the RTKFailureDefinition data model on success. """
     DUT = dtmFailureDefinition(test_dao)
@@ -69,8 +63,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Definition ID is requested. """
     DUT = dtmFailureDefinition(test_dao)
@@ -80,8 +72,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_insert(test_dao):
     """ insert() should return False on success. """
     DUT = dtmFailureDefinition(test_dao)
@@ -96,8 +86,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmFailureDefinition(test_dao)
@@ -111,8 +99,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Revision ID that doesn't exist. """
     DUT = dtmFailureDefinition(test_dao)
@@ -126,8 +112,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmFailureDefinition(test_dao)
@@ -143,8 +127,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Failure Definition ID that doesn't exist. """
     DUT = dtmFailureDefinition(test_dao)
@@ -158,8 +140,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmFailureDefinition(test_dao)
@@ -172,8 +152,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_controller_create(test_dao, test_configuration):
     """ __init__() should return a Failure Definition Data Controller. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -183,8 +161,6 @@ def test_controller_create(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RTKFailureDefinition models. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -194,8 +170,6 @@ def test_request_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_select(test_dao, test_configuration):
     """ request_select() should return an RTKFailureDefinition model. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -205,8 +179,6 @@ def test_request_select(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_non_existent_id(test_dao, test_configuration):
     """ request_select() should return None when requesting a Failure Definition that doesn't exist. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -215,8 +187,6 @@ def test_request_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -229,8 +199,6 @@ def test_request_get_attributes(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -243,8 +211,6 @@ def test_request_set_attributes(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_insert(test_dao, test_configuration):
     """ request_insert() should return False on success. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -254,8 +220,6 @@ def test_request_insert(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_last_id(test_dao, test_configuration):
     """ request_last_id() should return the last Revision ID used in the RTK Program database. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -265,8 +229,6 @@ def test_request_last_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_delete(test_dao, test_configuration):
     """ request_delete() should return False on success. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -276,8 +238,6 @@ def test_request_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_delete_non_existent_id(test_dao, test_configuration):
     """ request_delete() should return True when attempting to delete a non-existent Failure Definition. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -287,8 +247,6 @@ def test_request_delete_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_update(test_dao, test_configuration):
     """ request_update() should return False on success. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -298,8 +256,6 @@ def test_request_update(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_update_non_existent_id(test_dao, test_configuration):
     """ request_update() should return True when attempting to save a non-existent Failure Definition. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
@@ -309,8 +265,6 @@ def test_request_update_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.failure_definition
 def test_request_update_all(test_dao, test_configuration):
     """ request_update_all() should return False on success. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)

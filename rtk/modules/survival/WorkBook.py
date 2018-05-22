@@ -608,8 +608,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Analysis\nInputs") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Analysis\nInputs") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()

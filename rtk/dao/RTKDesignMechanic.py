@@ -6,7 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKDesignMechanic Table Module."""  # pragma: no cover
 
-
 from sqlalchemy import Column, Float, ForeignKey, Integer  # pragma: no cover
 from sqlalchemy.orm import relationship
 
@@ -88,8 +87,7 @@ class RTKDesignMechanic(RTK_BASE):
     width_minimum = Column('fld_width_minimum', Float, default=0.0)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware',
-                            back_populates='design_mechanic')
+    hardware = relationship('RTKHardware', back_populates='design_mechanic')
 
     def get_attributes(self):
         """

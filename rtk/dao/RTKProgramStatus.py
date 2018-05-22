@@ -9,11 +9,11 @@
 from datetime import date
 
 # Import other RTK modules.
-from rtk.Utilities import none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 
 class RTKProgramStatus(RTK_BASE):

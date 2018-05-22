@@ -55,11 +55,13 @@ class RTKOpLoad(RTK_BASE):
         :rtype: dict
         """
 
-        _attributes = {'mechanism_id': self.mechanism_id,
-        'load_id':self.load_id,
-        'description':self.description,
-        'damage_model':self.damage_model,
-        'priority_id':self.priority_id}
+        _attributes = {
+            'mechanism_id': self.mechanism_id,
+            'load_id': self.load_id,
+            'description': self.description,
+            'damage_model': self.damage_model,
+            'priority_id': self.priority_id
+        }
 
         return _attributes
 
@@ -76,14 +78,16 @@ class RTKOpLoad(RTK_BASE):
                format(self.load_id)
 
         try:
-            self.description = str(none_to_default(attributes['description'], ''))
-            self.damage_model = int(none_to_default(attributes['damage_model'], 0))
-            self.priority_id = int(none_to_default(attributes['priority_id'], 0))
+            self.description = str(
+                none_to_default(attributes['description'], ''))
+            self.damage_model = int(
+                none_to_default(attributes['damage_model'], 0))
+            self.priority_id = int(
+                none_to_default(attributes['priority_id'], 0))
         except KeyError as _err:
             _error_code = 40
             _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
                    "RTKOpLoad.set_attributes().".format(_err)
-
 
         return _error_code, _msg

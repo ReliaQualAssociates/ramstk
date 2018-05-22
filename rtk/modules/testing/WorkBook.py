@@ -459,8 +459,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"General\nData") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"General\nData") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -493,8 +493,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Test\nPlanning\nInputs") + "</span>")
+        _label.set_markup("<span weight='bold'>" +
+                          _(u"Test\nPlanning\nInputs") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -526,8 +526,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
         self._obj_feasibility.show_all()
 
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Test\nFeasibility") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Test\nFeasibility") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -561,8 +561,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Test\nResults") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Test\nResults") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()

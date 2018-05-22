@@ -16,25 +16,21 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
-
 ATTRIBUTES = {
-        'rpn_new': 0,
-        'rpn_occurrence_new': 0,
-        'cause_id': 1,
-        'description': 'Test Failure Cause #1',
-        'rpn_occurrence': 0,
-        'rpn_detection_new': 0,
-        'rpn_detection': 0,
-        'mechanism_id': 1,
-        'mode_id': 1,
-        'rpn': 0
-    }
+    'rpn_new': 0,
+    'rpn_occurrence_new': 0,
+    'cause_id': 1,
+    'description': 'Test Failure Cause #1',
+    'rpn_occurrence': 0,
+    'rpn_detection_new': 0,
+    'rpn_detection': 0,
+    'mechanism_id': 1,
+    'mode_id': 1,
+    'rpn': 0
+}
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_rtkcause_create(test_dao):
     """ __init__() should create an RTKCause model. """
     _session = test_dao.RTK_SESSION(
@@ -45,9 +41,9 @@ def test_rtkcause_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_cause'
-    assert DUT.mode_id == 4
+    assert DUT.mode_id == 1
     assert DUT.cause_id == 1
-    assert DUT.description == 'Test Failure Cause #1'
+    assert DUT.description == 'Test Functional FMEA Cause #1 for Mode ID 1'
     assert DUT.rpn == 0
     assert DUT.rpn_detection == 0
     assert DUT.rpn_detection_new == 0
@@ -57,9 +53,6 @@ def test_rtkcause_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_get_attributes(test_dao):
     """ get_attributes() should return a tuple of attribute values. """
     _session = test_dao.RTK_SESSION(
@@ -69,10 +62,11 @@ def test_get_attributes(test_dao):
     _attributes = DUT.get_attributes()
 
     assert isinstance(_attributes, dict)
-    assert _attributes['mode_id'] == 4
-    assert _attributes['mechanism_id'] == 1
+    assert _attributes['mode_id'] == 1
+    assert _attributes['mechanism_id'] == -1
     assert _attributes['cause_id'] == 1
-    assert _attributes['description'] == 'Test Failure Cause #1'
+    assert _attributes['description'] == ('Test Functional FMEA Cause #1 for '
+                                          'Mode ID 1')
     assert _attributes['rpn'] == 0
     assert _attributes['rpn_detection'] == 0
     assert _attributes['rpn_detection_new'] == 0
@@ -82,9 +76,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -99,9 +90,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_set_attributes_missing_key(test_dao):
     """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
     _session = test_dao.RTK_SESSION(
@@ -120,9 +108,6 @@ def test_set_attributes_missing_key(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_rpn_out_of_range_severity_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < severity inputs < 0. """
     _session = test_dao.RTK_SESSION(
@@ -136,9 +121,6 @@ def test_calculate_rpn_out_of_range_severity_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_rpn_out_of_range_occurrence_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < occurrence inputs < 0. """
     _session = test_dao.RTK_SESSION(
@@ -152,9 +134,6 @@ def test_calculate_rpn_out_of_range_occurrence_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_rpn_out_of_range_new_occurrence_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < new occurrence inputs < 0. """
     _session = test_dao.RTK_SESSION(
@@ -168,9 +147,6 @@ def test_calculate_rpn_out_of_range_new_occurrence_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_rpn_out_of_range_detection_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < detection inputs < 0. """
     _session = test_dao.RTK_SESSION(
@@ -184,9 +160,6 @@ def test_calculate_rpn_out_of_range_detection_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_rpn_out_of_range_new_detection_inputs(test_dao):
     """ calculate_rpn raises OutOfRangeError for 11 < new detection inputs < 0. """
     _session = test_dao.RTK_SESSION(

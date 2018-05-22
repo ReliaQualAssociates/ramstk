@@ -105,7 +105,8 @@ def calculate_217f_part_stress(**attributes):
             'lamp, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.
-    attributes['hazard_rate_active'] = (attributes['lambda_b'] * attributes[
-        'piU'] * attributes['piA'] * attributes['piE'])
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b'] * attributes['piU'] * attributes['piA'] *
+        attributes['piE'])
 
     return attributes, _msg

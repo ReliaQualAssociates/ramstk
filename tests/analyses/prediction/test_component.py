@@ -21,7 +21,6 @@ ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("category_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 def test_calculate_mil_217f_part_count(category_id):
@@ -44,7 +43,6 @@ def test_calculate_mil_217f_part_count(category_id):
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("category_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
 def test_calculate_mil_217f_part_stress(category_id):
@@ -67,7 +65,6 @@ def test_calculate_mil_217f_part_stress(category_id):
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("category_id", [1, 2, 3, 4, 5, 6, 7, 8])
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -119,7 +116,6 @@ def test_calculate_dormant_hazard_rate(category_id, subcategory_id,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_zero_mult_adj():
     """calculate() should return an error message when the multiplicative adjustment factor is <= 0.0."""
@@ -137,7 +133,6 @@ def test_calculate_zero_mult_adj():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_zero_duty_cycle():
     """calculate() should return an error message when the duty cycle factor is <= 0.0."""
@@ -156,7 +151,6 @@ def test_calculate_zero_duty_cycle():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_zero_quantity():
     """calculate() should return an error message when the quantity is < 1."""

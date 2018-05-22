@@ -22,8 +22,6 @@ __copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_create_data_model(test_dao):
     """ __init__() should return instance of Action data model. """
     DUT = dtmAction(test_dao)
@@ -33,8 +31,6 @@ def test_create_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_do_select_all_functional(test_dao):
     """ do_select_all() should return a Tree() object populated with RTKAction instances on success. """
     DUT = dtmAction(test_dao)
@@ -45,8 +41,6 @@ def test_do_select_all_functional(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_do_select_all_hardware(test_dao):
     """ do_select_all() should return a Tree() object populated with RTKAction instances on success. """
     DUT = dtmAction(test_dao)
@@ -57,8 +51,6 @@ def test_do_select_all_hardware(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select(test_dao):
     """ select() should return an instance of the RTKAction data model on success. """
     DUT = dtmAction(test_dao)
@@ -71,8 +63,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Action ID is requested. """
     DUT = dtmAction(test_dao)
@@ -83,8 +73,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_insert_functional_mode(test_dao):
     """ insert() should return False on success when inserting a functional FMEA action. """
     DUT = dtmAction(test_dao)
@@ -98,8 +86,6 @@ def test_insert_functional_mode(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_insert_hardware_mode(test_dao):
     """ insert() should return False on success when inserting a hardware FMEA action. """
     DUT = dtmAction(test_dao)
@@ -113,8 +99,6 @@ def test_insert_hardware_mode(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmAction(test_dao)
@@ -128,8 +112,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Mode ID that doesn't exist. """
     DUT = dtmAction(test_dao)
@@ -143,8 +125,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmAction(test_dao)
@@ -161,8 +141,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed an Action ID that doesn't exist. """
     DUT = dtmAction(test_dao)
@@ -175,8 +153,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmAction(test_dao)

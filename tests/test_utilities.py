@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Utilities module algorithms and models."""
 
+import os
+
 from datetime import datetime
 import logging
 
@@ -27,7 +29,7 @@ def test_create_logger():
     _log = create_logger("test.debug", logging.DEBUG, '/tmp/test.log')
 
     assert isinstance(_log, logging.Logger)
-    assert isfile('/tmp/test.log')
+    assert os.path.isfile('/tmp/test.log')
 
 
 def test_create_logger_to_tty():
@@ -35,7 +37,7 @@ def test_create_logger_to_tty():
     _log = create_logger("test.debug", logging.DEBUG, '', True)
 
     assert isinstance(_log, logging.Logger)
-    assert isfile('/tmp/test.log')
+    assert os.path.isfile('/tmp/test.log')
 
 
 def test_split_string():

@@ -8,10 +8,9 @@
 """This is the test class for testing the RTK module algorithms and models."""
 
 import os
-from os.path import isfile
 
 import logging
-
+import pdb
 from treelib import Tree
 
 import pytest
@@ -41,9 +40,9 @@ def test_initialize_logger():
     assert isinstance(_configuration.RTK_DEBUG_LOG, logging.Logger)
     assert isinstance(_configuration.RTK_USER_LOG, logging.Logger)
     assert isinstance(_configuration.RTK_IMPORT_LOG, logging.Logger)
-    assert isfile('/tmp/RTK_debug.log')
-    assert isfile('/tmp/RTK_user.log')
-    assert isfile('/tmp/RTK_import.log')
+    assert os.path.isfile('/tmp/RTK_debug.log')
+    assert os.path.isfile('/tmp/RTK_user.log')
+    assert os.path.isfile('/tmp/RTK_import.log')
 
 
 @pytest.mark.integration
@@ -58,7 +57,7 @@ def test_initialize_model(test_common_dao, test_dao):
     assert DUT.program_session is None
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_create_new_program(test_common_dao, test_dao):
     """ create_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
@@ -85,7 +84,7 @@ def test_create_new_program(test_common_dao, test_dao):
         os.remove('/tmp/BigAssTestDB.rtk')
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_create_new_program_failed(test_common_dao, test_dao):
     """ create_program() should return a non-zero error code on failure. """
     DUT = Model(test_common_dao, test_dao)
@@ -109,7 +108,7 @@ def test_create_new_program_failed(test_common_dao, test_dao):
                     'sqlite:///tmp/BigAssTestDB.rtk.')
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_open_program(test_common_dao, test_dao):
     """ open_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
@@ -836,7 +835,7 @@ def test_request_load_globals():
     assert not DUT.request_load_globals()
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_request_create_program():
     """ request_create_program() should return False on success. """
     DUT = RTK(test=True)
@@ -852,7 +851,7 @@ def test_request_create_program():
     assert not DUT.request_create_program()
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_request_open_program():
     """ request_open_program() should return False on success. """
     DUT = RTK(test=True)
@@ -902,7 +901,7 @@ def test_request_open_program():
     }
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_request_save_program():
     """ request_save_program() should return False on success. """
     DUT = RTK(test=True)
@@ -919,7 +918,7 @@ def test_request_save_program():
     assert not DUT.request_save_program()
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_request_close_program():
     """ request_close_program() should return False on success. """
     DUT = RTK(test=True)

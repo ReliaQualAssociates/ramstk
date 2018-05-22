@@ -441,8 +441,8 @@ class Results(gtk.HPaned):  # pylint: disable=R0902, R0904
             self.tvwReliability.append_column(_column)
 
         # Insert the tab.
-        self.lblPage.set_markup(
-            "<span weight='bold'>" + _(u"Gaussian\nResults") + "</span>")
+        self.lblPage.set_markup("<span weight='bold'>" +
+                                _(u"Gaussian\nResults") + "</span>")
         self.lblPage.set_alignment(xalign=0.5, yalign=0.5)
         self.lblPage.set_justify(gtk.JUSTIFY_CENTER)
         self.lblPage.show_all()

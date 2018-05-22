@@ -70,8 +70,9 @@ class TestRTKProgramStatus(unittest.TestCase):
         _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKProgramStatus {0:d} "
-                         "attributes.".format(self.DUT.revision_id))
+        self.assertEqual(
+            _msg, "RTK SUCCESS: Updating RTKProgramStatus {0:d} "
+            "attributes.".format(self.DUT.revision_id))
 
     @attr(all=True, unit=True)
     def test02b_set_attributes_missing_key(self):
@@ -81,8 +82,9 @@ class TestRTKProgramStatus(unittest.TestCase):
         _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'time_remaining' "
-                         "in attribute dictionary passed to "
-                         "RTKProgramStatus.set_attributes().")
+        self.assertEqual(
+            _msg, "RTK ERROR: Missing attribute 'time_remaining' "
+            "in attribute dictionary passed to "
+            "RTKProgramStatus.set_attributes().")
 
         self._attributes['time_remaining'] = 0.0

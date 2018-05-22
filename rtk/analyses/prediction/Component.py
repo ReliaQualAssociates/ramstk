@@ -565,8 +565,8 @@ def do_calculate_stress_ratios(**attributes):
     Calculates the current, power, and voltage stress ratios.
     """
     try:
-        attributes['current_ratio'] = attributes[
-            'current_operating'] / attributes['current_rated']
+        attributes[
+            'current_ratio'] = attributes['current_operating'] / attributes['current_rated']
     except ZeroDivisionError:
         attributes['voltage_ratio'] = 1.0
 

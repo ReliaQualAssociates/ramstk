@@ -22,8 +22,6 @@ __copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_create_data_model(test_dao):
     """ __init__() should return a Stakeholder model. """
     DUT = dtmStakeholder(test_dao)
@@ -34,8 +32,6 @@ def test_create_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_select_all(test_dao):
     """ select_all() should return a Tree() object populated with RTKStakeholder instances on success. """
     DUT = dtmStakeholder(test_dao)
@@ -47,8 +43,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_select(test_dao):
     """ select() should return an instance of the RTKStakeholder data model on success. """
     DUT = dtmStakeholder(test_dao)
@@ -62,8 +56,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Stakeholder ID is requested. """
     DUT = dtmStakeholder(test_dao)
@@ -74,8 +66,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_insert(test_dao):
     """ insert() should return False on success. """
     DUT = dtmStakeholder(test_dao)
@@ -90,8 +80,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmStakeholder(test_dao)
@@ -105,8 +93,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Stakeholder ID that doesn't exist. """
     DUT = dtmStakeholder(test_dao)
@@ -120,8 +106,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmStakeholder(test_dao)
@@ -137,8 +121,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Stakeholder ID that doesn't exist. """
     DUT = dtmStakeholder(test_dao)
@@ -152,8 +134,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmStakeholder(test_dao)
@@ -166,8 +146,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_calculate_weight(test_dao):
     """ calculate_weight() returns False on success and calculate values are correct. """
     DUT = dtmStakeholder(test_dao)
@@ -189,8 +167,6 @@ def test_calculate_weight(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_data_controller_create(test_dao, test_configuration):
     """ __init__() should create a Stakeholder data controller. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -200,8 +176,6 @@ def test_data_controller_create(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RTKStakeholder models. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -212,8 +186,6 @@ def test_request_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_select(test_dao, test_configuration):
     """ request_select() should return an RTKStakeholder model. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -225,8 +197,6 @@ def test_request_select(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_select_non_existent_id(test_dao, test_configuration):
     """ request_select() should return None when requesting a Stakeholder that doesn't exist. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -238,8 +208,6 @@ def test_request_select_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_insert(test_dao, test_configuration):
     """ request_insert() should return False on success. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -249,8 +217,6 @@ def test_request_insert(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_delete(test_dao, test_configuration):
     """ request_delete() should return False on success. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -260,8 +226,6 @@ def test_request_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_delete_non_existent_id(test_dao, test_configuration):
     """ request_delete() should return True when attempting to delete a non-existent Stakeholder. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -271,8 +235,6 @@ def test_request_delete_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_update(test_dao, test_configuration):
     """ request_update() should return False on success. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -282,8 +244,6 @@ def test_request_update(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_update_non_existent_id(test_dao, test_configuration):
     """ request_update() should return True when attempting to save a non-existent Stakeholder. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -293,8 +253,6 @@ def test_request_update_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_update_all(test_dao, test_configuration):
     """ request_update_all() should return False on success. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)
@@ -304,8 +262,6 @@ def test_request_update_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_request_calculate_weight(test_dao, test_configuration):
     """ request_calculate_weight() should return False on success. """
     DUT = dtcStakeholder(test_dao, test_configuration, test=True)

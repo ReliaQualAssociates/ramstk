@@ -58,6 +58,9 @@ def test_configuration():
     """ Create loggers to use for testing. """
     configuration = Configuration()
 
+    configuration.RTK_BACKEND = 'sqlite'
+    configuration.RTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
+
     configuration.RTK_DEBUG_LOG = \
         Utilities.create_logger("RTK.debug", 'DEBUG', TMP_DIR + '/RTK_debug.log')
     configuration.RTK_USER_LOG = \

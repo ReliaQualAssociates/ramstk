@@ -23,9 +23,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_rtkcontrol_create(test_dao):
     """
     __init__() should create an RTKControl model.
@@ -38,16 +35,13 @@ def test_rtkcontrol_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_control'
-    assert DUT.cause_id == -1
+    assert DUT.cause_id == 1
     assert DUT.control_id == 1
-    assert DUT.description == 'Test Functional FMEA Control #1'
+    assert DUT.description == 'Test Functional FMEA Control #1 for Cause ID 1'
     assert DUT.type_id == ''
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_get_attributes(test_dao):
     """
     get_attributes() should return a dictionary of attribute key:value pairs.
@@ -60,16 +54,14 @@ def test_get_attributes(test_dao):
 
     assert isinstance(_attributes, dict)
 
-    assert _attributes['cause_id'] == -1
+    assert _attributes['cause_id'] == 1
     assert _attributes['control_id'] == 1
-    assert _attributes['description'] == 'Test Functional FMEA Control #1'
+    assert _attributes['description'] == ('Test Functional FMEA Control #1 '
+                                          'for Cause ID 1')
     assert _attributes['type_id'] == ''
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_set_attributes(test_dao):
     """
     set_attributes() should return a zero error code on success
@@ -85,9 +77,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_set_attributes_missing_key(test_dao):
     """
     set_attributes() should return a 40 error code when passed a dict with a missing key.

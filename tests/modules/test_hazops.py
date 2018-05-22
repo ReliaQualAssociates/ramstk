@@ -21,8 +21,6 @@ __copyright__ = 'Copyright 2018 Andrew "Weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_create_hazard_analysis_data_model(test_dao):
     """ __init__ should return instance of HazardAnalysis data model. """
     DUT = dtmHazardAnalysis(test_dao)
@@ -33,8 +31,6 @@ def test_create_hazard_analysis_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_select_all(test_dao):
     """select_all() should return a treelib Tree() on success when selecting HazardAnalysiss."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -45,8 +41,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_select(test_dao):
     """select() should return an instance of the RTKHazardAnalysis data model on success."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -61,8 +55,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_select_non_existent_id(test_dao):
     """select() should return None when a non-existent HazardAnalysis ID is requested."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -74,8 +66,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_select_children(test_dao):
     """select_children() should return the immediate subtree of the passed node ID."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -89,8 +79,6 @@ def test_select_children(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_insert(test_dao):
     """insert() should return a zero error code on success."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -105,8 +93,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_delete(test_dao):
     """delete() should return a zero error code on success."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -121,8 +107,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_delete_non_existent_id(test_dao):
     """delete() should return a non-zero error code when passed a Revision ID that doesn't exist."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -136,8 +120,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_update(test_dao):
     """update() should return a zero error code on success."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -153,8 +135,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_update_non_existent_id(test_dao):
     """update() should return a non-zero error code when passed an HazardAnalysis ID that doesn't exist."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -169,8 +149,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_update_all(test_dao):
     """update_all() should return a zero error code on success."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -183,8 +161,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_calculate_hri(test_dao):
     """calculate() should return False on success."""
     DUT = dtmHazardAnalysis(test_dao)
@@ -208,8 +184,6 @@ def test_calculate_hri(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_create_hazard_analysis_data_controller(test_dao, test_configuration):
     """ __init__ should return instance of HazardAnalysis data controller. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -219,8 +193,6 @@ def test_create_hazard_analysis_data_controller(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RTKHazardAnalysis data models. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -232,8 +204,6 @@ def test_request_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_select(test_dao, test_configuration):
     """ request_select() should return an RTKHazardAnalysis data model. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -243,8 +213,6 @@ def test_request_select(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_non_existent_id(test_dao, test_configuration):
     """ request_select() should return None when requesting an HazardAnalysis that doesn't exist. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -254,8 +222,6 @@ def test_request_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_insert(test_dao, test_configuration):
     """ request_insert() should return False on success. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -265,8 +231,6 @@ def test_request_insert(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_delete(test_dao, test_configuration):
     """ request_delete() should return False on success. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -276,8 +240,6 @@ def test_request_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_delete_non_existent_id(test_dao, test_configuration):
     """ request_delete() should return True when attempting to delete a non-existent HazardAnalysis. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -287,8 +249,6 @@ def test_request_delete_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_update(test_dao, test_configuration):
     """ request_update() should return False on success. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -298,8 +258,6 @@ def test_request_update(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_update_non_existent_id(test_dao, test_configuration):
     """ request_update() should return True when attempting to save a non-existent HazardAnalysis. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -309,8 +267,6 @@ def test_request_update_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_update_all(test_dao, test_configuration):
     """ request_update_all() should return False on success. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
@@ -320,8 +276,6 @@ def test_request_update_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_request_calculate(test_dao, test_configuration):
     """ request_calculate() should return False on success. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')

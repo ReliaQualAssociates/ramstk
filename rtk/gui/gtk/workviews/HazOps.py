@@ -184,17 +184,16 @@ class HazOps(RTKWorkView):
             elif position == self._lst_col_order[5]:
                 _hazops.assembly_effect = model[path][self._lst_col_order[5]]
             elif position == self._lst_col_order[6]:
-                _hazops.assembly_severity = model[path][self._lst_col_order[
-                    6]]
+                _hazops.assembly_severity = model[path][self._lst_col_order[6]]
             elif position == self._lst_col_order[7]:
-                _hazops.assembly_probability = model[path][
-                    self._lst_col_order[7]]
+                _hazops.assembly_probability = model[path][self._lst_col_order[
+                    7]]
             elif position == self._lst_col_order[9]:
                 _hazops.assembly_mitigation = model[path][self._lst_col_order[
                     9]]
             elif position == self._lst_col_order[10]:
-                _hazops.assembly_severity_f = model[path][
-                    self._lst_col_order[10]]
+                _hazops.assembly_severity_f = model[path][self._lst_col_order[
+                    10]]
             elif position == self._lst_col_order[11]:
                 _hazops.assembly_probability_f = model[path][
                     self._lst_col_order[11]]
@@ -203,13 +202,17 @@ class HazOps(RTKWorkView):
             elif position == self._lst_col_order[14]:
                 _hazops.system_severity = model[path][self._lst_col_order[14]]
             elif position == self._lst_col_order[15]:
-                _hazops.system_probability = model[path][self._lst_col_order[15]]
+                _hazops.system_probability = model[path][self._lst_col_order[
+                    15]]
             elif position == self._lst_col_order[17]:
-                _hazops.system_mitigation = model[path][self._lst_col_order[17]]
+                _hazops.system_mitigation = model[path][self._lst_col_order[
+                    17]]
             elif position == self._lst_col_order[18]:
-                _hazops.system_severity_f = model[path][self._lst_col_order[18]]
+                _hazops.system_severity_f = model[path][self._lst_col_order[
+                    18]]
             elif position == self._lst_col_order[19]:
-                _hazops.system_probability_f = model[path][self._lst_col_order[19]]
+                _hazops.system_probability_f = model[path][self._lst_col_order[
+                    19]]
             elif position == self._lst_col_order[21]:
                 _hazops.remarks = model[path][self._lst_col_order[21]]
         else:
@@ -305,7 +308,8 @@ class HazOps(RTKWorkView):
 
         # Iterate through the hazards and calculate the HRIs.
         while _row is not None:
-            _node_id = '{0:d}.{1:d}'.format(_model.get_value(_row, 1), _model.get_value(_row, 2))
+            _node_id = '{0:d}.{1:d}'.format(
+                _model.get_value(_row, 1), _model.get_value(_row, 2))
             _return = (_return or
                        self._dtc_data_controller.request_calculate(_node_id))
             _row = _model.iter_next(_row)

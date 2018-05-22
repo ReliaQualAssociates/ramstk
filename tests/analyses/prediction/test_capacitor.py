@@ -114,7 +114,6 @@ PART_COUNT_PIQ = [0.030, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0]
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize(
     "subcategory_id",
@@ -136,8 +135,8 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
         lambda_b = PART_COUNT_LAMBDA_B[subcategory_id][specification_id][
             environment_active_id - 1]
     else:
-        lambda_b = PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id
-                                                       - 1]
+        lambda_b = PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id -
+                                                       1]
 
     piQ = PART_COUNT_PIQ[quality_id - 1]
 
@@ -155,7 +154,6 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
@@ -174,7 +172,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_specification():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the specification ID is missing and needed."""
@@ -193,7 +190,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_specification():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -213,7 +209,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -242,7 +237,6 @@ def test_calculate_mil_hdbk_217f_part_stress():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [20.0, 12.0])
 @pytest.mark.parametrize("environment_active_id",
@@ -271,7 +265,6 @@ def test_voltage_overstress_harsh_environment(voltage_rated,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("temperature_active", [48.7, 118.2])
 @pytest.mark.parametrize("environment_active_id",
@@ -301,7 +294,6 @@ def test_temperature_overstress_harsh_environment(temperature_active,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [20.0, 12.0])
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])

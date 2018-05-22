@@ -689,9 +689,9 @@ class ImportHardware(gtk.Assistant):
                        float(root[i][37]), str(root[i][38]), float(
                            root[i][39]), float(root[i][40]), str(root[i][41]),
                        int(root[i][42]), int(root[i][43]), float(root[i][44]),
-                       float(root[i][45]), float(root[i][46]), str(
-                           root[i][47]), float(root[i][48]), float(
-                               root[i][49]), float(root[i][50]),
+                       float(root[i][45]), float(
+                           root[i][46]), str(root[i][47]), float(root[i][48]),
+                       float(root[i][49]), float(root[i][50]),
                        float(root[i][51]), float(root[i][52]),
                        float(root[i][53]), float(root[i][54]),
                        float(root[i][55]), int(root[i][56]), float(

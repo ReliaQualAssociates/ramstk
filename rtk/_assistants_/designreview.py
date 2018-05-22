@@ -364,7 +364,7 @@ class DesignReview(gtk.Window):
             for i in range(_n_criteria):
                 _query = "INSERT INTO tbl_reviews \
                           (fld_revision_id, fld_gateway_id, fld_concern_id) \
-                          VALUES (%d, %d, %d)"                                               % \
+                          VALUES (%d, %d, %d)"                                                                                                                                           % \
                          (self._app.REVISION.revision_id, self.gateway_id,
                           _criteria[i][0])
                 self._app.DB.execute_query(
@@ -375,7 +375,7 @@ class DesignReview(gtk.Window):
                       FROM tbl_reviews \
                       WHERE fld_revision_id=%d \
                       AND fld_gateway_id=%d \
-                      ORDER BY fld_concern_id"                                               % \
+                      ORDER BY fld_concern_id"                                                                                                                                           % \
                      (self._app.REVISION.revision_id, self.gateway_id)
             _status = self._app.DB.execute_query(_query, None,
                                                  self._app.ProgCnx)
@@ -456,7 +456,7 @@ class DesignReview(gtk.Window):
                               fld_due_date='%s', fld_owner='%s' \
                           WHERE fld_revision_id=%d \
                           AND fld_gateway_id=%d \
-                          AND fld_concern_id=%d"                                                 % \
+                          AND fld_concern_id=%d"                                                                                                                                                 % \
                          (_satisfied, _action, _due_date, _owner,
                           self._app.REVISION.revision_id, self.gateway_id,
                           _concern_id)
@@ -465,7 +465,7 @@ class DesignReview(gtk.Window):
                           (fld_revision_id, fld_gateway_id, \
                            fld_concern_id, fld_satisfied, fld_action, \
                            fld_due_date, fld_owner) \
-                          VALUES (%d, %d, %d, %d, '%s', '%s', '%s')"                                                                     % \
+                          VALUES (%d, %d, %d, %d, '%s', '%s', '%s')"                                                                                                                                                                                                             % \
                          (self._app.REVISION.revision_id,
                           self.gateway_id, _concern_id, _satisfied, _action,
                           _due_date, _owner)
@@ -850,7 +850,7 @@ class ReviewCriteria(gtk.Window):
             _query = "INSERT INTO tbl_reviews \
                       (fld_gateway_id, fld_concern, fld_rationale, \
                        fld_parent_id) \
-                      VALUES (%d, '%s', '%s', '%s')"                                                     % \
+                      VALUES (%d, '%s', '%s', '%s')"                                                                                                                                                             % \
                      (self.gateway_id, _concern, _rationale, _parent)
             _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
             _dialog.destroy()
@@ -943,7 +943,7 @@ class ReviewCriteria(gtk.Window):
 
             _query = "UPDATE tbl_reviews \
                       SET fld_concern='%s', fld_rationale='%s' \
-                      WHERE fld_concern_id=%d"                                               % \
+                      WHERE fld_concern_id=%d"                                                                                                                                           % \
                      (_concern, _rationale, _concern_id)
             if not self._app.COMDB.execute_query(
                     _query, None, self._app.ComCnx, commit=True):

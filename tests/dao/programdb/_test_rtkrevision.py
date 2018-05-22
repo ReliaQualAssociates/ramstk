@@ -191,8 +191,9 @@ class TestRTKRevision(unittest.TestCase):
 
         _error_code, _msg = self.DUT.calculate_hazard_rate()
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Calculating hazard rates for '
-                         'Revision ID 1.')
+        self.assertEqual(
+            _msg, 'RTK SUCCESS: Calculating hazard rates for '
+            'Revision ID 1.')
         self.assertAlmostEqual(self.DUT.hazard_rate_logistics, 1.8252e-06)
 
     @attr(all=True, unit=True)

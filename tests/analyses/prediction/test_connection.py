@@ -87,7 +87,6 @@ PART_COUNT_PIQ = [1.0, 2.0]
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
 @pytest.mark.parametrize("type_id", [1, 2, 3, 4, 5, 6, 7])
@@ -110,8 +109,8 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
         except KeyError:
             lambda_b = 0.0
     else:
-        lambda_b = PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id
-                                                       - 1]
+        lambda_b = PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id -
+                                                       1]
 
     piQ = PART_COUNT_PIQ[quality_id - 1]
 
@@ -129,7 +128,6 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
@@ -148,7 +146,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_type():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the type ID is missing and needed."""
@@ -167,7 +164,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -187,7 +183,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -222,7 +217,6 @@ def test_calculate_mil_hdbk_217f_part_stress():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_insert_temperature():
     """Test the calculate_insert_temperature() function."""
@@ -237,7 +231,6 @@ def test_calculate_insert_temperature():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [40.0, 20.0])
 @pytest.mark.parametrize("environment_active_id",
@@ -266,7 +259,6 @@ def test_voltage_overstress_harsh_environment(voltage_rated,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("temperature_active", [48.7, 118.2])
 @pytest.mark.parametrize("environment_active_id",
@@ -296,7 +288,6 @@ def test_temperature_overstress_harsh_environment(temperature_active,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [20.0, 12.0])
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])

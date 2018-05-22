@@ -116,8 +116,8 @@ def calculate_duane_standard_error(n_failures, fail_times, alpha, beta):
     _logT = sum([log(x) for x in fail_times])
     _logT2 = sum([log(x)**2.0 for x in fail_times])
 
-    _SSE = sum([((log(beta) + alpha * log(fail_times[i])) -
-                 log(fail_times[i] / sum(n_failures[:i + 1])))**2.0
+    _SSE = sum([((log(beta) + alpha * log(fail_times[i])) - log(
+        fail_times[i] / sum(n_failures[:i + 1])))**2.0
                 for i in range(len(fail_times))])
     if sum(n_failures) > 2:
         _sigma2 = _SSE / (sum(n_failures) - 2)

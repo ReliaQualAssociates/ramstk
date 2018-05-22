@@ -263,8 +263,9 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             attributes['hazard_rate_active'] * attributes['piCYC'] *
             attributes['piL'] * attributes['piC'])
     elif attributes['subcategory_id'] in [2, 3, 4]:
-        attributes['hazard_rate_active'] = (attributes[
-            'hazard_rate_active'] * attributes['piCYC'] * attributes['piL'])
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piCYC'] *
+            attributes['piL'])
     elif attributes['subcategory_id'] == 5:
         attributes['hazard_rate_active'] = (
             attributes['hazard_rate_active'] * attributes['piC'] *

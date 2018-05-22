@@ -85,8 +85,9 @@ class TestRTKMatrix(unittest.TestCase):
         _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKMatrix {0:d} "
-                         "attributes.".format(self.DUT.matrix_id))
+        self.assertEqual(
+            _msg, "RTK SUCCESS: Updating RTKMatrix {0:d} "
+            "attributes.".format(self.DUT.matrix_id))
 
     @attr(all=True, unit=True)
     def test02b_set_attributes_mission_key(self):

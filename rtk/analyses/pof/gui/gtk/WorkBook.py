@@ -157,11 +157,11 @@ class WorkView(gtk.HBox):
                                              u"Operating Conditions"))
         ]
         self._lst_operating_parameters = [
-            (0, _("")), (1, _(u"Ambient Temperature")),
-            (2, _(u"Contamination, "
-                  u"Concentration")), (3, _(
-                      u"Contamination, "
-                      u"Particle Size")), (4, _(u"Coolant Temperature")),
+            (0, _("")), (1, _(u"Ambient Temperature")), (2,
+                                                         _(u"Contamination, "
+                                                           u"Concentration")),
+            (3, _(u"Contamination, "
+                  u"Particle Size")), (4, _(u"Coolant Temperature")),
             (5, _(u"Drag Torque")), (6, _(u"Dynamic Load")),
             (7, _(u"Exhaust Gas Temperature")), (8,
                                                  _(u"Load Frequency vs Eigen "
@@ -428,8 +428,8 @@ class WorkView(gtk.HBox):
             _label.set_line_wrap(True)
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
-            _label.set_markup(
-                "<span weight='bold'>" + _headings[i] + "</span>")
+            _label.set_markup("<span weight='bold'>" + _headings[i] +
+                              "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column.set_widget(_label)

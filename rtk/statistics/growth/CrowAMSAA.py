@@ -221,9 +221,9 @@ def beta_grouped(beta, fails, times, logt):
     :param ndarray logt: the natural log of the end time for each interval.
     """
 
-    _beta = sum(fails[1:] *
-                ((times[1:]**beta * logt[1:] - times[:-1]**beta * logt[:-1]) /
-                 (times[1:]**beta - times[:-1]**beta) - log(max(times))))
+    _beta = sum(fails[1:] * (
+        (times[1:]**beta * logt[1:] - times[:-1]**beta * logt[:-1]) /
+        (times[1:]**beta - times[:-1]**beta) - log(max(times))))
 
     return _beta
 
@@ -561,9 +561,8 @@ def calculate_cramer_vonmises(n_failures,
         _beta_bar = beta
         _M = _N
 
-    _ei = sum([(((fail_times[i] / t_star)**_beta_bar) - ((2.0 * i - 1.0) /
-                                                         (2.0 * _M)))**2.0
-               for i in range(_m)])
+    _ei = sum([(((fail_times[i] / t_star)**_beta_bar) - (
+        (2.0 * i - 1.0) / (2.0 * _M)))**2.0 for i in range(_m)])
 
     _Cvm = _ei + (1.0 / (12.0 * _M))
 

@@ -184,8 +184,8 @@ class CSCITestSelection(gtk.ScrolledWindow):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup(
-                "<span weight='bold'>" + _headings[i] + "</span>")
+            _label.set_markup("<span weight='bold'>" + _headings[i] +
+                              "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -207,8 +207,8 @@ class CSCITestSelection(gtk.ScrolledWindow):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup(
-                "<span weight='bold'>" + _headings[i + 6] + "</span>")
+            _label.set_markup("<span weight='bold'>" + _headings[i + 6] +
+                              "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -229,8 +229,8 @@ class CSCITestSelection(gtk.ScrolledWindow):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_property('angle', 90)
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Recommended") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Recommended") +
+                          "</span>")
         _label.set_use_markup(True)
         _label.show_all()
         _column = gtk.TreeViewColumn()
@@ -325,8 +325,8 @@ class CSCITestSelection(gtk.ScrolledWindow):
             _selection = 1
         else:
             _selection = 0
-        self._software_model.lst_test_selection[int(path)][position
-                                                           - 12] = _selection
+        self._software_model.lst_test_selection[int(path)][position -
+                                                           12] = _selection
 
         return False
 
@@ -489,8 +489,8 @@ class UnitTestSelection(gtk.ScrolledWindow):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup(
-                "<span weight='bold'>" + _headings[i] + "</span>")
+            _label.set_markup("<span weight='bold'>" + _headings[i] +
+                              "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -510,8 +510,8 @@ class UnitTestSelection(gtk.ScrolledWindow):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup(
-                "<span weight='bold'>" + _headings[i + 6] + "</span>")
+            _label.set_markup("<span weight='bold'>" + _headings[i + 6] +
+                              "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -531,8 +531,8 @@ class UnitTestSelection(gtk.ScrolledWindow):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_property('angle', 90)
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Recommended") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Recommended") +
+                          "</span>")
         _label.set_use_markup(True)
         _label.show_all()
         _column = gtk.TreeViewColumn()
@@ -624,7 +624,7 @@ class UnitTestSelection(gtk.ScrolledWindow):
             _selection = 1
         else:
             _selection = 0
-        self._software_model.lst_test_selection[int(path)][position
-                                                           - 22] = _selection
+        self._software_model.lst_test_selection[int(path)][position -
+                                                           22] = _selection
 
         return False

@@ -523,8 +523,8 @@ def calculate_217f_part_stress(**attributes):
             elif _diff >= 0:
                 break
 
-        attributes['C1'] = _dic_c1[attributes['subcategory_id']][
-            _technology - 1][_index + 1]
+        attributes['C1'] = _dic_c1[attributes['subcategory_id']][_technology -
+                                                                 1][_index + 1]
 
     except KeyError:
         attributes['C1'] = 0.0
@@ -553,8 +553,8 @@ def calculate_217f_part_stress(**attributes):
     attributes = _calculate_temperature_factor(**attributes)
 
     # Calculate the learning factor.
-    attributes['piL'] = 0.01 * exp(
-        5.35 - 0.35 * attributes['years_in_production'])
+    attributes[
+        'piL'] = 0.01 * exp(5.35 - 0.35 * attributes['years_in_production'])
 
     # Determine the quality factor (piQ).
     attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
@@ -574,10 +574,9 @@ def calculate_217f_part_stress(**attributes):
 
     # Determine the active hazard rate.
     if attributes['subcategory_id'] in [1, 2, 3, 4]:
-        attributes['hazard_rate_active'] = ((
-            attributes['C1'] * attributes['piT'] +
-            attributes['C2'] * attributes['piE']) * attributes['piQ'] *
-                                            attributes['piL'])
+        attributes['hazard_rate_active'] = (
+            (attributes['C1'] * attributes['piT'] + attributes['C2'] *
+             attributes['piE']) * attributes['piQ'] * attributes['piL'])
     elif attributes['subcategory_id'] in [5, 6, 7, 8]:
         attributes = _calculate_lambda_cyclic(**attributes)
 
@@ -588,10 +587,10 @@ def calculate_217f_part_stress(**attributes):
     elif attributes['subcategory_id'] == 9:
         attributes['piA'] = _dic_piA[attributes['type_id']][
             attributes['application_id'] - 1]
-        attributes['hazard_rate_active'] = ((
-            attributes['C1'] * attributes['piT'] * attributes['piA'] +
-            attributes['C2'] * attributes['piE']) * attributes['piQ'] *
-                                            attributes['piL'])
+        attributes['hazard_rate_active'] = (
+            (attributes['C1'] * attributes['piT'] * attributes['piA'] +
+             attributes['C2'] * attributes['piE']) * attributes['piQ'] *
+            attributes['piL'])
     elif attributes['subcategory_id'] == 10:
         # Determine the die base hazard rate.
         if attributes['type_id'] == 1:
@@ -709,19 +708,19 @@ def _calculate_lambda_cyclic(**attributes):
     # Calculate the B1 and B2 factors for lambda_CYC.
     if attributes['construction_id'] == 1:
         attributes['B1'] = ((attributes['n_elements'] / 16000.0)**0.5) * (exp(
-            (-0.15 / 8.63E-5) *
-            ((1.0 / (attributes['temperature_junction'] + 273.0)) -
-             (1.0 / 333.0))))
+            (-0.15 / 8.63E-5) * (
+                (1.0 / (attributes['temperature_junction'] + 273.0)) -
+                (1.0 / 333.0))))
         attributes['B2'] = 0.0
     elif attributes['construction_id'] == 2:
         attributes['B1'] = ((attributes['n_elements'] / 64000.0)**0.25) * (exp(
-            (0.1 / 8.63E-5) * ((1.0 /
-                                (attributes['temperature_junction'] + 273.0)) -
-                               (1.0 / 303.0))))
+            (0.1 / 8.63E-5) * (
+                (1.0 / (attributes['temperature_junction'] + 273.0)) -
+                (1.0 / 303.0))))
         attributes['B2'] = ((attributes['n_elements'] / 64000.0)**0.25) * (exp(
-            (-0.12 / 8.63E-5) *
-            ((1.0 / (attributes['temperature_junction'] + 273.0)) -
-             (1.0 / 303.0))))
+            (-0.12 / 8.63E-5) * (
+                (1.0 / (attributes['temperature_junction'] + 273.0)) -
+                (1.0 / 303.0))))
     else:
         attributes['B1'] = 0.0
         attributes['B2'] = 0.0
@@ -737,10 +736,10 @@ def _calculate_lambda_cyclic(**attributes):
         attributes['piECC'] = 0.0
 
     if attributes['subcategory_id'] == 6:
-        attributes['lambda_cyc'] = ((
-            attributes['A1'] * attributes['B1'] +
-            (attributes['A2'] * attributes['B2'] / attributes['piQ'])) *
-                                    attributes['piECC'])
+        attributes['lambda_cyc'] = (
+            (attributes['A1'] * attributes['B1'] +
+             (attributes['A2'] * attributes['B2'] / attributes['piQ'])) *
+            attributes['piECC'])
     else:
         attributes['lambda_cyc'] = 0.0
 
@@ -773,8 +772,8 @@ def _calculate_temperature_factor(**attributes):
     }
     if attributes['subcategory_id'] == 2:
         _ref_temp = 296.0
-        _ea = _dic_ea[attributes['subcategory_id']][attributes['family_id']
-                                                    - 1]
+        _ea = _dic_ea[attributes['subcategory_id']][attributes['family_id'] -
+                                                    1]
     elif attributes['subcategory_id'] == 9:
         _ref_temp = 423.0
         _ea = _dic_ea[attributes['subcategory_id']][attributes['type_id'] - 1]
@@ -787,9 +786,8 @@ def _calculate_temperature_factor(**attributes):
     attributes['temperature_junction'] = (
         attributes['temperature_case'] +
         attributes['power_operating'] * attributes['theta_jc'])
-    attributes['piT'] = 0.1 * exp(
-        (-_ea / 8.617E-5) * ((1.0 /
-                              (attributes['temperature_junction'] + 273)) -
-                             (1.0 / _ref_temp)))
+    attributes['piT'] = 0.1 * exp((-_ea / 8.617E-5) * (
+        (1.0 / (attributes['temperature_junction'] + 273)) -
+        (1.0 / _ref_temp)))
 
     return attributes

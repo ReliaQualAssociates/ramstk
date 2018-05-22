@@ -76,8 +76,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
 def test_rtkdesignelectric_create(test_dao):
     """ __init__() should create an RTKDesignElectric model. """
     _session = test_dao.RTK_SESSION(
@@ -145,8 +143,6 @@ def test_rtkdesignelectric_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
 def test_get_attributes(test_dao):
     """ get_attributes() should return a tuple of attribute values. """
     _session = test_dao.RTK_SESSION(
@@ -157,8 +153,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -173,8 +167,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
 def test_set_attributes_missing_key(test_dao):
     """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
     _session = test_dao.RTK_SESSION(

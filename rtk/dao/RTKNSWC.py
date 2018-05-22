@@ -6,7 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKNSWC Table Module."""
 
-
 from sqlalchemy import Column, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
@@ -92,8 +91,7 @@ class RTKNSWC(RTK_BASE):
     Cy = Column('fld_c_y', Float, default=0.0)  # pylint: disable=C0103
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware',
-                            back_populates='nswc')
+    hardware = relationship('RTKHardware', back_populates='nswc')
 
     def get_attributes(self):
         """

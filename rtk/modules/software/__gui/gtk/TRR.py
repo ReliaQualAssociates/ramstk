@@ -186,8 +186,8 @@ class CSCIRiskAnalysis(gtk.VPaned):
         _fxdcscilt.put(self.txtTRRLTCMQ4, _x_pos, _y_pos[3])
 
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Test\nReadiness\nReview") + "</span>")
+        _label.set_markup("<span weight='bold'>" +
+                          _(u"Test\nReadiness\nReview") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_angle(0)
@@ -478,8 +478,8 @@ class UnitRiskAnalysis(gtk.VPaned):
             self.chkTRRQCQ14.connect('toggled', self._on_toggled, 20))
 
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Test\nReadiness\nReview") + "</span>")
+        _label.set_markup("<span weight='bold'>" +
+                          _(u"Test\nReadiness\nReview") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_angle(90)

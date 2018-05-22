@@ -16,29 +16,26 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 ATTRIBUTES = {
-        'user_float_1': 0.0,
-        'priority': 1,
-        'group': u'',
-        'description': 'Test Stakeholder Input',
-        'planned_rank': 1,
-        'stakeholder': u'',
-        'improvement': 0.0,
-        'customer_rank': 1,
-        'user_float_5': 0.0,
-        'user_float_4': 0.0,
-        'user_float_3': 0.0,
-        'user_float_2': 0.0,
-        'stakeholder_id': 1,
-        'overall_weight': 0.0,
-        'revision_id': 1,
-        'requirement_id': 0
-    }
+    'user_float_1': 0.0,
+    'priority': 1,
+    'group': u'',
+    'description': 'Test Stakeholder Input',
+    'planned_rank': 1,
+    'stakeholder': u'',
+    'improvement': 0.0,
+    'customer_rank': 1,
+    'user_float_5': 0.0,
+    'user_float_4': 0.0,
+    'user_float_3': 0.0,
+    'user_float_2': 0.0,
+    'stakeholder_id': 1,
+    'overall_weight': 0.0,
+    'revision_id': 1,
+    'requirement_id': 0
+}
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_rtkstakeholder_create(test_dao):
     """ __init__() should create an RTKStakeholder model. """
     _session = test_dao.RTK_SESSION(
@@ -68,9 +65,6 @@ def test_rtkstakeholder_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_get_attributes(test_dao):
     """ get_attributes() should return a tuple of attribute values. """
     _session = test_dao.RTK_SESSION(
@@ -81,9 +75,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -98,9 +89,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.requirement
-@pytest.mark.stakeholder
 def test_set_attributes_missing_key(test_dao):
     """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
     _session = test_dao.RTK_SESSION(

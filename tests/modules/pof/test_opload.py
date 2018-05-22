@@ -21,8 +21,6 @@ __copyright__ = 'Copyright 2014 - 2017 Andrew "Weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_create_opload_data_model(test_dao):
     """ __init__() should return instance of OpLoad data model. """
     DUT = dtmOpLoad(test_dao)
@@ -33,8 +31,6 @@ def test_create_opload_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_select_all(test_dao):
     """select_all() should return a treelib Tree() on success when selecting OpLoads."""
     DUT = dtmOpLoad(test_dao)
@@ -45,8 +41,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_select(test_dao):
     """select() should return an instance of the RTKOpLoad data model on success."""
     DUT = dtmOpLoad(test_dao)
@@ -60,8 +54,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_select_non_existent_id(test_dao):
     """select() should return None when a non-existent OpLoad ID is requested."""
     DUT = dtmOpLoad(test_dao)
@@ -73,8 +65,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_insert(test_dao):
     """insert() should return a zero error code on success."""
     DUT = dtmOpLoad(test_dao)
@@ -89,8 +79,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_delete(test_dao):
     """delete() should return a zero error code on success."""
     DUT = dtmOpLoad(test_dao)
@@ -104,8 +92,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_delete_non_existent_id(test_dao):
     """delete() should return a non-zero error code when passed a OpLoad ID that doesn't exist."""
     DUT = dtmOpLoad(test_dao)
@@ -119,8 +105,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_update(test_dao):
     """update() should return a zero error code on success."""
     DUT = dtmOpLoad(test_dao)
@@ -136,8 +120,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_update_non_existent_id(test_dao):
     """update() should return a non-zero error code when passed an OpLoad ID that doesn't exist."""
     DUT = dtmOpLoad(test_dao)
@@ -150,8 +132,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_update_all(test_dao):
     """update_all() should return a zero error code on success."""
     DUT = dtmOpLoad(test_dao)

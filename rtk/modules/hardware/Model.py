@@ -440,8 +440,8 @@ class HardwareBoMDataModel(RTKDataModel):
             attributes['mtbf_mission'] = 0.0
 
         attributes['reliability_logistics'] = exp(
-            -1.0 *
-            (attributes['hazard_rate_logistics']) * attributes['mission_time'])
+            -1.0 * (attributes['hazard_rate_logistics']) *
+            attributes['mission_time'])
 
         return attributes
 

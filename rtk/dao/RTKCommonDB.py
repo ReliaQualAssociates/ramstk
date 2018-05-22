@@ -670,7 +670,7 @@ def create_common_db(**kwargs):
     from rtk.dao import (RTKSiteInfo, RTKCategory, RTKCondition, RTKUser,
                          RTKGroup, RTKModel, RTKType, RTKSubCategory,
                          RTKManufacturer, RTKUnit, RTKMethod, RTKRPN,
-                         RTKHazards, RTKStakeholders, RTKStatus, RTKCondition,
+                         RTKHazards, RTKStakeholders, RTKStatus,
                          RTKFailureMode, RTKMeasurement, RTKLoadHistory)
 
     __test = kwargs['test']

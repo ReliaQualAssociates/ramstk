@@ -21,7 +21,6 @@ __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_data_model_create(test_dao):
     """ __init__() should return a Hardware model. """
     DUT = dtmHardware(test_dao)
@@ -33,7 +32,6 @@ def test_data_model_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select_all(test_dao):
     """ select_all() should return a Tree() object populated with RTKHardware instances on success. """
     DUT = dtmHardware(test_dao)
@@ -45,7 +43,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select(test_dao):
     """ select() should return an instance of the RTKHardware data model on success. """
     DUT = dtmHardware(test_dao)
@@ -59,7 +56,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Hardware ID is requested. """
     DUT = dtmHardware(test_dao)
@@ -70,7 +66,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert_sibling_assembly(test_dao):
     """ insert() should return False on success when inserting a sibling Hardware assembly. """
     DUT = dtmHardware(test_dao)
@@ -81,11 +76,9 @@ def test_insert_sibling_assembly(test_dao):
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
                     'database.')
-    assert DUT.last_id == 9
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert_child_assembly(test_dao):
     """ insert() should return False on success when inserting a child Hardware assembly. """
     DUT = dtmHardware(test_dao)
@@ -96,11 +89,9 @@ def test_insert_child_assembly(test_dao):
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
                     'database.')
-    assert DUT.last_id == 10
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_delete_assembly(test_dao):
     """ delete() should return a zero error code on success when deleting a Hardware assembly. """
     DUT = dtmHardware(test_dao)
@@ -114,7 +105,6 @@ def test_delete_assembly(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_delete_assembly_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Hardware assembly with an ID that doesn't exist. """
     DUT = dtmHardware(test_dao)
@@ -128,7 +118,6 @@ def test_delete_assembly_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmHardware(test_dao)
@@ -144,7 +133,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Hardware ID that doesn't exist. """
     DUT = dtmHardware(test_dao)
@@ -158,7 +146,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmHardware(test_dao)
@@ -171,7 +158,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_make_composite_reference_designator(test_dao):
     """ make_composite_ref_des() should return False on success. """
     DUT = dtmHardware(test_dao)

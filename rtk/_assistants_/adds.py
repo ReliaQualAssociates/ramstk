@@ -280,7 +280,7 @@ class CreateDataSet(object):
                 _query = "INSERT INTO tbl_dataset (fld_assembly_id, \
                                                    fld_description, \
                                                    fld_confidence) \
-                          VALUES (%d, '%s', %f)"                                                 % \
+                          VALUES (%d, '%s', %f)"                                                                                                                                                 % \
                          (_assembly_id, _description, _confidence)
 
             elif _conf.BACKEND == 'sqlite3':
@@ -300,7 +300,7 @@ class CreateDataSet(object):
                                                    fld_assembly_id, \
                                                    fld_description, \
                                                    fld_confidence) \
-                          VALUES (%d, %d, '%s', %f)"                                                     % \
+                          VALUES (%d, %d, '%s', %f)"                                                                                                                                                             % \
                          (_dataset_id, _assembly_id, _description,
                           _confidence)
 
@@ -481,17 +481,17 @@ class CreateDataSet(object):
                                 _results[i + 1][10])
                             _current_date = _util.ordinal_to_date(
                                 _results[i][10])
-                            _errmsg = _(u"The failure date of record #%d, "
-                                        u"which occurred on '%s' on unit "
-                                        u"'%s', is earlier than the failure "
-                                        u"date of record #%d, which occurred "
-                                        u"on '%s' on unit '%s'.  Failure "
-                                        u"dates should not decrease over "
-                                        u"time." %
-                                        (int(_results[i][1]),
-                                         _current_date, _results[i][0],
-                                         int(_results[i + 1][1]), _next_date,
-                                         _results[i + 1][0]))
+                            _errmsg = _(
+                                u"The failure date of record #%d, "
+                                u"which occurred on '%s' on unit "
+                                u"'%s', is earlier than the failure "
+                                u"date of record #%d, which occurred "
+                                u"on '%s' on unit '%s'.  Failure "
+                                u"dates should not decrease over "
+                                u"time." % (int(_results[i][1]), _current_date,
+                                            _results[i][0],
+                                            int(_results[i + 1][1]),
+                                            _next_date, _results[i + 1][0]))
                             self._app.user_log.error(_errmsg)
                             _n_inconsistent += 1
 
@@ -524,8 +524,8 @@ class CreateDataSet(object):
                     _file.write(
                         str(i) + '\t' + str(_results[i - 1][3]) + '\t' +
                         str(_results[i][3]) + '\tInterval Censored\t1\t' +
-                        str(_results[i][0]) + '\t' + str(_tbf) + '\t' + str(
-                            _results[i][11]) + '\t' + str(_results[i][10]) +
+                        str(_results[i][0]) + '\t' + str(_tbf) + '\t' +
+                        str(_results[i][11]) + '\t' + str(_results[i][10]) +
                         '\n')
                     # Check the consistency of the two adjacent records.  Any
                     # inconsistent records will be logged, but they are always
@@ -542,17 +542,17 @@ class CreateDataSet(object):
                                 _results[i + 1][10])
                             _current_date = _util.ordinal_to_date(
                                 _results[i][10])
-                            _errmsg = _(u"The failure date of record #%d, "
-                                        u"which occurred on '%s' on unit "
-                                        u"'%s', is earlier than the failure "
-                                        u"date of record #%d, which occurred "
-                                        u"on '%s' on unit '%s'.  Failure "
-                                        u"dates should not decrease over "
-                                        u"time." %
-                                        (int(_results[i][1]),
-                                         _current_date, _results[i][0],
-                                         int(_results[i + 1][1]), _next_date,
-                                         _results[i + 1][0]))
+                            _errmsg = _(
+                                u"The failure date of record #%d, "
+                                u"which occurred on '%s' on unit "
+                                u"'%s', is earlier than the failure "
+                                u"date of record #%d, which occurred "
+                                u"on '%s' on unit '%s'.  Failure "
+                                u"dates should not decrease over "
+                                u"time." % (int(_results[i][1]), _current_date,
+                                            _results[i][0],
+                                            int(_results[i + 1][1]),
+                                            _next_date, _results[i + 1][0]))
                             self._app.user_log.error(_errmsg)
                             _n_inconsistent += 1
 
@@ -599,13 +599,13 @@ class CreateDataSet(object):
         if results2[10] < results1[10]:  # Failure dates are descending.
             _previous_date = _util.ordinal_to_date(results1[10])
             _current_date = _util.ordinal_to_date(results2[10])
-            _errmsg = _(u"The failure date of record #%d, which occurred on "
-                        u"'%s' on unit '%s', is earlier than the failure time "
-                        u"of record #%d, which occurred on '%s' on unit "
-                        u"'%s'.  Failure dates should not decrease over "
-                        u"time." %
-                        (int(results2[1]), _current_date, results2[0],
-                         int(results1[1]), _previous_date, results2[0]))
+            _errmsg = _(
+                u"The failure date of record #%d, which occurred on "
+                u"'%s' on unit '%s', is earlier than the failure time "
+                u"of record #%d, which occurred on '%s' on unit "
+                u"'%s'.  Failure dates should not decrease over "
+                u"time." % (int(results2[1]), _current_date, results2[0],
+                            int(results1[1]), _previous_date, results2[0]))
             _err = True
 
         if _err:

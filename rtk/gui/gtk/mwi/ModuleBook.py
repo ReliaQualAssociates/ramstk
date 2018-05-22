@@ -75,10 +75,10 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_module_views = [[mvwRevision(controller), 0],
-                                  [mvwFunction(controller), 1],
-                                  [mvwRequirement(controller), 2],
-                                  [mvwHardware(controller), 3],
+        self._lst_module_views = [[mvwRevision(controller),
+                                   0], [mvwFunction(controller),
+                                        1], [mvwRequirement(controller),
+                                             2], [mvwHardware(controller), 3],
                                   [mvwValidation(controller), 4]]
 
         # Initialize private scalar attributes.

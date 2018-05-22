@@ -137,8 +137,9 @@ class Test00MatrixModel(unittest.TestCase):
         _error_code, _msg = self.DUT.delete(3, row=True)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Removing a row or column from '
-                         'the matrix.')
+        self.assertEqual(
+            _msg, 'RTK SUCCESS: Removing a row or column from '
+            'the matrix.')
         self.assertEqual(self.DUT.n_row, 2)
         self.assertEqual(self.DUT.n_col, 3)
 
@@ -151,8 +152,9 @@ class Test00MatrixModel(unittest.TestCase):
         _error_code, _msg = self.DUT.delete(22, row=True)
 
         self.assertEqual(_error_code, 6)
-        self.assertEqual(_msg, 'RTK ERROR: Attempted to drop non-existent '
-                         'row 22 from the matrix.')
+        self.assertEqual(
+            _msg, 'RTK ERROR: Attempted to drop non-existent '
+            'row 22 from the matrix.')
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 3)
 
@@ -165,8 +167,9 @@ class Test00MatrixModel(unittest.TestCase):
         _error_code, _msg = self.DUT.delete(2, row=False)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Removing a row or column from '
-                         'the matrix.')
+        self.assertEqual(
+            _msg, 'RTK SUCCESS: Removing a row or column from '
+            'the matrix.')
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 2)
 
@@ -179,8 +182,9 @@ class Test00MatrixModel(unittest.TestCase):
         _error_code, _msg = self.DUT.delete(400, row=False)
 
         self.assertEqual(_error_code, 6)
-        self.assertEqual(_msg, 'RTK ERROR: Attempted to drop non-existent '
-                         'column 400 from the matrix.')
+        self.assertEqual(
+            _msg, 'RTK ERROR: Attempted to drop non-existent '
+            'column 400 from the matrix.')
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 3)
 

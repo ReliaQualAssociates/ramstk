@@ -454,18 +454,19 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             _f1 = _factors[1]
             _f2 = _factors[2]
             if attributes['voltage_ratio'] <= 0.4:
-                attributes['piT'] = _f1 * exp(-_f0 * (1.0 / (
-                    attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
+                attributes['piT'] = _f1 * exp(
+                    -_f0 * (1.0 / (attributes['temperature_junction'] + 273.0)
+                            - 1.0 / 298.0))
             else:
-                attributes['piT'] = _f2 * (
-                    attributes['voltage_ratio'] - 0.35
-                ) * exp(-_f0 * (1.0 / (
-                    attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
+                attributes[
+                    'piT'] = _f2 * (attributes['voltage_ratio'] - 0.35) * exp(
+                        -_f0 * (1.0 /
+                                (attributes['temperature_junction'] + 273.0) -
+                                1.0 / 298.0))
         else:
             attributes['piT'] = exp(
-                -_factors *
-                (1.0 /
-                 (attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
+                -_factors * (1.0 / (attributes['temperature_junction'] + 273.0)
+                             - 1.0 / 298.0))
     except (KeyError, IndexError):
         attributes['piT'] = 0.0
 
@@ -576,35 +577,29 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
 
     # Calculate the active hazard rate.
     if attributes['subcategory_id'] == 1:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piT'] * attributes['piS'] * attributes['piC'] * attributes[
-                'piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piS'] * attributes['piC'] * attributes['piQ'] * attributes['piE']
     elif attributes['subcategory_id'] == 2:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piT'] * attributes['piA'] * attributes['piR'] * attributes[
-                'piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piA'] * attributes['piR'] * attributes['piQ'] * attributes['piE']
     elif attributes['subcategory_id'] == 3:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piT'] * attributes['piA'] * attributes['piR'] * attributes[
-                'piS'] * attributes['piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piA'] * attributes['piR'] * attributes['piS'] * attributes['piQ'] * attributes['piE']
     elif attributes['subcategory_id'] == 4:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piT'] * attributes['piA'] * attributes['piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piA'] * attributes['piQ'] * attributes['piE']
     elif attributes['subcategory_id'] in [5, 9, 11, 12]:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piT'] * attributes['piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piQ'] * attributes['piE']
     elif attributes['subcategory_id'] in [6, 10]:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piT'] * attributes['piR'] * attributes['piS'] * attributes[
-                'piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piR'] * attributes['piS'] * attributes['piQ'] * attributes['piE']
     elif attributes['subcategory_id'] in [7, 8]:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piT'] * attributes['piA'] * attributes['piM'] * attributes[
-                'piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piA'] * attributes['piM'] * attributes['piQ'] * attributes['piE']
     elif attributes['subcategory_id'] == 13:
-        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-            'piT'] * attributes['piI'] * attributes['piA'] * attributes[
-                'piP'] * attributes['piQ'] * attributes['piE']
+        attributes[
+            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piI'] * attributes['piA'] * attributes['piP'] * attributes['piQ'] * attributes['piE']
 
     return attributes, _msg
 
