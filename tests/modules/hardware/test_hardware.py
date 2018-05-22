@@ -81,7 +81,6 @@ def test_insert_sibling_assembly(test_dao):
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
                     'database.')
-    assert DUT.last_id == 9
 
 
 @pytest.mark.integration
@@ -96,7 +95,6 @@ def test_insert_child_assembly(test_dao):
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
                     'database.')
-    assert DUT.last_id == 10
 
 
 @pytest.mark.integration
