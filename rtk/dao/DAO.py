@@ -81,6 +81,7 @@ class DAO(object):
     engine = None
     metadata = None
     session = None
+    database = None
 
     def __init__(self):
         """Initialize an instance of the DAO controller."""
@@ -105,7 +106,8 @@ class DAO(object):
         :return: False if successful, True if an error occurs.
         :rtype: bool
         """
-        self.engine = create_engine(database, echo=False)
+        self.database = database
+        self.engine = create_engine(self.database, echo=False)
         self.metadata = MetaData(self.engine)
 
         self.session = self.RTK_SESSION(

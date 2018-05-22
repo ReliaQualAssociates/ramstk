@@ -494,7 +494,7 @@ def test_request_select_all_matrix(test_dao, test_configuration):
         1, 'hrdwr_vldtn')
 
     assert isinstance(_matrix, pd.DataFrame)
-    assert _column_hdrs == {1: 'Test Validation'}
+    assert _column_hdrs[1] == 'Test Validation'
     assert _row_hdrs[1] == 'S1'
     assert _row_hdrs[2] == 'S1:SS1'
     assert _row_hdrs[3] == 'S1:SS2'
@@ -593,10 +593,16 @@ def test_insert_matrix_column(test_dao, test_configuration):
     (_matrix, _column_hdrs, _row_hdrs) = DUT.request_select_all_matrix(
         1, 'hrdwr_vldtn')
 
-    assert not DUT.request_insert_matrix(
+    if pytest.mark.name == 'integration':
+        assert not DUT.request_insert_matrix(
+        'hrdwr_vldtn', 1, 'Test Validation Task 1', row=False)
+        assert DUT._dmx_hw_vldtn_matrix.dic_column_hdrs[
+            1] == 'Test Validation Task 1'
+    elif pytest.mark.name == 'hardware':
+        assert not DUT.request_insert_matrix(
         'hrdwr_vldtn', 2, 'Test Validation Task 2', row=False)
-    assert DUT._dmx_hw_vldtn_matrix.dic_column_hdrs[
-        2] == 'Test Validation Task 2'
+        assert DUT._dmx_hw_vldtn_matrix.dic_column_hdrs[
+            2] == 'Test Validation Task 2'
 
 
 @pytest.mark.integration
