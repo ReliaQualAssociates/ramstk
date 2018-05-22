@@ -109,7 +109,7 @@ def test_set_attributes_missing_key(test_dao):
 
 
 @pytest.mark.integration
-def test03a_calculate_rpn(test_dao):
+def test_calculate_rpn(test_dao):
     """ calculate_rpn() always returns a zero error code on success. """
     _session = test_dao.RTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)

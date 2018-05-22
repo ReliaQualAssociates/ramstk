@@ -74,7 +74,6 @@ def test_insert_1(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
                     "Program database.")
-    assert DUT.last_id == 2
 
 
 @pytest.mark.integration
@@ -88,7 +87,6 @@ def test_insert_2(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
                     "Program database.")
-    assert DUT.last_id == 4
 
 
 def test_insert_3(test_dao):
@@ -101,7 +99,6 @@ def test_insert_3(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
                     "Program database.")
-    assert DUT.last_id == 4
 
 
 @pytest.mark.integration

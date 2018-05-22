@@ -8,7 +8,6 @@
 """This is the test class for testing the RTK module algorithms and models."""
 
 import os
-from os.path import isfile
 
 import logging
 import pdb
@@ -41,9 +40,9 @@ def test_initialize_logger():
     assert isinstance(_configuration.RTK_DEBUG_LOG, logging.Logger)
     assert isinstance(_configuration.RTK_USER_LOG, logging.Logger)
     assert isinstance(_configuration.RTK_IMPORT_LOG, logging.Logger)
-    assert isfile('/tmp/RTK_debug.log')
-    assert isfile('/tmp/RTK_user.log')
-    assert isfile('/tmp/RTK_import.log')
+    assert os.path.isfile('/tmp/RTK_debug.log')
+    assert os.path.isfile('/tmp/RTK_user.log')
+    assert os.path.isfile('/tmp/RTK_import.log')
 
 
 @pytest.mark.integration
