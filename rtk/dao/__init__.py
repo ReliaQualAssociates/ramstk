@@ -56,7 +56,7 @@ from .RTKProgramInfo import RTKProgramInfo
 from .RTKProgramStatus import RTKProgramStatus
 from .RTKReliability import RTKReliability
 from .RTKRequirement import RTKRequirement
-from .RTKRevision import RTKRevision
+from .programdb.RTKRevision import RTKRevision
 from .RTKSimilarItem import RTKSimilarItem
 from .RTKSoftware import RTKSoftware
 from .RTKSoftwareDevelopment import RTKSoftwareDevelopment

@@ -48,7 +48,7 @@ from .RTKProgramInfo import RTKProgramInfo
 from .RTKProgramStatus import RTKProgramStatus
 from .RTKReliability import RTKReliability
 from .RTKRequirement import RTKRequirement
-from .RTKRevision import RTKRevision
+from .programdb.RTKRevision import RTKRevision
 from .RTKSimilarItem import RTKSimilarItem
 from .RTKSoftware import RTKSoftware
 from .RTKSoftwareDevelopment import RTKSoftwareDevelopment
@@ -192,7 +192,7 @@ class DAO(object):
         self._db_table_create(RTKEnvironment.__table__)
         _revision = RTKRevision()
         _revision.revision_id = 1
-        _revision.description = _(u"Test Revision")
+        _revision.name = 'Test Revision'
         self.db_add([
             _revision,
         ], self.session)
