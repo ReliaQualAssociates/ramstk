@@ -524,8 +524,8 @@ class ListView(gtk.VBox):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup(
-                "<span weight='bold'>" + _headings[i - 1] + "</span>")
+            _label.set_markup("<span weight='bold'>" + _headings[i - 1] +
+                              "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()

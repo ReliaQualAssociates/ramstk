@@ -109,7 +109,6 @@ PART_COUNT_PIQ = [0.030, 0.10, 0.30, 1.0, 3.0, 10.0]
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id",
                          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
@@ -155,7 +154,6 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
@@ -177,7 +175,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_specification():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the specification ID is missing and needed."""
@@ -199,7 +196,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_specification():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -221,7 +217,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the quality ID is missing."""
@@ -241,7 +236,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -279,7 +273,6 @@ def test_calculate_mil_hdbk_217f_part_stress():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("power_rated", [0.5, 0.25])
 @pytest.mark.parametrize("environment_active_id",
@@ -309,7 +302,6 @@ def test_power_overstress_harsh_environment(power_rated,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("power_rated", [0.5, 0.25])
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])

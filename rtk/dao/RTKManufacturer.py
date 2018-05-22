@@ -10,11 +10,11 @@ The RTKManufacturer Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String  
+from sqlalchemy import Column, Integer, String
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import error_handler, none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKManufacturer(RTK_BASE):

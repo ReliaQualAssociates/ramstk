@@ -51,9 +51,10 @@ class AddControlAction(rtk.RTKDialog):
         Assistant.
         """
 
-        rtk.RTKDialog.__init__(self,
-                               _(u"RTK FMEA/FMECA Design Control and "
-                                 u"Action Addition Assistant"))
+        rtk.RTKDialog.__init__(
+            self,
+            _(u"RTK FMEA/FMECA Design Control and "
+              u"Action Addition Assistant"))
 
         # Initialize private dictionary attributes.
 

@@ -15,7 +15,6 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
-
 ATTRIBUTES = {
     'hazard_rate_percent': 0.0,
     'reliability_mission': 1.0,
@@ -62,8 +61,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
 def test_rtkreliability_create(test_dao):
     """ __init__() should create an RTKReliability model. """
     _session = test_dao.RTK_SESSION(
@@ -118,8 +115,6 @@ def test_rtkreliability_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
 def test_get_attributes(test_dao):
     """ get_attributes() should return a dict of attribute key:value pairs. """
     _session = test_dao.RTK_SESSION(
@@ -130,8 +125,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -146,8 +139,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
 def test_set_attributes_missing_key(test_dao):
     """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
     _session = test_dao.RTK_SESSION(

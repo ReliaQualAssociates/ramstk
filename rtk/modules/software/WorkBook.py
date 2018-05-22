@@ -629,8 +629,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
               u"indenture level as the selected software "
               u"module."))
         _image = gtk.Image()
-        _image.set_from_file(
-            Configuration.ICON_DIR + '32x32/insert_sibling.png')
+        _image.set_from_file(Configuration.ICON_DIR +
+                             '32x32/insert_sibling.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 0)
         _toolbar.insert(_button, 0)
@@ -790,8 +790,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"General\nData") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"General\nData") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -852,8 +852,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Risk\nAnalysis") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Risk\nAnalysis") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -1014,8 +1014,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Test\nPlanning") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Test\nPlanning") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -1128,8 +1128,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Reliability\nEstimation") + "</span>")
+        _label.set_markup("<span weight='bold'>" +
+                          _(u"Reliability\nEstimation") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()

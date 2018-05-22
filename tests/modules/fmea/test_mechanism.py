@@ -21,9 +21,6 @@ __copyright__ = 'Copyright 2014 - 2017 Andrew "Weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_create_mechanism_data_model(test_dao):
     """ __init__() should return instance of Mechanism data model. """
     DUT = dtmMechanism(test_dao)
@@ -34,9 +31,6 @@ def test_create_mechanism_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_do_select_all(test_dao):
     """ do_select_all() should return a treelib Tree() on success when selecting Mechanisms. """
     DUT = dtmMechanism(test_dao)
@@ -47,9 +41,6 @@ def test_do_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_select(test_dao):
     """ select() should return an instance of the RTKMechanism data model on success. """
     DUT = dtmMechanism(test_dao)
@@ -63,9 +54,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Mechanism ID is requested. """
     DUT = dtmMechanism(test_dao)
@@ -76,7 +64,6 @@ def test_select_non_existent_id(test_dao):
     assert _mechanism is None
 
 
-@pytest.mark.pof
 def test_insert_1(test_dao):
     """ insert() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
@@ -104,8 +91,6 @@ def test_insert_2(test_dao):
     assert DUT.last_id == 4
 
 
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_insert_3(test_dao):
     """ insert() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
@@ -120,9 +105,6 @@ def test_insert_3(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
@@ -137,9 +119,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_delete_non_existent_id(test_dao):
     """ elete() should return a non-zero error code when passed a Mechanism ID that doesn't exist. """
     DUT = dtmMechanism(test_dao)
@@ -153,9 +132,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
@@ -171,9 +147,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed an Mechanism ID that doesn't exist. """
     DUT = dtmMechanism(test_dao)
@@ -187,9 +160,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)

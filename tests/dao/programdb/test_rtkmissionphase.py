@@ -26,9 +26,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.revision
-@pytest.mark.usage
 def test_rtkmissionphase_create(test_dao):
     """ __init__() should create an RTKPhase model. """
     _session = test_dao.RTK_SESSION(
@@ -48,9 +45,6 @@ def test_rtkmissionphase_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.revision
-@pytest.mark.usage
 def test_get_attributes(test_dao):
     """ get_attributes() should return a tuple of attributes values on success. """
     _session = test_dao.RTK_SESSION(
@@ -61,9 +55,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.revision
-@pytest.mark.usage
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -78,9 +69,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.revision
-@pytest.mark.usage
 def test_set_attributes_wrong_type(test_dao):
     """ set_attributes() should return a 10 error code when passed the wrong data type. """
     _session = test_dao.RTK_SESSION(

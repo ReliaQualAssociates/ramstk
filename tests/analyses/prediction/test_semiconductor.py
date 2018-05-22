@@ -176,7 +176,6 @@ PART_COUNT_PIQ = {
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id",
                          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
@@ -234,7 +233,6 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -271,7 +269,6 @@ def test_calculate_mil_hdbk_217f_part_stress():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     """calculate_mil_hdbk_217f_part_stress() should return a zero active hazard rate and a non-empty message when the quality ID is missing."""
@@ -309,7 +306,6 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     """calculate_mil_hdbk_217f_part_stress() should return a zero active hazard rate and a non-empty message when the active environment ID is missing."""
@@ -347,13 +343,12 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("power_rated", [1.0, 0.75])
 @pytest.mark.parametrize("environment_active_id",
                          [3, 5, 6, 7, 8, 9, 10, 12, 13, 14])
 def test_power_overstress_harsh_environment(power_rated,
-                                              environment_active_id):
+                                            environment_active_id):
     """overstressed() should return True when power ratio > 0.70 in a harsh environment and False otherwise."""
     ATTRIBUTES['power_operating'] = 0.6
     ATTRIBUTES['temperature_rated_max'] = 150.0
@@ -375,7 +370,6 @@ def test_power_overstress_harsh_environment(power_rated,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("temperature_junction", [28.7, 128.2])
 @pytest.mark.parametrize("environment_active_id",
@@ -401,8 +395,8 @@ def test_temperature_overstress_harsh_environment(temperature_junction,
         assert not _attributes['overstress']
         assert _attributes['reason'] == ''
 
+
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("power_rated", [1.0, 0.5])
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])

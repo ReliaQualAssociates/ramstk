@@ -134,7 +134,7 @@ class GeneralData(RTKWorkView):
               u"completed."))
         self.btnStartDate.set_tooltip_text(
             _(u"Launches the calendar to select the date the task was started."
-             ))
+              ))
 
         self.cmbTaskType = rtk.RTKComboBox(
             tooltip=
@@ -1117,8 +1117,8 @@ class BurndownCurve(RTKWorkView):
 
             for _index, _target in enumerate(_targets):
                 self.burndown.axis.annotate(
-                    str(self.fmt.format(_target[1])) + "\n" +
-                    str(self.fmt.format(_target[0])),
+                    str(self.fmt.format(_target[1])) + "\n" + str(
+                        self.fmt.format(_target[0])),
                     xy=(_assessment_dates[_index],
                         0.95 * max(_y_maximum.values())),
                     xycoords='data',
@@ -1208,8 +1208,9 @@ class BurndownCurve(RTKWorkView):
 
         # Insert the tab.
         self.hbx_tab_label = gtk.Label()
-        self.hbx_tab_label.set_markup("<span weight='bold'>" + _(
-            u"Program\nValidation\nProgress") + "</span>")
+        self.hbx_tab_label.set_markup("<span weight='bold'>" +
+                                      _(u"Program\nValidation\nProgress") +
+                                      "</span>")
         self.hbx_tab_label.set_alignment(xalign=0.5, yalign=0.5)
         self.hbx_tab_label.set_justify(gtk.JUSTIFY_CENTER)
         self.hbx_tab_label.show_all()

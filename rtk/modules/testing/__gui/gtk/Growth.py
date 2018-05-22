@@ -2181,8 +2181,8 @@ class Assessment(gtk.HPaned):  # pylint: disable=R0902, R0904
 
         # Retrieve the observed cumulative and instantaneous MTBF or failure
         # intensity values and bounds if there are any observed values.
-        (_obs_times, _cumll, _cumpt, _cumul) = self._get_observed_values(
-            self._testing_model.cum_mean)
+        (_obs_times, _cumll, _cumpt,
+         _cumul) = self._get_observed_values(self._testing_model.cum_mean)
         (_obs_times, _insll, _inspt, _insul) = self._get_observed_values(
             self._testing_model.instantaneous_mean)
 

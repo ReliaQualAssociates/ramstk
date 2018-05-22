@@ -16,43 +16,39 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
-
 ATTRIBUTES = {
-        'mode_id': 1,
-        'effect_local': u'',
-        'mission': u'Default Mission',
-        'other_indications': u'',
-        'mode_criticality': 0.0,
-        'single_point': 0,
-        'design_provisions': '',
-        'type_id': 0,
-        'rpn_severity_new': 1,
-        'effect_next': u'',
-        'detection_method': u'',
-        'hardware_id': -1,
-        'operator_actions': '',
-        'critical_item': 0,
-        'hazard_rate_source': u'',
-        'severity_class': u'',
-        'description': 'Test Functional Failure Mode #1',
-        'mission_phase': u'',
-        'mode_probability': u'',
-        'remarks': '',
-        'function_id': 1,
-        'mode_ratio': 0.0,
-        'mode_hazard_rate': 0.0,
-        'rpn_severity': 1,
-        'isolation_method': u'',
-        'effect_end': u'',
-        'mode_op_time': 0.0,
-        'effect_probability': 0.0
-    }
+    'mode_id': 1,
+    'effect_local': u'',
+    'mission': u'Default Mission',
+    'other_indications': u'',
+    'mode_criticality': 0.0,
+    'single_point': 0,
+    'design_provisions': '',
+    'type_id': 0,
+    'rpn_severity_new': 1,
+    'effect_next': u'',
+    'detection_method': u'',
+    'hardware_id': -1,
+    'operator_actions': '',
+    'critical_item': 0,
+    'hazard_rate_source': u'',
+    'severity_class': u'',
+    'description': 'Test Functional Failure Mode #1',
+    'mission_phase': u'',
+    'mode_probability': u'',
+    'remarks': '',
+    'function_id': 1,
+    'mode_ratio': 0.0,
+    'mode_hazard_rate': 0.0,
+    'rpn_severity': 1,
+    'isolation_method': u'',
+    'effect_end': u'',
+    'mode_op_time': 0.0,
+    'effect_probability': 0.0
+}
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_rtkmode_create(test_dao):
     """ __init__() should create an RTKMode model. """
     _session = test_dao.RTK_SESSION(
@@ -94,9 +90,6 @@ def test_rtkmode_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_get_attributes(test_dao):
     """ get_attributes() should return a dict of attribute name:value pairs. """
     _session = test_dao.RTK_SESSION(
@@ -107,9 +100,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -124,9 +114,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_set_attributes_missing_key(test_dao):
     """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
     _session = test_dao.RTK_SESSION(
@@ -143,9 +130,6 @@ def test_set_attributes_missing_key(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_criticality(test_dao):
     """ calculate_criticality() should return False on success. """
     _session = test_dao.RTK_SESSION(
@@ -166,9 +150,6 @@ def test_calculate_criticality(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_criticality_out_of_range_hazard_rate_input(test_dao):
     """ calculate_criticality() raises OutOfRangeError for item_hr < 0.0. """
     _session = test_dao.RTK_SESSION(
@@ -183,9 +164,6 @@ def test_calculate_criticality_out_of_range_hazard_rate_input(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_criticality_out_of_range_ratio_input(test_dao):
     """ calculate_criticality() raises OutOfRangeError for 0.0 > ratio > 1.0. """
     _session = test_dao.RTK_SESSION(
@@ -198,10 +176,8 @@ def test_calculate_criticality_out_of_range_ratio_input(test_dao):
 
     pytest.raises(OutOfRangeError, DUT.calculate_criticality, 1.1)
 
+
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_criticality_out_of_range_op_time_input(test_dao):
     """ calculate_criticality() raises OutOfRangeError for 0.0 > operating time. """
     _session = test_dao.RTK_SESSION(
@@ -216,9 +192,6 @@ def test_calculate_criticality_out_of_range_op_time_input(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_criticality_out_of_range_eff_prob_input(test_dao):
     """ calculate_criticality() raises OutOfRangeError for 0.0 <= effect probability =< 1.0. """
     _session = test_dao.RTK_SESSION(
@@ -233,9 +206,6 @@ def test_calculate_criticality_out_of_range_eff_prob_input(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_criticality_out_of_range_mode_hazard_rate(test_dao):
     """ calculate_criticality() raises OutOfRangeError for 0 > mode hazard rate. """
     _session = test_dao.RTK_SESSION(
@@ -250,9 +220,6 @@ def test_calculate_criticality_out_of_range_mode_hazard_rate(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_calculate_criticality_out_of_range_mode_criticality(test_dao):
     """ calculate_criticality() raises OutOfRangeError for 0 > mode criticality. """
     _session = test_dao.RTK_SESSION(

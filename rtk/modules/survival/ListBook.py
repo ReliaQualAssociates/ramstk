@@ -739,8 +739,8 @@ class ListView(gtk.VBox):
             _label.set_line_wrap(True)
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
-            _label.set_markup(
-                "<span weight='bold'>" + _headings[i] + "</span>")
+            _label.set_markup("<span weight='bold'>" + _headings[i] +
+                              "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column.setWidgetset(_label)

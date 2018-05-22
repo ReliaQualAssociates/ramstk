@@ -155,25 +155,30 @@ class RTKTreeView(gtk.TreeView):
 
             if _widgets[i] == 'combo':
                 _cell = self._do_make_combo_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col,
+                                        self.editable[i])
             elif _widgets[i] == 'spin':
                 _cell = self._do_make_spin_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col,
+                                        self.editable[i])
             elif _widgets[i] == 'toggle':
                 _cell = self._do_make_toggle_cell(self.editable[i])
-                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col,
+                                        self.editable[i])
             elif _widgets[i] == 'blob':
                 _cell = self._do_make_text_cell(True)
-                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col,
+                                        self.editable[i])
             else:
                 _cell = self._do_make_text_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, self.editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col,
+                                        self.editable[i])
 
             if pixbuf and i == 0:
                 _pbcell = gtk.CellRendererPixbuf()
                 _pbcell.set_property('xalign', 0.5)
-                _column = self._do_make_column([_pbcell, _cell], self.visible[i],
-                                               self.headings[i])
+                _column = self._do_make_column(
+                    [_pbcell, _cell], self.visible[i], self.headings[i])
                 _column.set_attributes(_pbcell, pixbuf=_n_cols)
             else:
                 _column = self._do_make_column([

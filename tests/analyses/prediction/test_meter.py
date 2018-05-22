@@ -50,7 +50,6 @@ PART_COUNT_PIQ = {2: [1.0, 3.4]}
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 @pytest.mark.parametrize("type_id", [1, 2, 3])
@@ -94,7 +93,6 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
@@ -115,7 +113,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_type():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the family ID is missing and needed."""
@@ -136,7 +133,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -157,7 +153,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_elapsed_time_meter():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -186,7 +181,6 @@ def test_calculate_mil_hdbk_217f_part_stress_elapsed_time_meter():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_panel_meter():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""

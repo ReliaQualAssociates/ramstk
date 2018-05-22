@@ -878,14 +878,14 @@ class ListView(gtk.VBox):
             _date = datetime.strptime(new_text, "%Y-%m-%d").toordinal()
             self._testing_model.dic_test_data[_record_id - 1][1] = _date
         elif position == 2:  # Failure start time
-            self._testing_model.dic_test_data[_record_id
-                                              - 1][2] = float(new_text)
+            self._testing_model.dic_test_data[_record_id -
+                                              1][2] = float(new_text)
         elif position == 3:  # Failure end time
-            self._testing_model.dic_test_data[_record_id
-                                              - 1][3] = float(new_text)
+            self._testing_model.dic_test_data[_record_id -
+                                              1][3] = float(new_text)
         elif position == 4:  # Number of failures
-            self._testing_model.dic_test_data[_record_id
-                                              - 1][4] = int(new_text)
+            self._testing_model.dic_test_data[_record_id -
+                                              1][4] = int(new_text)
 
         return False
 

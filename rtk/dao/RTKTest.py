@@ -11,11 +11,11 @@ The RTKTest Table
 """
 
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import error_handler, none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKTest(RTK_BASE):

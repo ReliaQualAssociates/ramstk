@@ -479,8 +479,8 @@ class Model(object):  # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
-        (_data, self.n_failures, self.n_suspensions) = _km.format_data(
-            self.dicRecords)
+        (_data, self.n_failures,
+         self.n_suspensions) = _km.format_data(self.dicRecords)
 
         self.km, _rank = _km.kaplan_meier(_data, self.start_time,
                                           self.rel_time, self.confidence,

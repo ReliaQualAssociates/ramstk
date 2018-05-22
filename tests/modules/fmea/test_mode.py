@@ -19,8 +19,6 @@ __copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_create(test_dao):
     """ __init__() should return instance of Mode data model. """
     DUT = dtmMode(test_dao)
@@ -30,8 +28,6 @@ def test_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_do_select_all_functional(test_dao):
     """ do_select_all() should return a Tree() object populated with RTKMode instances on success. """
     DUT = dtmMode(test_dao)
@@ -42,8 +38,6 @@ def test_do_select_all_functional(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_do_select_all_hardware(test_dao):
     """ do_select_all() should return a Tree() object populated with RTKMode instances on success. """
     DUT = dtmMode(test_dao)
@@ -54,8 +48,6 @@ def test_do_select_all_hardware(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select(test_dao):
     """ select() should return an instance of the RTKMode data model on success. """
     DUT = dtmMode(test_dao)
@@ -68,8 +60,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Mode ID is requested. """
     DUT = dtmMode(test_dao)
@@ -80,8 +70,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_insert_functional_mode(test_dao):
     """ insert() should return a zero error code on success when inserting a functional failure Mode. """
     DUT = dtmMode(test_dao)
@@ -95,8 +83,6 @@ def test_insert_functional_mode(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_insert_hardware_mode(test_dao):
     """ insert() should return a zero error code on success when inserting a hardware failure Mode. """
     DUT = dtmMode(test_dao)
@@ -110,8 +96,6 @@ def test_insert_hardware_mode(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmMode(test_dao)
@@ -126,8 +110,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Mode ID that doesn't exist. """
     DUT = dtmMode(test_dao)
@@ -141,8 +123,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmMode(test_dao)
@@ -158,8 +138,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Mode ID that doesn't exist. """
     DUT = dtmMode(test_dao)
@@ -172,8 +150,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmMode(test_dao)

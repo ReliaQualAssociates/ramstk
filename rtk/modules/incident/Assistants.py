@@ -276,11 +276,12 @@ class AddIncident(object):
         self.assistant.append_page(self.fxdPageGeneral)
         self.assistant.set_page_type(self.fxdPageGeneral,
                                      gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(self.fxdPageGeneral,
-                                      _(u"Program "
-                                        u"Incident: "
-                                        u"General "
-                                        u"Information"))
+        self.assistant.set_page_title(
+            self.fxdPageGeneral,
+            _(u"Program "
+              u"Incident: "
+              u"General "
+              u"Information"))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the incident descriptions page.                            #
@@ -330,9 +331,10 @@ class AddIncident(object):
         self.assistant.append_page(self.fxdPageDescription)
         self.assistant.set_page_type(self.fxdPageDescription,
                                      gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(self.fxdPageDescription,
-                                      _(u"Program Incident: Incident "
-                                        u"Description"))
+        self.assistant.set_page_title(
+            self.fxdPageDescription,
+            _(u"Program Incident: Incident "
+              u"Description"))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the confirmation page.                                     #
@@ -350,9 +352,9 @@ class AddIncident(object):
 
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(_fixed,
-                                      _(u"Incident: Confirm Addition "
-                                        u"of New Incident"))
+        self.assistant.set_page_title(
+            _fixed, _(u"Incident: Confirm Addition "
+                      u"of New Incident"))
         self.assistant.set_page_complete(_fixed, True)
 
         self.assistant.show_all()
@@ -600,9 +602,9 @@ class AddComponents(object):
 
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(_fixed,
-                                      _(u"Confirm Addition of the New "
-                                        u"Component"))
+        self.assistant.set_page_title(
+            _fixed, _(u"Confirm Addition of the New "
+                      u"Component"))
         self.assistant.set_page_complete(_fixed, True)
 
         self.assistant.show_all()
@@ -912,9 +914,9 @@ class FilterIncident(object):
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed,
-                                      _(u"Set Filter Criteria: "
-                                        u"Incident Details"))
+        self.assistant.set_page_title(
+            fixed, _(u"Set Filter Criteria: "
+                     u"Incident Details"))
         self.assistant.set_page_complete(fixed, True)
 
         # Create the page to select filter criteria related to the short
@@ -979,10 +981,11 @@ class FilterIncident(object):
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed,
-                                      _(u"Set Filter Criteria: "
-                                        u"Descriptions, Remarks, and "
-                                        u"Analysis"))
+        self.assistant.set_page_title(
+            fixed,
+            _(u"Set Filter Criteria: "
+              u"Descriptions, Remarks, and "
+              u"Analysis"))
         self.assistant.set_page_complete(fixed, True)
 
         # Create the page to select filter criteria related to the test and
@@ -1020,9 +1023,9 @@ class FilterIncident(object):
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed,
-                                      _(u"Set Filter Criteria: Test "
-                                        u"Information"))
+        self.assistant.set_page_title(
+            fixed, _(u"Set Filter Criteria: Test "
+                     u"Information"))
         self.assistant.set_page_complete(fixed, True)
 
         # Create the page to select filter criteria reliated to the request by,
@@ -1167,9 +1170,9 @@ class FilterIncident(object):
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed,
-                                      _(u"Set Filter Criteria: People "
-                                        u"and Dates"))
+        self.assistant.set_page_title(
+            fixed, _(u"Set Filter Criteria: People "
+                     u"and Dates"))
         self.assistant.set_page_complete(fixed, True)
 
         # Create the page to apply the filter criteria.
@@ -2296,8 +2299,8 @@ class CreateDataSet(object):
         _dialog.destroy()
 
         _file = open(_filename, 'w')
-        _file.write(
-            "Data Set Description: " + self.txtDescription.get_text() + "\n")
+        _file.write("Data Set Description: " + self.txtDescription.get_text() +
+                    "\n")
         _file.write("\n")
         _file.write(
             "Record_ID\tRequest_Date\tLeft\tRight\tStatus\tQuantity\tUnit\tTBF\tAssembly_ID\n"

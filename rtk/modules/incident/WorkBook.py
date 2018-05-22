@@ -1002,8 +1002,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Incident\nDetails") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Incident\nDetails") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -1195,8 +1195,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Incident\nChargeability") + "</span>")
+        _label.set_markup("<span weight='bold'>" +
+                          _(u"Incident\nChargeability") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -1303,8 +1303,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Incident\nAnalysis") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Incident\nAnalysis") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -1415,8 +1415,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup(
-            "<span weight='bold'>" + _(u"Incident\nActions") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Incident\nActions") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
@@ -2082,8 +2082,8 @@ class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
             self._modulebook.update(index, _new_text)
         elif index == 7:
             self._model.status = combo.get_active()
-            _new_text = Configuration.RTK_INCIDENT_STATUS[combo.get_active()
-                                                          - 1]
+            _new_text = Configuration.RTK_INCIDENT_STATUS[combo.get_active() -
+                                                          1]
             self._modulebook.update(index + 2, _new_text)
         elif index == 8:
             _model = combo.get_model()

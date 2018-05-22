@@ -187,9 +187,9 @@ class AssignMTBFResults(object):
 
         self.assistant.append_page(frame)
         self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(frame,
-                                      _(u"Select Assembly to Assign "
-                                        u"Results"))
+        self.assistant.set_page_title(
+            frame, _(u"Select Assembly to Assign "
+                     u"Results"))
         self.assistant.set_page_complete(frame, True)
 
         # Create a page to select whether or not to assign the decomposed

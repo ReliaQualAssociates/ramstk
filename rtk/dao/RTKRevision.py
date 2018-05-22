@@ -6,7 +6,6 @@
 # Copyright 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKRevision Table Module."""
 
-
 from sqlalchemy import BLOB, Column, Float, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -344,8 +343,8 @@ class RTKRevision(RTK_BASE):
                'ID {0:d}.'.format(self.revision_id)
 
         try:
-            self.availability_logistics = (self.mtbf_logistics /
-                                           (self.mtbf_logistics + self.mttr))
+            self.availability_logistics = (
+                self.mtbf_logistics / (self.mtbf_logistics + self.mttr))
         except OverflowError:
             self.availability_logistics = 0.0
             _error_code = 101
@@ -362,8 +361,8 @@ class RTKRevision(RTK_BASE):
                    format(self.revision_id, self.mtbf_logistics, self.mttr)
 
         try:
-            self.availability_mission = (self.mtbf_mission /
-                                         (self.mtbf_mission + self.mttr))
+            self.availability_mission = (
+                self.mtbf_mission / (self.mtbf_mission + self.mttr))
         except OverflowError:
             self.availability_mission = 0.0
             _error_code = 101

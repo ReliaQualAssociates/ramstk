@@ -20,8 +20,6 @@ __copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_create_data_model(test_dao):
     """ __init__() should return instance of Control data model. """
     DUT = dtmControl(test_dao)
@@ -31,8 +29,6 @@ def test_create_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_do_select_all(test_dao):
     """ do_select_all() should return a Tree() object populated with RTKControl instances on success. """
     DUT = dtmControl(test_dao)
@@ -43,8 +39,6 @@ def test_do_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select(test_dao):
     """ select() should return an instance of the RTKControl data model on success. """
     DUT = dtmControl(test_dao)
@@ -56,8 +50,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Control ID is requested. """
     DUT = dtmControl(test_dao)
@@ -68,8 +60,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_insert_control(test_dao):
     """ insert() should return False on success when inserting a Control into a hardware FMEA. """
     DUT = dtmControl(test_dao)
@@ -83,8 +73,6 @@ def test_insert_control(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmControl(test_dao)
@@ -98,8 +86,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Control ID that doesn't exist. """
     DUT = dtmControl(test_dao)
@@ -113,8 +99,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmControl(test_dao)
@@ -130,8 +114,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Control ID that doesn't exist. """
     DUT = dtmControl(test_dao)
@@ -145,8 +127,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmControl(test_dao)

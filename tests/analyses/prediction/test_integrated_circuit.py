@@ -328,7 +328,6 @@ PART_COUNT_PIQ = [0.25, 1.0, 2.0]
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("technology_id", [1, 2])
 @pytest.mark.parametrize("quality_id", [1, 2, 3])
@@ -366,7 +365,6 @@ def test_calculate_mil_hdbk_217f_part_count(technology_id, quality_id,
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
@@ -388,7 +386,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_technology():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the technology ID is missing."""
@@ -410,7 +407,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_technology():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -432,7 +428,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the quality ID is missing."""
@@ -454,7 +449,6 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -489,7 +483,6 @@ def test_calculate_mil_hdbk_217f_part_stress():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_gaas():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success when calculating a GaAs device."""
@@ -527,7 +520,6 @@ def test_calculate_mil_hdbk_217f_part_stress_gaas():
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [5.0, 3.3])
 @pytest.mark.parametrize("environment_active_id",
@@ -556,7 +548,6 @@ def test_under_voltage(voltage_rated, environment_active_id):
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [5.0, 3.3])
 @pytest.mark.parametrize("environment_active_id",
@@ -585,7 +576,6 @@ def test_over_voltage(voltage_rated, environment_active_id):
 
 
 @pytest.mark.unit
-@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("temperature_junction", [28.7, 138.0])
 @pytest.mark.parametrize("environment_active_id",

@@ -328,22 +328,22 @@ def calculate_hot_spot_temperature(**attributes):
 
     if attributes['temperature_rise'] == 0.0:
         try:
-            attributes['temperature_rise'] = 125.0 * attributes[
-                'power_operating'] / attributes['area']
+            attributes[
+                'temperature_rise'] = 125.0 * attributes['power_operating'] / attributes['area']
         except ZeroDivisionError:
             attributes['temperature_rise'] = 0.0
 
     if attributes['temperature_rise'] == 0.0:
         try:
-            attributes['temperature_rise'] = 11.5 * attributes[
-                'power_operating'] / attributes['weight']**0.6766
+            attributes[
+                'temperature_rise'] = 11.5 * attributes['power_operating'] / attributes['weight']**0.6766
         except ZeroDivisionError:
             attributes['temperature_rise'] = 0.0
 
     if attributes['temperature_rise'] == 0.0:
         try:
-            attributes['temperature_rise'] = 2.1 * attributes[
-                'power_operating'] / attributes['weight']**0.6766
+            attributes[
+                'temperature_rise'] = 2.1 * attributes['power_operating'] / attributes['weight']**0.6766
         except ZeroDivisionError:
             attributes['temperature_rise'] = 0.0
 

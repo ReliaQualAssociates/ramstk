@@ -300,8 +300,8 @@ def _calculate_quality_risk(module):
         _ratios = [0, 0, 0, 0, 0]
         try:
             if (module.lst_sftw_quality[1][3] /
-                (module.lst_sftw_quality[1][2] + module.lst_sftw_quality[1][3]
-                 )) <= 0.3:
+                (module.lst_sftw_quality[1][2] + module.lst_sftw_quality[1][3])
+                ) <= 0.3:
                 _ratios[0] = 1
             if (module.lst_sftw_quality[1][7] /
                     module.lst_sftw_quality[1][6]) > 0.5:
@@ -425,9 +425,8 @@ def _calculate_risk_reduction(module):
     # Calculate the risk reduction due to test coverage.
     try:
         if module.level_id == 2:  # Module
-            _VS = ((float(module.nm_test) / float(module.nm)) +
-                   (float(module.interfaces_test) / float(module.interfaces))
-                   ) / 2.0
+            _VS = ((float(module.nm_test) / float(module.nm)) + (float(
+                module.interfaces_test) / float(module.interfaces))) / 2.0
         elif module.level_id == 3:  # Unit
             _VS = ((float(module.branches_test) / float(module.branches)) +
                    (float(module.inputs_test) / float(module.inputs))) / 2.0

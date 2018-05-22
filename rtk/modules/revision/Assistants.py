@@ -157,9 +157,10 @@ class AddRevision(object):
         self.assistant.append_page(self.fxdPageOtherInfo)
         self.assistant.set_page_type(self.fxdPageOtherInfo,
                                      gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(self.fxdPageOtherInfo,
-                                      _(u"Select Additional Information to "
-                                        u"Add"))
+        self.assistant.set_page_title(
+            self.fxdPageOtherInfo,
+            _(u"Select Additional Information to "
+              u"Add"))
         self.assistant.set_page_complete(self.fxdPageOtherInfo, True)
 
         # Create the page for entering the new Revision information.
@@ -194,10 +195,10 @@ class AddRevision(object):
         self.assistant.append_page(self.fxdPageSetValues)
         self.assistant.set_page_type(self.fxdPageSetValues,
                                      gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(self.fxdPageSetValues,
-                                      _(u"Set Values "
-                                        u"for New "
-                                        u"Revision"))
+        self.assistant.set_page_title(
+            self.fxdPageSetValues, _(u"Set Values "
+                                     u"for New "
+                                     u"Revision"))
         self.assistant.set_page_complete(self.fxdPageSetValues, True)
 
         _fixed = gtk.Fixed()

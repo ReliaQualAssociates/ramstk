@@ -22,7 +22,6 @@ __copyright__ = 'Copyright 2015 Andrew "weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_data_model_create(test_dao):
     """ __init__() should return a Validation model. """
     DUT = dtmValidation(test_dao)
@@ -33,7 +32,6 @@ def test_data_model_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_select_all(test_dao):
     """ select_all() should return a Tree() object populated with RTKValidation instances on success. """
     DUT = dtmValidation(test_dao)
@@ -44,7 +42,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_select(test_dao):
     """ select() should return an instance of the RTKValidation data model on success. """
     DUT = dtmValidation(test_dao)
@@ -57,7 +54,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Validation ID is requested. """
     DUT = dtmValidation(test_dao)
@@ -67,7 +63,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_insert(test_dao):
     """ insert() should return False on success. """
     DUT = dtmValidation(test_dao)
@@ -82,7 +77,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmValidation(test_dao)
@@ -97,7 +91,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Validation ID that doesn't exist. """
     DUT = dtmValidation(test_dao)
@@ -111,7 +104,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmValidation(test_dao)
@@ -127,7 +119,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Validation ID that doesn't exist. """
     DUT = dtmValidation(test_dao)
@@ -141,7 +132,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_update_status(test_dao):
     """ update_status() should return a zero error code on success. """
     DUT = dtmValidation(test_dao)
@@ -154,7 +144,6 @@ def test_update_status(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmValidation(test_dao)
@@ -167,7 +156,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_calculate_task_time(test_dao):
     """ calculate_task_time() returns False on successfully calculating tasks times. """
     DUT = dtmValidation(test_dao)
@@ -184,7 +172,6 @@ def test_calculate_task_time(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_calculate_task_cost(test_dao):
     """ calculate_task_cost() returns False on successfully calculating tasks costs. """
     DUT = dtmValidation(test_dao)
@@ -201,7 +188,6 @@ def test_calculate_task_cost(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_data_controller_create(test_dao, test_configuration):
     """ __init__() should return a Validation Data Controller. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -211,7 +197,6 @@ def test_data_controller_create(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RTKValidation models. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -221,7 +206,6 @@ def test_request_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_select(test_dao, test_configuration):
     """ request_select() should return an RTKValidation model. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -231,7 +215,6 @@ def test_request_select(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_non_existent_id(test_dao, test_configuration):
     """ request_select() should return None when requesting a Validation that doesn't exist. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -240,7 +223,6 @@ def test_request_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_insert(test_dao, test_configuration):
     """ request_insert() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -250,7 +232,6 @@ def test_request_insert(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_delete(test_dao, test_configuration):
     """ request_delete() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -260,7 +241,6 @@ def test_request_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_delete_non_existent_id(test_dao, test_configuration):
     """ request_delete() should return True when attempting to delete a non-existent Validation. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -270,7 +250,6 @@ def test_request_delete_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_update(test_dao, test_configuration):
     """ request_update() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -280,7 +259,6 @@ def test_request_update(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_update_non_existent_id(test_dao, test_configuration):
     """ request_update() should return True when attempting to save a non-existent Validation. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -290,7 +268,6 @@ def test_request_update_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_update_all(test_dao, test_configuration):
     """ request_update_all() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -300,7 +277,6 @@ def test_request_update_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.validation
 def test_request_calculate(test_dao, test_configuration):
     """ request_calculate() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)

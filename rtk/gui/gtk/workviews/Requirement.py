@@ -256,8 +256,8 @@ class GeneralData(RTKWorkView):
         _frame = rtk.RTKFrame(label=_(u"General Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels,
-                                              _fixed, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels, _fixed,
+                                              5, 5)
         _x_pos += 50
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])

@@ -21,7 +21,6 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_data_model_create(test_dao):
     """ __init__() should return a MilHdbkF model. """
     DUT = dtmMilHdbkF(test_dao)
@@ -33,7 +32,6 @@ def test_data_model_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select_all(test_dao):
     """ select_all() should return a Tree() object populated with RTKMilHdbkF instances on success. """
     DUT = dtmMilHdbkF(test_dao)
@@ -45,7 +43,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select(test_dao):
     """ select() should return an instance of the RTKMilHdbkF data model on success. """
     DUT = dtmMilHdbkF(test_dao)
@@ -59,7 +56,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent MilHdbkF ID is requested. """
     DUT = dtmMilHdbkF(test_dao)
@@ -70,7 +66,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert(test_dao):
     """ insert() should return False on success when inserting a MilHdbkF record. """
     DUT = dtmMilHdbkF(test_dao)
@@ -84,7 +79,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmMilHdbkF(test_dao)
@@ -98,7 +92,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a MilHdbkF ID that doesn't exist. """
     DUT = dtmMilHdbkF(test_dao)
@@ -112,7 +105,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmMilHdbkF(test_dao)
@@ -128,7 +120,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a MilHdbkF ID that doesn't exist. """
     DUT = dtmMilHdbkF(test_dao)
@@ -142,7 +133,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmMilHdbkF(test_dao)

@@ -30,8 +30,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_create_data_model(test_dao):
     """ __init__() should create a Usage Profile data model. """
     DUT = dtmUsageProfile(test_dao)
@@ -46,8 +44,6 @@ def test_create_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_select_all(test_dao):
     """ select_all() should return an empty Tree() when passed a Revision ID that doesn't exist. """
     DUT = dtmUsageProfile(test_dao)
@@ -61,8 +57,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_select_all_non_existent_id(test_dao):
     """ select_all() should return an empty Tree() when passed a Revision ID that doesn't exist. """
     DUT = dtmUsageProfile(test_dao)
@@ -74,8 +68,6 @@ def test_select_all_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_select(test_dao):
     """ select() should return a Tree() on success. """
     DUT = dtmUsageProfile(test_dao)
@@ -88,8 +80,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_insert_mission(test_dao):
     """ insert() should return a zero error code on success when adding a new Mission. """
     DUT = dtmUsageProfile(test_dao)
@@ -104,8 +94,6 @@ def test_insert_mission(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_insert_phase(test_dao):
     """ insert() should return a zero error code on success when adding a new Mission Phase. """
     DUT = dtmUsageProfile(test_dao)
@@ -120,8 +108,6 @@ def test_insert_phase(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_insert_environment(test_dao):
     """ insert() should return a zero error code on success when adding a new Environment. """
     DUT = dtmUsageProfile(test_dao)
@@ -137,8 +123,6 @@ def test_insert_environment(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_insert_non_existent_type(test_dao):
     """ insert() should return a 2105 error code when attempting to add something other than a Mission, Phase, or Environment. """
     DUT = dtmUsageProfile(test_dao)
@@ -155,8 +139,6 @@ def test_insert_non_existent_type(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_delete_environment(test_dao):
     """ delete() should return a zero error code on success when removing an Environment. """
     DUT = dtmUsageProfile(test_dao)
@@ -170,8 +152,6 @@ def test_delete_environment(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_delete_non_existent_node_id(test_dao):
     """ delete() should return a 2005 error code when attempting to remove a non-existant item from the Profile. """
     DUT = dtmUsageProfile(test_dao)
@@ -185,8 +165,6 @@ def test_delete_non_existent_node_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmUsageProfile(test_dao)
@@ -199,8 +177,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_update_non_existent_node_id(test_dao):
     """ update() should return a 2006 error code when attempting to update a non-existent Node ID. """
     DUT = dtmUsageProfile(test_dao)
@@ -214,8 +190,6 @@ def test_update_non_existent_node_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmUsageProfile(test_dao)
@@ -228,8 +202,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_create_data_controller(test_dao, test_configuration):
     """ __init__() should create an instance of a UsageProfile data controller. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -239,8 +211,6 @@ def test_create_data_controller(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_select_all(test_dao, test_configuration):
     """ request_select_all() should return a treelib Tree() with the Usage Profile. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -249,8 +219,6 @@ def test_request_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_insert_mission(test_dao, test_configuration):
     """ request_insert() should return False on success. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -260,8 +228,6 @@ def test_request_insert_mission(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_delete(test_dao, test_configuration):
     """ request_delete() should return False on success. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -271,8 +237,6 @@ def test_request_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_delete_non_existent_id(test_dao, test_configuration):
     """ request_delete() should return True when attempting to delete a non-existent Node ID. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -282,8 +246,6 @@ def test_request_delete_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -296,8 +258,6 @@ def test_request_get_attributes(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return a zero error code on success. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -310,8 +270,6 @@ def test_request_set_attributes(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_last_mission_id(test_dao, test_configuration):
     """ request_last_id() should return the last Mission ID used in the RTK Program database. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -323,8 +281,6 @@ def test_request_last_mission_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_last_mission_phase_id(test_dao, test_configuration):
     """ request_last_id() should return the last Mission Phase ID used in the RTK Program database. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -334,8 +290,6 @@ def test_request_last_mission_phase_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_last_environment_id(test_dao, test_configuration):
     """ request_last_id() should return the last Environment ID used in the RTK Program database. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
@@ -345,8 +299,6 @@ def test_request_last_environment_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_request_update_all(test_dao, test_configuration):
     """ request_update_all() should return False on success. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)

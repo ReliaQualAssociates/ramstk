@@ -50,8 +50,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.validation
 def test_rtkvalidation_create(test_dao):
     """ __init__() should create an RTKValidation model. """
     _session = test_dao.RTK_SESSION(
@@ -93,8 +91,6 @@ def test_rtkvalidation_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.validation
 def test_get_attributes(test_dao):
     """ get_attributes() should return a dict of attribute values. """
     _session = test_dao.RTK_SESSION(
@@ -105,8 +101,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.validation
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -121,8 +115,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.validation
 def test_set_attributes_missing_key(test_dao):
     """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
     _session = test_dao.RTK_SESSION(
@@ -140,8 +132,6 @@ def test_set_attributes_missing_key(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.validation
 def test_calculate_task_time(test_dao):
     """ calculate() returns False on successfully calculating tasks times. """
     _session = test_dao.RTK_SESSION(
@@ -160,8 +150,6 @@ def test_calculate_task_time(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.validation
 def test_calculate_task_cost(test_dao):
     """ calculate() returns False on successfully calculating tasks costs. """
     _session = test_dao.RTK_SESSION(

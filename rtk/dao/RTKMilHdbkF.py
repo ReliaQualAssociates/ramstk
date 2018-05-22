@@ -6,7 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKMilHdbkF Table Module."""  # pragma: no cover
 
-
 from sqlalchemy import Column, Float, ForeignKey, Integer  # pragma: no cover
 from sqlalchemy.orm import relationship
 
@@ -70,8 +69,7 @@ class RTKMilHdbkF(RTK_BASE):
     piV = Column('fld_pi_v', Float, default=0.0)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware',
-                            back_populates='milhdbkf')
+    hardware = relationship('RTKHardware', back_populates='milhdbkf')
 
     def get_attributes(self):
         """

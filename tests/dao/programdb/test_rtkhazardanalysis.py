@@ -61,9 +61,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_rtkallocation_create(test_dao):
     """__init__() should create an RTKHazardAnalysis model."""
     _session = test_dao.RTK_SESSION(
@@ -118,9 +115,6 @@ def test_rtkallocation_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_get_attributes(test_dao):
     """get_attributes() should return a dict of attribute values."""
     _session = test_dao.RTK_SESSION(
@@ -175,9 +169,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_set_attributes(test_dao):
     """set_attributes() should return a zero error code on success."""
     _session = test_dao.RTK_SESSION(
@@ -191,9 +182,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_set_attributes_too_few_passed(test_dao):
     """set_attributes() should return a 40 error code when passed a dict with missing attributes."""
     _session = test_dao.RTK_SESSION(
@@ -201,45 +189,84 @@ def test_set_attributes_too_few_passed(test_dao):
     DUT = _session.query(RTKHazardAnalysis).first()
 
     _error_code, _msg = DUT.set_attributes({
-        'user_blob_3': '',
-        'user_blob_2': '',
-        'user_blob_1': '',
-        'system_severity': 'Medium',
-        'result_2': 0.0,
-        'result_3': 0.0,
-        'assembly_probability': 'Level A - Frequent',
-        'system_probability': 'Level A - Frequent',
-        'system_probability_f': 'Level A - Frequent',
-        'assembly_hri': 20,
-        'system_hri': 20,
-        'system_effect': u'',
-        'user_int_1': 0,
-        'user_float_3': 0.0,
-        'result_4': 0.0,
-        'user_float_1': 0.0,
-        'potential_hazard': u'',
-        'remarks': '',
-        'hazard_id': 1,
-        'system_hri_f': 20,
-        'result_5': 0.0,
-        'assembly_severity': 'Medium',
-        'assembly_probability_f': 'Level A - Frequent',
-        'assembly_hri_f': 4,
-        'assembly_effect': u'',
-        'function_4': u'',
-        'potential_cause': u'',
-        'system_mitigation': '',
-        'hardware_id': 1,
-        'function_3': u'',
-        'function_2': u'',
-        'function_1': u'',
-        'user_int_3': 0,
-        'user_int_2': 0,
-        'assembly_severity_f': 'Medium',
-        'system_severity_f': 'Medium',
-        'assembly_mitigation': '',
-        'function_5': u'',
-        'result_1': 0.0
+        'user_blob_3':
+        '',
+        'user_blob_2':
+        '',
+        'user_blob_1':
+        '',
+        'system_severity':
+        'Medium',
+        'result_2':
+        0.0,
+        'result_3':
+        0.0,
+        'assembly_probability':
+        'Level A - Frequent',
+        'system_probability':
+        'Level A - Frequent',
+        'system_probability_f':
+        'Level A - Frequent',
+        'assembly_hri':
+        20,
+        'system_hri':
+        20,
+        'system_effect':
+        u'',
+        'user_int_1':
+        0,
+        'user_float_3':
+        0.0,
+        'result_4':
+        0.0,
+        'user_float_1':
+        0.0,
+        'potential_hazard':
+        u'',
+        'remarks':
+        '',
+        'hazard_id':
+        1,
+        'system_hri_f':
+        20,
+        'result_5':
+        0.0,
+        'assembly_severity':
+        'Medium',
+        'assembly_probability_f':
+        'Level A - Frequent',
+        'assembly_hri_f':
+        4,
+        'assembly_effect':
+        u'',
+        'function_4':
+        u'',
+        'potential_cause':
+        u'',
+        'system_mitigation':
+        '',
+        'hardware_id':
+        1,
+        'function_3':
+        u'',
+        'function_2':
+        u'',
+        'function_1':
+        u'',
+        'user_int_3':
+        0,
+        'user_int_2':
+        0,
+        'assembly_severity_f':
+        'Medium',
+        'system_severity_f':
+        'Medium',
+        'assembly_mitigation':
+        '',
+        'function_5':
+        u'',
+        'result_1':
+        0.0
     })
 
     assert _error_code == 40
@@ -248,9 +275,6 @@ def test_set_attributes_too_few_passed(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_calculate_hri(test_dao):
     """calculate() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -275,9 +299,6 @@ def test_calculate_hri(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.hazard_analysis
 def test_calculate_user_defined(test_dao):
     """calculate() should return False when calculating user-defined risks."""
     _session = test_dao.RTK_SESSION(

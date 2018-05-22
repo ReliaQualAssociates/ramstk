@@ -22,8 +22,6 @@ __copyright__ = 'Copyright 2018 Andrew "Weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_create_similar_item_data_model(test_dao):
     """ __init__ should return instance of SimilarItem data model. """
     DUT = dtmSimilarItem(test_dao)
@@ -34,8 +32,6 @@ def test_create_similar_item_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_select_all(test_dao):
     """select_all() should return a treelib Tree() on success when selecting SimilarItems."""
     DUT = dtmSimilarItem(test_dao)
@@ -46,8 +42,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_select(test_dao):
     """select() should return an instance of the RTKSimilarItem data model on success."""
     DUT = dtmSimilarItem(test_dao)
@@ -62,8 +56,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_select_non_existent_id(test_dao):
     """select() should return None when a non-existent SimilarItem ID is requested."""
     DUT = dtmSimilarItem(test_dao)
@@ -75,8 +67,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_select_children(test_dao):
     """select_children() should return the immediate subtree of the passed node ID."""
     DUT = dtmSimilarItem(test_dao)
@@ -90,8 +80,6 @@ def test_select_children(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_insert(test_dao):
     """insert() should return a zero error code on success."""
     DUT = dtmSimilarItem(test_dao)
@@ -106,8 +94,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_delete(test_dao):
     """delete() should return a zero error code on success."""
     DUT = dtmSimilarItem(test_dao)
@@ -121,8 +107,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_delete_non_existent_id(test_dao):
     """delete() should return a non-zero error code when passed a Revision ID that doesn't exist."""
     DUT = dtmSimilarItem(test_dao)
@@ -137,8 +121,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_update(test_dao):
     """update() should return a zero error code on success."""
     DUT = dtmSimilarItem(test_dao)
@@ -154,8 +136,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_update_non_existent_id(test_dao):
     """update() should return a non-zero error code when passed an SimilarItem ID that doesn't exist."""
     DUT = dtmSimilarItem(test_dao)
@@ -169,8 +149,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_update_all(test_dao):
     """update_all() should return a zero error code on success."""
     DUT = dtmSimilarItem(test_dao)
@@ -183,8 +161,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_topic_633(test_dao):
     """calculate() should return False on success when using Topic 633 similar item analysis."""
     DUT = dtmSimilarItem(test_dao)
@@ -207,8 +183,6 @@ def test_topic_633(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_user_defined(test_dao):
     """calculate() should return False on success when using user defined similar item analysis."""
     DUT = dtmSimilarItem(test_dao)
@@ -227,8 +201,6 @@ def test_user_defined(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_create_similar_item_data_controller(test_dao, test_configuration):
     """ __init__ should return instance of SimilarItem data controller. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -238,8 +210,6 @@ def test_create_similar_item_data_controller(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RTKSimilarItem data models. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -251,8 +221,6 @@ def test_request_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_select(test_dao, test_configuration):
     """ request_select() should return an RTKSimilarItem data model. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -262,8 +230,6 @@ def test_request_select(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_non_existent_id(test_dao, test_configuration):
     """ request_select() should return None when requesting an SimilarItem that doesn't exist. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -273,8 +239,6 @@ def test_request_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_insert(test_dao, test_configuration):
     """ request_insert() should return False on success. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -284,8 +248,6 @@ def test_request_insert(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_delete(test_dao, test_configuration):
     """ request_delete() should return False on success. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -295,8 +257,6 @@ def test_request_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_delete_non_existent_id(test_dao, test_configuration):
     """ request_delete() should return True when attempting to delete a non-existent SimilarItem. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -306,8 +266,6 @@ def test_request_delete_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_update(test_dao, test_configuration):
     """ request_update() should return False on success. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -317,8 +275,6 @@ def test_request_update(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_update_non_existent_id(test_dao, test_configuration):
     """ request_update() should return True when attempting to save a non-existent SimilarItem. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -328,8 +284,6 @@ def test_request_update_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_update_all(test_dao, test_configuration):
     """ request_update_all() should return False on success. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
@@ -339,8 +293,6 @@ def test_request_update_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.similar_item
 def test_request_calculate(test_dao, test_configuration):
     """ request_calculate() should return False on success. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')

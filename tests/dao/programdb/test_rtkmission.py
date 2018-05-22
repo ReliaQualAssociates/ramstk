@@ -25,9 +25,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.revision
-@pytest.mark.usage
 def test_rtkmission_create(test_dao):
     """ __init__() should create an RTKMission model. """
     _session = test_dao.RTK_SESSION(
@@ -46,9 +43,6 @@ def test_rtkmission_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.revision
-@pytest.mark.usage
 def test_get_attributes(test_dao):
     """ get_attributes() should return a tuple of attribute values. """
     _session = test_dao.RTK_SESSION(
@@ -59,9 +53,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.revision
-@pytest.mark.usage
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -76,9 +67,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.revision
-@pytest.mark.usage
 def test_set_attributes_too_few_passed(test_dao):
     """ set_attributes() should return a zero error code when passed too few attributes. """
     _session = test_dao.RTK_SESSION(

@@ -87,7 +87,7 @@ class RTKMode(RTK_BASE):
     hardware = relationship('RTKHardware', back_populates='mode')
     mechanism = relationship(
         'RTKMechanism', back_populates='mode', cascade='all,delete')
-    cause  = relationship(
+    cause = relationship(
         'RTKCause', back_populates='mode', cascade='all,delete')
 
     is_mode = True

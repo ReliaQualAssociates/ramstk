@@ -6,13 +6,12 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKDesignElectric Table Module."""
 
-
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 # pylint: disable=R0902
@@ -79,8 +78,7 @@ class RTKDesignElectric(RTK_BASE):
         'fld_temperature_hot_spot', Float, default=0.0)
     temperature_junction = Column(
         'fld_temperature_junction', Float, default=0.0)
-    temperature_knee = Column(
-        'fld_temperature_knee', Float, default=25.0)
+    temperature_knee = Column('fld_temperature_knee', Float, default=25.0)
     temperature_rated_max = Column(
         'fld_temperature_rated_max', Float, default=0.0)
     temperature_rated_min = Column(

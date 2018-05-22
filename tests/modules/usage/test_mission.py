@@ -22,8 +22,6 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_create_data_model(test_dao):
     """ __init__() should return a Mission data model. """
     DUT = dtmMission(test_dao)
@@ -34,8 +32,6 @@ def test_create_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_select_all(test_dao):
     """ select_all() should return a Tree() object populated with RTKMission instances on success. """
     DUT = dtmMission(test_dao)
@@ -47,8 +43,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_select(test_dao):
     """ select() should return an instance of the RTKMission data model on success. """
     DUT = dtmMission(test_dao)
@@ -62,8 +56,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_select_non_existent_id(test_dao):
     """ select() should return None when passed a Mission ID that doesn't exist. """
     DUT = dtmMission(test_dao)
@@ -73,8 +65,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_insert(test_dao):
     """ insert() should return a zero error code on success. """
     DUT = dtmMission(test_dao)
@@ -89,8 +79,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_delete(test_dao):
     """ delete() should return False on success. """
     DUT = dtmMission(test_dao)
@@ -104,8 +92,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_delete_non_existent_id(test_dao):
     """ delete() should return True when passed a Mission ID that doesn't exist. """
     DUT = dtmMission(test_dao)
@@ -119,8 +105,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmMission(test_dao)
@@ -136,8 +120,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Mission ID that doesn't exist. """
     DUT = dtmMission(test_dao)
@@ -151,8 +133,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.revision
-@pytest.mark.usage
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmMission(test_dao)

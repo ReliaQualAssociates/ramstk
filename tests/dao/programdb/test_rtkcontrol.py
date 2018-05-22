@@ -23,9 +23,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_rtkcontrol_create(test_dao):
     """
     __init__() should create an RTKControl model.
@@ -45,9 +42,6 @@ def test_rtkcontrol_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_get_attributes(test_dao):
     """
     get_attributes() should return a dictionary of attribute key:value pairs.
@@ -68,9 +62,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_set_attributes(test_dao):
     """
     set_attributes() should return a zero error code on success
@@ -86,9 +77,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
 def test_set_attributes_missing_key(test_dao):
     """
     set_attributes() should return a 40 error code when passed a dict with a missing key.

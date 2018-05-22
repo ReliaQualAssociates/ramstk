@@ -294,7 +294,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_data_model_create(test_dao):
     """ __init__() should return a Hardware BoM model. """
     DUT = dtmHardwareBoM(test_dao)
@@ -312,7 +311,6 @@ def test_data_model_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select_all(test_dao):
     """ select_all() should return a Tree() object populated with RTKHardware instances on success. """
     DUT = dtmHardwareBoM(test_dao)
@@ -324,7 +322,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select(test_dao):
     """ select() should return an instance of the RTKHardware data model on success. """
     DUT = dtmHardwareBoM(test_dao)
@@ -338,7 +335,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Hardware ID is requested. """
     DUT = dtmHardwareBoM(test_dao)
@@ -347,7 +343,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert_sibling_assembly(test_dao):
     """ insert() should return a zero error code on success when inserting a sibling Hardware assembly. """
     DUT = dtmHardwareBoM(test_dao)
@@ -361,7 +356,6 @@ def test_insert_sibling_assembly(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert_child_assembly(test_dao):
     """ insert() should return a zero error code on success when inserting a child Hardware assembly. """
     DUT = dtmHardwareBoM(test_dao)
@@ -375,7 +369,6 @@ def test_insert_child_assembly(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert_part(test_dao):
     """ insert() should return a zero error code on success when inserting a child Hardware piece part. """
     DUT = dtmHardwareBoM(test_dao)
@@ -389,7 +382,6 @@ def test_insert_part(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmHardwareBoM(test_dao)
@@ -403,7 +395,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_delete_non_existent_id(test_dao):
     """ delete() should return a non-zero error code when passed a Hardware ID that doesn't exist. """
     DUT = dtmHardwareBoM(test_dao)
@@ -417,7 +408,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmHardwareBoM(test_dao)
@@ -433,7 +423,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update_non_existent_id(test_dao):
     """ update() should return a non-zero error code when passed a Hardware ID that doesn't exist. """
     DUT = dtmHardwareBoM(test_dao)
@@ -453,7 +442,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmHardwareBoM(test_dao)
@@ -466,7 +454,6 @@ def test_update_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_data_controller_create(test_dao, test_configuration):
     """ __init__() should create an instance of a Hardware data controller. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -476,7 +463,6 @@ def test_data_controller_create(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_select_all(test_dao, test_configuration):
     """ request_select_all() should return a treelib Tree() with the Hardware BoM. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -485,7 +471,6 @@ def test_request_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_select_all_matrix(test_dao, test_configuration):
     """ select_all_matrix() should return a tuple containing the matrix, column headings, and row headings. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -502,7 +487,6 @@ def test_request_select_all_matrix(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_update_matrix(test_dao, test_configuration):
     """ request_update_matrix() should return False on success. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -513,7 +497,6 @@ def test_request_update_matrix(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_select(test_dao, test_configuration):
     """ request_select() should return an instance of the RTKHardware data model on success. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -525,7 +508,6 @@ def test_request_select(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_select_non_existent_id(test_dao, test_configuration):
     """ request_select() should return None when requesting a Hardware item that doesn't exist. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -536,7 +518,6 @@ def test_request_select_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_insert_sibling(test_dao, test_configuration):
     """ request_insert() should return False on success when inserting a sibling Hardware item. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -548,7 +529,6 @@ def test_request_insert_sibling(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_insert_child(test_dao, test_configuration):
     """ request_insert() should return False on success when inserting a child Hardware item. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -560,7 +540,6 @@ def test_request_insert_child(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert_matrix_row(test_dao, test_configuration):
     """ request_insert_matrix() should return False on successfully inserting a row. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -574,7 +553,6 @@ def test_insert_matrix_row(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert_matrix_duplicate_row(test_dao, test_configuration):
     """ request_insert_matrix() should return True when attempting to insert a duplicate row. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -585,7 +563,6 @@ def test_insert_matrix_duplicate_row(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_insert_matrix_column(test_dao, test_configuration):
     """ request_insert_matrix() should return False on successfully inserting a column. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -595,18 +572,17 @@ def test_insert_matrix_column(test_dao, test_configuration):
 
     if pytest.mark.name == 'integration':
         assert not DUT.request_insert_matrix(
-        'hrdwr_vldtn', 1, 'Test Validation Task 1', row=False)
+            'hrdwr_vldtn', 1, 'Test Validation Task 1', row=False)
         assert DUT._dmx_hw_vldtn_matrix.dic_column_hdrs[
             1] == 'Test Validation Task 1'
     elif pytest.mark.name == 'hardware':
         assert not DUT.request_insert_matrix(
-        'hrdwr_vldtn', 2, 'Test Validation Task 2', row=False)
+            'hrdwr_vldtn', 2, 'Test Validation Task 2', row=False)
         assert DUT._dmx_hw_vldtn_matrix.dic_column_hdrs[
             2] == 'Test Validation Task 2'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_delete(test_dao, test_configuration):
     """ request_delete() should return False on success. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -616,7 +592,6 @@ def test_request_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_delete_non_existent_id(test_dao, test_configuration):
     """ request_delete() should return True when attempting to delete a non-existent Node ID. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -626,7 +601,6 @@ def test_request_delete_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs for the RTKHardware table. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -639,7 +613,6 @@ def test_request_get_attributes(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return False on success when setting the attributes. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -649,7 +622,6 @@ def test_request_set_attributes(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_set_attributes_missing_design_electric(
         test_dao, test_configuration):
     """ request_set_attributes() should return True when an attribute for the RTKDesignElectric table is missing. """
@@ -664,7 +636,6 @@ def test_request_set_attributes_missing_design_electric(
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_set_attributes_missin_design_mechanic(test_dao,
                                                        test_configuration):
     """ request_set_attributes() should return True when an attribute for the RTKDesignMechanic table is missing. """
@@ -679,7 +650,6 @@ def test_request_set_attributes_missin_design_mechanic(test_dao,
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_set_attributes_missing_mil_hdbk_f(test_dao,
                                                    test_configuration):
     """ request_set_attributes() should return True when an attribute for the RTKMilHdbkF table is missing. """
@@ -694,7 +664,6 @@ def test_request_set_attributes_missing_mil_hdbk_f(test_dao,
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_set_attributes_missing_nswc(test_dao, test_configuration):
     """ request_set_attributes() should return True when an attribute for the RTKNSWC table is missing. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -708,7 +677,6 @@ def test_request_set_attributes_missing_nswc(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_set_attributes_missing_reliability(test_dao,
                                                     test_configuration):
     """ request_set_attributes() should return True when an attribute for the RTKReliability table is missing. """
@@ -723,7 +691,6 @@ def test_request_set_attributes_missing_reliability(test_dao,
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_last_id(test_dao, test_configuration):
     """ request_last_id() should return the last Hardware ID used in the RTK Program database. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -736,7 +703,6 @@ def test_request_last_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_update_all(test_dao, test_configuration):
     """ request_update_all() should return False on success. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
@@ -746,7 +712,6 @@ def test_request_update_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
 def test_request_make_composite_reference_designator(test_dao,
                                                      test_configuration):
     """ request_make_composite_reference_designator() should return a zero error code on success. """

@@ -21,8 +21,6 @@ __copyright__ = 'Copyright 2014 - 2017 Andrew "Weibullguy" Rowland'
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_create_testmethod_data_model(test_dao):
     """ __init__() should return instance of TestMethod data model. """
     DUT = dtmTestMethod(test_dao)
@@ -33,8 +31,6 @@ def test_create_testmethod_data_model(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_select_all(test_dao):
     """select_all() should return a treelib Tree() on success when selecting TestMethods."""
     DUT = dtmTestMethod(test_dao)
@@ -45,8 +41,6 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_select(test_dao):
     """select() should return an instance of the RTKTestMethod data model on success."""
     DUT = dtmTestMethod(test_dao)
@@ -60,8 +54,6 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_select_non_existent_id(test_dao):
     """select() should return None when a non-existent TestMethod ID is requested."""
     DUT = dtmTestMethod(test_dao)
@@ -73,8 +65,6 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_insert(test_dao):
     """insert() should return a zero error code on success."""
     DUT = dtmTestMethod(test_dao)
@@ -94,8 +84,6 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_delete(test_dao):
     """delete() should return a zero error code on success."""
     DUT = dtmTestMethod(test_dao)
@@ -109,8 +97,6 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_delete_non_existent_id(test_dao):
     """delete() should return a non-zero error code when passed a TestMethod ID that doesn't exist."""
     DUT = dtmTestMethod(test_dao)
@@ -124,8 +110,6 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_update(test_dao):
     """update() should return a zero error code on success."""
     DUT = dtmTestMethod(test_dao)
@@ -141,8 +125,6 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_update_non_existent_id(test_dao):
     """update() should return a non-zero error code when passed an TestMethod ID that doesn't exist."""
     DUT = dtmTestMethod(test_dao)
@@ -156,8 +138,6 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.hardware
-@pytest.mark.pof
 def test_update_all(test_dao):
     """update_all() should return a zero error code on success."""
     DUT = dtmTestMethod(test_dao)

@@ -222,8 +222,8 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         else:
             _quality = 1
         attributes['piF'] = _dic_piF[attributes['contact_rating_id']][
-            attributes['application_id'] - 1][attributes['construction_id']
-                                              - 1][_quality]
+            attributes['application_id'] - 1][attributes['construction_id'] -
+                                              1][_quality]
 
     # Determine the quality factor (piQ).
     try:

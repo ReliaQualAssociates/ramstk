@@ -31,10 +31,6 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_rtkmechanism_create(test_dao):
     """ __init__() should create an RTKMechanism model. """
     _session = test_dao.RTK_SESSION(
@@ -58,10 +54,6 @@ def test_rtkmechanism_create(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_get_attributes(test_dao):
     """ get_attributes() should return a dict of attribute:value pairs. """
     _session = test_dao.RTK_SESSION(
@@ -86,10 +78,6 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -103,10 +91,6 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_set_attributes_missing_key(test_dao):
     """ set_attributes() should return a 40 error code when passed a dict with a missing key."""
     _session = test_dao.RTK_SESSION(
@@ -125,10 +109,6 @@ def test_set_attributes_missing_key(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test03a_calculate_rpn(test_dao):
     """ calculate_rpn() always returns a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -150,10 +130,6 @@ def test03a_calculate_rpn(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_calculate_rpn_out_of_range_severity_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < severity inputs < 0. """
     _session = test_dao.RTK_SESSION(
@@ -176,10 +152,6 @@ def test_calculate_rpn_out_of_range_severity_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_calculate_rpn_out_of_range_occurrence_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < occurrence inputs < 0."""
     _session = test_dao.RTK_SESSION(
@@ -195,10 +167,6 @@ def test_calculate_rpn_out_of_range_occurrence_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_calculate_rpn_out_of_range_new_occurrence_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < new occurrence inputs < 0. """
     _session = test_dao.RTK_SESSION(
@@ -214,10 +182,6 @@ def test_calculate_rpn_out_of_range_new_occurrence_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_calculate_rpn_out_of_range_detection_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < detection inputs < 0. """
     _session = test_dao.RTK_SESSION(
@@ -233,10 +197,6 @@ def test_calculate_rpn_out_of_range_detection_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_calculate_rpn_out_of_range_new_detection_inputs(test_dao):
     """ calculate_rpn() raises OutOfRangeError for 11 < new detection inputs < 0. """
     _session = test_dao.RTK_SESSION(
@@ -252,10 +212,6 @@ def test_calculate_rpn_out_of_range_new_detection_inputs(test_dao):
 
 
 @pytest.mark.integration
-@pytest.mark.database
-@pytest.mark.hardware
-@pytest.mark.fmea
-@pytest.mark.pof
 def test_calculate_rpn_out_of_range_result(test_dao):
     """ calculate_rpn() returns a non-zero error code when the calculated RPN is outide the range (0, 1000]. """
     _session = test_dao.RTK_SESSION(

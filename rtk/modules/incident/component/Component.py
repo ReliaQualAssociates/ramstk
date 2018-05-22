@@ -236,8 +236,8 @@ class Component(object):
         """
 
         for _component in self.dicComponents.values():
-            (_results, _error_code) = self.save_component(
-                _component.component_id)
+            (_results,
+             _error_code) = self.save_component(_component.component_id)
 
         return False
 
