@@ -10,7 +10,6 @@
 import os
 
 import logging
-import pdb
 from treelib import Tree
 
 import pytest
@@ -67,7 +66,8 @@ def test_create_new_program(test_common_dao, test_dao, test_configuration):
     _error_code, _msg = DUT.create_program(_database)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Creating RTK Program database {0:s}.'.format(_database))
+    assert _msg == (
+        'RTK SUCCESS: Creating RTK Program database {0:s}.'.format(_database))
 
 
 @pytest.mark.integration
@@ -94,7 +94,8 @@ def test_open_program(test_common_dao, test_dao, test_configuration):
     _error_code, _msg = DUT.open_program(_database)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Opening RTK Program database {0:s}.'.format(_database))
+    assert _msg == (
+        'RTK SUCCESS: Opening RTK Program database {0:s}.'.format(_database))
 
 
 @pytest.mark.integration
@@ -740,7 +741,7 @@ def test_validate_license_wrong_key(test_common_dao, test_dao):
 
 
 @pytest.mark.integration
-def test_initialize_controller(test_configuration):
+def test_initialize_controller():
     """ __init__() should create an instance of the rtk.RTK object. """
     DUT = RTK(test=True)
 
@@ -773,7 +774,7 @@ def test_initialize_controller(test_configuration):
 
 
 @pytest.mark.integration
-def test_request_validate_license(test_configuration):
+def test_request_validate_license():
     """ request_validate_license() should return False on success. """
     DUT = RTK(test=True)
 

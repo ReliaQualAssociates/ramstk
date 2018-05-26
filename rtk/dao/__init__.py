@@ -43,7 +43,7 @@ from .RTKHazardAnalysis import RTKHazardAnalysis
 from .RTKIncident import RTKIncident
 from .RTKIncidentAction import RTKIncidentAction
 from .RTKIncidentDetail import RTKIncidentDetail
-from .RTKMatrix import RTKMatrix
+from .programdb.RTKMatrix import RTKMatrix
 from .RTKMechanism import RTKMechanism
 from .RTKMilHdbkF import RTKMilHdbkF
 from .RTKMission import RTKMission
