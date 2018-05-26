@@ -8,7 +8,7 @@
 
 # Import other RTK modules.
 from rtk.datamodels import RTKDataModel
-from rtk.dao.programdb import RTKFunction
+from rtk.dao import RTKFunction
 
 
 class FunctionDataModel(RTKDataModel):

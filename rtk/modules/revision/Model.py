@@ -8,7 +8,7 @@
 
 # Import other RTK modules.
 from rtk.datamodels import RTKDataModel
-from rtk.dao.programdb import RTKRevision
+from rtk.dao import RTKRevision
 
 
 class RevisionDataModel(RTKDataModel):

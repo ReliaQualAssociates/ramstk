@@ -1,4 +1,3 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
 #       tests.dao.programdb.test_rtkrequirement.py is part of The RTK Project
@@ -10,7 +9,7 @@ from datetime import date
 
 import pytest
 
-from rtk.dao.RTKRequirement import RTKRequirement
+from rtk.dao.programdb.RTKRequirement import RTKRequirement
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
