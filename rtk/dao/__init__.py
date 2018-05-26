@@ -36,7 +36,7 @@ from .RTKDesignElectric import RTKDesignElectric
 from .RTKDesignMechanic import RTKDesignMechanic
 from .RTKEnvironment import RTKEnvironment
 from .RTKFailureDefinition import RTKFailureDefinition
-from .RTKFunction import RTKFunction
+from .programdb.RTKFunction import RTKFunction
 from .RTKGrowthTest import RTKGrowthTest
 from .RTKHardware import RTKHardware
 from .RTKHazardAnalysis import RTKHazardAnalysis
