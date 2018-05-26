@@ -27,7 +27,7 @@ except ImportError:
 from Configuration import Configuration
 import Utilities
 from rtk.dao.DAO import DAO
-from rtk.dao.RTKProgramInfo import RTKProgramInfo
+from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 from rtk.dao.RTKCategory import RTKCategory
 from rtk.dao.RTKFailureMode import RTKFailureMode
 from rtk.dao.RTKGroup import RTKGroup
