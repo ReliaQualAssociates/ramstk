@@ -8,11 +8,18 @@ from rtk.Configuration import Configuration
 from rtk.dao import DAO
 
 VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
+SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TMP_DIR = VIRTUAL_ENV + '/tmp'
+DATA_DIR = TMP_DIR + '/data'
+LOG_DIR = TMP_DIR + '/logs'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.rtk'
 TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB2.rtk'
 TEST_PROGRAM_DB_URI = 'sqlite:///' + TEST_PROGRAM_DB_PATH
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
+
+DEBUG_LOG = LOG_DIR + '/RTK_debug.log'
+USER_LOG = LOG_DIR + '/RTK_user.log'
+IMPORT_LOG = LOG_DIR + '/RTK_import.log'
 
 
 @pytest.fixture(scope='session')
@@ -55,15 +62,41 @@ def test_dao():
 
 @pytest.fixture(scope='session')
 def test_configuration():
-    """ Create loggers to use for testing. """
+    """ Create configuration object to use for testing. """
+    import fileinput
+    from shutil import copyfile
+
+    # Create the data directory if it doesn't exist.
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
+
+    # Create the log directory if it doesn't exist.
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
+
     configuration = Configuration()
 
+    configuration.RTK_CONF_DIR = DATA_DIR
+    configuration.RTK_PROG_CONF = configuration.RTK_CONF_DIR + '/RTK.conf'
+    copyfile(SRC_DIR + '/data/RTK.conf', configuration.RTK_PROG_CONF)
+    for line in fileinput.input(configuration.RTK_PROG_CONF, inplace=True):
+        # Inside this loop the STDOUT will be redirected to the file
+        # the comma after each print statement is needed to avoid double line
+        # breaks.
+        print line.replace("database =", "database = " + TEST_PROGRAM_DB_PATH),
+
+    configuration.RTK_COM_BACKEND = 'sqlite'
     configuration.RTK_BACKEND = 'sqlite'
+    configuration.RTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
     configuration.RTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
 
+    configuration.RTK_LOG_DIR = TMP_DIR
+
     configuration.RTK_DEBUG_LOG = \
-        Utilities.create_logger("RTK.debug", 'DEBUG', TMP_DIR + '/RTK_debug.log')
+        Utilities.create_logger("RTK.debug", 'DEBUG', DEBUG_LOG)
     configuration.RTK_USER_LOG = \
-        Utilities.create_logger("RTK.user", 'INFO', TMP_DIR + '/RTK_user.log')
+        Utilities.create_logger("RTK.user", 'INFO', USER_LOG)
+    configuration.RTK_IMPORT_LOG = \
+        Utilities.create_logger("RTK.user", 'INFO', IMPORT_LOG)
 
     yield configuration

@@ -29,10 +29,9 @@ __copyright__ = 'Copyright 2014 - 2018 Andrew "Weibullguy" Rowland'
 
 
 @pytest.mark.integration
-def test_initialize_logger():
+def test_initialize_logger(test_configuration):
     """ _initialize_loggers() should return a tuple of logging.Logger instances. """
-    _configuration = Configuration()
-    _configuration.RTK_LOG_DIR = '/tmp'
+    _configuration = test_configuration
 
     (_configuration.RTK_DEBUG_LOG, _configuration.RTK_USER_LOG,
      _configuration.RTK_IMPORT_LOG) = _initialize_loggers(_configuration)
@@ -40,9 +39,9 @@ def test_initialize_logger():
     assert isinstance(_configuration.RTK_DEBUG_LOG, logging.Logger)
     assert isinstance(_configuration.RTK_USER_LOG, logging.Logger)
     assert isinstance(_configuration.RTK_IMPORT_LOG, logging.Logger)
-    assert os.path.isfile('/tmp/RTK_debug.log')
-    assert os.path.isfile('/tmp/RTK_user.log')
-    assert os.path.isfile('/tmp/RTK_import.log')
+    assert os.path.isfile(_configuration.RTK_LOG_DIR + '/RTK_debug.log')
+    assert os.path.isfile(_configuration.RTK_LOG_DIR + '/RTK_user.log')
+    assert os.path.isfile(_configuration.RTK_LOG_DIR + '/RTK_import.log')
 
 
 @pytest.mark.integration
@@ -57,50 +56,26 @@ def test_initialize_model(test_common_dao, test_dao):
     assert DUT.program_session is None
 
 
-@pytest.mark.broken_test
-def test_create_new_program(test_common_dao, test_dao):
+@pytest.mark.integration
+def test_create_new_program(test_common_dao, test_dao, test_configuration):
     """ create_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
 
-    _configuration = Configuration()
-    _configuration.RTK_BACKEND = 'sqlite'
-    _configuration.RTK_PROG_INFO = {
-        'host': 'localhost',
-        'socket': 3306,
-        'database': '/tmp/BigAssTestDB.rtk',
-        'type': 'sqlite',
-        'user': '',
-        'password': ''
-    }
+    _configuration = test_configuration
     _database = _configuration.RTK_BACKEND + ':///' + \
                 _configuration.RTK_PROG_INFO['database']
     _error_code, _msg = DUT.create_program(_database)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Creating RTK Program database '
-                    'sqlite:////tmp/BigAssTestDB.rtk.')
-
-    if os.path.isfile('/tmp/BigAssTestDB.rtk'):
-        os.remove('/tmp/BigAssTestDB.rtk')
+    assert _msg == ('RTK SUCCESS: Creating RTK Program database {0:s}.'.format(_database))
 
 
-@pytest.mark.broken_test
+@pytest.mark.integration
 def test_create_new_program_failed(test_common_dao, test_dao):
     """ create_program() should return a non-zero error code on failure. """
     DUT = Model(test_common_dao, test_dao)
 
-    _configuration = Configuration()
-    _configuration.RTK_BACKEND = 'sqlite'
-    _configuration.RTK_PROG_INFO = {
-        'host': 'localhost',
-        'socket': 3306,
-        'database': 'tmp/BigAssTestDB.rtk',
-        'type': 'sqlite',
-        'user': '',
-        'password': ''
-    }
-    _database = _configuration.RTK_BACKEND + ':///' + \
-                _configuration.RTK_PROG_INFO['database']
+    _database = 'sqlite:///tmp/BigAssTestDB.rtk'
     _error_code, _msg = DUT.create_program(_database)
 
     assert _error_code == 1
@@ -108,28 +83,18 @@ def test_create_new_program_failed(test_common_dao, test_dao):
                     'sqlite:///tmp/BigAssTestDB.rtk.')
 
 
-@pytest.mark.broken_test
-def test_open_program(test_common_dao, test_dao):
+@pytest.mark.integration
+def test_open_program(test_common_dao, test_dao, test_configuration):
     """ open_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
 
-    _configuration = Configuration()
-    _configuration.RTK_BACKEND = 'sqlite'
-    _configuration.RTK_PROG_INFO = {
-        'host': 'localhost',
-        'socket': 3306,
-        'database': 'tmp/TestDB.rtk',
-        'type': 'sqlite',
-        'user': '',
-        'password': ''
-    }
+    _configuration = test_configuration
     _database = _configuration.RTK_BACKEND + ':///' + \
                 _configuration.RTK_PROG_INFO['database']
     _error_code, _msg = DUT.open_program(_database)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Opening RTK Program database '
-                    'sqlite:///tmp/TestDB.rtk.')
+    assert _msg == ('RTK SUCCESS: Opening RTK Program database {0:s}.'.format(_database))
 
 
 @pytest.mark.integration
@@ -775,7 +740,7 @@ def test_validate_license_wrong_key(test_common_dao, test_dao):
 
 
 @pytest.mark.integration
-def test_initialize_controller():
+def test_initialize_controller(test_configuration):
     """ __init__() should create an instance of the rtk.RTK object. """
     DUT = RTK(test=True)
 
@@ -808,7 +773,7 @@ def test_initialize_controller():
 
 
 @pytest.mark.integration
-def test_request_validate_license():
+def test_request_validate_license(test_configuration):
     """ request_validate_license() should return False on success. """
     DUT = RTK(test=True)
 
@@ -816,61 +781,32 @@ def test_request_validate_license():
 
 
 @pytest.mark.integration
-def test_request_load_globals():
+def test_request_load_globals(test_configuration):
     """ request_load_globals() should return False on success. """
+    _configuration = test_configuration
     DUT = RTK(test=True)
-    DUT.RTK_CONFIGURATION.RTK_COM_BACKEND = 'sqlite'
-    DUT.RTK_CONFIGURATION.RTK_COM_INFO = {
-        'host': 'localhost',
-        'socket': 3306,
-        'database': '/tmp/TestCommonDB.rtk',
-        'user': '',
-        'password': ''
-    }
 
-    _database = DUT.RTK_CONFIGURATION.RTK_COM_BACKEND + ':///' + \
-                DUT.RTK_CONFIGURATION.RTK_COM_INFO['database']
+    _database = _configuration.RTK_COM_BACKEND + ':///' + \
+                _configuration.RTK_COM_INFO['database']
     DUT.rtk_model.program_dao.db_connect(_database)
 
     assert not DUT.request_load_globals()
 
 
 @pytest.mark.broken_test
-def test_request_create_program():
+def test_request_create_program(test_configuration):
     """ request_create_program() should return False on success. """
     DUT = RTK(test=True)
-    DUT.RTK_CONFIGURATION.RTK_BACKEND = 'sqlite'
-    DUT.RTK_CONFIGURATION.RTK_PROG_INFO = {
-        'host': 'localhost',
-        'socket': 3306,
-        'database': '/tmp/TestDB.rtk',
-        'user': '',
-        'password': ''
-    }
+    DUT.RTK_CONFIGURATION = test_configuration
 
     assert not DUT.request_create_program()
 
 
 @pytest.mark.broken_test
-def test_request_open_program():
+def test_request_open_program(test_configuration):
     """ request_open_program() should return False on success. """
     DUT = RTK(test=True)
-    DUT.RTK_CONFIGURATION.RTK_COM_BACKEND = 'sqlite'
-    DUT.RTK_CONFIGURATION.RTK_COM_INFO = {
-        'host': 'localhost',
-        'socket': 3306,
-        'database': '/tmp/TestCommonDB.rtk',
-        'user': '',
-        'password': ''
-    }
-    DUT.RTK_CONFIGURATION.RTK_BACKEND = 'sqlite'
-    DUT.RTK_CONFIGURATION.RTK_PROG_INFO = {
-        'host': 'localhost',
-        'socket': 3306,
-        'database': '/tmp/TestDB.rtk',
-        'user': '',
-        'password': ''
-    }
+    DUT.RTK_CONFIGURATION = test_configuration
 
     assert not DUT.request_open_program()
     assert DUT.RTK_CONFIGURATION.RTK_PREFIX == {
