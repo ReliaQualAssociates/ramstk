@@ -8,7 +8,7 @@
 
 import pytest
 
-from rtk.dao.RTKTestMethod import RTKTestMethod
+from rtk.dao.programdb.RTKTestMethod import RTKTestMethod
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

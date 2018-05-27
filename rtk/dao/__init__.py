@@ -66,5 +66,5 @@ from .programdb.RTKStakeholder import RTKStakeholder
 from .RTKSurvival import RTKSurvival
 from .RTKSurvivalData import RTKSurvivalData
 from .RTKTest import RTKTest
-from .RTKTestMethod import RTKTestMethod
+from .programdb.RTKTestMethod import RTKTestMethod
 from .programdb.RTKValidation import RTKValidation
