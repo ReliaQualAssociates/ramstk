@@ -38,7 +38,7 @@ from .RTKIncidentDetail import RTKIncidentDetail
 from .programdb.RTKLoadHistory import RTKLoadHistory
 from .programdb.RTKMatrix import RTKMatrix
 from .programdb.RTKMechanism import RTKMechanism
-from .RTKMilHdbkF import RTKMilHdbkF
+from .programdb.RTKMilHdbkF import RTKMilHdbkF
 from .programdb.RTKMission import RTKMission
 from .programdb.RTKMissionPhase import RTKMissionPhase
 from .programdb.RTKMode import RTKMode

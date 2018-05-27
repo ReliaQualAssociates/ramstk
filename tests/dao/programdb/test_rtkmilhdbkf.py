@@ -7,7 +7,7 @@
 
 import pytest
 
-from rtk.dao.RTKMilHdbkF import RTKMilHdbkF
+from rtk.dao.programdb.RTKMilHdbkF import RTKMilHdbkF
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
