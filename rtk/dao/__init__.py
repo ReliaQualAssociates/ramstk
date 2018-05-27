@@ -31,7 +31,7 @@ from .RTKLoadHistory import RTKLoadHistory
 from .RTKAction import RTKAction
 from .RTKAllocation import RTKAllocation
 from .programdb.RTKCause import RTKCause
-from .RTKControl import RTKControl
+from .programdb.RTKControl import RTKControl
 from .RTKDesignElectric import RTKDesignElectric
 from .RTKDesignMechanic import RTKDesignMechanic
 from .programdb.RTKEnvironment import RTKEnvironment
