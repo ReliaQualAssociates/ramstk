@@ -50,7 +50,7 @@ from .programdb.RTKProgramStatus import RTKProgramStatus
 from .programdb.RTKReliability import RTKReliability
 from .programdb.RTKRequirement import RTKRequirement
 from .programdb.RTKRevision import RTKRevision
-from .RTKSimilarItem import RTKSimilarItem
+from .programdb.RTKSimilarItem import RTKSimilarItem
 from .RTKSoftware import RTKSoftware
 from .RTKSoftwareDevelopment import RTKSoftwareDevelopment
 from .RTKSoftwareReview import RTKSoftwareReview

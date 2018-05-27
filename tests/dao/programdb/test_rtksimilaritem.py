@@ -8,7 +8,7 @@
 
 import pytest
 
-from rtk.dao.RTKSimilarItem import RTKSimilarItem
+from rtk.dao.programdb.RTKSimilarItem import RTKSimilarItem
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
