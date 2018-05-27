@@ -25,7 +25,6 @@ from .RTKStatus import RTKStatus
 from .RTKCondition import RTKCondition
 from .RTKFailureMode import RTKFailureMode
 from .RTKMeasurement import RTKMeasurement
-from .RTKLoadHistory import RTKLoadHistory
 
 # Program database
 from .programdb.RTKAction import RTKAction
@@ -43,6 +42,7 @@ from .programdb.RTKHazardAnalysis import RTKHazardAnalysis
 from .RTKIncident import RTKIncident
 from .RTKIncidentAction import RTKIncidentAction
 from .RTKIncidentDetail import RTKIncidentDetail
+from .programdb.RTKLoadHistory import RTKLoadHistory
 from .programdb.RTKMatrix import RTKMatrix
 from .programdb.RTKMechanism import RTKMechanism
 from .RTKMilHdbkF import RTKMilHdbkF
