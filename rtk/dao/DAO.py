@@ -42,7 +42,7 @@ from .programdb.RTKMilHdbkF import RTKMilHdbkF
 from .programdb.RTKMission import RTKMission
 from .programdb.RTKMissionPhase import RTKMissionPhase
 from .programdb.RTKMode import RTKMode
-from .RTKNSWC import RTKNSWC
+from .programdb.RTKNSWC import RTKNSWC
 from .RTKOpLoad import RTKOpLoad
 from .RTKOpStress import RTKOpStress
 from .programdb.RTKProgramInfo import RTKProgramInfo
