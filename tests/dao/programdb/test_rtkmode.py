@@ -8,8 +8,8 @@
 
 import pytest
 
-from rtk.dao.RTKMode import RTKMode
 from rtk.Utilities import OutOfRangeError
+from rtk.dao.programdb.RTKMode import RTKMode
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

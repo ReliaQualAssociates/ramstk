@@ -40,7 +40,7 @@ from .RTKMechanism import RTKMechanism
 from .RTKMilHdbkF import RTKMilHdbkF
 from .programdb.RTKMission import RTKMission
 from .programdb.RTKMissionPhase import RTKMissionPhase
-from .RTKMode import RTKMode
+from .programdb.RTKMode import RTKMode
 from .RTKNSWC import RTKNSWC
 from .RTKOpLoad import RTKOpLoad
 from .RTKOpStress import RTKOpStress
