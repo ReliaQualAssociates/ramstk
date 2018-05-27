@@ -20,7 +20,7 @@ import rtk.dao.RTKCommonDB
 from .RTKCommonDB import create_common_db
 
 # Import RTK Program database table objects.
-from .RTKAction import RTKAction
+from .programdb.RTKAction import RTKAction
 from .RTKAllocation import RTKAllocation
 from .programdb.RTKCause import RTKCause
 from .programdb.RTKControl import RTKControl

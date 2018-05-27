@@ -28,7 +28,7 @@ from .RTKMeasurement import RTKMeasurement
 from .RTKLoadHistory import RTKLoadHistory
 
 # Program database
-from .RTKAction import RTKAction
+from .programdb.RTKAction import RTKAction
 from .RTKAllocation import RTKAllocation
 from .programdb.RTKCause import RTKCause
 from .programdb.RTKControl import RTKControl
