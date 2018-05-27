@@ -24,7 +24,7 @@ from .programdb.RTKAction import RTKAction
 from .programdb.RTKAllocation import RTKAllocation
 from .programdb.RTKCause import RTKCause
 from .programdb.RTKControl import RTKControl
-from .RTKDesignElectric import RTKDesignElectric
+from .programdb.RTKDesignElectric import RTKDesignElectric
 from .RTKDesignMechanic import RTKDesignMechanic
 from .programdb.RTKEnvironment import RTKEnvironment
 from .programdb.RTKFailureDefinition import RTKFailureDefinition
