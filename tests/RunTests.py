@@ -439,7 +439,7 @@ def _do_bandit(bandit, files, options):
 
     # Build up the options for bandit.
     if options.verbose:
-        _bandit += "-c .bandit --verbose "
+        _bandit += "-s B307 --verbose "
     if options.files_output != "n":
         _bandit += "--output {0:s} ".format(options.files_output)
     if options.ignore:

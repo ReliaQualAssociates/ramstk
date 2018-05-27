@@ -47,7 +47,9 @@ class FormatFiles(distutils.cmd.Command):
     def run(self):
         """Run command."""
         # Base command.
-        _command = [os.path.dirname(os.path.abspath(__file__)) + '/tests/RunTests.py']
+        _command = [
+            os.path.dirname(os.path.abspath(__file__)) + '/tests/RunTests.py'
+        ]
 
         # Add option to use isort.
         if self.isort:
@@ -63,11 +65,10 @@ class FormatFiles(distutils.cmd.Command):
 
         # Add the path to search for Python files.
         _command.append(' -r')
-        _command.append(' -f')
+        _command.append(' -f ')
         _command.append(os.getcwd() + '/rtk/')
         self.announce(
-            'Running {0:s}'.format(_command),
-            level=distutils.log.INFO)
+            'Running {0:s}'.format(_command), level=distutils.log.INFO)
 
         try:
             subprocess.check_call(_command)
@@ -75,8 +76,7 @@ class FormatFiles(distutils.cmd.Command):
             _msg = ('Command {0:s} failed with exit code {1:s}').format(
                 _commad, str(error.returncode))
             print(_msg)
-            self.announce(
-                _msg, level=distutils.log.DEBUG)
+            self.announce(_msg, level=distutils.log.DEBUG)
             sys.exit(error.returncode)
 
 
@@ -86,7 +86,9 @@ class LintFiles(distutils.cmd.Command):
     user_options = [
         ('parallel=', 'p', 'number of parallel processes to use'),
         ('flake8=', None, 'use flake8 to lint Python files; default is False'),
-        ('pycodestyle=', None, 'use pycodestyle (formally pep8) to lint Python files; default is True'),
+        ('pycodestyle=', None,
+         'use pycodestyle (formally pep8) to lint Python files; default is True'
+         ),
         ('pylint-', None, 'use pylint to lint Python files; default is True'),
     ]
 
@@ -104,7 +106,10 @@ class LintFiles(distutils.cmd.Command):
     def run(self):
         """Run command."""
         # Base command.
-        _command = [os.path.dirname(os.path.abspath(__file__)) + '/tests/RunTests.py --quality']
+        _command = [
+            os.path.dirname(os.path.abspath(__file__)) +
+            '/tests/RunTests.py --quality'
+        ]
 
         # Add option to run flake8.
         if self.flake8:
@@ -125,8 +130,7 @@ class LintFiles(distutils.cmd.Command):
         # Add the path to search for Python files.
         _command.append(' ' + os.getcwd() + '/rtk')
         self.announce(
-            'Running {0:s}'.format(_command),
-            level=distutils.log.INFO)
+            'Running {0:s}'.format(_command), level=distutils.log.INFO)
 
         try:
             subprocess.check_call(_command)
@@ -134,8 +138,7 @@ class LintFiles(distutils.cmd.Command):
             _msg = ('Command {0:s} failed with exit code {1:s}').format(
                 _commad, str(error.returncode))
             print(_msg)
-            self.announce(
-                _msg, level=distutils.log.DEBUG)
+            self.announce(_msg, level=distutils.log.DEBUG)
             sys.exit(error.returncode)
 
 
@@ -155,13 +158,15 @@ class SecurityCheck(distutils.cmd.Command):
     def run(self):
         """Run command."""
         # Base command.
-        _command = [os.path.dirname(os.path.abspath(__file__)) + '/tests/RunTests.py --security']
+        _command = [
+            os.path.dirname(os.path.abspath(__file__)) +
+            '/tests/RunTests.py --security'
+        ]
 
         # Add the path to search for Python files.
         _command.append(' ' + os.getcwd() + '/rtk')
         self.announce(
-            'Running {0:s}'.format(_command),
-            level=distutils.log.INFO)
+            'Running {0:s}'.format(_command), level=distutils.log.INFO)
 
         try:
             subprocess.check_call(_command)
@@ -169,8 +174,7 @@ class SecurityCheck(distutils.cmd.Command):
             _msg = ('Command {0:s} failed with exit code {1:s}').format(
                 _commad, str(error.returncode))
             print(_msg)
-            self.announce(
-                _msg, level=distutils.log.DEBUG)
+            self.announce(_msg, level=distutils.log.DEBUG)
             sys.exit(error.returncode)
 
 
@@ -190,13 +194,15 @@ class CheckManifest(distutils.cmd.Command):
     def run(self):
         """Run command."""
         # Base command.
-        _command = [os.path.dirname(os.path.abspath(__file__)) + '/tests/RunTests.py -- manifest']
+        _command = [
+            os.path.dirname(os.path.abspath(__file__)) +
+            '/tests/RunTests.py -- manifest'
+        ]
 
         # Add the path to search for Python files.
         _command.append(' ' + os.getcwd() + '/rtk')
         self.announce(
-            'Running {0:s}'.format(_command),
-            level=distutils.log.INFO)
+            'Running {0:s}'.format(_command), level=distutils.log.INFO)
 
         try:
             subprocess.check_call(_command)
@@ -204,18 +210,17 @@ class CheckManifest(distutils.cmd.Command):
             _msg = ('Command {0:s} failed with exit code {1:s}').format(
                 _commad, str(error.returncode))
             print(_msg)
-            self.announce(
-                _msg, level=distutils.log.DEBUG)
+            self.announce(_msg, level=distutils.log.DEBUG)
             sys.exit(error.returncode)
 
 
 class Benchmark(distutils.cmd.Command):
     """Custom command to benchmark Python code."""
     description = 'benchmarks'
-    user_options = [
-        ('flake8=', None, 'use flake8 to benchmark code; default is True'),
-        ('pycodestyle=', None, 'use pycodestyle to benchmark code; default is True')
-    ]
+    user_options = [('flake8=', None,
+                     'use flake8 to benchmark code; default is True'),
+                    ('pycodestyle=', None,
+                     'use pycodestyle to benchmark code; default is True')]
 
     def initialize_options(self):
         """Set default values for user options."""
@@ -229,7 +234,9 @@ class Benchmark(distutils.cmd.Command):
     def run(self):
         """Run command."""
         # Base command.
-        _command = [os.path.dirname(os.path.abspath(__file__)) + '/tests/RunTests.py']
+        _command = [
+            os.path.dirname(os.path.abspath(__file__)) + '/tests/RunTests.py'
+        ]
         _command.append(' --quality')
         _command.append(' --benchmark')
 
@@ -242,8 +249,7 @@ class Benchmark(distutils.cmd.Command):
         # Add the path to search for Python files.
         _command.append(' -f ' + os.getcwd() + '/rtk')
         self.announce(
-            'Running {0:s}'.format(_command),
-            level=distutils.log.INFO)
+            'Running {0:s}'.format(_command), level=distutils.log.INFO)
 
         try:
             subprocess.check_call(_command)
@@ -251,8 +257,7 @@ class Benchmark(distutils.cmd.Command):
             _msg = ('Command {0:s} failed with exit code {1:s}').format(
                 _commad, str(error.returncode))
             print(_msg)
-            self.announce(
-                _msg, level=distutils.log.DEBUG)
+            self.announce(_msg, level=distutils.log.DEBUG)
             sys.exit(error.returncode)
 
 
