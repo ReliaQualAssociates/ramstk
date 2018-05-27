@@ -8,7 +8,7 @@
 
 import pytest
 
-from rtk.dao.RTKMission import RTKMission
+from rtk.dao.programdb.RTKMission import RTKMission
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

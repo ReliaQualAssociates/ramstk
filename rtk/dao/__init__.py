@@ -46,7 +46,7 @@ from .RTKIncidentDetail import RTKIncidentDetail
 from .programdb.RTKMatrix import RTKMatrix
 from .RTKMechanism import RTKMechanism
 from .RTKMilHdbkF import RTKMilHdbkF
-from .RTKMission import RTKMission
+from .programdb.RTKMission import RTKMission
 from .RTKMissionPhase import RTKMissionPhase
 from .RTKMode import RTKMode
 from .RTKNSWC import RTKNSWC
