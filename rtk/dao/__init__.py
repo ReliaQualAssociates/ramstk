@@ -38,7 +38,7 @@ from .programdb.RTKEnvironment import RTKEnvironment
 from .programdb.RTKFailureDefinition import RTKFailureDefinition
 from .programdb.RTKFunction import RTKFunction
 from .RTKGrowthTest import RTKGrowthTest
-from .RTKHardware import RTKHardware
+from .programdb.RTKHardware import RTKHardware
 from .RTKHazardAnalysis import RTKHazardAnalysis
 from .RTKIncident import RTKIncident
 from .RTKIncidentAction import RTKIncidentAction
