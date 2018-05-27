@@ -10,7 +10,7 @@ from datetime import date, timedelta
 
 import pytest
 
-from rtk.dao.RTKValidation import RTKValidation
+from rtk.dao.programdb.RTKValidation import RTKValidation
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
