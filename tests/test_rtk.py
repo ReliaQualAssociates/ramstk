@@ -740,7 +740,7 @@ def test_validate_license_wrong_key(test_common_dao, test_dao):
                     'key is incorrect.  Closing the RTK application.')
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_initialize_controller():
     """ __init__() should create an instance of the rtk.RTK object. """
     DUT = RTK(test=True)
@@ -773,7 +773,7 @@ def test_initialize_controller():
     assert DUT.dic_controllers['component'] is None
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_request_validate_license():
     """ request_validate_license() should return False on success. """
     DUT = RTK(test=True)
@@ -781,7 +781,7 @@ def test_request_validate_license():
     assert not DUT.request_validate_license()
 
 
-@pytest.mark.integration
+@pytest.mark.broken_test
 def test_request_load_globals(test_configuration):
     """ request_load_globals() should return False on success. """
     _configuration = test_configuration
