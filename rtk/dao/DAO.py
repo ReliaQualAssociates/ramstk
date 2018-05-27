@@ -27,7 +27,7 @@ from .RTKControl import RTKControl
 from .RTKDesignElectric import RTKDesignElectric
 from .RTKDesignMechanic import RTKDesignMechanic
 from .RTKEnvironment import RTKEnvironment
-from .RTKFailureDefinition import RTKFailureDefinition
+from .programdb.RTKFailureDefinition import RTKFailureDefinition
 from .programdb.RTKFunction import RTKFunction
 from .RTKGrowthTest import RTKGrowthTest
 from .RTKHardware import RTKHardware

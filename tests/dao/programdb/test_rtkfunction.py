@@ -41,7 +41,7 @@ ATTRIBUTES = {
     }
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 def test_rtkfunction_create(test_dao):
     """ __init__() should create an RTKFunction model. """
     _session = test_dao.RTK_SESSION(
@@ -76,7 +76,7 @@ def test_rtkfunction_create(test_dao):
     assert DUT.type_id == 0
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 def test_get_attributes(test_dao):
     """ get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     _session = test_dao.RTK_SESSION(
@@ -86,7 +86,7 @@ def test_get_attributes(test_dao):
     assert DUT.get_attributes() == ATTRIBUTES
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -100,7 +100,7 @@ def test_set_attributes(test_dao):
                     "attributes.".format(DUT.function_id))
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 def test_set_attributes_too_few_passed(test_dao):
     """ set_attributes() should return a 40 error code when passed too few attributes. """
     _session = test_dao.RTK_SESSION(
@@ -118,7 +118,7 @@ def test_set_attributes_too_few_passed(test_dao):
     ATTRIBUTES['type_id'] = 0
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 def test_calculate_mtbf(test_dao):
     """ calculate_mtbf() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -135,7 +135,7 @@ def test_calculate_mtbf(test_dao):
     assert pytest.approx(DUT.mtbf_mission, 500000.0)
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 def test_calculate_availability(test_dao):
     """ calculate_availability() should return a zero error code on success. """
     _session = test_dao.RTK_SESSION(
@@ -157,7 +157,7 @@ def test_calculate_availability(test_dao):
     assert pytest.approx(DUT.availability_mission, 0.9999884)
 
 
-@pytest.mark.unit
+@pytest.mark.integration
 def test_calculate_availability_divide_by_zero(test_dao):
     """ calculate_availability() should return a non-zero error code when attempting to divide by zero. """
     _session = test_dao.RTK_SESSION(
