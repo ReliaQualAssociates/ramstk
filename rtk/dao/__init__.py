@@ -54,7 +54,7 @@ from .programdb.RTKOpLoad import RTKOpLoad
 from .programdb.RTKOpStress import RTKOpStress
 from .programdb.RTKProgramInfo import RTKProgramInfo
 from .programdb.RTKProgramStatus import RTKProgramStatus
-from .RTKReliability import RTKReliability
+from .programdb.RTKReliability import RTKReliability
 from .programdb.RTKRequirement import RTKRequirement
 from .programdb.RTKRevision import RTKRevision
 from .RTKSimilarItem import RTKSimilarItem
