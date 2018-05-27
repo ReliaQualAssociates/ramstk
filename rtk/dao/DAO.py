@@ -45,7 +45,7 @@ from .RTKNSWC import RTKNSWC
 from .RTKOpLoad import RTKOpLoad
 from .RTKOpStress import RTKOpStress
 from .programdb.RTKProgramInfo import RTKProgramInfo
-from .RTKProgramStatus import RTKProgramStatus
+from .programdb.RTKProgramStatus import RTKProgramStatus
 from .RTKReliability import RTKReliability
 from .programdb.RTKRequirement import RTKRequirement
 from .programdb.RTKRevision import RTKRevision
@@ -177,7 +177,6 @@ class DAO(object):
             return True
 
         self._db_table_create(RTKProgramInfo.__table__)
-        self._db_table_create(RTKProgramStatus.__table__)
         _program_info = RTKProgramInfo()
         _program_info.revision_prefix = "REV"
         _program_info.revision_next_id = 0
@@ -190,6 +189,7 @@ class DAO(object):
         self._db_table_create(RTKMission.__table__)
         self._db_table_create(RTKMissionPhase.__table__)
         self._db_table_create(RTKEnvironment.__table__)
+        self._db_table_create(RTKProgramStatus.__table__)
         _revision = RTKRevision()
         _revision.revision_id = 1
         _revision.name = 'Test Revision'
@@ -224,6 +224,10 @@ class DAO(object):
         _environment = RTKEnvironment()
         _environment.phase_id = _phase.phase_id
 
+        _program_status = RTKProgramStatus()
+        _program_status.revision_id = _revision.revision_id
+        self.db_add([_environment, _program_status], self.session)
+
         self._db_table_create(RTKFunction.__table__)
         self._db_table_create(RTKMode.__table__)
         self._db_table_create(RTKMechanism.__table__)
@@ -235,7 +239,7 @@ class DAO(object):
             _function = RTKFunction()
             _function.revision_id = _revision.revision_id
             _function.function_code = "FUNC-000{0:d}".format(i)
-            self.db_add([_environment, _function], self.session)
+            self.db_add([_function], self.session)
 
             _mode = RTKMode()
             _mode.function_id = _function.function_id

@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.RTKProgramStatus.py is part of The RTK Project
+#       rtk.dao.programdb.RTKProgramStatus.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKProgramStatus Table."""
+"""RTKProgramStatus Table Module."""
 
 from datetime import date
+
+from sqlalchemy import Column, Date, Float, ForeignKey, Integer
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
 from rtk.Utilities import none_to_default
 from rtk.dao.RTKCommonDB import RTK_BASE
-
-from sqlalchemy import Column, Date, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship
 
 
 class RTKProgramStatus(RTK_BASE):

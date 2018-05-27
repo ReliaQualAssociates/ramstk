@@ -53,7 +53,7 @@ from .RTKNSWC import RTKNSWC
 from .RTKOpLoad import RTKOpLoad
 from .RTKOpStress import RTKOpStress
 from .programdb.RTKProgramInfo import RTKProgramInfo
-from .RTKProgramStatus import RTKProgramStatus
+from .programdb.RTKProgramStatus import RTKProgramStatus
 from .RTKReliability import RTKReliability
 from .programdb.RTKRequirement import RTKRequirement
 from .programdb.RTKRevision import RTKRevision
