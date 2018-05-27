@@ -8,7 +8,7 @@
 
 import pytest
 
-from rtk.dao.RTKOpLoad import RTKOpLoad
+from rtk.dao.programdb.RTKOpLoad import RTKOpLoad
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
