@@ -34,7 +34,7 @@ from .RTKCause import RTKCause
 from .RTKControl import RTKControl
 from .RTKDesignElectric import RTKDesignElectric
 from .RTKDesignMechanic import RTKDesignMechanic
-from .RTKEnvironment import RTKEnvironment
+from .programdb.RTKEnvironment import RTKEnvironment
 from .programdb.RTKFailureDefinition import RTKFailureDefinition
 from .programdb.RTKFunction import RTKFunction
 from .RTKGrowthTest import RTKGrowthTest

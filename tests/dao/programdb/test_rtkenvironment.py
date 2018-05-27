@@ -8,7 +8,7 @@
 
 import pytest
 
-from rtk.dao.RTKEnvironment import RTKEnvironment
+from rtk.dao.programdb.RTKEnvironment import RTKEnvironment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
