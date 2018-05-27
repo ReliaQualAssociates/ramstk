@@ -44,7 +44,7 @@ from .programdb.RTKMissionPhase import RTKMissionPhase
 from .programdb.RTKMode import RTKMode
 from .programdb.RTKNSWC import RTKNSWC
 from .programdb.RTKOpLoad import RTKOpLoad
-from .RTKOpStress import RTKOpStress
+from .programdb.RTKOpStress import RTKOpStress
 from .programdb.RTKProgramInfo import RTKProgramInfo
 from .programdb.RTKProgramStatus import RTKProgramStatus
 from .RTKReliability import RTKReliability
