@@ -8,7 +8,7 @@
 
 import pytest
 
-from rtk.dao.RTKLoadHistory import RTKLoadHistory
+from rtk.dao.programdb.RTKLoadHistory import RTKLoadHistory
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

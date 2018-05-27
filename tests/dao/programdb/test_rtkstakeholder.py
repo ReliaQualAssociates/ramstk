@@ -8,7 +8,7 @@
 
 import pytest
 
-from rtk.dao.RTKStakeholder import RTKStakeholder
+from rtk.dao.programdb.RTKStakeholder import RTKStakeholder
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

@@ -7,7 +7,7 @@
 
 import pytest
 
-from rtk.dao.RTKControl import RTKControl
+from rtk.dao.programdb.RTKControl import RTKControl
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

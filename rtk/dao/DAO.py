@@ -20,46 +20,47 @@ import rtk.dao.RTKCommonDB
 from .RTKCommonDB import create_common_db
 
 # Import RTK Program database table objects.
-from .RTKAction import RTKAction
-from .RTKAllocation import RTKAllocation
-from .RTKCause import RTKCause
-from .RTKControl import RTKControl
-from .RTKDesignElectric import RTKDesignElectric
-from .RTKDesignMechanic import RTKDesignMechanic
-from .RTKEnvironment import RTKEnvironment
-from .RTKFailureDefinition import RTKFailureDefinition
-from .RTKFunction import RTKFunction
-from .RTKGrowthTest import RTKGrowthTest
-from .RTKHardware import RTKHardware
-from .RTKHazardAnalysis import RTKHazardAnalysis
-from .RTKIncident import RTKIncident
-from .RTKIncidentAction import RTKIncidentAction
-from .RTKIncidentDetail import RTKIncidentDetail
-from .RTKMatrix import RTKMatrix
-from .RTKMechanism import RTKMechanism
-from .RTKMilHdbkF import RTKMilHdbkF
-from .RTKMission import RTKMission
-from .RTKMissionPhase import RTKMissionPhase
-from .RTKMode import RTKMode
-from .RTKNSWC import RTKNSWC
-from .RTKOpLoad import RTKOpLoad
-from .RTKOpStress import RTKOpStress
-from .RTKProgramInfo import RTKProgramInfo
-from .RTKProgramStatus import RTKProgramStatus
-from .RTKReliability import RTKReliability
-from .RTKRequirement import RTKRequirement
-from .RTKRevision import RTKRevision
-from .RTKSimilarItem import RTKSimilarItem
-from .RTKSoftware import RTKSoftware
-from .RTKSoftwareDevelopment import RTKSoftwareDevelopment
-from .RTKSoftwareReview import RTKSoftwareReview
-from .RTKSoftwareTest import RTKSoftwareTest
-from .RTKStakeholder import RTKStakeholder
-from .RTKSurvival import RTKSurvival
-from .RTKSurvivalData import RTKSurvivalData
-from .RTKTest import RTKTest
-from .RTKTestMethod import RTKTestMethod
-from .RTKValidation import RTKValidation
+from .programdb.RTKAction import RTKAction
+from .programdb.RTKAllocation import RTKAllocation
+from .programdb.RTKCause import RTKCause
+from .programdb.RTKControl import RTKControl
+from .programdb.RTKDesignElectric import RTKDesignElectric
+from .programdb.RTKDesignMechanic import RTKDesignMechanic
+from .programdb.RTKEnvironment import RTKEnvironment
+from .programdb.RTKFailureDefinition import RTKFailureDefinition
+from .programdb.RTKFunction import RTKFunction
+from .programdb.RTKGrowthTest import RTKGrowthTest
+from .programdb.RTKHardware import RTKHardware
+from .programdb.RTKHazardAnalysis import RTKHazardAnalysis
+from .programdb.RTKIncident import RTKIncident
+from .programdb.RTKIncidentAction import RTKIncidentAction
+from .programdb.RTKIncidentDetail import RTKIncidentDetail
+from .programdb.RTKLoadHistory import RTKLoadHistory
+from .programdb.RTKMatrix import RTKMatrix
+from .programdb.RTKMechanism import RTKMechanism
+from .programdb.RTKMilHdbkF import RTKMilHdbkF
+from .programdb.RTKMission import RTKMission
+from .programdb.RTKMissionPhase import RTKMissionPhase
+from .programdb.RTKMode import RTKMode
+from .programdb.RTKNSWC import RTKNSWC
+from .programdb.RTKOpLoad import RTKOpLoad
+from .programdb.RTKOpStress import RTKOpStress
+from .programdb.RTKProgramInfo import RTKProgramInfo
+from .programdb.RTKProgramStatus import RTKProgramStatus
+from .programdb.RTKReliability import RTKReliability
+from .programdb.RTKRequirement import RTKRequirement
+from .programdb.RTKRevision import RTKRevision
+from .programdb.RTKSimilarItem import RTKSimilarItem
+from .programdb.RTKSoftware import RTKSoftware
+from .programdb.RTKSoftwareDevelopment import RTKSoftwareDevelopment
+from .programdb.RTKSoftwareReview import RTKSoftwareReview
+from .programdb.RTKSoftwareTest import RTKSoftwareTest
+from .programdb.RTKStakeholder import RTKStakeholder
+from .programdb.RTKSurvival import RTKSurvival
+from .programdb.RTKSurvivalData import RTKSurvivalData
+from .programdb.RTKTest import RTKTest
+from .programdb.RTKTestMethod import RTKTestMethod
+from .programdb.RTKValidation import RTKValidation
 
 RTK_BASE = declarative_base()
 
@@ -177,7 +178,6 @@ class DAO(object):
             return True
 
         self._db_table_create(RTKProgramInfo.__table__)
-        self._db_table_create(RTKProgramStatus.__table__)
         _program_info = RTKProgramInfo()
         _program_info.revision_prefix = "REV"
         _program_info.revision_next_id = 0
@@ -190,9 +190,10 @@ class DAO(object):
         self._db_table_create(RTKMission.__table__)
         self._db_table_create(RTKMissionPhase.__table__)
         self._db_table_create(RTKEnvironment.__table__)
+        self._db_table_create(RTKProgramStatus.__table__)
         _revision = RTKRevision()
         _revision.revision_id = 1
-        _revision.description = _(u"Test Revision")
+        _revision.name = 'Test Revision'
         self.db_add([
             _revision,
         ], self.session)
@@ -224,6 +225,10 @@ class DAO(object):
         _environment = RTKEnvironment()
         _environment.phase_id = _phase.phase_id
 
+        _program_status = RTKProgramStatus()
+        _program_status.revision_id = _revision.revision_id
+        self.db_add([_environment, _program_status], self.session)
+
         self._db_table_create(RTKFunction.__table__)
         self._db_table_create(RTKMode.__table__)
         self._db_table_create(RTKMechanism.__table__)
@@ -235,7 +240,7 @@ class DAO(object):
             _function = RTKFunction()
             _function.revision_id = _revision.revision_id
             _function.function_code = "FUNC-000{0:d}".format(i)
-            self.db_add([_environment, _function], self.session)
+            self.db_add([_function], self.session)
 
             _mode = RTKMode()
             _mode.function_id = _function.function_id

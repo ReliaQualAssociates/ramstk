@@ -9,7 +9,7 @@ from datetime import date
 
 import pytest
 
-from rtk.dao.RTKHardware import RTKHardware
+from rtk.dao.programdb.RTKHardware import RTKHardware
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

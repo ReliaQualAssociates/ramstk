@@ -27,7 +27,7 @@ except ImportError:
 from Configuration import Configuration
 import Utilities
 from rtk.dao.DAO import DAO
-from rtk.dao.RTKProgramInfo import RTKProgramInfo
+from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 from rtk.dao.RTKCategory import RTKCategory
 from rtk.dao.RTKFailureMode import RTKFailureMode
 from rtk.dao.RTKGroup import RTKGroup
@@ -714,28 +714,6 @@ class RTK(object):
             # self.dic_controllers['action'] = Action()
 
             _program_info = self.rtk_model.read_program_info()[0]
-
-            self.RTK_CONFIGURATION.RTK_PREFIX['revision'] = \
-                [_program_info.revision_prefix, _program_info.revision_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['function'] = \
-                [_program_info.function_prefix, _program_info.function_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['requirement'] = \
-                [_program_info.requirement_prefix,
-                 _program_info.requirement_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['assembly'] = \
-                [_program_info.assembly_prefix, _program_info.assembly_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['part'] = \
-                [_program_info.part_prefix, _program_info.part_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['fmeca'] = \
-                [_program_info.fmeca_prefix, _program_info.fmeca_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['mode'] = \
-                [_program_info.mode_prefix, _program_info.mode_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['effect'] = \
-                [_program_info.effect_prefix, _program_info.effect_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['cause'] = \
-                [_program_info.cause_prefix, _program_info.cause_next_id]
-            self.RTK_CONFIGURATION.RTK_PREFIX['software'] = \
-                [_program_info.software_prefix, _program_info.software_next_id]
 
             self.RTK_CONFIGURATION.RTK_MODULES['revision'] = \
                 _program_info.revision_active

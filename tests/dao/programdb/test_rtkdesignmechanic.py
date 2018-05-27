@@ -9,7 +9,7 @@
 
 import pytest
 
-from rtk.dao.RTKDesignMechanic import RTKDesignMechanic
+from rtk.dao.programdb.RTKDesignMechanic import RTKDesignMechanic
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

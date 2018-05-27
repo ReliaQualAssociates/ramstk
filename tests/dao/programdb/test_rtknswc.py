@@ -7,7 +7,7 @@
 
 import pytest
 
-from rtk.dao.RTKNSWC import RTKNSWC
+from rtk.dao.programdb.RTKNSWC import RTKNSWC
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

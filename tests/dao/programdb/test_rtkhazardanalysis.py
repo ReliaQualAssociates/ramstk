@@ -9,7 +9,7 @@
 
 import pytest
 
-from rtk.dao.RTKHazardAnalysis import RTKHazardAnalysis
+from rtk.dao.programdb.RTKHazardAnalysis import RTKHazardAnalysis
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -317,7 +317,7 @@ def test_calculate_user_defined(test_dao):
     DUT.user_float_1 = 4.4
     DUT.user_float_2 = 6.0
     DUT.user_int_1 = 2
-    DUT.function_1 = '(uf1 + ui1) / uf2'
+    DUT.function_1 = "(uf1 + ui1) / uf2"
 
     assert not DUT.calculate()
     assert DUT.result_1 == pytest.approx(1.06666667)

@@ -9,7 +9,7 @@
 
 import pytest
 
-from rtk.dao.RTKFailureDefinition import RTKFailureDefinition
+from rtk.dao.programdb.RTKFailureDefinition import RTKFailureDefinition
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

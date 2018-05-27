@@ -9,7 +9,7 @@
 import pytest
 
 from rtk.Utilities import OutOfRangeError
-from rtk.dao.RTKMechanism import RTKMechanism
+from rtk.dao.programdb.RTKMechanism import RTKMechanism
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

@@ -9,7 +9,7 @@
 
 import pytest
 
-from rtk.dao.RTKOpStress import RTKOpStress
+from rtk.dao.programdb.RTKOpStress import RTKOpStress
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

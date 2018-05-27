@@ -57,7 +57,8 @@ from optparse import OptionParser
 try:
     VIRTBIN = glob.glob(os.environ['VIRTUAL_ENV'] + '/bin')[0]
 except KeyError:
-    VIRTBIN = glob.glob(os.environ['WORKON_HOME'] + '/rtk/bin')[0]
+    # This is hardcoded to the virtual environment I use.
+    VIRTBIN = glob.glob(os.environ['WORKON_HOME'] + '/rtk-python2.7-pygtk/bin')[0]
 LOCALBIN = os.environ['HOME'] + '/.local/bin'
 SYSBIN = '/usr/bin'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -438,7 +439,7 @@ def _do_bandit(bandit, files, options):
 
     # Build up the options for bandit.
     if options.verbose:
-        _bandit += "--verbose "
+        _bandit += "-c .bandit --verbose "
     if options.files_output != "n":
         _bandit += "--output {0:s} ".format(options.files_output)
     if options.ignore:

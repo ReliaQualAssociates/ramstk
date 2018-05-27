@@ -8,7 +8,7 @@
 
 import pytest
 
-from rtk.dao.RTKReliability import RTKReliability
+from rtk.dao.programdb.RTKReliability import RTKReliability
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
