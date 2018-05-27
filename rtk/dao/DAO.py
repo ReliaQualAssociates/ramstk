@@ -39,7 +39,7 @@ from .programdb.RTKMatrix import RTKMatrix
 from .RTKMechanism import RTKMechanism
 from .RTKMilHdbkF import RTKMilHdbkF
 from .programdb.RTKMission import RTKMission
-from .RTKMissionPhase import RTKMissionPhase
+from .programdb.RTKMissionPhase import RTKMissionPhase
 from .RTKMode import RTKMode
 from .RTKNSWC import RTKNSWC
 from .RTKOpLoad import RTKOpLoad
