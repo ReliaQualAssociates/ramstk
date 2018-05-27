@@ -29,7 +29,7 @@ from .RTKLoadHistory import RTKLoadHistory
 
 # Program database
 from .programdb.RTKAction import RTKAction
-from .RTKAllocation import RTKAllocation
+from .programdb.RTKAllocation import RTKAllocation
 from .programdb.RTKCause import RTKCause
 from .programdb.RTKControl import RTKControl
 from .RTKDesignElectric import RTKDesignElectric

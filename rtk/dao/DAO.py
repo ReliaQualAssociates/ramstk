@@ -21,7 +21,7 @@ from .RTKCommonDB import create_common_db
 
 # Import RTK Program database table objects.
 from .programdb.RTKAction import RTKAction
-from .RTKAllocation import RTKAllocation
+from .programdb.RTKAllocation import RTKAllocation
 from .programdb.RTKCause import RTKCause
 from .programdb.RTKControl import RTKControl
 from .RTKDesignElectric import RTKDesignElectric

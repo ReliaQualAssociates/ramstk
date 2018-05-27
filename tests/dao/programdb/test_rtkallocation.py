@@ -7,7 +7,7 @@
 
 import pytest
 
-from rtk.dao.RTKAllocation import RTKAllocation
+from rtk.dao.programdb.RTKAllocation import RTKAllocation
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
