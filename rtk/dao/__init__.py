@@ -33,7 +33,7 @@ from .programdb.RTKAllocation import RTKAllocation
 from .programdb.RTKCause import RTKCause
 from .programdb.RTKControl import RTKControl
 from .programdb.RTKDesignElectric import RTKDesignElectric
-from .RTKDesignMechanic import RTKDesignMechanic
+from .programdb.RTKDesignMechanic import RTKDesignMechanic
 from .programdb.RTKEnvironment import RTKEnvironment
 from .programdb.RTKFailureDefinition import RTKFailureDefinition
 from .programdb.RTKFunction import RTKFunction
