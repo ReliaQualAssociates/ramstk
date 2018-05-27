@@ -62,7 +62,7 @@ from .RTKSoftware import RTKSoftware
 from .RTKSoftwareDevelopment import RTKSoftwareDevelopment
 from .RTKSoftwareReview import RTKSoftwareReview
 from .RTKSoftwareTest import RTKSoftwareTest
-from .RTKStakeholder import RTKStakeholder
+from .programdb.RTKStakeholder import RTKStakeholder
 from .RTKSurvival import RTKSurvival
 from .RTKSurvivalData import RTKSurvivalData
 from .RTKTest import RTKTest
