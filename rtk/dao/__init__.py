@@ -8,23 +8,23 @@
 from .DAO import DAO
 
 # Common database.
-from .RTKSiteInfo import RTKSiteInfo
-from .RTKUser import RTKUser
-from .RTKGroup import RTKGroup
-from .RTKModel import RTKModel
-from .RTKType import RTKType
-from .RTKCategory import RTKCategory
-from .RTKSubCategory import RTKSubCategory
-from .RTKManufacturer import RTKManufacturer
-from .RTKUnit import RTKUnit
-from .RTKMethod import RTKMethod
-from .RTKRPN import RTKRPN
-from .RTKHazards import RTKHazards
-from .RTKStakeholders import RTKStakeholders
-from .RTKStatus import RTKStatus
+from .commondb.RTKCategory import RTKCategory
 from .RTKCondition import RTKCondition
 from .RTKFailureMode import RTKFailureMode
+from .RTKGroup import RTKGroup
+from .RTKHazards import RTKHazards
+from .RTKManufacturer import RTKManufacturer
 from .RTKMeasurement import RTKMeasurement
+from .RTKMethod import RTKMethod
+from .RTKModel import RTKModel
+from .RTKRPN import RTKRPN
+from .RTKSiteInfo import RTKSiteInfo
+from .RTKStakeholders import RTKStakeholders
+from .RTKStatus import RTKStatus
+from .RTKSubCategory import RTKSubCategory
+from .RTKType import RTKType
+from .RTKUnit import RTKUnit
+from .RTKUser import RTKUser
 
 # Program database
 from .programdb.RTKAction import RTKAction

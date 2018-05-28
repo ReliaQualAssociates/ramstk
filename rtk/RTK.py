@@ -28,7 +28,7 @@ from Configuration import Configuration
 import Utilities
 from rtk.dao.DAO import DAO
 from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
-from rtk.dao.RTKCategory import RTKCategory
+from rtk.dao.commondb.RTKCategory import RTKCategory
 from rtk.dao.RTKFailureMode import RTKFailureMode
 from rtk.dao.RTKGroup import RTKGroup
 from rtk.dao.RTKHazards import RTKHazards
@@ -337,17 +337,17 @@ class Model(object):
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.category_id == 'action').all():
             configuration.RTK_ACTION_CATEGORY[_record.category_id] = \
-                _record.get_attributes()[1:]
+                _record.get_attributes()['description']
 
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'incident').all():
             configuration.RTK_INCIDENT_CATEGORY[_record.category_id] = \
-                _record.get_attributes()[1:]
+                _record.get_attributes()['description']
 
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'risk').all():
             configuration.RTK_SEVERITY[_record.category_id] = \
-                _record.get_attributes()[1:]
+                _record.get_attributes()['description']
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKGroup.                                    #
