@@ -10,7 +10,7 @@ from .DAO import DAO
 # Common database.
 from .commondb.RTKCategory import RTKCategory
 from .commondb.RTKCondition import RTKCondition
-from .RTKFailureMode import RTKFailureMode
+from .commondb.RTKFailureMode import RTKFailureMode
 from .RTKGroup import RTKGroup
 from .RTKHazards import RTKHazards
 from .RTKManufacturer import RTKManufacturer

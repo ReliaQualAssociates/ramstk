@@ -30,7 +30,7 @@ from rtk.dao.DAO import DAO
 from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 from rtk.dao.commondb.RTKCategory import RTKCategory
 from rtk.dao.commondb.RTKCondition import RTKCondition
-from rtk.dao.RTKFailureMode import RTKFailureMode
+from rtk.dao.commondb.RTKFailureMode import RTKFailureMode
 from rtk.dao.RTKGroup import RTKGroup
 from rtk.dao.RTKHazards import RTKHazards
 from rtk.dao.RTKManufacturer import RTKManufacturer
@@ -337,18 +337,24 @@ class Model(object):
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.category_id == 'action').all():
+            _attributes = _record.get_attributes()
             configuration.RTK_ACTION_CATEGORY[_record.category_id] = \
-                _record.get_attributes()['description']
+                (_attributes['name'], _attributes['description'],
+                 _attributes['category_type'], _attributes['value'])
 
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'incident').all():
+            _attributes = _record.get_attributes()
             configuration.RTK_INCIDENT_CATEGORY[_record.category_id] = \
-                _record.get_attributes()['description']
+                (_attributes['name'], _attributes['description'],
+                 _attributes['category_type'], _attributes['value'])
 
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'risk').all():
+            _attributes = _record.get_attributes()
             configuration.RTK_SEVERITY[_record.category_id] = \
-                _record.get_attributes()['description']
+                (_attributes['name'], _attributes['description'],
+                 _attributes['category_type'], _attributes['value'])
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKGroup.                                    #

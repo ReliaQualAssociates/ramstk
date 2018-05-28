@@ -187,6 +187,8 @@ RTK_GROUPS = {
     8: ('Cost', 'affinity')
 }
 
+RTK_FAILURE_MODES = {3:{24:{1:['Open',0.5, 'FMD-97'],2:['Short', 0.3, 'FMD-97'],3:['Parameter Change',0.2,'FMD-97']}}}
+
 RTK_HAZARDS = {
     0: ('Acceleration/Gravity', 'Falls'),
     1: ('Acceleration/Gravity', 'Falling Objects'),
@@ -733,7 +735,18 @@ def create_common_db(**kwargs):
         _record.description = _value[2]
         session.add(_record)
 
-    # TODO: Populate failure mode table.
+    # Default failure modes.
+    for _ckey in RTK_FAILURE_MODES:
+        _record = RTKFailureMode()
+        _record.category_id = _ckey
+        for _skey in RTK_FAILURE_MODES[_ckey]:
+            _record.subcategory_id = _skey
+            for _mkey in RTK_FAILURE_MODES[_ckey][_skey]:
+                _record.mode_id = _mkey
+                _record.description = RTK_FAILURE_MODES[_ckey][_skey][_mkey][0]
+                _record.mode_ratio = RTK_FAILURE_MODES[_ckey][_skey][_mkey][1]
+                _record.source = RTK_FAILURE_MODES[_ckey][_skey][_mkey][2]
+                session.add(_record)
 
     # Environmental conditions, operating conditions, measurable parameters,
     # and load histories for PoF analysis.
