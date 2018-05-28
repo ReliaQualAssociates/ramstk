@@ -11,7 +11,7 @@ from .DAO import DAO
 from .commondb.RTKCategory import RTKCategory
 from .commondb.RTKCondition import RTKCondition
 from .commondb.RTKFailureMode import RTKFailureMode
-from .RTKGroup import RTKGroup
+from .commondb.RTKGroup import RTKGroup
 from .RTKHazards import RTKHazards
 from .RTKManufacturer import RTKManufacturer
 from .RTKMeasurement import RTKMeasurement
