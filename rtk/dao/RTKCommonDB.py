@@ -176,15 +176,15 @@ RTK_CONDITIONS = {
 }
 
 RTK_GROUPS = {
-    0: ('Engineering, Design', 'workgroup'),
-    1: ('Engineering, Logistics Support', 'workgroup'),
-    2: ('Engineering, Maintainability', 'workgroup'),
-    3: ('Engineering, Reliability', 'workgroup'),
-    4: ('Engineering, Safety', 'workgroup'),
-    5: ('Engineering, Software', 'workgroup'),
-    6: ('Reliability', 'affinity'),
-    7: ('Durability', 'affinity'),
-    8: ('Cost', 'affinity')
+    1: ('Engineering, Design', 'workgroup'),
+    2: ('Engineering, Logistics Support', 'workgroup'),
+    3: ('Engineering, Maintainability', 'workgroup'),
+    4: ('Engineering, Reliability', 'workgroup'),
+    5: ('Engineering, Safety', 'workgroup'),
+    6: ('Engineering, Software', 'workgroup'),
+    7: ('Reliability', 'affinity'),
+    8: ('Durability', 'affinity'),
+    9: ('Cost', 'affinity')
 }
 
 RTK_FAILURE_MODES = {3:{24:{1:['Open',0.5, 'FMD-97'],2:['Short', 0.3, 'FMD-97'],3:['Parameter Change',0.2,'FMD-97']}}}

@@ -32,7 +32,7 @@ from rtk.dao.commondb.RTKCategory import RTKCategory
 from rtk.dao.commondb.RTKCondition import RTKCondition
 from rtk.dao.commondb.RTKFailureMode import RTKFailureMode
 from rtk.dao.commondb.RTKGroup import RTKGroup
-from rtk.dao.RTKHazards import RTKHazards
+from rtk.dao.commondb.RTKHazards import RTKHazards
 from rtk.dao.RTKManufacturer import RTKManufacturer
 from rtk.dao.RTKMethod import RTKMethod
 from rtk.dao.RTKRPN import RTKRPN
@@ -363,13 +363,13 @@ class Model(object):
                 filter(RTKGroup.group_type == 'affinity').all():
             _attributes = _record.get_attributes()
             configuration.RTK_AFFINITY_GROUPS[_record.group_id] = \
-                (_attributes['description'], )
+                (_attributes['description'], _attributes['group_type'])
 
         for _record in self.site_session.query(RTKGroup).\
                 filter(RTKGroup.group_type == 'workgroup').all():
             _attributes = _record.get_attributes()
             configuration.RTK_WORKGROUPS[_record.group_id] = \
-                (_attributes['description'], )
+                (_attributes['description'], _attributes['group_type'])
 
         # ------------------------------------------------------------------- #
         # Load the dictionaries from RTKMethod.                               #

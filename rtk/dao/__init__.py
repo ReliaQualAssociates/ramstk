@@ -12,7 +12,7 @@ from .commondb.RTKCategory import RTKCategory
 from .commondb.RTKCondition import RTKCondition
 from .commondb.RTKFailureMode import RTKFailureMode
 from .commondb.RTKGroup import RTKGroup
-from .RTKHazards import RTKHazards
+from .commondb.RTKHazards import RTKHazards
 from .RTKManufacturer import RTKManufacturer
 from .RTKMeasurement import RTKMeasurement
 from .RTKMethod import RTKMethod
