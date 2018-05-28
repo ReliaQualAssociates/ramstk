@@ -281,7 +281,7 @@ def test_load_globals(test_common_dao, test_dao):
         9: u'Meter',
         10: u'Miscellaneous'
     }
-    assert {
+    assert _configuration.RTK_FAILURE_MODES == {
         1: {
             1: {},
             2: {},

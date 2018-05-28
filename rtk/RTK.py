@@ -33,7 +33,7 @@ from rtk.dao.commondb.RTKCondition import RTKCondition
 from rtk.dao.commondb.RTKFailureMode import RTKFailureMode
 from rtk.dao.commondb.RTKGroup import RTKGroup
 from rtk.dao.commondb.RTKHazards import RTKHazards
-from rtk.dao.RTKManufacturer import RTKManufacturer
+from rtk.dao.commondb.RTKManufacturer import RTKManufacturer
 from rtk.dao.RTKMethod import RTKMethod
 from rtk.dao.RTKRPN import RTKRPN
 from rtk.dao.RTKSiteInfo import RTKSiteInfo
@@ -432,12 +432,14 @@ class Model(object):
         # Load dictionaries from tables not requiring a filter.               #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKHazards).all():
+            _attributes = _record.get_attributes()
             configuration.RTK_HAZARDS[_record.hazard_id] = \
-                _record.get_attributes()[1:]
+                (_attributes['category'], _attributes['subcategory'])
 
         for _record in self.site_session.query(RTKManufacturer).all():
+            _attributes = _record.get_attributes()
             configuration.RTK_MANUFACTURERS[_record.manufacturer_id] = \
-                _record.get_attributes()[1:]
+                (_attributes['description'], _attributes['location'], _attributes['cage_code'])
 
         for _record in self.site_session.query(RTKUnit).\
                 filter(RTKUnit.unit_type == 'measurement').all():
