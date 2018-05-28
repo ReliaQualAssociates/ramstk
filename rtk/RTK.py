@@ -29,6 +29,7 @@ import Utilities
 from rtk.dao.DAO import DAO
 from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 from rtk.dao.commondb.RTKCategory import RTKCategory
+from rtk.dao.commondb.RTKCondition import RTKCondition
 from rtk.dao.RTKFailureMode import RTKFailureMode
 from rtk.dao.RTKGroup import RTKGroup
 from rtk.dao.RTKHazards import RTKHazards

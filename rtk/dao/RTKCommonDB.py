@@ -158,7 +158,7 @@ RTK_CONDITIONS = {
     38: ('Radiation, Gamma', 'environmental'),
     39: ('Radiation, Neutron', 'environmental'),
     40: ('Radiation, Solar', 'environmental'),
-    41: ('Shock, Mechnical', 'environmental'),
+    41: ('Shock, Mechanical', 'environmental'),
     42: ('Shock, Thermal', 'environmental'),
     43: ('Temperature', 'environmental'),
     44: ('Thermal Cycles', 'environmental'),
@@ -667,11 +667,11 @@ def create_common_db(**kwargs):
     import os
     from datetime import date, timedelta
 
-    from rtk.dao import (RTKSiteInfo, RTKCategory, RTKCondition, RTKUser,
-                         RTKGroup, RTKModel, RTKType, RTKSubCategory,
-                         RTKManufacturer, RTKUnit, RTKMethod, RTKRPN,
-                         RTKHazards, RTKStakeholders, RTKStatus,
-                         RTKFailureMode, RTKMeasurement, RTKLoadHistory)
+    from rtk.dao import (RTKSiteInfo, RTKCategory, RTKCondition, RTKFailureMode, RTKGroup,
+                         RTKHazards, RTKLoadHistory, RTKManufacturer,
+                         RTKMeasurement, RTKMethod, RTKModel, RTKRPN,
+                         RTKStakeholders, RTKStatus, RTKSubCategory, RTKType,
+                         RTKUnit, RTKUser)
 
     __test = kwargs['test']
     uri = kwargs['database']
