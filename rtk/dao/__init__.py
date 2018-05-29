@@ -18,7 +18,7 @@ from .commondb.RTKMeasurement import RTKMeasurement
 from .commondb.RTKMethod import RTKMethod
 from .commondb.RTKModel import RTKModel
 from .RTKRPN import RTKRPN
-from .RTKSiteInfo import RTKSiteInfo
+from .commondb.RTKSiteInfo import RTKSiteInfo
 from .RTKStakeholders import RTKStakeholders
 from .RTKStatus import RTKStatus
 from .RTKSubCategory import RTKSubCategory
