@@ -15,7 +15,7 @@ from .commondb.RTKGroup import RTKGroup
 from .commondb.RTKHazards import RTKHazards
 from .commondb.RTKManufacturer import RTKManufacturer
 from .commondb.RTKMeasurement import RTKMeasurement
-from .RTKMethod import RTKMethod
+from .commondb.RTKMethod import RTKMethod
 from .RTKModel import RTKModel
 from .RTKRPN import RTKRPN
 from .RTKSiteInfo import RTKSiteInfo
