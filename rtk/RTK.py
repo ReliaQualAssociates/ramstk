@@ -27,7 +27,6 @@ except ImportError:
 from Configuration import Configuration
 import Utilities
 from rtk.dao.DAO import DAO
-from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 from rtk.dao.commondb.RTKCategory import RTKCategory
 from rtk.dao.commondb.RTKCondition import RTKCondition
 from rtk.dao.commondb.RTKFailureMode import RTKFailureMode
@@ -36,6 +35,7 @@ from rtk.dao.commondb.RTKHazards import RTKHazards
 from rtk.dao.commondb.RTKManufacturer import RTKManufacturer
 from rtk.dao.commondb.RTKMeasurement import RTKMeasurement
 from rtk.dao.commondb.RTKMethod import RTKMethod
+from rtk.dao.commondb.RTKModel import RTKModel
 from rtk.dao.RTKRPN import RTKRPN
 from rtk.dao.RTKSiteInfo import RTKSiteInfo
 from rtk.dao.RTKStakeholders import RTKStakeholders
@@ -44,6 +44,7 @@ from rtk.dao.RTKSubCategory import RTKSubCategory
 from rtk.dao.RTKType import RTKType
 from rtk.dao.RTKUnit import RTKUnit
 from rtk.dao.RTKUser import RTKUser
+from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 # from datamodels.matrix.Matrix import Matrix
 from rtk.modules.revision import dtcRevision
 from rtk.modules.usage import dtcUsageProfile

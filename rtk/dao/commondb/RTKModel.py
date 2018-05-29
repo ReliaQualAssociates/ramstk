@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.RTKModel.py is part of The RTK Project
+#       rtk.dao.commondb.RTKModel.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKModel Table"""
+"""RTKModel Table Module."""
 
 from sqlalchemy import Column, Integer, String
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default
+from rtk.Utilities import none_to_default
 from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKModel(RTK_BASE):
-    """
-    Class to represent the table rtk_model in the RTK Common database.
-    """
+    """Class to represent the table rtk_model in the RTK Common database."""
 
     __tablename__ = 'rtk_model'
     __table_args__ = {'extend_existing': True}
@@ -33,42 +31,42 @@ class RTKModel(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKModel data model
-        attributes.
+        Retrieve the current values of the RTKModel data model attributes.
 
-        :return: (model_id, description, model_type)
-        :rtype: tuple
+        :return: {model_id, description, model_type} pairs.
+        :rtype: dict
         """
-
-        _values = (self.model_id, self.description, self.model_type)
-
-        return _values
+        _attributes = {
+            'model_id': self.model_id,
+            'description': self.description,
+            'model_type': self.model_type
+        }
+        print _attributes
+        return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the current values of the RTKModel data model
-        attributes.
+        Set the current values of the RTKModel data model attributes.
 
-        :param tuple attributes: tuple containing the values to set.
+        :param dict attributes: dict containing the key:values to set.
         :return: (_error_code, _msg)
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKModel {0:d} attributes.". \
             format(self.model_id)
 
         try:
             self.description = str(
-                none_to_default(attributes[0], 'Model Description'))
-            self.model_type = str(none_to_default(attributes[1], 'unkown'))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKModel.set_attributes()."
-        except TypeError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKModel attributes."
+                none_to_default(attributes['description'],
+                                'Model Description'))
+            self.model_type = str(
+                none_to_default(attributes['model_type'], 'unkown'))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = ("RTK ERROR: Missing attribute {0:s} in attribute "
+                    "dictionary passed to "
+                    "{1:s}.set_attributes().").format(_err,
+                                                      self.__class__.__name__)
 
         return _error_code, _msg
