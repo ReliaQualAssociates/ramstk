@@ -14,7 +14,7 @@ from .commondb.RTKFailureMode import RTKFailureMode
 from .commondb.RTKGroup import RTKGroup
 from .commondb.RTKHazards import RTKHazards
 from .commondb.RTKManufacturer import RTKManufacturer
-from .RTKMeasurement import RTKMeasurement
+from .commondb.RTKMeasurement import RTKMeasurement
 from .RTKMethod import RTKMethod
 from .RTKModel import RTKModel
 from .RTKRPN import RTKRPN

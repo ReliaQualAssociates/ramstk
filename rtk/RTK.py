@@ -34,6 +34,7 @@ from rtk.dao.commondb.RTKFailureMode import RTKFailureMode
 from rtk.dao.commondb.RTKGroup import RTKGroup
 from rtk.dao.commondb.RTKHazards import RTKHazards
 from rtk.dao.commondb.RTKManufacturer import RTKManufacturer
+from rtk.dao.commondb.RTKMeasurement import RTKMeasurement
 from rtk.dao.RTKMethod import RTKMethod
 from rtk.dao.RTKRPN import RTKRPN
 from rtk.dao.RTKSiteInfo import RTKSiteInfo
