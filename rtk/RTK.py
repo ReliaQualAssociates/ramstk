@@ -39,7 +39,7 @@ from rtk.dao.commondb.RTKModel import RTKModel
 from rtk.dao.commondb.RTKSiteInfo import RTKSiteInfo
 from rtk.dao.commondb.RTKStakeholders import RTKStakeholders
 from rtk.dao.commondb.RTKStatus import RTKStatus
-from rtk.dao.RTKSubCategory import RTKSubCategory
+from rtk.dao.commondb.RTKSubCategory import RTKSubCategory
 from rtk.dao.RTKType import RTKType
 from rtk.dao.RTKUnit import RTKUnit
 from rtk.dao.RTKUser import RTKUser
