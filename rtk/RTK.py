@@ -38,7 +38,7 @@ from rtk.dao.commondb.RTKMethod import RTKMethod
 from rtk.dao.commondb.RTKModel import RTKModel
 from rtk.dao.commondb.RTKSiteInfo import RTKSiteInfo
 from rtk.dao.commondb.RTKStakeholders import RTKStakeholders
-from rtk.dao.RTKStatus import RTKStatus
+from rtk.dao.commondb.RTKStatus import RTKStatus
 from rtk.dao.RTKSubCategory import RTKSubCategory
 from rtk.dao.RTKType import RTKType
 from rtk.dao.RTKUnit import RTKUnit
@@ -407,13 +407,15 @@ class Model(object):
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKStatus).\
                 filter(RTKStatus.status_type == 'action').all():
-            configuration.RTK_ACTION_STATUS[_record.status_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_ACTION_STATUS[_record.status_id] = (
+                _attributes['name'], _attributes['description'], _attributes['status_type'])
 
         for _record in self.site_session.query(RTKStatus).\
                 filter(RTKStatus.status_type == 'incident').all():
-            configuration.RTK_INCIDENT_STATUS[_record.status_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_INCIDENT_STATUS[_record.status_id] = (
+                _attributes['name'], _attributes['description'], _attributes['status_type'])
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKType.                                     #
