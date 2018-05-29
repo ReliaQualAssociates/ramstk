@@ -40,7 +40,7 @@ from rtk.dao.commondb.RTKSiteInfo import RTKSiteInfo
 from rtk.dao.commondb.RTKStakeholders import RTKStakeholders
 from rtk.dao.commondb.RTKStatus import RTKStatus
 from rtk.dao.commondb.RTKSubCategory import RTKSubCategory
-from rtk.dao.RTKType import RTKType
+from rtk.dao.commondb.RTKType import RTKType
 from rtk.dao.RTKUnit import RTKUnit
 from rtk.dao.RTKUser import RTKUser
 from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
@@ -409,31 +409,39 @@ class Model(object):
                 filter(RTKStatus.status_type == 'action').all():
             _attributes = _record.get_attributes()
             configuration.RTK_ACTION_STATUS[_record.status_id] = (
-                _attributes['name'], _attributes['description'], _attributes['status_type'])
+                _attributes['name'], _attributes['description'],
+                _attributes['status_type'])
 
         for _record in self.site_session.query(RTKStatus).\
                 filter(RTKStatus.status_type == 'incident').all():
             _attributes = _record.get_attributes()
             configuration.RTK_INCIDENT_STATUS[_record.status_id] = (
-                _attributes['name'], _attributes['description'], _attributes['status_type'])
+                _attributes['name'], _attributes['description'],
+                _attributes['status_type'])
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKType.                                     #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'incident').all():
-            configuration.RTK_INCIDENT_TYPE[_record.type_id] = \
-                _record.get_attributes[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_INCIDENT_TYPE[_record.type_id] = (
+                _attributes['code'], _attributes['description'],
+                _attributes['type_type'])
 
         for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'requirement').all():
-            configuration.RTK_REQUIREMENT_TYPE[_record.type_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_REQUIREMENT_TYPE[_record.type_id] = (
+                _attributes['code'], _attributes['description'],
+                _attributes['type_type'])
 
         for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'validation').all():
-            configuration.RTK_VALIDATION_TYPE[_record.type_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_VALIDATION_TYPE[_record.type_id] = (
+                _attributes['code'], _attributes['description'],
+                _attributes['type_type'])
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from tables not requiring a filter.               #

@@ -1,30 +1,13 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.unit._dao.TestRTKType.py is part of The RTK Project
-
+#       tests.dao.commondb.test_rtktype.py is part of The RTK Project
 #
 # All rights reserved.
-"""
-This is the test class for testing the RTKType module algorithms and
-models.
-"""
+"""Test class for testing the RTKType module algorithms and models."""
 
-import sys
-from os.path import dirname
+import pytest
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-)
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-import unittest
-from nose.plugins.attrib import attr
-
-from dao.RTKType import RTKType
+from rtk.dao.commondb.RTKType import RTKType
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -32,78 +15,63 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
-class TestRTKType(unittest.TestCase):
-    """
-    Class for testing the RTKType class.
-    """
+ATTRIBUTES = {'type_id':1, 'code':'Type Code', 'description':'PLN', 'type_type':'unknown'}
 
-    attributes = (1, 'CALC', 'Calculated', 'cost')
 
-    def setUp(self):
-        """
-        Sets up the test fixture for the RTKType class.
-        """
+@pytest.mark.integration
+def test_rtktype_create(test_common_dao):
+    """ __init__() should create an RTKType model. """
+    _session = test_common_dao.RTK_SESSION(
+        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKType).first()
 
-        engine = create_engine('sqlite:////tmp/TestCommonDB.rtk', echo=False)
-        session = scoped_session(sessionmaker())
+    assert isinstance(DUT, RTKType)
 
-        session.remove()
-        session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+    # Verify class attributes are properly initialized.
+    assert DUT.__tablename__ == 'rtk_type'
+    assert DUT.type_id == 1
+    assert DUT.code == 'Type Code'
+    assert DUT.description == 'PLN'
+    assert DUT.type_type == 'unknown'
 
-        self.DUT = session.query(RTKType).first()
-        self.DUT.code = self.attributes[1]
-        self.DUT.description = self.attributes[2]
-        self.DUT.type_type = self.attributes[3]
 
-        session.commit()
+@pytest.mark.integration
+def test_get_attributes(test_common_dao):
+    """ get_attributes() should return a tuple of attributes values on success. """
+    _session = test_common_dao.RTK_SESSION(
+        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKType).first()
 
-    @attr(all=True, unit=True)
-    def test00_RTKType_create(self):
-        """
-        (TestRTKType) __init__ should create an RTKType model
-        """
+    assert DUT.get_attributes() == ATTRIBUTES
 
-        self.assertTrue(isinstance(self.DUT, RTKType))
 
-        # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'rtk_type')
-        self.assertEqual(self.DUT.type_id, 1)
-        self.assertEqual(self.DUT.code, 'CALC')
-        self.assertEqual(self.DUT.description, 'Calculated')
-        self.assertEqual(self.DUT.type_type, 'cost')
+@pytest.mark.integration
+def test_set_attributes(test_common_dao):
+    """ set_attributes() should return a zero error code on success. """
+    _session = test_common_dao.RTK_SESSION(
+        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKType).first()
 
-    @attr(all=True, unit=True)
-    def test01_RTKType_get_attributes(self):
-        """
-        (TestRTKType) get_attributes should return a tuple of attributes values on success
-        """
+    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
-        self.assertEqual(self.DUT.get_attributes(), self.attributes)
+    assert _error_code == 0
+    assert _msg == ("RTK SUCCESS: Updating RTKType {0:d} "
+                               "attributes.".format(DUT.type_id))
 
-    @attr(all=True, unit=True)
-    def test02a_RTKType_set_attributes(self):
-        """
-        (TestRTKType) set_attributes should return a zero error code on success
-        """
 
-        _attributes = ('DEF', 'Defined', 'cost')
+@pytest.mark.integration
+def test_set_attributes_missing_key(test_common_dao):
+    """ set_attributes() should return a 40 error code when passed too few attributes. """
+    _session = test_common_dao.RTK_SESSION(
+        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RTKType).first()
 
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+    ATTRIBUTES.pop('code')
 
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKType {0:d} " \
-                               "attributes.".format(self.DUT.type_id))
+    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
-    @attr(all=True, unit=True)
-    def test02b_RTKType_set_attributes_to_few(self):
-        """
-        (TestRTKType) set_attributes should return a 40 error code when passed too few attributes
-        """
+    assert _error_code == 40
+    assert _msg == ("RTK ERROR: Missing attribute 'code' in attribute "
+                    "dictionary passed to RTKType.set_attributes().")
 
-        _attributes = ('ASS', 'Assessed')
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
-
-        self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to RTKType.set_attributes().")
+    ATTRIBUTES['code'] = 'CALC'

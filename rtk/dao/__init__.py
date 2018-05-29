@@ -22,7 +22,7 @@ from .commondb.RTKSiteInfo import RTKSiteInfo
 from .commondb.RTKStakeholders import RTKStakeholders
 from .commondb.RTKStatus import RTKStatus
 from .commondb.RTKSubCategory import RTKSubCategory
-from .RTKType import RTKType
+from .commondb.RTKType import RTKType
 from .RTKUnit import RTKUnit
 from .RTKUser import RTKUser
 
