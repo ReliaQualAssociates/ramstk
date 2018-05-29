@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.RTKCategory.py is part of The RTK Project
+#       rtk.dao.commondb.RTKCategory.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKCategory Table."""
+"""RTKCategory Table Module."""
 
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default
+from rtk.Utilities import none_to_default
 from rtk.dao.RTKCommonDB import RTK_BASE
 
 
@@ -46,45 +46,46 @@ class RTKCategory(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKCategory data model
-        attributes.
+        Retrieve current values of the RTKCategory data model attributes.
 
-        :return: (category_id, name, description, cat_type, value)
-        :rtype: tuple
+        :return: {category_id, name, description, cat_type, value} pairs
+        :rtype: dict
         """
+        _attributes = {
+            'category_id': self.category_id,
+            'name': self.name,
+            'description': self.description,
+            'category_type': self.cat_type,
+            'value': self.value
+        }
 
-        _values = (self.category_id, self.name, self.description,
-                   self.cat_type, self.value)
-
-        return _values
+        return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the current values of the RTKCategory data model
-        attributes.
+        Set the current values of the RTKCategory data model attributes.
 
-        :param tuple attributes: tuple containing the values to set.
+        :param dict attributes: dict containing the values to set.
         :return: (_error_code, _msg)
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKCategory {0:d} attributes.". \
             format(self.category_id)
 
         try:
-            self.name = str(none_to_default(attributes[0], 'Category Name'))
+            self.name = str(
+                none_to_default(attributes['name'], 'Category Name'))
             self.description = str(
-                none_to_default(attributes[1], 'Category Description'))
-            self.cat_type = str(none_to_default(attributes[2], 'unknown'))
-            self.value = int(none_to_default(attributes[3], 1))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKCategory.set_attributes()."
-        except TypeError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKCategory attributes."
+                none_to_default(attributes['description'],
+                                'Category Description'))
+            self.cat_type = str(
+                none_to_default(attributes['category_type'], 'unknown'))
+            self.value = int(none_to_default(attributes['value'], 1))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKCategory.set_attributes().".format(_err)
 
         return _error_code, _msg

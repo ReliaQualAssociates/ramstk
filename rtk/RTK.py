@@ -27,21 +27,24 @@ except ImportError:
 from Configuration import Configuration
 import Utilities
 from rtk.dao.DAO import DAO
+from rtk.dao.commondb.RTKCategory import RTKCategory
+from rtk.dao.commondb.RTKCondition import RTKCondition
+from rtk.dao.commondb.RTKFailureMode import RTKFailureMode
+from rtk.dao.commondb.RTKGroup import RTKGroup
+from rtk.dao.commondb.RTKHazards import RTKHazards
+from rtk.dao.commondb.RTKManufacturer import RTKManufacturer
+from rtk.dao.commondb.RTKMeasurement import RTKMeasurement
+from rtk.dao.commondb.RTKMethod import RTKMethod
+from rtk.dao.commondb.RTKModel import RTKModel
+from rtk.dao.commondb.RTKSiteInfo import RTKSiteInfo
+from rtk.dao.commondb.RTKStakeholders import RTKStakeholders
+from rtk.dao.commondb.RTKStatus import RTKStatus
+from rtk.dao.commondb.RTKSubCategory import RTKSubCategory
+from rtk.dao.commondb.RTKType import RTKType
+from rtk.dao.commondb.RTKUser import RTKUser
 from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
-from rtk.dao.RTKCategory import RTKCategory
-from rtk.dao.RTKFailureMode import RTKFailureMode
-from rtk.dao.RTKGroup import RTKGroup
-from rtk.dao.RTKHazards import RTKHazards
-from rtk.dao.RTKManufacturer import RTKManufacturer
-from rtk.dao.RTKMethod import RTKMethod
 from rtk.dao.RTKRPN import RTKRPN
-from rtk.dao.RTKSiteInfo import RTKSiteInfo
-from rtk.dao.RTKStakeholders import RTKStakeholders
-from rtk.dao.RTKStatus import RTKStatus
-from rtk.dao.RTKSubCategory import RTKSubCategory
-from rtk.dao.RTKType import RTKType
 from rtk.dao.RTKUnit import RTKUnit
-from rtk.dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
 from rtk.modules.revision import dtcRevision
 from rtk.modules.usage import dtcUsageProfile
@@ -328,47 +331,58 @@ class Model(object):
             configuration.RTK_SUBCATEGORIES[_record.category_id] = _subcats
 
         for _record in self.site_session.query(RTKStakeholders).all():
-            configuration.RTK_STAKEHOLDERS[_record.stakeholders_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_STAKEHOLDERS[_record.stakeholders_id] = (
+                _attributes['stakeholder'], )
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKCategory.                                 #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.category_id == 'action').all():
-            configuration.RTK_ACTION_CATEGORY[_record.category_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_ACTION_CATEGORY[_record.category_id] = (
+                _attributes['name'], _attributes['description'],
+                _attributes['category_type'], _attributes['value'])
 
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'incident').all():
-            configuration.RTK_INCIDENT_CATEGORY[_record.category_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_INCIDENT_CATEGORY[_record.category_id] = (
+                _attributes['name'], _attributes['description'],
+                _attributes['category_type'], _attributes['value'])
 
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'risk').all():
-            configuration.RTK_SEVERITY[_record.category_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_SEVERITY[_record.category_id] = (
+                _attributes['name'], _attributes['description'],
+                _attributes['category_type'], _attributes['value'])
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKGroup.                                    #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKGroup).\
                 filter(RTKGroup.group_type == 'affinity').all():
-            configuration.RTK_AFFINITY_GROUPS[_record.group_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_AFFINITY_GROUPS[_record.group_id] = (
+                _attributes['description'], _attributes['group_type'])
 
         for _record in self.site_session.query(RTKGroup).\
                 filter(RTKGroup.group_type == 'workgroup').all():
-            configuration.RTK_WORKGROUPS[_record.group_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_WORKGROUPS[_record.group_id] = (
+                _attributes['description'], _attributes['group_type'])
 
         # ------------------------------------------------------------------- #
         # Load the dictionaries from RTKMethod.                               #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKMethod).\
                 filter(RTKMethod.method_type == 'detection').all():
-            configuration.RTK_DETECTION_METHODS[_record.method_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_DETECTION_METHODS[_record.method_id] = (
+                _attributes['name'], _attributes['description'],
+                _attributes['method_type'])
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKRPN.                                      #
@@ -393,42 +407,55 @@ class Model(object):
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKStatus).\
                 filter(RTKStatus.status_type == 'action').all():
-            configuration.RTK_ACTION_STATUS[_record.status_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_ACTION_STATUS[_record.status_id] = (
+                _attributes['name'], _attributes['description'],
+                _attributes['status_type'])
 
         for _record in self.site_session.query(RTKStatus).\
                 filter(RTKStatus.status_type == 'incident').all():
-            configuration.RTK_INCIDENT_STATUS[_record.status_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_INCIDENT_STATUS[_record.status_id] = (
+                _attributes['name'], _attributes['description'],
+                _attributes['status_type'])
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKType.                                     #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'incident').all():
-            configuration.RTK_INCIDENT_TYPE[_record.type_id] = \
-                _record.get_attributes[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_INCIDENT_TYPE[_record.type_id] = (
+                _attributes['code'], _attributes['description'],
+                _attributes['type_type'])
 
         for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'requirement').all():
-            configuration.RTK_REQUIREMENT_TYPE[_record.type_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_REQUIREMENT_TYPE[_record.type_id] = (
+                _attributes['code'], _attributes['description'],
+                _attributes['type_type'])
 
         for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'validation').all():
-            configuration.RTK_VALIDATION_TYPE[_record.type_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_VALIDATION_TYPE[_record.type_id] = (
+                _attributes['code'], _attributes['description'],
+                _attributes['type_type'])
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from tables not requiring a filter.               #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKHazards).all():
-            configuration.RTK_HAZARDS[_record.hazard_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_HAZARDS[_record.hazard_id] = (
+                _attributes['category'], _attributes['subcategory'])
 
         for _record in self.site_session.query(RTKManufacturer).all():
-            configuration.RTK_MANUFACTURERS[_record.manufacturer_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_MANUFACTURERS[_record.manufacturer_id] = (
+                _attributes['description'], _attributes['location'],
+                _attributes['cage_code'])
 
         for _record in self.site_session.query(RTKUnit).\
                 filter(RTKUnit.unit_type == 'measurement').all():
@@ -436,8 +463,11 @@ class Model(object):
                 _record.get_attributes()[1:]
 
         for _record in self.site_session.query(RTKUser).all():
-            configuration.RTK_USERS[_record.user_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_USERS[_record.user_id] = (
+                _attributes['user_lname'], _attributes['user_fname'],
+                _attributes['user_email'], _attributes['user_phone'],
+                _attributes['user_group_id'])
 
         return _return
 

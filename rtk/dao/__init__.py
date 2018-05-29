@@ -8,23 +8,23 @@
 from .DAO import DAO
 
 # Common database.
-from .RTKSiteInfo import RTKSiteInfo
-from .RTKUser import RTKUser
-from .RTKGroup import RTKGroup
-from .RTKModel import RTKModel
-from .RTKType import RTKType
-from .RTKCategory import RTKCategory
-from .RTKSubCategory import RTKSubCategory
-from .RTKManufacturer import RTKManufacturer
-from .RTKUnit import RTKUnit
-from .RTKMethod import RTKMethod
+from .commondb.RTKCategory import RTKCategory
+from .commondb.RTKCondition import RTKCondition
+from .commondb.RTKFailureMode import RTKFailureMode
+from .commondb.RTKGroup import RTKGroup
+from .commondb.RTKHazards import RTKHazards
+from .commondb.RTKManufacturer import RTKManufacturer
+from .commondb.RTKMeasurement import RTKMeasurement
+from .commondb.RTKMethod import RTKMethod
+from .commondb.RTKModel import RTKModel
 from .RTKRPN import RTKRPN
-from .RTKHazards import RTKHazards
-from .RTKStakeholders import RTKStakeholders
-from .RTKStatus import RTKStatus
-from .RTKCondition import RTKCondition
-from .RTKFailureMode import RTKFailureMode
-from .RTKMeasurement import RTKMeasurement
+from .commondb.RTKSiteInfo import RTKSiteInfo
+from .commondb.RTKStakeholders import RTKStakeholders
+from .commondb.RTKStatus import RTKStatus
+from .commondb.RTKSubCategory import RTKSubCategory
+from .commondb.RTKType import RTKType
+from .RTKUnit import RTKUnit
+from .commondb.RTKUser import RTKUser
 
 # Program database
 from .programdb.RTKAction import RTKAction

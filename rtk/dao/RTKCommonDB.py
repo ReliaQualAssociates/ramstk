@@ -158,7 +158,7 @@ RTK_CONDITIONS = {
     38: ('Radiation, Gamma', 'environmental'),
     39: ('Radiation, Neutron', 'environmental'),
     40: ('Radiation, Solar', 'environmental'),
-    41: ('Shock, Mechnical', 'environmental'),
+    41: ('Shock, Mechanical', 'environmental'),
     42: ('Shock, Thermal', 'environmental'),
     43: ('Temperature', 'environmental'),
     44: ('Thermal Cycles', 'environmental'),
@@ -176,16 +176,18 @@ RTK_CONDITIONS = {
 }
 
 RTK_GROUPS = {
-    0: ('Engineering, Design', 'workgroup'),
-    1: ('Engineering, Logistics Support', 'workgroup'),
-    2: ('Engineering, Maintainability', 'workgroup'),
-    3: ('Engineering, Reliability', 'workgroup'),
-    4: ('Engineering, Safety', 'workgroup'),
-    5: ('Engineering, Software', 'workgroup'),
-    6: ('Reliability', 'affinity'),
-    7: ('Durability', 'affinity'),
-    8: ('Cost', 'affinity')
+    1: ('Engineering, Design', 'workgroup'),
+    2: ('Engineering, Logistics Support', 'workgroup'),
+    3: ('Engineering, Maintainability', 'workgroup'),
+    4: ('Engineering, Reliability', 'workgroup'),
+    5: ('Engineering, Safety', 'workgroup'),
+    6: ('Engineering, Software', 'workgroup'),
+    7: ('Reliability', 'affinity'),
+    8: ('Durability', 'affinity'),
+    9: ('Cost', 'affinity')
 }
+
+RTK_FAILURE_MODES = {3:{24:{1:['Open',0.5, 'FMD-97'],2:['Short', 0.3, 'FMD-97'],3:['Parameter Change',0.2,'FMD-97']}}}
 
 RTK_HAZARDS = {
     0: ('Acceleration/Gravity', 'Falls'),
@@ -667,11 +669,11 @@ def create_common_db(**kwargs):
     import os
     from datetime import date, timedelta
 
-    from rtk.dao import (RTKSiteInfo, RTKCategory, RTKCondition, RTKUser,
-                         RTKGroup, RTKModel, RTKType, RTKSubCategory,
-                         RTKManufacturer, RTKUnit, RTKMethod, RTKRPN,
-                         RTKHazards, RTKStakeholders, RTKStatus,
-                         RTKFailureMode, RTKMeasurement, RTKLoadHistory)
+    from rtk.dao import (RTKSiteInfo, RTKCategory, RTKCondition, RTKFailureMode, RTKGroup,
+                         RTKHazards, RTKLoadHistory, RTKManufacturer,
+                         RTKMeasurement, RTKMethod, RTKModel, RTKRPN,
+                         RTKStakeholders, RTKStatus, RTKSubCategory, RTKType,
+                         RTKUnit, RTKUser)
 
     __test = kwargs['test']
     uri = kwargs['database']
@@ -733,7 +735,18 @@ def create_common_db(**kwargs):
         _record.description = _value[2]
         session.add(_record)
 
-    # TODO: Populate failure mode table.
+    # Default failure modes.
+    for _ckey in RTK_FAILURE_MODES:
+        _record = RTKFailureMode()
+        _record.category_id = _ckey
+        for _skey in RTK_FAILURE_MODES[_ckey]:
+            _record.subcategory_id = _skey
+            for _mkey in RTK_FAILURE_MODES[_ckey][_skey]:
+                _record.mode_id = _mkey
+                _record.description = RTK_FAILURE_MODES[_ckey][_skey][_mkey][0]
+                _record.mode_ratio = RTK_FAILURE_MODES[_ckey][_skey][_mkey][1]
+                _record.source = RTK_FAILURE_MODES[_ckey][_skey][_mkey][2]
+                session.add(_record)
 
     # Environmental conditions, operating conditions, measurable parameters,
     # and load histories for PoF analysis.

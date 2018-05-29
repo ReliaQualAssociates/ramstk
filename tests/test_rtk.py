@@ -317,7 +317,9 @@ def test_load_globals(test_common_dao, test_dao):
             36: {},
             37: {},
             38: {},
-            24: {},
+            24: {
+                3: [u'Parameter Change', 0.2, u'FMD-97']
+            },
             25: {},
             26: {},
             27: {},
