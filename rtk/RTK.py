@@ -37,7 +37,7 @@ from rtk.dao.commondb.RTKMeasurement import RTKMeasurement
 from rtk.dao.commondb.RTKMethod import RTKMethod
 from rtk.dao.commondb.RTKModel import RTKModel
 from rtk.dao.commondb.RTKSiteInfo import RTKSiteInfo
-from rtk.dao.RTKStakeholders import RTKStakeholders
+from rtk.dao.commondb.RTKStakeholders import RTKStakeholders
 from rtk.dao.RTKStatus import RTKStatus
 from rtk.dao.RTKSubCategory import RTKSubCategory
 from rtk.dao.RTKType import RTKType
@@ -331,8 +331,9 @@ class Model(object):
             configuration.RTK_SUBCATEGORIES[_record.category_id] = _subcats
 
         for _record in self.site_session.query(RTKStakeholders).all():
-            configuration.RTK_STAKEHOLDERS[_record.stakeholders_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_STAKEHOLDERS[_record.stakeholders_id] = (
+                _attributes['stakeholder'], )
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKCategory.                                 #

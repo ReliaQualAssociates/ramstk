@@ -19,7 +19,7 @@ from .commondb.RTKMethod import RTKMethod
 from .commondb.RTKModel import RTKModel
 from .RTKRPN import RTKRPN
 from .commondb.RTKSiteInfo import RTKSiteInfo
-from .RTKStakeholders import RTKStakeholders
+from .commondb.RTKStakeholders import RTKStakeholders
 from .RTKStatus import RTKStatus
 from .RTKSubCategory import RTKSubCategory
 from .RTKType import RTKType
