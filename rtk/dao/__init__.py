@@ -24,7 +24,7 @@ from .commondb.RTKStatus import RTKStatus
 from .commondb.RTKSubCategory import RTKSubCategory
 from .commondb.RTKType import RTKType
 from .RTKUnit import RTKUnit
-from .RTKUser import RTKUser
+from .commondb.RTKUser import RTKUser
 
 # Program database
 from .programdb.RTKAction import RTKAction

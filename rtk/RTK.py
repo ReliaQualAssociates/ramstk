@@ -41,10 +41,10 @@ from rtk.dao.commondb.RTKStakeholders import RTKStakeholders
 from rtk.dao.commondb.RTKStatus import RTKStatus
 from rtk.dao.commondb.RTKSubCategory import RTKSubCategory
 from rtk.dao.commondb.RTKType import RTKType
-from rtk.dao.RTKUnit import RTKUnit
-from rtk.dao.RTKUser import RTKUser
+from rtk.dao.commondb.RTKUser import RTKUser
 from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 from rtk.dao.RTKRPN import RTKRPN
+from rtk.dao.RTKUnit import RTKUnit
 # from datamodels.matrix.Matrix import Matrix
 from rtk.modules.revision import dtcRevision
 from rtk.modules.usage import dtcUsageProfile
@@ -463,8 +463,11 @@ class Model(object):
                 _record.get_attributes()[1:]
 
         for _record in self.site_session.query(RTKUser).all():
-            configuration.RTK_USERS[_record.user_id] = \
-                _record.get_attributes()[1:]
+            _attributes = _record.get_attributes()
+            configuration.RTK_USERS[_record.user_id] = (
+                _attributes['user_lname'], _attributes['user_fname'],
+                _attributes['user_email'], _attributes['user_phone'],
+                _attributes['user_group_id'])
 
         return _return
 
