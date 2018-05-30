@@ -17,13 +17,11 @@ from .commondb.RTKManufacturer import RTKManufacturer
 from .commondb.RTKMeasurement import RTKMeasurement
 from .commondb.RTKMethod import RTKMethod
 from .commondb.RTKModel import RTKModel
-from .RTKRPN import RTKRPN
 from .commondb.RTKSiteInfo import RTKSiteInfo
 from .commondb.RTKStakeholders import RTKStakeholders
 from .commondb.RTKStatus import RTKStatus
 from .commondb.RTKSubCategory import RTKSubCategory
 from .commondb.RTKType import RTKType
-from .RTKUnit import RTKUnit
 from .commondb.RTKUser import RTKUser
 
 # Program database
@@ -57,6 +55,7 @@ from .programdb.RTKProgramStatus import RTKProgramStatus
 from .programdb.RTKReliability import RTKReliability
 from .programdb.RTKRequirement import RTKRequirement
 from .programdb.RTKRevision import RTKRevision
+from .programdb.RTKRPN import RTKRPN
 from .programdb.RTKSimilarItem import RTKSimilarItem
 from .programdb.RTKSoftware import RTKSoftware
 from .programdb.RTKSoftwareDevelopment import RTKSoftwareDevelopment
@@ -67,4 +66,5 @@ from .programdb.RTKSurvival import RTKSurvival
 from .programdb.RTKSurvivalData import RTKSurvivalData
 from .programdb.RTKTest import RTKTest
 from .programdb.RTKTestMethod import RTKTestMethod
+from .programdb.RTKUnits import RTKUnit
 from .programdb.RTKValidation import RTKValidation

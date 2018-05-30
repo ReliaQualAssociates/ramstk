@@ -43,8 +43,7 @@ from rtk.dao.commondb.RTKSubCategory import RTKSubCategory
 from rtk.dao.commondb.RTKType import RTKType
 from rtk.dao.commondb.RTKUser import RTKUser
 from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
-from rtk.dao.RTKRPN import RTKRPN
-from rtk.dao.RTKUnit import RTKUnit
+from rtk.dao.programdb.RTKRPN import RTKRPN
 # from datamodels.matrix.Matrix import Matrix
 from rtk.modules.revision import dtcRevision
 from rtk.modules.usage import dtcUsageProfile
