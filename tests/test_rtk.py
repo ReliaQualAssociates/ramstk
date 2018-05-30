@@ -577,16 +577,16 @@ def test_load_globals(test_common_dao, test_dao):
         3: ('National Semiconductor', 'California', '27014')
     }
     assert _configuration.RTK_MEASUREMENT_UNITS == {
-        1: ('lbf', 'Pounds Force', 'measurement'),
-        2: ('lbm', 'Pounds Mass', 'measurement'),
-        3: ('hrs', 'hours', 'measurement'),
-        4: ('N', 'Newtons', 'measurement'),
-        5: ('mins', 'minutes', 'measurement'),
-        6: ('secs', 'seconds', 'measurement'),
-        7: ('g', 'grams', 'measurement'),
-        8: ('oz', 'ounces', 'measurement'),
-        9: ('A', 'Amperes', 'measurement'),
-        10: ('V', 'Volts', 'measurement')
+        1: (u'lbf', u'Pounds Force', u'unit'),
+        2: (u'lbm', u'Pounds Mass', u'unit'),
+        3: (u'hrs', u'hours', u'unit'),
+        4: (u'N', u'Newtons', u'unit'),
+        5: (u'mins', u'minutes', u'unit'),
+        6: (u'secs', u'seconds', u'unit'),
+        7: (u'g', u'grams', u'unit'),
+        8: (u'oz', u'ounces', u'unit'),
+        9: (u'A', u'Amperes', u'unit'),
+        10: (u'V', u'Volts', u'unit')
     }
     assert _configuration.RTK_OPERATING_PARAMETERS == {}
     assert _configuration.RTK_STAKEHOLDERS == {

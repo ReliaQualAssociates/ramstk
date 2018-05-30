@@ -457,10 +457,12 @@ class Model(object):
                 _attributes['description'], _attributes['location'],
                 _attributes['cage_code'])
 
-        for _record in self.site_session.query(RTKUnit).\
-                filter(RTKUnit.unit_type == 'measurement').all():
-            configuration.RTK_MEASUREMENT_UNITS[_record.unit_id] = \
-                _record.get_attributes()[1:]
+        for _record in self.site_session.query(RTKMeasurement).\
+                filter(RTKMeasurement.measurement_type == 'unit').all():
+            _attributes = _record.get_attributes()
+            configuration.RTK_MEASUREMENT_UNITS[_record.measurement_id] = (
+                _attributes['code'], _attributes['description'],
+                _attributes['measurement_type'])
 
         for _record in self.site_session.query(RTKUser).all():
             _attributes = _record.get_attributes()

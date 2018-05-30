@@ -187,7 +187,15 @@ RTK_GROUPS = {
     9: ('Cost', 'affinity')
 }
 
-RTK_FAILURE_MODES = {3:{24:{1:['Open',0.5, 'FMD-97'],2:['Short', 0.3, 'FMD-97'],3:['Parameter Change',0.2,'FMD-97']}}}
+RTK_FAILURE_MODES = {
+    3: {
+        24: {
+            1: ['Open', 0.5, 'FMD-97'],
+            2: ['Short', 0.3, 'FMD-97'],
+            3: ['Parameter Change', 0.2, 'FMD-97']
+        }
+    }
+}
 
 RTK_HAZARDS = {
     0: ('Acceleration/Gravity', 'Falls'),
@@ -400,26 +408,36 @@ RTK_MANUFACTURERS = {
 }
 
 RTK_MEASUREMENTS = {
-    0: ('Contamination, Concentration', ),
-    1: ('Contamination, Particle Size', ),
-    2: ('Dynamic Load', ),
-    3: ('Load, Maximum', ),
-    4: ('Load, Minimum-Maximum', ),
-    5: ('Number of Braking Events', ),
-    6: ('Number of Cycles', ),
-    7: ('Number of Overload Events', ),
-    8: ('Number of Shifts', ),
-    9: ('Operating Time at Condition', ),
-    10: ('Pressure, Average', ),
-    11: ('Pressure, Differential', ),
-    12: ('Pressure, Peak', ),
-    13: ('RPM', ),
-    14: ('Temperature, Ambient', ),
-    15: ('Temperature, Average', ),
-    16: ('Temperature, Differential', ),
-    17: ('Temperature, Peak', ),
-    18: ('Temperature = f(Time)', ),
-    19: ('Torque', )
+    0: ('lbf', 'Pounds Force', 'unit'),
+    1: ('lbm', 'Pounds Mass', 'unit'),
+    2: ('hrs', 'hours', 'unit'),
+    3: ('N', 'Newtons', 'unit'),
+    4: ('mins', 'minutes', 'unit'),
+    5: ('secs', 'seconds', 'unit'),
+    6: ('g', 'grams', 'unit'),
+    7: ('oz', 'ounces', 'unit'),
+    8: ('A', 'Amperes', 'unit'),
+    9: ('V', 'Volts', 'unit'),
+    10: ('CN', 'Contamination, Concentration', 'damage'),
+    11: ('CS', 'Contamination, Particle Size', 'damage'),
+    12: ('LD', 'Dynamic Load', 'damage'),
+    13: ('LM', 'Load, Maximum', 'damage'),
+    14: ('LMM', 'Load, Minimum-Maximum', 'damage'),
+    15: ('NBC', 'Number of Braking Events', 'damage'),
+    16: ('NC', 'Number of Cycles', 'damage'),
+    17: ('NOE', 'Number of Overload Events', 'damage'),
+    18: ('NS', 'Number of Shifts', 'damage'),
+    19: ('TIME', 'Operating Time at Condition', 'damage'),
+    20: ('PAVG', 'Pressure, Average', 'damage'),
+    21: ('DELTAP', 'Pressure, Differential', 'damage'),
+    22: ('PPEAK', 'Pressure, Peak', 'damage'),
+    23: ('RPM', 'Revolutions per Time', 'damage'),
+    24: ('TAMB', 'Temperature, Ambient', 'damage'),
+    25: ('TAVG', 'Temperature, Average', 'damage'),
+    26: ('DELTAT', 'Temperature, Differential', 'damage'),
+    27: ('TPEAK', 'Temperature, Peak', 'damage'),
+    28: ('TEMP', 'Temperature = f(Time)', 'damage'),
+    29: ('T', 'Torque', 'damage')
 }
 
 RTK_METHODS = {
@@ -650,30 +668,17 @@ RTK_TYPES = {
     41: ('WCA', 'System Engineering, Worst Case Analysis', 'validation')
 }
 
-RTK_UNITS = {
-    0: ('lbf', 'Pounds Force', 'measurement'),
-    1: ('lbm', 'Pounds Mass', 'measurement'),
-    2: ('hrs', 'hours', 'measurement'),
-    3: ('N', 'Newtons', 'measurement'),
-    4: ('mins', 'minutes', 'measurement'),
-    5: ('secs', 'seconds', 'measurement'),
-    6: ('g', 'grams', 'measurement'),
-    7: ('oz', 'ounces', 'measurement'),
-    8: ('A', 'Amperes', 'measurement'),
-    9: ('V', 'Volts', 'measurement')
-}
-
 
 def create_common_db(**kwargs):
     """Create and populate the RTK Common database."""
     import os
     from datetime import date, timedelta
 
-    from rtk.dao import (RTKSiteInfo, RTKCategory, RTKCondition, RTKFailureMode, RTKGroup,
-                         RTKHazards, RTKLoadHistory, RTKManufacturer,
-                         RTKMeasurement, RTKMethod, RTKModel, RTKRPN,
-                         RTKStakeholders, RTKStatus, RTKSubCategory, RTKType,
-                         RTKUnit, RTKUser)
+    from rtk.dao import (RTKSiteInfo, RTKCategory, RTKCondition,
+                         RTKFailureMode, RTKGroup, RTKHazards, RTKLoadHistory,
+                         RTKManufacturer, RTKMeasurement, RTKMethod, RTKModel,
+                         RTKRPN, RTKStakeholders, RTKStatus, RTKSubCategory,
+                         RTKType, RTKUser)
 
     __test = kwargs['test']
     uri = kwargs['database']
@@ -712,7 +717,6 @@ def create_common_db(**kwargs):
     RTKStatus.__table__.create(bind=engine)
     RTKSubCategory.__table__.create(bind=engine)
     RTKType.__table__.create(bind=engine)
-    RTKUnit.__table__.create(bind=engine)
     RTKUser.__table__.create(bind=engine)
 
     # Add the product key and expiration date to the site info table.
@@ -748,16 +752,12 @@ def create_common_db(**kwargs):
                 _record.source = RTK_FAILURE_MODES[_ckey][_skey][_mkey][2]
                 session.add(_record)
 
-    # Environmental conditions, operating conditions, measurable parameters,
-    # and load histories for PoF analysis.
+    # Environmental conditions, operating conditions and load histories for
+    # PoF analysis.
     for __, _value in RTK_CONDITIONS.items():
         _record = RTKCondition()
         _record.description = _value[0]
         _record.cond_type = _value[1]
-        session.add(_record)
-    for __, _value in RTK_MEASUREMENTS.items():
-        _record = RTKMeasurement()
-        _record.description = _value[0]
         session.add(_record)
     for __, _value in RTK_HISTORIES.items():
         _record = RTKLoadHistory()
@@ -784,6 +784,14 @@ def create_common_db(**kwargs):
         _record.description = _value[0]
         _record.location = _value[1]
         _record.cage_code = _value[2]
+        session.add(_record)
+
+    # Units of measure, damage measurements.
+    for __, _value in RTK_MEASUREMENTS.items():
+        _record = RTKMeasurement()
+        _record.code = _value[0]
+        _record.description = _value[1]
+        _record.measurement_type = _value[2]
         session.add(_record)
 
     # Detection methods for incident reports.
@@ -829,14 +837,6 @@ def create_common_db(**kwargs):
         _record = RTKType()
         _record.description = _value[0]
         _record.model_type = _value[1]
-        session.add(_record)
-
-    # Measurement units.
-    for __, _value in RTK_UNITS.items():
-        _record = RTKUnit()
-        _record.code = _value[0]
-        _record.description = _value[1]
-        _record.unit_type = _value[2]
         session.add(_record)
 
     _user = RTKUser()

@@ -25,8 +25,10 @@ class RTKMeasurement(RTK_BASE):
         primary_key=True,
         autoincrement=True,
         nullable=False)
+    code = Column('fld_code', String(128), default='Measurement Code')
     description = Column(
         'fld_description', String(512), default='Measurement Decription')
+    measurement_type = Column('fld_type', String(128), default='unknown')
 
     def get_attributes(self):
         """
@@ -37,7 +39,9 @@ class RTKMeasurement(RTK_BASE):
         """
         _attributes = {
             'measurement_id': self.measurement_id,
-            'description': self.description
+            'code': self.code,
+            'description': self.description,
+            'measurement_type': self.measurement_type
         }
 
         return _attributes
@@ -55,9 +59,13 @@ class RTKMeasurement(RTK_BASE):
             format(self.measurement_id)
 
         try:
+            self.code = str(
+                none_to_default(attributes['code'], 'Measurement Code'))
             self.description = str(
                 none_to_default(attributes['description'],
                                 'Measurement Description'))
+            self.description = str(
+                none_to_default(attributes['measurement_type'], 'unknown'))
         except KeyError as _err:
             _error_code = 40
             _msg = ("RTK ERROR: Missing attribute {0:s} in attribute "
