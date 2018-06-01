@@ -19,7 +19,6 @@ class RTKOpStress(RTK_BASE):
     Class to represent the table rtk_op_stress in the RTK Program database.
 
     This table shares a Many-to-One relationship with rtk_op_load.
-    This table shares a One-to-Many relationship with rtk_test_method.
     """
 
     __tablename__ = 'rtk_op_stress'
@@ -45,8 +44,6 @@ class RTKOpStress(RTK_BASE):
 
     # Define the relationships to other tables in the RTK Program database.
     op_load = relationship('RTKOpLoad', back_populates='op_stress')
-    test_method = relationship(
-        'RTKTestMethod', back_populates='op_stress', cascade='all,delete')
 
     def get_attributes(self):
         """

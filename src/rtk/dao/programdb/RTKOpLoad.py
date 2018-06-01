@@ -20,6 +20,7 @@ class RTKOpLoad(RTK_BASE):
 
     This table shares a Many-to-One relationship with rtk_mechanism.
     This table shares a One-to-Many relationship with rtk_op_stress.
+    This table shares a One-to-Many relationship with rtk_test_method.
     """
 
     __tablename__ = 'rtk_op_load'
@@ -45,6 +46,8 @@ class RTKOpLoad(RTK_BASE):
     mechanism = relationship('RTKMechanism', back_populates='op_load')
     op_stress = relationship(
         'RTKOpStress', back_populates='op_load', cascade='all,delete')
+    test_method = relationship(
+        'RTKTestMethod', back_populates='op_load', cascade='all,delete')
 
     def get_attributes(self):
         """

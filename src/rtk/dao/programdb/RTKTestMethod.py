@@ -24,10 +24,10 @@ class RTKTestMethod(RTK_BASE):
     __tablename__ = 'rtk_test_method'
     __table_args__ = {'extend_existing': True}
 
-    stress_id = Column(
-        'fld_stress_id',
+    load_id = Column(
+        'fld_load_id',
         Integer,
-        ForeignKey('rtk_op_stress.fld_stress_id'),
+        ForeignKey('rtk_op_load.fld_load_id'),
         nullable=False)
     test_id = Column(
         'fld_test_id',
@@ -42,7 +42,7 @@ class RTKTestMethod(RTK_BASE):
     remarks = Column('fld_remarks', BLOB, default='')
 
     # Define the relationships to other tables in the RTK Program database.
-    op_stress = relationship('RTKOpStress', back_populates='test_method')
+    op_load = relationship('RTKOpLoad', back_populates='test_method')
 
     def get_attributes(self):
         """
@@ -53,7 +53,7 @@ class RTKTestMethod(RTK_BASE):
         :rtype: dict
         """
         _attributes = {
-            'stress_id': self.stress_id,
+            'load_id': self.load_id,
             'test_id': self.test_id,
             'description': self.description,
             'boundary_conditions': self.boundary_conditions,
