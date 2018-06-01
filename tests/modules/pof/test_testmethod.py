@@ -70,7 +70,7 @@ def test_insert(test_dao):
     DUT = dtmTestMethod(test_dao)
     DUT.select_all(1)
 
-    _error_code, _msg = DUT.insert(stress_id=1)
+    _error_code, _msg = DUT.insert(load_id=1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "

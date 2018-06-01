@@ -84,7 +84,7 @@ def test_select_opstress(test_dao):
     """ select() should return an instance of RTKOpStress on success."""
     DUT = dtmPoF(test_dao)
     DUT.select_all(4)
-    _entity = DUT.select('0.1.1.1')
+    _entity = DUT.select('0.1.1.1s')
 
     assert isinstance(_entity, RTKOpStress)
     assert _entity.description == 'Test Operating Stress'
@@ -95,7 +95,7 @@ def test_select_test_method(test_dao):
     """ select() should return an instance of RTKTestMethod on success."""
     DUT = dtmPoF(test_dao)
     DUT.select_all(4)
-    _entity = DUT.select('0.1.1.1.1')
+    _entity = DUT.select('0.1.1.1t')
 
     assert isinstance(_entity, RTKTestMethod)
     assert _entity.description == 'Test Test Method'
@@ -136,8 +136,8 @@ def test_insert_opstress(test_dao):
     assert _msg == (
         "RTK SUCCESS: Adding one or more items to the RTK Program database.")
 
-    # Verify the insert added an OpLoad.
-    _node_id = '0.1.1.{0:d}'.format(DUT.dtm_opstress.last_id)
+    # Verify the insert added an OpStress.
+    _node_id = '0.1.1.{0:d}s'.format(DUT.dtm_opstress.last_id)
     _opstress = DUT.select(_node_id)
 
     assert isinstance(_opstress, RTKOpStress)
@@ -150,7 +150,7 @@ def test_insert_test_method(test_dao):
     DUT.select_all(4)
 
     _error_code, _msg = DUT.insert(
-        entity_id=1, parent_id='0.1.1.1', level='testmethod')
+        entity_id=1, parent_id='0.1.1', level='testmethod')
 
     # Verify the insert went well.
     assert _error_code == 0
@@ -158,7 +158,7 @@ def test_insert_test_method(test_dao):
         "RTK SUCCESS: Adding one or more items to the RTK Program database.")
 
     # Verify the insert added an OpLoad.
-    _node_id = '0.1.1.1.{0:d}'.format(DUT.dtm_testmethod.last_id)
+    _node_id = '0.1.1.{0:d}t'.format(DUT.dtm_testmethod.last_id)
     _method = DUT.select(_node_id)
 
     assert isinstance(_method, RTKTestMethod)
@@ -171,7 +171,7 @@ def test_insert_non_existent_type(test_dao):
     DUT.select_all(4)
 
     _error_code, _msg = DUT.insert(
-        entity_id=1, parent_id='0.1.1.1', level='scadamoosh')
+        entity_id=1, parent_id='0.1.1', level='scadamoosh')
 
     # Verify the insert went well.
     assert _error_code == 2005
@@ -257,7 +257,8 @@ def test_update_all(test_dao):
     _error_code, _msg = DUT.update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all line items in the damage "
+                    "modeling worksheet.")
 
 
 @pytest.mark.integration
@@ -301,7 +302,7 @@ def test_request_insert_test_method(test_dao, test_configuration):
     DUT = dtcPoF(test_dao, test_configuration, test=True)
     DUT.request_select_all(4)
 
-    assert not DUT.request_insert(1, '0.1.1.1', 'testmethod')
+    assert not DUT.request_insert(1, '0.1.1', 'testmethod')
 
 
 @pytest.mark.integration
