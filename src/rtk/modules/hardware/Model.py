@@ -11,7 +11,7 @@ from treelib.exceptions import DuplicatedNodeIdError
 
 # Import other RTK modules.
 from rtk.analyses.prediction import Component
-from rtk.datamodels import RTKDataModel
+from rtk.modules import RTKDataModel
 from rtk.dao import RTKHardware, RTKDesignElectric, RTKDesignMechanic, \
     RTKMilHdbkF, RTKNSWC, RTKReliability
 

@@ -8,7 +8,7 @@
 
 # Import other RTK modules.
 from rtk.Utilities import OutOfRangeError
-from rtk.datamodels import RTKDataController
+from rtk.modules import RTKDataController
 from . import dtmFMEA
 
 

@@ -13,7 +13,7 @@ from treelib import tree, Tree
 
 # Import other RTK modules.
 from rtk.Utilities import date_to_ordinal
-from rtk.datamodels import RTKDataModel
+from rtk.modules import RTKDataModel
 from rtk.dao import RTKProgramStatus, RTKValidation
 from rtk.statistics.Bounds import calculate_beta_bounds
 
