@@ -1,5 +1,8 @@
 graft src
 
+global-exclude *.pyc
+global-exclude *.fuse*
+
 include *.md
 include *.py
 include *.rc
