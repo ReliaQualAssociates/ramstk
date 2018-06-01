@@ -61,8 +61,7 @@ def test_create_new_program(test_common_dao, test_dao, test_configuration):
     DUT = Model(test_common_dao, test_dao)
 
     _configuration = test_configuration
-    _database = _configuration.RTK_BACKEND + ':///' + \
-                _configuration.RTK_PROG_INFO['database']
+    _database = _configuration.RTK_BACKEND + ':///' + '/tmp/_rtk_test_db.rtk'
     _error_code, _msg = DUT.create_program(_database)
 
     assert _error_code == 0

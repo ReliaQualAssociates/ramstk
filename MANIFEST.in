@@ -1,3 +1,5 @@
+graft src
+
 include *.md
 include *.py
 include *.rc

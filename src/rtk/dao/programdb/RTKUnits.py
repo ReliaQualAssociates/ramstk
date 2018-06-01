@@ -13,7 +13,7 @@ from rtk.Utilities import error_handler, none_to_default
 from rtk.dao.RTKCommonDB import RTK_BASE
 
 
-class RTKUnit(RTK_BASE):
+class RTKUnits(RTK_BASE):
     """
     Class to represent the table rtk_unit in the RTK Common database.
     """

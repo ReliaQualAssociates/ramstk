@@ -66,5 +66,5 @@ from .programdb.RTKSurvival import RTKSurvival
 from .programdb.RTKSurvivalData import RTKSurvivalData
 from .programdb.RTKTest import RTKTest
 from .programdb.RTKTestMethod import RTKTestMethod
-from .programdb.RTKUnits import RTKUnit
+from .programdb.RTKUnits import RTKUnits
 from .programdb.RTKValidation import RTKValidation

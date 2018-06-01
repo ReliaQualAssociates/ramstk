@@ -202,20 +202,10 @@ class Model(object):
         _msg = 'RTK SUCCESS: Creating RTK Program database {0:s}.'.\
             format(database)
 
-        self.program_dao.db_connect(database)
-
-        _session = scoped_session(self.program_dao.RTK_SESSION)
-        _session.configure(
-            bind=self.program_dao.engine,
-            autoflush=False,
-            expire_on_commit=False)
-
         if self.program_dao.db_create_program(database):
             _error_code = 1
             _msg = 'RTK ERROR: Failed to create RTK Program database {0:s}.'.\
                 format(database)
-
-        _session.close()
 
         return _error_code, _msg
 
