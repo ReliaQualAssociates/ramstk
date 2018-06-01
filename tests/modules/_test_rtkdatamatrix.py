@@ -17,7 +17,7 @@ from sqlalchemy.orm import scoped_session
 
 import rtk.Utilities as Utilities
 from rtk.Configuration import Configuration
-from rtk.datamodels import RTKDataMatrix
+from rtk.modules import RTKDataMatrix
 from rtk.dao import DAO
 from rtk.dao import RTKFunction, RTKHardware
 
