@@ -1,5 +1,8 @@
 Master Branch:
 [![Build Status](https://travis-ci.org/weibullguy/rtk.svg?branch=master)](https://travis-ci.org/weibullguy/rtk)
+](https://www.codacy.com/app/weibullguy/rtk?utm_source=github.com&utm_medium=referral&utm_content=weibullguy/rtk&utm_campaign=Badge_Coverage)
+[![Coverage Status](https://coveralls.io/repos/github/weibullguy/rtk/badge.svg?branch=master)](https://coveralls.io/github/weibullguy/rtk?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/rtk/badge/?version=master)](http://rtk.readthedocs.io/en/develop/?badge=master)
 
 Develop Branch:
 [![Build Status](https://travis-ci.org/weibullguy/rtk.svg?branch=develop)](https://travis-ci.org/weibullguy/rtk)

@@ -318,7 +318,8 @@ if __name__ == '__main__':
         tests_require=tests_require,
         keywords='reliability RAMS engineering quality safety',
         scripts=[],
-        packages=find_packages(exclude=['tests']),
+        packages=find_packages('src', exclude=['tests']),
+        package_dir={'': 'src'},
         py_modules=['rtk.Configuration', 'rtk.RTK', 'rtk.Utilities'],
         classifiers=[
             'Development Status :: 3 - Alpha', 'Programming Language :: Python'
