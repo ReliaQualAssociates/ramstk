@@ -36,20 +36,20 @@ def test_pof_create_data_model(test_dao):
 
 @pytest.mark.integration
 def test_select_all(test_dao):
-    """ select_all() should return a treelib Tree() on success. """
+    """ do_select_all() should return a treelib Tree() on success. """
     DUT = dtmPoF(test_dao)
 
-    _tree = DUT.select_all(1)
+    _tree = DUT.do_select_all(parent_id=1)
 
     assert isinstance(_tree, Tree)
 
 
 @pytest.mark.integration
 def test_select_all_non_existent_id(test_dao):
-    """ select_all() should return an empty Tree() when passed a Mechanism ID that doesn't exist. """
+    """ do_select_all() should return an empty Tree() when passed a Mechanism ID that doesn't exist. """
     DUT = dtmPoF(test_dao)
 
-    _tree = DUT.select_all(100)
+    _tree = DUT.do_select_all(parent_id=100)
 
     assert isinstance(_tree, Tree)
     assert _tree.get_node(0).tag == 'PhysicsOfFailure'
@@ -60,7 +60,7 @@ def test_select_all_non_existent_id(test_dao):
 def test_select_mechanism(test_dao):
     """ select() should return an instance of RTKMechanism on success. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _entity = DUT.select('0.1')
 
@@ -72,7 +72,7 @@ def test_select_mechanism(test_dao):
 def test_select_opload(test_dao):
     """ select() should return an instance of RTKOpLoad on success."""
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
     _entity = DUT.select('0.1.1')
 
     assert isinstance(_entity, RTKOpLoad)
@@ -83,7 +83,7 @@ def test_select_opload(test_dao):
 def test_select_opstress(test_dao):
     """ select() should return an instance of RTKOpStress on success."""
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
     _entity = DUT.select('0.1.1.1s')
 
     assert isinstance(_entity, RTKOpStress)
@@ -94,7 +94,7 @@ def test_select_opstress(test_dao):
 def test_select_test_method(test_dao):
     """ select() should return an instance of RTKTestMethod on success."""
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
     _entity = DUT.select('0.1.1.1t')
 
     assert isinstance(_entity, RTKTestMethod)
@@ -105,7 +105,7 @@ def test_select_test_method(test_dao):
 def test_insert_opload(test_dao):
     """ insert() should return a zero error code on success when adding a new Operating Load to a PoF. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.insert(
         entity_id=1, parent_id='0.1', level='opload')
@@ -126,7 +126,7 @@ def test_insert_opload(test_dao):
 def test_insert_opstress(test_dao):
     """ insert() should return a zero error code on success when adding a new Operating Stress to a PoF. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.insert(
         entity_id=1, parent_id='0.1.1', level='opstress')
@@ -147,7 +147,7 @@ def test_insert_opstress(test_dao):
 def test_insert_test_method(test_dao):
     """ insert() should return a zero error code on success when adding a new Test Method to a PoF. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.insert(
         entity_id=1, parent_id='0.1.1', level='testmethod')
@@ -168,7 +168,7 @@ def test_insert_test_method(test_dao):
 def test_insert_non_existent_type(test_dao):
     """ insert() should return a non-zero error code when trying a something to a PoF at a level that doesn't exist. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.insert(
         entity_id=1, parent_id='0.1.1', level='scadamoosh')
@@ -185,7 +185,7 @@ def test_insert_non_existent_type(test_dao):
 def test_insert_no_parent_in_tree(test_dao):
     """ insert() should return a 2005 error code when attempting to add something to a non-existant parent Node. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.insert(
         entity_id=1, parent_id='mechanism_1', level='opload')
@@ -199,7 +199,7 @@ def test_insert_no_parent_in_tree(test_dao):
 def test_delete_opload(test_dao):
     """ delete() should return a zero error code on success when removing an Operating Load. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _node_id = '0.1.{0:d}'.format(DUT.dtm_opload.last_id)
 
@@ -214,7 +214,7 @@ def test_delete_opload(test_dao):
 def test_delete_non_existent_node_id(test_dao):
     """ delete() should return a 2105 error code when attempting to remove a non-existant item from the PoF. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.delete('scadamoosh_1')
 
@@ -227,7 +227,7 @@ def test_delete_non_existent_node_id(test_dao):
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.update('0.1')
 
@@ -239,7 +239,7 @@ def test_update(test_dao):
 def test_update_non_existent_node_id(test_dao):
     """ update() should return a 2106 error code when attempting to update a non-existent Node ID from a PoF. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.update('mode_1000')
 
@@ -252,7 +252,7 @@ def test_update_non_existent_node_id(test_dao):
 def test_update_all(test_dao):
     """ update_all() should return a zero error code on success. """
     DUT = dtmPoF(test_dao)
-    DUT.select_all(4)
+    DUT.do_select_all(parent_id=4)
 
     _error_code, _msg = DUT.update_all()
 

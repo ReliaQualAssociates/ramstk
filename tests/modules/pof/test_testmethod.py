@@ -34,7 +34,7 @@ def test_create_testmethod_data_model(test_dao):
 def test_select_all(test_dao):
     """select_all() should return a treelib Tree() on success when selecting TestMethods."""
     DUT = dtmTestMethod(test_dao)
-    _tree = DUT.select_all(1)
+    _tree = DUT.do_select_all(parent_id=1)
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(1).data, RTKTestMethod)
@@ -44,7 +44,7 @@ def test_select_all(test_dao):
 def test_select(test_dao):
     """select() should return an instance of the RTKTestMethod data model on success."""
     DUT = dtmTestMethod(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1)
 
     _testmethod = DUT.select(1)
 
@@ -57,7 +57,7 @@ def test_select(test_dao):
 def test_select_non_existent_id(test_dao):
     """select() should return None when a non-existent TestMethod ID is requested."""
     DUT = dtmTestMethod(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1)
 
     _testmethod = DUT.select('100')
 
@@ -68,7 +68,7 @@ def test_select_non_existent_id(test_dao):
 def test_insert(test_dao):
     """insert() should return a zero error code on success."""
     DUT = dtmTestMethod(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.insert(load_id=1)
 
@@ -87,7 +87,7 @@ def test_insert(test_dao):
 def test_delete(test_dao):
     """delete() should return a zero error code on success."""
     DUT = dtmTestMethod(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.delete(DUT.last_id)
 
@@ -100,7 +100,7 @@ def test_delete(test_dao):
 def test_delete_non_existent_id(test_dao):
     """delete() should return a non-zero error code when passed a TestMethod ID that doesn't exist."""
     DUT = dtmTestMethod(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.delete(300)
 
@@ -113,7 +113,7 @@ def test_delete_non_existent_id(test_dao):
 def test_update(test_dao):
     """update() should return a zero error code on success."""
     DUT = dtmTestMethod(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1)
 
     _testmethod = DUT.select(1)
     _testmethod.pof_include = 1
@@ -128,7 +128,7 @@ def test_update(test_dao):
 def test_update_non_existent_id(test_dao):
     """update() should return a non-zero error code when passed an TestMethod ID that doesn't exist."""
     DUT = dtmTestMethod(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.update(100)
 
@@ -141,7 +141,7 @@ def test_update_non_existent_id(test_dao):
 def test_update_all(test_dao):
     """update_all() should return a zero error code on success."""
     DUT = dtmTestMethod(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(parent_id=1)
 
     _error_code, _msg = DUT.update_all()
 

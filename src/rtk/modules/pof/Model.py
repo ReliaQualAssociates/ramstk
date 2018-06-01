@@ -46,7 +46,7 @@ class OpLoadDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the operating loads from the RTK Program database.
 
@@ -59,10 +59,11 @@ class OpLoadDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKOpLoad data models.
         :rtype: :class:`treelib.Tree`
         """
+        _parent_id = kwargs['parent_id']
         _session = RTKDataModel.select_all(self)
 
         _oploads = _session.query(RTKOpLoad).filter(
-            RTKOpLoad.mechanism_id == parent_id).all()
+            RTKOpLoad.mechanism_id == _parent_id).all()
 
         for _opload in _oploads:
             # We get and then set the attributes to replace any None values
@@ -199,7 +200,7 @@ class OpStressDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the operating stresss from the RTK Program database.
 
@@ -212,10 +213,11 @@ class OpStressDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKOpStress data models.
         :rtype: :class:`treelib.Tree`
         """
+        _parent_id = kwargs['parent_id']
         _session = RTKDataModel.select_all(self)
 
         _opstresss = _session.query(RTKOpStress).filter(
-            RTKOpStress.load_id == parent_id).all()
+            RTKOpStress.load_id == _parent_id).all()
 
         for _opstress in _opstresss:
             # We get and then set the attributes to replace any None values
@@ -358,7 +360,7 @@ class TestMethodDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the operating stresss from the RTK Program database.
 
@@ -371,10 +373,11 @@ class TestMethodDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKTestMethod data models.
         :rtype: :class:`treelib.Tree`
         """
+        _parent_id = kwargs['parent_id']
         _session = RTKDataModel.select_all(self)
 
         _testmethods = _session.query(RTKTestMethod).filter(
-            RTKTestMethod.load_id == parent_id).all()
+            RTKTestMethod.load_id == _parent_id).all()
 
         for _testmethod in _testmethods:
             # We get and then set the attributes to replace any None values
@@ -540,7 +543,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         self.dtm_opstress = OpStressDataModel(dao)
         self.dtm_testmethod = TestMethodDataModel(dao)
 
-    def select_all(self, parent_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve and build the PhysicsOfFailure tree for Parent ID.
 
@@ -549,10 +552,11 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         :return: tree; the PhysicsOfFailure treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
+        _mode_id = kwargs['parent_id']
         RTKDataModel.select_all(self)
 
         _mechanisms = self.dtm_mechanism.do_select_all(
-            parent_id=parent_id, pof=True).nodes
+            parent_id=_mode_id, pof=True).nodes
 
         for _key in _mechanisms:
             _mechanism = _mechanisms[_key].data
@@ -580,7 +584,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         """
         _return = False
 
-        _oploads = self.dtm_opload.select_all(mechanism_id).nodes
+        _oploads = self.dtm_opload.do_select_all(parent_id=mechanism_id).nodes
         for _key in _oploads:
             _opload = _oploads[_key].data
             if _opload is not None:
@@ -607,7 +611,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         """
         _return = False
 
-        _opstresses = self.dtm_opstress.select_all(load_id).nodes
+        _opstresses = self.dtm_opstress.do_select_all(parent_id=load_id).nodes
 
         for _key in _opstresses:
             _opstress = _opstresses[_key].data
@@ -632,7 +636,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         """
         _return = False
 
-        _methods = self.dtm_testmethod.select_all(load_id).nodes
+        _methods = self.dtm_testmethod.do_select_all(parent_id=load_id).nodes
         for _key in _methods:
             _method = _methods[_key].data
             if _method is not None:

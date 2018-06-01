@@ -54,7 +54,7 @@ class PhysicsOfFailureDataController(RTKDataController):
         :return: tree; the PoF treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        return self._dtm_data_model.select_all(parent_id)
+        return self._dtm_data_model.do_select_all(parent_id=parent_id)
 
     def request_do_insert(self, **kwargs):
         """
