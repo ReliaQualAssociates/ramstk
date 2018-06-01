@@ -271,44 +271,47 @@ def test_pof_create_data_controller(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_request_select_all(test_dao, test_configuration):
-    """ request_select_all() should return a treelib Tree() with the PoF. """
+def test_request_do_select_all(test_dao, test_configuration):
+    """ request_do_select_all() should return a treelib Tree() with the PoF. """
     DUT = dtcPoF(test_dao, test_configuration, test=True)
 
-    assert isinstance(DUT.request_select_all(1), Tree)
+    assert isinstance(DUT.request_do_select_all(1), Tree)
 
 
 @pytest.mark.integration
-def test_request_insert_opload(test_dao, test_configuration):
-    """ request_insert() should return False on success when adding an operating load to a PoF. """
+def test_request_do_insert_opload(test_dao, test_configuration):
+    """ request_do_insert() should return False on success when adding an operating load to a PoF. """
     DUT = dtcPoF(test_dao, test_configuration, test=True)
-    DUT.request_select_all(4)
+    DUT.request_do_select_all(4)
 
-    assert not DUT.request_insert(1, '0.1', 'opload')
+    assert not DUT.request_do_insert(
+        entity_id=1, parent_id='0.1', level='opload')
 
 
 @pytest.mark.integration
-def test_request_insert_opstress(test_dao, test_configuration):
-    """ request_insert() should return False on success when adding an operating stress to a PoF. """
+def test_request_do_insert_opstress(test_dao, test_configuration):
+    """ request_do_insert() should return False on success when adding an operating stress to a PoF. """
     DUT = dtcPoF(test_dao, test_configuration, test=True)
-    DUT.request_select_all(4)
+    DUT.request_do_select_all(4)
 
-    assert not DUT.request_insert(1, '0.1.1', 'opstress')
+    assert not DUT.request_do_insert(
+        entity_id=1, parent_id='0.1.1', level='opstress')
 
 
 @pytest.mark.integration
-def test_request_insert_test_method(test_dao, test_configuration):
-    """ request_insert() should return False on success when adding a test method to a PoF. """
+def test_request_do_insert_test_method(test_dao, test_configuration):
+    """ request_do_insert() should return False on success when adding a test method to a PoF. """
     DUT = dtcPoF(test_dao, test_configuration, test=True)
-    DUT.request_select_all(4)
+    DUT.request_do_select_all(4)
 
-    assert not DUT.request_insert(1, '0.1.1', 'testmethod')
+    assert not DUT.request_do_insert(
+        entity_id=1, parent_id='0.1.1', level='testmethod')
 
 
 @pytest.mark.integration
-def test_request_update_all(test_dao, test_configuration):
-    """ request_update_all() should return a zero error code on success. """
+def test_request_do_update_all(test_dao, test_configuration):
+    """ request_do_update_all() should return a zero error code on success. """
     DUT = dtcPoF(test_dao, test_configuration, test=True)
-    DUT.request_select_all(4)
+    DUT.request_do_select_all(4)
 
-    assert not DUT.request_update_all()
+    assert not DUT.request_do_update_all()

@@ -45,7 +45,7 @@ class PhysicsOfFailureDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_select_all(self, parent_id):
+    def request_do_select_all(self, parent_id, **kwargs):
         """
         Load the entire PoF for a failure Mechanism.
 
@@ -56,15 +56,19 @@ class PhysicsOfFailureDataController(RTKDataController):
         """
         return self._dtm_data_model.select_all(parent_id)
 
-    def request_insert(self, entity_id, parent_id, level):
+    def request_do_insert(self, **kwargs):
         """
         Request to add a PoF table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _entity_id = kwargs['entity_id']
+        _parent_id = kwargs['parent_id']
+        _level = kwargs['level']
+
         _error_code, _msg = self._dtm_data_model.insert(
-            entity_id=entity_id, parent_id=parent_id, level=level)
+            entity_id=_entity_id, parent_id=_parent_id, level=_level)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
@@ -90,7 +94,7 @@ class PhysicsOfFailureDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_update_all(self):
+    def request_do_update_all(self, **kwargs):
         """
         Request all (D)FME(C)A entities be saved to the RTK Program database.
 
