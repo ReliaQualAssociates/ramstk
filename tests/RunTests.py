@@ -625,7 +625,8 @@ def _do_check_manifest(check_manifest, options):
     if options.verbose:
         _check_manifest += "-v "
 
-    _check_manifest += " ".join(ROOT)
+    _check_manifest += " "
+    _check_manifest += ROOT
 
     os.system(_check_manifest)
 
