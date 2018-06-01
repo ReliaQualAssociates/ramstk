@@ -14,7 +14,7 @@ import pandas as pd
 
 import pytest
 
-from rtk.datamodels import RTKDataMatrix
+from rtk.modules import RTKDataMatrix
 from rtk.modules.requirement import dtmRequirement, dtcRequirement
 from rtk.dao import DAO
 from rtk.dao import RTKRequirement

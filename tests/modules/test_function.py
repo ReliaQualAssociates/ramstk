@@ -13,7 +13,7 @@ import pandas as pd
 
 from rtk.dao import DAO, RTKFunction
 from rtk.modules.function import dtcFunction, dtmFunction
-from rtk.datamodels import RTKDataMatrix
+from rtk.modules import RTKDataMatrix
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

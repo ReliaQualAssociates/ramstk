@@ -7,7 +7,7 @@
 """Physics of Failure Package Data Controller."""
 
 # Import other RTK modules.
-from rtk.datamodels import RTKDataController
+from rtk.modules import RTKDataController
 from . import dtmPoF
 
 

@@ -7,7 +7,7 @@
 """FMEA Package Data Models."""
 
 # Import other RTK modules.
-from rtk.datamodels import RTKDataModel
+from rtk.modules import RTKDataModel
 from rtk.dao import RTKAllocation
 
 

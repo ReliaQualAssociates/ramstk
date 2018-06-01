@@ -9,7 +9,7 @@
 from pubsub import pub
 
 # Import other RTK modules.
-from rtk.datamodels import RTKDataController
+from rtk.modules import RTKDataController
 from rtk.modules.hardware import dtmHardwareBoM
 from . import dtmAllocation
 
