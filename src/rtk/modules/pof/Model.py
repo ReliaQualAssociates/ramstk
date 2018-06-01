@@ -147,20 +147,22 @@ class OpLoadDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all OpLoads in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.load_id)
+                _error_code, _debug_msg = self.update(_node.data.load_id)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.pof.Model.OpLoadDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.pof.Model.OpLoadDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more operating loads in the damage "
+                        "modeling worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all operating loads in the damage "
+                    "modeling worksheet.")
 
         return _error_code, _msg
 
@@ -304,20 +306,22 @@ class OpStressDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all OpStresss in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.stress_id)
+                _error_code, _debug_msg = self.update(_node.data.stress_id)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.pof.Model.OpStressDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.pof.Model.OpStressDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more operating stresses in the "
+                        "damage modeling worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all operating stresses in the "
+                    "damage modeling worksheet.")
 
         return _error_code, _msg
 
@@ -461,20 +465,22 @@ class TestMethodDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all TestMethods in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.load_id)
+                _error_code, _debug_msg = self.update(_node.data.load_id)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.pof.Model.TestMethodDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.pof.Model.TestMethodDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more test methods in the damage "
+                        "modeling worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all test methods in the damage "
+                    "modeling worksheet.")
 
         return _error_code, _msg
 

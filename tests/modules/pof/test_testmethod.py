@@ -146,4 +146,5 @@ def test_update_all(test_dao):
     _error_code, _msg = DUT.update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all test methods in the damage "
+                    "modeling worksheet.")
