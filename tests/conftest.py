@@ -6,6 +6,7 @@ import pytest
 import rtk.Utilities as Utilities
 from rtk.Configuration import Configuration
 from rtk.dao import DAO
+from rtk.dao.RTKProgramDB import do_create_test_database
 
 VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -48,14 +49,18 @@ def test_dao():
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
 
-    # If there is an existing test database, delete it.
+    # If there are existing test databases, delete them.
     if os.path.exists(TEST_PROGRAM_DB_PATH):
         os.remove(TEST_PROGRAM_DB_PATH)
+    if os.path.exists('/tmp/_rtk_program_db.rtk'):
+        os.remove('/tmp/_rtk_program_db.rtk')
+    if os.path.exists('/tmp/_rtk_test_db.rtk'):
+        os.remove('/tmp/_rtk_test_db.rtk')
 
     # Create and populate an RTK Program test database.
     dao = DAO()
     dao.db_connect(TEST_PROGRAM_DB_URI)
-    dao.db_create_program(TEST_PROGRAM_DB_URI)
+    do_create_test_database(TEST_PROGRAM_DB_URI)
 
     yield dao
 

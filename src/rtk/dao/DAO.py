@@ -115,11 +115,11 @@ class DAO(object):
         _test = kwargs['test']
         try:
             return create_common_db(database=database, test=_test)
-        except (IOError, exc.SQLAlchemyError, exc.DBAPIError):
+        except (IOError, exc.SQLAlchemyError, exc.DBAPIError, exc.OperationalError):
             return True
 
     @staticmethod
-    def db_create_program(database, **kwargs):
+    def db_create_program(database):
         """
         Create a new RTK Program database.
 
@@ -128,13 +128,10 @@ class DAO(object):
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
-        _test = kwargs['test']
         try:
-            return create_program_db(database=database, test=_test)
-        except (IOError, exc.SQLAlchemyError, exc.DBAPIError):
+            return create_program_db(database=database)
+        except (IOError, exc.SQLAlchemyError, exc.DBAPIError, exc.OperationalError):
             return True
-
-        return False
 
     @staticmethod
     def db_add(item, session):

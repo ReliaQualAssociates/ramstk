@@ -10,18 +10,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-from rtk.dao.programdb import (
-        RTKAction, RTKAllocation, RTKCause, RTKControl, RTKDesignElectric,
-        RTKDesignMechanic, RTKEnvironment, RTKFailureDefinition, RTKFunction,
-        RTKGrowthTest, RTKHardware, RTKHazardAnalysis, RTKIncident,
-        RTKIncidentAction, RTKIncidentDetail, RTKLoadHistory, RTKMatrix,
-        RTKMechanism, RTKMilHdbkF, RTKMission, RTKMissionPhase, RTKMode,
-        RTKNSWC, RTKOpLoad, RTKOpStress, RTKProgramInfo, RTKProgramStatus,
-        RTKReliability, RTKRequirement, RTKRevision, RTKRPN, RTKSimilarItem,
-        RTKSoftware, RTKSoftwareDevelopment, RTKSoftwareReview,
-        RTKSoftwareTest, RTKStakeholder, RTKSurvival, RTKSurvivalData, RTKTest,
-        RTKTestMethod, RTKUnits, RTKValidation)
-
 RTK_BASE = declarative_base()
 
 # This file contains all the dictionaries defining the default fields for each
@@ -89,7 +77,18 @@ RTK_RPNS = {
 
 def create_program_db(**kwargs):
     """Create and populate a RTK Program database."""
-    __test = kwargs['test']
+    from rtk.dao import (
+        RTKAction, RTKAllocation, RTKCause, RTKControl, RTKDesignElectric,
+        RTKDesignMechanic, RTKEnvironment, RTKFailureDefinition, RTKFunction,
+        RTKGrowthTest, RTKHardware, RTKHazardAnalysis, RTKIncident,
+        RTKIncidentAction, RTKIncidentDetail, RTKLoadHistory, RTKMatrix,
+        RTKMechanism, RTKMilHdbkF, RTKMission, RTKMissionPhase, RTKMode,
+        RTKNSWC, RTKOpLoad, RTKOpStress, RTKProgramInfo, RTKProgramStatus,
+        RTKReliability, RTKRequirement, RTKRevision, RTKRPN, RTKSimilarItem,
+        RTKSoftware, RTKSoftwareDevelopment, RTKSoftwareReview,
+        RTKSoftwareTest, RTKStakeholder, RTKSurvival, RTKSurvivalData, RTKTest,
+        RTKTestMethod, RTKUnits, RTKValidation)
+
     uri = kwargs['database']
 
     # Create and populate the RTK Program test database.
@@ -141,7 +140,7 @@ def create_program_db(**kwargs):
     RTKSurvivalData.__table__.create(bind=engine)
     RTKTest.__table__.create(bind=engine)
     RTKTestMethod.__table__.create(bind=engine)
-    RTKUnit.__table__.create(bind=engine)
+    RTKUnits.__table__.create(bind=engine)
     RTKValidation.__table__.create(bind=engine)
 
     # Add an entry for the Program Information.
@@ -213,6 +212,18 @@ def do_create_test_database(database):
     :return: False if successful or True if an error occurs.
     :rtype: bool
     """
+    from rtk.dao import (
+        RTKAction, RTKAllocation, RTKCause, RTKControl, RTKDesignElectric,
+        RTKDesignMechanic, RTKEnvironment, RTKFailureDefinition, RTKFunction,
+        RTKGrowthTest, RTKHardware, RTKHazardAnalysis, RTKIncident,
+        RTKIncidentAction, RTKIncidentDetail, RTKLoadHistory, RTKMatrix,
+        RTKMechanism, RTKMilHdbkF, RTKMission, RTKMissionPhase, RTKMode,
+        RTKNSWC, RTKOpLoad, RTKOpStress, RTKProgramInfo, RTKProgramStatus,
+        RTKReliability, RTKRequirement, RTKRevision, RTKRPN, RTKSimilarItem,
+        RTKSoftware, RTKSoftwareDevelopment, RTKSoftwareReview,
+        RTKSoftwareTest, RTKStakeholder, RTKSurvival, RTKSurvivalData, RTKTest,
+        RTKTestMethod, RTKUnits, RTKValidation)
+
     # Create and populate the RTK Program test database.
     engine = create_engine(database, echo=False)
     session = scoped_session(sessionmaker())
@@ -262,22 +273,18 @@ def do_create_test_database(database):
     RTKSurvivalData.__table__.create(bind=engine)
     RTKTest.__table__.create(bind=engine)
     RTKTestMethod.__table__.create(bind=engine)
-    RTKUnit.__table__.create(bind=engine)
+    RTKUnits.__table__.create(bind=engine)
     RTKValidation.__table__.create(bind=engine)
 
     _program_info = RTKProgramInfo()
     _program_info.revision_prefix = "REV"
     _program_info.revision_next_id = 0
-    session.add([
-        _program_info,
-    ], session)
+    session.add(_program_info)
 
     _revision = RTKRevision()
     _revision.revision_id = 1
     _revision.name = 'Test Revision'
-    session.add([
-        _revision,
-    ], session)
+    session.add(_revision)
     session.commit()
 
     _definition = RTKFailureDefinition()
@@ -288,52 +295,50 @@ def do_create_test_database(database):
     _mission.revision_id = _revision.revision_id
     _mission.mission_id = 1
     _mission.description = "Test Mission"
-    session.add([
-        _definition,
-        _mission,
-    ], session)
+    session.add(_definition)
+    session.add(_mission)
     session.commit()
 
     _phase = RTKMissionPhase()
     _phase.mission_id = _mission.mission_id
     _phase.phase_id = 1
     _phase.description = "Test Mission Phase 1"
-    session.add([
-        _phase,
-    ], session)
+    session.add(_phase)
     session.commit()
 
     _environment = RTKEnvironment()
     _environment.phase_id = _phase.phase_id
+    session.add(_environment)
 
     _program_status = RTKProgramStatus()
     _program_status.revision_id = _revision.revision_id
-    session.add([_environment, _program_status], session)
+    session.add(_program_status)
 
     _dic_rows = {}
     for i in [1, 2, 3]:
         _function = RTKFunction()
         _function.revision_id = _revision.revision_id
         _function.function_code = "FUNC-000{0:d}".format(i)
-        session.add([_function], session)
+        session.add(_function)
+        session.commit()
 
         _mode = RTKMode()
         _mode.function_id = _function.function_id
         _mode.hardware_id = -1
         _mode.description = (
         "Test Functional Failure Mode #{0:d}").format(i)
-        session.add([
-        _mode,
-        ], session)
+        session.add(_mode)
+        session.commit()
+
         _cause = RTKCause()
         _cause.mode_id = _mode.mode_id
         _cause.mechanism_id = -1
         _cause.description = ("Test Functional FMEA Cause "
                   "#{0:d} for Mode ID {1:d}").format(
                       i, _mode.mode_id)
-        session.add([
-        _cause,
-        ], session)
+        session.add(_cause)
+        session.commit()
+
         _control = RTKControl()
         _control.cause_id = _cause.cause_id
         _control.description = (
@@ -344,8 +349,10 @@ def do_create_test_database(database):
         _action.action_recommended = (
         "Test Functional FMEA Recommended "
         "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
-        session.add([_control, _action], session)
+        session.add(_control)
+        session.add(_action)
         _dic_rows[i] = _function.function_id
+        session.commit()
 
     _requirement = RTKRequirement()
     _requirement.revision_id = _revision.revision_id
@@ -353,7 +360,8 @@ def do_create_test_database(database):
     _stakeholder = RTKStakeholder()
     _stakeholder.revision_id = _revision.revision_id
     _stakeholder.description = 'Test Stakeholder Input'
-    session.add([_requirement, _stakeholder], session)
+    session.add(_requirement)
+    session.add(_stakeholder)
     session.commit()
 
     _system = RTKHardware()
@@ -362,9 +370,7 @@ def do_create_test_database(database):
     _system.description = "Test System"
     _system.ref_des = "S1"
     _system.comp_ref_des = "S1"
-    session.add([
-        _system,
-    ], session)
+    session.add(_system)
     session.commit()
 
     _reliability = RTKReliability()
@@ -392,23 +398,31 @@ def do_create_test_database(database):
     _mode.function_id = -1
     _mode.hardware_id = _system.hardware_id
     _mode.description = 'System Test Failure Mode'
-    session.add([
-        _reliability, _mil_hdbk_217, _nswc, _design_electric,
-        _design_mechanic, _allocation, _similaritem, _hazardanalysis, _mode
-    ], session)
+    session.add(_reliability)
+    session.add(_mil_hdbk_217)
+    session.add(_nswc)
+    session.add(_design_electric)
+    session.add(_design_mechanic)
+    session.add(_allocation)
+    session.add(_similaritem)
+    session.add(_hazardanalysis)
+    session.add(_mode)
+    session.commit()
 
     # Build a Hardware FMEA for the system.
     _mechanism = RTKMechanism()
     _mechanism.mode_id = _mode.mode_id
     _mechanism.description = 'Test Failure Mechanism #1 for Mode ID {0:d}'.format(
         _mode.mode_id)
-    session.add([_mechanism], session)
+    session.add(_mechanism)
+    session.commit()
     _cause = RTKCause()
     _cause.mode_id = _mode.mode_id
     _cause.mechanism_id = _mechanism.mechanism_id
     _cause.description = 'Test Failure Cause #1 for Mechanism ID {0:d}'.format(
         _mechanism.mechanism_id)
-    session.add([_cause], session)
+    session.add(_cause)
+    session.commit()
     _control = RTKControl()
     _control.cause_id = _cause.cause_id
     _control.description = 'Test FMEA Control #1 for Cause ID {0:d}'.format(
@@ -422,15 +436,19 @@ def do_create_test_database(database):
     _opload = RTKOpLoad()
     _opload.mechanism_id = _mechanism.mechanism_id
     _opload.description = 'Test Operating Load'
-    session.add([_control, _action, _opload], session)
+    session.add(_control)
+    session.add(_action)
+    session.add(_opload)
+    session.commit()
     _opstress = RTKOpStress()
     _opstress.load_id = _opload.load_id
     _opstress.description = 'Test Operating Stress'
-    session.add([_opstress], session)
+    session.add(_opstress)
+    session.commit()
     _testmethod = RTKTestMethod()
     _testmethod.stress_id = _opstress.stress_id
     _testmethod.description = 'Test Test Method'
-    session.add([_testmethod], session)
+    session.add(_testmethod)
 
     # Create a dictionary to use for creating X_hrdwr and hrdwr_X matrices.
     # Key is row or column ID; value is row item or column item ID.
@@ -443,9 +461,8 @@ def do_create_test_database(database):
         _subsystem.ref_des = "SS{0:d}".format(i)
         _subsystem.comp_ref_des = "S1:SS{0:d}".format(i)
         _subsystem.description = "Test Sub-System {0:d}".format(i)
-        session.add([
-        _subsystem,
-        ], session)
+        session.add(_subsystem)
+        session.commit()
         _dic_cols[i + 1] = _subsystem.hardware_id
 
         if i == 1:
@@ -457,9 +474,7 @@ def do_create_test_database(database):
                 _assembly.ref_des = "A{0:d}".format(j - 4)
                 _assembly.comp_ref_des = "S1:SS1:A{0:d}".format(j - 4)
                 _assembly.description = "Test Assembly {0:d}".format(j - 4)
-                session.add([
-                    _assembly,
-                ], session)
+                session.add(_assembly)
                 _dic_cols[j + 1] = _assembly.hardware_id
     session.commit()
 
@@ -485,10 +500,14 @@ def do_create_test_database(database):
         _design_electric.hardware_id = i + 1
         _design_mechanic = RTKDesignMechanic()
         _design_mechanic.hardware_id = i + 1
-        session.add([
-        _allocation, _similaritem, _hazardanalysis, _reliability,
-        _mil_hdbk_217, _nswc, _design_electric, _design_mechanic
-        ], session)
+        session.add(_allocation)
+        session.add(_similaritem)
+        session.add(_hazardanalysis)
+        session.add(_reliability)
+        session.add(_mil_hdbk_217)
+        session.add(_nswc)
+        session.add(_design_electric)
+        session.add(_design_mechanic)
 
     for i in [5, 6, 7]:
         _allocation = RTKAllocation()
@@ -513,11 +532,14 @@ def do_create_test_database(database):
         _design_electric.hardware_id = i + 1
         _design_mechanic = RTKDesignMechanic()
         _design_mechanic.hardware_id = i + 1
-        session.add([
-        _allocation, _similaritem, _hazardanalysis, _reliability,
-        _mil_hdbk_217, _nswc, _design_electric, _design_mechanic
-        ], session)
-
+        session.add(_allocation)
+        session.add(_similaritem)
+        session.add(_hazardanalysis)
+        session.add(_reliability)
+        session.add(_mil_hdbk_217)
+        session.add(_nswc)
+        session.add(_design_electric)
+        session.add(_design_mechanic)
     session.commit()
 
     for _ckey in _dic_cols:
@@ -529,7 +551,7 @@ def do_create_test_database(database):
         _matrix.column_item_id = _dic_cols[_ckey]
         _matrix.row_id = _ckey
         _matrix.row_item_id = 1
-        session.add([_matrix], session)
+        session.add(_matrix)
         for _rkey in _dic_rows:
             _matrix = RTKMatrix()
             _matrix.revision_id = _revision.revision_id
@@ -539,13 +561,13 @@ def do_create_test_database(database):
             _matrix.column_item_id = _dic_cols[_ckey]
             _matrix.row_id = _ckey
             _matrix.row_item_id = _dic_rows[_rkey]
-            session.add([_matrix], session)
+            session.add(_matrix)
     session.commit()
 
     _validation = RTKValidation()
     _validation.revision_id = _revision.revision_id
     _validation.description = 'Test Validation'
-    session.add([_validation], session)
+    session.add(_validation)
     session.commit()
 
     for _ckey in _dic_cols:
@@ -557,7 +579,7 @@ def do_create_test_database(database):
         _matrix.column_item_id = 1
         _matrix.row_id = _ckey
         _matrix.row_item_id = _dic_cols[_ckey]
-        session.add([_matrix], session)
+        session.add(_matrix)
         _matrix = RTKMatrix()
         _matrix.revision_id = _revision.revision_id
         _matrix.matrix_id = 4
@@ -566,7 +588,7 @@ def do_create_test_database(database):
         _matrix.column_item_id = 1
         _matrix.row_id = _ckey
         _matrix.row_item_id = _dic_cols[_ckey]
-        session.add([_matrix], session)
+        session.add(_matrix)
     session.commit()
 
     return False
