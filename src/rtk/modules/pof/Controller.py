@@ -45,7 +45,7 @@ class PhysicsOfFailureDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_do_select_all(self, parent_id, **kwargs):
+    def request_do_select_all(self, parent_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the entire PoF for a failure Mechanism.
 
@@ -67,7 +67,7 @@ class PhysicsOfFailureDataController(RTKDataController):
         _parent_id = kwargs['parent_id']
         _level = kwargs['level']
 
-        _error_code, _msg = self._dtm_data_model.insert(
+        _error_code, _msg = self._dtm_data_model.do_insert(
             entity_id=_entity_id, parent_id=_parent_id, level=_level)
 
         if _error_code == 0:
@@ -80,7 +80,7 @@ class PhysicsOfFailureDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, node_id):
+    def request_do_delete(self, node_id):
         """
         Request entity and it's children be deleted from the PoF.
 
@@ -89,12 +89,12 @@ class PhysicsOfFailureDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.delete(node_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_do_update_all(self, **kwargs):
+    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request all (D)FME(C)A entities be saved to the RTK Program database.
 
@@ -103,7 +103,7 @@ class PhysicsOfFailureDataController(RTKDataController):
         """
         _return = False
 
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all()
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

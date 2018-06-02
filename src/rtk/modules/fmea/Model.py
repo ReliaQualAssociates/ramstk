@@ -62,7 +62,7 @@ class ModeDataModel(RTKDataModel):
         _parent_id = kwargs['parent_id']
         _functional = kwargs['functional']
 
-        _session = RTKDataModel.select_all(self)
+        _session = RTKDataModel.do_select_all(self)
 
         if _functional:
             _modes = _session.query(RTKMode).filter(
@@ -97,7 +97,7 @@ class ModeDataModel(RTKDataModel):
         _mode = RTKMode()
         _mode.function_id = kwargs['function_id']
         _mode.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _mode,
             ])
@@ -209,15 +209,15 @@ class MechanismDataModel(RTKDataModel):
         """
         Retrieve all the failure Mechanisms from the RTK Program database.
 
-        This method retrieves all the records from the RTKMechanism table in the
-        connected RTK Program database.  It then add each to the Mechanism data
-        mechanisml treelib.Tree().
+        This method retrieves all the records from the RTKMechanism table in
+        the connected RTK Program database.  It then add each to the Mechanism
+        data mechanism treelib.Tree().
 
         :return: tree; the Tree() of RTKMechanism data mechanismls.
         :rtype: :class:`treelib.Tree`
         """
         _parent_id = kwargs['parent_id']
-        _session = RTKDataModel.select_all(self)
+        _session = RTKDataModel.do_select_all(self)
 
         _mechanisms = _session.query(RTKMechanism).filter(
             RTKMechanism.mode_id == _parent_id).all()
@@ -250,7 +250,7 @@ class MechanismDataModel(RTKDataModel):
         """
         _mechanism = RTKMechanism()
         _mechanism.mode_id = kwargs['mode_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _mechanism,
             ])
@@ -377,7 +377,7 @@ class CauseDataModel(RTKDataModel):
         _parent_id = kwargs['parent_id']
         _functional = kwargs['functional']
 
-        _session = RTKDataModel.select_all(self)
+        _session = RTKDataModel.do_select_all(self)
 
         if _functional:
             _causes = _session.query(RTKCause).filter(
@@ -412,7 +412,7 @@ class CauseDataModel(RTKDataModel):
         _cause = RTKCause()
         _cause.mode_id = kwargs['mode_id']
         _cause.mechanism_id = kwargs['mechanism_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _cause,
             ])
@@ -535,7 +535,7 @@ class ControlDataModel(RTKDataModel):
         """
         _parent_id = kwargs['parent_id']
 
-        _session = RTKDataModel.select_all(self)
+        _session = RTKDataModel.do_select_all(self)
 
         _controls = _session.query(RTKControl).filter(
             RTKControl.cause_id == _parent_id).all()
@@ -568,7 +568,7 @@ class ControlDataModel(RTKDataModel):
         """
         _control = RTKControl()
         _control.cause_id = kwargs['cause_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _control,
             ])
@@ -691,7 +691,7 @@ class ActionDataModel(RTKDataModel):
         :rtype: :class:`treelib.Tree`
         """
         _parent_id = kwargs['parent_id']
-        _session = RTKDataModel.select_all(self)
+        _session = RTKDataModel.do_select_all(self)
 
         _actions = _session.query(RTKAction).filter(
             RTKAction.cause_id == _parent_id).all()
@@ -724,7 +724,7 @@ class ActionDataModel(RTKDataModel):
         """
         _action = RTKAction()
         _action.cause_id = kwargs['cause_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _action,
             ])
@@ -879,7 +879,7 @@ class FMEADataModel(RTKDataModel):
         _parent_id = kwargs['parent_id']
         self._functional = kwargs['functional']
 
-        RTKDataModel.select_all(self)
+        RTKDataModel.do_select_all(self)
 
         _modes = self.dtm_mode.do_select_all(
             parent_id=_parent_id, functional=self._functional).nodes
