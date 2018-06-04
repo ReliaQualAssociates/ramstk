@@ -10,7 +10,7 @@ from treelib import tree
 
 # Import other RTK modules.
 from rtk.modules import RTKDataModel
-from rtk.modules.fmea import dtmMechanism
+from rtk.modules.fmea import dtmMode, dtmMechanism
 from rtk.dao import RTKOpLoad, RTKOpStress, RTKTestMethod
 
 
@@ -213,13 +213,13 @@ class OpStressDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKOpStress data models.
         :rtype: :class:`treelib.Tree`
         """
-        _parent_id = kwargs['parent_id']
+        _load_id = kwargs['parent_id']
         _session = RTKDataModel.do_select_all(self)
 
-        _opstresss = _session.query(RTKOpStress).filter(
-            RTKOpStress.load_id == _parent_id).all()
+        _opstresses = _session.query(RTKOpStress).filter(
+            RTKOpStress.load_id == _load_id).all()
 
-        for _opstress in _opstresss:
+        for _opstress in _opstresses:
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _opstress.get_attributes()
@@ -496,22 +496,22 @@ class PhysicsOfFailureDataModel(RTKDataModel):
     and TestMethod data models to produce an overall PoF.  A Hardware item will
     consist of one PoF.  This is a hierarchical relationship, such as:
 
-          Mechanism 1
+        Mode 1
           |
-          |_Load 1.1
-          |   |
-          |   |_Stress 1.1.1
-          |   |   |
-          |   |   |_Test 1.1.1.1
-          |   |   |_Test 1.1.1.2
-          |   |_Stress 1.1.2
-          |       |
-          |       |_Test 1.1.2.1
-          |
-          |_Load 1.2
+          |_Mechanism 1.1
               |
-              |_Stress 1.2.1
-              |_Stress 1.2.2
+              |_Load 1.1.1
+              |   |
+              |   |_Stress 1.1.1.1s
+              |   |_Stress 1.1.1.2s
+              |   |_Test 1.1.1.1t
+              |   |_Test 1.1.1.2t
+              |
+              |_Load 1.1.2
+                  |
+                  |_Stress 1.1.2.1s
+                  |_Stress 1.1.2.2s
+                  |_Test 1.1.2.1t
     """
 
     _tag = 'PhysicsOfFailure'
@@ -538,6 +538,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.dtm_mode = dtmMode(dao)
         self.dtm_mechanism = dtmMechanism(dao)
         self.dtm_opload = OpLoadDataModel(dao)
         self.dtm_opstress = OpStressDataModel(dao)
@@ -545,27 +546,55 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve and build the PhysicsOfFailure tree for Parent ID.
+        Retrieve and build the Physics of Failure tree for Hardware ID.
 
-        :param str parent_id: the Mode ID to retrieve the PhysicsOfFailure
-                              and build trees for.
+        :param str parent_id: the Hardware ID to retrieve the Physics of
+                              Failure information and build trees for.
         :return: tree; the PhysicsOfFailure treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
         _mode_id = kwargs['parent_id']
         RTKDataModel.do_select_all(self)
 
-        _mechanisms = self.dtm_mechanism.do_select_all(
-            parent_id=_mode_id, pof=True).nodes
+        _modes = self.dtm_mode.do_select_all(
+            parent_id=_mode_id, functional=False).nodes
+        for _key in _modes:
+            _mode = _modes[_key].data
+            if _mode is not None:
+                _node_id = '0.{0:d}'.format(_mode.mode_id)
+                self.tree.create_node(
+                    tag=_mode.description,
+                    identifier=_node_id,
+                    parent=0,
+                    data=_mode)
 
+                self._do_add_mechanisms(_mode.mode_id, _node_id)
+
+        return self.tree
+
+    def _do_add_mechanisms(self, mode_id, parent_id):
+        """
+        Add the failure mechanisms to Physics of Failure tree for Mode ID.
+
+        :param int mechanism_id: the Mechanism ID to add the operating loads
+                                 to.
+        :param str parent_id: the Node ID to add the operating loads to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _mechanisms = self.dtm_mechanism.do_select_all(
+            parent_id=mode_id, pof=True).nodes
         for _key in _mechanisms:
             _mechanism = _mechanisms[_key].data
             if _mechanism is not None and _mechanism.pof_include:
-                _node_id = '0.{0:d}'.format(_mechanism.mechanism_id)
+                _node_id = '{0:s}.{1:d}'.format(parent_id,
+                                                _mechanism.mechanism_id)
                 self.tree.create_node(
                     tag=_mechanism.description,
                     identifier=_node_id,
-                    parent=0,
+                    parent=parent_id,
                     data=_mechanism)
 
                 self._do_add_oploads(_mechanism.mechanism_id, _node_id)
@@ -574,7 +603,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
     def _do_add_oploads(self, mechanism_id, parent_id):
         """
-        Add the operating loadss to the PhysicsOfFailure tree for Mechanism ID.
+        Add the operating loads to Physics of Failure tree for Mechanism ID.
 
         :param int mechanism_id: the Mechanism ID to add the operating loads
                                  to.
@@ -678,7 +707,8 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         _level = kwargs['level']
 
         if _level == 'opload':
-            _error_code, _msg = self.dtm_opload.do_insert(mechanism_id=_entity_id)
+            _error_code, _msg = self.dtm_opload.do_insert(
+                mechanism_id=_entity_id)
             _entity = self.dtm_opload.do_select(self.dtm_opload.last_id)
             _tag = 'OpLoad'
             _node_id = '{0:s}.{1:d}'.format(_parent_id,
@@ -690,8 +720,10 @@ class PhysicsOfFailureDataModel(RTKDataModel):
             _node_id = '{0:s}.{1:d}s'.format(_parent_id,
                                              self.dtm_opstress.last_id)
         elif _level == 'testmethod':
-            _error_code, _msg = self.dtm_testmethod.do_insert(load_id=_entity_id)
-            _entity = self.dtm_testmethod.do_select(self.dtm_testmethod.last_id)
+            _error_code, _msg = self.dtm_testmethod.do_insert(
+                load_id=_entity_id)
+            _entity = self.dtm_testmethod.do_select(
+                self.dtm_testmethod.last_id)
             _tag = 'TestMethod'
             _node_id = '{0:s}.{1:d}t'.format(_parent_id,
                                              self.dtm_testmethod.last_id)

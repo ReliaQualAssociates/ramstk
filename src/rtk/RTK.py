@@ -32,6 +32,7 @@ from rtk.dao.commondb.RTKCondition import RTKCondition
 from rtk.dao.commondb.RTKFailureMode import RTKFailureMode
 from rtk.dao.commondb.RTKGroup import RTKGroup
 from rtk.dao.commondb.RTKHazards import RTKHazards
+from rtk.dao.commondb.RTKLoadHistory import RTKLoadHistory
 from rtk.dao.commondb.RTKManufacturer import RTKManufacturer
 from rtk.dao.commondb.RTKMeasurement import RTKMeasurement
 from rtk.dao.commondb.RTKMethod import RTKMethod
@@ -374,6 +375,15 @@ class Model(object):
                 _attributes['method_type'])
 
         # ------------------------------------------------------------------- #
+        # Load the dictionaries from RTKModel.                                #
+        # ------------------------------------------------------------------- #
+        for _record in self.site_session.query(RTKModel).\
+            filter(RTKModel.model_type == 'damage').all():
+            _attributes = _record.get_attributes()
+            configuration.RTK_DAMAGE_MODELS[_record.model_id] = (
+                _attributes['description'], )
+
+        # ------------------------------------------------------------------- #
         # Load dictionaries from RTKRPN.                                      #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKRPN).\
@@ -440,6 +450,11 @@ class Model(object):
             configuration.RTK_HAZARDS[_record.hazard_id] = (
                 _attributes['category'], _attributes['subcategory'])
 
+        for _record in self.site_session.query(RTKLoadHistory).all():
+            _attributes = _record.get_attributes()
+            configuration.RTK_LOAD_HISTORY[_record.history_id] = (
+                _attributes['description'],)
+
         for _record in self.site_session.query(RTKManufacturer).all():
             _attributes = _record.get_attributes()
             configuration.RTK_MANUFACTURERS[_record.manufacturer_id] = (
@@ -450,6 +465,13 @@ class Model(object):
                 filter(RTKMeasurement.measurement_type == 'unit').all():
             _attributes = _record.get_attributes()
             configuration.RTK_MEASUREMENT_UNITS[_record.measurement_id] = (
+                _attributes['code'], _attributes['description'],
+                _attributes['measurement_type'])
+
+        for _record in self.site_session.query(RTKMeasurement).\
+                filter(RTKMeasurement.measurement_type == 'damage').all():
+            _attributes = _record.get_attributes()
+            configuration.RTK_MEASURABLE_PARAMETERS[_record.measurement_id] = (
                 _attributes['code'], _attributes['description'],
                 _attributes['measurement_type'])
 
@@ -730,7 +752,10 @@ class RTK(object):
                 self.RTK_CONFIGURATION,
                 test=False,
                 functional=False)
-            # self.dic_controllers['pof'] = dtcPoF()
+            self.dic_controllers['pof'] = dtcPoF(
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
             # self.dic_controllers['growth'] = Growth()
             # self.dic_controllers['action'] = Action()
 

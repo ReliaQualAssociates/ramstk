@@ -397,31 +397,32 @@ class Configuration(object):
     # Common database.
     RTK_ACTION_CATEGORY = {}
     RTK_ACTION_STATUS = {}
-    RTK_AFFINITY_GROUPS = {}
-    RTK_CATEGORIES = {}
-    RTK_DAMAGE_MODELS = {}
+    RTK_AFFINITY_GROUPS = {}        # User updateable
+    RTK_CATEGORIES = {}             # Static.
+    RTK_DAMAGE_MODELS = {}          # User updateable.
     RTK_DETECTION_METHODS = {}
-    RTK_FAILURE_MODES = {}  # Default failure modes.
-    RTK_HAZARDS = {}
+    RTK_FAILURE_MODES = {}          # User updateable.
+    RTK_HAZARDS = {}                # User updateable.
     RTK_INCIDENT_CATEGORY = {}
     RTK_INCIDENT_STATUS = {}
     RTK_INCIDENT_TYPE = {}
+    RTK_LOAD_HISTORY = {}           # User updateable.
     RTK_MANUFACTURERS = {}
+    RTK_MEASURABLE_PARAMETERS = {}  # User updateable.
     RTK_MEASUREMENT_UNITS = {}
-    RTK_MODULES = {}
-    RTK_OPERATING_PARAMETERS = {}  # TODO: Add table to common db for this.
+    RTK_MODULES = {}                # Static.
     RTK_PAGE_NUMBER = {}
-    RTK_PREFIX = {}
+    RTK_PREFIX = {}                 # Static.
     RTK_REQUIREMENT_TYPE = {}
-    RTK_RPN_DETECTION = {}
-    RTK_RPN_OCCURRENCE = {}
-    RTK_RPN_SEVERITY = {}
+    RTK_RPN_DETECTION = {}          # User updateable.
+    RTK_RPN_OCCURRENCE = {}         # User updateable.
+    RTK_RPN_SEVERITY = {}           # User updateable.
     RTK_SEVERITY = {}
-    RTK_STAKEHOLDERS = {}
-    RTK_SUBCATEGORIES = {}
-    RTK_USERS = {}
+    RTK_STAKEHOLDERS = {}           # User updateable.
+    RTK_SUBCATEGORIES = {}          # Static.
+    RTK_USERS = {}                  # Admin updateable.
     RTK_VALIDATION_TYPE = {}
-    RTK_WORKGROUPS = {}
+    RTK_WORKGROUPS = {}             # Admin updateable.
 
     # Define global list class attributes.
     RTK_RISK_POINTS = [4, 10]
@@ -468,7 +469,7 @@ class Configuration(object):
             'allocation', 'ffmea', 'dfmeca', 'function', 'hardware', 'hazops',
             'requirement', 'revision', 'software', 'incident', 'validation',
             'testing', 'similaritem', 'rgincident', 'stakeholder', 'dataset',
-            'risk'
+            'risk', 'pof'
         ]
 
         if name == 'posix':
