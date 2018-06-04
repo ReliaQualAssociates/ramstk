@@ -31,7 +31,8 @@ class RTKTreeView(gtk.TreeView):
                  bg_col='white',
                  fg_col='black',
                  pixbuf=False,
-                 indexed=False):
+                 indexed=False,
+                 aggregate=False):
         """
         Initialize an RTKTreeView() instance.
 
@@ -120,6 +121,8 @@ class RTKTreeView(gtk.TreeView):
             self.editable.append(0)
             _position.append(len(_position))
             self.visible.append(1)
+            _pixbuf_col = int(len(_types)) - 1
+
         # FIXME: What is this for?  It'll become obvious later...maybe.
         elif fmt_idx in [15, 16]:
             print fmt_file
@@ -129,8 +132,8 @@ class RTKTreeView(gtk.TreeView):
             _types.append(gtk.gdk.Pixbuf)
 
         # We may want to add a column to hold indexing information for program
-        # control.
-        # FIXME: Are we using this?  If not, we need to eliminate.
+        # control.  This is used, for example, by aggregate data views to hold
+        # the Node ID from the PyPubSub Tree().
         if indexed:
             _datatypes.append('text')
             self.headings.append('')
@@ -139,17 +142,12 @@ class RTKTreeView(gtk.TreeView):
             self.editable.append(0)
             _position.append(len(_position))
             self.visible.append(0)
+            _idx_col = int(len(_types)) - 1
 
         # Create the model.
         _model = gtk.TreeStore(*_types)
 
-        if pixbuf:
-            _n_cols = int(len(_types)) - 2
-        elif indexed:
-            _n_cols = int(len(_types)) - 1
-        else:
-            _n_cols = int(len(_types))
-
+        _n_cols = int(len(_types))
         for i in range(_n_cols):
             self.order.append(_position[i])
 
@@ -179,7 +177,7 @@ class RTKTreeView(gtk.TreeView):
                 _pbcell.set_property('xalign', 0.5)
                 _column = self._do_make_column(
                     [_pbcell, _cell], self.visible[i], self.headings[i])
-                _column.set_attributes(_pbcell, pixbuf=_n_cols)
+                _column.set_attributes(_pbcell, pixbuf=_pixbuf_col)
             else:
                 _column = self._do_make_column([
                     _cell,
@@ -189,23 +187,13 @@ class RTKTreeView(gtk.TreeView):
 
             if _widgets[i] == 'toggle':
                 _column.set_attributes(_cell, active=_position[i])
-            else:
+            elif _widgets[i] != 'pixbuf':
                 _column.set_attributes(_cell, text=_position[i])
 
             if i > 0:
                 _column.set_reorderable(True)
 
             self.append_column(_column)
-
-        # Finally, we want to add a column to hold indexing information for
-        # program control.
-        _cell = gtk.CellRendererText()
-        _column = self._do_make_column([
-            _cell,
-        ], False, "")
-        _column.pack_start(_cell, False)
-        _column.set_attributes(_cell, text=_n_cols + 1)
-        self.append_column(_column)
 
         # FIXME: What is this for?  It'll become obvious later...maybe.
         if fmt_idx == 9:

@@ -343,8 +343,7 @@ class FMEA(RTKWorkView):
         _scrollwindow.add(self.treeview)
 
         _frame = rtk.RTKFrame(
-            label=_(u"Failure Mode and Effects Analysis "
-                    u"(FMEA)"))
+            label=_(u"Failure Mode and Effects Analysis (FMEA)"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
