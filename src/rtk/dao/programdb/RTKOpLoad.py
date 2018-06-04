@@ -39,7 +39,7 @@ class RTKOpLoad(RTK_BASE):
         nullable=False)
 
     description = Column('fld_description', String(512), default='')
-    damage_model = Column('fld_damage_model', Integer, default=0)
+    damage_model = Column('fld_damage_model', String(512), default='')
     priority_id = Column('fld_priority_id', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
@@ -48,6 +48,12 @@ class RTKOpLoad(RTK_BASE):
         'RTKOpStress', back_populates='op_load', cascade='all,delete')
     test_method = relationship(
         'RTKTestMethod', back_populates='op_load', cascade='all,delete')
+
+    is_mode = False
+    is_mechanism = False
+    is_opload = True
+    is_opstress = False
+    is_testmethod = False
 
     def get_attributes(self):
         """
@@ -83,8 +89,8 @@ class RTKOpLoad(RTK_BASE):
         try:
             self.description = str(
                 none_to_default(attributes['description'], ''))
-            self.damage_model = int(
-                none_to_default(attributes['damage_model'], 0))
+            self.damage_model = str(
+                none_to_default(attributes['damage_model'], ''))
             self.priority_id = int(
                 none_to_default(attributes['priority_id'], 0))
         except KeyError as _err:

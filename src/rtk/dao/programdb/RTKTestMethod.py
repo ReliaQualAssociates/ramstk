@@ -44,6 +44,12 @@ class RTKTestMethod(RTK_BASE):
     # Define the relationships to other tables in the RTK Program database.
     op_load = relationship('RTKOpLoad', back_populates='test_method')
 
+    is_mode = False
+    is_mechanism = False
+    is_opload = False
+    is_opstress = False
+    is_testmethod = True
+
     def get_attributes(self):
         """
         Retrieve the current values of the RTKTestMethod data model attributes.

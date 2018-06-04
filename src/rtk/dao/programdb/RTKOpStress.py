@@ -37,13 +37,19 @@ class RTKOpStress(RTK_BASE):
         nullable=False)
 
     description = Column('fld_description', String(512), default='')
-    load_history = Column('fld_load_history', Integer, default=0)
+    load_history = Column('fld_load_history', String(512), default='')
     measurable_parameter = Column(
-        'fld_measurable_parameter', Integer, default=0)
+        'fld_measurable_parameter', String(512), default='')
     remarks = Column('fld_remarks', BLOB, default='')
 
     # Define the relationships to other tables in the RTK Program database.
     op_load = relationship('RTKOpLoad', back_populates='op_stress')
+
+    is_mode = False
+    is_mechanism = False
+    is_opload = False
+    is_opstress = True
+    is_testmethod = False
 
     def get_attributes(self):
         """
@@ -78,9 +84,9 @@ class RTKOpStress(RTK_BASE):
 
         try:
             self.description = str(none_to_default(values['description'], ''))
-            self.load_history = int(none_to_default(values['load_history'], 0))
-            self.measurable_parameter = int(
-                none_to_default(values['measurable_parameter'], 0))
+            self.load_history = str(none_to_default(values['load_history'], ''))
+            self.measurable_parameter = str(
+                none_to_default(values['measurable_parameter'], ''))
             self.remarks = str(none_to_default(values['remarks'], ''))
         except KeyError as _err:
             _error_code = 40

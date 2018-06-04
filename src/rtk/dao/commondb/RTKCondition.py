@@ -41,7 +41,7 @@ class RTKCondition(RTK_BASE):
             'description': self.description,
             'condition_type': self.cond_type
         }
-        print _attributes
+
         return _attributes
 
     def set_attributes(self, attributes):
