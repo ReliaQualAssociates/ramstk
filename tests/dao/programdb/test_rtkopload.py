@@ -17,7 +17,7 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'priority_id': 0,
-    'damage_model': 0,
+    'damage_model': '',
     'load_id': 1,
     'mechanism_id': 1,
     'description': u'Test Operating Load'
@@ -38,7 +38,7 @@ def test_rtkopload_create(test_dao):
     assert DUT.mechanism_id == 1
     assert DUT.load_id == 1
     assert DUT.description == 'Test Operating Load'
-    assert DUT.damage_model == 0
+    assert DUT.damage_model == ''
     assert DUT.priority_id == 0
 
 
@@ -56,7 +56,7 @@ def test_get_attributes(test_dao):
     assert _attributes['mechanism_id'] == 1
     assert _attributes['load_id'] == 1
     assert _attributes['description'] == 'Test Operating Load'
-    assert _attributes['damage_model'] == 0
+    assert _attributes['damage_model'] == ''
     assert _attributes['priority_id'] == 0
 
 
