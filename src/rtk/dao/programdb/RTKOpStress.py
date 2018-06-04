@@ -84,7 +84,8 @@ class RTKOpStress(RTK_BASE):
 
         try:
             self.description = str(none_to_default(values['description'], ''))
-            self.load_history = str(none_to_default(values['load_history'], ''))
+            self.load_history = str(
+                none_to_default(values['load_history'], ''))
             self.measurable_parameter = str(
                 none_to_default(values['measurable_parameter'], ''))
             self.remarks = str(none_to_default(values['remarks'], ''))

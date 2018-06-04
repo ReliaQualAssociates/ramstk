@@ -10,7 +10,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default
+from rtk.Utilities import none_to_default
 from rtk.dao.RTKCommonDB import RTK_BASE
 
 
@@ -63,7 +63,6 @@ class RTKOpLoad(RTK_BASE):
                   priority_id} pairs
         :rtype: dict
         """
-
         _attributes = {
             'mechanism_id': self.mechanism_id,
             'load_id': self.load_id,

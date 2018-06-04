@@ -453,7 +453,7 @@ class Model(object):
         for _record in self.site_session.query(RTKLoadHistory).all():
             _attributes = _record.get_attributes()
             configuration.RTK_LOAD_HISTORY[_record.history_id] = (
-                _attributes['description'],)
+                _attributes['description'], )
 
         for _record in self.site_session.query(RTKManufacturer).all():
             _attributes = _record.get_attributes()
@@ -753,9 +753,7 @@ class RTK(object):
                 test=False,
                 functional=False)
             self.dic_controllers['pof'] = dtcPoF(
-                self.rtk_model.program_dao,
-                self.RTK_CONFIGURATION,
-                test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             # self.dic_controllers['growth'] = Growth()
             # self.dic_controllers['action'] = Action()
 
