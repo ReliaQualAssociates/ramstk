@@ -145,7 +145,16 @@ def test_load_globals(test_common_dao, test_dao):
         6: (u'Branch Testing', u'', u'detection')
     }
 
-    assert _configuration.RTK_DAMAGE_MODELS == {}
+    assert _configuration.RTK_DAMAGE_MODELS == {
+        1: (u'Adhesion Wear Model for Bearings', ),
+        2: (u'Arrhenius', ),
+        3: (u'Coffin-Manson', ),
+        4: (u'Empirical/DOE', ),
+        5: (u'Eyring', ),
+        6: (u'Inverse Power Law (IPL)', ),
+        7: (u'IPL - Arrhenius', ),
+        8: (u'Time Fraction of Damaging Operating Conditions', )
+    }
 
     assert _configuration.RTK_RPN_DETECTION == {
         1:
@@ -587,7 +596,6 @@ def test_load_globals(test_common_dao, test_dao):
         9: (u'A', u'Amperes', u'unit'),
         10: (u'V', u'Volts', u'unit')
     }
-    assert _configuration.RTK_OPERATING_PARAMETERS == {}
     assert _configuration.RTK_STAKEHOLDERS == {
         1: ('Customer', ),
         2: ('Service', ),
