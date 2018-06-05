@@ -90,49 +90,6 @@ class GeneralData(RTKWorkView):
         pub.subscribe(self._on_select, 'selectedRevision')
         pub.subscribe(self._on_edit, 'mvwEditedRevision')
 
-    def _do_request_calculate(self, __button):
-        """
-        Request to calculate the selected RTKRevision table record.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _error_code = 0
-        _msg = ['', '', '']
-
-        if self._dtc_data_controller.request_calculate_reliability(
-                self._revision_id, self._mission_time):
-            _error_code = 1
-            _msg[0] = 'Error calculating reliability attributes.'
-
-        if self._dtc_data_controller.request_calculate_availability(
-                self._revision_id):
-            _error_code = 1
-            _msg[1] = 'Error calculating availability attributes.'
-
-        if self._dtc_data_controller.request_calculate_costs(
-                self._revision_id, self._mission_time):
-            _error_code = 1
-            _msg[2] = 'Error calculating cost attributes.'
-
-        if _error_code != 0:
-            _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Revision {0:d}. \n\n\t" + _msg[0] + "\n\t" +
-                        _msg[1] + "\n\t" + _msg[2] + "\n\n").\
-                format(self._revision_id)
-            _error_dialog = rtk.RTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-
-        return _return
-
     def _do_request_update(self, __button):
         """
         Request to save all records to the RTKRevision table.
@@ -187,13 +144,12 @@ class GeneralData(RTKWorkView):
         :rtype: :py:class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Calculate the currently selected Revision."),
             _(u"Saves the currently selected Revision to the open "
               u"RTK Project database.")
         ]
-        _callbacks = [self._do_request_calculate, self._do_request_update]
+        _callbacks = [self._do_request_update]
 
-        _icons = ['calculate', 'save']
+        _icons = ['save']
         _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
                                                  _callbacks, 'vertical')
 
