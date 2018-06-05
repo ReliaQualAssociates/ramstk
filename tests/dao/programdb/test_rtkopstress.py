@@ -19,8 +19,8 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 ATTRIBUTES = {
     'description': u'Test Operating Stress',
     'load_id': 1,
-    'load_history': 0,
-    'measurable_parameter': 0,
+    'load_history': '',
+    'measurable_parameter': '',
     'remarks': '',
     'stress_id': 1
 }
@@ -40,8 +40,8 @@ def test_rtkopstress_create(test_dao):
     assert DUT.load_id == 1
     assert DUT.stress_id == 1
     assert DUT.description == 'Test Operating Stress'
-    assert DUT.measurable_parameter == 0
-    assert DUT.load_history == 0
+    assert DUT.measurable_parameter == ''
+    assert DUT.load_history == ''
     assert DUT.remarks == ''
 
 
@@ -59,8 +59,8 @@ def test_get_attributes(test_dao):
     assert _attributes['load_id'] == 1
     assert _attributes['stress_id'] == 1
     assert _attributes['description'] == 'Test Operating Stress'
-    assert _attributes['load_history'] == 0
-    assert _attributes['measurable_parameter'] == 0
+    assert _attributes['load_history'] == ''
+    assert _attributes['measurable_parameter'] == ''
     assert _attributes['remarks'] == ''
 
 

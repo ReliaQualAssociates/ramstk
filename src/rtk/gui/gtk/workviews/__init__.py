@@ -17,6 +17,7 @@ from .Hardware import GeneralData as wvwHardwareGD
 from .Hardware import AssessmentInputs as wvwHardwareAI
 from .Hardware import AssessmentResults as wvwHardwareAR
 from .HazOps import HazOps as wvwHazOps
+from .PoF import PoF as wvwPoF
 from .Requirement import GeneralData as wvwRequirementGD
 from .Requirement import RequirementAnalysis as wvwRequirementAnalysis
 from .Revision import GeneralData as wvwRevisionGD

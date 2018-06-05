@@ -19,7 +19,6 @@ class RTKOpStress(RTK_BASE):
     Class to represent the table rtk_op_stress in the RTK Program database.
 
     This table shares a Many-to-One relationship with rtk_op_load.
-    This table shares a One-to-Many relationship with rtk_test_method.
     """
 
     __tablename__ = 'rtk_op_stress'
@@ -38,15 +37,19 @@ class RTKOpStress(RTK_BASE):
         nullable=False)
 
     description = Column('fld_description', String(512), default='')
-    load_history = Column('fld_load_history', Integer, default=0)
+    load_history = Column('fld_load_history', String(512), default='')
     measurable_parameter = Column(
-        'fld_measurable_parameter', Integer, default=0)
+        'fld_measurable_parameter', String(512), default='')
     remarks = Column('fld_remarks', BLOB, default='')
 
     # Define the relationships to other tables in the RTK Program database.
     op_load = relationship('RTKOpLoad', back_populates='op_stress')
-    test_method = relationship(
-        'RTKTestMethod', back_populates='op_stress', cascade='all,delete')
+
+    is_mode = False
+    is_mechanism = False
+    is_opload = False
+    is_opstress = True
+    is_testmethod = False
 
     def get_attributes(self):
         """
@@ -81,9 +84,10 @@ class RTKOpStress(RTK_BASE):
 
         try:
             self.description = str(none_to_default(values['description'], ''))
-            self.load_history = int(none_to_default(values['load_history'], 0))
-            self.measurable_parameter = int(
-                none_to_default(values['measurable_parameter'], 0))
+            self.load_history = str(
+                none_to_default(values['load_history'], ''))
+            self.measurable_parameter = str(
+                none_to_default(values['measurable_parameter'], ''))
             self.remarks = str(none_to_default(values['remarks'], ''))
         except KeyError as _err:
             _error_code = 40

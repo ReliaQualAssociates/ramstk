@@ -444,11 +444,11 @@ def do_create_test_database(database):
     _opstress.load_id = _opload.load_id
     _opstress.description = 'Test Operating Stress'
     session.add(_opstress)
-    session.commit()
     _testmethod = RTKTestMethod()
-    _testmethod.stress_id = _opstress.stress_id
+    _testmethod.load_id = _opload.load_id
     _testmethod.description = 'Test Test Method'
     session.add(_testmethod)
+    session.commit()
 
     # Create a dictionary to use for creating X_hrdwr and hrdwr_X matrices.
     # Key is row or column ID; value is row item or column item ID.

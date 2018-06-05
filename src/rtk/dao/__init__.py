@@ -13,6 +13,7 @@ from .commondb.RTKCondition import RTKCondition
 from .commondb.RTKFailureMode import RTKFailureMode
 from .commondb.RTKGroup import RTKGroup
 from .commondb.RTKHazards import RTKHazards
+from .commondb.RTKLoadHistory import RTKLoadHistory
 from .commondb.RTKManufacturer import RTKManufacturer
 from .commondb.RTKMeasurement import RTKMeasurement
 from .commondb.RTKMethod import RTKMethod

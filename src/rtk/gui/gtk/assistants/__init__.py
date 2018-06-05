@@ -6,8 +6,9 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 
-from .FMEA import AddControlAction
 from .CreateProject import CreateProject
 from .DeleteProject import DeleteProject
 from .OpenProject import OpenProject
 from .Options import Options
+from .FMEA import AddControlAction
+from .PoF import AddStressMethod

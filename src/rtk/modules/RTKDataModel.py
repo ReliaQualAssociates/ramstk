@@ -61,6 +61,12 @@ class RTKDataModel(object):  # pragma: no cover
 
     def select(self, node_id):
         """
+        Placeholder to call do_select() until all test files can be updated.
+        """
+        return self.do_select(node_id)
+
+    def do_select(self, node_id, **kwargs):  # pylint: disable=unused-argument
+        """
         Retrieve the instance of the RTK<MODULE> model for the Node ID passed.
 
         :param int node_id: the Node ID of the data package to retrieve.
@@ -77,6 +83,9 @@ class RTKDataModel(object):  # pragma: no cover
         return _entity
 
     def select_all(self):
+        return self.do_select_all()
+
+    def do_select_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Retrieve and build the RTK Module tree.
 
@@ -91,6 +100,10 @@ class RTKDataModel(object):  # pragma: no cover
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
     def insert(self, **kwargs):
+        _entities = kwargs['entities']
+        return self.do_insert(entities=_entities)
+
+    def do_insert(self, **kwargs):
         """
         Add the list of RTK<MODULE> instance to the RTK Program database.
 
@@ -110,6 +123,9 @@ class RTKDataModel(object):  # pragma: no cover
         return _error_code, _msg
 
     def delete(self, node_id):
+        return self.do_delete(node_id)
+
+    def do_delete(self, node_id):
         """
         Delete the instance of RTK<MODULE> from the RTK Program database.
 
@@ -139,6 +155,9 @@ class RTKDataModel(object):  # pragma: no cover
         return _error_code, _msg
 
     def update(self, node_id):
+        return self.do_update(node_id)
+
+    def do_update(self, node_id):
         """
         Update the RTK<MODULE> instance in the RTK Program database.
 

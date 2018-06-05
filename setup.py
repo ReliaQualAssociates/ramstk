@@ -3,6 +3,7 @@
 import os
 import sys
 import subprocess
+import glob
 
 import distutils.cmd
 import distutils.log
@@ -23,6 +24,24 @@ tests_require = [
     'pytest', 'pytest-cov', 'coverage==4.0.3', 'codacy-coverage',
     'python-coveralls'
 ]
+
+layout_files = []
+directories = glob.glob('data/layouts/')
+for directory in directories:
+    files = glob.glob(directory+'*')
+    layout_files.append(files)
+
+icon16_files = []
+directories = glob.glob('data/icons/16x16/')
+for directory in directories:
+    files = glob.glob(directory+'*')
+    icon16_files.append(files)
+
+icon32_files = []
+directories = glob.glob('data/icons/32x32/')
+for directory in directories:
+    files = glob.glob(directory+'*')
+    icon32_files.append(files)
 
 
 class Install(_install):
@@ -92,7 +111,13 @@ if __name__ == '__main__':
             'console_scripts': ['rtk = rtk.RTK:main'],
         },
         data_files=[('share/applications', ['data/RTK.desktop']),
-                    ('share/pixmaps', ['data/icons/RTK.png'])],
+                    ('share/pixmaps', ['data/icons/RTK.png']),
+                    ('share/RTK', ['data/RTK.conf']),
+                    ('share/RTK', ['data/Site.conf']),
+                    ('share/RTK/layouts', layout_files[0]),
+                    ('share/RTK/icons/16x16', icon16_files[0]),
+                    ('share/RTK/icons/32x32', icon32_files[0])
+                    ],
         package_data={},
         dependency_links=[],
         zip_safe=True,

@@ -10,8 +10,8 @@ from treelib import tree
 
 # Import other RTK modules.
 from rtk.modules import RTKDataModel
-from rtk.modules.fmea import dtmMechanism
-from rtk.dao import RTKMechanism, RTKOpLoad, RTKOpStress, RTKTestMethod
+from rtk.modules.fmea import dtmMode, dtmMechanism
+from rtk.dao import RTKOpLoad, RTKOpStress, RTKTestMethod
 
 
 class OpLoadDataModel(RTKDataModel):
@@ -46,7 +46,7 @@ class OpLoadDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the operating loads from the RTK Program database.
 
@@ -59,10 +59,11 @@ class OpLoadDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKOpLoad data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _parent_id = kwargs['parent_id']
+        _session = RTKDataModel.do_select_all(self)
 
         _oploads = _session.query(RTKOpLoad).filter(
-            RTKOpLoad.mechanism_id == parent_id).all()
+            RTKOpLoad.mechanism_id == _parent_id).all()
 
         for _opload in _oploads:
             # We get and then set the attributes to replace any None values
@@ -80,7 +81,7 @@ class OpLoadDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Add a record to the RTKOpLoad table.
 
@@ -89,7 +90,7 @@ class OpLoadDataModel(RTKDataModel):
         """
         _opload = RTKOpLoad()
         _opload.mechanism_id = kwargs['mechanism_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _opload,
             ])
@@ -104,7 +105,7 @@ class OpLoadDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKOpLoad table.
 
@@ -113,7 +114,7 @@ class OpLoadDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -122,7 +123,7 @@ class OpLoadDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -130,7 +131,7 @@ class OpLoadDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -139,7 +140,7 @@ class OpLoadDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKOpLoad table records in the RTK Program database.
 
@@ -147,20 +148,22 @@ class OpLoadDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all OpLoads in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.load_id)
+                _error_code, _debug_msg = self.do_update(_node.data.load_id)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.pof.Model.OpLoadDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.pof.Model.OpLoadDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more operating loads in the damage "
+                        "modeling worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all operating loads in the damage "
+                    "modeling worksheet.")
 
         return _error_code, _msg
 
@@ -197,7 +200,7 @@ class OpStressDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the operating stresss from the RTK Program database.
 
@@ -210,12 +213,13 @@ class OpStressDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKOpStress data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _load_id = kwargs['parent_id']
+        _session = RTKDataModel.do_select_all(self)
 
-        _opstresss = _session.query(RTKOpStress).filter(
-            RTKOpStress.load_id == parent_id).all()
+        _opstresses = _session.query(RTKOpStress).filter(
+            RTKOpStress.load_id == _load_id).all()
 
-        for _opstress in _opstresss:
+        for _opstress in _opstresses:
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _opstress.get_attributes()
@@ -234,7 +238,7 @@ class OpStressDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Add a record to the RTKOpStress table.
 
@@ -243,7 +247,7 @@ class OpStressDataModel(RTKDataModel):
         """
         _opstress = RTKOpStress()
         _opstress.load_id = kwargs['load_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _opstress,
             ])
@@ -261,7 +265,7 @@ class OpStressDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKOpStress table.
 
@@ -270,7 +274,7 @@ class OpStressDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -279,7 +283,7 @@ class OpStressDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -287,7 +291,7 @@ class OpStressDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -296,7 +300,7 @@ class OpStressDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKOpStress table records in the RTK Program database.
 
@@ -304,20 +308,22 @@ class OpStressDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all OpStresss in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.stress_id)
+                _error_code, _debug_msg = self.do_update(_node.data.stress_id)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.pof.Model.OpStressDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.pof.Model.OpStressDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more operating stresses in the "
+                        "damage modeling worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all operating stresses in the "
+                    "damage modeling worksheet.")
 
         return _error_code, _msg
 
@@ -354,7 +360,7 @@ class TestMethodDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the operating stresss from the RTK Program database.
 
@@ -367,10 +373,11 @@ class TestMethodDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKTestMethod data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _parent_id = kwargs['parent_id']
+        _session = RTKDataModel.do_select_all(self)
 
         _testmethods = _session.query(RTKTestMethod).filter(
-            RTKTestMethod.stress_id == parent_id).all()
+            RTKTestMethod.load_id == _parent_id).all()
 
         for _testmethod in _testmethods:
             # We get and then set the attributes to replace any None values
@@ -391,7 +398,7 @@ class TestMethodDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Add a record to the RTKTestMethod table.
 
@@ -399,8 +406,8 @@ class TestMethodDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _testmethod = RTKTestMethod()
-        _testmethod.stress_id = kwargs['stress_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _testmethod.load_id = kwargs['load_id']
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _testmethod,
             ])
@@ -418,16 +425,16 @@ class TestMethodDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKTestMethod table.
 
-        :param int node_id: the ID of the RTKTestMethod record to be removed from the
-                            RTK Program database.
+        :param int node_id: the ID of the RTKTestMethod record to be removed
+                            from the RTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -436,7 +443,7 @@ class TestMethodDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -444,7 +451,7 @@ class TestMethodDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -453,7 +460,7 @@ class TestMethodDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKTestMethod table records in the RTK Program database.
 
@@ -461,20 +468,22 @@ class TestMethodDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all TestMethods in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.stress_id)
+                _error_code, _debug_msg = self.do_update(_node.data.load_id)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.pof.Model.TestMethodDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.pof.Model.TestMethodDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more test methods in the damage "
+                        "modeling worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all test methods in the damage "
+                    "modeling worksheet.")
 
         return _error_code, _msg
 
@@ -487,22 +496,22 @@ class PhysicsOfFailureDataModel(RTKDataModel):
     and TestMethod data models to produce an overall PoF.  A Hardware item will
     consist of one PoF.  This is a hierarchical relationship, such as:
 
-          Mechanism 1
+        Mode 1
           |
-          |_Load 1.1
-          |   |
-          |   |_Stress 1.1.1
-          |   |   |
-          |   |   |_Test 1.1.1.1
-          |   |   |_Test 1.1.1.2
-          |   |_Stress 1.1.2
-          |       |
-          |       |_Test 1.1.2.1
-          |
-          |_Load 1.2
+          |_Mechanism 1.1
               |
-              |_Stress 1.2.1
-              |_Stress 1.2.2
+              |_Load 1.1.1
+              |   |
+              |   |_Stress 1.1.1.1s
+              |   |_Stress 1.1.1.2s
+              |   |_Test 1.1.1.1t
+              |   |_Test 1.1.1.2t
+              |
+              |_Load 1.1.2
+                  |
+                  |_Stress 1.1.2.1s
+                  |_Stress 1.1.2.2s
+                  |_Test 1.1.2.1t
     """
 
     _tag = 'PhysicsOfFailure'
@@ -529,42 +538,43 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.dtm_mode = dtmMode(dao)
         self.dtm_mechanism = dtmMechanism(dao)
         self.dtm_opload = OpLoadDataModel(dao)
         self.dtm_opstress = OpStressDataModel(dao)
         self.dtm_testmethod = TestMethodDataModel(dao)
 
-    def select_all(self, parent_id):
+    def do_select_all(self, **kwargs):
         """
-        Retrieve and build the PhysicsOfFailure tree for Parent ID.
+        Retrieve and build the Physics of Failure tree for Hardware ID.
 
-        :param str parent_id: the Mode ID to retrieve the PhysicsOfFailure
-                              and build trees for.
+        :param str parent_id: the Hardware ID to retrieve the Physics of
+                              Failure information and build trees for.
         :return: tree; the PhysicsOfFailure treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        RTKDataModel.select_all(self)
+        _mode_id = kwargs['parent_id']
+        RTKDataModel.do_select_all(self)
 
-        _mechanisms = self.dtm_mechanism.do_select_all(
-            parent_id=parent_id).nodes
-
-        for _key in _mechanisms:
-            _mechanism = _mechanisms[_key].data
-            if _mechanism is not None:
-                _node_id = '0.{0:d}'.format(_mechanism.mechanism_id)
+        _modes = self.dtm_mode.do_select_all(
+            parent_id=_mode_id, functional=False).nodes
+        for _key in _modes:
+            _mode = _modes[_key].data
+            if _mode is not None:
+                _node_id = '0.{0:d}'.format(_mode.mode_id)
                 self.tree.create_node(
-                    tag=_mechanism.description,
+                    tag=_mode.description,
                     identifier=_node_id,
                     parent=0,
-                    data=_mechanism)
+                    data=_mode)
 
-                self._do_add_oploads(_mechanism.mechanism_id, _node_id)
+                self._do_add_mechanisms(_mode.mode_id, _node_id)
 
         return self.tree
 
-    def _do_add_oploads(self, mechanism_id, parent_id):
+    def _do_add_mechanisms(self, mode_id, parent_id):
         """
-        Add the operating loadss to the PhysicsOfFailure tree for Mechanism ID.
+        Add the failure mechanisms to Physics of Failure tree for Mode ID.
 
         :param int mechanism_id: the Mechanism ID to add the operating loads
                                  to.
@@ -574,7 +584,36 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         """
         _return = False
 
-        _oploads = self.dtm_opload.select_all(mechanism_id).nodes
+        _mechanisms = self.dtm_mechanism.do_select_all(
+            parent_id=mode_id, pof=True).nodes
+        for _key in _mechanisms:
+            _mechanism = _mechanisms[_key].data
+            if _mechanism is not None and _mechanism.pof_include:
+                _node_id = '{0:s}.{1:d}'.format(parent_id,
+                                                _mechanism.mechanism_id)
+                self.tree.create_node(
+                    tag=_mechanism.description,
+                    identifier=_node_id,
+                    parent=parent_id,
+                    data=_mechanism)
+
+                self._do_add_oploads(_mechanism.mechanism_id, _node_id)
+
+        return self.tree
+
+    def _do_add_oploads(self, mechanism_id, parent_id):
+        """
+        Add the operating loads to Physics of Failure tree for Mechanism ID.
+
+        :param int mechanism_id: the Mechanism ID to add the operating loads
+                                 to.
+        :param str parent_id: the Node ID to add the operating loads to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _oploads = self.dtm_opload.do_select_all(parent_id=mechanism_id).nodes
         for _key in _oploads:
             _opload = _oploads[_key].data
             if _opload is not None:
@@ -586,6 +625,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
                     data=_opload)
 
                 self._do_add_opstress(_opload.load_id, _node_id)
+                self._do_add_test_methods(_opload.load_id, _node_id)
 
         return _return
 
@@ -600,38 +640,37 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         """
         _return = False
 
-        _opstresses = self.dtm_opstress.select_all(load_id).nodes
+        _opstresses = self.dtm_opstress.do_select_all(parent_id=load_id).nodes
 
         for _key in _opstresses:
             _opstress = _opstresses[_key].data
             if _opstress is not None:
-                _node_id = '{0:s}.{1:d}'.format(parent_id, _opstress.stress_id)
+                _node_id = '{0:s}.{1:d}s'.format(parent_id,
+                                                 _opstress.stress_id)
                 self.tree.create_node(
                     tag=_opstress.description,
                     identifier=_node_id,
                     parent=parent_id,
                     data=_opstress)
 
-                self._do_add_test_methods(_opstress.stress_id, _node_id)
-
         return _return
 
-    def _do_add_test_methods(self, stress_id, parent_id):
+    def _do_add_test_methods(self, load_id, parent_id):
         """
         Add the test methods to the PhysicsOfFailure tree for Stress ID.
 
-        :param int stress_id: the Stress ID to add the test method to.
+        :param int load_id: the Operating Load ID to add the test method to.
         :param str parent_id: the Node ID to add the test method to.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _methods = self.dtm_testmethod.select_all(stress_id).nodes
+        _methods = self.dtm_testmethod.do_select_all(parent_id=load_id).nodes
         for _key in _methods:
             _method = _methods[_key].data
             if _method is not None:
-                _node_id = '{0:s}.{1:d}'.format(parent_id, _method.test_id)
+                _node_id = '{0:s}.{1:d}t'.format(parent_id, _method.test_id)
                 self.tree.create_node(
                     tag=_method.description,
                     identifier=_node_id,
@@ -640,7 +679,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
         return _return
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add an entity to the PhysicsOfFailure and RTK Program database..
 
@@ -668,24 +707,26 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         _level = kwargs['level']
 
         if _level == 'opload':
-            _error_code, _msg = self.dtm_opload.insert(mechanism_id=_entity_id)
-            _entity = self.dtm_opload.select(self.dtm_opload.last_id)
+            _error_code, _msg = self.dtm_opload.do_insert(
+                mechanism_id=_entity_id)
+            _entity = self.dtm_opload.do_select(self.dtm_opload.last_id)
             _tag = 'OpLoad'
             _node_id = '{0:s}.{1:d}'.format(_parent_id,
                                             self.dtm_opload.last_id)
         elif _level == 'opstress':
-            _error_code, _msg = self.dtm_opstress.insert(load_id=_entity_id)
-            _entity = self.dtm_opstress.select(self.dtm_opstress.last_id)
+            _error_code, _msg = self.dtm_opstress.do_insert(load_id=_entity_id)
+            _entity = self.dtm_opstress.do_select(self.dtm_opstress.last_id)
             _tag = 'OpStress'
-            _node_id = '{0:s}.{1:d}'.format(_parent_id,
-                                            self.dtm_opstress.last_id)
+            _node_id = '{0:s}.{1:d}s'.format(_parent_id,
+                                             self.dtm_opstress.last_id)
         elif _level == 'testmethod':
-            _error_code, _msg = self.dtm_testmethod.insert(
-                stress_id=_entity_id)
-            _entity = self.dtm_testmethod.select(self.dtm_testmethod.last_id)
+            _error_code, _msg = self.dtm_testmethod.do_insert(
+                load_id=_entity_id)
+            _entity = self.dtm_testmethod.do_select(
+                self.dtm_testmethod.last_id)
             _tag = 'TestMethod'
-            _node_id = '{0:s}.{1:d}'.format(_parent_id,
-                                            self.dtm_testmethod.last_id)
+            _node_id = '{0:s}.{1:d}t'.format(_parent_id,
+                                             self.dtm_testmethod.last_id)
         else:
             _error_code = 2005
             _msg = ('RTK ERROR: Attempted to add an item to the Physics of '
@@ -703,7 +744,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove record from the RTKOpLoad, RTKOpStress, or RTKTestMethod table.
 
@@ -712,7 +753,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -722,7 +763,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -730,7 +771,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -739,7 +780,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKControl table records in the RTK Program database.
 
@@ -747,19 +788,21 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all Controls in the PhysicsOfFailure.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.identifier)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.fmea.Model.PhysicsOfFailureDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.fmea.Model.PhysicsOfFailureDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the damage "
+                        "modeling worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all line items in the damage "
+                    "modeling worksheet.")
 
         return _error_code, _msg

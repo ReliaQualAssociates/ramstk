@@ -41,7 +41,7 @@ class RTKModel(RTK_BASE):
             'description': self.description,
             'model_type': self.model_type
         }
-        print _attributes
+
         return _attributes
 
     def set_attributes(self, attributes):

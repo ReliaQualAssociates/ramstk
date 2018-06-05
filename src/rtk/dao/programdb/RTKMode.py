@@ -95,6 +95,9 @@ class RTKMode(RTK_BASE):
     is_cause = False
     is_control = False
     is_action = False
+    is_opload = False
+    is_opstress = False
+    is_testmethod = False
 
     def get_attributes(self):
         """

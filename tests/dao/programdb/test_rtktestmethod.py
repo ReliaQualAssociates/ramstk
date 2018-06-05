@@ -19,7 +19,7 @@ ATTRIBUTES = {
     'remarks': '',
     'test_id': 1,
     'boundary_conditions': u'',
-    'stress_id': 1,
+    'load_id': 1,
     'description': u'Test Test Method'
 }
 
@@ -35,7 +35,7 @@ def test_rtkopstress_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_test_method'
-    assert DUT.stress_id == 1
+    assert DUT.load_id == 1
     assert DUT.test_id == 1
     assert DUT.description == 'Test Test Method'
     assert DUT.boundary_conditions == ''
@@ -53,7 +53,7 @@ def test_get_attributes(test_dao):
 
     assert isinstance(_attributes, dict)
 
-    assert _attributes['stress_id'] == 1
+    assert _attributes['load_id'] == 1
     assert _attributes['test_id'] == 1
     assert _attributes['description'] == 'Test Test Method'
     assert _attributes['boundary_conditions'] == ''
@@ -71,7 +71,7 @@ def test_set_attributes(test_dao):
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating RTKTestMethod {0:d} "
-                    "attributes.".format(DUT.stress_id))
+                    "attributes.".format(DUT.load_id))
 
 
 @pytest.mark.integration
