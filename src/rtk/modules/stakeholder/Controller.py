@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.stakeholder.Controller.py is part of The RTK Project
+#       rtk.modules.stakeholder.Controller.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -51,7 +51,7 @@ class StakeholderDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_insert(self, revision_id):
+    def request_do_insert(self, **kwargs):
         """
         Request to add an RTKStakeholder table record.
 
@@ -64,8 +64,9 @@ class StakeholderDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id)
+        _revision_id = kwargs['revision_id']
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=_revision_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
@@ -81,7 +82,7 @@ class StakeholderDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, stakeholder_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete an RTKStakeholder table record.
 
@@ -89,12 +90,12 @@ class StakeholderDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.delete(stakeholder_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedStakeholder')
 
-    def request_update(self, stakeholder_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKStakeholder table record.
 
@@ -102,29 +103,39 @@ class StakeholderDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update(stakeholder_id)
+        _error_code, _msg = self._dtm_data_model.update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedStakeholder')
 
-    def request_update_all(self):
+    def request_do_update_all(self):
         """
         Request to update all records in the RTKStakeholder table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all()
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_calculate_weight(self, stakeholder_id):
+    def request_do_calculate(self, node_id, **kwargs):
         """
         Request to calculate the Stakeholder input.
 
-        :param int stakeholder_id: the Stakholder ID to calculate.
+        :param int node_id: the PyPubSub Tree() ID of the Stakeholder to
+                            calculate.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtm_data_model.calculate_weight(stakeholder_id)
+        return self._dtm_data_model.do_calculate(node_id, **kwargs)
+
+    def request_do_calculate_all(self, **kwargs):
+        """
+        Request to calculate all Stakeholder inputs.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtm_data_model.do_calculate_all(**kwargs)
