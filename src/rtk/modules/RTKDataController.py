@@ -103,7 +103,7 @@ class RTKDataController(object):
         return self._dtm_data_model.do_select(node_id)
 
     def request_select_all(self, parent_id, **kwargs):
-        return self.request_do_select_all(parent_id, **kwargs)
+        return self.request_do_select_all(**kwargs)
 
     def request_do_select_all(self, **kwargs):
         """

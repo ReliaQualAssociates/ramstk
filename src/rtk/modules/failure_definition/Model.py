@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.failure_definition.Model.py is part of The RTK Project
+#       rtk.modules.failure_definition.Model.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -44,7 +44,7 @@ class FailureDefinitionDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Failure Definitions from the RTK Program database.
 
@@ -52,15 +52,14 @@ class FailureDefinitionDataModel(RTKDataModel):
         table in the connected RTK Program database.  It then add each to the
         Failure Definition data model treelib.Tree().
 
-        :param int revision_id: the Revision ID to select the Failure
-                                Definition records.
         :return: tree; the treelib Tree() of RTKFailureDefinition data models.
         :rtype: :py:class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _definition in _session.query(RTKFailureDefinition).filter(
-                RTKFailureDefinition.revision_id == revision_id).all():
+                RTKFailureDefinition.revision_id == _revision_id).all():
             self.tree.create_node(
                 _definition.definition,
                 _definition.definition_id,
@@ -75,19 +74,17 @@ class FailureDefinitionDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKFailureDefinition table.
 
-        :param int revision_id: the Revision ID to add the Failure
-                                Definition against.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _revision_id = kwargs['revision_id']
         _definition = RTKFailureDefinition()
         _definition.revision_id = _revision_id
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _definition,
             ])
@@ -102,7 +99,7 @@ class FailureDefinitionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKFailureDefinition table.
 
@@ -111,7 +108,7 @@ class FailureDefinitionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -124,7 +121,7 @@ class FailureDefinitionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record in the RTKFailureDefinition table.
 
@@ -133,7 +130,7 @@ class FailureDefinitionDataModel(RTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2207
@@ -142,7 +139,7 @@ class FailureDefinitionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Upsate all RTKFailureDefinition records.
 
@@ -154,7 +151,7 @@ class FailureDefinitionDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.definition_id)
+                _error_code, _msg = self.do_update(_node.data.definition_id)
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
