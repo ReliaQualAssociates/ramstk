@@ -62,22 +62,22 @@ def test_create_data_model(test_dao):
 
 
 @pytest.mark.integration
-def test_select_all(test_dao):
-    """ select_all() should return a Tree() object populated with RTKRevision instances on success. """
+def test_do_select_all(test_dao):
+    """ do_select_all() should return a Tree() object populated with RTKRevision instances on success. """
     DUT = dtmRevision(test_dao)
-    _tree = DUT.select_all(None)
+    _tree = DUT.do_select_all()
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(1).data, RTKRevision)
 
 
 @pytest.mark.integration
-def test_select(test_dao):
-    """  select() should return an instance of the RTKRevision data model on success. """
+def test_do_select(test_dao):
+    """  do_select() should return an instance of the RTKRevision data model on success. """
     DUT = dtmRevision(test_dao)
-    DUT.select_all(None)
+    DUT.do_select_all()
 
-    _revision = DUT.select(1)
+    _revision = DUT.do_select(1)
 
     assert isinstance(_revision, RTKRevision)
     assert _revision.revision_id == 1
@@ -85,23 +85,23 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-def test_select_non_existent_id(test_dao):
-    """ select() should return None when a non-existent Revision ID is requested. """
+def test_do_select_non_existent_id(test_dao):
+    """ do_select() should return None when a non-existent Revision ID is requested. """
     DUT = dtmRevision(test_dao)
-    DUT.select_all(None)
+    DUT.do_select_all()
 
-    _revision = DUT.select(100)
+    _revision = DUT.do_select(100)
 
     assert _revision is None
 
 
 @pytest.mark.integration
-def test_insert(test_dao):
-    """ insert() should return False on success. """
+def test_do_insert(test_dao):
+    """ do_insert() should return False on success. """
     DUT = dtmRevision(test_dao)
-    DUT.select_all(None)
+    DUT.do_select_all()
 
-    _error_code, _msg = DUT.insert()
+    _error_code, _msg = DUT.do_insert()
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
@@ -110,13 +110,13 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-def test_delete(test_dao):
-    """ delete() should return a zero error code on success. """
+def test_do_delete(test_dao):
+    """ do_delete() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
-    DUT.select_all(None)
-    DUT.insert()
+    DUT.do_select_all()
+    DUT.do_insert()
 
-    _error_code, _msg = DUT.delete(DUT.last_id)
+    _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
@@ -124,12 +124,12 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-def test_delete_non_existent_id(test_dao):
-    """ delete() should return a non-zero error code when passed a Revision ID that doesn't exist. """
+def test_do_delete_non_existent_id(test_dao):
+    """ do_delete() should return a non-zero error code when passed a Revision ID that doesn't exist. """
     DUT = dtmRevision(test_dao)
-    DUT.select_all(None)
+    DUT.do_select_all()
 
-    _error_code, _msg = DUT.delete(300)
+    _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
     assert _msg == ("  RTK ERROR: Attempted to delete non-existent Revision "
@@ -137,27 +137,27 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update(test_dao):
-    """ update() should return a zero error code on success. """
+def test_do_update(test_dao):
+    """ do_update() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
-    DUT.select_all(None)
+    DUT.do_select_all()
 
     _revision = DUT.tree.get_node(1).data
     _revision.availability_logistics = 0.9832
 
-    _error_code, _msg = DUT.update(1)
+    _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
 
 
 @pytest.mark.integration
-def test_update_non_existent_id(test_dao):
-    """ update() should return a non-zero error code when passed a Revision ID that doesn't exist. """
+def test_do_update_non_existent_id(test_dao):
+    """ do_update() should return a non-zero error code when passed a Revision ID that doesn't exist. """
     DUT = dtmRevision(test_dao)
-    DUT.select_all(None)
+    DUT.do_select_all()
 
-    _error_code, _msg = DUT.update(100)
+    _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
     assert _msg == ("RTK ERROR: Attempted to save non-existent Revision ID "
@@ -165,15 +165,15 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update_all(test_dao):
-    """ update_all() should return a zero error code on success. """
+def test_do_update_all(test_dao):
+    """ do_update_all() should return a zero error code on success. """
     DUT = dtmRevision(test_dao)
-    DUT.select_all(None)
+    DUT.do_select_all()
 
-    _error_code, _msg = DUT.update_all()
+    _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all Revisions.")
 
 
 @pytest.mark.integration
@@ -186,30 +186,30 @@ def test_create_data_controller(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_request_select_all(test_dao, test_configuration):
-    """ request_select_all() should return a Tree of RTKRevision models. """
+def test_request_do_select_all(test_dao, test_configuration):
+    """ request_do_select_all() should return a Tree of RTKRevision models. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    _tree = DUT.request_select_all(1)
+    _tree = DUT.request_do_select_all()
 
     assert isinstance(_tree.get_node(1).data, RTKRevision)
 
 
 @pytest.mark.integration
-def test_request_select(test_dao, test_configuration):
-    """ request_select() should return an RTKRevision model. """
+def test_request_do_select(test_dao, test_configuration):
+    """ request_do_select() should return an RTKRevision model. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(1)
+    DUT.request_do_select_all()
 
-    _revision = DUT.request_select(1)
+    _revision = DUT.request_do_select(1)
 
     assert isinstance(_revision, RTKRevision)
 
 
 @pytest.mark.integration
 def test_request_non_existent_id(test_dao, test_configuration):
-    """ request_select() should return None when requesting a Revision that doesn't exist. """
+    """ request_do_select() should return None when requesting a Revision that doesn't exist. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    _revision = DUT.request_select(100)
+    _revision = DUT.request_do_select(100)
 
     assert _revision is None
 
@@ -218,7 +218,7 @@ def test_request_non_existent_id(test_dao, test_configuration):
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(None)
+    DUT.request_do_select_all()
 
     _attributes = DUT.request_get_attributes(1)
 
@@ -230,7 +230,7 @@ def test_request_get_attributes(test_dao, test_configuration):
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(None)
+    DUT.request_do_select_all()
 
     _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
 
@@ -242,7 +242,7 @@ def test_request_set_attributes(test_dao, test_configuration):
 def test_request_last_id(test_dao, test_configuration):
     """ request_last_id() should return the last Revision ID used in the RTK Program database. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(None)
+    DUT.request_do_select_all()
 
     _last_id = DUT.request_last_id()
 
@@ -250,57 +250,57 @@ def test_request_last_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_request_insert(test_dao, test_configuration):
-    """ request_insert() should return False on success."""
+def test_request_do_insert(test_dao, test_configuration):
+    """ request_do_insert() should return False on success."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(1)
+    DUT.request_do_select_all()
 
-    assert not DUT.request_insert()
+    assert not DUT.request_do_insert()
 
-    DUT.request_delete(DUT.request_last_id())
+    DUT.request_do_delete(DUT.request_last_id())
 
 
 @pytest.mark.integration
-def test_request_delete(test_dao, test_configuration):
-    """ request_delete() should return False on success."""
+def test_request_do_delete(test_dao, test_configuration):
+    """ request_do_delete() should return False on success."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(1)
-    DUT.request_insert()
+    DUT.request_do_select_all()
+    DUT.request_do_insert()
 
-    assert not DUT.request_delete(DUT.request_last_id())
+    assert not DUT.request_do_delete(DUT.request_last_id())
 
 
 @pytest.mark.integration
-def test_request_delete_non_existent_id(test_dao, test_configuration):
-    """ request_delete() should return True when attempting to delete a non-existent Revision."""
+def test_request_do_delete_non_existent_id(test_dao, test_configuration):
+    """ request_do_delete() should return True when attempting to delete a non-existent Revision."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(1)
+    DUT.request_do_select_all()
 
-    assert DUT.request_delete(100)
+    assert DUT.request_do_delete(100)
 
 
 @pytest.mark.integration
-def test_request_update(test_dao, test_configuration):
-    """ request_update() should return False on success. """
+def test_request_do_update(test_dao, test_configuration):
+    """ request_do_update() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(1)
+    DUT.request_do_select_all()
 
-    assert not DUT.request_update(DUT.request_last_id())
+    assert not DUT.request_do_update(DUT.request_last_id())
 
 
 @pytest.mark.integration
-def test_request_update_non_existent_id(test_dao, test_configuration):
-    """ request_update() should return True when attempting to save a non-existent Revision. """
+def test_request_do_update_non_existent_id(test_dao, test_configuration):
+    """ request_do_update() should return True when attempting to save a non-existent Revision. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(1)
+    DUT.request_do_select_all()
 
-    assert DUT.request_update(100)
+    assert DUT.request_do_update(100)
 
 
 @pytest.mark.integration
-def test_request_update_all(test_dao, test_configuration):
-    """ request_update_all() should return False on success. """
+def test_request_do_update_all(test_dao, test_configuration):
+    """ request_do_update_all() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_select_all(1)
+    DUT.request_do_select_all()
 
-    assert not DUT.request_update_all()
+    assert not DUT.request_do_update_all()

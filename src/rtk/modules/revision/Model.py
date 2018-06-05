@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.revision.Model.py is part of The RTK Project
+#       rtk.modules.revision.Model.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -43,7 +43,7 @@ class RevisionDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id):  # pylint: disable=unused-argument
+    def do_select_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Retrieve all the Revisions from the RTK Program database.
 
@@ -51,12 +51,10 @@ class RevisionDataModel(RTKDataModel):
         connected RTK Program database.  It then add each to the Revision data
         model treelib.Tree().
 
-        :param int revision_id: unused, only required for compatibility with
-                                underlying RTKDataModel.
         :return: tree; the Tree() of RTKRevision data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _session = RTKDataModel.do_select_all(self)
 
         for _revision in _session.query(RTKRevision).all():
             # We get and then set the attributes to replace any None values
@@ -77,7 +75,7 @@ class RevisionDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Add a record to the RTKRevision table.
 
@@ -85,7 +83,7 @@ class RevisionDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _revision = RTKRevision()
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _revision,
             ])
@@ -103,7 +101,7 @@ class RevisionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKRevision table.
 
@@ -112,7 +110,7 @@ class RevisionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -125,7 +123,7 @@ class RevisionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -133,7 +131,7 @@ class RevisionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -142,7 +140,7 @@ class RevisionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKRevision table records in the RTK Program database.
 
@@ -154,15 +152,15 @@ class RevisionDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.revision_id)
+                _error_code, _debug_msg = self.update(_node.data.revision_id)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.revision.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.revision.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more Revisions did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all Revisions.")
 
         return _error_code, _msg

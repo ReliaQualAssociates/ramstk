@@ -91,24 +91,29 @@ class RTKDataController(object):
         return _return
 
     def request_select(self, node_id):
+        return self.request_do_select(node_id)
+
+    def request_do_select(self, node_id):
         """
         Request the RTK Program database record associated with Node ID.
 
         :param int node_id: the Node ID to retrieve from the Tree.
         :return: the RTK Program database record requested.
         """
-        return self._dtm_data_model.select(node_id)
+        return self._dtm_data_model.do_select(node_id)
 
     def request_select_all(self, parent_id, **kwargs):
+        return self.request_do_select_all(parent_id, **kwargs)
+
+    def request_do_select_all(self, **kwargs):
         """
         Retrieve the treelib Tree() from the Data Model.
 
-        :param int parent_id: the Parent ID to select the entities for.
         :return: tree; the treelib Tree() of RTKRequirement models in the
                  Requirement tree.
         :rtype: dict
         """
-        return self._dtm_data_model.select_all(parent_id, **kwargs)
+        return self._dtm_data_model.do_select_all(**kwargs)
 
     def request_get_attributes(self, node_id):
         """

@@ -51,14 +51,14 @@ class RevisionDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_insert(self):
+    def request_do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request to add an RTKRevision table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert()
+        _error_code, _msg = self._dtm_data_model.do_insert()
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
@@ -74,40 +74,40 @@ class RevisionDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, revision_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete an RTKRevision table record.
 
-        :param int revision_id: the Revision ID to delete.
+        :param int node_id: the PyPubSub Tree() ID to delete.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.delete(revision_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedRevision')
 
-    def request_update(self, revision_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKRevision table record.
 
-        :param int revision_id: the ID of the revision to save.
+        :param int node_id: the PyPubSub Tree() ID of the Revision to save.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update(revision_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedRevision')
 
-    def request_update_all(self):
+    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request to update all records in the RTKRevision table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all()
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
