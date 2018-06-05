@@ -59,7 +59,7 @@ class RequirementDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_select_all_matrix(self, revision_id, matrix_type):
+    def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Requirement module.
 
@@ -118,21 +118,17 @@ class RequirementDataController(RTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_insert(self, revision_id, parent_id):
+    def request_do_insert(self, **kwargs):
         """
         Request to add an RTKRequirement table record.
 
-        :param int revision_id: the ID of the Revision to add the new
-                                Requirement to.
-        :param int parent_id: the ID of the parent Requirement to add the new
-                              Requirement to.
-        :keyword bool sibling: indicates whether or not to insert a sibling
-                               (default) or child (derived) Requirement.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id, parent_id=parent_id)
+        _revision_id = kwargs['revision_id']
+        _parent_id = kwargs['parent_id']
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=_revision_id, parent_id=_parent_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
@@ -141,7 +137,7 @@ class RequirementDataController(RTKDataController):
                 pub.sendMessage(
                     'insertedRequirement',
                     requirement_id=self._dtm_data_model.last_id,
-                    parent_id=parent_id)
+                    parent_id=_parent_id)
         else:
             _msg = _msg + '  Failed to add a new Requirement to the RTK ' \
                 'Program database.'
@@ -149,7 +145,8 @@ class RequirementDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_insert_matrix(self, matrix_type, item_id, heading, row=True):
+    def request_do_insert_matrix(self, matrix_type, item_id, heading,
+                                 row=True):
         """
         Request the to add a new row or column to the Data Matrix.
 
@@ -188,20 +185,21 @@ class RequirementDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, requirement_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete an RTKRequirement table record.
 
-        :param int requirement_id: the Requirement ID to delete.
+        :param str node_id: the PyPubSub Tree() ID of the Requirement to
+                            delete.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.delete(requirement_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedRequirement')
 
-    def request_delete_matrix(self, matrix_type, item_id, row=True):
+    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
         Request to remove a row or column from the selected Data Matrix.
 
@@ -232,20 +230,20 @@ class RequirementDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedMatrix')
 
-    def request_update(self, requirement_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKRequirement table record.
 
-        :param int requirement_id: the ID of the requirement to save.
+        :param str node_id: the PyPubSub Tree() ID of the Requirement to save.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update(requirement_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedRequirement')
 
-    def request_update_matrix(self, revision_id, matrix_type):
+    def request_do_update_matrix(self, revision_id, matrix_type):
         """
         Request to update the selected Data Matrix.
 
@@ -278,14 +276,14 @@ class RequirementDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedMatrix')
 
-    def request_update_all(self):
+    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request to update all records in the RTKRequirement table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all()
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
