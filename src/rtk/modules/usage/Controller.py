@@ -52,7 +52,7 @@ class UsageProfileDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_insert(self, entity_id, parent_id, level):
+    def request_do_insert(self, **kwargs):
         """
         Request to add a RTKMission, RTKMissionPhase, or RTKEnvironment record.
 
@@ -70,8 +70,11 @@ class UsageProfileDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(
-            entity_id=entity_id, parent_id=parent_id, level=level)
+        _entity_id = kwargs['entity_id']
+        _parent_id = kwargs['parent_id']
+        _level = kwargs['level']
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            entity_id=_entity_id, parent_id=_parent_id, level=_level)
 
         # If the add was successful log the success message to the user log.
         # Otherwise, update the error message and write it to the debug log.
@@ -79,11 +82,11 @@ class UsageProfileDataController(RTKDataController):
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self._test:
-                if level == 0:
+                if _level == 0:
                     pub.sendMessage('addedMission')
-                elif level == 1:
+                elif _level == 1:
                     pub.sendMessage('addedPhase')
-                elif level == 2:
+                elif _level == 2:
                     pub.sendMessage('addedEnvironment')
 
         else:
@@ -94,7 +97,7 @@ class UsageProfileDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, node_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete a RTKMission, RTKMissionPhase, or RTKEnvironment.
 
@@ -103,12 +106,12 @@ class UsageProfileDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.delete(node_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_update(self, node_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKMission, RTKMissionPhase, or RTKEnvironment.
 
@@ -116,37 +119,37 @@ class UsageProfileDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update(node_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_update_all(self):
+    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request to update all records in the Usage Profile tables.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_last_id(self, entity):
+    def request_last_id(self, **kwargs):
         """
         Request the last Mission, Mission Phase, or Environment ID used.
 
-        :param int node_id: the ID of the entity to request the last ID from.
-        :param str entity: the type of entity to request the last ID from.
         :return: the last Mission, Mission Phase, or Environment ID used.
         :rtype: int
         """
-        if entity == 'mission':
+        _entity = kwargs['entity']
+
+        if _entity == 'mission':
             _last_id = self._dtm_data_model.dtm_mission.last_id
-        elif entity == 'phase':
+        elif _entity == 'phase':
             _last_id = self._dtm_data_model.dtm_phase.last_id
-        elif entity == 'environment':
+        elif _entity == 'environment':
             _last_id = self._dtm_data_model.dtm_environment.last_id
         else:
             _last_id = None
