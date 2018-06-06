@@ -63,7 +63,7 @@ class ValidationDataModel(RTKDataModel):
                 tree.DuplicatedNodeIdError):
             pass
 
-    def select_all(self, revision_id):  # pragma: no cover
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Validations from the RTK Program database.
 
@@ -71,15 +71,14 @@ class ValidationDataModel(RTKDataModel):
         the connected RTK Program database.  It then add each to the Validation
         data model treelib.Tree().
 
-        :param int revision_id: the Revision ID to select the Validation tasks
-                                for.
         :return: tree; the Tree() of RTKValidation data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _validation in _session.query(RTKValidation).filter(
-                RTKValidation.revision_id == revision_id).all():
+                RTKValidation.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _validation.get_attributes()
@@ -97,7 +96,7 @@ class ValidationDataModel(RTKDataModel):
         # Now select all the status updates.
         _today = False
         for _status in _session.query(RTKProgramStatus).filter(
-                RTKProgramStatus.revision_id == revision_id).all():
+                RTKProgramStatus.revision_id == _revision_id).all():
             _attributes = _status.get_attributes()
             _status.set_attributes(_attributes)
             try:
@@ -113,9 +112,9 @@ class ValidationDataModel(RTKDataModel):
 
         if not _today:
             _status = RTKProgramStatus()
-            _status.revision_id = revision_id
+            _status.revision_id = _revision_id
             _status.date_status = date.today()
-            _error_code, _msg = RTKDataModel.insert(
+            _error_code, _msg = RTKDataModel.do_insert(
                 self, entities=[
                     _status,
                 ])
@@ -131,7 +130,7 @@ class ValidationDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Add a record to the RTKValidation table.
 
@@ -140,7 +139,7 @@ class ValidationDataModel(RTKDataModel):
         """
         _validation = RTKValidation()
         _validation.revision_id = kwargs['revision_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _validation,
             ])
@@ -158,7 +157,7 @@ class ValidationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKValidation table.
 
@@ -167,7 +166,7 @@ class ValidationDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -180,7 +179,7 @@ class ValidationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -188,7 +187,7 @@ class ValidationDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -197,7 +196,7 @@ class ValidationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):
         """
         Update all RTKValidation table records in the RTK Program database.
 
@@ -209,7 +208,8 @@ class ValidationDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.validation_id)
+                _error_code, _msg = self.do_update(_node.data.validation_id,
+                                                   **kwargs)
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
@@ -222,7 +222,7 @@ class ValidationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_status(self):
+    def do_update_status(self):
         """
         Update the overall program Validation status.
 
@@ -254,38 +254,29 @@ class ValidationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def calculate_costs(self, validation_id):
+    def do_calculate(self, node_id, **kwargs):
         """
         Calculate task cost metrics.
 
         This method calculate mean, lower bound, upper bound, and standard
         error on task costs.
 
-        :param int validation_id: the Validation ID to calculate.
+        :param int node_id: the PyPubSub Tree() ID of the Validation to
+                            calculate.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _validation = self.tree.get_node(validation_id).data
+        _metric = kwargs['metric']
+        _validation = self.tree.get_node(node_id).data
 
-        return _validation.calculate_task_cost()
+        if _metric == 'cost':
+            _return = _validation.calculate_task_cost()
+        elif _metric == 'time':
+            _return = _validation.calculate_task_time()
 
-    def calculate_time(self, validation_id):
-        """
-        Calculate task time metrics.
+        return _return
 
-        This method calculate mean, lower bound, upper bound, and standard
-        error on task time.
-
-        :param int validation_id: the Validation ID to calculate.
-        :param float mission_time: the time over which to calculate costs.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _validation = self.tree.get_node(validation_id).data
-
-        return _validation.calculate_task_time()
-
-    def calculate_program(self):
+    def do_calculate_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Calculate the overall cost and time of all validation tasks.
 
@@ -305,11 +296,11 @@ class ValidationDataModel(RTKDataModel):
         _status = self.status_tree.get_node(date_to_ordinal(date.today())).data
 
         for _node in self.tree.children(0):
-            self.calculate_costs(_node.data.validation_id)
+            self.do_calculate(_node.data.validation_id, metric='cost')
             _cost_minimum += _node.data.cost_minimum
             _cost_average += _node.data.cost_average
             _cost_maximum += _node.data.cost_maximum
-            self.calculate_time(_node.data.validation_id)
+            self.do_calculate(_node.data.validation_id, metric='time')
             _time_minimum += _node.data.time_minimum
             _time_average += _node.data.time_average
             _time_maximum += _node.data.time_maximum
@@ -325,7 +316,7 @@ class ValidationDataModel(RTKDataModel):
 
         return (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean, _time_ul)
 
-    def assessments(self):
+    def get_assessment_points(self):
         """
         Get the dates, minimum, and maximum values for reliability assessments.
 
@@ -345,7 +336,7 @@ class ValidationDataModel(RTKDataModel):
 
         return _assessment_dates, _targets
 
-    def planned_burndown(self):
+    def get_planned_burndown(self):
         """
         Get the planned burndown curve dates and task times.
 
@@ -399,7 +390,7 @@ class ValidationDataModel(RTKDataModel):
         return SortedDict(_y_minimum), SortedDict(_y_average), SortedDict(
             _y_maximum)
 
-    def actual_burndown(self):
+    def get_actual_burndown(self):
         """
         Get the actual burndown curve dates and task times.
 
