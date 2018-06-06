@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.function.Controller.py is part of The RTK Project
+#       rtk.modules.function.Controller.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -55,7 +55,7 @@ class FunctionDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_select_all_matrix(self, revision_id, matrix_type):
+    def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Function.
 
@@ -90,15 +90,17 @@ class FunctionDataController(RTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_insert(self, revision_id=0, parent_id=0):
+    def request_do_insert(self, **kwargs):
         """
         Request to add an RTKFunction table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id, parent_id=parent_id)
+        _revision_id = kwargs['revision_id']
+        _parent_id = kwargs['parent_id']
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=_revision_id, parent_id=_parent_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
@@ -114,7 +116,8 @@ class FunctionDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_insert_matrix(self, matrix_type, item_id, heading, row=True):
+    def request_do_insert_matrix(self, matrix_type, item_id, heading,
+                                 row=True):
         """
         Request the to add a new row or column to the Data Matrix.
 
@@ -147,20 +150,20 @@ class FunctionDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, function_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete an RTKFunction table record.
 
-        :param int function_id: the Function ID to delete.
+        :param int node_id: the PyPubSub Tree() ID of the Function to delete.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.delete(function_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedFunction')
 
-    def request_delete_matrix(self, matrix_type, item_id, row=True):
+    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
         Request to remove a row or column from the selected Data Matrix.
 
@@ -185,20 +188,20 @@ class FunctionDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedMatrix')
 
-    def request_update(self, function_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKFunction table record.
 
-        :param int function_id: the ID of the function to save.
+        :param int node_id: the PyPubSub Tree() ID of the Function to save.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update(function_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedFunction')
 
-    def request_update_matrix(self, revision_id, matrix_type):
+    def request_do_update_matrix(self, revision_id, matrix_type):
         """
         Request to update the selected Data Matrix.
 
@@ -219,14 +222,14 @@ class FunctionDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedMatrix')
 
-    def request_update_all(self):
+    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request to update all records in the RTKFunction table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all()
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
