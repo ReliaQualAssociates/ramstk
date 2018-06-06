@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Test class for testing the Allocation class."""
+"""Test class for testing the Allocation class. """
 
 import pytest
 
@@ -31,22 +31,22 @@ def test_create_allocation_data_model(test_dao):
 
 
 @pytest.mark.integration
-def test_select_all(test_dao):
-    """select_all() should return a treelib Tree() on success when selecting Allocations."""
+def test_do_select_all(test_dao):
+    """ do_select_all() should return a treelib Tree() on success when selecting Allocations. """
     DUT = dtmAllocation(test_dao)
-    _tree = DUT.select_all(1)
+    _tree = DUT.do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(2).data, RTKAllocation)
 
 
 @pytest.mark.integration
-def test_select(test_dao):
-    """select() should return an instance of the RTKAllocation data model on success."""
+def test_do_select(test_dao):
+    """ do_select() should return an instance of the RTKAllocation data model on success. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _allocation = DUT.select(2)
+    _allocation = DUT.do_select(2)
 
     assert isinstance(_allocation, RTKAllocation)
     assert _allocation.hardware_id == 2
@@ -55,23 +55,23 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-def test_select_non_existent_id(test_dao):
-    """select() should return None when a non-existent Allocation ID is requested."""
+def test_do_select_non_existent_id(test_dao):
+    """ do_select() should return None when a non-existent Allocation ID is requested. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _allocation = DUT.select(100)
+    _allocation = DUT.do_select(100)
 
     assert _allocation is None
 
 
 @pytest.mark.integration
-def test_select_children(test_dao):
-    """select_children() should return the immediate subtree of the passed node ID."""
+def test_do_select_children(test_dao):
+    """ do_select_children() should return the immediate subtree of the passed node ID. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _nodes = DUT.select_children(1)
+    _nodes = DUT.do_select_children(1)
 
     assert isinstance(_nodes, list)
     assert isinstance(_nodes[0].data, RTKAllocation)
@@ -79,12 +79,13 @@ def test_select_children(test_dao):
 
 
 @pytest.mark.integration
-def test_insert(test_dao):
-    """insert() should return a zero error code on success."""
+def test_do_insert(test_dao):
+    """ do_insert() should return a zero error code on success. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _error_code, _msg = DUT.insert(revision_id=1, hardware_id=9, parent_id=1)
+    _error_code, _msg = DUT.do_insert(
+        revision_id=1, hardware_id=9, parent_id=1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
@@ -93,12 +94,12 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-def test_delete(test_dao):
-    """delete() should return a zero error code on success."""
+def test_do_delete(test_dao):
+    """ do_delete() should return a zero error code on success. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _error_code, _msg = DUT.delete(DUT.last_id)
+    _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
@@ -107,12 +108,12 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-def test_delete_non_existent_id(test_dao):
-    """delete() should return a non-zero error code when passed a Revision ID that doesn't exist."""
+def test_do_delete_non_existent_id(test_dao):
+    """ do_delete() should return a non-zero error code when passed a Revision ID that doesn't exist. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _error_code, _msg = DUT.delete(300)
+    _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
     assert _msg == ("  RTK ERROR: Attempted to delete non-existent Allocation "
@@ -120,27 +121,27 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update(test_dao):
-    """update() should return a zero error code on success."""
+def test_do_update(test_dao):
+    """ do_update() should return a zero error code on success. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _allocation = DUT.select(1)
+    _allocation = DUT.do_select(1)
     _allocation.n_sub_systems = 2
 
-    _error_code, _msg = DUT.update(1)
+    _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
 
 
 @pytest.mark.integration
-def test_update_non_existent_id(test_dao):
-    """update() should return a non-zero error code when passed an Allocation ID that doesn't exist."""
+def test_do_update_non_existent_id(test_dao):
+    """ do_update() should return a non-zero error code when passed an Allocation ID that doesn't exist. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _error_code, _msg = DUT.update(100)
+    _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2207
     assert _msg == ("RTK ERROR: Attempted to save non-existent Allocation "
@@ -148,28 +149,28 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update_all(test_dao):
-    """update_all() should return a zero error code on success."""
+def test_do_update_all(test_dao):
+    """ do_update_all() should return a zero error code on success. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _error_code, _msg = DUT.update_all()
+    _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
 
 
 @pytest.mark.integration
-def test_equal_apportionment(test_dao):
-    """calculate() should return False on success when using equal apportionment."""
+def test_do_calculate_equal_apportionment(test_dao):
+    """ do_calculate() should return False on success when using equal apportionment. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _parent = DUT.select(1)
+    _parent = DUT.do_select(1)
     _parent.reliability_goal = 0.99975
-    _children = DUT.select_children(1)
+    _children = DUT.do_select_children(1)
 
-    assert not DUT.calculate(1)
+    assert not DUT.do_calculate(1)
     assert _parent.hazard_rate_goal == pytest.approx(2.5003126e-06)
     assert _parent.mtbf_goal == pytest.approx(399949.9979165)
     for _child in _children:
@@ -178,22 +179,22 @@ def test_equal_apportionment(test_dao):
 
 
 @pytest.mark.integration
-def test_agree_apportionment(test_dao):
-    """calculate() should return False on success when using AGREE apportionment."""
+def test_do_calculate_agree_apportionment(test_dao):
+    """ do_calculate() should return False on success when using AGREE apportionment. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
-    _parent = DUT.select(1)
+    _parent = DUT.do_select(1)
     _parent.method_id = 2
     _parent.reliability_goal = 0.99975
-    _children = DUT.select_children(1)
+    _children = DUT.do_select_children(1)
 
     _children[0].data.weight_factor = 0.2
     _children[1].data.weight_factor = 0.4
     _children[2].data.weight_factor = 0.6
     _children[3].data.weight_factor = 0.7
 
-    assert not DUT.calculate(1)
+    assert not DUT.do_calculate(1)
     assert _parent.hazard_rate_goal == pytest.approx(2.5003126e-06)
     assert _parent.mtbf_goal == pytest.approx(399949.9979165)
     assert _children[0].data.reliability_alloc == pytest.approx(0.9996875)
@@ -203,25 +204,25 @@ def test_agree_apportionment(test_dao):
 
 
 @pytest.mark.integration
-def test_arinc_apportionment(test_dao):
-    """calculate() should return False on success when using ARINC apportionment."""
+def test_do_calculate_arinc_apportionment(test_dao):
+    """ do_calculate() should return False on success when using ARINC apportionment. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
     # The [parent, child 1, child 2, child 3, child 4] hazard rates.
     _hazard_rates = [0.005862, 0.000392, 0.000168, 0.0000982, 0.000212]
 
-    _parent = DUT.select(1)
+    _parent = DUT.do_select(1)
     _parent.method_id = 3
     _parent.reliability_goal = 0.99975
-    _children = DUT.select_children(1)
+    _children = DUT.do_select_children(1)
 
     _children[0].data.weight_factor = 0.2
     _children[1].data.weight_factor = 0.4
     _children[2].data.weight_factor = 0.6
     _children[3].data.weight_factor = 0.7
 
-    assert not DUT.calculate(1, _hazard_rates)
+    assert not DUT.do_calculate(1, hazard_rates=_hazard_rates)
     assert _parent.hazard_rate_goal == pytest.approx(2.5003126e-06)
     assert _parent.mtbf_goal == pytest.approx(399949.9979165)
     assert _children[0].data.reliability_alloc == pytest.approx(0.9999833)
@@ -231,19 +232,19 @@ def test_arinc_apportionment(test_dao):
 
 
 @pytest.mark.integration
-def test_foo_apportionment(test_dao):
-    """calculate() should return False on success when using FOO apportionment."""
+def test_do_calculate_foo_apportionment(test_dao):
+    """ do_calculate() should return False on success when using FOO apportionment. """
     DUT = dtmAllocation(test_dao)
-    DUT.select_all(1)
+    DUT.do_select_all(revision_id=1)
 
     # The [parent, child 1, child 2, child 3, child 4] hazard rates.
     _hazard_rates = [0.005862, 0.000392, 0.000168, 0.0000982, 0.000212]
 
-    _parent = DUT.select(1)
+    _parent = DUT.do_select(1)
     _parent.method_id = 4
     _parent.goal_measure_id = 2
     _parent.hazard_rate_goal = 2.5003126e-06
-    _children = DUT.select_children(1)
+    _children = DUT.do_select_children(1)
 
     i = 1
     for _child in _children:
@@ -253,7 +254,7 @@ def test_foo_apportionment(test_dao):
         _child.data.env_factor = i + 1
         i += 1
 
-    assert not DUT.calculate(1)
+    assert not DUT.do_calculate(1)
     assert _parent.weight_factor == 8952
     assert _parent.reliability_goal == pytest.approx(0.99975)
     assert _parent.mtbf_goal == pytest.approx(399949.9979165)
@@ -264,8 +265,17 @@ def test_foo_apportionment(test_dao):
 
 
 @pytest.mark.integration
+def test_do_calculate_all(test_dao):
+    """ do_calculate_all() should return False on success. """
+    DUT = dtmAllocation(test_dao)
+    DUT.do_select_all(revision_id=1)
+
+    assert not DUT.do_calculate_all()
+
+
+@pytest.mark.integration
 def test_create_allocation_data_controller(test_dao, test_configuration):
-    """ __init__ should return instance of Allocation data controller. """
+    """ __init__() should return instance of Allocation data controller. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
 
     assert isinstance(DUT, dtcAllocation)
@@ -273,97 +283,99 @@ def test_create_allocation_data_controller(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_request_select_all(test_dao, test_configuration):
-    """ request_select_all() should return a Tree of RTKAllocation data models. """
+def test_request_do_select_all(test_dao, test_configuration):
+    """ request_do_select_all() should return a Tree of RTKAllocation data models. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
 
-    _tree = DUT.request_select_all(1)
+    _tree = DUT.request_do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(2).data, RTKAllocation)
 
 
 @pytest.mark.integration
-def test_request_select(test_dao, test_configuration):
-    """ request_select() should return an RTKAllocation data model. """
+def test_request_do_select(test_dao, test_configuration):
+    """ request_do_select() should return an RTKAllocation data model. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(DUT.request_select(2), RTKAllocation)
+    assert isinstance(DUT.request_do_select(2), RTKAllocation)
 
 
 @pytest.mark.integration
-def test_request_non_existent_id(test_dao, test_configuration):
-    """ request_select() should return None when requesting an Allocation that doesn't exist. """
+def test_request_do_select_non_existent_id(test_dao, test_configuration):
+    """ request_do_select() should return None when requesting an Allocation that doesn't exist. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
-    assert DUT.request_select(100) is None
+    assert DUT.request_do_select(100) is None
 
 
 @pytest.mark.integration
-def test_request_insert(test_dao, test_configuration):
-    """ request_insert() should return False on success. """
+def test_request_do_insert(test_dao, test_configuration):
+    """ request_do_insert() should return False on success. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
-    assert not DUT.request_insert(revision_id=1, hardware_id=10, parent_id=1)
+    assert not DUT.request_do_insert(
+        revision_id=1, hardware_id=10, parent_id=1)
 
 
 @pytest.mark.integration
-def test_request_delete(test_dao, test_configuration):
-    """ request_delete() should return False on success. """
+def test_request_do_delete(test_dao, test_configuration):
+    """ request_do_delete() should return False on success. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
-    assert not DUT.request_delete(10)
+    assert not DUT.request_do_delete(10)
 
 
 @pytest.mark.integration
-def test_request_delete_non_existent_id(test_dao, test_configuration):
-    """ request_delete() should return True when attempting to delete a non-existent Allocation. """
+def test_request_do_delete_non_existent_id(test_dao, test_configuration):
+    """ request_do_delete() should return True when attempting to delete a non-existent Allocation. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
-    assert DUT.request_delete(100)
+    assert DUT.request_do_delete(100)
 
 
 @pytest.mark.integration
-def test_request_update(test_dao, test_configuration):
-    """ request_update() should return False on success. """
+def test_request_do_update(test_dao, test_configuration):
+    """ request_do_update() should return False on success. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
-    assert not DUT.request_update(2)
+    assert not DUT.request_do_update(2)
 
 
 @pytest.mark.integration
-def test_request_update_non_existent_id(test_dao, test_configuration):
-    """ request_update() should return True when attempting to save a non-existent Allocation. """
+def test_request_do_update_non_existent_id(test_dao, test_configuration):
+    """ request_do_update() should return True when attempting to save a non-existent Allocation. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
-    assert DUT.request_update(100)
+    assert DUT.request_do_update(100)
 
 
 @pytest.mark.integration
-def test_request_update_all(test_dao, test_configuration):
-    """ request_update_all() should return False on success. """
+def test_request_do_update_all(test_dao, test_configuration):
+    """ request_do_update_all() should return False on success. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
-    assert not DUT.request_update_all()
+    assert not DUT.request_do_update_all()
 
 
 @pytest.mark.integration
-def test_request_calculate(test_dao, test_configuration):
-    """ request_calculate() should return False on success. """
+def test_request_do_calculate(test_dao, test_configuration):
+    """ request_do_calculate() should return False on success. """
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
-    DUT.request_select_all(1)
+    DUT.request_do_select_all(revision_id=1)
 
     DUT.request_select(1).reliability_goal = 0.99975
 
     # The [parent, child 1, child 2, child 3, child 4] hazard rates.
     _hazard_rates = [0.005862, 0.000392, 0.000168, 0.0000982, 0.000212]
 
-    assert not DUT.request_calculate(1)
+    assert not DUT.request_do_calculate(
+        1, method='arinc', hazard_rates=_hazard_rates)

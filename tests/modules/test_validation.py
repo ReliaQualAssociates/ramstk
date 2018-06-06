@@ -290,7 +290,7 @@ def test_request_do_calculate(test_dao, test_configuration):
     _validation.time_maximum = 44.1
     _validation.confidence = 0.95
 
-    assert not DUT.request_do_calculate(validation_id=1)
+    assert not DUT.request_do_calculate(1)
     assert _validation.time_mean == pytest.approx(36.08333333)
     assert _validation.time_variance == pytest.approx(9.9225)
     assert _validation.cost_mean == pytest.approx(360.83333333)

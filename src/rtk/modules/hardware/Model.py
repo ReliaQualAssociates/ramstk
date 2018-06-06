@@ -63,7 +63,7 @@ class HardwareBoMDataModel(RTKDataModel):
         self.dtm_nswc = NSWCDataModel(dao)
         self.dtm_reliability = ReliabilityDataModel(dao)
 
-    def select(self, node_id, table):
+    def do_select(self, node_id, **kwargs):
         """
         Retrieve the instance of the RTK<MODULE> model for the Node ID passed.
 
@@ -81,22 +81,23 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: the instance of the RTK<MODULE> class that was requested
                  or None if the requested Node ID does not exist.
         """
-        if table == 'general':
+        _table = kwargs['table']
+        if _table == 'general':
             _entity = self.dtm_hardware.select(node_id)
-        elif table == 'electrical_design':
+        elif _table == 'electrical_design':
             _entity = self.dtm_design_electric.select(node_id)
-        elif table == 'mechanical_design':
+        elif _table == 'mechanical_design':
             _entity = self.dtm_design_mechanic.select(node_id)
-        elif table == 'mil_hdbk_f':
+        elif _table == 'mil_hdbk_f':
             _entity = self.dtm_mil_hdbk_f.select(node_id)
-        elif table == 'nswc':
+        elif _table == 'nswc':
             _entity = self.dtm_nswc.select(node_id)
-        elif table == 'reliability':
+        elif _table == 'reliability':
             _entity = self.dtm_reliability.select(node_id)
 
         return _entity
 
-    def select_all(self, revision_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Hardware BoM data from the RTK Program database.
 
@@ -104,7 +105,8 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: tree; the Tree() of data models.
         :rtype: :class:`treelib.Tree`
         """
-        for _node in self.dtm_hardware.select_all(revision_id).all_nodes()[1:]:
+        _revision_id = kwargs['revision_id']
+        for _node in self.dtm_hardware.select_all(_revision_id).all_nodes()[1:]:
             _data = {}
             _hardware_id = _node.data.hardware_id
             _data = _node.data.get_attributes()

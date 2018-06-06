@@ -130,7 +130,7 @@ class ValidationDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_do_calculate(self, **kwargs):
+    def request_do_calculate(self, node_id, **kwargs):
         """
         Request to calculate the Validation task metrics.
 
@@ -142,15 +142,14 @@ class ValidationDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _validation_id = kwargs['validation_id']
         _return = False
         _msg = 'RTK SUCCESS: Calculating Validation Task {0:d} cost and ' \
-               'time metrics.'.format(_validation_id)
+               'time metrics.'.format(node_id)
 
         _costs = self._dtm_data_model.do_calculate(
-            _validation_id, metric='cost')
+            node_id, metric='cost')
         _time = self._dtm_data_model.do_calculate(
-            _validation_id, metric='time')
+            node_id, metric='time')
 
         if not _costs and not _time:
             self._configuration.RTK_USER_LOG.info(_msg)

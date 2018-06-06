@@ -43,7 +43,7 @@ class AllocationDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id, **kwargs):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Allocations from the RTK Program database.
 
@@ -51,15 +51,14 @@ class AllocationDataModel(RTKDataModel):
         the connected RTK Program database.  It then adds each to the
         Allocation data model treelib.Tree().
 
-        :param int revision_id: the Revision ID the Allocations are associated
-                                with.
         :return: tree; the Tree() of RTKAllocation data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _allocation in _session.query(RTKAllocation).filter(
-                RTKAllocation.revision_id == revision_id).all():
+                RTKAllocation.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _allocation.get_attributes()
@@ -78,7 +77,7 @@ class AllocationDataModel(RTKDataModel):
 
         return self.tree
 
-    def select_children(self, node_id):
+    def do_select_children(self, node_id):
         """
         Select a list containing the immediate child nodes.
 
@@ -89,7 +88,7 @@ class AllocationDataModel(RTKDataModel):
         """
         return self.tree.children(node_id)
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKAllocation table.
 
@@ -100,7 +99,7 @@ class AllocationDataModel(RTKDataModel):
         _allocation.revision_id = kwargs['revision_id']
         _allocation.hardware_id = kwargs['hardware_id']
         _allocation.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _allocation,
             ])
@@ -115,16 +114,16 @@ class AllocationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKFailureDefinition table.
 
-        :param int node_id: the ID of the Failure Definition to be
-                                  removed.
+        :param int node_id: the PyPubSub Tree() ID of the Allocation to be
+                            removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -137,16 +136,15 @@ class AllocationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record in the RTKAllocation table.
 
-        :param int node_id: the Allocation ID to save to the RTK Program
-                            database.
+        :param int node_id: the PyPubSub Tree() ID of the Allocation to save.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2207
@@ -155,7 +153,7 @@ class AllocationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKAllocation records.
 
@@ -167,7 +165,7 @@ class AllocationDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.hardware_id)
+                _error_code, _msg = self.do_update(_node.data.hardware_id)
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
@@ -180,11 +178,11 @@ class AllocationDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def calculate(self, node_id, hazard_rates=None):
+    def do_calculate(self, node_id, **kwargs):
         """
         Calculate and allocate the goals for the selected hardware item.
 
-        :param int node_id: the Node (Hardware) ID of the hardware item whose
+        :param int node_id: the PyPubSub Tree() ID of the Hardware item whose
                             goal is to be allocated.
         :param list hazard_rates: the hazard rates of the parent hardware item
                                   to be allocated and each of the child items
@@ -193,10 +191,14 @@ class AllocationDataModel(RTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        try:
+            _hazard_rates = kwargs['hazard_rates']
+        except KeyError:
+            _hazard_rates = None
         _return = False
 
-        _parent = self.select(node_id)
-        _children = self.select_children(node_id)
+        _parent = self.do_select(node_id)
+        _children = self.do_select_children(node_id)
         _parent.n_sub_systems = 0
         for _child in _children:
             if _child.data.included:
@@ -220,13 +222,29 @@ class AllocationDataModel(RTKDataModel):
                         _parent.n_sub_systems, _parent.reliability_goal))
                 elif _parent.method_id == 3:
                     _return = (_return or _child.data.arinc_apportionment(
-                        hazard_rates[0], _parent.hazard_rate_goal,
-                        hazard_rates[_idx]))
+                        _hazard_rates[0], _parent.hazard_rate_goal,
+                        _hazard_rates[_idx]))
                     _idx += 1
                 elif _parent.method_id == 4:
                     _return = (_return or _child.data.foo_apportionment(
                         _parent.weight_factor, _parent.hazard_rate_goal))
         else:
             _return = True
+
+        return _return
+
+    def do_calculate_all(self, **kwargs):
+        """
+        Calculate metrics for all Allocations.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        # Calculate all Allocations, skipping the top node in the tree.
+        for _node in self.tree.all_nodes():
+            if _node.identifier != 0:
+                self.do_calculate(_node.identifier, **kwargs)
 
         return _return
