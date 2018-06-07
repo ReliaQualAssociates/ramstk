@@ -110,14 +110,14 @@ class SimilarItemDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedSimilarItem')
 
-    def request_do_update_all(self):
+    def request_do_update_all(self, **kwargs):
         """
         Request to update all records in the RTKSimilarItem table.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.do_update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

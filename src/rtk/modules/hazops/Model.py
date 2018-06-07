@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.hazard_analysis.Model.py is part of The RTK Project
+#       rtk.modules.hazops.Model.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -40,7 +40,7 @@ class HazardAnalysisDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Hazard Analysis from the RTK Program database.
 
@@ -53,10 +53,11 @@ class HazardAnalysisDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKHazardAnalysis data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _hazard_analysis in _session.query(RTKHazardAnalysis).filter(
-                RTKHazardAnalysis.revision_id == revision_id).all():
+                RTKHazardAnalysis.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _hazard_analysis.get_attributes()
@@ -85,7 +86,7 @@ class HazardAnalysisDataModel(RTKDataModel):
 
         return self.tree
 
-    def select_children(self, node_id):
+    def do_select_children(self, node_id):
         """
         Select a list containing the immediate child nodes.
 
@@ -96,7 +97,7 @@ class HazardAnalysisDataModel(RTKDataModel):
         """
         return self.tree.children(node_id)
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKHazardAnalysis table.
 
@@ -106,7 +107,7 @@ class HazardAnalysisDataModel(RTKDataModel):
         _hazard_analysis = RTKHazardAnalysis()
         _hazard_analysis.revision_id = kwargs['revision_id']
         _hazard_analysis.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _hazard_analysis,
             ])
@@ -123,7 +124,7 @@ class HazardAnalysisDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKHazardAnalysis table.
 
@@ -131,7 +132,7 @@ class HazardAnalysisDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -144,7 +145,7 @@ class HazardAnalysisDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the selected HazOps in the RTKHazardAnalysis table.
 
@@ -153,7 +154,7 @@ class HazardAnalysisDataModel(RTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2207
@@ -162,7 +163,7 @@ class HazardAnalysisDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self, module_id):
+    def do_update_all(self, **kwargs):
         """
         Update all RTKHazardAnalysis records for the selected Hardware item.
 
@@ -170,10 +171,11 @@ class HazardAnalysisDataModel(RTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _hardware_id = kwargs['hardware_id']
         _error_code = 0
         _msg = "RTK SUCCESS: Updating the RTK Program database."
 
-        for _node in self.select_children(module_id):
+        for _node in self.do_select_children(_hardware_id):
             try:
                 _id = '{0:d}.{1:d}'.format(_node.data.hardware_id,
                                            _node.data.hazard_id)
@@ -196,7 +198,7 @@ class HazardAnalysisDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def calculate(self, node_id):
+    def do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
         """
         Calculate the HRIs for the selected hazard.
 
@@ -205,6 +207,22 @@ class HazardAnalysisDataModel(RTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _hazard = self.select(node_id)
+        _hazard = self.do_select(node_id)
 
         return _hazard.calculate()
+
+    def do_calculate_all(self, **kwargs):
+        """
+        Calculate metrics for all Similar Item analysis.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        # Calculate all Similar Items, skipping the top node in the tree.
+        for _node in self.tree.all_nodes():
+            if _node.identifier != 0:
+                self.do_calculate(_node.identifier, **kwargs)
+
+        return _return

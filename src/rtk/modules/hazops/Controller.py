@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.hazard_analysis.Controller.py is part of The RTK Project
+#       rtk.modules.hazops.Controller.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -50,18 +50,17 @@ class HazardAnalysisDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_insert(self, revision_id, **kwargs):
+    def request_do_insert(self, **kwargs):
         """
         Request to add an RTKHazardAnalysis table record.
 
-        :param int revision_id: the Revision ID this HazardAnalysis will be
-                                associated with.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _revision_id = kwargs['revision_id']
         _hardware_id = kwargs['hardware_id']
-        _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id, hardware_id=_hardware_id)
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=_revision_id, hardware_id=_hardware_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
@@ -76,7 +75,7 @@ class HazardAnalysisDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, node_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete an RTKHazardAnalysis table record.
 
@@ -86,12 +85,12 @@ class HazardAnalysisDataController(RTKDataController):
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.delete(node_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedHazardAnalysis')
 
-    def request_update(self, node_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKHazardAnalysis table record.
 
@@ -100,12 +99,12 @@ class HazardAnalysisDataController(RTKDataController):
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update(node_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedHazardAnalysis')
 
-    def request_update_all(self, node_id):
+    def request_do_update_all(self, **kwargs):
         """
         Request to update all records in the RTKHazardAnalysis table.
 
@@ -114,23 +113,23 @@ class HazardAnalysisDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update_all(node_id)
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_select_children(self, hardware_id):
+    def request_do_select_children(self, node_id):
         """
         Request the child nodes of the selected Hardware ID.
 
-        :param int hardware_id: the ID of the Hardware item to select the
-                                child nodes for.
+        :param int node_id: the PyPubSub Tree() ID of the Hardware item to
+                            select the HazOps for.
         :return: a list of the immediate child nodes of the passed Hardware ID.
         :rtype: list
         """
-        return self._dtm_data_model.select_children(hardware_id)
+        return self._dtm_data_model.do_select_children(node_id)
 
-    def request_calculate(self, node_id):
+    def request_do_calculate(self, node_id, **kwargs):
         """
         Request the hazard_analysis calculations be performed.
 
@@ -143,4 +142,13 @@ class HazardAnalysisDataController(RTKDataController):
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-        return self._dtm_data_model.calculate(node_id)
+        return self._dtm_data_model.do_calculate(node_id, **kwargs)
+
+    def request_do_calculate_all(self, **kwargs):
+        """
+        Request to calculate all HazOps.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtm_data_model.do_calculate_all(**kwargs)
