@@ -58,20 +58,18 @@ class HardwareBoMDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_select(self, node_id, table):
+    def request_do_select(self, node_id, **kwargs):
         """
         Request the RTK Program database record associated with Node ID.
 
         :param int node_id: the Node ID to retrieve from the Tree.
-        :param str table: the name of the RTK Program database table to
-                          select the entity from.
         :return: the RTK Program database record requested from the desired
                  table.
         :rtype: object
         """
-        return self._dtm_data_model.select(node_id, table)
+        return self._dtm_data_model.do_select(node_id, **kwargs)
 
-    def request_select_all_matrix(self, revision_id, matrix_type):
+    def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Hardware.
 
@@ -130,24 +128,28 @@ class HardwareBoMDataController(RTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_insert(self, revision_id=0, parent_id=0, part=0):
+    def request_do_insert(self, **kwargs):
         """
         Request to add an RTKHardware table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id, parent_id=parent_id, part=part)
+        _revision_id = kwargs['revision_id']
+        _parent_id = kwargs['parent_id']
+        _part = kwargs['part']
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=_revision_id, parent_id=_parent_id, part=_part)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
 
             _hardware_id = self.request_last_id()
-            _heading = self.request_select(_hardware_id, 'general').ref_des
+            _heading = self.request_do_select(
+                _hardware_id, table='general').ref_des
 
             for _matrix in ['hrdwr_rqrmnt', 'hrdwr_vldtn']:
-                self.request_insert_matrix(
+                self.request_do_insert_matrix(
                     _matrix, _hardware_id, heading=_heading, row=True)
 
             if not self._test:
@@ -162,7 +164,8 @@ class HardwareBoMDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_insert_matrix(self, matrix_type, item_id, heading, row=True):
+    def request_do_insert_matrix(self, matrix_type, item_id, heading,
+                                 row=True):
         """
         Request the to add a new row or column to the Data Matrix.
 
@@ -202,20 +205,21 @@ class HardwareBoMDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, hardware_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete an RTKHardware table record.
 
-        :param int hardware_id: the Hardware ID to delete.
+        :param str node_id: the PyPubSub Tree() ID of the Hardware item to
+                            delete.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.delete(hardware_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedHardware')
 
-    def request_delete_matrix(self, matrix_type, item_id, row=True):
+    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
         Request to remove a row or column from the selected Data Matrix.
 
@@ -247,20 +251,21 @@ class HardwareBoMDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedMatrix')
 
-    def request_update(self, hardware_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKHardware table record.
 
-        :param int hardware_id: the ID of the hardware to save.
+        :param str node_id: the PyPubSub Tree() ID of the Hardware item to
+                            save.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update(hardware_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedHardware')
 
-    def request_update_matrix(self, revision_id, matrix_type):
+    def request_do_update_matrix(self, revision_id, matrix_type):
         """
         Request to update the selected Data Matrix.
 
@@ -294,14 +299,14 @@ class HardwareBoMDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedMatrix')
 
-    def request_update_all(self):
+    def request_do_update_all(self, **kwargs):
         """
         Request to update all records in the RTKHardware table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
@@ -332,39 +337,39 @@ class HardwareBoMDataController(RTKDataController):
         self._dtm_data_model.tree.get_node(node_id).data = attributes
 
         # Set the attributes for the individual tables.
-        _error_code, _msg = self._dtm_data_model.dtm_hardware.select(
+        _error_code, _msg = self._dtm_data_model.dtm_hardware.do_select(
             node_id).set_attributes(attributes)
         _return = (_return or RTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
-        _error_code, _msg = self._dtm_data_model.dtm_design_electric.select(
+        _error_code, _msg = self._dtm_data_model.dtm_design_electric.do_select(
             node_id).set_attributes(attributes)
         _return = (_return or RTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
-        _error_code, _msg = self._dtm_data_model.dtm_design_mechanic.select(
+        _error_code, _msg = self._dtm_data_model.dtm_design_mechanic.do_select(
             node_id).set_attributes(attributes)
         _return = (_return or RTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
-        _error_code, _msg = self._dtm_data_model.dtm_mil_hdbk_f.select(
+        _error_code, _msg = self._dtm_data_model.dtm_mil_hdbk_f.do_select(
             node_id).set_attributes(attributes)
         _return = (_return or RTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
-        _error_code, _msg = self._dtm_data_model.dtm_nswc.select(
+        _error_code, _msg = self._dtm_data_model.dtm_nswc.do_select(
             node_id).set_attributes(attributes)
         _return = (_return or RTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
-        _error_code, _msg = self._dtm_data_model.dtm_reliability.select(
+        _error_code, _msg = self._dtm_data_model.dtm_reliability.do_select(
             node_id).set_attributes(attributes)
         _return = (_return or RTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         return _return
 
-    def request_last_id(self):
+    def request_last_id(self, **kwargs):    # pylint: disable=unused-argument
         """
         Request the last Hardware ID used.
 
@@ -373,7 +378,7 @@ class HardwareBoMDataController(RTKDataController):
         """
         return self._dtm_data_model.last_id
 
-    def request_make_composite_reference_designator(self, node_id=1):
+    def request_do_make_composite_reference_designator(self, node_id=1):
         """
         Request the composite reference designators be created.
 
@@ -387,7 +392,8 @@ class HardwareBoMDataController(RTKDataController):
         _msg = ''
 
         # Create the composite reference designators in the Hardware model.
-        if self._dtm_data_model.dtm_hardware.make_composite_ref_des(node_id):
+        if self._dtm_data_model.dtm_hardware.do_make_composite_ref_des(
+                node_id):
             _error_code = 3005
             _msg = 'RTK ERROR: Failed to create all composite reference ' \
                    'designators for Node ID {0:d} and ' \
@@ -398,13 +404,13 @@ class HardwareBoMDataController(RTKDataController):
             for _node_id in self._dtm_data_model.tree.nodes:
                 if _node_id != 0:
                     _attributes = self.request_get_attributes(_node_id)
-                    _comp_ref_des = self._dtm_data_model.dtm_hardware.select(
+                    _comp_ref_des = self._dtm_data_model.dtm_hardware.do_select(
                         _node_id).comp_ref_des
                     _attributes['comp_ref_des'] = _comp_ref_des
 
         return _error_code, _msg
 
-    def request_calculate(self, node_id):
+    def request_do_calculate(self, node_id, **kwargs):
         """
         Request to calculate the hardware item.
 
@@ -414,7 +420,7 @@ class HardwareBoMDataController(RTKDataController):
         """
         _return = False
 
-        _attributes = self._dtm_data_model.calculate(node_id)
+        _attributes = self._dtm_data_model.do_calculate(node_id, **kwargs)
 
         if (not self.request_set_attributes(node_id, _attributes)
                 and not self._test):
@@ -424,7 +430,7 @@ class HardwareBoMDataController(RTKDataController):
 
         return _return
 
-    def request_calculate_all(self):
+    def request_do_calculate_all(self, **kwargs):
         """
         Request to calculate the hardware item.
 
@@ -434,7 +440,7 @@ class HardwareBoMDataController(RTKDataController):
         """
         _return = False
 
-        _results = self._dtm_data_model.calculate_all()
+        _results = self._dtm_data_model.do_calculate_all(**kwargs)
 
         if not self._test:
             for _node_id in self._dtm_data_model.tree.nodes:
