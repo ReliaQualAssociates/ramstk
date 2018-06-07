@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.datamodels.RTKDataController.py is part of the RTK Project
+#       rtk.modules.RTKDataController.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -29,7 +29,7 @@ class RTKDataController(object):
                       tests.
     """
 
-    def __init__(self, configuration, model=None, rtk_module=None, **kwargs):
+    def __init__(self, configuration, **kwargs):
         """
         Initialize a RTKDataController instance.
 
@@ -46,11 +46,11 @@ class RTKDataController(object):
 
         # Initialize private scalar attributes.
         self._configuration = configuration
-        self._dtm_data_model = model
+        self._dtm_data_model = kwargs['model']
         self._test = kwargs['test']
 
         self._module = None
-        for __, char in enumerate(rtk_module):
+        for __, char in enumerate(kwargs['rtk_module']):
             if char.isalpha():
                 self._module = rtk_module.capitalize()
 
@@ -90,20 +90,14 @@ class RTKDataController(object):
 
         return _return
 
-    def request_select(self, node_id):
-        return self.request_do_select(node_id)
-
-    def request_do_select(self, node_id):
+    def request_do_select(self, node_id, **kwargs):
         """
         Request the RTK Program database record associated with Node ID.
 
         :param int node_id: the Node ID to retrieve from the Tree.
         :return: the RTK Program database record requested.
         """
-        return self._dtm_data_model.do_select(node_id)
-
-    def request_select_all(self, parent_id, **kwargs):
-        return self.request_do_select_all(**kwargs)
+        return self._dtm_data_model.do_select(node_id, **kwargs)
 
     def request_do_select_all(self, **kwargs):
         """
@@ -150,86 +144,3 @@ class RTKDataController(object):
         :rtype: int
         """
         return self._dtm_data_model.last_id
-
-    def request_calculate_availability(self, node_id):
-        """
-        Request availability attributes be calculated for the Node ID passed.
-
-        :param int node_id: the ID of the entity in the treelib.Tree() to
-                            calculate.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, \
-            _msg = self._dtm_data_model.calculate_availability(node_id)
-
-        return self.do_handle_results(_error_code, _msg,
-                                      'calculated' + self._module)
-
-    def request_calculate_costs(self, node_id, mission_time):
-        """
-        Request cost attributes be calculated for the Node ID passed.
-
-        :param int node_id: the ID of the entity in the treelib.Tree() to
-                            calculate.
-        :param float mission_time: the time to use in the calculations.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.calculate_costs(
-            node_id, float(mission_time))
-
-        return self.do_handle_results(_error_code, _msg,
-                                      'calculated' + self._module)
-
-    def request_calculate_hazard_rate(self, node_id):
-        """
-        Request hazard rate attributes be calculated for the Node ID passed.
-
-        :param int node_id: the ID of the entity in the treelib.Tree() to
-                            calculate.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, \
-            _msg = self._dtm_data_model.calculate_hazard_rate(node_id)
-
-        return self.do_handle_results(_error_code, _msg,
-                                      'calculated' + self._module)
-
-    def request_calculate_mtbf(self, node_id):
-        """
-        Request MTBF attributes be calculated for the Node ID passed.
-
-        :param int node_id: the ID of the entity in the treelib.Tree() to
-                            calculate.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, \
-            _msg = self._dtm_data_model.calculate_mtbf(node_id)
-
-        return self.do_handle_results(_error_code, _msg,
-                                      'calculated' + self._module)
-
-    def request_calculate_reliability(self,
-                                      node_id,
-                                      mission_time,
-                                      multiplier=1.0):
-        """
-        Request reliability attributes be calculated for the Node ID passed.
-
-        :param int node_id: the ID of the entity in the treelib.Tree() to
-                            calculate.
-        :param float mission_time: the time to use in the calculations.
-        :keyword float multiplier: the hazard rate multiplier.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, \
-            _msg = self._dtm_data_model.calculate_reliability(node_id,
-                                                              mission_time,
-                                                              multiplier)
-
-        return self.do_handle_results(_error_code, _msg,
-                                      'calculated' + self._module)
