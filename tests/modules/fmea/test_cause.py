@@ -39,11 +39,11 @@ def test_do_select_all(test_dao):
 
 
 @pytest.mark.integration
-def test_select(test_dao):
-    """ select() should return an instance of the RTKCause data model on success. """
+def test_do_select(test_dao):
+    """ do_select() should return an instance of the RTKCause data model on success. """
     DUT = dtmCause(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
-    _cause = DUT.select(4)
+    _cause = DUT.do_select(4)
 
     assert isinstance(_cause, RTKCause)
     assert _cause.cause_id == 4
@@ -51,18 +51,18 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-def test_select_non_existent_id(test_dao):
-    """ select() should return None when a non-existent Cause ID is requested. """
+def test_do_select_non_existent_id(test_dao):
+    """ do_select() should return None when a non-existent Cause ID is requested. """
     DUT = dtmCause(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
-    _cause = DUT.select(100)
+    _cause = DUT.do_select(100)
 
     assert _cause is None
 
 
 @pytest.mark.integration
-def test_insert(test_dao):
-    """ insert() should return a zero error code on success when inserting a hardware failure Cause. """
+def test_do_insert(test_dao):
+    """ do_insert() should return a zero error code on success when inserting a hardware failure Cause. """
     DUT = dtmCause(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
@@ -74,12 +74,12 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-def test_delete(test_dao):
-    """ delete() should return a zero error code on success. """
+def test_do_delete(test_dao):
+    """ do_delete() should return a zero error code on success. """
     DUT = dtmCause(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
-    _error_code, _msg = DUT.delete(DUT.last_id)
+    _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
@@ -87,12 +87,12 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-def test_delete_non_existent_id(test_dao):
-    """ delete() should return a non-zero error code when passed a Cause ID that doesn't exist. """
+def test_do_delete_non_existent_id(test_dao):
+    """ do_delete() should return a non-zero error code when passed a Cause ID that doesn't exist. """
     DUT = dtmCause(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
-    _error_code, _msg = DUT.delete(300)
+    _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
     assert _msg == ("  RTK ERROR: Attempted to delete non-existent Cause ID "
@@ -100,39 +100,40 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update(test_dao):
-    """ update() should return a zero error code on success. """
+def test_do_update(test_dao):
+    """ do_update() should return a zero error code on success. """
     DUT = dtmCause(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _cause = DUT.tree.get_node(4).data
     _cause.description = 'Test Failure Cause #1 for Mechanism ID 1'
 
-    _error_code, _msg = DUT.update(4)
+    _error_code, _msg = DUT.do_update(4)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
 
 
 @pytest.mark.integration
-def test_update_non_existent_id(test_dao):
-    """ update() should return a non-zero error code when passed a Cause ID that doesn't exist. """
+def test_do_update_non_existent_id(test_dao):
+    """ do_update() should return a non-zero error code when passed a Cause ID that doesn't exist. """
     DUT = dtmCause(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
-    _error_code, _msg = DUT.update(100)
+    _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
     assert _msg == ("RTK ERROR: Attempted to save non-existent Cause ID 100.")
 
 
 @pytest.mark.integration
-def test_update_all(test_dao):
-    """ update_all() should return a zero error code on success. """
+def test_do_update_all(test_dao):
+    """ do_update_all() should return a zero error code on success. """
     DUT = dtmCause(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
-    _error_code, _msg = DUT.update_all()
+    _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all records in the FMEA causes "
+                    "table.")

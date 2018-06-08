@@ -39,29 +39,29 @@ def test_do_select_all(test_dao):
 
 
 @pytest.mark.integration
-def test_select(test_dao):
-    """ select() should return an instance of the RTKControl data model on success. """
+def test_do_select(test_dao):
+    """ do_elect() should return an instance of the RTKControl data model on success. """
     DUT = dtmControl(test_dao)
     DUT.do_select_all(parent_id=1)
-    _control = DUT.select(1)
+    _control = DUT.do_select(1)
 
     assert isinstance(_control, RTKControl)
     assert _control.control_id == 1
 
 
 @pytest.mark.integration
-def test_select_non_existent_id(test_dao):
-    """ select() should return None when a non-existent Control ID is requested. """
+def test_do_select_non_existent_id(test_dao):
+    """ do_select() should return None when a non-existent Control ID is requested. """
     DUT = dtmControl(test_dao)
     DUT.do_select_all(parent_id=1)
-    _control = DUT.select(100)
+    _control = DUT.do_select(100)
 
     assert _control is None
 
 
 @pytest.mark.integration
-def test_insert_control(test_dao):
-    """ insert() should return False on success when inserting a Control into a hardware FMEA. """
+def test_do_insert_control(test_dao):
+    """ do_insert() should return False on success when inserting a Control into a hardware FMEA. """
     DUT = dtmControl(test_dao)
     DUT.do_select_all(parent_id=1)
 
@@ -73,12 +73,12 @@ def test_insert_control(test_dao):
 
 
 @pytest.mark.integration
-def test_delete(test_dao):
-    """ delete() should return a zero error code on success. """
+def test_do_delete(test_dao):
+    """ do_delete() should return a zero error code on success. """
     DUT = dtmControl(test_dao)
     DUT.do_select_all(parent_id=1)
 
-    _error_code, _msg = DUT.delete(DUT.last_id)
+    _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
@@ -86,12 +86,12 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-def test_delete_non_existent_id(test_dao):
-    """ delete() should return a non-zero error code when passed a Control ID that doesn't exist. """
+def test_do_delete_non_existent_id(test_dao):
+    """ do_delete() should return a non-zero error code when passed a Control ID that doesn't exist. """
     DUT = dtmControl(test_dao)
     DUT.do_select_all(parent_id=1)
 
-    _error_code, _msg = DUT.delete(300)
+    _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code, 2005
     assert _msg == ("  RTK ERROR: Attempted to delete non-existent Control ID "
@@ -99,27 +99,27 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update(test_dao):
-    """ update() should return a zero error code on success. """
+def test_do_update(test_dao):
+    """ do_update() should return a zero error code on success. """
     DUT = dtmControl(test_dao)
     DUT.do_select_all(parent_id=1)
 
-    _control = DUT.select(1)
+    _control = DUT.do_select(1)
     _control.description = 'Test Functional FMEA Control #1 for Cause ID 1'
 
-    _error_code, _msg = DUT.update(1)
+    _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
 
 
 @pytest.mark.integration
-def test_update_non_existent_id(test_dao):
-    """ update() should return a non-zero error code when passed a Control ID that doesn't exist. """
+def test_do_update_non_existent_id(test_dao):
+    """ do_update() should return a non-zero error code when passed a Control ID that doesn't exist. """
     DUT = dtmControl(test_dao)
     DUT.do_select_all(parent_id=1)
 
-    _error_code, _msg = DUT.update(100)
+    _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
     assert _msg == ("RTK ERROR: Attempted to save non-existent Control ID "
@@ -127,12 +127,13 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update_all(test_dao):
-    """ update_all() should return a zero error code on success. """
+def test_do_update_all(test_dao):
+    """ do_update_all() should return a zero error code on success. """
     DUT = dtmControl(test_dao)
     DUT.do_select_all(parent_id=1)
 
-    _error_code, _msg = DUT.update_all()
+    _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all records in the FMEA controls "
+                    "table.")

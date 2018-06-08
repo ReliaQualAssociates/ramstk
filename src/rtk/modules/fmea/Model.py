@@ -87,7 +87,7 @@ class ModeDataModel(RTKDataModel):
 
         return self.tree
 
-    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKMode table.
 
@@ -112,7 +112,7 @@ class ModeDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKMode table.
 
@@ -121,7 +121,7 @@ class ModeDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -130,7 +130,7 @@ class ModeDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -138,7 +138,7 @@ class ModeDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -147,7 +147,7 @@ class ModeDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKMode table records in the RTK Program database.
 
@@ -155,20 +155,22 @@ class ModeDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all Modes in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.mode_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.fmea.Model.ModeDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.fmea.Model.ModeDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the FMEA modes "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the FMEA modes "
+                    "table.")
 
         return _error_code, _msg
 
@@ -241,7 +243,7 @@ class MechanismDataModel(RTKDataModel):
 
         return self.tree
 
-    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKMechanism table.
 
@@ -268,7 +270,7 @@ class MechanismDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKMechanism table.
 
@@ -277,7 +279,7 @@ class MechanismDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -286,7 +288,7 @@ class MechanismDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -294,7 +296,7 @@ class MechanismDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -303,7 +305,7 @@ class MechanismDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKMechanism table records in the RTK Program database.
 
@@ -311,20 +313,22 @@ class MechanismDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all Mechanisms in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.mechanism_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.fmea.Model.MechanismDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.fmea.Model.MechanismDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the FMEA "
+                        "mechanisms table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the FMEA mechanisms "
+                    "table.")
 
         return _error_code, _msg
 
@@ -402,7 +406,7 @@ class CauseDataModel(RTKDataModel):
 
         return self.tree
 
-    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKCause table.
 
@@ -427,7 +431,7 @@ class CauseDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKCause table.
 
@@ -436,7 +440,7 @@ class CauseDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -445,7 +449,7 @@ class CauseDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -453,7 +457,7 @@ class CauseDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -462,7 +466,7 @@ class CauseDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKCause table records in the RTK Program database.
 
@@ -470,20 +474,22 @@ class CauseDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all Causes in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.cause_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.fmea.Model.CauseDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.fmea.Model.CauseDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the FMEA causes "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the FMEA causes "
+                    "table.")
 
         return _error_code, _msg
 
@@ -559,7 +565,7 @@ class ControlDataModel(RTKDataModel):
 
         return self.tree
 
-    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKControl table.
 
@@ -586,7 +592,7 @@ class ControlDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKControl table.
 
@@ -595,7 +601,7 @@ class ControlDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -604,7 +610,7 @@ class ControlDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -612,7 +618,7 @@ class ControlDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -621,7 +627,7 @@ class ControlDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKControl table records in the RTK Program database.
 
@@ -629,20 +635,22 @@ class ControlDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all Controls in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.control_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.fmea.Model.ControlDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.fmea.Model.ControlDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the FMEA controls "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the FMEA controls "
+                    "table.")
 
         return _error_code, _msg
 
@@ -742,7 +750,7 @@ class ActionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKAction table.
 
@@ -751,7 +759,7 @@ class ActionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # last_id is defined in RTKDataModel.__init__
@@ -764,7 +772,7 @@ class ActionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -772,7 +780,7 @@ class ActionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -781,7 +789,7 @@ class ActionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKAction table records in the RTK Program database.
 
@@ -789,20 +797,22 @@ class ActionDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Saving all Actions in the FMEA.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.action_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.fmea.Model.ActionDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.fmea.Model.ActionDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the FMEA actions "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the FMEA actions "
+                    "table.")
 
         return _error_code, _msg
 
@@ -1048,13 +1058,13 @@ class FMEADataModel(RTKDataModel):
         if _level == 'mode':
             _error_code, _msg = self.dtm_mode.do_insert(
                 function_id=_function_id, hardware_id=_hardware_id)
-            _entity = self.dtm_mode.select(self.dtm_mode.last_id)
+            _entity = self.dtm_mode.do_select(self.dtm_mode.last_id)
             _tag = 'Mode'
             _node_id = '0.' + str(self.dtm_mode.last_id)
         elif _level == 'mechanism':
             _error_code, _msg = self.dtm_mechanism.do_insert(
                 mode_id=_entity_id)
-            _entity = self.dtm_mechanism.select(self.dtm_mechanism.last_id)
+            _entity = self.dtm_mechanism.do_select(self.dtm_mechanism.last_id)
             _tag = 'Mechanism'
             _node_id = _parent_id + '.' + str(self.dtm_mechanism.last_id)
         elif _level == 'cause':
@@ -1064,17 +1074,17 @@ class FMEADataModel(RTKDataModel):
             else:
                 _error_code, _msg = self.dtm_cause.do_insert(
                     mode_id=-1, mechanism_id=_entity_id)
-            _entity = self.dtm_cause.select(self.dtm_cause.last_id)
+            _entity = self.dtm_cause.do_select(self.dtm_cause.last_id)
             _tag = 'Cause'
             _node_id = _parent_id + '.' + str(self.dtm_cause.last_id)
         elif _level == 'control':
             _error_code, _msg = self.dtm_control.do_insert(cause_id=_entity_id)
-            _entity = self.dtm_control.select(self.dtm_control.last_id)
+            _entity = self.dtm_control.do_select(self.dtm_control.last_id)
             _tag = 'Control'
             _node_id = _parent_id + '.' + str(self.dtm_control.last_id) + 'c'
         elif _level == 'action':
             _error_code, _msg = self.dtm_action.do_insert(cause_id=_entity_id)
-            _entity = self.dtm_action.select(self.dtm_action.last_id)
+            _entity = self.dtm_action.do_select(self.dtm_action.last_id)
             _tag = 'Action'
             _node_id = _parent_id + '.' + str(self.dtm_action.last_id) + 'a'
         else:
@@ -1094,7 +1104,7 @@ class FMEADataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKControl table.
 
@@ -1103,7 +1113,7 @@ class FMEADataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
@@ -1113,7 +1123,7 @@ class FMEADataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -1121,7 +1131,7 @@ class FMEADataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 1
@@ -1136,7 +1146,7 @@ class FMEADataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all FMEA table records in the RTK Program database.
 
@@ -1148,7 +1158,7 @@ class FMEADataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _err_code, _debug_msg = self.update(_node.identifier)
+                _err_code, _debug_msg = self.do_update(_node.identifier)
 
                 if _err_code != 0:
                     _error_code = 1
@@ -1156,15 +1166,33 @@ class FMEADataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = "RTK ERROR: One or more line items in the FMEA did " \
-                       "not update."
+                _msg = ("RTK ERROR: One or more line items in the FMEA did "
+                        "not update.")
 
         if _error_code == 0:
-            _msg = 'RTK SUCCESS: Updating all line items in the FMEA.'
+            _msg = ("RTK SUCCESS: Updating all line items in the FMEA.")
 
         return _error_code, _msg
 
-    def calculate_criticality(self, item_hr):
+    def do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
+        """
+        Calculate the RPN or criticality for the selected Node ID.
+
+        :param str node_id: the PyPubSub Tree() ID of the failure Mode to
+                            calculate.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _criticality = kwargs['criticality']
+        _rpn = kwargs['rpn']
+        _item_hr = kwargs['item_hr']
+
+        if _criticality:
+            return self._do_calculate_criticality(_item_hr)
+        elif _rpn:
+            return self._do_calculate_rpn()
+
+    def _do_calculate_criticality(self, item_hr):
         """
         Calculate the FMEA MIL-STD-1629b, Task 102 criticality.
 
@@ -1185,7 +1213,7 @@ class FMEADataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def calculate_rpn(self):
+    def _do_calculate_rpn(self):
         """
         Calculate the Risk Priority Number (RPN).
 
