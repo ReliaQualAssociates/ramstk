@@ -31,7 +31,7 @@ def test_create_opstress_data_model(test_dao):
 
 
 @pytest.mark.integration
-def test_select_all(test_dao):
+def test_do_select_all(test_dao):
     """ do_select_all() should return a treelib Tree() on success when selecting OpStresss. """
     DUT = dtmOpStress(test_dao)
     _tree = DUT.do_select_all(parent_id=1)
@@ -41,7 +41,7 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-def test_select(test_dao):
+def test_do_select(test_dao):
     """ do_select() should return an instance of the RTKOpStress data model on success. """
     DUT = dtmOpStress(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -54,7 +54,7 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-def test_select_non_existent_id(test_dao):
+def test_do_select_non_existent_id(test_dao):
     """ do_select() should return None when a non-existent OpStress ID is requested. """
     DUT = dtmOpStress(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -65,7 +65,7 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_insert(test_dao):
+def test_do_insert(test_dao):
     """ do_insert() should return a zero error code on success. """
     DUT = dtmOpStress(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -79,7 +79,7 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-def test_delete(test_dao):
+def test_do_delete(test_dao):
     """ do_delete() should return a zero error code on success. """
     DUT = dtmOpStress(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -92,7 +92,7 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-def test_delete_non_existent_id(test_dao):
+def test_do_delete_non_existent_id(test_dao):
     """ do_delete() should return a non-zero error code when passed a OpStress ID that doesn't exist. """
     DUT = dtmOpStress(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -105,7 +105,7 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update(test_dao):
+def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
     DUT = dtmOpStress(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -120,7 +120,7 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-def test_update_non_existent_id(test_dao):
+def test_do_update_non_existent_id(test_dao):
     """ do_update() should return a non-zero error code when passed an OpStress ID that doesn't exist. """
     DUT = dtmOpStress(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -133,7 +133,7 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update_all(test_dao):
+def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
     DUT = dtmOpStress(test_dao)
     DUT.do_select_all(parent_id=1)

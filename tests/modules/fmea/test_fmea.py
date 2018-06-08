@@ -563,7 +563,7 @@ def test_request_do_select_all_hardware(test_dao, test_configuration):
     """ request_do_select_all() should return a treelib Tree() with the hardware FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
 
-    assert isinstance(DUT.request_do_select_all(1, functional=False), Tree)
+    assert isinstance(DUT.request_do_select_all(parent_id=1, functional=False), Tree)
 
 
 @pytest.mark.integration
@@ -571,7 +571,7 @@ def test_request_do_select_all_functional(test_dao, test_configuration):
     """ request_do_select_all() should return a treelib Tree() with the functional FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
 
-    assert isinstance(DUT.request_do_select_all(1, functional=True), Tree)
+    assert isinstance(DUT.request_do_select_all(parent_id=1, functional=True), Tree)
 
 
 @pytest.mark.integration
@@ -579,7 +579,7 @@ def test_request_do_insert_mode_functional(test_dao, test_configuration):
     """ request_do_insert() should return False on success when adding a mode to a functional FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
 
-    DUT.request_do_select_all(1, functional=True)
+    DUT.request_do_select_all(parent_id=1, functional=True)
     assert not DUT.request_do_insert(entity_id=1, parent_id=0, level='mode')
 
 
@@ -587,7 +587,7 @@ def test_request_do_insert_mode_functional(test_dao, test_configuration):
 def test_request_do_insert_mode_hardware(test_dao, test_configuration):
     """ request_do_insert() should return False on success when addin a mode to a hardware FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(1, functional=False)
+    DUT.request_do_select_all(parent_id=1, functional=False)
 
     assert not DUT.request_do_insert(entity_id=1, parent_id=0, level='mode')
 
@@ -596,7 +596,7 @@ def test_request_do_insert_mode_hardware(test_dao, test_configuration):
 def test_request_do_insert_mechanism(test_dao, test_configuration):
     """ request_do_insert() should return a False on success when adding a new Mechanism to a Hardware FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(1, functional=False)
+    DUT.request_do_select_all(parent_id=1, functional=False)
 
     assert not DUT.request_do_insert(
         entity_id=4, parent_id='0.4', level='mechanism')
@@ -606,7 +606,7 @@ def test_request_do_insert_mechanism(test_dao, test_configuration):
 def test_request_do_delete_control_functional(test_dao, test_configuration):
     """ request_do_delete() should return False on success when removing a Control from a functional FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(1, functional=True)
+    DUT.request_do_select_all(parent_id=1, functional=True)
     _node_id = '0.1.1.' + str(DUT._dtm_data_model.dtm_control.last_id) + 'c'
 
     assert not DUT.request_do_delete(_node_id)
@@ -616,6 +616,6 @@ def test_request_do_delete_control_functional(test_dao, test_configuration):
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(1, functional=True)
+    DUT.request_do_select_all(parent_id=1, functional=True)
 
     assert not DUT.request_do_update_all()

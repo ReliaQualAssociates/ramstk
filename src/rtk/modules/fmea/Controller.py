@@ -58,13 +58,9 @@ class FMEADataController(RTKDataController):
                               (hardware FMEA) to retrieve the FMEA and build
                               trees for.
         :return: tree; the FMEA treelib Tree().
-        :rtype: :py:class:`treelib.Tree`
+        :rtype: :class:`treelib.Tree`
         """
-        _parent_id = kwargs['parent_id']
-        _functional = kwargs['functional']
-
-        return self._dtm_data_model.do_select_all(
-            parent_id=_parent_id, functional=_functional)
+        return self._dtm_data_model.do_select_all(**kwargs)
 
     def request_do_insert(self, **kwargs):
         """
