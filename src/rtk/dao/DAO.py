@@ -115,7 +115,11 @@ class DAO(object):
         _test = kwargs['test']
         try:
             return create_common_db(database=database, test=_test)
-        except (IOError, exc.SQLAlchemyError, exc.DBAPIError, exc.OperationalError):
+        except (IOError, exc.SQLAlchemyError, exc.DBAPIError,
+                exc.OperationalError):
+            return True
+        except ArgumentError:   # pylint: disable=undefined-variable
+            print "Bad common database URI: {0:s}".format(database)
             return True
 
     @staticmethod
@@ -130,7 +134,11 @@ class DAO(object):
         """
         try:
             return create_program_db(database=database)
-        except (IOError, exc.SQLAlchemyError, exc.DBAPIError, exc.OperationalError):
+        except (IOError, exc.SQLAlchemyError, exc.DBAPIError,
+                exc.OperationalError):
+            return True
+        except ArgumentError:   # pylint: disable=undefined-variable
+            print "Bad program database URI: {0:s}".format(database)
             return True
 
     @staticmethod
