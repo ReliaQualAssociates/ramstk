@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.function.Model.py is part of The RTK Project
+#       rtk.modules.function.Model.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -43,7 +43,7 @@ class FunctionDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id):  # pylint: disable=unused-argument
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Functions from the RTK Program database.
 
@@ -55,10 +55,11 @@ class FunctionDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKFunction data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _function in _session.query(RTKFunction).filter(
-                RTKFunction.revision_id == revision_id).all():
+                RTKFunction.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _function.get_attributes()
@@ -77,7 +78,7 @@ class FunctionDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKFunction table.
 
@@ -87,7 +88,7 @@ class FunctionDataModel(RTKDataModel):
         _function = RTKFunction()
         _function.revision_id = kwargs['revision_id']
         _function.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _function,
             ])
@@ -105,7 +106,7 @@ class FunctionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKFunction table.
 
@@ -114,7 +115,7 @@ class FunctionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -127,7 +128,7 @@ class FunctionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -135,7 +136,7 @@ class FunctionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -144,7 +145,7 @@ class FunctionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKFunction table records in the RTK Program database.
 
@@ -156,44 +157,17 @@ class FunctionDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.function_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.function.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.function.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the function "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the function "
+                    "table.")
 
         return _error_code, _msg
-
-    def calculate_availability(self, function_id):
-        """
-        Calculate the availability metrics.
-
-        This method calculate logistics and mission availability.
-
-        :param int function_id: the Function ID to calculate.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _function = self.tree.get_node(function_id).data
-
-        return _function.calculate_availability()
-
-    def calculate_mtbf(self, function_id):
-        """
-        Calculate the MTBF metrics.
-
-        This method calculates the logistics and mission mean time between
-        failures (MTBF).
-
-        :param int function_id: the ID of the Function record to calculate.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _function = self.tree.get_node(function_id).data
-
-        return _function.calculate_mtbf()

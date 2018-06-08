@@ -50,7 +50,7 @@ class SimilarItemDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_insert(self, revision_id, **kwargs):
+    def request_do_insert(self, **kwargs):
         """
         Request to add an RTKSimilarItem table record.
 
@@ -59,10 +59,11 @@ class SimilarItemDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _revision_id = kwargs['revision_id']
         _hardware_id = kwargs['hardware_id']
         _parent_id = kwargs['parent_id']
-        _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id,
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=_revision_id,
             hardware_id=_hardware_id,
             parent_id=_parent_id)
 
@@ -79,66 +80,79 @@ class SimilarItemDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, hardware_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete an RTKSimilarItem table record.
 
-        :param int hardware_id: the Hardware ID whose similar_item is to be
-                                deleted.
+        :param int node_id: the PyPubSub Tree() ID of the Similar Item to be
+                            deleted.
         :return: (_error_code, _msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.delete(hardware_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedSimilarItem')
 
-    def request_update(self, hardware_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKSimilarItem table record.
 
+        :param int node_id: the PyPubSub Tree() ID of the Similar Item to be
+                            saved.
         :return: (_error_code, _msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update(hardware_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedSimilarItem')
 
-    def request_update_all(self):
+    def request_do_update_all(self, **kwargs):
         """
         Request to update all records in the RTKSimilarItem table.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_select_children(self, hardware_id):
+    def request_do_select_children(self, node_id):
         """
         Request the child nodes of the selected Hardware ID.
 
-        :param int hardware_id: the ID of the Hardware item to select the
-                                child nodes for.
+        :param int node_id: the PyPubSub Tree() ID of the Similar Item to
+                            select the child nodes for.
         :return: a list of the immediate child nodes of the passed Hardware ID.
         :rtype: list
         """
-        return self._dtm_data_model.select_children(hardware_id)
+        return self._dtm_data_model.do_select_children(node_id)
 
-    def request_calculate(self, node_id, hazard_rate=0.0):
+    def request_do_calculate(self, node_id, **kwargs):
         """
-        Request the similar_item calculations be performed.
+        Request the Similar Item calculations be performed.
 
-        :param int node_id: the Node (Hardware) ID of the hardware item whose
-                            goal is to be allocated.
+        :param int node_id: the PyPubSub Tree()  ID of the Similar Item to be
+                            calculated.
         :param float hazard_rate: the current hazard rate of the hardware item
                                   to be calculated.
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-        return self._dtm_data_model.calculate(node_id, hazard_rate)
+        _hazard_rate = kwargs['hazard_rate']
+        return self._dtm_data_model.do_calculate(
+            node_id, hazard_rate=_hazard_rate)
+
+    def request_do_calculate_all(self, **kwargs):
+        """
+        Request to calculate all Similar Items.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtm_data_model.do_calculate_all(**kwargs)

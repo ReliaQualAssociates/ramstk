@@ -50,7 +50,7 @@ class FMEADataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_do_select_all(self, parent_id, **kwargs):
+    def request_do_select_all(self, **kwargs):
         """
         Load the entire FMEA for a Function or Hardware item.
 
@@ -58,12 +58,9 @@ class FMEADataController(RTKDataController):
                               (hardware FMEA) to retrieve the FMEA and build
                               trees for.
         :return: tree; the FMEA treelib Tree().
-        :rtype: :py:class:`treelib.Tree`
+        :rtype: :class:`treelib.Tree`
         """
-        _functional = kwargs['functional']
-
-        return self._dtm_data_model.do_select_all(
-            parent_id=parent_id, functional=_functional)
+        return self._dtm_data_model.do_select_all(**kwargs)
 
     def request_do_insert(self, **kwargs):
         """
@@ -89,7 +86,7 @@ class FMEADataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, node_id):
+    def request_do_delete(self, node_id):
         """
         Request entity and it's children be deleted from the FMEA.
 
@@ -98,12 +95,25 @@ class FMEADataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.delete(node_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_update_all(self, **kwargs):  # pylint: disable=W0613
+    def request_do_update(self, node_id):
+        """
+        Request to update an RTKFunction table record.
+
+        :param int node_id: the PyPubSub Tree() ID of the Function to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
+
+        return RTKDataController.do_handle_results(self, _error_code, _msg,
+                                                   None)
+
+    def request_do_update_all(self, **kwargs):
         """
         Request all (D)FME(C)A entities be saved to the RTK Program database.
 
@@ -112,12 +122,12 @@ class FMEADataController(RTKDataController):
         """
         _return = False
 
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_calculate(self, item_hr, criticality=True, rpn=True):
+    def request_do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
         """
         Request the (D)FME(C)A be calculated.
 
@@ -128,11 +138,7 @@ class FMEADataController(RTKDataController):
         _msg = 'RTK SUCCESS: Calculating (D)FME(C)A.'
 
         try:
-            if rpn:
-                _error_code, _msg = self._dtm_data_model.calculate_rpn()
-            if criticality:
-                _error_code, _msg = self._dtm_data_model.calculate_criticality(
-                    item_hr)
+            _error_code, _msg = self._dtm_data_model.do_calculate(**kwargs)
         except OutOfRangeError:
             _error_code = 50
             _msg = ("RTK WARNING: OutOfRangeError raised when calculating "

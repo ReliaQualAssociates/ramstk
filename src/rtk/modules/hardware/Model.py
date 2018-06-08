@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.Model.py is part of The RTK Project
+#       rtk.modules.hardware.Model.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -63,7 +63,7 @@ class HardwareBoMDataModel(RTKDataModel):
         self.dtm_nswc = NSWCDataModel(dao)
         self.dtm_reliability = ReliabilityDataModel(dao)
 
-    def select(self, node_id, table):
+    def do_select(self, node_id, **kwargs):
         """
         Retrieve the instance of the RTK<MODULE> model for the Node ID passed.
 
@@ -81,22 +81,23 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: the instance of the RTK<MODULE> class that was requested
                  or None if the requested Node ID does not exist.
         """
-        if table == 'general':
-            _entity = self.dtm_hardware.select(node_id)
-        elif table == 'electrical_design':
-            _entity = self.dtm_design_electric.select(node_id)
-        elif table == 'mechanical_design':
-            _entity = self.dtm_design_mechanic.select(node_id)
-        elif table == 'mil_hdbk_f':
-            _entity = self.dtm_mil_hdbk_f.select(node_id)
-        elif table == 'nswc':
-            _entity = self.dtm_nswc.select(node_id)
-        elif table == 'reliability':
-            _entity = self.dtm_reliability.select(node_id)
+        _table = kwargs['table']
+        if _table == 'general':
+            _entity = self.dtm_hardware.do_select(node_id)
+        elif _table == 'electrical_design':
+            _entity = self.dtm_design_electric.do_select(node_id)
+        elif _table == 'mechanical_design':
+            _entity = self.dtm_design_mechanic.do_select(node_id)
+        elif _table == 'mil_hdbk_f':
+            _entity = self.dtm_mil_hdbk_f.do_select(node_id)
+        elif _table == 'nswc':
+            _entity = self.dtm_nswc.do_select(node_id)
+        elif _table == 'reliability':
+            _entity = self.dtm_reliability.do_select(node_id)
 
         return _entity
 
-    def select_all(self, revision_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Hardware BoM data from the RTK Program database.
 
@@ -104,39 +105,45 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: tree; the Tree() of data models.
         :rtype: :class:`treelib.Tree`
         """
-        for _node in self.dtm_hardware.select_all(revision_id).all_nodes()[1:]:
+        _revision_id = kwargs['revision_id']
+        for _node in self.dtm_hardware.do_select_all(
+                revision_id=_revision_id).all_nodes()[1:]:
             _data = {}
             _hardware_id = _node.data.hardware_id
             _data = _node.data.get_attributes()
             try:
-                _electrical = self.dtm_design_electric.select_all(_hardware_id)
+                _electrical = self.dtm_design_electric.do_select_all(
+                    hardware_id=_hardware_id)
                 _data.update(
                     _electrical.nodes[_hardware_id].data.get_attributes())
             except KeyError:
                 pass
 
             try:
-                _mechanical = self.dtm_design_mechanic.select_all(_hardware_id)
+                _mechanical = self.dtm_design_mechanic.do_select_all(
+                    hardware_id=_hardware_id)
                 _data.update(
                     _mechanical.nodes[_hardware_id].data.get_attributes())
             except KeyError:
                 pass
 
             try:
-                _mil_hdbk_f = self.dtm_mil_hdbk_f.select_all(_hardware_id)
+                _mil_hdbk_f = self.dtm_mil_hdbk_f.do_select_all(
+                    hardware_id=_hardware_id)
                 _data.update(
                     _mil_hdbk_f.nodes[_hardware_id].data.get_attributes())
             except KeyError:
                 pass
 
             try:
-                _nswc = self.dtm_nswc.select_all(_hardware_id)
+                _nswc = self.dtm_nswc.do_select_all(hardware_id=_hardware_id)
                 _data.update(_nswc.nodes[_hardware_id].data.get_attributes())
             except KeyError:
                 pass
 
             try:
-                _reliability = self.dtm_reliability.select_all(_hardware_id)
+                _reliability = self.dtm_reliability.do_select_all(
+                    hardware_id=_hardware_id)
                 _data.update(
                     _reliability.nodes[_hardware_id].data.get_attributes())
             except KeyError:
@@ -157,7 +164,7 @@ class HardwareBoMDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a new hardware item.
 
@@ -167,8 +174,10 @@ class HardwareBoMDataModel(RTKDataModel):
         _revision_id = kwargs['revision_id']
         _parent_id = kwargs['parent_id']
         _part = kwargs['part']
+        _error_code = 0
+        _msg = ''
 
-        _parent = self.dtm_hardware.select(_parent_id)
+        _parent = self.dtm_hardware.do_select(_parent_id)
         try:
             _parent_is_part = _parent.part
         except AttributeError:
@@ -176,45 +185,63 @@ class HardwareBoMDataModel(RTKDataModel):
 
         if _parent_is_part == 1 and _part == 0:
             _error_code = 3006
-            _msg = 'RTK ERROR: You can not have a hardware assembly as a ' \
-                   'child of a component/piece part.'
+            _msg = ("RTK ERROR: You can not have a hardware assembly as a "
+                    "child of a component/piece part.")
         elif _parent_is_part == 1 and _part == 1:
             _error_code = 3006
-            _msg = 'RTK ERROR: You can not have a component/piece part as a ' \
-                   'child of another component/piece part.'
+            _msg = ("RTK ERROR: You can not have a component/piece part as a "
+                    "child of another component/piece part.")
         else:
-            _error_code, _msg = self.dtm_hardware.insert(
+            _error_code, _error_msg = self.dtm_hardware.do_insert(
                 revision_id=_revision_id, parent_id=_parent_id, part=_part)
 
-        if _error_code == 0:
+        if _error_code != 0:
+            _msg = _msg + _error_msg + '\n'
+        else:
             _data = {}
             _hardware_id = self.dtm_hardware.last_id
-            _hardware = self.dtm_hardware.select(_hardware_id)
+            _hardware = self.dtm_hardware.do_select(_hardware_id)
             _data = _hardware.get_attributes()
-            # FIXME: Handle error codes in HardwareBoMDataModel.insert().
-            _error_code, _msg = self.dtm_design_electric.insert(
-                hardware_id=_hardware_id)
-            _electrical = self.dtm_design_electric.select(_hardware_id)
-            _data.update(_electrical.get_attributes())
 
-            _error_code, _msg = self.dtm_design_mechanic.insert(
+            _error_code, _error_msg = self.dtm_design_electric.do_insert(
                 hardware_id=_hardware_id)
-            _mechanical = self.dtm_design_mechanic.select(_hardware_id)
-            _data.update(_mechanical.get_attributes())
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _electrical = self.dtm_design_electric.do_select(_hardware_id)
+                _data.update(_electrical.get_attributes())
 
-            _error_code, _msg = self.dtm_mil_hdbk_f.insert(
+            _error_code, _error_msg = self.dtm_design_mechanic.do_insert(
                 hardware_id=_hardware_id)
-            _mil_hdbk_f = self.dtm_mil_hdbk_f.select(_hardware_id)
-            _data.update(_mil_hdbk_f.get_attributes())
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _mechanical = self.dtm_design_mechanic.do_select(_hardware_id)
+                _data.update(_mechanical.get_attributes())
 
-            _error_code, _msg = self.dtm_nswc.insert(hardware_id=_hardware_id)
-            _nswc = self.dtm_nswc.select(_hardware_id)
-            _data.update(_nswc.get_attributes())
-
-            _error_code, _msg = self.dtm_reliability.insert(
+            _error_code, _error_msg = self.dtm_mil_hdbk_f.do_insert(
                 hardware_id=_hardware_id)
-            _reliability = self.dtm_reliability.select(_hardware_id)
-            _data.update(_reliability.get_attributes())
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _mil_hdbk_f = self.dtm_mil_hdbk_f.do_select(_hardware_id)
+                _data.update(_mil_hdbk_f.get_attributes())
+
+            _error_code, _error_msg = self.dtm_nswc.do_insert(
+                hardware_id=_hardware_id)
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _nswc = self.dtm_nswc.do_select(_hardware_id)
+                _data.update(_nswc.get_attributes())
+
+            _error_code, _error_msg = self.dtm_reliability.do_insert(
+                hardware_id=_hardware_id)
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _reliability = self.dtm_reliability.do_select(_hardware_id)
+                _data.update(_reliability.get_attributes())
 
             # FIXME: Add code to insert record to analyses tables (Allocation, Similar Item, etc.) in HardwareBoMDataModel.insert().
 
@@ -228,9 +255,13 @@ class HardwareBoMDataModel(RTKDataModel):
             # It is defined in RTKDataModel.__init__
             self.last_id = max(self.last_id, _hardware_id)
 
+            if _msg == '':
+                _msg = ("RTK SUCCESS: Adding a new hardware item to the RTK "
+                        "Program database.")
+
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a Hardware item.
 
@@ -275,7 +306,7 @@ class HardwareBoMDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -286,32 +317,32 @@ class HardwareBoMDataModel(RTKDataModel):
         _error_code = 0
         _msg = ''
 
-        _code, _message = self.dtm_hardware.update(node_id)
+        _code, _message = self.dtm_hardware.do_update(node_id)
         if _code != 0:
             _error_code += _code
             _msg = _msg + _message + '\n'
 
-        _code, _message = self.dtm_reliability.update(node_id)
+        _code, _message = self.dtm_reliability.do_update(node_id)
         if _code != 0:
             _error_code += _code
             _msg = _msg + _message + '\n'
 
-        _code, _message = self.dtm_design_electric.update(node_id)
+        _code, _message = self.dtm_design_electric.do_update(node_id)
         if _code != 0:
             _error_code += _code
             _msg = _msg + _message + '\n'
 
-        _code, _message = self.dtm_design_mechanic.update(node_id)
+        _code, _message = self.dtm_design_mechanic.do_update(node_id)
         if _code != 0:
             _error_code += _code
             _msg = _msg + _message + '\n'
 
-        _code, _message = self.dtm_mil_hdbk_f.update(node_id)
+        _code, _message = self.dtm_mil_hdbk_f.do_update(node_id)
         if _code != 0:
             _error_code += _code
             _msg = _msg + _message + '\n'
 
-        _code, _message = self.dtm_nswc.update(node_id)
+        _code, _message = self.dtm_nswc.do_update(node_id)
         if _code != 0:
             _error_code += _code
             _msg = _msg + _message + '\n'
@@ -321,7 +352,7 @@ class HardwareBoMDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKHardware table records in the RTK Program database.
 
@@ -333,20 +364,22 @@ class HardwareBoMDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.identifier)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print('FIXME: Handle non-zero error codes in '
-                          'rtk.hardware.Model.HardwareDataModel.update_all().')
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.HardwareDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the hardware "
+                        "bill of materials did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the hardware bill "
+                    "of materials.")
 
         return _error_code, _msg
 
-    def calculate(self, hardware_id, hr_multiplier=1E6):
+    def do_calculate(self, node_id, **kwargs):
         """
         Calculate RAMS attributes for the hardware item.
 
@@ -354,7 +387,8 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: _attributes
         :rtype: dict
         """
-        _attributes = self.tree.get_node(hardware_id).data
+        _hr_multiplier = kwargs['hr_multiplier']
+        _attributes = self.tree.get_node(node_id).data
 
         if _attributes is not None:
             if _attributes['category_id'] > 0:
@@ -374,20 +408,20 @@ class HardwareBoMDataModel(RTKDataModel):
                     _attributes['total_cost'] = 0.0
 
             _attributes['hazard_rate_active'] = (
-                _attributes['hazard_rate_active'] / hr_multiplier)
+                _attributes['hazard_rate_active'] / _hr_multiplier)
             _attributes['hazard_rate_dormant'] = (
-                _attributes['hazard_rate_dormant'] / hr_multiplier)
+                _attributes['hazard_rate_dormant'] / _hr_multiplier)
             _attributes['hazard_rate_software'] = (
-                _attributes['hazard_rate_software'] / hr_multiplier)
+                _attributes['hazard_rate_software'] / _hr_multiplier)
 
-            _attributes = self._calculate_reliability_metrics(_attributes)
-            _attributes = self._calculate_cost_metrics(_attributes)
-            _attributes = self._calculate_metric_variances(_attributes)
+            _attributes = self._do_calculate_reliability_metrics(_attributes)
+            _attributes = self._do_calculate_cost_metrics(_attributes)
+            _attributes = self._do_calculate_metric_variances(_attributes)
 
         return _attributes
 
     @staticmethod
-    def _calculate_cost_metrics(attributes):
+    def _do_calculate_cost_metrics(attributes):
         """
         Calculate the metrics related to hardware costs.
 
@@ -415,7 +449,7 @@ class HardwareBoMDataModel(RTKDataModel):
         return attributes
 
     @staticmethod
-    def _calculate_reliability_metrics(attributes):
+    def _do_calculate_reliability_metrics(attributes):
         """
         Calculate the metrics related to hardware reliability.
 
@@ -446,7 +480,7 @@ class HardwareBoMDataModel(RTKDataModel):
         return attributes
 
     @staticmethod
-    def _calculate_metric_variances(attributes):
+    def _do_calculate_metric_variances(attributes):
         """
         Calculate the variances of several hardware metrics.
 
@@ -475,7 +509,7 @@ class HardwareBoMDataModel(RTKDataModel):
 
         return attributes
 
-    def calculate_all(self, hr_multiplier=1E6, node_id=0):
+    def do_calculate_all(self, **kwargs):
         """
         Calculate all items in the system.
 
@@ -500,15 +534,18 @@ class HardwareBoMDataModel(RTKDataModel):
 
         :rtype: list
         """
+        _hr_multiplier = kwargs['hr_multiplier']
+        _node_id = kwargs['node_id']
         _cum_results = [0.0, 0.0, 0.0, 0.0, 0, 0.0]
 
         # Check if there are children nodes of the node passed.
-        if self.tree.get_node(node_id).fpointer:
-            _attributes = self.tree.get_node(node_id).data
+        if self.tree.get_node(_node_id).fpointer:
+            _attributes = self.tree.get_node(_node_id).data
 
             # If there are children, calculate each of them first.
-            for _node_id in self.tree.get_node(node_id).fpointer:
-                _results = self.calculate_all(hr_multiplier, _node_id)
+            for _subnode_id in self.tree.get_node(_node_id).fpointer:
+                _results = self.do_calculate_all(
+                    hazard_rate=_hr_multiplier, node_id=_subnode_id)
                 _cum_results[0] += _results[0]
                 _cum_results[1] += _results[1]
                 _cum_results[2] += _results[2]
@@ -516,7 +553,8 @@ class HardwareBoMDataModel(RTKDataModel):
                 _cum_results[4] += int(_results[4])
                 _cum_results[5] += _results[5]
             # Then calculate the parent node.
-            _attributes = self.calculate(node_id, hr_multiplier)
+            _attributes = self.do_calculate(
+                _node_id, hr_multiplier=_hr_multiplier)
             if _attributes is not None:
                 _cum_results[0] += _attributes['hazard_rate_active']
                 _cum_results[1] += _attributes['hazard_rate_dormant']
@@ -525,8 +563,9 @@ class HardwareBoMDataModel(RTKDataModel):
                 _cum_results[4] += int(_attributes['total_part_count'])
                 _cum_results[5] += _attributes['total_power_dissipation']
         else:
-            if self.tree.get_node(node_id).data is not None:
-                _attributes = self.calculate(node_id, hr_multiplier)
+            if self.tree.get_node(_node_id).data is not None:
+                _attributes = self.do_calculate(
+                    _node_id, hr_multiplier=_hr_multiplier)
                 _cum_results[0] += _attributes['hazard_rate_active']
                 _cum_results[1] += _attributes['hazard_rate_dormant']
                 _cum_results[2] += _attributes['hazard_rate_software']
@@ -535,7 +574,7 @@ class HardwareBoMDataModel(RTKDataModel):
                 _cum_results[5] += _attributes['total_power_dissipation']
 
         if self.tree.get_node(
-                node_id).data is not None and _attributes['part'] == 0:
+                _node_id).data is not None and _attributes['part'] == 0:
             _attributes['hazard_rate_active'] = _cum_results[0]
             _attributes['hazard_rate_dormant'] = _cum_results[1]
             _attributes['hazard_rate_software'] = _cum_results[2]
@@ -543,9 +582,9 @@ class HardwareBoMDataModel(RTKDataModel):
             _attributes['total_part_count'] = int(_cum_results[4])
             _attributes['total_power_dissipation'] = _cum_results[5]
 
-            _attributes = self._calculate_reliability_metrics(_attributes)
-            _attributes = self._calculate_cost_metrics(_attributes)
-            _attributes = self._calculate_metric_variances(_attributes)
+            _attributes = self._do_calculate_reliability_metrics(_attributes)
+            _attributes = self._do_calculate_cost_metrics(_attributes)
+            _attributes = self._do_calculate_metric_variances(_attributes)
 
         return _cum_results
 
@@ -582,7 +621,7 @@ class HardwareDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Hardware from the RTK Program database.
 
@@ -594,10 +633,11 @@ class HardwareDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKHardware data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _hardware in _session.query(RTKHardware).filter(
-                RTKHardware.revision_id == revision_id).all():
+                RTKHardware.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _hardware.get_attributes()
@@ -619,7 +659,7 @@ class HardwareDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKHardware table.
 
@@ -630,7 +670,7 @@ class HardwareDataModel(RTKDataModel):
         _hardware.revision_id = kwargs['revision_id']
         _hardware.parent_id = kwargs['parent_id']
         _hardware.part = kwargs['part']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _hardware,
             ])
@@ -648,7 +688,7 @@ class HardwareDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKHardware table.
 
@@ -657,7 +697,7 @@ class HardwareDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -670,7 +710,7 @@ class HardwareDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -678,7 +718,7 @@ class HardwareDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -687,7 +727,7 @@ class HardwareDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self):
         """
         Update all RTKHardware table records in the RTK Program database.
 
@@ -699,20 +739,21 @@ class HardwareDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print('FIXME: Handle non-zero error codes in '
-                          'rtk.hardware.Model.HardwareDataModel.update_all().')
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.HardwareDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the hardware table "
+                        "did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the hardware table.")
 
         return _error_code, _msg
 
-    def make_composite_ref_des(self, node_id=1):
+    def do_make_composite_ref_des(self, node_id=1):
         """
         Make the composite reference designators.
 
@@ -736,7 +777,7 @@ class HardwareDataModel(RTKDataModel):
 
         # Now make the composite reference designator for all the chil nodes.
         for _child_node in self.tree.children(node_id):
-            self.make_composite_ref_des(node_id=_child_node.identifier)
+            self.do_make_composite_ref_des(node_id=_child_node.identifier)
 
         return _return
 
@@ -768,7 +809,7 @@ class DesignElectricDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, hardware_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all RTKDesignElectric records from the RTK Program database.
 
@@ -776,12 +817,12 @@ class DesignElectricDataModel(RTKDataModel):
         in the connected RTK Program database.  It then add each to the
         Design Electric data model treelib.Tree().
 
-        :param int hardware_id: the ID of the Hardware item to retrieve the
-                                Electrical Design parameters for.
         :return: tree; the treelib Tree() of RTKDesignElectric data models that
                  comprise the DesignElectric tree.
         :rtype: :class:`treelib.Tree`
         """
+        _hardware_id = kwargs['hardware_id']
+
         # Don't use the RTKDataModel.select_all() method because we don't want
         # to clear the tree or we'll only be left with the last hardware ID
         # passed.
@@ -789,7 +830,7 @@ class DesignElectricDataModel(RTKDataModel):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _design in _session.query(RTKDesignElectric).\
-                filter(RTKDesignElectric.hardware_id == hardware_id).all():
+                filter(RTKDesignElectric.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _design.hardware_id,
@@ -807,7 +848,7 @@ class DesignElectricDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKDesignElectric table.
 
@@ -816,7 +857,7 @@ class DesignElectricDataModel(RTKDataModel):
         """
         _design = RTKDesignElectric()
         _design.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _design,
             ])
@@ -834,7 +875,7 @@ class DesignElectricDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKDesignElectric table.
 
@@ -843,7 +884,7 @@ class DesignElectricDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -857,7 +898,7 @@ class DesignElectricDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -866,7 +907,7 @@ class DesignElectricDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -875,7 +916,7 @@ class DesignElectricDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKDesignElectric table records in the RTK Program database.
 
@@ -887,19 +928,18 @@ class DesignElectricDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print(
-                        'FIXME: Handle non-zero error codes in '
-                        'rtk.hardware.Model.DesignElectricDataModel.update_all().'
-                    )
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print(
-                    'FIXME: Handle AttributeError in '
-                    'rtk.hardware.Model.DesignElectricDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the electrical "
+                        "design table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the electrical "
+                    "design table.")
 
         return _error_code, _msg
 
@@ -931,7 +971,7 @@ class DesignMechanicDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, hardware_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all RTKDesignMechanic records from the RTK Program database.
 
@@ -939,12 +979,12 @@ class DesignMechanicDataModel(RTKDataModel):
         in the connected RTK Program database.  It then add each to the
         Mechanical Design parameter data model treelib.Tree().
 
-        :param int hardware_id: the ID of the Hardware item to retrieve the
-                                Mechanical Design parameters for.
         :return: tree; the treelib Tree() of RTKDesignMechanic data models that
                  comprise the DesignMechanic tree.
         :rtype: :class:`treelib.Tree`
         """
+        _hardware_id = kwargs['hardware_id']
+
         # Don't use the RTKDataModel.select_all() method because we don't want
         # to clear the tree or we'll only be left with the last hardware ID
         # passed.
@@ -952,7 +992,7 @@ class DesignMechanicDataModel(RTKDataModel):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _design in _session.query(RTKDesignMechanic).\
-                filter(RTKDesignMechanic.hardware_id == hardware_id).all():
+                filter(RTKDesignMechanic.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _design.hardware_id,
@@ -970,7 +1010,7 @@ class DesignMechanicDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKDesignMechanic table.
 
@@ -979,7 +1019,7 @@ class DesignMechanicDataModel(RTKDataModel):
         """
         _design = RTKDesignMechanic()
         _design.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _design,
             ])
@@ -997,7 +1037,7 @@ class DesignMechanicDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKDesignMechanic table.
 
@@ -1006,7 +1046,7 @@ class DesignMechanicDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -1020,7 +1060,7 @@ class DesignMechanicDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -1029,7 +1069,7 @@ class DesignMechanicDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -1038,7 +1078,7 @@ class DesignMechanicDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKDesignMechanic table records in the RTK Program database.
 
@@ -1050,19 +1090,18 @@ class DesignMechanicDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print(
-                        'FIXME: Handle non-zero error codes in '
-                        'rtk.hardware.Model.DesignMechanicDataModel.update_all().'
-                    )
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print(
-                    'FIXME: Handle AttributeError in '
-                    'rtk.hardware.Model.DesignMechanicDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the mechanical "
+                        "design table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the mechanical "
+                    "design table.")
 
         return _error_code, _msg
 
@@ -1094,7 +1133,7 @@ class MilHdbkFDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, hardware_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all RTKMilHdbkF records from the RTK Program database.
 
@@ -1102,12 +1141,12 @@ class MilHdbkFDataModel(RTKDataModel):
         in the connected RTK Program database.  It then add each to the
         MIL-HDBK-217F data model treelib.Tree().
 
-        :param int hardware_id: the ID of the Hardware item to retrieve the
-                                MIL-HDBK-217F parameters for.
         :return: tree; the treelib Tree() of RTKMilHdbkF data models that
                  comprise the MilHdbkF tree.
         :rtype: :class:`treelib.Tree`
         """
+        _hardware_id = kwargs['hardware_id']
+
         # Don't use the RTKDataModel.select_all() method because we don't want
         # to clear the tree or we'll only be left with the last hardware ID
         # passed.
@@ -1115,7 +1154,7 @@ class MilHdbkFDataModel(RTKDataModel):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _milhdbkf in _session.query(RTKMilHdbkF).\
-                filter(RTKMilHdbkF.hardware_id == hardware_id).all():
+                filter(RTKMilHdbkF.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _milhdbkf.hardware_id,
@@ -1133,7 +1172,7 @@ class MilHdbkFDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKMilHdbkF table.
 
@@ -1142,7 +1181,7 @@ class MilHdbkFDataModel(RTKDataModel):
         """
         _milhdbkf = RTKMilHdbkF()
         _milhdbkf.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _milhdbkf,
             ])
@@ -1160,7 +1199,7 @@ class MilHdbkFDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKMilHdbkF table.
 
@@ -1169,7 +1208,7 @@ class MilHdbkFDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -1183,7 +1222,7 @@ class MilHdbkFDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -1192,7 +1231,7 @@ class MilHdbkFDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -1201,7 +1240,7 @@ class MilHdbkFDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKMilHdbkF table records in the RTK Program database.
 
@@ -1213,16 +1252,18 @@ class MilHdbkFDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print('FIXME: Handle non-zero error codes in '
-                          'rtk.hardware.Model.MilHdbkFDataModel.update_all().')
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.MilHdbkFDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the MIL-HDBK-217 "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the MIL-HDBK-217 "
+                    "table.")
 
         return _error_code, _msg
 
@@ -1254,7 +1295,7 @@ class NSWCDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, hardware_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all RTKNSWC records from the RTK Program database.
 
@@ -1262,12 +1303,12 @@ class NSWCDataModel(RTKDataModel):
         in the connected RTK Program database.  It then add each to the
         NSWC data model treelib.Tree().
 
-        :param int hardware_id: the ID of the Hardware item to retrieve the
-                                NSWC parameters for.
         :return: tree; the treelib Tree() of RTKNSWC data models that
                  comprise the NSWC tree.
         :rtype: :class:`treelib.Tree`
         """
+        _hardware_id = kwargs['hardware_id']
+
         # Don't use the RTKDataModel.select_all() method because we don't want
         # to clear the tree or we'll only be left with the last hardware ID
         # passed.
@@ -1275,7 +1316,7 @@ class NSWCDataModel(RTKDataModel):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _nswc in _session.query(RTKNSWC).\
-                filter(RTKNSWC.hardware_id == hardware_id).all():
+                filter(RTKNSWC.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
@@ -1290,7 +1331,7 @@ class NSWCDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKNSWC table.
 
@@ -1299,7 +1340,7 @@ class NSWCDataModel(RTKDataModel):
         """
         _nswc = RTKNSWC()
         _nswc.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _nswc,
             ])
@@ -1314,7 +1355,7 @@ class NSWCDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKNSWC table.
 
@@ -1323,7 +1364,7 @@ class NSWCDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -1337,7 +1378,7 @@ class NSWCDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -1346,7 +1387,7 @@ class NSWCDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -1355,7 +1396,7 @@ class NSWCDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self):
         """
         Update all RTKNSWC table records in the RTK Program database.
 
@@ -1367,16 +1408,17 @@ class NSWCDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print('FIXME: Handle non-zero error codes in '
-                          'rtk.hardware.Model.NSWCDataModel.update_all().')
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.NSWCDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the NSWC table "
+                        "did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the NSWC table.")
 
         return _error_code, _msg
 
@@ -1408,7 +1450,7 @@ class ReliabilityDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, hardware_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all RTKReliability records from the RTK Program database.
 
@@ -1422,6 +1464,8 @@ class ReliabilityDataModel(RTKDataModel):
                  comprise the Reliability tree.
         :rtype: :class:`treelib.Tree`
         """
+        _hardware_id = kwargs['hardware_id']
+
         # Don't use the RTKDataModel.select_all() method because we don't want
         # to clear the tree or we'll only be left with the last hardware ID
         # passed.
@@ -1429,7 +1473,7 @@ class ReliabilityDataModel(RTKDataModel):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _reliability in _session.query(RTKReliability).\
-                filter(RTKReliability.hardware_id == hardware_id).all():
+                filter(RTKReliability.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _reliability.hardware_id,
@@ -1447,7 +1491,7 @@ class ReliabilityDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKReliability table.
 
@@ -1456,7 +1500,7 @@ class ReliabilityDataModel(RTKDataModel):
         """
         _reliability = RTKReliability()
         _reliability.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _reliability,
             ])
@@ -1474,7 +1518,7 @@ class ReliabilityDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKReliability table.
 
@@ -1483,7 +1527,7 @@ class ReliabilityDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -1497,7 +1541,7 @@ class ReliabilityDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
@@ -1506,7 +1550,7 @@ class ReliabilityDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -1515,7 +1559,7 @@ class ReliabilityDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKReliability table records in the RTK Program database.
 
@@ -1527,17 +1571,17 @@ class ReliabilityDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print(
-                        'FIXME: Handle non-zero error codes in '
-                        'rtk.hardware.Model.ReliabilityDataModel.update_all().'
-                    )
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.ReliabilityDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the reliability "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the reliability "
+                    "table.")
 
         return _error_code, _msg

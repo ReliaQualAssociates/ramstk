@@ -45,7 +45,7 @@ class SimilarItemDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id, **kwargs):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the SimilarItems from the RTK Program database.
 
@@ -58,10 +58,11 @@ class SimilarItemDataModel(RTKDataModel):
         :return: tree; the Tree() of RTKSimilarItem data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _similar_item in _session.query(RTKSimilarItem).filter(
-                RTKSimilarItem.revision_id == revision_id).all():
+                RTKSimilarItem.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _similar_item.get_attributes()
@@ -80,7 +81,7 @@ class SimilarItemDataModel(RTKDataModel):
 
         return self.tree
 
-    def select_children(self, node_id):
+    def do_select_children(self, node_id):
         """
         Select a list containing the immediate child nodes.
 
@@ -96,7 +97,7 @@ class SimilarItemDataModel(RTKDataModel):
 
         return _children
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKSimilarItem table.
 
@@ -107,7 +108,7 @@ class SimilarItemDataModel(RTKDataModel):
         _similar_item.revision_id = kwargs['revision_id']
         _similar_item.hardware_id = kwargs['hardware_id']
         _similar_item.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _similar_item,
             ])
@@ -122,16 +123,16 @@ class SimilarItemDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKFailureDefinition table.
 
-        :param int node_id: the ID of the Failure Definition to be
-                                  removed.
+        :param int node_id: the PyPubSub Tree() ID of the Similar Item to be
+                            removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -144,7 +145,7 @@ class SimilarItemDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record in the RTKSimilarItem table.
 
@@ -153,7 +154,7 @@ class SimilarItemDataModel(RTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2207
@@ -162,51 +163,68 @@ class SimilarItemDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKSimilarItem records.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
         _error_code = 0
         _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.similar_item.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.ssimilar_item.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the similar "
+                        "item analysis worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all line items in the similar item "
+                    "analysis worksheet.")
 
         return _error_code, _msg
 
-    def calculate(self, node_id, hazard_rate):
+    def do_calculate(self, node_id, **kwargs):
         """
         Calculate and allocate the goals for the selected hardware item.
 
         :param int node_id: the Node (Hardware) ID of the hardware item whose
                             goal is to be allocated.
-        :param float hazard_rate: the current hazard rate of the hardware item
-                                  to be calculated.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _hazard_rate = kwargs['hazard_rate']
+        _return = False
+
+        _sia = self.do_select(node_id)
+
+        if _sia.method_id == 1:
+            _return = (_return or _sia.topic_633(_hazard_rate))
+        elif _sia.method_id == 2:
+            _return = (_return or _sia.user_defined(_hazard_rate))
+        else:
+            _return = True
+
+        return _return
+
+    def do_calculate_all(self, **kwargs):
+        """
+        Calculate metrics for all Similar Item analysis.
+
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _sia = self.select(node_id)
-
-        if _sia.method_id == 1:
-            _return = (_return or _sia.topic_633(hazard_rate))
-        elif _sia.method_id == 2:
-            _return = (_return or _sia.user_defined(hazard_rate))
-        else:
-            _return = True
+        # Calculate all Similar Items, skipping the top node in the tree.
+        for _node in self.tree.all_nodes():
+            if _node.identifier != 0:
+                self.do_calculate(_node.identifier, **kwargs)
 
         return _return

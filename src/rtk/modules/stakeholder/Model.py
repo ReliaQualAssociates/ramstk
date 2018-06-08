@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.stakeholder.Model.py is part of The RTK Project
+#       rtk.modules.stakeholder.Model.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -44,7 +44,7 @@ class StakeholderDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Stakeholders from the RTK Program database.
 
@@ -52,15 +52,14 @@ class StakeholderDataModel(RTKDataModel):
         table in the connected RTK Program database.  It then add each to the
         Stakeholder data model treelib.Tree().
 
-        :param int revision_id: the Revision ID to select the Failure
-                                Definition records.
         :return: tree; the treelib Tree() of RTKStakeholder data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self, **kwargs)
 
         for _stakeholder in _session.query(RTKStakeholder).filter(
-                RTKStakeholder.revision_id == revision_id).all():
+                RTKStakeholder.revision_id == _revision_id).all():
             self.tree.create_node(
                 _stakeholder.description,
                 _stakeholder.stakeholder_id,
@@ -75,7 +74,7 @@ class StakeholderDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKStakeholder table.
 
@@ -87,7 +86,7 @@ class StakeholderDataModel(RTKDataModel):
         _revision_id = kwargs['revision_id']
         _stakeholder = RTKStakeholder()
         _stakeholder.revision_id = _revision_id
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _stakeholder,
             ])
@@ -105,7 +104,7 @@ class StakeholderDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKStakeholder table.
 
@@ -114,7 +113,7 @@ class StakeholderDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -127,7 +126,7 @@ class StakeholderDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record in the RTKStakeholder table.
 
@@ -136,7 +135,7 @@ class StakeholderDataModel(RTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -145,32 +144,34 @@ class StakeholderDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKStakeholder records.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Updating the RTK Program database.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.stakeholder_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.stakeholder.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.stakeholder.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the stakeholder "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the stakeholder "
+                    "table.")
 
         return _error_code, _msg
 
-    def calculate_weight(self, stakeholder_id):
+    def do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
         """
         Calculate the improvement factor and overall weighting.
 
@@ -179,7 +180,7 @@ class StakeholderDataModel(RTKDataModel):
         """
         _return = False
 
-        _stakeholder = self.tree.get_node(stakeholder_id).data
+        _stakeholder = self.tree.get_node(node_id).data
 
         _stakeholder.improvement = 1.0 + 0.2 * (
             _stakeholder.planned_rank - _stakeholder.customer_rank)
@@ -187,5 +188,21 @@ class StakeholderDataModel(RTKDataModel):
             _stakeholder.improvement * _stakeholder.user_float_1 * \
             _stakeholder.user_float_2 * _stakeholder.user_float_3 * \
             _stakeholder.user_float_4 * _stakeholder.user_float_5
+
+        return _return
+
+    def do_calculate_all(self, **kwargs):
+        """
+        Calculate metrics for all Stakeholder inputs.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        # Calculate all Stakeholder inputs, skipping the top node in the tree.
+        for _node in self.tree.all_nodes():
+            if _node.identifier != 0:
+                self.do_calculate(_node.identifier, **kwargs)
 
         return _return

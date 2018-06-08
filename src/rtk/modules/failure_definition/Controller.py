@@ -50,7 +50,7 @@ class FailureDefinitionDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_insert(self, revision_id):
+    def request_do_insert(self, **kwargs):
         """
         Request to add an RTKFailureDefinition table record.
 
@@ -59,8 +59,9 @@ class FailureDefinitionDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id)
+        _revision_id = kwargs['revision_id']
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=_revision_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
@@ -75,41 +76,44 @@ class FailureDefinitionDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, definition_id):
+    def request_do_delete(self, node_id):
         """
         Request to delete an RTKFailureDefinition table record.
 
-        :param int definition_id: the Failure Definition ID to delete.
+        :param str node_id: the PyPubSub Tree() ID for the Failure Definition
+                            to delete.
         :return: (_error_code, _msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.delete(definition_id)
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedDefinition')
 
-    def request_update(self, definition_id):
+    def request_do_update(self, node_id):
         """
         Request to update an RTKFailureDefinition table record.
 
+        :param str node_id: the PyPubSub Tree() ID of the Failure Definition to
+                            update.
         :return: (_error_code, _msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update(definition_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedDefinition')
 
-    def request_update_all(self):
+    def request_do_update_all(self, **kwargs):
         """
         Request to update all records in the RTKFailureDefinition table.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

@@ -43,7 +43,7 @@ class RequirementDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id):  # pylint: disable=unused-argument
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Requirements from the RTK Program database.
 
@@ -51,14 +51,14 @@ class RequirementDataModel(RTKDataModel):
         the connected RTK Program database.  It then adds each to the
         Requirement data model treelib.Tree().
 
-        :param int revision_id: the Revision ID to select the Requirements for.
         :return: tree; the Tree() of RTKRequirement data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _requirement in _session.query(RTKRequirement).filter(
-                RTKRequirement.revision_id == revision_id).all():
+                RTKRequirement.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _requirement.get_attributes()
@@ -77,7 +77,7 @@ class RequirementDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKRequirement table.
 
@@ -87,7 +87,7 @@ class RequirementDataModel(RTKDataModel):
         _requirement = RTKRequirement()
         _requirement.revision_id = kwargs['revision_id']
         _requirement.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _requirement,
             ])
@@ -105,46 +105,46 @@ class RequirementDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove a record from the RTKRequirement table.
 
-        :param int node_id entity: the ID of the RTKRequirement record to be
-                                   removed from the RTK Program database.
+        :param int node_id entity: the PyPubSub Tree() ID of the Requirement to
+                                   delete.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
-                          'Requirement ID {0:d}.'.format(node_id)
+                          'Requirement ID {0:s}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the record associated with Node ID to the RTK Program database.
 
-        :param int node_id: the Requirement ID of the Requirement to save.
+        :param str node_id: the PyPubSub Tree() ID of the Requirement to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Requirement ID ' \
-                   '{0:d}.'.format(node_id)
+            _msg = ('RTK ERROR: Attempted to save non-existent Requirement ID '
+                    '{0:s}.'.format(str(node_id)))
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKRequirement table records in the RTK Program database.
 
@@ -156,15 +156,17 @@ class RequirementDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.requirement_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.requirement.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.requirement.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the requirement "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the requirement "
+                    "table.")
 
         return _error_code, _msg

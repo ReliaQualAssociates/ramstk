@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.datamodels.matrix.Matrix.py is part of The RTK Project
+#       rtk.modules.Matrix.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com

@@ -31,7 +31,7 @@ def test_create_opload_data_model(test_dao):
 
 
 @pytest.mark.integration
-def test_select_all(test_dao):
+def test_do_select_all(test_dao):
     """ do_select_all() should return a treelib Tree() on success when selecting OpLoads. """
     DUT = dtmOpLoad(test_dao)
     _tree = DUT.do_select_all(parent_id=1)
@@ -41,12 +41,12 @@ def test_select_all(test_dao):
 
 
 @pytest.mark.integration
-def test_select(test_dao):
+def test_do_select(test_dao):
     """ do_select() should return an instance of the RTKOpLoad data model on success. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)
 
-    _opload = DUT.select(1)
+    _opload = DUT.do_select(1)
 
     assert isinstance(_opload, RTKOpLoad)
     assert _opload.load_id == 1
@@ -54,7 +54,7 @@ def test_select(test_dao):
 
 
 @pytest.mark.integration
-def test_select_non_existent_id(test_dao):
+def test_do_select_non_existent_id(test_dao):
     """ do_select() should return None when a non-existent OpLoad ID is requested. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -65,7 +65,7 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_insert(test_dao):
+def test_do_insert(test_dao):
     """ do_insert() should return a zero error code on success. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -79,7 +79,7 @@ def test_insert(test_dao):
 
 
 @pytest.mark.integration
-def test_delete(test_dao):
+def test_do_delete(test_dao):
     """ do_delete() should return a zero error code on success. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -92,7 +92,7 @@ def test_delete(test_dao):
 
 
 @pytest.mark.integration
-def test_delete_non_existent_id(test_dao):
+def test_do_delete_non_existent_id(test_dao):
     """ do_delete() should return a non-zero error code when passed a OpLoad ID that doesn't exist. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -105,12 +105,12 @@ def test_delete_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update(test_dao):
+def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)
 
-    _opload = DUT.select(1)
+    _opload = DUT.do_select(1)
     _opload.pof_include = 1
 
     _error_code, _msg = DUT.do_update(1)
@@ -120,7 +120,7 @@ def test_update(test_dao):
 
 
 @pytest.mark.integration
-def test_update_non_existent_id(test_dao):
+def test_do_update_non_existent_id(test_dao):
     """ do_update() should return a non-zero error code when passed an OpLoad ID that doesn't exist. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)
@@ -132,7 +132,7 @@ def test_update_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
-def test_update_all(test_dao):
+def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)

@@ -8,6 +8,7 @@
 """This is the test class for testing the RTK module algorithms and models."""
 
 import os
+import tempfile
 
 import logging
 from treelib import Tree
@@ -20,6 +21,8 @@ from rtk.dao.DAO import DAO
 from rtk.gui.gtk.mwi.ListBook import ListBook
 from rtk.gui.gtk.mwi.ModuleBook import ModuleBook
 from rtk.gui.gtk.mwi.WorkBook import WorkBook
+
+TEMPDIR = tempfile.gettempdir()
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -61,7 +64,8 @@ def test_create_new_program(test_common_dao, test_dao, test_configuration):
     DUT = Model(test_common_dao, test_dao)
 
     _configuration = test_configuration
-    _database = _configuration.RTK_BACKEND + ':///' + '/tmp/_rtk_test_db.rtk'
+    _database = (
+        _configuration.RTK_BACKEND + ':///' + TEMPDIR + '/_rtk_test_db.rtk')
     _error_code, _msg = DUT.create_program(_database)
 
     assert _error_code == 0
@@ -74,12 +78,12 @@ def test_create_new_program_failed(test_common_dao, test_dao):
     """ create_program() should return a non-zero error code on failure. """
     DUT = Model(test_common_dao, test_dao)
 
-    _database = 'sqlite:///tmp/BigAssTestDB.rtk'
+    _database = 'sqlite:/' + TEMPDIR + '/BigAssTestDB.rtk'
     _error_code, _msg = DUT.create_program(_database)
 
     assert _error_code == 1
     assert _msg == ('RTK ERROR: Failed to create RTK Program database '
-                    'sqlite:///tmp/BigAssTestDB.rtk.')
+                    'sqlite:/' + TEMPDIR + '/BigAssTestDB.rtk.')
 
 
 @pytest.mark.integration
@@ -855,7 +859,7 @@ def test_request_save_program():
     DUT.RTK_CONFIGURATION.RTK_PROG_INFO = {
         'host': 'localhost',
         'socket': 3306,
-        'database': '/tmp/TestDB.rtk',
+        'database': TEMPDIR + '/TestDB.rtk',
         'user': '',
         'password': ''
     }
@@ -872,7 +876,7 @@ def test_request_close_program():
     DUT.RTK_CONFIGURATION.RTK_PROG_INFO = {
         'host': 'localhost',
         'socket': 3306,
-        'database': '/tmp/TestDB.rtk',
+        'database': TEMPDIR + '/TestDB.rtk',
         'user': '',
         'password': ''
     }

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.datamodels.RTKDataModel.py is part of the RTK Project
+#       rtk.modules.RTKDataModel.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -59,12 +59,6 @@ class RTKDataModel(object):  # pragma: no cover
                 tree.DuplicatedNodeIdError):
             pass
 
-    def select(self, node_id):
-        """
-        Placeholder to call do_select() until all test files can be updated.
-        """
-        return self.do_select(node_id)
-
     def do_select(self, node_id, **kwargs):  # pylint: disable=unused-argument
         """
         Retrieve the instance of the RTK<MODULE> model for the Node ID passed.
@@ -82,9 +76,6 @@ class RTKDataModel(object):  # pragma: no cover
 
         return _entity
 
-    def select_all(self):
-        return self.do_select_all()
-
     def do_select_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Retrieve and build the RTK Module tree.
@@ -98,10 +89,6 @@ class RTKDataModel(object):  # pragma: no cover
 
         return self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
-
-    def insert(self, **kwargs):
-        _entities = kwargs['entities']
-        return self.do_insert(entities=_entities)
 
     def do_insert(self, **kwargs):
         """

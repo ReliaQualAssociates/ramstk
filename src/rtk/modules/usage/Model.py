@@ -60,7 +60,7 @@ class UsageProfileDataModel(RTKDataModel):
         self.dtm_phase = MissionPhaseDataModel(dao)
         self.dtm_environment = EnvironmentDataModel(dao)
 
-    def select_all(self, revision_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve and build the Usage Profile tree for Revision ID.
 
@@ -69,7 +69,8 @@ class UsageProfileDataModel(RTKDataModel):
         :return: tree; the Usage Profile treelib Tree().
         :rtype: :py:class:`treelib.Tree`
         """
-        RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        RTKDataModel.do_select_all(self, **kwargs)
 
         # Build the tree.  We concatenate the Mission ID and the Phase ID to
         # create the Node() identifier for Mission Phases.  This prevents the
@@ -77,7 +78,8 @@ class UsageProfileDataModel(RTKDataModel):
         # the database from causing problems when building the tree.  Do the
         # same for the environment by concatenating the Environment ID with the
         # Mission ID and Phase ID.
-        _missions = self.dtm_mission.select_all(revision_id).nodes
+        _missions = self.dtm_mission.do_select_all(
+            revision_id=_revision_id).nodes
 
         # pylint: disable=too-many-nested-blocks
         for _mkey in _missions:
@@ -90,7 +92,8 @@ class UsageProfileDataModel(RTKDataModel):
                     data=_mission)
 
                 # Add the phases, if any, to the mission.
-                _phases = self.dtm_phase.select_all(_mission.mission_id).nodes
+                _phases = self.dtm_phase.do_select_all(
+                    mission_id=_mission.mission_id).nodes
                 for _pkey in _phases:
                     _phase = _phases[_pkey].data
                     if _phase is not None:
@@ -103,8 +106,8 @@ class UsageProfileDataModel(RTKDataModel):
                             data=_phase)
 
                         # Add the environments, if any, to the phase.
-                        _environments = self.dtm_environment.select_all(
-                            _phase.phase_id).nodes
+                        _environments = self.dtm_environment.do_select_all(
+                            phase_id=_phase.phase_id).nodes
                         for _ekey in _environments:
                             _environment = _environments[_ekey].data
                             if _environment is not None:
@@ -123,7 +126,7 @@ class UsageProfileDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add an entity to the Usage Profile and RTK Program database..
 
@@ -160,7 +163,7 @@ class UsageProfileDataModel(RTKDataModel):
         else:
             _entity = None
 
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _entity,
             ])
@@ -187,7 +190,7 @@ class UsageProfileDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove an entity from the Usage Profile and RTK Program database.
 
@@ -195,7 +198,7 @@ class UsageProfileDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -209,7 +212,7 @@ class UsageProfileDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the entity associated with Node ID to the RTK Program database.
 
@@ -218,7 +221,7 @@ class UsageProfileDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -227,7 +230,7 @@ class UsageProfileDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all Usage Profile entities to the RTK Program database.
 
@@ -237,13 +240,19 @@ class UsageProfileDataModel(RTKDataModel):
         _error_code = 0
         _msg = ''
 
-        for _key in self.tree.nodes:
-            if _key != 0:
-                _error_code, _msg = self.update(_key)
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _debug_msg = self.do_update(_node.identifier)
+                _msg = _msg + _debug_msg + '\n'
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print _error_code
+            except AttributeError:
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the usage "
+                        "profile did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all line items in the usage "
+                    "profile.")
 
         return _error_code, _msg
 
@@ -281,7 +290,7 @@ class MissionDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, revision_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the RTKMission records from the RTK Program database.
 
@@ -294,10 +303,11 @@ class MissionDataModel(RTKDataModel):
                  comprise the Mission tree.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _revision_id = kwargs['revision_id']
+        _session = RTKDataModel.do_select_all(self, **kwargs)
 
         for _mission in _session.query(RTKMission).\
-                filter(RTKMission.revision_id == revision_id).all():
+                filter(RTKMission.revision_id == _revision_id).all():
             self.tree.create_node(
                 _mission.description,
                 _mission.mission_id,
@@ -312,7 +322,7 @@ class MissionDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKMission table in the RTK Program database.
 
@@ -323,7 +333,7 @@ class MissionDataModel(RTKDataModel):
         _revision_id = kwargs['revision_id']
         _mission = RTKMission()
         _mission.revision_id = _revision_id
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _mission,
             ])
@@ -341,7 +351,7 @@ class MissionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove the RTKMission record associated with Node ID.
 
@@ -349,7 +359,7 @@ class MissionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -362,7 +372,7 @@ class MissionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the RTKMission record associated with Node ID.
 
@@ -371,7 +381,7 @@ class MissionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -380,7 +390,7 @@ class MissionDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKMission records.
 
@@ -392,16 +402,18 @@ class MissionDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.mission_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.Usage.Model.MissionDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.Usage.Model.MissionDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the usage profile "
+                        "mission table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+                    "mission table.")
 
         return _error_code, _msg
 
@@ -439,7 +451,7 @@ class MissionPhaseDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, mission_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the RTKMissionPhase records from the RTK Program database.
 
@@ -449,10 +461,11 @@ class MissionPhaseDataModel(RTKDataModel):
                  comprise the Mission Phase tree.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _mission_id = kwargs['mission_id']
+        _session = RTKDataModel.do_select_all(self, **kwargs)
 
         for _phase in _session.query(RTKMissionPhase).\
-                filter(RTKMissionPhase.mission_id == mission_id).all():
+                filter(RTKMissionPhase.mission_id == _mission_id).all():
             self.tree.create_node(
                 _phase.name, _phase.phase_id, parent=0, data=_phase)
 
@@ -464,7 +477,7 @@ class MissionPhaseDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKMissionPhase table in the RTK Program database.
 
@@ -476,7 +489,7 @@ class MissionPhaseDataModel(RTKDataModel):
         _phase = RTKMissionPhase()
         _phase.mission_id = _mission_id
 
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _phase,
             ])
@@ -491,7 +504,7 @@ class MissionPhaseDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove the RTKMissionPhase record associated with Node ID.
 
@@ -499,7 +512,7 @@ class MissionPhaseDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -512,7 +525,7 @@ class MissionPhaseDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the RTKMissionPhase record associated with Node ID.
 
@@ -521,7 +534,7 @@ class MissionPhaseDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -530,7 +543,7 @@ class MissionPhaseDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKMissionPhase records.
 
@@ -542,16 +555,18 @@ class MissionPhaseDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.phase_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.Usage.Model.MissionPhaseDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.Usage.Model.MissionPhaseDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the usage profile "
+                        "mission phase table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+                    "mission phase table.")
 
         return _error_code, _msg
 
@@ -589,7 +604,7 @@ class EnvironmentDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, phase_id):
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the RTKEnvironment records from the RTK Program database.
 
@@ -599,10 +614,11 @@ class EnvironmentDataModel(RTKDataModel):
                  that comprise the Environment tree.
         :rtype: :py:class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        _phase_id = kwargs['phase_id']
+        _session = RTKDataModel.do_select_all(self)
 
         for _environment in _session.query(RTKEnvironment).\
-                filter(RTKEnvironment.phase_id == phase_id).all():
+                filter(RTKEnvironment.phase_id == _phase_id).all():
             self.tree.create_node(
                 _environment.name,
                 _environment.environment_id,
@@ -617,11 +633,10 @@ class EnvironmentDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKEnvironment table in the RTK Program database.
 
-        :param int phase_id: the Mission Phase ID to add the Environment to.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
@@ -629,7 +644,7 @@ class EnvironmentDataModel(RTKDataModel):
         _environment = RTKEnvironment()
         _environment.phase_id = _phase_id
 
-        _error_code, _msg = RTKDataModel.insert(
+        _error_code, _msg = RTKDataModel.do_insert(
             self, entities=[
                 _environment,
             ])
@@ -647,7 +662,7 @@ class EnvironmentDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def delete(self, node_id):
+    def do_delete(self, node_id):
         """
         Remove the RTKEnvironment record associated with Node ID.
 
@@ -655,7 +670,7 @@ class EnvironmentDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
+        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
@@ -668,16 +683,16 @@ class EnvironmentDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update(self, node_id):
+    def do_update(self, node_id):
         """
         Update the RTKEnvironment record associated with Node ID.
 
-        :param int environment_id: the Environment ID to save to the RTK
-                                   Program database.
+        :param str node_id: the PyPubSub Tree() node ID of the Environment to
+                            save to the RTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.update(self, node_id)
+        _error_code, _msg = RTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
@@ -686,7 +701,7 @@ class EnvironmentDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKEnvironment records to the RTK Program database.
 
@@ -698,15 +713,17 @@ class EnvironmentDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.environment_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.Usage.Model.EnvironmentDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.Usage.Model.EnvironmentDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the usage profile "
+                        "environment table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+                    "environment table.")
 
         return _error_code, _msg
