@@ -144,7 +144,7 @@ class StakeholderDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, *kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKStakeholder records.
 
@@ -152,20 +152,22 @@ class StakeholderDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Updating the RTK Program database.'
+        _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.stakeholder_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.stakeholder.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.stakeholder.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the stakeholder "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the stakeholder "
+                    "table.")
 
         return _error_code, _msg
 

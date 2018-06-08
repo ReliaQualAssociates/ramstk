@@ -163,28 +163,30 @@ class SimilarItemDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RTKSimilarItem records.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
         _error_code = 0
         _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.similar_item.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.ssimilar_item.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the similar "
+                        "item analysis worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all line items in the similar item "
+                    "analysis worksheet.")
 
         return _error_code, _msg
 
@@ -200,7 +202,7 @@ class SimilarItemDataModel(RTKDataModel):
         _hazard_rate = kwargs['hazard_rate']
         _return = False
 
-        _sia = self.select(node_id)
+        _sia = self.do_select(node_id)
 
         if _sia.method_id == 1:
             _return = (_return or _sia.topic_633(_hazard_rate))

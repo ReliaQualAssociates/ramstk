@@ -167,34 +167,29 @@ class HazardAnalysisDataModel(RTKDataModel):
         """
         Update all RTKHazardAnalysis records for the selected Hardware item.
 
-        :param int module_id: the ID of the Hardware item to save the HazOps for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _hardware_id = kwargs['hardware_id']
         _error_code = 0
-        _msg = "RTK SUCCESS: Updating the RTK Program database."
+        _msg = ''
 
         for _node in self.do_select_children(_hardware_id):
             try:
-                _id = '{0:d}.{1:d}'.format(_node.data.hardware_id,
-                                           _node.data.hazard_id)
-                _error_code, _err_msg = self.update(_id)
+                _id = '{0:d}.{1:d}'.format(_hardware_id, _node.data.hazard_id)
+                _error_code, _debug_msg = self.do_update(_id)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.hazard_analysis.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                if _node.data is None:
-                    _msg = _msg + ('RTK ERROR: No data package for Node ID: '
-                                   '{0:d}.\n').format(_node.identifier)
-                else:
-                    _msg = _msg + ('RTK ERROR: Attempt to save Node ID: '
-                                   '{0:d}.{1:d} failed.\n').format(
-                                       _node.data.hardware_id,
-                                       _node.data.hazard_id)
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the HazOps table "
+                        "for Hardware ID {0:d} did not "
+                        "update.").format(_hardware_id)
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the HazOps table "
+                    "for Hardware ID {0:d}.").format(_hardware_id)
 
         return _error_code, _msg
 

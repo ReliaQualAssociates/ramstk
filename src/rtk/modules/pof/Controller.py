@@ -45,16 +45,14 @@ class PhysicsOfFailureDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_do_select_all(self, parent_id, **kwargs):  # pylint: disable=unused-argument
+    def request_do_select_all(self, **kwargs):
         """
-        Load the entire PoF for a failure Mechanism.
+        Load the entire PoF for a failure Mode.
 
-        :param int parent_id: the Mechanism ID to retrieve the PoF and build
-                              trees for.
         :return: tree; the PoF treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        return self._dtm_data_model.do_select_all(parent_id=parent_id)
+        return self._dtm_data_model.do_select_all(**kwargs)
 
     def request_do_insert(self, **kwargs):
         """
@@ -94,16 +92,29 @@ class PhysicsOfFailureDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def request_do_update(self, node_id):
         """
-        Request all (D)FME(C)A entities be saved to the RTK Program database.
+        Request to update an RTKOpLoad, RTKOpStress, or RTKTestMethod.
+
+        :param int node_id: the PyPubSub Tree() ID of the entity to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
+
+        return RTKDataController.do_handle_results(self, _error_code, _msg,
+                                                   None)
+
+    def request_do_update_all(self, **kwargs):
+        """
+        Request all PoF entities be saved to the RTK Program database.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _error_code, _msg = self._dtm_data_model.do_update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

@@ -52,7 +52,7 @@ class RTKDataController(object):
         self._module = None
         for __, char in enumerate(kwargs['rtk_module']):
             if char.isalpha():
-                self._module = rtk_module.capitalize()
+                self._module = kwargs['rtk_module'].capitalize()
 
         # Initialize public dictionary attributes.
 
@@ -118,7 +118,7 @@ class RTKDataController(object):
         :return: _attributes
         :rtype: dict
         """
-        _entity = self.request_select(node_id)
+        _entity = self.request_do_select(node_id)
 
         return _entity.get_attributes()
 
@@ -132,7 +132,7 @@ class RTKDataController(object):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _entity = self.request_select(node_id)
+        _entity = self.request_do_select(node_id)
 
         return _entity.set_attributes(attributes)
 

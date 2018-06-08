@@ -71,7 +71,7 @@ def test_do_insert(test_dao):
     DUT = dtmMilHdbkF(test_dao)
     DUT.do_select_all(hardware_id=3)
 
-    _error_code, _msg = DUT.do_insert(hardware_id=9)
+    _error_code, _msg = DUT.do_insert(hardware_id=90)
 
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
@@ -141,4 +141,5 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ("RTK SUCCESS: Updating all records in the MIL-HDBK-217 "
+                    "table.")

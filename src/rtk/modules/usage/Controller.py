@@ -124,7 +124,7 @@ class UsageProfileDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def request_do_update_all(self, **kwargs):
         """
         Request to update all records in the Usage Profile tables.
 

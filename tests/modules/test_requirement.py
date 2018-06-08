@@ -102,7 +102,7 @@ def test_do_select(test_dao):
     DUT = dtmRequirement(test_dao)
     DUT.do_select_all(revision_id=1)
 
-    _requirement = DUT.select(1)
+    _requirement = DUT.do_select(1)
 
     assert isinstance(_requirement, RTKRequirement)
     assert _requirement.requirement_id == 1
@@ -212,7 +212,8 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ("RTK SUCCESS: Updating all records in the requirement "
+                    "table.")
 
 
 @pytest.mark.integration

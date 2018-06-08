@@ -158,7 +158,8 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all line items in the similar item "
+                    "analysis worksheet.")
 
 
 @pytest.mark.integration
@@ -308,7 +309,7 @@ def test_request_do_calculate(test_dao, test_configuration):
     DUT.request_do_select(1).function_1 = 'hr * pi1 * pi2 * pi3 *pi4'
 
     assert not DUT.request_do_calculate(1, hazard_rate=2.5003126e-06)
-    assert DUT.request_select(1).result_1 == pytest.approx(2.2446556e-06)
+    assert DUT.request_do_select(1).result_1 == pytest.approx(2.2446556e-06)
 
 
 @pytest.mark.integration

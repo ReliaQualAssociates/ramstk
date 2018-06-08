@@ -240,13 +240,19 @@ class UsageProfileDataModel(RTKDataModel):
         _error_code = 0
         _msg = ''
 
-        for _key in self.tree.nodes:
-            if _key != 0:
-                _error_code, _msg = self.do_update(_key)
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _debug_msg = self.do_update(_node.identifier)
+                _msg = _msg + _debug_msg + '\n'
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print _error_code
+            except AttributeError:
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the usage "
+                        "profile did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all line items in the usage "
+                    "profile.")
 
         return _error_code, _msg
 
@@ -396,16 +402,18 @@ class MissionDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.mission_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.Usage.Model.MissionDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.Usage.Model.MissionDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the usage profile "
+                        "mission table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+                    "mission table.")
 
         return _error_code, _msg
 
@@ -547,16 +555,18 @@ class MissionPhaseDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.phase_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.Usage.Model.MissionPhaseDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.Usage.Model.MissionPhaseDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the usage profile "
+                        "mission phase table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+                    "mission phase table.")
 
         return _error_code, _msg
 
@@ -703,15 +713,17 @@ class EnvironmentDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.environment_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.Usage.Model.EnvironmentDataModel.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.Usage.Model.EnvironmentDataModel.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the usage profile "
+                        "environment table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+                    "environment table.")
 
         return _error_code, _msg

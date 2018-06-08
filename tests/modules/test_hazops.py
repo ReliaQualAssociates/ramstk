@@ -157,7 +157,8 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all(hardware_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all records in the HazOps table "
+                    "for Hardware ID 1.")
 
 
 @pytest.mark.integration

@@ -83,17 +83,17 @@ class HardwareBoMDataModel(RTKDataModel):
         """
         _table = kwargs['table']
         if _table == 'general':
-            _entity = self.dtm_hardware.select(node_id)
+            _entity = self.dtm_hardware.do_select(node_id)
         elif _table == 'electrical_design':
-            _entity = self.dtm_design_electric.select(node_id)
+            _entity = self.dtm_design_electric.do_select(node_id)
         elif _table == 'mechanical_design':
-            _entity = self.dtm_design_mechanic.select(node_id)
+            _entity = self.dtm_design_mechanic.do_select(node_id)
         elif _table == 'mil_hdbk_f':
-            _entity = self.dtm_mil_hdbk_f.select(node_id)
+            _entity = self.dtm_mil_hdbk_f.do_select(node_id)
         elif _table == 'nswc':
-            _entity = self.dtm_nswc.select(node_id)
+            _entity = self.dtm_nswc.do_select(node_id)
         elif _table == 'reliability':
-            _entity = self.dtm_reliability.select(node_id)
+            _entity = self.dtm_reliability.do_select(node_id)
 
         return _entity
 
@@ -341,16 +341,18 @@ class HardwareBoMDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.identifier)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print('FIXME: Handle non-zero error codes in '
-                          'rtk.hardware.Model.HardwareDataModel.update_all().')
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.HardwareDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the hardware "
+                        "bill of materials did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the hardware bill "
+                    "of materials.")
 
         return _error_code, _msg
 
@@ -714,16 +716,17 @@ class HardwareDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print('FIXME: Handle non-zero error codes in '
-                          'rtk.hardware.Model.HardwareDataModel.update_all().')
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.HardwareDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the hardware table "
+                        "did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the hardware table.")
 
         return _error_code, _msg
 
@@ -902,21 +905,21 @@ class DesignElectricDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print(
-                        'FIXME: Handle non-zero error codes in '
-                        'rtk.hardware.Model.DesignElectricDataModel.update_all().'
-                    )
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print(
-                    'FIXME: Handle AttributeError in '
-                    'rtk.hardware.Model.DesignElectricDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the electrical "
+                        "design table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the electrical "
+                    "design table.")
 
         return _error_code, _msg
+
 
 
 class DesignMechanicDataModel(RTKDataModel):
@@ -1065,21 +1068,21 @@ class DesignMechanicDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print(
-                        'FIXME: Handle non-zero error codes in '
-                        'rtk.hardware.Model.DesignMechanicDataModel.update_all().'
-                    )
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print(
-                    'FIXME: Handle AttributeError in '
-                    'rtk.hardware.Model.DesignMechanicDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the mechanical "
+                        "design table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the mechanical "
+                    "design table.")
 
         return _error_code, _msg
+
 
 
 class MilHdbkFDataModel(RTKDataModel):
@@ -1228,16 +1231,18 @@ class MilHdbkFDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print('FIXME: Handle non-zero error codes in '
-                          'rtk.hardware.Model.MilHdbkFDataModel.update_all().')
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.MilHdbkFDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the MIL-HDBK-217 "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the MIL-HDBK-217 "
+                    "table.")
 
         return _error_code, _msg
 
@@ -1382,16 +1387,17 @@ class NSWCDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print('FIXME: Handle non-zero error codes in '
-                          'rtk.hardware.Model.NSWCDataModel.update_all().')
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.NSWCDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the NSWC table "
+                        "did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the NSWC table.")
 
         return _error_code, _msg
 
@@ -1544,17 +1550,17 @@ class ReliabilityDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print(
-                        'FIXME: Handle non-zero error codes in '
-                        'rtk.hardware.Model.ReliabilityDataModel.update_all().'
-                    )
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print('FIXME: Handle AttributeError in '
-                      'rtk.hardware.Model.ReliabilityDataModel.update_all().')
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the reliability "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the reliability "
+                    "table.")
 
         return _error_code, _msg

@@ -43,7 +43,7 @@ class RequirementDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def do_select_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_select_all(self, **kwargs):
         """
         Retrieve all the Requirements from the RTK Program database.
 
@@ -77,7 +77,7 @@ class RequirementDataModel(RTKDataModel):
 
         return self.tree
 
-    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
+    def do_insert(self, **kwargs):
         """
         Add a record to the RTKRequirement table.
 
@@ -156,15 +156,17 @@ class RequirementDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.requirement_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.requirement.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.requirement.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the requirement "
+                        "table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the requirement "
+                    "table.")
 
         return _error_code, _msg

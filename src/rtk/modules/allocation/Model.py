@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.allocation.Model.py is part of The RTK Project
+#       rtk.modules.allocation.Model.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -157,24 +157,26 @@ class AllocationDataModel(RTKDataModel):
         """
         Update all RTKAllocation records.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
         _error_code = 0
         _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.hardware_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.analyses.allocation.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.allocation.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more line items in the reliability "
+                        "allocation analysis worksheet did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all line items in the reliability "
+                    "allocation analysis worksheet.")
 
         return _error_code, _msg
 

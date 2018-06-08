@@ -152,7 +152,8 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ("RTK SUCCESS: Updating all records in the validation "
+                    "table.")
 
 
 @pytest.mark.integration
@@ -176,7 +177,7 @@ def test_do_calculate_cost(test_dao):
     """ do_calculate() returns False on successfully calculating tasks costs. """
     DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
-    _validation = DUT.select(1)
+    _validation = DUT.do_select(1)
     _validation.cost_minimum = 252.00
     _validation.cost_average = 368.00
     _validation.cost_maximum = 441.00

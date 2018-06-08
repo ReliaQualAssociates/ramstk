@@ -143,23 +143,25 @@ class FailureDefinitionDataModel(RTKDataModel):
         """
         Upsate all RTKFailureDefinition records.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
         _error_code = 0
         _msg = ''
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.do_update(_node.data.definition_id)
+                _error_code, _debug_msg = self.do_update(_node.identifier)
 
-                # Break if something goes wrong and return.
-                if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.failure_definition.Model.update_all().'
+                _msg = _msg + _debug_msg + '\n'
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.failure_definition.Model.update_all().'
+                _error_code = 1
+                _msg = ("RTK ERROR: One or more records in the failure "
+                        "definition table did not update.")
+
+        if _error_code == 0:
+            _msg = ("RTK SUCCESS: Updating all records in the failure "
+                    "definition table.")
 
         return _error_code, _msg

@@ -157,7 +157,8 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Updating all line items in the reliability "
+                    "allocation analysis worksheet.")
 
 
 @pytest.mark.integration
@@ -372,7 +373,7 @@ def test_request_do_calculate(test_dao, test_configuration):
     DUT = dtcAllocation(test_dao, test_configuration, test='True')
     DUT.request_do_select_all(revision_id=1)
 
-    DUT.request_select(1).reliability_goal = 0.99975
+    DUT.request_do_select(1).reliability_goal = 0.99975
 
     # The [parent, child 1, child 2, child 3, child 4] hazard rates.
     _hazard_rates = [0.005862, 0.000392, 0.000168, 0.0000982, 0.000212]
