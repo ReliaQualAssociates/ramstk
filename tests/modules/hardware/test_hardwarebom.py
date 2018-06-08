@@ -351,8 +351,8 @@ def test_do_insert_sibling_assembly(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=0, part=0)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
-                    'database.')
+    assert _msg == ("RTK SUCCESS: Adding a new hardware item to the RTK "
+                    "Program database.")
 
 
 @pytest.mark.integration
@@ -364,8 +364,8 @@ def test_do_insert_child_assembly(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1, part=0)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
-                    'database.')
+    assert _msg == ("RTK SUCCESS: Adding a new hardware item to the RTK "
+                    "Program database.")
 
 
 @pytest.mark.integration
@@ -377,8 +377,8 @@ def test_do_insert_part(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1, part=1)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
-                    'database.')
+    assert _msg == ("RTK SUCCESS: Adding a new hardware item to the RTK "
+                    "Program database.")
 
 
 @pytest.mark.integration

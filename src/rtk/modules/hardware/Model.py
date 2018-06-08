@@ -174,6 +174,8 @@ class HardwareBoMDataModel(RTKDataModel):
         _revision_id = kwargs['revision_id']
         _parent_id = kwargs['parent_id']
         _part = kwargs['part']
+        _error_code = 0
+        _msg = ''
 
         _parent = self.dtm_hardware.do_select(_parent_id)
         try:
@@ -183,46 +185,63 @@ class HardwareBoMDataModel(RTKDataModel):
 
         if _parent_is_part == 1 and _part == 0:
             _error_code = 3006
-            _msg = 'RTK ERROR: You can not have a hardware assembly as a ' \
-                   'child of a component/piece part.'
+            _msg = ("RTK ERROR: You can not have a hardware assembly as a "
+                    "child of a component/piece part.")
         elif _parent_is_part == 1 and _part == 1:
             _error_code = 3006
-            _msg = 'RTK ERROR: You can not have a component/piece part as a ' \
-                   'child of another component/piece part.'
+            _msg = ("RTK ERROR: You can not have a component/piece part as a "
+                    "child of another component/piece part.")
         else:
-            _error_code, _msg = self.dtm_hardware.do_insert(
+            _error_code, _error_msg = self.dtm_hardware.do_insert(
                 revision_id=_revision_id, parent_id=_parent_id, part=_part)
 
-        if _error_code == 0:
+        if _error_code != 0:
+            _msg = _msg + _error_msg + '\n'
+        else:
             _data = {}
             _hardware_id = self.dtm_hardware.last_id
             _hardware = self.dtm_hardware.do_select(_hardware_id)
             _data = _hardware.get_attributes()
-            # FIXME: Handle error codes in HardwareBoMDataModel.insert().
-            _error_code, _msg = self.dtm_design_electric.do_insert(
-                hardware_id=_hardware_id)
-            _electrical = self.dtm_design_electric.do_select(_hardware_id)
-            _data.update(_electrical.get_attributes())
 
-            _error_code, _msg = self.dtm_design_mechanic.do_insert(
+            _error_code, _error_msg = self.dtm_design_electric.do_insert(
                 hardware_id=_hardware_id)
-            _mechanical = self.dtm_design_mechanic.do_select(_hardware_id)
-            _data.update(_mechanical.get_attributes())
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _electrical = self.dtm_design_electric.do_select(_hardware_id)
+                _data.update(_electrical.get_attributes())
 
-            _error_code, _msg = self.dtm_mil_hdbk_f.do_insert(
+            _error_code, _error_msg = self.dtm_design_mechanic.do_insert(
                 hardware_id=_hardware_id)
-            _mil_hdbk_f = self.dtm_mil_hdbk_f.do_select(_hardware_id)
-            _data.update(_mil_hdbk_f.get_attributes())
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _mechanical = self.dtm_design_mechanic.do_select(_hardware_id)
+                _data.update(_mechanical.get_attributes())
 
-            _error_code, _msg = self.dtm_nswc.do_insert(
+            _error_code, _error_msg = self.dtm_mil_hdbk_f.do_insert(
                 hardware_id=_hardware_id)
-            _nswc = self.dtm_nswc.do_select(_hardware_id)
-            _data.update(_nswc.get_attributes())
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _mil_hdbk_f = self.dtm_mil_hdbk_f.do_select(_hardware_id)
+                _data.update(_mil_hdbk_f.get_attributes())
 
-            _error_code, _msg = self.dtm_reliability.do_insert(
+            _error_code, _error_msg = self.dtm_nswc.do_insert(
                 hardware_id=_hardware_id)
-            _reliability = self.dtm_reliability.do_select(_hardware_id)
-            _data.update(_reliability.get_attributes())
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _nswc = self.dtm_nswc.do_select(_hardware_id)
+                _data.update(_nswc.get_attributes())
+
+            _error_code, _error_msg = self.dtm_reliability.do_insert(
+                hardware_id=_hardware_id)
+            if _error_code != 0:
+                _msg = _msg + _error_msg + '\n'
+            else:
+                _reliability = self.dtm_reliability.do_select(_hardware_id)
+                _data.update(_reliability.get_attributes())
 
             # FIXME: Add code to insert record to analyses tables (Allocation, Similar Item, etc.) in HardwareBoMDataModel.insert().
 
@@ -235,6 +254,10 @@ class HardwareBoMDataModel(RTKDataModel):
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
             self.last_id = max(self.last_id, _hardware_id)
+
+            if _msg == '':
+                _msg = ("RTK SUCCESS: Adding a new hardware item to the RTK "
+                        "Program database.")
 
         return _error_code, _msg
 
@@ -921,7 +944,6 @@ class DesignElectricDataModel(RTKDataModel):
         return _error_code, _msg
 
 
-
 class DesignMechanicDataModel(RTKDataModel):
     """Contain the attributes and methods of a Mechanical Design model."""
 
@@ -1082,7 +1104,6 @@ class DesignMechanicDataModel(RTKDataModel):
                     "design table.")
 
         return _error_code, _msg
-
 
 
 class MilHdbkFDataModel(RTKDataModel):
