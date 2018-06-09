@@ -244,9 +244,9 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(**kwargs)
+        return self._do_request_insert(sibling=False)
 
-    def _do_request_insert_sibling(self, __button, **kwargs):
+    def _do_request_insert_sibling(self, __button, **kwargs):   # pylint: disable=unused-argument
         """
         Send request to insert a new sibling Function.
 
@@ -255,7 +255,7 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(**kwargs)
+        return self._do_request_insert(sibling=True)
 
     def _do_request_update(self, __button):
         """
