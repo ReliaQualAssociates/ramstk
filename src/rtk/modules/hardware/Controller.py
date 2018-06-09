@@ -58,17 +58,6 @@ class HardwareBoMDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_do_select(self, node_id, **kwargs):
-        """
-        Request the RTK Program database record associated with Node ID.
-
-        :param int node_id: the Node ID to retrieve from the Tree.
-        :return: the RTK Program database record requested from the desired
-                 table.
-        :rtype: object
-        """
-        return self._dtm_data_model.do_select(node_id, **kwargs)
-
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Hardware.
