@@ -132,7 +132,7 @@ class RTKBaseView(object):
                         callbacks,
                         orientation='horizontal',
                         height=-1,
-                        width=-1):
+                        width=-1, **kwargs):
         """
         Method to create the buttonbox for RTK Views.  This method creates the
         base buttonbox used by all RTK View.  Use a buttonbox for an RTK View
@@ -143,6 +143,12 @@ class RTKBaseView(object):
         :return: _buttonbox
         :rtype: :py:class:`gtk.ButtonBox`
         """
+        _icons = kwargs['icons']
+        _tooltips = kwargs['tooltips']
+        _callback = kwargs['callbacks']
+        _orientation = kwargs['orientation']
+        _height = kwargs['height']
+        _width = kwargs['width']
 
         if orientation == 'horizontal':
             _buttonbox = gtk.HButtonBox()
