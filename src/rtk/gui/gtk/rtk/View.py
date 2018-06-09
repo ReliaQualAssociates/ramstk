@@ -238,7 +238,7 @@ class RTKBaseView(object):
         # add additional items to the gtk.ToolBar().
         return _toolbar, _position
 
-    def _on_select_revision(self, tree):
+    def _on_select_revision(self, tree, **kwargs):
         """
         Method to load the Module View gtk.TreeModel() with information when an
         RTK Program database is opened.
@@ -249,7 +249,7 @@ class RTKBaseView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        _tree = kwargs['tree']
         _return = False
 
         _model = self.treeview.get_model()

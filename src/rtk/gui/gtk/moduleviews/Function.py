@@ -26,7 +26,7 @@ class ModuleView(RTKModuleView):
     :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Module View for the Function package.
 
@@ -170,7 +170,7 @@ class ModuleView(RTKModuleView):
 
         if _response == gtk.RESPONSE_YES:
             _dialog.do_destroy()
-            if self._dtc_data_controller.request_delete(self._function_id):
+            if self._dtc_data_controller.request_do_delete(self._function_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Function {0:d}.").format(self._function_id)
                 _error_dialog = rtk.RTKMessageDialog(
@@ -195,7 +195,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert(self, sibling=True):
+    def _do_request_insert(self, **kwargs):
         """
         Send request to insert a new Function into the RTK Program database.
 
@@ -204,16 +204,17 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _sibling = kwargs['sibling']
         _return = False
 
-        _function = self._dtc_data_controller.request_select(self._function_id)
+        _function = self._dtc_data_controller.request_do_select(self._function_id)
 
-        if sibling:
+        if _sibling:
             _parent_id = _function.parent_id
         else:
             _parent_id = _function.function_id
 
-        if not self._dtc_data_controller.request_insert(
+        if not self._dtc_data_controller.request_do_insert(
                 self._revision_id, _parent_id):
             # TODO: Add code to the FMEA Class to respond to the 'insertedFunction' pubsub message and insert a set of functional failure modes.
             # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
@@ -234,7 +235,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert_child(self, __button):
+    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new chid Function.
 
@@ -243,9 +244,9 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(False)
+        return self._do_request_insert(**kwargs)
 
-    def _do_request_insert_sibling(self, __button):
+    def _do_request_insert_sibling(self, __button, **kwargs):
         """
         Send request to insert a new sibling Function.
 
@@ -254,7 +255,7 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(True)
+        return self._do_request_insert(**kwargs)
 
     def _do_request_update(self, __button):
         """
@@ -265,7 +266,7 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._function_id)
+        return self._dtc_data_controller.request_do_update(self._function_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -276,9 +277,9 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Function class Module View.
 
@@ -432,7 +433,7 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_select_revision(self, module_id):  # pylint: disable=W0221
+    def _on_select_revision(self, **kwargs):
         """
         Load the Function Module View RTKTreeView().
 
@@ -441,15 +442,16 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
-        _functions = self._dtc_data_controller.request_select_all(
+        _functions = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(self, _functions)
+        _return = RTKModuleView._on_select_revision(
+            self, _functions, tree=_functions)
         if _return:
             _prompt = _(u"An error occured while loading the Functions for "
                         u"Revision ID {0:d} into the Module "
