@@ -4,10 +4,10 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKModuleView Module."""
+"""The RTKModuleView Module."""
 
 # Import other RTK modules.
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import gobject, gtk
 from rtk.gui.gtk import rtk
 
 
@@ -27,7 +27,7 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
                     in the selected module.
     """
 
-    def __init__(self, controller, module=None):
+    def __init__(self, controller, **kwargs):
         """
         Initialize the Module View.
 
@@ -36,7 +36,7 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
         :param str module: the module that is being loaded.
         """
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller, module)
+        rtk.RTKBaseView.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 

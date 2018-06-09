@@ -207,7 +207,8 @@ class ModuleView(RTKModuleView):
         _sibling = kwargs['sibling']
         _return = False
 
-        _function = self._dtc_data_controller.request_do_select(self._function_id)
+        _function = self._dtc_data_controller.request_do_select(
+            self._function_id)
 
         if _sibling:
             _parent_id = _function.parent_id
@@ -246,7 +247,7 @@ class ModuleView(RTKModuleView):
         """
         return self._do_request_insert(sibling=False)
 
-    def _do_request_insert_sibling(self, __button, **kwargs):   # pylint: disable=unused-argument
+    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new sibling Function.
 
@@ -307,8 +308,14 @@ class ModuleView(RTKModuleView):
             'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
         ]
 
-        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
-                                                   _callbacks, 'vertical')
+        _buttonbox = RTKModuleView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -450,8 +457,7 @@ class ModuleView(RTKModuleView):
         _functions = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(
-            self, _functions, tree=_functions)
+        _return = RTKModuleView._on_select_revision(self, tree=_functions)
         if _return:
             _prompt = _(u"An error occured while loading the Functions for "
                         u"Revision ID {0:d} into the Module "

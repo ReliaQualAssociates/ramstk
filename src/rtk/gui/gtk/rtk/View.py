@@ -4,13 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKBaseView Module
--------------------------------------------------------------------------------
-
-This module contains the base class for all the RTK data model views.  It
-provides the basis for the RTKListView, RTKModuleView, and RTKWorkView.
-"""
+"""The RTKBaseView Module."""
 
 import locale
 
@@ -21,8 +15,9 @@ from .Widget import gtk
 
 class RTKBaseView(object):
     """
-    This is the meta class for all RTK ListView, ModuleView, and WorkView
-    classes.  Attributes of the RTKBaseView are:
+    Meta class for all RTK ListView, ModuleView, and WorkView classes.
+
+    Attributes of the RTKBaseView are:
 
     :ivar dict _dic_icons: dictionary containing icon name and absolute path
                            key:value pairs.
@@ -43,13 +38,14 @@ class RTKBaseView(object):
     _top_tab = gtk.POS_TOP
     _bottom_tab = gtk.POS_BOTTOM
 
-    def __init__(self, controller, module=None):
+    def __init__(self, controller, **kwargs):
         """
         Initialize the RTK Base View.
 
         :param controller: the RTK master data controller instance.
         :type controller: :class:`rtk.RTK.RTK`
         """
+        _module = kwargs['module']
 
         # Initialize private dictionary attributes.
         self._dic_icons = {
@@ -97,17 +93,17 @@ class RTKBaseView(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        if module is None:
+        if _module is None:
             self.treeview = None
         else:
             try:
-                _bg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module +
+                _bg_color = controller.RTK_CONFIGURATION.RTK_COLORS[_module +
                                                                     'bg']
-                _fg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module +
+                _fg_color = controller.RTK_CONFIGURATION.RTK_COLORS[_module +
                                                                     'fg']
                 _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-                    '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE[module]
-                _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
+                    '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE[_module]
+                _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
 
                 self.treeview = RTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
                                             _fg_color)
@@ -125,32 +121,24 @@ class RTKBaseView(object):
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
-    # pylint: disable=too-many-arguments
-    def _make_buttonbox(self,
-                        icons,
-                        tooltips,
-                        callbacks,
-                        orientation='horizontal',
-                        height=-1,
-                        width=-1, **kwargs):
+    def _make_buttonbox(self, **kwargs):
         """
-        Method to create the buttonbox for RTK Views.  This method creates the
-        base buttonbox used by all RTK View.  Use a buttonbox for an RTK View
-        if there are only buttons to be added.
+        Create the buttonbox for RTK Views.
 
-        :param list icons: list of icon names to place on the toolbuttons.
-                           The items in the list are keys in _dic_icons.
+        This method creates the base buttonbox used by all RTK View.  Use a
+        buttonbox for an RTK View if there are only buttons to be added.
+
         :return: _buttonbox
         :rtype: :py:class:`gtk.ButtonBox`
         """
         _icons = kwargs['icons']
         _tooltips = kwargs['tooltips']
-        _callback = kwargs['callbacks']
+        _callbacks = kwargs['callbacks']
         _orientation = kwargs['orientation']
         _height = kwargs['height']
         _width = kwargs['width']
 
-        if orientation == 'horizontal':
+        if _orientation == 'horizontal':
             _buttonbox = gtk.HButtonBox()
         else:
             _buttonbox = gtk.VButtonBox()
@@ -158,25 +146,25 @@ class RTKBaseView(object):
         _buttonbox.set_layout(gtk.BUTTONBOX_START)
 
         i = 0
-        for _icon in icons:
+        for _icon in _icons:
             _image = gtk.Image()
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                self._dic_icons[_icon], height, width)
+                self._dic_icons[_icon], _height, _width)
             _image.set_from_pixbuf(_icon)
 
             _button = gtk.Button()
             _button.set_image(_image)
 
-            _button.props.width_request = width
-            _button.props.height_request = height
+            _button.props.width_request = _width
+            _button.props.height_request = _height
 
             try:
-                _button.set_tooltip_markup(tooltips[i])
+                _button.set_tooltip_markup(_tooltips[i])
             except IndexError:
                 _button.set_tooltip_markup("")
 
             try:
-                _button.connect('clicked', callbacks[i])
+                _button.connect('clicked', _callbacks[i])
             except IndexError:
                 _button.set_sensitive(False)
 
@@ -192,16 +180,16 @@ class RTKBaseView(object):
                       height=60,
                       width=60):
         """
-        Method to create the toolbar for RTK Views.  This method creates the
-        base toolbar used by all RTK Views.  Use a toolbar for an RTK View if
-        there are other than buttons to be added.
+        Create the toolbar for RTK Views.
+
+        This method creates the base toolbar used by all RTK Views.  Use a
+        toolbar for an RTK View if there are other than buttons to be added.
 
         :param list icons: list of icon names to place on the toolbuttons.
                            The items in the list are keys in _dic_icons.
         :return: _toolbar, _position
         :rtype: (:py:class:`gtk.Toolbar`, int)
         """
-
         _toolbar = gtk.Toolbar()
 
         if orientation == 'horizontal':
@@ -238,10 +226,9 @@ class RTKBaseView(object):
         # add additional items to the gtk.ToolBar().
         return _toolbar, _position
 
-    def _on_select_revision(self, tree, **kwargs):
+    def _on_select_revision(self, **kwargs):
         """
-        Method to load the Module View gtk.TreeModel() with information when an
-        RTK Program database is opened.
+        Load the RTK View gtk.TreeModel() when a Revision is selected.
 
         :param tree: the treelib Tree() that should be loaded into the View's
                      RTKTreeView.
@@ -255,7 +242,7 @@ class RTKBaseView(object):
         _model = self.treeview.get_model()
         _model.clear()
 
-        _return = self.treeview.do_load_tree(tree)
+        _return = self.treeview.do_load_tree(_tree)
 
         _row = _model.get_iter_root()
         self.treeview.expand_all()

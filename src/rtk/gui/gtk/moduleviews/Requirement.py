@@ -273,7 +273,9 @@ class ModuleView(RTKModuleView):
             _parent_id = 0
 
         if not self._dtc_data_controller.request_do_insert(
-                self._revision_id, _parent_id, sibling):
+                revision_id=self._revision_id,
+                parent_id=_parent_id,
+                sibling=_sibling):
             # TODO: Add code to the Matrix Class to respond to the 'insertedRequirement' pubsub message and insert a record into each of the Requirement-X matrices.
 
             _last_id = self._dtc_data_controller.request_last_id()
@@ -285,7 +287,7 @@ class ModuleView(RTKModuleView):
             _prow = _model.iter_parent(_row)
             if _parent_id == 0:
                 _model.append(None, _data)
-            elif _parent_id != 0 and sibling:
+            elif _parent_id != 0 and _sibling:
                 _model.append(_prow, _data)
             else:  # Inserting a child.
                 _model.append(_row, _data)
@@ -380,8 +382,14 @@ class ModuleView(RTKModuleView):
             'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
         ]
 
-        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
-                                                   _callbacks, 'vertical')
+        _buttonbox = RTKModuleView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -564,8 +572,7 @@ class ModuleView(RTKModuleView):
         _requirements = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(
-            self, _requirements, tree=_requirements)
+        _return = RTKModuleView._on_select_revision(self, tree=_requirements)
         if _return:
             _prompt = _(u"An error occured while loading the Requirements for "
                         u"Revision ID {0:d} into the Module "

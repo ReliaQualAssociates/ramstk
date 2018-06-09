@@ -13,7 +13,7 @@ from pubsub import pub
 
 # Import other RTK modules.
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from .ModuleView import RTKModuleView
 
 _ = gettext.gettext
@@ -185,7 +185,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert(self, **kwargs):
+    def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new record to the RTKRevision table.
 
@@ -214,7 +214,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert_sibling(self, __button, **kwargs):   # pylint: disable=unused-argument
+    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new sibling Function.
 
@@ -247,7 +247,7 @@ class ModuleView(RTKModuleView):
         """
         return self._dtc_data_controller.request_do_update_all()
 
-    def _make_buttonbox(self, **kwargs):    # pylint: disable=unused-argument
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Create the gtk.ButtonBox() for the Revision Module View.
 
@@ -269,8 +269,14 @@ class ModuleView(RTKModuleView):
         ]
         _icons = ['add', 'remove', 'save', 'save-all']
 
-        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
-                                                   _callbacks, 'vertical')
+        _buttonbox = RTKModuleView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -400,7 +406,7 @@ class ModuleView(RTKModuleView):
         self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
         _revisions = self._dtc_data_controller.request_do_select_all()
 
-        _return = RTKModuleView._on_select_revision(self, _revisions, tree=_revisions)
+        _return = RTKModuleView._on_select_revision(self, tree=_revisions)
         if _return:
             _prompt = _(u"An error occured while loading Revisions into the "
                         u"Module View.")

@@ -353,8 +353,14 @@ class ModuleView(RTKModuleView):
             'remove', 'calculate_all', 'save', 'save-all'
         ]
 
-        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
-                                                   _callbacks, 'vertical')
+        _buttonbox = RTKModuleView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
