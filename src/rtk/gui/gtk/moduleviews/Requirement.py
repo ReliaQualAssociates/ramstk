@@ -546,7 +546,7 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_select_revision(self, module_id, **kwargs):
+    def _on_select_revision(self, **kwargs):
         """
         Load the Requirement Module View gtk.TreeModel().
 
@@ -557,7 +557,6 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
         self._revision_id = kwargs['module_id']
-        self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
