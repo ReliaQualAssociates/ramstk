@@ -7,6 +7,7 @@
 """Test class for testing the Utilities module algorithms and models."""
 
 import os
+import tempfile
 
 from datetime import datetime
 import logging
@@ -18,6 +19,8 @@ from rtk.Utilities import (create_logger, split_string, none_to_string,
                            dir_exists, file_exists, none_to_default,
                            error_handler)
 
+TEMPDIR = tempfile.gettempdir()
+
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
@@ -26,10 +29,11 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 def test_create_logger():
     """create_logger() should return a logging.Logger instance."""
-    _log = create_logger("test.debug", logging.DEBUG, '/tmp/test.log')
+    _testlog = TEMPDIR + '/test.log'
+    _log = create_logger("test.debug", logging.DEBUG, _testlog)
 
     assert isinstance(_log, logging.Logger)
-    assert os.path.isfile('/tmp/test.log')
+    assert os.path.isfile(_testlog)
 
 
 def test_create_logger_to_tty():
@@ -37,7 +41,6 @@ def test_create_logger_to_tty():
     _log = create_logger("test.debug", logging.DEBUG, '', True)
 
     assert isinstance(_log, logging.Logger)
-    assert os.path.isfile('/tmp/test.log')
 
 
 def test_split_string():
@@ -116,7 +119,7 @@ def test_ordinal_to_date_value_error():
 
 def test_dir_exists():
     """ dir_exists() should return True if the directory exists. """
-    assert dir_exists('/tmp')
+    assert dir_exists(TEMPDIR)
 
 
 def test_dir_does_not_exist():
@@ -126,12 +129,13 @@ def test_dir_does_not_exist():
 
 def test_file_exists():
     """ file_exists() should return True if the file exists. """
-    assert file_exists('/tmp/test.log')
+    _testlog = TEMPDIR + '/test.log'
+    assert file_exists(_testlog)
 
 
 def test_file_does_not_exist():
     """ file_exists() should return False if the file does not exists. """
-    assert not file_exists('/tmp/NotThere.txt')
+    assert not file_exists(TEMPDIR + '/NotThere.txt')
 
 
 @pytest.mark.unit

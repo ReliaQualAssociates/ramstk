@@ -99,7 +99,7 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._revision_id)
+        return self._dtc_data_controller.request_do_update(self._revision_id)
 
     def _make_general_data_page(self):
         """
@@ -210,7 +210,7 @@ class GeneralData(RTKWorkView):
         entry.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _revision = self._dtc_data_controller.request_select(
+            _revision = self._dtc_data_controller.request_do_select(
                 self._revision_id)
 
             if index == 0:
@@ -249,7 +249,7 @@ class GeneralData(RTKWorkView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
-        _revision = self._dtc_data_controller.request_select(self._revision_id)
+        _revision = self._dtc_data_controller.request_do_select(self._revision_id)
 
         self.txtTotalCost.set_text(str(locale.currency(_revision.cost)))
         self.txtCostFailure.set_text(
@@ -332,7 +332,7 @@ class AssessmentResults(RTKWorkView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
-        _revision = self._dtc_data_controller.request_select(self._revision_id)
+        _revision = self._dtc_data_controller.request_do_select(self._revision_id)
 
         self.txtAvailability.set_text(
             str(self.fmt.format(_revision.availability_logistics)))

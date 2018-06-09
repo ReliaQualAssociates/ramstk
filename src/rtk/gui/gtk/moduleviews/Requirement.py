@@ -26,7 +26,7 @@ class ModuleView(RTKModuleView):
     :ivar _revision_id: the ID of the currently selected Revision.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Requirement Module View.
 
@@ -222,7 +222,8 @@ class ModuleView(RTKModuleView):
 
         if _response == gtk.RESPONSE_YES:
             _dialog.do_destroy()
-            if self._dtc_data_controller.request_delete(self._requirement_id):
+            if self._dtc_data_controller.request_do_delete(
+                    self._requirement_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Requirement {0:d}.").format(self._requirement_id)
                 _error_dialog = rtk.RTKMessageDialog(
@@ -247,7 +248,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert(self, sibling=True):
+    def _do_request_insert(self, **kwargs):
         """
         Request to insert a new Requirement into the RTK Program database.
 
@@ -256,12 +257,13 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _sibling = kwargs['sibling']
         _return = False
 
-        _requirement = self._dtc_data_controller.request_select(
+        _requirement = self._dtc_data_controller.request_do_select(
             self._requirement_id)
 
-        if sibling:
+        if _sibling:
             _parent_id = _requirement.parent_id
         else:
             _parent_id = _requirement.requirement_id
@@ -270,19 +272,22 @@ class ModuleView(RTKModuleView):
         if _parent_id is None:
             _parent_id = 0
 
-        if not self._dtc_data_controller.request_insert(
-                self._revision_id, _parent_id, sibling):
+        if not self._dtc_data_controller.request_do_insert(
+                revision_id=self._revision_id,
+                parent_id=_parent_id,
+                sibling=_sibling):
             # TODO: Add code to the Matrix Class to respond to the 'insertedRequirement' pubsub message and insert a record into each of the Requirement-X matrices.
 
             _last_id = self._dtc_data_controller.request_last_id()
-            _requirement = self._dtc_data_controller.request_select(_last_id)
+            _requirement = self._dtc_data_controller.request_do_select(
+                _last_id)
             _data = _requirement.get_attributes()
 
             _model, _row = self.treeview.get_selection().get_selected()
             _prow = _model.iter_parent(_row)
             if _parent_id == 0:
                 _model.append(None, _data)
-            elif _parent_id != 0 and sibling:
+            elif _parent_id != 0 and _sibling:
                 _model.append(_prow, _data)
             else:  # Inserting a child.
                 _model.append(_row, _data)
@@ -305,7 +310,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert_child(self, __button):
+    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
         """
         Request to insert a child Requirement of the selected Requirement.
 
@@ -314,9 +319,9 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(False)
+        return self._do_request_insert(sibling=False)
 
-    def _do_request_insert_sibling(self, __button):
+    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
         """
         Request to insert a sibling Requirement of the selected Requirement.
 
@@ -325,7 +330,7 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(True)
+        return self._do_request_insert(sibling=True)
 
     def _do_request_update(self, __button):
         """
@@ -336,7 +341,8 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._requirement_id)
+        return self._dtc_data_controller.request_do_update(
+            self._requirement_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -347,9 +353,9 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Requirement Module View.
 
@@ -376,8 +382,14 @@ class ModuleView(RTKModuleView):
             'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
         ]
 
-        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
-                                                   _callbacks, 'vertical')
+        _buttonbox = RTKModuleView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -542,7 +554,7 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_select_revision(self, module_id):  # pylint: disable=W0221
+    def _on_select_revision(self, **kwargs):
         """
         Load the Requirement Module View gtk.TreeModel().
 
@@ -552,15 +564,15 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['requirement']
-        _requirements = self._dtc_data_controller.request_select_all(
+        _requirements = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(self, _requirements)
+        _return = RTKModuleView._on_select_revision(self, tree=_requirements)
         if _return:
             _prompt = _(u"An error occured while loading the Requirements for "
                         u"Revision ID {0:d} into the Module "

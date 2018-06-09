@@ -14,7 +14,7 @@ from pubsub import pub
 # Import other RTK modules.
 from rtk.Utilities import date_to_ordinal
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from .ModuleView import RTKModuleView
 
 _ = gettext.gettext
@@ -31,7 +31,7 @@ class ModuleView(RTKModuleView):
     :ivar int _validation_id: the ID of the currently selected Validation.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Validation Module View.
 
@@ -196,6 +196,21 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_calculate_all(self, __button):
+        """
+        Send request to calculate all hardware items.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        self._dtc_data_controller.request_do_calculate_all()
+
+        return _return
+
     def _do_request_delete(self, __button):
         """
         Request to delete the selected record from the RTKValidation table.
@@ -216,7 +231,7 @@ class ModuleView(RTKModuleView):
 
         if _response == gtk.RESPONSE_YES:
             _dialog.do_destroy()
-            if self._dtc_function.request_delete(self._function_id):
+            if self._dtc_function.request_do_delete(self._function_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Validation {0:d}.").format(self._validation_id)
                 _error_dialog = rtk.RTKMessageDialog(
@@ -230,7 +245,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert(self, __button):
+    def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new record to the RTKValidation table.
 
@@ -241,10 +256,10 @@ class ModuleView(RTKModuleView):
         """
         _return = False
 
-        _validation = self._dtc_data_controller.request_select(
+        _validation = self._dtc_data_controller.request_do_select(
             self._validation_id)
 
-        if not self._dtc_data_controller.request_insert():
+        if not self._dtc_data_controller.request_do_insert():
             self._on_select_validation()
             self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['validation'][1] += 1
         else:
@@ -261,6 +276,17 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_insert_sibling(self, __button, **kwargs):
+        """
+        Send request to insert a new sibling Validation task.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(**kwargs)
+
     def _do_request_update(self, __button):
         """
         Send request to update the selected record to the RTKValidation table.
@@ -270,7 +296,7 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._validation_id)
+        return self._dtc_data_controller.request_do_update(self._validation_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -281,9 +307,9 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Create the gtk.ButtonBox() for the Validation Module View.
 
@@ -300,13 +326,19 @@ class ModuleView(RTKModuleView):
               u"database.")
         ]
         _callbacks = [
-            self._do_request_insert, self._do_request_delete,
+            self._do_request_insert_sibling, self._do_request_delete,
             self._do_request_update, self._do_request_update_all
         ]
         _icons = ['add', 'remove', 'save', 'save-all']
 
-        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
-                                                   _callbacks, 'vertical')
+        _buttonbox = RTKModuleView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -433,6 +465,33 @@ class ModuleView(RTKModuleView):
 
         return False
 
+    def _on_calculate(self):
+        """
+        Load the new attribute values for the entire tree after calculating.
+
+        :return: None
+        :rtype: None
+        """
+
+        def _load_row(model, __path, row, self):
+            """
+            Load the row associated with the selected Validation task.
+
+            This is a helper function to allow iterative updating of the
+            RTKTreeView().
+            """
+            _node_id = model.get_value(row, self._lst_col_order[1])
+            _attributes = self._dtc_data_controller.request_get_attributes(
+                _node_id)
+
+            #model.set(row, self._lst_col_order[35],
+            #          _attributes['hazard_rate_active'])
+
+        _model = self.treeview.get_model()
+        _model.foreach(_load_row, self)
+
+        return None
+
     def _on_edit(self, position, new_text):
         """
         Update the Module View RTKTreeView() with Validation attribute changes.
@@ -451,7 +510,7 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_select_revision(self, module_id):  # pylint: disable=W0221
+    def _on_select_revision(self, **kwargs):
         """
         Load the Validation Module View RTKTreeView().
 
@@ -461,15 +520,15 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['validation']
-        _validations = self._dtc_data_controller.request_select_all(
+        _validations = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(self, _validations)
+        _return = RTKModuleView._on_select_revision(self, tree=_validations)
         if _return:
             _prompt = _(u"An error occured while loading Validation Tasks "
                         u"into the Module View.")

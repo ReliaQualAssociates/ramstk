@@ -13,7 +13,7 @@ from pubsub import pub
 
 # Import other RTK modules.
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from .ModuleView import RTKModuleView
 
 _ = gettext.gettext
@@ -30,7 +30,7 @@ class ModuleView(RTKModuleView):
     :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):
         """
         Initialize the Revision Module View.
 
@@ -171,7 +171,7 @@ class ModuleView(RTKModuleView):
 
         if _response == gtk.RESPONSE_YES:
             _dialog.do_destroy()
-            if self._dtc_function.request_delete(self._function_id):
+            if self._dtc_data_controller.request_do_delete(self._revision_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Revision {0:d}.").format(self._revision_id)
                 _error_dialog = rtk.RTKMessageDialog(
@@ -185,20 +185,19 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert(self, __button):
+    def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new record to the RTKRevision table.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _revision = self._dtc_data_controller.request_select(self._revision_id)
+        _revision = self._dtc_data_controller.request_do_select(
+            self._revision_id)
 
-        if not self._dtc_data_controller.request_insert():
+        if not self._dtc_data_controller.request_do_insert():
             self._on_select_revision()
             self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['revision'][1] += 1
         else:
@@ -215,6 +214,17 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
+        """
+        Send request to insert a new sibling Function.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=True)
+
     def _do_request_update(self, __button):
         """
         Send request to update the selected record to the RTKRevision table.
@@ -224,7 +234,7 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._revision_id)
+        return self._dtc_data_controller.request_do_update(self._revision_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -235,9 +245,9 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Create the gtk.ButtonBox() for the Revision Module View.
 
@@ -254,13 +264,19 @@ class ModuleView(RTKModuleView):
               u"database.")
         ]
         _callbacks = [
-            self._do_request_insert, self._do_request_delete,
+            self._do_request_insert_sibling, self._do_request_delete,
             self._do_request_update, self._do_request_update_all
         ]
         _icons = ['add', 'remove', 'save', 'save-all']
 
-        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
-                                                   _callbacks, 'vertical')
+        _buttonbox = RTKModuleView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -318,7 +334,7 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add New Revision"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
+            _menu_item.connect('activate', self._do_request_insert_sibling)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -375,7 +391,7 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_select_revision(self):  # pylint: disable=W0221
+    def _on_select_revision(self, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Revision Module View RTKTreeView().
 
@@ -388,9 +404,9 @@ class ModuleView(RTKModuleView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
-        _revisions = self._dtc_data_controller.request_select_all(None)
+        _revisions = self._dtc_data_controller.request_do_select_all()
 
-        _return = RTKModuleView._on_select_revision(self, _revisions)
+        _return = RTKModuleView._on_select_revision(self, tree=_revisions)
         if _return:
             _prompt = _(u"An error occured while loading Revisions into the "
                         u"Module View.")
