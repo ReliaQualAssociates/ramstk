@@ -28,7 +28,7 @@ class ListView(RTKListView):
                               displayed in the List View.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the List View for the Failure Definition package.
 
@@ -128,7 +128,7 @@ class ListView(RTKListView):
         # Update the Failure Definition data model.
         _definition_id = model[path][0]
         _definition = \
-            self._dtc_data_controller.request_select(_definition_id)
+            self._dtc_data_controller.request_do_select(_definition_id)
         _definition.definition = str(new_text)
 
         return False
@@ -147,8 +147,8 @@ class ListView(RTKListView):
         _model, _row = self.treeview.get_selection().get_selected()
         _definition_id = _model.get_value(_row, 0)
 
-        if not self._dtc_data_controller.request_delete(_definition_id):
-            self._on_select_revision(self._revision_id)
+        if not self._dtc_data_controller.request_do_delete(_definition_id):
+            self._on_select_revision(module_id=self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to delete failure "
                         u"definition {0:d} to Revision {1:d}.").\
@@ -159,7 +159,7 @@ class ListView(RTKListView):
 
         return _return
 
-    def _do_request_insert(self, __button):
+    def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request to add a Failure Definition record.
 
@@ -170,8 +170,9 @@ class ListView(RTKListView):
         """
         _return = False
 
-        if not self._dtc_data_controller.request_insert(self._revision_id):
-            self._on_select_revision(self._revision_id)
+        if not self._dtc_data_controller.request_do_insert(
+                revision_id=self._revision_id):
+            self._on_select_revision(module_id=self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to add a failure "
                         u"definition to Revision {0:d}.").\
@@ -182,6 +183,17 @@ class ListView(RTKListView):
 
         return _return
 
+    def _do_request_insert_sibling(self, __button, **kwargs):
+        """
+        Send request to insert a new sibling Hardware assembly.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(**kwargs)
+
     def _do_request_update(self, __button):
         """
         Request to update the currently selected Failure Definition record.
@@ -191,7 +203,7 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._definition_id)
+        return self._dtc_data_controller.request_do_update(self._definition_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -204,8 +216,8 @@ class ListView(RTKListView):
         """
         _return = False
 
-        if not self._dtc_data_controller.request_update_all():
-            self._on_select_revision(self._revision_id)
+        if not self._dtc_data_controller.request_do_update_all():
+            self._on_select_revision(module_id=self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to save the failure "
                         u"definitions for Revision {0:d}.").\
@@ -216,7 +228,7 @@ class ListView(RTKListView):
 
         return _return
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the buttonbox for the Failure Definition List View.
 
@@ -239,8 +251,14 @@ class ListView(RTKListView):
         ]
         _icons = ['add', 'remove', 'save', 'save-all', 'reports']
 
-        _buttonbox = RTKListView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKListView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -373,7 +391,7 @@ class ListView(RTKListView):
 
         return False
 
-    def _on_select_revision(self, module_id):
+    def _on_select_revision(self, **kwargs):
         """
         Load the Failure Definition List View gtk.TreeModel().
 
@@ -387,26 +405,23 @@ class ListView(RTKListView):
         """
         _return = False
 
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['definition']
         _definitions = \
-            self._dtc_data_controller.request_select_all(self._revision_id)
+            self._dtc_data_controller.request_do_select_all(self._revision_id)
 
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        for _key in _definitions.nodes.keys():
-            try:
-                _model.append([
-                    _definitions[_key].data.definition_id,
-                    _definitions[_key].data.definition
-                ])
-            except AttributeError:
-                print "FIXME: Handle AttributeError in " \
-                      "gtk.gui.listviews.FailureDefinition._on_select_revision"
+        _return = RTKListView.on_select_revision(self, tree=_definitions)
+        if _return:
+            _prompt = _(u"An error occured while loading the Failure "
+                        u"Definitions for Revision ID {0:d} into the Module "
+                        u"View.").format(self._revision_id)
+            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
+                                           'error')
+            if _dialog.do_run() == self._response_ok:
+                _dialog.do_destroy()
 
         return _return

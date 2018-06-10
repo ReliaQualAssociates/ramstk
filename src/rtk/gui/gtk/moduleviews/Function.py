@@ -457,7 +457,7 @@ class ModuleView(RTKModuleView):
         _functions = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(self, tree=_functions)
+        _return = RTKModuleView.on_select_revision(self, tree=_functions)
         if _return:
             _prompt = _(u"An error occured while loading the Functions for "
                         u"Revision ID {0:d} into the Module "

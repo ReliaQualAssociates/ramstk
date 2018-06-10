@@ -588,7 +588,7 @@ class ModuleView(RTKModuleView):
         _hardware = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(self, tree=_hardware)
+        _return = RTKModuleView.on_select_revision(self, tree=_hardware)
         if _return:
             _prompt = _(u"An error occured while loading the Hardware for "
                         u"Revision ID {0:d} into the Module "

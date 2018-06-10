@@ -572,7 +572,7 @@ class ModuleView(RTKModuleView):
         _requirements = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(self, tree=_requirements)
+        _return = RTKModuleView.on_select_revision(self, tree=_requirements)
         if _return:
             _prompt = _(u"An error occured while loading the Requirements for "
                         u"Revision ID {0:d} into the Module "

@@ -28,20 +28,22 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
                     in the selected module.
     """
 
-    def __init__(self, controller, module=None):
+    def __init__(self, controller, **kwargs):
         """
         Initialize the List View.
 
         :param controller: the RTK master data controller instance.
         :type controller: :class:`rtk.RTK.RTK`
         """
+        _module = kwarges['module']
+
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller, module=module)
+        rtk.RTKBaseView.__init__(self, controller, **kwargs)
 
         self._module = None
-        for __, char in enumerate(module):
+        for __, char in enumerate(_module):
             if char.isalpha():
-                self._module = module.capitalize()
+                self._module = _module.capitalize()
 
         # Initialize private dictionary attributes.
 
