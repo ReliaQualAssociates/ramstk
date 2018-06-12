@@ -35,7 +35,7 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
         :param controller: the RTK master data controller instance.
         :type controller: :class:`rtk.RTK.RTK`
         """
-        _module = kwarges['module']
+        _module = kwargs['module']
 
         gtk.HBox.__init__(self)
         rtk.RTKBaseView.__init__(self, controller, **kwargs)

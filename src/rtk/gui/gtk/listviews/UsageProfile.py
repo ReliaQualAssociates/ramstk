@@ -28,7 +28,7 @@ class ListView(RTKListView):
                         displayed in the List View.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the List View for the Usage Profile.
 
@@ -229,7 +229,7 @@ class ListView(RTKListView):
 
         return _return
 
-    def _do_load_tree(self, tree, row=None):
+    def _do_load_page(self, **kwargs):
         """
         Recursively load the Usage Profile List View's gtk.TreeModel.
 
@@ -238,13 +238,16 @@ class ListView(RTKListView):
         :param row: the parent row in the Usage Profile gtk.TreeView() to
                     add the new item.
         :type row: :class:`gtk.TreeIter`
-        :return: None
-        :rtype: None
+        :return: False is successful or True if an error is encountered.
+        :rtype: bool
         """
+        _tree = kwargs['tree']
+        _row = kwargs['row']
+        _return = False
         _data = []
         _model = self.treeview.get_model()
 
-        _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
+        _node = tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
 
         try:
@@ -256,7 +259,7 @@ class ListView(RTKListView):
                     _entity.time_units, 0.0, _entity.mission_time, 0.0, 0.0,
                     _node.identifier, 0, 'mission'
                 ]
-                _row = None
+                _new_row = None
 
             elif _entity.is_phase:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
@@ -278,19 +281,19 @@ class ListView(RTKListView):
                 ]
 
             try:
-                _row = _model.append(row, _data)
+                _new_row = _model.append(_row, _data)
             except TypeError:
-                print "FIXME: Handle TypeError in " \
-                      "gtk.gui.listview.UsageProfile.UsageProfile._load_tree"
+                _return = True
 
         except AttributeError:
             _row = None
+            _return = True
 
         for _n in tree.children(_node.identifier):
             _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(_child_tree, _row)
+            self._do_load_page(_child_tree, _new_row)
 
-        return None
+        return _return
 
     def _do_request_delete(self, __button):
         """
@@ -307,8 +310,8 @@ class ListView(RTKListView):
         _node_id = _model.get_value(_row, 9)
         _level = _model.get_value(_row, 11)
 
-        if not self._dtc_data_controller.request_delete(_node_id):
-            self._on_select_revision(self._revision_id)
+        if not self._dtc_data_controller.request_do_delete(_node_id):
+            self._on_select_revision(module_id=self._revision_id)
         else:
             _prompt = _(u"A problem occurred while attempting to delete {0:s} "
                         u"with ID {1:d}.").format(_level.title(), _node_id)
@@ -318,7 +321,7 @@ class ListView(RTKListView):
 
         return _return
 
-    def _do_request_insert(self, __button, sibling=True):
+    def _do_request_insert(self, **kwargs):
         """
         Request to add an entity to the Usage Profile.
 
@@ -330,15 +333,20 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _sibling = kwargs['sibling']
         _return = False
 
         # Get the currently selected row, the level of the currently selected
         # item, and it's parent row in the Usage Profile.
         _model, _row = self.treeview.get_selection().get_selected()
-        _level = _model.get_value(_row, 11)
-        _prow = _model.iter_parent(_row)
+        try:
+            _level = _model.get_value(_row, 11)
+            _prow = _model.iter_parent(_row)
+        except TypeError:
+            _level = ''
+            _prow = None
 
-        if sibling:
+        if _sibling:
             if _level == 'mission':
                 _entity_id = self._revision_id
                 _parent_id = 0
@@ -349,25 +357,61 @@ class ListView(RTKListView):
             _entity_id = _model.get_value(_row, 1)
             _parent_id = _model.get_value(_row, 9)
 
-        if _level == 'mission' and not sibling:
-            _level = 'phase'
+        if _level == 'mission' and not _sibling:
+            _level = 1
 
-        elif _level == 'phase' and not sibling:
-            _level = 'environment'
+        elif _level == 'phase' and not _sibling:
+            _level = 2
 
-        elif _level == 'environment' and not sibling:
+        elif _level == 'environment' and not _sibling:
             _prompt = _(u"An environmental condition cannot have a child.")
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
 
-        if (not _return and not self._dtc_data_controller.request_insert(
-                _entity_id, _parent_id, _level)):
-            self._on_select_revision(self._revision_id)
+        if (not _return and not self._dtc_data_controller.request_do_insert(
+                entity_id=_entity_id, parent_id=_parent_id, level=_level)):
+            self._on_select_revision(module_id=self._revision_id)
         else:
             _return = True
 
         return _return
+
+    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
+        """
+        Send request to insert a new chid USage Profile item.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=False)
+
+    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
+        """
+        Send request to insert a new sibling Usage Profile item.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=True)
+
+    def _do_request_update(self, __button):
+        """
+        Request to update the currently selected Usage Profile record.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _model, _row = self.treeview.get_selection().get_selected()
+        _node_id = _model.get_value(_row, 9)
+
+        return self._dtc_data_controller.request_do_update(_node_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -378,9 +422,9 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the buttonbox for the Usage Profile List View.
 
@@ -395,20 +439,30 @@ class ListView(RTKListView):
               u"currently selected entity."),
             _(u"Remove the curently selected entity from the Usage "
               u"Profile."),
+            _(u"Save the currently selected Usage Profile line to the open "
+              u"RTK Program database."),
             _(u"Save the Usage Profile to the open RTK Program "
               u"database."),
             _(u"Create the Mission and Usage Profile report.")
         ]
         _callbacks = [
-            self._do_request_insert, self._do_request_insert,
-            self._do_request_delete, self._do_request_update_all
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_delete, self._do_request_update,
+            self._do_request_update_all
         ]
         _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'reports'
+            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all',
+            'reports'
         ]
 
-        _buttonbox = RTKListView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKListView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -585,7 +639,7 @@ class ListView(RTKListView):
 
         return False
 
-    def _on_select_revision(self, module_id):
+    def _on_select_revision(self, **kwargs):
         """
         Load the Usage Profile List View gtk.TreeModel().
 
@@ -595,26 +649,22 @@ class ListView(RTKListView):
         """
         _return = False
 
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['profile']
-        _profile = self._dtc_data_controller.request_select_all(
-            self._revision_id)
+        _profile = self._dtc_data_controller.request_do_select_all(
+            revision_id=self._revision_id)
 
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        self._do_load_tree(_profile)
-
-        _row = _model.get_iter_root()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
-
-        self.treeview.expand_all()
+        _return = self._do_load_page(self, tree=_profile, row=None)
+        if _return:
+            _prompt = _(u"An error occured while loading the Usage "
+                        u"Profile for Revision ID {0:d} into the List "
+                        u"View.").format(self._revision_id)
+            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
+                                           'error')
+            if _dialog.do_run() == self._response_ok:
+                _dialog.do_destroy()
 
         return _return

@@ -108,7 +108,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
         return _buttonbox
 
-    def _on_select_revision(self, module_id):
+    def _on_select_revision(self, **kwargs):
         """
         Load the Function:Hardware Matrix View gtk.TreeModel().
 
@@ -117,7 +117,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['function']

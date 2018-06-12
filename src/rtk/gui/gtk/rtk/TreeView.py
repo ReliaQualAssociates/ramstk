@@ -236,22 +236,20 @@ class RTKTreeView(gtk.TreeView):
                     _attributes.append(_temp[_key])
             except AttributeError:
                 # For aggregate data models (Hardware, Software) that return a
-                # discionary of attributes from ALL associated RTK database
+                # dictionary of attributes from ALL associated RTK database
                 # tables, this try statement will create the list of attribute
                 # values.
                 try:
                     for _key in self.korder:
                         _attributes.append(_entity[_key])
                 except TypeError:
-                    print "FIXME: Handle TypeError in " \
-                          "gtk.gui.rtk.TreeView.RTKTreeView.do_load_tree"
+                    _return = True
 
             try:
                 _row = _model.append(row, _attributes)
             except ValueError:
                 _row = None
-                print "FIXME: Handle ValueError in " \
-                      "gtk.gui.rtk.TreeView.RTKTreeView.do_load_tree"
+                _return = True
 
         for _n in tree.children(_node.identifier):
             _child_tree = tree.subtree(_n.identifier)

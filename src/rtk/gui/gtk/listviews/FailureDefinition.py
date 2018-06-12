@@ -183,16 +183,16 @@ class ListView(RTKListView):
 
         return _return
 
-    def _do_request_insert_sibling(self, __button, **kwargs):
+    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
         """
-        Send request to insert a new sibling Hardware assembly.
+        Send request to insert a new Failure Definition.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(**kwargs)
+        return self._do_request_insert(sibling=True)
 
     def _do_request_update(self, __button):
         """
@@ -246,7 +246,7 @@ class ListView(RTKListView):
             _(u"Create the Failure Definition report.")
         ]
         _callbacks = [
-            self._do_request_insert, self._do_request_delete,
+            self._do_request_insert_sibling, self._do_request_delete,
             self._do_request_update, self._do_request_update_all
         ]
         _icons = ['add', 'remove', 'save', 'save-all', 'reports']
@@ -409,15 +409,14 @@ class ListView(RTKListView):
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = \
-            self._mdcRTK.dic_controllers['definition']
-        _definitions = \
-            self._dtc_data_controller.request_do_select_all(self._revision_id)
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['definition']
+        _definitions = self._dtc_data_controller.request_do_select_all(
+            revision_id=self._revision_id)
 
         _return = RTKListView.on_select_revision(self, tree=_definitions)
         if _return:
             _prompt = _(u"An error occured while loading the Failure "
-                        u"Definitions for Revision ID {0:d} into the Module "
+                        u"Definitions for Revision ID {0:d} into the List "
                         u"View.").format(self._revision_id)
             _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
                                            'error')
