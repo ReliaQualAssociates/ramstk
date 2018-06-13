@@ -179,7 +179,7 @@ class GeneralData(RTKWorkView):
         _return = False
 
         _requirement = self._dtc_data_controller.request_do_select(
-            module_id=self._requirement_id)
+            self._requirement_id)
 
         self.txtCode.handler_block(self._lst_handler_id[0])
         self.txtCode.set_text(str(_requirement.requirement_code))
@@ -401,7 +401,7 @@ class GeneralData(RTKWorkView):
 
         if self._dtc_data_controller is not None:
             _requirement = self._dtc_data_controller.request_do_select(
-                module_id=self._requirement_id)
+                self._requirement_id)
 
             if index == 2:
                 _index = 11
@@ -515,7 +515,7 @@ class GeneralData(RTKWorkView):
 
         if self._dtc_data_controller is not None:
             _requirement = self._dtc_data_controller.request_do_select(
-                module_id=self._requirement_id)
+                self._requirement_id)
 
             if index == 0:
                 _index = 9
@@ -587,7 +587,7 @@ class GeneralData(RTKWorkView):
 
         if self._dtc_data_controller is not None:
             _requirement = self._dtc_data_controller.request_do_select(
-                module_id=self._requirement_id)
+                self._requirement_id)
 
             if index == 3:
                 _index = 2
@@ -718,7 +718,7 @@ class RequirementAnalysis(RTKWorkView):
         _return = False
 
         _requirement = self._dtc_data_controller.request_do_select(
-            module_id=self._requirement_id)
+            self._requirement_id)
 
         _answer = boolean_to_integer(not cell.get_active())
         model[path][2] = _answer
@@ -786,7 +786,7 @@ class RequirementAnalysis(RTKWorkView):
         _return = False
 
         _requirement = self._dtc_data_controller.request_do_select(
-            module_id=self._requirement_id)
+            self._requirement_id)
 
         # Load the Requirement analyses answers.  It's easiest to pack the
         # answers into a list and iterate for each tree.

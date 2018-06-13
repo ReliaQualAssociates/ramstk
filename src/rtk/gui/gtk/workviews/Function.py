@@ -47,7 +47,7 @@ class GeneralData(RTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Function package.
 
@@ -102,47 +102,40 @@ class GeneralData(RTKWorkView):
 
         # FIXME: The general data page should be the page shown after launching.
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_general_data_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedFunction')
         pub.subscribe(self._on_edit, 'mvwEditedFunction')
 
-    def _do_request_calculate(self, __button):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Send request to calculate the selected function.
+        Load the Function General Data page.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _error_code = 0
-        _msg = ['', '']
+        _function = self._dtc_data_controller.request_do_select(
+            self._function_id)
 
-        if self._dtc_data_controller.request_calculate_mtbf(self._function_id):
-            _error_code = 1
-            _msg[0] = 'Error calculating reliability attributes.'
+        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.set_text(str(_function.function_code))
+        self.txtCode.handler_unblock(self._lst_handler_id[0])
 
-        if self._dtc_data_controller.request_calculate_availability(
-                self._function_id):
-            _error_code = 1
-            _msg[1] = 'Error calculating availability attributes.'
+        self.txtName.handler_block(self._lst_handler_id[1])
+        self.txtName.set_text(_function.name)
+        self.txtName.handler_unblock(self._lst_handler_id[1])
 
-        if _error_code != 0:
-            _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
-                        _msg[1] + "\n\n").format(self._function_id)
-            _error_dialog = rtk.RTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
+        _textbuffer = self.txtRemarks.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[2])
+        _textbuffer.set_text(_function.remarks)
+        _textbuffer.handler_unblock(self._lst_handler_id[2])
 
-            _return = True
-        else:
-            pub.sendMessage('calculatedFunction', module_id=self._function_id)
+        self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
+        self.chkSafetyCritical.set_active(_function.safety_critical)
+        self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
 
         return _return
 
@@ -155,9 +148,48 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._function_id)
+        return self._dtc_data_controller.request_do_update(self._function_id)
 
-    def _make_general_data_page(self):
+    def _do_request_update_all(self, __button):
+        """
+        Request to save all the Functions.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_update_all()
+
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the gtk.ButtonBox() for the Function class Work View.
+
+        :return: _buttonbox; the gtk.ButtonBox() for the Function class Work
+                 View.
+        :rtype: :class:`gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Saves the currently selected Function to the open "
+              u"RTK Program database."),
+            _(u"Saves all Functions to the open RTK Program database.")
+        ]
+        _callbacks = [self._do_request_update, self._do_request_update_all]
+
+        _icons = ['save', 'save-all']
+
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def _make_page(self):
         """
         Make the Function class gtk.Notebook() general data page.
 
@@ -191,27 +223,6 @@ class GeneralData(RTKWorkView):
         self.hbx_tab_label.pack_start(_label)
 
         return _frame
-
-    def _make_buttonbox(self):
-        """
-        Make the gtk.ButtonBox() for the Function class Work View.
-
-        :return: _buttonbox; the gtk.ButtonBox() for the Function class Work
-                 View.
-        :rtype: :class:`gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Calculate the currently selected Function."),
-            _(u"Saves the currently selected Function to the open "
-              u"RTK Project database.")
-        ]
-        _callbacks = [self._do_request_calculate, self._do_request_update]
-
-        _icons = ['calculate', 'save']
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
-
-        return _buttonbox
 
     def _on_edit(self, index, new_text):
         """
@@ -269,7 +280,7 @@ class GeneralData(RTKWorkView):
         entry.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _function = self._dtc_data_controller.request_select(
+            _function = self._dtc_data_controller.request_do_select(
                 self._function_id)
 
             if index == 0:
@@ -292,7 +303,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, module_id, **kwargs):
+    def _on_select(self, **kwargs):
         """
         Load the Function Work View class gtk.Notebook() widgets.
 
@@ -303,29 +314,12 @@ class GeneralData(RTKWorkView):
         """
         _return = False
 
-        self._function_id = module_id
+        self._function_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
-        _function = self._dtc_data_controller.request_select(self._function_id)
-
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(_function.function_code))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(_function.name)
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        _textbuffer = self.txtRemarks.do_get_buffer()
-        _textbuffer.handler_block(self._lst_handler_id[2])
-        _textbuffer.set_text(_function.remarks)
-        _textbuffer.handler_unblock(self._lst_handler_id[2])
-
-        self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
-        self.chkSafetyCritical.set_active(_function.safety_critical)
-        self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
+        self._do_load_page()
 
         return _return
 
@@ -343,7 +337,8 @@ class GeneralData(RTKWorkView):
 
         togglebutton.handler_block(self._lst_handler_id[index])
 
-        _function = self._dtc_data_controller.request_select(self._function_id)
+        _function = self._dtc_data_controller.request_do_select(
+            self._function_id)
         _function.safety_critical = boolean_to_integer(
             self.chkSafetyCritical.get_active())
 
@@ -365,7 +360,7 @@ class AssessmentResults(RTKWorkView):
     :ivar int _function_id: the ID of the Function currently being displayed.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Function package.
 
@@ -397,51 +392,23 @@ class AssessmentResults(RTKWorkView):
                       u"associated with the "
                       u"selected Function."))
 
-        self.pack_start(
-            self._make_assessment_results_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedFunction')
         pub.subscribe(self._on_select, 'calculatedFunction')
 
-    def _make_assessment_results_page(self):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the Function class gtk.Notebook() assessment results page.
+        Load the Function Assessment Results page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        (_hbx_page, __, _fxd_right, ___, _x_pos_r, __,
-         _y_pos_r) = RTKWorkView._make_assessment_results_page(self)
-
-        _fxd_right.put(self.txtModeCount, _x_pos_r, _y_pos_r[8] + 30)
-        _fxd_right.show_all()
-
-        self.txtActiveHt.set_sensitive(False)
-        self.txtDormantHt.set_sensitive(False)
-        self.txtSoftwareHt.set_sensitive(False)
-        self.txtReliability.set_sensitive(False)
-        self.txtMissionRt.set_sensitive(False)
-
-        return _hbx_page
-
-    def _on_select(self, module_id, **kwargs):
-        """
-        Load the Function Work View class gtk.Notebook() widgets.
-
-        :param int function_id: the Function ID of the selected/edited
-                                Function.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        self._function_id = module_id
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
-        _function = self._dtc_data_controller.request_select(self._function_id)
+        _function = self._dtc_data_controller.request_do_select(
+            self._function_id)
 
         self.txtAvailability.set_text(
             str(self.fmt.format(_function.availability_logistics)))
@@ -466,5 +433,46 @@ class AssessmentResults(RTKWorkView):
             str('{0:d}'.format(_function.total_mode_count)))
         self.txtPartCount.set_text(
             str('{0:d}'.format(_function.total_part_count)))
+
+        return _return
+
+    def _make_page(self):
+        """
+        Make the Function class gtk.Notebook() assessment results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        (_hbx_page, __, _fxd_right, ___, _x_pos_r, __,
+         _y_pos_r) = RTKWorkView._make_assessment_results_page(self)
+
+        _fxd_right.put(self.txtModeCount, _x_pos_r, _y_pos_r[8] + 30)
+        _fxd_right.show_all()
+
+        self.txtActiveHt.set_sensitive(False)
+        self.txtDormantHt.set_sensitive(False)
+        self.txtSoftwareHt.set_sensitive(False)
+        self.txtReliability.set_sensitive(False)
+        self.txtMissionRt.set_sensitive(False)
+
+        return _hbx_page
+
+    def _on_select(self, **kwargs):
+        """
+        Load the Function Work View class gtk.Notebook() widgets.
+
+        :param int function_id: the Function ID of the selected/edited
+                                Function.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        self._function_id = kwargs['module_id']
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
+        self._do_load_page()
 
         return _return

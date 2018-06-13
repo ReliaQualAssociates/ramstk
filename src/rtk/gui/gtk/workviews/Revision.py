@@ -100,7 +100,7 @@ class GeneralData(RTKWorkView):
         _return = False
 
         _revision = self._dtc_data_controller.request_do_select(
-            module_id=self._revision_id)
+            self._revision_id)
 
         self.txtTotalCost.set_text(str(locale.currency(_revision.cost)))
         self.txtCostFailure.set_text(
@@ -345,7 +345,7 @@ class AssessmentResults(RTKWorkView):
         _return = False
 
         _revision = self._dtc_data_controller.request_do_select(
-            module_id=self._revision_id)
+            self._revision_id)
 
         self.txtAvailability.set_text(
             str(self.fmt.format(_revision.availability_logistics)))
