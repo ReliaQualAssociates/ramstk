@@ -226,7 +226,7 @@ class RTKBaseView(object):
         # add additional items to the gtk.ToolBar().
         return _toolbar, _position
 
-    def _on_select_revision(self, **kwargs):
+    def on_select_revision(self, **kwargs):
         """
         Load the RTK View gtk.TreeModel() when a Revision is selected.
 

@@ -256,7 +256,7 @@ class ModuleView(RTKModuleView):
 
         else:
             _prompt = _(u"An error occurred while attempting to add a "
-                        u"hardware to Revision "
+                        u"hardware item to Revision "
                         u"{0:d}.").format(self._revision_id)
             _error_dialog = rtk.RTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
@@ -269,27 +269,37 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
+    def _do_request_insert_child(self, button, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new child Hardware assembly.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param button: the gtk.ToolButton() that called this method.
+        :type button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(**kwargs)
+        if button.get_property('name') == 'assembly':
+            _part=0
+        else:
+            _part=1
 
-    def _do_request_insert_sibling(self, __button, **kwargs):
+        return self._do_request_insert(sibling=False, part=_part)
+
+    def _do_request_insert_sibling(self, button, **kwargs): # pylint: disable=unused-argument
         """
         Send request to insert a new sibling Hardware assembly.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param button: the gtk.ToolButton() that called this method.
+        :type button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(**kwargs)
+        if button.get_property('name') == 'assembly':
+            _part=0
+        else:
+            _part=1
+
+        return self._do_request_insert(sibling=False, part=_part)
 
     def _do_request_update(self, __button):
         """
@@ -341,10 +351,10 @@ class ModuleView(RTKModuleView):
               u"database.")
         ]
         _callbacks = [
-            self._do_request_insert_sibling(None, sibling=True, part=0),
-            self._do_request_insert_child(None, sibling=False, part=1),
-            self._do_request_insert_sibling(None, sibling=True, part=0),
-            self._do_request_insert_child(None, sibling=False, part=1),
+            self._do_request_insert_sibling,
+            self._do_request_insert_child,
+            self._do_request_insert_sibling,
+            self._do_request_insert_child,
             self._do_request_delete, self._do_request_calculate_all,
             self._do_request_update, self._do_request_update_all
         ]
@@ -361,6 +371,12 @@ class ModuleView(RTKModuleView):
             orientation='vertical',
             height=-1,
             width=-1)
+
+        _buttons = _buttonbox.get_children()
+        _buttons[0].set_property('name', 'assembly')
+        _buttons[1].set_property('name', 'assembly')
+        _buttons[2].set_property('name', 'part')
+        _buttons[3].set_property('name', 'part')
 
         return _buttonbox
 
@@ -588,7 +604,7 @@ class ModuleView(RTKModuleView):
         _hardware = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(self, tree=_hardware)
+        _return = RTKModuleView.on_select_revision(self, tree=_hardware)
         if _return:
             _prompt = _(u"An error occured while loading the Hardware for "
                         u"Revision ID {0:d} into the Module "

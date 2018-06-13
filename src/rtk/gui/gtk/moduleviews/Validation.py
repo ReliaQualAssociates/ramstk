@@ -528,7 +528,7 @@ class ModuleView(RTKModuleView):
         _validations = self._dtc_data_controller.request_do_select_all(
             self._revision_id)
 
-        _return = RTKModuleView._on_select_revision(self, tree=_validations)
+        _return = RTKModuleView.on_select_revision(self, tree=_validations)
         if _return:
             _prompt = _(u"An error occured while loading Validation Tasks "
                         u"into the Module View.")

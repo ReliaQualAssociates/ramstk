@@ -406,7 +406,7 @@ class ModuleView(RTKModuleView):
         self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
         _revisions = self._dtc_data_controller.request_do_select_all()
 
-        _return = RTKModuleView._on_select_revision(self, tree=_revisions)
+        _return = RTKModuleView.on_select_revision(self, tree=_revisions)
         if _return:
             _prompt = _(u"An error occured while loading Revisions into the "
                         u"Module View.")

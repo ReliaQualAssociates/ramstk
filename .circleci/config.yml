@@ -5,26 +5,19 @@
 version: 2
 jobs:
   build:
+    working_directory: ~/rtk-python2.7-pygtk
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:2.7
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/postgres:9.4
-
-    working_directory: ~/repo
+      - image: circleci/python:2.7
 
     steps:
-      - machine:
-          - timezone: America/Detroit
-          - python:
-              - version: 2.7.12
-
       - checkout
-
       - dependencies:
         - pre:
             - sudo apt-get update
@@ -33,15 +26,13 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
+          - deps-{{ .Branch }}-{{ checksum "requirements_run.txt" }}
           # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - deps-
 
       - run:
-          name: install dependencies
           command: |
-            mkdir -p ./venv
-            virtualenv ./venv
+            python -m venc venv
             . venv/bin/activate
             pip install -U pip
             pip install -U setuptools>12.0
@@ -53,21 +44,15 @@ jobs:
             pip install matplotlib==1.4.3
 
       - save_cache:
+          key: deps-{{ .Branch }}-{{ checksum "requirements_run.txt" }}
           paths:
-            - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
+            - "venv"
 
-      # run tests!
-      # this example uses Django's built-in test-runner
-      # other common Python testing frameworks include pytest and nose
-      # https://pytest.org
-      # https://nose.readthedocs.io
       - run:
-          name: run tests
           command: |
             . venv/bin/activate
             python setup.py test
 
       - store_artifacts:
-          path: test-reports
+          path: test-reports/
           destination: test-reports

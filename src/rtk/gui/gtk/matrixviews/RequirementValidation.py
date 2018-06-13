@@ -13,7 +13,7 @@ Requirement:Validation Matrix View Module
 from pubsub import pub
 
 # Import other RTK modules.
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
 
 
@@ -113,7 +113,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
         return _buttonbox
 
-    def _on_select_revision(self, module_id):
+    def _on_select_revision(self, **kwargs):    # pylint: disable=unused-argument
         """
         Method to load the Requirement:Validation Matrix View gtk.TreeModel() with
         matrix information whenever a new Revision is selected.
@@ -123,11 +123,9 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        self._revision_id = ['module_id']
 
-        self._revision_id = module_id
-
-        self._dtc_data_controller = \
-            self._mdcRTK.dic_controllers['requirement']
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['requirement']
         (_matrix, _column_hdrs,
          _row_hdrs) = self._dtc_data_controller.request_select_all_matrix(
              self._revision_id, self._matrix_type)
