@@ -196,8 +196,7 @@ class ListView(RTKListView):
 
             # Retrieve the Usage Profile data package.
             _node_id = model[path][9]
-            _entity = \
-                self._dtc_data_controller.request_select(_node_id)
+            _entity = self._dtc_data_controller.request_do_select(_node_id)
 
             # Build a list of attributes based on the type of data package.
             _attributes = {}

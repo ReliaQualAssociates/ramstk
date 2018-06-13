@@ -27,7 +27,7 @@ class ListView(RTKListView):
                                in the List View.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):
         """
         Initialize the List View for the Stakeholder package.
 
@@ -132,7 +132,7 @@ class ListView(RTKListView):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _stakeholder = self._dtc_data_controller.request_select(
+            _stakeholder = self._dtc_data_controller.request_do_select(
                 self._stakeholder_id)
 
             if position == self._lst_col_order[2]:
@@ -189,8 +189,8 @@ class ListView(RTKListView):
         _model, _row = self.treeview.get_selection().get_selected()
         _stakeholder_id = _model.get_value(_row, 0)
 
-        if not self._dtc_data_controller.request_delete(_stakeholder_id):
-            self._on_select_stakeholder(self._stakeholder_id)
+        if not self._dtc_data_controller.request_do_delete(_stakeholder_id):
+            self._on_select_revision(module_id=self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to delete failure "
                         u"stakeholder {0:d} to Stakeholder {1:d}.").\
@@ -201,7 +201,7 @@ class ListView(RTKListView):
 
         return _return
 
-    def _do_request_insert(self, __button):
+    def _do_request_insert(self, **kwargs):
         """
         Request to add a Stakeholder.
 
@@ -212,7 +212,7 @@ class ListView(RTKListView):
         """
         _return = False
 
-        if not self._dtc_data_controller.request_insert(self._stakeholder_id):
+        if not self._dtc_data_controller.request_do_insert(self._stakeholder_id):
             self._on_select_stakeholder(self._stakeholder_id)
         else:
             _prompt = _(u"An error occurred attempting to add a stakeholder "
@@ -224,6 +224,17 @@ class ListView(RTKListView):
 
         return _return
 
+    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
+        """
+        Send request to insert a new Stakeholder input.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(**kwargs)
+
     def _do_request_update(self, __button):
         """
         Save the currently selected Stakeholder Input.
@@ -233,7 +244,7 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._stakeholder_id)
+        return self._dtc_data_controller.request_do_update(self._stakeholder_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -246,7 +257,7 @@ class ListView(RTKListView):
         """
         _return = False
 
-        if not self._dtc_data_controller.request_update_all():
+        if not self._dtc_data_controller.request_do_update_all():
             self._on_select_revision(self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to save the "
@@ -258,7 +269,7 @@ class ListView(RTKListView):
 
         return _return
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):
         """
         Make the buttonbox for the Stakeholder List View.
 
@@ -276,13 +287,19 @@ class ListView(RTKListView):
             _(u"Create the Stakeholder report.")
         ]
         _callbacks = [
-            self._do_request_insert, self._do_request_delete,
+            self._do_request_insert_sibling, self._do_request_delete,
             self._do_request_update, self._do_request_update_all
         ]
         _icons = ['add', 'remove', 'save', 'save-all', 'reports']
 
-        _buttonbox = RTKListView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKListView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -421,7 +438,7 @@ class ListView(RTKListView):
 
         return False
 
-    def _on_select_revision(self, module_id):
+    def _on_select_revision(self, **kwargs):
         """
         Load the Stakeholder List View gtk.TreeModel().
 
@@ -432,14 +449,14 @@ class ListView(RTKListView):
         """
         _return = False
 
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['stakeholder']
         _stakeholders = \
-            self._dtc_data_controller.request_select_all(self._revision_id)
+            self._dtc_data_controller.request_do_select_all(self._revision_id)
 
         _model = self.treeview.get_model()
         _model.clear()
