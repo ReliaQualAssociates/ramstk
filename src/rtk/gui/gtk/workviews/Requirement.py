@@ -400,8 +400,8 @@ class GeneralData(RTKWorkView):
         _row = combo.get_active_iter()
 
         if self._dtc_data_controller is not None:
-            _requirement = self._dtc_data_controller.request_select(
-                self._requirement_id)
+            _requirement = self._dtc_data_controller.request_do_select(
+                module_id=self._requirement_id)
 
             if index == 2:
                 _index = 11
@@ -514,8 +514,8 @@ class GeneralData(RTKWorkView):
         entry.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _requirement = self._dtc_data_controller.request_select(
-                self._requirement_id)
+            _requirement = self._dtc_data_controller.request_do_select(
+                module_id=self._requirement_id)
 
             if index == 0:
                 _index = 9
@@ -718,7 +718,7 @@ class RequirementAnalysis(RTKWorkView):
         _return = False
 
         _requirement = self._dtc_data_controller.request_do_select(
-            self._requirement_id)
+            module_id=self._requirement_id)
 
         _answer = boolean_to_integer(not cell.get_active())
         model[path][2] = _answer

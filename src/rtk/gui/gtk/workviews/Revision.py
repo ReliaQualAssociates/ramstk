@@ -40,7 +40,7 @@ class GeneralData(RTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Revision Work View general data page.
 
@@ -77,22 +77,47 @@ class GeneralData(RTKWorkView):
                       u"selected revision."))
 
         self._lst_handler_id.append(
-            self.txtName.connect('focus-out-event', self._on_focus_out, 0))
+            self.txtName.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
             'changed', self._on_focus_out, None, 1))
         self._lst_handler_id.append(
-            self.txtCode.connect('focus-out-event', self._on_focus_out, 2))
+            self.txtCode.connect('changed', self._on_focus_out, 2))
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_end(self._make_general_data_page(), expand=True, fill=True)
+        self.pack_end(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedRevision')
         pub.subscribe(self._on_edit, 'mvwEditedRevision')
 
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Load the Revision General Data page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _revision = self._dtc_data_controller.request_do_select(
+            module_id=self._revision_id)
+
+        self.txtTotalCost.set_text(str(locale.currency(_revision.cost)))
+        self.txtCostFailure.set_text(
+            str(locale.currency(_revision.cost_failure)))
+        self.txtCostHour.set_text(str(locale.currency(_revision.cost_hour)))
+        self.txtName.set_text(_revision.name)
+        _buffer = self.txtRemarks.do_get_buffer()
+        _buffer.set_text(_revision.remarks)
+        self.txtPartCount.set_text(
+            str('{0:0.0f}'.format(_revision.total_part_count)))
+        self.txtCode.set_text(str(_revision.revision_code))
+
+        return _return
+
     def _do_request_update(self, __button):
         """
-        Request to save all records to the RTKRevision table.
+        Request to save the currently selected Revision.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
@@ -101,7 +126,46 @@ class GeneralData(RTKWorkView):
         """
         return self._dtc_data_controller.request_do_update(self._revision_id)
 
-    def _make_general_data_page(self):
+    def _do_request_update_all(self, __button):
+        """
+        Request to save all the Revisions.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_update_all()
+
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Create the Revision Work View gtk.ButtonBox().
+
+        :return: _buttonbox; the gtk.ButtonBox() for the Revision class Work
+                 View.
+        :rtype: :py:class:`gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Saves the currently selected Revision to the open "
+              u"RTK Program database."),
+            _(u"Save all Revisions to the open RTK Program database.")
+        ]
+        _callbacks = [self._do_request_update, self._do_request_update_all]
+
+        _icons = ['save', 'save-all']
+
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def _make_page(self):
         """
         Create the Revision Work View general data page.
 
@@ -135,26 +199,6 @@ class GeneralData(RTKWorkView):
 
         return _frame
 
-    def _make_buttonbox(self):
-        """
-        Create the Revision Work View gtk.ButtonBox().
-
-        :return: _buttonbox; the gtk.ButtonBox() for the Revision class Work
-                 View.
-        :rtype: :py:class:`gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Saves the currently selected Revision to the open "
-              u"RTK Project database.")
-        ]
-        _callbacks = [self._do_request_update]
-
-        _icons = ['save']
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
-
-        return _buttonbox
-
     def _on_edit(self, index, new_text):
         """
         Update the Revision Work View gtk.Widgets().
@@ -187,16 +231,15 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_focus_out(self, entry, __event, index):
+    def _on_focus_out(self, entry, index):
         """
         Retrieve gtk.Entry() changes and assign the new data.
 
         This method takes the new data from the gtk.Entry() and assigns it to
         the appropriate Revision data model attribute.
 
-        :param gtk.Entry entry: the gtk.Entry() that called the method.
-        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
-                                      method.
+        :param entry: the gtk.Entry() that called the method.
+        :type entry: :class:`gtk.Entry`
         :param int index: the position in the Revision class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Entry().
@@ -233,7 +276,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, module_id, **kwargs):
+    def _on_select(self, **kwargs):
         """
         Load the Revision Work View General Data page gtk.Widget()s.
 
@@ -244,23 +287,12 @@ class GeneralData(RTKWorkView):
         """
         _return = False
 
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
-        _revision = self._dtc_data_controller.request_do_select(self._revision_id)
-
-        self.txtTotalCost.set_text(str(locale.currency(_revision.cost)))
-        self.txtCostFailure.set_text(
-            str(locale.currency(_revision.cost_failure)))
-        self.txtCostHour.set_text(str(locale.currency(_revision.cost_hour)))
-        self.txtName.set_text(_revision.name)
-        _buffer = self.txtRemarks.do_get_buffer()
-        _buffer.set_text(_revision.remarks)
-        self.txtPartCount.set_text(
-            str('{0:0.0f}'.format(_revision.total_part_count)))
-        self.txtCode.set_text(str(_revision.revision_code))
+        self._do_load_page()
 
         return _return
 
@@ -276,7 +308,7 @@ class AssessmentResults(RTKWorkView):
     :ivar int _revision_id: the ID of the Revision currently being displayed.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Revision Work View assessment results page.
 
@@ -298,41 +330,22 @@ class AssessmentResults(RTKWorkView):
 
         # Initialize public scalar attributes.
 
-        self.pack_end(
-            self._make_assessment_results_page(), expand=True, fill=True)
+        self.pack_end(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedRevision')
 
-    def _make_assessment_results_page(self):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Create the Revision Work View assessment results page.
+        Load the Revision Assessment Results page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        (_hbx_page, __, __, __, __, __,
-         __) = RTKWorkView._make_assessment_results_page(self)
-
-        return _hbx_page
-
-    def _on_select(self, module_id, **kwargs):
-        """
-        Load the Revision Work View assessment results page gtk.Widget()s.
-
-        :param int revision_id: the ID of the newly selected Revision.
-        :param str title: the title to display on the Work Book titlebar.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        self._revision_id = module_id
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
-        _revision = self._dtc_data_controller.request_do_select(self._revision_id)
+        _revision = self._dtc_data_controller.request_do_select(
+            module_id=self._revision_id)
 
         self.txtAvailability.set_text(
             str(self.fmt.format(_revision.availability_logistics)))
@@ -364,5 +377,37 @@ class AssessmentResults(RTKWorkView):
                    u"(Analyzing {0:s})").format(_revision.name)
         RTKWorkView.on_select(
             self, title=_title, error_code=0, user_msg='', debug_msg='')
+
+        return _return
+
+    def _make_page(self):
+        """
+        Create the Revision Work View assessment results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        (_hbx_page, __, __, __, __, __,
+         __) = RTKWorkView._make_assessment_results_page(self)
+
+        return _hbx_page
+
+    def _on_select(self, **kwargs):
+        """
+        Load the Revision Work View assessment results page gtk.Widget()s.
+
+        :param int revision_id: the ID of the newly selected Revision.
+        :param str title: the title to display on the Work Book titlebar.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        self._revision_id = kwargs['module_id']
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
+        self._do_load_page()
 
         return _return
