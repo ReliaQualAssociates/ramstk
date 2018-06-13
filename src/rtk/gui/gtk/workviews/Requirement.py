@@ -74,7 +74,7 @@ class GeneralData(RTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Requirement Work View.
 
@@ -158,15 +158,85 @@ class GeneralData(RTKWorkView):
             self.txtValidatedDate.connect('changed', self._on_focus_out, 10))
         self._lst_handler_id.append(
             self.btnValidateDate.connect('button-release-event',
-                                         self._do_select_date))
+                                         self._do_select_date,
+                                         self.txtValidatedDate))
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_general_data_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedRequirement')
         pub.subscribe(self._on_edit, 'mvwEditedRequirement')
         pub.subscribe(self._on_edit, 'calculatedRequirement')
+
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Load the Requirements general data page.
+
+        :return: False if successful and True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _requirement = self._dtc_data_controller.request_do_select(
+            module_id=self._requirement_id)
+
+        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.set_text(str(_requirement.requirement_code))
+        self.txtCode.handler_unblock(self._lst_handler_id[0])
+
+        self.txtName.handler_block(self._lst_handler_id[1])
+        self.txtName.set_text(_requirement.description)
+        self.txtName.handler_unblock(self._lst_handler_id[1])
+
+        self.chkDerived.handler_block(self._lst_handler_id[3])
+        self.chkDerived.set_active(_requirement.derived)
+        self.chkDerived.handler_unblock(self._lst_handler_id[3])
+
+        self.cmbRequirementType.handler_block(self._lst_handler_id[2])
+        _types = self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE
+        self.cmbRequirementType.set_active(0)
+        for _key, _type in _types.iteritems():
+            if _type[1] == _requirement.requirement_type:
+                self.cmbRequirementType.set_active(int(_key))
+        self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
+
+        self.txtSpecification.handler_block(self._lst_handler_id[4])
+        self.txtSpecification.set_text(str(_requirement.specification))
+        self.txtSpecification.handler_unblock(self._lst_handler_id[4])
+
+        self.txtPageNum.handler_block(self._lst_handler_id[5])
+        self.txtPageNum.set_text(str(_requirement.page_number))
+        self.txtPageNum.handler_unblock(self._lst_handler_id[5])
+
+        self.txtFigNum.handler_block(self._lst_handler_id[6])
+        self.txtFigNum.set_text(str(_requirement.figure_number))
+        self.txtFigNum.handler_unblock(self._lst_handler_id[6])
+
+        self.cmbPriority.handler_block(self._lst_handler_id[7])
+        self.cmbPriority.set_active(int(_requirement.priority))
+        self.cmbPriority.handler_unblock(self._lst_handler_id[7])
+
+        self.cmbOwner.handler_block(self._lst_handler_id[8])
+        _groups = self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS
+        self.cmbOwner.set_active(0)
+        for _key, _group in _groups.iteritems():
+            if _group[0] == _requirement.owner:
+                self.cmbOwner.set_property('active', int(_key))
+        self.cmbOwner.handler_unblock(self._lst_handler_id[8])
+
+        self.chkValidated.handler_block(self._lst_handler_id[9])
+        self.chkValidated.set_active(_requirement.validated)
+        self.chkValidated.handler_unblock(self._lst_handler_id[9])
+
+        self.txtValidatedDate.handler_block(self._lst_handler_id[10])
+        if _requirement.validated:
+            self.txtValidatedDate.set_text(str(_requirement.validated_date))
+        else:
+            self.txtValidatedDate.set_text("")
+        self.txtValidatedDate.handler_unblock(self._lst_handler_id[10])
+
+        return _return
 
     def _do_request_update(self, __button):
         """
@@ -177,9 +247,22 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._requirement_id)
+        return self._dtc_data_controller.request_do_update(
+            self._requirement_id)
 
-    def _do_select_date(self, __button, __event):
+    def _do_request_update_all(self, __button):
+        """
+        Request to save all the Requirements.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_update_all()
+
+    @staticmethod
+    def _do_select_date(__button, __event, entry):
         """
         Request to launch a date selection dialog.
 
@@ -189,6 +272,8 @@ class GeneralData(RTKWorkView):
         :type __button: :class:`rtk.gui.gtk.rtk.RTKButton`
         :param __event: the gtk.gdk.Event() that called this method.
         :type __event: :class:`gtk.gdk.Event`
+        :param entry: the gtk.Entry() that the new date should be displayed in.
+        :type entry: :class:`gtk.Entry`
         :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
         :rtype: str
         """
@@ -197,11 +282,11 @@ class GeneralData(RTKWorkView):
         _date = _dialog.do_run()
         _dialog.do_destroy()
 
-        self.txtValidatedDate.set_text(str(_date))
+        entry.set_text(str(_date))
 
         return _date
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Requirement Work View.
 
@@ -210,17 +295,25 @@ class GeneralData(RTKWorkView):
         """
         _tooltips = [
             (u"Save the currently selected Requirement to the open RTK "
-             u"Program database.")
+             u"Program database."),
+            _(u"Save all Requirement to the open RTK Program database.")
         ]
-        _callbacks = [self._do_request_update]
+        _callbacks = [self._do_request_update, self._do_request_update_all]
 
-        _icons = ['save']
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _icons = ['save', 'save-all']
+
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
-    def _make_general_data_page(self):
+    def _make_page(self):
         """
         Make the Requirement Work View General Data gtk.Notebook() page.
 
@@ -456,7 +549,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, module_id, **kwargs):
+    def _on_select(self, **kwargs):
         """
         Load the Requirement Work View gtk.Notebook() widgets.
 
@@ -467,104 +560,50 @@ class GeneralData(RTKWorkView):
         """
         _return = False
 
-        self._requirement_id = module_id
+        self._requirement_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['requirement']
-        _requirement = self._dtc_data_controller.request_select(
-            self._requirement_id)
-
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(_requirement.requirement_code))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(_requirement.description)
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        self.chkDerived.handler_block(self._lst_handler_id[3])
-        self.chkDerived.set_active(_requirement.derived)
-        self.chkDerived.handler_unblock(self._lst_handler_id[3])
-
-        self.cmbRequirementType.handler_block(self._lst_handler_id[2])
-        _types = self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE
-        self.cmbRequirementType.set_active(0)
-        for _key, _type in _types.iteritems():
-            if _type[1] == _requirement.requirement_type:
-                self.cmbRequirementType.set_active(int(_key))
-        self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
-
-        self.txtSpecification.handler_block(self._lst_handler_id[4])
-        self.txtSpecification.set_text(str(_requirement.specification))
-        self.txtSpecification.handler_unblock(self._lst_handler_id[4])
-
-        self.txtPageNum.handler_block(self._lst_handler_id[5])
-        self.txtPageNum.set_text(str(_requirement.page_number))
-        self.txtPageNum.handler_unblock(self._lst_handler_id[5])
-
-        self.txtFigNum.handler_block(self._lst_handler_id[6])
-        self.txtFigNum.set_text(str(_requirement.figure_number))
-        self.txtFigNum.handler_unblock(self._lst_handler_id[6])
-
-        self.cmbPriority.handler_block(self._lst_handler_id[7])
-        self.cmbPriority.set_active(int(_requirement.priority))
-        self.cmbPriority.handler_unblock(self._lst_handler_id[7])
-
-        self.cmbOwner.handler_block(self._lst_handler_id[8])
-        _groups = self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS
-        self.cmbOwner.set_active(0)
-        for _key, _group in _groups.iteritems():
-            if _group[0] == _requirement.owner:
-                self.cmbOwner.set_property('active', int(_key))
-        self.cmbOwner.handler_unblock(self._lst_handler_id[8])
-
-        self.chkValidated.handler_block(self._lst_handler_id[9])
-        self.chkValidated.set_active(_requirement.validated)
-        self.chkValidated.handler_unblock(self._lst_handler_id[9])
-
-        self.txtValidatedDate.handler_block(self._lst_handler_id[10])
-        if _requirement.validated:
-            self.txtValidatedDate.set_text(str(_requirement.validated_date))
-        else:
-            self.txtValidatedDate.set_text("")
-        self.txtValidatedDate.handler_unblock(self._lst_handler_id[10])
+        self._do_load_page()
 
         return _return
 
-    def _on_toggled(self, check, index):
+    def _on_toggled(self, togglebutton, index):
         """
         Retrieve gtk.CheckButton() changes and assign to Requirement attribute.
 
-        :param gtk.CheckButton check: the gtk.CheckButton() that called this
-                                      method.
+        :param togglebutton: the gtk.CheckButton() that called this method.
+        :type togglebutton: :class:`gtk.CheckButton`
         :param int index: the position in the Requirement class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Entry().
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        check.handler_block(self._lst_handler_id[index])
+        _return = False
+
+        togglebutton.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _requirement = self._dtc_data_controller.request_select(
-                self._requirement_id)
+            _requirement = self._dtc_data_controller.request_do_select(
+                module_id=self._requirement_id)
 
             if index == 3:
                 _index = 2
-                _requirement.derived = int(check.get_active())
+                _requirement.derived = int(togglebutton.get_active())
             elif index == 9:
                 _index = 12
-                _requirement.validated = int(check.get_active())
+                _requirement.validated = int(togglebutton.get_active())
 
             pub.sendMessage(
                 'wvwEditedRequirement',
                 position=_index,
-                new_text=int(check.get_active()))
+                new_text=int(togglebutton.get_active()))
 
-        check.handler_unblock(self._lst_handler_id[index])
+        togglebutton.handler_unblock(self._lst_handler_id[index])
 
-        return False
+        return _return
 
 
 class RequirementAnalysis(RTKWorkView):
@@ -595,7 +634,7 @@ class RequirementAnalysis(RTKWorkView):
                          Verifiability questions and answers.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  #pylint: disable=unused-argument
         """
         Initialize the Work View for the Requirement package.
 
@@ -626,8 +665,7 @@ class RequirementAnalysis(RTKWorkView):
         self.tvwVerifiable = gtk.TreeView()
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(
-            self._make_requirement_analysis_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedRequirement')
@@ -641,9 +679,21 @@ class RequirementAnalysis(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._requirement_id)
+        return self._dtc_data_controller.request_do_update(
+            self._requirement_id)
 
-    def _do_toggle_cell(self, cell, path, model, index):
+    def _do_request_update_all(self, __button):
+        """
+        Request to save all the Requirements.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_update_all()
+
+    def _do_edit_cell(self, cell, path, new_text, position, model, index):  # pylint: disable=unused-argument
         """
         Handle edits of the Requirement Analysis RTKTreeview().
 
@@ -662,14 +712,12 @@ class RequirementAnalysis(RTKWorkView):
                              * 2 = consistency
                              * 3 = verifiability
 
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
-                                    belongs to.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _requirement = self._dtc_data_controller.request_select(
+        _requirement = self._dtc_data_controller.request_do_select(
             self._requirement_id)
 
         _answer = boolean_to_integer(not cell.get_active())
@@ -719,14 +767,82 @@ class RequirementAnalysis(RTKWorkView):
                 _requirement.q_verifiable_2 = self._lst_verifiable_a[2]
                 _requirement.q_verifiable_3 = self._lst_verifiable_a[3]
                 _requirement.q_verifiable_4 = self._lst_verifiable_a[4]
-                _requirement.q_verifiable_5 = self._lst_verifiable_a[0]
+                _requirement.q_verifiable_5 = self._lst_verifiable_a[5]
         except IndexError:
-            print 'FIXME: Handle IndexError in ' \
-                  'rtk.gui.gtk.workview.Requirement.RequirementAnalysis._do_toggle_cell'
+            print(
+                "FIXME: Handle IndexError in "
+                "rtk.gui.gtk.workview.Requirement.RequirementAnalysis._do_toggle_cell "
+                "see issue #94.")
 
         return _return
 
-    def _make_buttonbox(self):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Load the Requirements analysis page.
+
+        :return: False if successful and True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _requirement = self._dtc_data_controller.request_do_select(
+            module_id=self._requirement_id)
+
+        # Load the Requirement analyses answers.  It's easiest to pack the
+        # answers into a list and iterate for each tree.
+        self._lst_clear_a = [
+            _requirement.q_clarity_0, _requirement.q_clarity_1,
+            _requirement.q_clarity_2, _requirement.q_clarity_3,
+            _requirement.q_clarity_4, _requirement.q_clarity_5,
+            _requirement.q_clarity_6, _requirement.q_clarity_7,
+            _requirement.q_clarity_8
+        ]
+        _model = self.tvwClear.get_model()
+        _row = _model.get_iter_first()
+        for _answer in self._lst_clear_a:
+            _model.set_value(_row, 2, _answer)
+            _row = _model.iter_next(_row)
+
+        self._lst_complete_a = [
+            _requirement.q_complete_0, _requirement.q_complete_1,
+            _requirement.q_complete_2, _requirement.q_complete_3,
+            _requirement.q_complete_4, _requirement.q_complete_5,
+            _requirement.q_complete_6, _requirement.q_complete_7,
+            _requirement.q_complete_8, _requirement.q_complete_9
+        ]
+        _model = self.tvwComplete.get_model()
+        _row = _model.get_iter_first()
+        for _answer in self._lst_complete_a:
+            _model.set_value(_row, 2, _answer)
+            _row = _model.iter_next(_row)
+
+        self._lst_consistent_a = [
+            _requirement.q_consistent_0, _requirement.q_consistent_1,
+            _requirement.q_consistent_2, _requirement.q_consistent_3,
+            _requirement.q_consistent_4, _requirement.q_consistent_5,
+            _requirement.q_consistent_6, _requirement.q_consistent_7,
+            _requirement.q_consistent_8
+        ]
+        _model = self.tvwConsistent.get_model()
+        _row = _model.get_iter_first()
+        for _answer in self._lst_consistent_a:
+            _model.set_value(_row, 2, _answer)
+            _row = _model.iter_next(_row)
+
+        self._lst_verifiable_a = [
+            _requirement.q_verifiable_0, _requirement.q_verifiable_1,
+            _requirement.q_verifiable_2, _requirement.q_verifiable_3,
+            _requirement.q_verifiable_4, _requirement.q_verifiable_5
+        ]
+        _model = self.tvwVerifiable.get_model()
+        _row = _model.get_iter_first()
+        for _answer in self._lst_verifiable_a:
+            _model.set_value(_row, 2, _answer)
+            _row = _model.iter_next(_row)
+
+        return _return
+
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Requirement Work View.
 
@@ -734,18 +850,26 @@ class RequirementAnalysis(RTKWorkView):
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            (u"Save the currently selected Requirement to the open RTK "
-             u"Program database.")
+            _(u"Save the currently selected Requirement to the open RTK "
+              u"Program database."),
+            _(u"Save all Requirement to the open RTK Program database.")
         ]
-        _callbacks = [self._do_request_update]
+        _callbacks = [self._do_request_update, self._do_request_update_all]
 
-        _icons = ['save']
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _icons = ['save', 'save-all']
+
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
-    def _make_requirement_analysis_page(self):
+    def _make_page(self):
         """
         Make the Requirement Analysis Work View page.
 
@@ -923,7 +1047,8 @@ class RequirementAnalysis(RTKWorkView):
             _cell = gtk.CellRendererToggle()
             _cell.set_property('activatable', 1)
             _cell.set_property('cell-background', '#E5E5E5')
-            _cell.connect('toggled', self._do_toggle_cell, _model, _index)
+            _cell.connect('toggled', self._do_edit_cell, None, None, _model,
+                          _index)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, active=2)
 
@@ -966,7 +1091,7 @@ class RequirementAnalysis(RTKWorkView):
 
         return _hpaned
 
-    def _on_select(self, module_id, **kwargs):
+    def _on_select(self, **kwargs):
         """
         Load the Requirement Analysis Work View gtk.Notebook() widgets.
 
@@ -976,64 +1101,11 @@ class RequirementAnalysis(RTKWorkView):
         """
         _return = False
 
-        self._requirement_id = module_id
+        self._requirement_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['requirement']
-        _requirement = self._dtc_data_controller.request_select(
-            self._requirement_id)
-
-        # Load the Requirement analyses answers.  It's easiest to pack the
-        # answers into a list and iterate for each tree.
-        self._lst_clear_a = [
-            _requirement.q_clarity_0, _requirement.q_clarity_1,
-            _requirement.q_clarity_2, _requirement.q_clarity_3,
-            _requirement.q_clarity_4, _requirement.q_clarity_5,
-            _requirement.q_clarity_6, _requirement.q_clarity_7,
-            _requirement.q_clarity_8
-        ]
-        _model = self.tvwClear.get_model()
-        _row = _model.get_iter_first()
-        for _answer in self._lst_clear_a:
-            _model.set_value(_row, 2, _answer)
-            _row = _model.iter_next(_row)
-
-        self._lst_complete_a = [
-            _requirement.q_complete_0, _requirement.q_complete_1,
-            _requirement.q_complete_2, _requirement.q_complete_3,
-            _requirement.q_complete_4, _requirement.q_complete_5,
-            _requirement.q_complete_6, _requirement.q_complete_7,
-            _requirement.q_complete_8, _requirement.q_complete_9
-        ]
-        _model = self.tvwComplete.get_model()
-        _row = _model.get_iter_first()
-        for _answer in self._lst_complete_a:
-            _model.set_value(_row, 2, _answer)
-            _row = _model.iter_next(_row)
-
-        self._lst_consistent_a = [
-            _requirement.q_consistent_0, _requirement.q_consistent_1,
-            _requirement.q_consistent_2, _requirement.q_consistent_3,
-            _requirement.q_consistent_4, _requirement.q_consistent_5,
-            _requirement.q_consistent_6, _requirement.q_consistent_7,
-            _requirement.q_consistent_8
-        ]
-        _model = self.tvwConsistent.get_model()
-        _row = _model.get_iter_first()
-        for _answer in self._lst_consistent_a:
-            _model.set_value(_row, 2, _answer)
-            _row = _model.iter_next(_row)
-
-        self._lst_verifiable_a = [
-            _requirement.q_verifiable_0, _requirement.q_verifiable_1,
-            _requirement.q_verifiable_2, _requirement.q_verifiable_3,
-            _requirement.q_verifiable_4, _requirement.q_verifiable_5
-        ]
-        _model = self.tvwVerifiable.get_model()
-        _row = _model.get_iter_first()
-        for _answer in self._lst_verifiable_a:
-            _model.set_value(_row, 2, _answer)
-            _row = _model.iter_next(_row)
+        self._do_load_page()
 
         return _return
