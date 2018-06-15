@@ -68,7 +68,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
                        cost/operating hour for the RTK module.
     """
 
-    def __init__(self, controller, module=None):
+    def __init__(self, controller, **kwargs):
         """
         Initialize the RTKWorkView meta-class.
 
@@ -76,13 +76,14 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         :type controller: :class:`rtk.RTK.RTK`
         :keyword str module: the RTK Module this RTKWorkView is the bassis for.
         """
+        _module = kwargs['module']
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller, module=module)
+        rtk.RTKBaseView.__init__(self, controller, module=_module)
 
         self._module = None
-        for __, char in enumerate(module):
+        for __, char in enumerate(_module):
             if char.isalpha():
-                self._module = module.capitalize()
+                self._module = _module.capitalize()
 
         # Initialize private dictionary attributes.
 
@@ -376,9 +377,13 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
 
-    def on_select(self, **kwargs):  # pylint: disable=W0613
+    def on_select(self, **kwargs):
         """
         Respond to load the Work View gtk.Notebook() widgets.
+
+        This method handles the results of the an individual module's
+        _on_select() method.  It sets the title of the RTK Work Book and
+        raises an error dialog if needed.
 
         :return: None
         :rtype: None
@@ -392,6 +397,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         _workbook.set_title(_title)
 
         if _error_code != 0:
+            self._mdcRTK.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_debug_msg)
             _dialog = rtk.RTKMessageDialog(_user_msg, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == gtk.RESPONSE_OK:

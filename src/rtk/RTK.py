@@ -136,7 +136,7 @@ def _initialize_loggers(configuration):
     _import_log = Utilities.create_logger("RTK.import", logging.WARNING,
                                           __import_log)
 
-    return _debug_log, _user_log, _import_log
+    return (_debug_log, _user_log, _import_log)
 
 
 class NoOptionError(Exception):
