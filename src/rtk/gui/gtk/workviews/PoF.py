@@ -38,14 +38,14 @@ class PoF(RTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller, module='PoF'):
+    def __init__(self, controller, **kwargs):   # pylint: disable=unused-argument
         """
         Initialize the Work View for the PoF.
 
         :param controller: the RTK master data controller instance.
         :type controller: :class:`rtk.RTK.RTK`
         """
-        RTKWorkView.__init__(self, controller, module=module)
+        RTKWorkView.__init__(self, controller, module='PoF')
 
         # Initialize private dictionary attributes.
         self._dic_icons['mode'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
@@ -102,24 +102,26 @@ class PoF(RTKWorkView):
 
         pub.subscribe(self._on_select, 'selectedHardware')
 
-    def _do_load_tree(self, tree, row=None):
+    def _do_load_page(self, **kwargs):
         """
         Iterate through the tree and load the Physics of Failure RTKTreeView().
 
-        :param tree: the treelib Tree() holding the (partial) PoF to load.
-        :param row: the parent gtk.Iter() of the entity being added to the
-                    PoF RTKTreeView().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _user_msg, _debug_msg); the error code, message
+                 to be displayed to the user, and the message to be written to
+                 the debug log.
+        :rtype: (int, str, str)
         """
-        _return = False
+        _tree = kwargs['tree']
+        _row = kwargs['row']
+        _error_code = 0
         _user_msg = ""
         _debug_msg = ""
 
         _data = []
         _model = self.treeview.get_model()
+        _model.clear()
 
-        _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
+        _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
         try:
             if _entity.is_mode:
@@ -164,7 +166,7 @@ class PoF(RTKWorkView):
                 ]
 
             try:
-                _row = _model.append(row, _data)
+                _new_row = _model.append(row, _data)
             except TypeError:
                 _error_code = 1
                 _user_msg = _(u"One or more PoF line items had the wrong data "
@@ -175,7 +177,7 @@ class PoF(RTKWorkView):
                               "columns.".format(
                                   str(_node.identifier),
                                   str(self._hardware_id)))
-                _row = None
+                _new_row = None
             except ValueError:
                 _error_code = 1
                 _user_msg = _(
@@ -185,7 +187,7 @@ class PoF(RTKWorkView):
                     "RTK ERROR: Too few fields for PoF ID {0:s} for Hardware "
                     "ID {1:s}.".format(
                         str(_node.identifier), str(self._hardware_id)))
-                _row = None
+                _new_row = None
 
         except AttributeError:
             if _node.identifier != 0:
@@ -197,13 +199,13 @@ class PoF(RTKWorkView):
                     "RTK ERROR: There is no data package for PoF ID {0:s} "
                     "for Hardware ID {1:s}.".format(
                         str(_node.identifier), str(self._hardware_id)))
-            _row = None
+            _new_row = None
 
         for _n in tree.children(_node.identifier):
             _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(_child_tree, _row)
+            self._do_load_tree(_child_tree, _new_row)
 
-        return None
+        return (_error_code, _user_msg, _debug_msg)
 
     def _do_change_row(self, treeview):
         """
@@ -351,21 +353,6 @@ class PoF(RTKWorkView):
 
         return _return
 
-    def _do_get_cell_model(self, column):
-        """
-        Retrieve the gtk.CellRendererCombo() gtk.TreeModel().
-
-        :param int column: the column number to retrieve the cell from.
-        :return: _model
-        :rtype: :class:`gtk.TreeModel`
-        """
-        _column = self.treeview.get_column(column)
-        _cell = _column.get_cell_renderers()[0]
-        _model = _cell.get_property('model')
-        _model.clear()
-
-        return _model
-
     def _do_request_delete(self, __button):
         """
         Request to delete the selected entity from the PoF.
@@ -395,10 +382,10 @@ class PoF(RTKWorkView):
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
+        _sibling = kwargs['sibling']
         _return = False
         _choose = False
         _undefined = False
-        _sibling = kwargs['sibling']
 
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
@@ -476,6 +463,16 @@ class PoF(RTKWorkView):
 
         return _return
 
+    def _do_request_insert_child(self, __button):
+        """
+        Request to insert a new entity to the PoF at the next level.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :return: False if sucessful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=False)
+
     def _do_request_insert_sibling(self, __button):
         """
         Request to insert a new entity to the PoF at the same level.
@@ -486,15 +483,19 @@ class PoF(RTKWorkView):
         """
         return self._do_request_insert(sibling=True)
 
-    def _do_request_insert_child(self, __button):
+    def _do_request_update(self, __button):
         """
-        Request to insert a new entity to the PoF at the next level.
+        Request to save the currently selected entity in the PoF.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :return: False if sucessful or True if an error is encountered.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(sibling=False)
+        _model, _row = self.treeview.get_selection().get_selected()
+        _node_id = _model.get_value(_row, 12)
+
+        return self._dtc_data_controller.request_do_update(_node_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -506,6 +507,21 @@ class PoF(RTKWorkView):
         :rtype: bool
         """
         return self._dtc_data_controller.request_do_update_all()
+
+    def _get_cell_model(self, column):
+        """
+        Retrieve the gtk.CellRendererCombo() gtk.TreeModel().
+
+        :param int column: the column number to retrieve the cell from.
+        :return: _model
+        :rtype: :class:`gtk.TreeModel`
+        """
+        _column = self.treeview.get_column(column)
+        _cell = _column.get_cell_renderers()[0]
+        _model = _cell.get_property('model')
+        _model.clear()
+
+        return _model
 
     @staticmethod
     def _get_level(node_id):
@@ -532,7 +548,7 @@ class PoF(RTKWorkView):
 
         return _level
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):    # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the PoF class Work View.
 
@@ -545,16 +561,18 @@ class PoF(RTKWorkView):
             _(u"Add a new PoF entity one level below the currently "
               u"selected entity."),
             _(u"Remove the selected entity from the PoF."),
+            _(u"Save the currently selected item in the PoF to the RTK "
+              u"Program database."),
             _(u"Save the PoF to the open RTK Program database.")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update_all
+            self._do_request_delete, self._do_request_update, self._do_request_update_all
         ]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'save']
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKWorkView._make_buttonbox(self, icons=_icons, tooltips=_tooltips,
+                                                 callbacks=_callbacks, orientation='vertical'. height=-1,width=-1)
 
         return _buttonbox
 
@@ -708,13 +726,22 @@ class PoF(RTKWorkView):
             _menu_item = gtk.ImageMenuItem()
             _image = gtk.Image()
             _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save"))
+            _menu_item.set_label(_(u"Save Selected"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save-all'])
+            _menu_item.set_label(_(u"Save All"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_update_all)
             _menu_item.show()
             _menu.append(_menu_item)
-
         treeview.handler_unblock(self._lst_handler_id[1])
 
         return _return
@@ -736,7 +763,7 @@ class PoF(RTKWorkView):
 
         _pof = self._dtc_data_controller.request_do_select_all(
             self._hardware_id, functional=False)
-        self._do_load_tree(_pof)
+        (_error_code, _user_msg, _debug_msg) = self._do_load_tree(_pof)
 
         _row = _model.get_iter_root()
         self.treeview.expand_all()
@@ -745,5 +772,13 @@ class PoF(RTKWorkView):
             _column = self.treeview.get_column(0)
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
+
+        RTKWorkView.on_select(
+            self,
+            title=_(u"Analyzing Physics of Failure for Hardware ID "
+                    u"{0:d}").format(self._hardware_id),
+            error_code=_error_code,
+            user_msg=_user_msg,
+            debug_msg=_debug_msg)
 
         return None
