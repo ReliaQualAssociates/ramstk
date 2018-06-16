@@ -38,7 +38,7 @@ class PoF(RTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller, **kwargs):   # pylint: disable=unused-argument
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the PoF.
 
@@ -121,6 +121,9 @@ class PoF(RTKWorkView):
         _model = self.treeview.get_model()
         _model.clear()
 
+        _tree = self._dtc_data_controller.request_do_select_all(
+            self._hardware_id, functional=False)
+
         _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
         try:
@@ -148,7 +151,7 @@ class PoF(RTKWorkView):
                     _entity.damage_model, '', '', '', _entity.priority_id, '',
                     _icon, _node.identifier
                 ]
-            elif _entity.is_opstress and row is not None:
+            elif _entity.is_opstress and _row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['opstress'], 22, 22)
                 _data = [
@@ -156,7 +159,7 @@ class PoF(RTKWorkView):
                     _entity.measurable_parameter, _entity.load_history, '', 0,
                     _entity.remarks, _icon, _node.identifier
                 ]
-            elif _entity.is_testmethod and row is not None:
+            elif _entity.is_testmethod and _row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['testmethod'], 22, 22)
                 _data = [
@@ -166,7 +169,7 @@ class PoF(RTKWorkView):
                 ]
 
             try:
-                _new_row = _model.append(row, _data)
+                _new_row = _model.append(_row, _data)
             except TypeError:
                 _error_code = 1
                 _user_msg = _(u"One or more PoF line items had the wrong data "
@@ -201,9 +204,17 @@ class PoF(RTKWorkView):
                         str(_node.identifier), str(self._hardware_id)))
             _new_row = None
 
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(_child_tree, _new_row)
+        for _n in _tree.children(_node.identifier):
+            _child_tree = _tree.subtree(_n.identifier)
+            self._do_load_page(tree=_child_tree, row=_new_row)
+
+        _row = _model.get_iter_root()
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
 
         return (_error_code, _user_msg, _debug_msg)
 
@@ -548,7 +559,7 @@ class PoF(RTKWorkView):
 
         return _level
 
-    def _make_buttonbox(self, **kwargs):    # pylint: disable=unused-argument
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the PoF class Work View.
 
@@ -567,16 +578,25 @@ class PoF(RTKWorkView):
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update, self._do_request_update_all
+            self._do_request_delete, self._do_request_update,
+            self._do_request_update_all
         ]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'save', 'save-all']
+        _icons = [
+            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+        ]
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, icons=_icons, tooltips=_tooltips,
-                                                 callbacks=_callbacks, orientation='vertical'. height=-1,width=-1)
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
-    def _make_treeview(self):
+    def _make_page(self):
         """
         Make the PoF RTKTreeview().
 
@@ -756,22 +776,15 @@ class PoF(RTKWorkView):
         """
         self._hardware_id = kwargs['module_id']
 
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['pof']
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers['pof']
 
         _pof = self._dtc_data_controller.request_do_select_all(
-            self._hardware_id, functional=False)
-        (_error_code, _user_msg, _debug_msg) = self._do_load_tree(_pof)
-
-        _row = _model.get_iter_root()
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
+            self._function_id, functional=True)
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page(
+            tree=_pof, row=None)
 
         RTKWorkView.on_select(
             self,

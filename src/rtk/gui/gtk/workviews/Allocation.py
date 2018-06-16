@@ -220,20 +220,22 @@ class Allocation(RTKWorkView):
         """
         Iterate through the tree and load the Allocation RTKTreeView().
 
-        :param tree: the treelib Tree() holding the (partial) Allocation to
-                     load.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _user_msg, _debug_msg); the error code, message
+                 to be displayed to the user, and the message to be written to
+                 the debug log.
+        :rtype: (int, str, str)
         """
-        _return = False
         _tree = None
+        _error_code = 0
+        _user_msg = ""
+        _debug_msg = ""
 
         _data = []
 
         _model = self.treeview.get_model()
         _model.clear()
 
-        _parent = self._dtc_data_controller.request_select(self._parent_id)
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
         if _parent is not None:
             self.cmbAllocationMethod.set_active(_parent.method_id)
             self.cmbAllocationGoal.set_active(_parent.goal_measure_id)
@@ -248,60 +250,69 @@ class Allocation(RTKWorkView):
         if _tree is not None:
             i = 1
             for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
-                _entity = _node.data
-                _node_id = _node.identifier
-
-                _name = self._dtc_data_controller.lst_name[i - 1]
-                _availability = self._dtc_data_controller.lst_availability[i]
-                _hazard_rate = self._dtc_data_controller.lst_hazard_rates[i]
-                _mtbf = self._dtc_data_controller.lst_mtbf[i]
-                _reliability = self._dtc_data_controller.lst_reliability[i]
-                _data = [
-                    _entity.revision_id, _entity.hardware_id, _name,
-                    _entity.included, _entity.n_sub_systems,
-                    _entity.n_sub_elements, _entity.mission_time,
-                    _entity.duty_cycle, _entity.int_factor, _entity.soa_factor,
-                    _entity.op_time_factor, _entity.env_factor,
-                    _entity.weight_factor, _entity.percent_weight_factor,
-                    _hazard_rate, _entity.hazard_rate_alloc, _mtbf,
-                    _entity.mtbf_alloc, _reliability,
-                    _entity.reliability_alloc, _availability,
-                    _entity.availability_alloc
-                ]
-
                 try:
-                    _row = _model.append(None, _data)
-                except TypeError:
-                    _error_code = 1
-                    _user_msg = _(u"One or more Allocation line items had the "
-                                  u"wrong data type in it's data package and "
-                                  u"is not displayed in the Allocation.")
-                    _debug_msg = ("RTK ERROR: Data for Allocation ID {0:s} "
-                                  "for Hardware ID {1:s} is the wrong type "
-                                  "for one or more columns.".format(
-                                  str(_node.identifier),
-                                  str(self._hardware_id)))
-                    _row = None
-                except ValueError:
-                    _error_code = 1
-                    _user_msg = _(u"One or more Allocation line items was "
-                                  u"missing some of it's data and is not "
-                                  u"displayed in the Allocation.")
-                    _debug_msg = ("RTK ERROR: Too few fields for Allocation "
-                                  "ID {0:s} for Hardware ID {1:s}.".format(str(_node.identifier), str(self._hardware_id)))
-            except AttributeError:
-                if _node.identifier != 0:
-                    _error_code = 1
-                    _user_msg = _(u"One or more Allocation line items was "
-                                  u"missing it's data package and is not "
-                                  u"displayed in the FMEA form.")
-                    _debug_msg = ("RTK ERROR: There is no data package for "
-                                  "Allocation ID {0:s} for Hardware ID "
-                                  "{1:s}.".format(str(_node.identifier), str(self._hardware_id)))
+                    _entity = _node.data
+                    _node_id = _node.identifier
+
+                    _name = self._dtc_data_controller.lst_name[i - 1]
+                    _availability = self._dtc_data_controller.lst_availability[
+                        i]
+                    _hazard_rate = self._dtc_data_controller.lst_hazard_rates[
+                        i]
+                    _mtbf = self._dtc_data_controller.lst_mtbf[i]
+                    _reliability = self._dtc_data_controller.lst_reliability[i]
+                    _data = [
+                        _entity.revision_id, _entity.hardware_id, _name,
+                        _entity.included, _entity.n_sub_systems,
+                        _entity.n_sub_elements, _entity.mission_time,
+                        _entity.duty_cycle, _entity.int_factor,
+                        _entity.soa_factor, _entity.op_time_factor,
+                        _entity.env_factor, _entity.weight_factor,
+                        _entity.percent_weight_factor, _hazard_rate,
+                        _entity.hazard_rate_alloc, _mtbf, _entity.mtbf_alloc,
+                        _reliability, _entity.reliability_alloc, _availability,
+                        _entity.availability_alloc
+                    ]
+
+                    try:
+                        _row = _model.append(None, _data)
+                    except TypeError:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Allocation line items had "
+                                      u"the wrong data type in it's data "
+                                      u"package and is not displayed in the "
+                                      u"Allocation.")
+                        _debug_msg = ("RTK ERROR: Data for Allocation ID "
+                                      "{0:s} for Hardware ID {1:s} is the "
+                                      "wrong type for one or more "
+                                      "columns.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
+                    except ValueError:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Allocation line items was "
+                                      u"missing some of it's data and is not "
+                                      u"displayed in the Allocation.")
+                        _debug_msg = ("RTK ERROR: Too few fields for "
+                                      "Allocation ID {0:s} for Hardware ID "
+                                      "{1:s}.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
+                except AttributeError:
+                    if _node.identifier != 0:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Allocation line items was "
+                                      u"missing it's data package and is not "
+                                      u"displayed in the Allocation.")
+                        _debug_msg = ("RTK ERROR: There is no data package "
+                                      "for Allocation ID {0:s} for Hardware "
+                                      "ID {1:s}.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
 
                 i += 1
 
-        return _return
+        return (_error_code, _user_msg, _debug_msg)
 
     def _do_request_calculate(self, __button):
         """
@@ -448,7 +459,7 @@ class Allocation(RTKWorkView):
 
         return _frame
 
-    def _make_treeview(self):
+    def _make_page(self):
         """
         Make the Allocation RTKTreeview().
 
@@ -705,15 +716,25 @@ class Allocation(RTKWorkView):
         """
         Respond to the `selectedHardware` signal from pypubsub.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self._parent_id = kwargs['module_id']
-        _return = False
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['allocation']
-        self._do_load_page()
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'allocation']
 
-        return _return
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page()
+
+        RTKWorkView.on_select(
+            self,
+            title=_(u"Allocating Reliability Requirement for Hardware ID "
+                    u"{0:d}").format(self._parent_id),
+            error_code=_error_code,
+            user_msg=_user_msg,
+            debug_msg=_debug_msg)
+
+        return None
