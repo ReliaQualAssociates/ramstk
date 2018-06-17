@@ -97,7 +97,7 @@ class PoF(RTKWorkView):
         self.hbx_tab_label.pack_start(_label)
 
         self.pack_start(self._make_buttonbox(), False, True)
-        self.pack_end(self._make_treeview(), True, True)
+        self.pack_end(self._make_page(), True, True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
@@ -627,14 +627,14 @@ class PoF(RTKWorkView):
         #    _column.set_attributes(_cell, text=i)
 
         # Load the damage models into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[5])
+        _model = self._get_cell_model(self._lst_col_order[5])
         _model.append(('', ))
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_DAMAGE_MODELS:
             _model.append(
                 (self._mdcRTK.RTK_CONFIGURATION.RTK_DAMAGE_MODELS[_item][0], ))
 
         # Load the measureable parameter into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[6])
+        _model = self._get_cell_model(self._lst_col_order[6])
         _model.append(('', ))
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_MEASURABLE_PARAMETERS:
             _model.append(
@@ -642,7 +642,7 @@ class PoF(RTKWorkView):
                     _item][1], ))
 
         # Load the measureable parameter into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[7])
+        _model = self._get_cell_model(self._lst_col_order[7])
         _model.append(('', ))
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_LOAD_HISTORY:
             _model.append(

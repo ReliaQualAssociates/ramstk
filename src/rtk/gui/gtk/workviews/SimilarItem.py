@@ -124,12 +124,12 @@ class SimilarItem(RTKWorkView):
         self.pack_start(self._make_buttonbox(), False, True)
         _hbox = gtk.HBox()
         _hbox.pack_start(self._make_methodbox(), False, True)
-        _hbox.pack_end(self._make_treeview(), True, True)
+        _hbox.pack_end(self._make_page(), True, True)
         self.pack_end(_hbox, True, True)
         self.show_all()
 
         #pub.subscribe(self._do_refresh_view, 'calculatedSimilarItem')
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
+        #pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedHardware')
 
     def _do_change_row(self, treeview):
@@ -179,7 +179,7 @@ class SimilarItem(RTKWorkView):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _similaritem = self._dtc_data_controller.request_select(
+            _similaritem = self._dtc_data_controller.request_do_select(
                 self._hardware_id)
 
             if position == self._lst_col_order[4]:
@@ -337,7 +337,7 @@ class SimilarItem(RTKWorkView):
 
                     _assembly = self._dtc_hw_controller.request_get_attributes(
                         _node_id)['description']
-                    _hazard_rate = self._dtc_hw_controller.request_select(
+                    _hazard_rate = self._dtc_hw_controller.request_do_select(
                         _node_id, 'reliability').hazard_rate_logistics
 
                     try:
@@ -457,12 +457,13 @@ class SimilarItem(RTKWorkView):
         while _row is not None:
             _node_id = _model.get_value(_row, 1)
             _hazard_rate = _model.get_value(_row, 3)
-            _return = (_return or self._dtc_data_controller.request_calculate(
-                _node_id, _hazard_rate))
+            _return = (_return
+                       or self._dtc_data_controller.request_do_calculate(
+                           _node_id, _hazard_rate))
             _row = _model.iter_next(_row)
 
         if not _return:
-            _nodes = self._dtc_data_controller.request_select_children(
+            _nodes = self._dtc_data_controller.request_do_select_children(
                 self._parent_id)
             self._do_load_tree(_nodes)
         rtk.Widget.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
@@ -566,7 +567,7 @@ class SimilarItem(RTKWorkView):
                 _row = _model.get_iter_root()
                 while _row is not None:
                     _hardware_id = _model.get_value(_row, 1)
-                    _similaritem = self._dtc_data_controller.request_select(
+                    _similaritem = self._dtc_data_controller.request_do_select(
                         _hardware_id)
                     _similaritem.function_1 = _txtFunction1.get_text()
                     _similaritem.function_2 = _txtFunction2.get_text()
@@ -578,10 +579,10 @@ class SimilarItem(RTKWorkView):
                     _model.set_value(_row, 32, _similaritem.function_3)
                     _model.set_value(_row, 33, _similaritem.function_4)
                     _model.set_value(_row, 34, _similaritem.function_5)
-                    self._dtc_data_controller.request_update(_hardware_id)
+                    self._dtc_data_controller.request_do_update(_hardware_id)
                     _row = _model.iter_next(_row)
             else:
-                _similaritem = self._dtc_data_controller.request_select(
+                _similaritem = self._dtc_data_controller.request_do_select(
                     self._hardware_id)
                 _similaritem.function_1 = _txtFunction1.get_text()
                 _similaritem.function_2 = _txtFunction2.get_text()
@@ -593,7 +594,7 @@ class SimilarItem(RTKWorkView):
                 _model.set_value(_row, 32, _similaritem.function_3)
                 _model.set_value(_row, 33, _similaritem.function_4)
                 _model.set_value(_row, 34, _similaritem.function_5)
-                self._dtc_data_controller.request_update(self._hardware_id)
+                self._dtc_data_controller.request_do_update(self._hardware_id)
 
         _dialog.destroy()
 
@@ -856,11 +857,11 @@ class SimilarItem(RTKWorkView):
         combo.handler_block(self._lst_handler_id[index])
 
         _method_id = combo.get_active()
-        _parent = self._dtc_data_controller.request_select(self._parent_id)
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
 
         if _parent is not None:
             _parent.method_id = _method_id
-            for _child in self._dtc_data_controller.request_select_children(
+            for _child in self._dtc_data_controller.request_do_select_children(
                     self._parent_id):
                 _child.data.method_id = _method_id
 

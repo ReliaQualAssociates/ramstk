@@ -139,7 +139,7 @@ class Allocation(RTKWorkView):
         self.pack_start(self._make_buttonbox(), False, True)
         _hbox = gtk.HBox()
         _hbox.pack_start(self._make_goalbox(), False, True)
-        _hbox.pack_end(self._make_treeview(), True, True)
+        _hbox.pack_end(self._make_page(), True, True)
         self.pack_end(_hbox, True, True)
         self.show_all()
 
@@ -190,7 +190,7 @@ class Allocation(RTKWorkView):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _allocation = self._dtc_data_controller.request_select(
+            _allocation = self._dtc_data_controller.request_do_select(
                 self._allocation_id)
 
             if position == self._lst_col_order[3]:
@@ -245,7 +245,8 @@ class Allocation(RTKWorkView):
             self.txtReliabilityGoal.set_text(
                 str(self.fmt.format(_parent.reliability_goal)))
 
-            _tree = self._dtc_data_controller.request_children(self._parent_id)
+            _tree = self._dtc_data_controller.request_do_select_children(
+                self._parent_id)
 
         if _tree is not None:
             i = 1
@@ -322,7 +323,7 @@ class Allocation(RTKWorkView):
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_calculate(self._parent_id)
+        return self._dtc_data_controller.request_do_calculate(self._parent_id)
 
     def _do_request_update(self, __button):
         """
@@ -346,7 +347,7 @@ class Allocation(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
     def _do_set_visible(self, **kwargs):
         """
@@ -411,7 +412,7 @@ class Allocation(RTKWorkView):
             icons=_icons,
             tooltips=_tooltips,
             callbacks=_callbacks,
-            orientatio='vertical',
+            orientation='vertical',
             height=-1,
             width=-1)
 
@@ -560,7 +561,7 @@ class Allocation(RTKWorkView):
 
         combo.handler_block(self._lst_handler_id[index])
 
-        _parent = self._dtc_data_controller.request_select(self._parent_id)
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
 
         if _parent is not None:
             if index == 2:
@@ -664,7 +665,7 @@ class Allocation(RTKWorkView):
         """
         entry.handler_block(self._lst_handler_id[index])
 
-        _parent = self._dtc_data_controller.request_select(self._parent_id)
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
         if _parent is not None:
             if index == 4:  # Reliability goal
                 _parent.reliability_goal = float(entry.get_text())

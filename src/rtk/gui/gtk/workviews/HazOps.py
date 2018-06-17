@@ -120,7 +120,7 @@ class HazOps(RTKWorkView):
         self.hbx_tab_label.pack_start(_label)
 
         self.pack_start(self._make_buttonbox(), False, True)
-        self.pack_end(self._make_treeview(), True, True)
+        self.pack_end(self._make_page(), True, True)
         self.show_all()
 
         #pub.subscribe(self._do_refresh_view, 'calculatedHazOps')

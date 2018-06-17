@@ -288,7 +288,7 @@ class GeneralData(RTKWorkView):
         """
         _return = False
 
-        _validation = self._dtc_data_controller.request_select(
+        _validation = self._dtc_data_controller.request_do_select(
             self._validation_id)
 
         self.txtID.set_text(str(_validation.validation_id))
@@ -408,7 +408,7 @@ class GeneralData(RTKWorkView):
         _error_code = 0
         _msg = ''
 
-        if self._dtc_data_controller.request_calculate(self._validation_id):
+        if self._dtc_data_controller.request_do_calculate(self._validation_id):
             _error_code = 1
             _msg = 'Error calculating Validation activity cost and time.'
 
@@ -440,7 +440,7 @@ class GeneralData(RTKWorkView):
         _return = False
 
         (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean,
-         _time_ul) = self._dtc_data_controller.request_calculate_program()
+         _time_ul) = self._dtc_data_controller.request_do_calculate_program()
 
         self.txtProjectCostLL.set_text(str(self.fmt.format(_cost_ll)))
         self.txtProjectCost.set_text(str(self.fmt.format(_cost_mean)))
@@ -460,7 +460,7 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._validation_id)
+        return self._dtc_data_controller.request_do_update(self._validation_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -471,10 +471,10 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = self._dtc_data_controller.request_update_all()
+        _return = self._dtc_data_controller.request_do_update_all()
 
         if not _return:
-            _return = self._dtc_data_controller.request_update_status()
+            _return = self._dtc_data_controller.request_do_update_status()
 
         return _return
 
@@ -508,7 +508,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _do_set_revision(self, module_id):
+    def _do_set_revision(self, **kwargs):
         """
         Set the revision ID attribute when a Revision is selected.
 
@@ -516,7 +516,7 @@ class GeneralData(RTKWorkView):
         :return: None
         :rtype: None
         """
-        self._revision_id = module_id
+        self._revision_id = kwargs['module_id']
 
         return None
 
@@ -715,7 +715,7 @@ class GeneralData(RTKWorkView):
         combo.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _validation = self._dtc_data_controller.request_select(
+            _validation = self._dtc_data_controller.request_do_select(
                 self._validation_id)
 
             if index == 1:
@@ -749,7 +749,7 @@ class GeneralData(RTKWorkView):
         """
         _return = False
 
-        _validation = self._dtc_data_controller.request_select(
+        _validation = self._dtc_data_controller.request_do_select(
             self._validation_id)
 
         if index == 2:
@@ -860,7 +860,7 @@ class GeneralData(RTKWorkView):
         entry.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _validation = self._dtc_data_controller.request_select(
+            _validation = self._dtc_data_controller.request_do_select(
                 self._validation_id)
 
             if index == 0:
@@ -962,7 +962,7 @@ class GeneralData(RTKWorkView):
         """
         spinbutton.handler_block(self._lst_handler_id[index])
 
-        _validation = self._dtc_data_controller.request_select(
+        _validation = self._dtc_data_controller.request_do_select(
             self._validation_id)
 
         if index == 10:
@@ -1037,7 +1037,7 @@ class BurndownCurve(RTKWorkView):
         """
         _return = False
 
-        _y_actual = self._dtc_data_controller.request_actual_burndown()
+        _y_actual = self._dtc_data_controller.request_get_actual_burndown()
 
         if _y_actual:
             self.burndown.do_add_line(
@@ -1058,8 +1058,8 @@ class BurndownCurve(RTKWorkView):
 
             _return = True
 
-        (_y_minimum, _y_average,
-         _y_maximum) = self._dtc_data_controller.request_planned_burndown()
+        (_y_minimum, _y_average, _y_maximum
+         ) = self._dtc_data_controller.request_get_planned_burndown()
 
         self.burndown.axis.cla()
         self.burndown.axis.grid(True, which='both')
@@ -1090,7 +1090,7 @@ class BurndownCurve(RTKWorkView):
                 marker='g--')
 
         (_assessment_dates,
-         _targets) = self._dtc_data_controller.request_assessments()
+         _targets) = self._dtc_data_controller.request_get_assessment_points()
 
         # Add a vertical line at the scheduled end-date for each task
         # identified as a Reliability Assessment.  Add an annotation box
@@ -1141,7 +1141,7 @@ class BurndownCurve(RTKWorkView):
         _return = False
 
         (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean,
-         _time_ul) = self._dtc_data_controller.request_calculate_program()
+         _time_ul) = self._dtc_data_controller.request_do_calculate_all()
 
         return _return
 
@@ -1178,10 +1178,10 @@ class BurndownCurve(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = self._dtc_data_controller.request_update_all()
+        _return = self._dtc_data_controller.request_do_update_all()
 
         if not _return:
-            _return = self._dtc_data_controller.request_update_status()
+            _return = self._dtc_data_controller.request_do_update_status()
 
         return _return
 
