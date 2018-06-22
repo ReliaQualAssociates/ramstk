@@ -237,18 +237,23 @@ class ListView(RTKListView):
         :param row: the parent row in the Usage Profile gtk.TreeView() to
                     add the new item.
         :type row: :class:`gtk.TreeIter`
-        :return: False is successful or True if an error is encountered.
-        :rtype: bool
+
+        :return: (_error_code, _user_msg, _debug_msg); the error code, message
+                 to be displayed to the user, and the message to be written to
+                 the debug log.
+        :rtype: (int, str, str)
         """
         _tree = kwargs['tree']
         _row = kwargs['row']
-        _return = False
+        _error_code = 0
+        _user_msg = ""
+        _debug_msg = ""
+
         _data = []
         _model = self.treeview.get_model()
 
         _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
-
         try:
             if _entity.is_mission:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
@@ -282,17 +287,51 @@ class ListView(RTKListView):
             try:
                 _new_row = _model.append(_row, _data)
             except TypeError:
-                _return = True
-
+                _error_code = 1
+                _user_msg = _(u"One or more Usage Profile line items had the "
+                              u"wrong data type in it's data package and is "
+                              u"not displayed in the Usage Profile.")
+                _debug_msg = ("RTK ERROR: Data for Usage Profile ID {0:s} for "
+                              "Revision ID {1:s} is the wrong type for one or "
+                              "more columns.".format(
+                                  str(_node.identifier),
+                                  str(self._revision_id)))
+                _new_row = None
+            except ValueError:
+                _error_code = 1
+                _user_msg = _(u"One or more Usage Profile line items was "
+                              u"missing some of it's data and is not "
+                              u"displayed in the Usage Profile.")
+                _debug_msg = ("RTK ERROR: Too few fields for Usage Profile ID "
+                              "{0:s} for Revision ID {1:s}.".format(
+                                  str(_node.identifier),
+                                  str(self._revision_id)))
+                _new_row = None
         except AttributeError:
+            if _node.identifier != 0:
+                _error_code = 1
+                _user_msg = _(u"One or more Usage Profile line items was "
+                              u"missing it's data package and is not "
+                              u"displayed in the Usage Profile.")
+                _debug_msg = ("RTK ERROR: There is no data package for Usage "
+                              "Profile ID {0:s} for Revision ID {1:s}.".format(
+                                  str(_node.identifier),
+                                  str(self._revision_id)))
             _new_row = None
-            _return = True
 
         for _n in _tree.children(_node.identifier):
             _child_tree = _tree.subtree(_n.identifier)
             self._do_load_page(tree=_child_tree, row=_new_row)
 
-        return _return
+        _row = _model.get_iter_root()
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
+
+        return (_error_code, _user_msg, _debug_msg)
 
     def _do_request_delete(self, __button):
         """
@@ -643,27 +682,30 @@ class ListView(RTKListView):
         Load the Usage Profile List View gtk.TreeModel().
 
         :param int module_id: the Revision ID to select the Usage Profiles for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         self._revision_id = module_id
+
+        _model = self.treeview.get_model()
+        _model.clear()
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['profile']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers['profile']
+
         _profile = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page(
+            tree=_profile, row=None)
 
-        _return = self._do_load_page(tree=_profile, row=None)
-        if _return:
-            _prompt = _(u"An error occured while loading the Usage "
-                        u"Profile for Revision ID {0:d} into the List "
-                        u"View.").format(self._revision_id)
-            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
-                                           'error')
-            if _dialog.do_run() == self._response_ok:
-                _dialog.do_destroy()
+        RTKListView.on_select(
+            self,
+            title=_(u"Usage Profile for Revision ID "
+                    u"{0:d}").format(self._revision_id),
+            error_code=_error_code,
+            user_msg=_user_msg,
+            debug_msg=_debug_msg)
 
-        return _return
+        return None
