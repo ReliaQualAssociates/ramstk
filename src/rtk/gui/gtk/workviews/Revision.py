@@ -79,7 +79,7 @@ class GeneralData(RTKWorkView):
         self._lst_handler_id.append(
             self.txtName.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 1))
+            'changed', self._on_focus_out, 1))
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 2))
 
@@ -276,7 +276,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id):
         """
         Load the Revision Work View General Data page gtk.Widget()s.
 
@@ -285,9 +285,8 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        self._revision_id = module_id
         _return = False
-
-        self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__

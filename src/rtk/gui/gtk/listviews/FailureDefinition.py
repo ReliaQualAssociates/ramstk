@@ -391,7 +391,7 @@ class ListView(RTKListView):
 
         return False
 
-    def _on_select_revision(self, **kwargs):
+    def _on_select_revision(self, module_id):
         """
         Load the Failure Definition List View gtk.TreeModel().
 
@@ -405,7 +405,7 @@ class ListView(RTKListView):
         """
         _return = False
 
-        self._revision_id = kwargs['module_id']
+        self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__

@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKWorkView Meta-Class Module."""
 
+from pubsub import pub
+
 # Import other RTK modules.
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
@@ -139,6 +141,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         """
 
         # Initialize private scalar attributes.
+        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -299,6 +302,8 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
                       u"per operating hour for "
                       u"the selected {0:s}.").format(self._module))
 
+        pub.subscribe(self._on_select_revision, 'selectedRevision')
+
     def _make_assessment_results_page(self):
         """
         Create the gtk.Notebook() page for displaying assessment results.
@@ -393,8 +398,11 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         _user_msg = kwargs['user_msg']
         _debug_msg = kwargs['debug_msg']
 
-        _workbook = self.get_parent().get_parent()
-        _workbook.set_title(_title)
+        try:
+            _workbook = self.get_parent().get_parent()
+            _workbook.set_title(_title)
+        except AttributeError:
+            pass
 
         if _error_code != 0:
             self._mdcRTK.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_debug_msg)
@@ -402,5 +410,16 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
                                            'error')
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _dialog.destroy()
+
+        return None
+
+    def _on_select_revision(self, **kwargs):
+        """
+        Respond to the `selectedRevision` signal from pypubsub.
+
+        :return: None
+        :rtype: None
+        """
+        self._revision_id = kwargs['module_id']
 
         return None

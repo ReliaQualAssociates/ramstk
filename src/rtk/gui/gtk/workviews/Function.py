@@ -303,22 +303,23 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Function Work View class gtk.Notebook() widgets.
 
-        :param int function_id: the Function ID of the selected/edited
-                                Function.
+        :param int module_id: the Function ID of the selected/edited Function.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        self._function_id = kwargs['module_id']
+        self._function_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'function']
         self._do_load_page()
 
         return _return
@@ -457,22 +458,23 @@ class AssessmentResults(RTKWorkView):
 
         return _hbx_page
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Function Work View class gtk.Notebook() widgets.
 
-        :param int function_id: the Function ID of the selected/edited
-                                Function.
+        :param int module_id: the Function ID of the selected/edited Function.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        self._function_id = kwargs['module_id']
+        self._function_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'function']
         self._do_load_page()
 
         return _return

@@ -70,7 +70,6 @@ class FMEA(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = None
         self._functional = bool(_module == 'FFMEA')
         self._item_hazard_rate = 0.0
 
@@ -492,8 +491,8 @@ class FFMEA(FMEA):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['ffmea']
+        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['ffmea'])
         _fmt_path = "/root/tree[@name='FFMEA']/column"
         _tooltip = _(u"Displays the Functional Failure Mode and Effects "
                      u"Analysis (FFMEA) for the currently selected "
@@ -901,14 +900,14 @@ class FFMEA(FMEA):
 
         return FMEA._make_page(self)
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to selectedFunction signal from pypubsub.
 
         :return: None
         :rtype: None
         """
-        self._function_id = kwargs['module_id']
+        self._function_id = module_id
 
         _model = self.treeview.get_model()
         _model.clear()
@@ -919,7 +918,7 @@ class FFMEA(FMEA):
             self._dtc_data_controller = self._mdcRTK.dic_controllers['ffmea']
 
         _fmea = self._dtc_data_controller.request_do_select_all(
-            self._function_id, functional=True)
+            parent_id=self._function_id, functional=True)
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
             tree=_fmea, row=None)
 
@@ -965,8 +964,8 @@ class DFMECA(FMEA):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['dfmeca']
+        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['dfmeca'])
         _fmt_path = "/root/tree[@name='DFMECA']/column"
         _tooltip = _(u"Displays the (Design) Failure Mode and Effects "
                      u"(and Criticality) Analysis [(D)FME(C)A] for the "
@@ -1269,7 +1268,7 @@ class DFMECA(FMEA):
         _return = False
 
         _tree = self._mdcRTK.dic_controllers['profile'].request_do_select_all(
-            module_id)
+            revision_id=module_id)
 
         _missions = _tree.children(0)
         for _mission in _missions:
@@ -1312,7 +1311,7 @@ class DFMECA(FMEA):
         _model.clear()
 
         _tree = self._dtc_data_controller.request_do_select_all(
-            self._hardware_id, functional=False)
+            parent_id=self._hardware_id, functional=False)
 
         _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
@@ -1771,8 +1770,9 @@ class DFMECA(FMEA):
         """
         self._hardware_id = kwargs['module_id']
         self._item_hazard_rate = self._mdcRTK.dic_controllers[
-            'hardware'].request_do_select(self._hardware_id,
-                                          'reliability').hazard_rate_logistics
+            'hardware'].request_do_select(
+                node_id=self._hardware_id,
+                table='reliability').hazard_rate_logistics
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
@@ -1780,14 +1780,14 @@ class DFMECA(FMEA):
             self._dtc_data_controller = self._mdcRTK.dic_controllers['dfmeca']
 
         _fmea = self._dtc_data_controller.request_do_select_all(
-            self._function_id, functional=True)
+            parent_id=self._hardware_id, functional=False)
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
             tree=_fmea, row=None)
 
         RTKWorkView.on_select(
             self,
             title=_(u"Analyzing Failure Modes for Hardware ID "
-                    u"{0:d}").format(self._parent_id),
+                    u"{0:d}").format(self._hardware_id),
             error_code=_error_code,
             user_msg=_user_msg,
             debug_msg=_debug_msg)

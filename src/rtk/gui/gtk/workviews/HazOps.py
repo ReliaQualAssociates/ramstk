@@ -52,7 +52,6 @@ class HazOps(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._revision_id = None
         self._hardware_id = None
         self._hazops_id = None
 
@@ -63,8 +62,8 @@ class HazOps(RTKWorkView):
         # Initialize public scalar attributes.
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['hazops']
+        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['hazops'])
         _fmt_path = "/root/tree[@name='HazOps']/column"
         _tooltip = _(u"Displays the HazOps Analysis for the currently "
                      u"selected Hardware item.")
@@ -174,7 +173,8 @@ class HazOps(RTKWorkView):
                                           model):
 
             _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazops_id)
-            _hazops = self._dtc_data_controller.request_do_select(_node_id)
+            _hazops = self._dtc_data_controller.request_do_select_all(
+                hardware_id=_node_id)
 
             if position == self._lst_col_order[3]:
                 _hazops.potential_hazard = model[path][self._lst_col_order[3]]
@@ -255,55 +255,58 @@ class HazOps(RTKWorkView):
         _tree = self._dtc_data_controller.request_do_select_children(
             self._hardware_id)
 
-        i = 1
-        for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
-            _entity = _node.data
-            _node_id = _node.identifier
+        if _tree is not None:
+            i = 1
+            for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
+                _entity = _node.data
+                _node_id = _node.identifier
 
-            _data = [
-                _entity.revision_id, _entity.hardware_id, _entity.hazard_id,
-                _entity.potential_hazard, _entity.potential_cause,
-                _entity.assembly_effect, _entity.assembly_severity,
-                _entity.assembly_probability, _entity.assembly_hri,
-                _entity.assembly_mitigation, _entity.assembly_severity_f,
-                _entity.assembly_probability_f, _entity.assembly_hri_f,
-                _entity.system_effect, _entity.system_severity,
-                _entity.system_probability, _entity.system_hri,
-                _entity.system_mitigation, _entity.system_severity_f,
-                _entity.system_probability_f, _entity.system_hri_f,
-                _entity.remarks, _entity.function_1, _entity.function_2,
-                _entity.function_3, _entity.function_4, _entity.function_5,
-                _entity.result_1, _entity.result_2, _entity.result_3,
-                _entity.result_4, _entity.result_5, _entity.user_blob_1,
-                _entity.user_blob_2, _entity.user_blob_3, _entity.user_float_1,
-                _entity.user_float_2, _entity.user_float_3, _entity.user_int_1,
-                _entity.user_int_2, _entity.user_int_3
-            ]
+                _data = [
+                    _entity.revision_id, _entity.hardware_id,
+                    _entity.hazard_id, _entity.potential_hazard,
+                    _entity.potential_cause, _entity.assembly_effect,
+                    _entity.assembly_severity, _entity.assembly_probability,
+                    _entity.assembly_hri, _entity.assembly_mitigation,
+                    _entity.assembly_severity_f,
+                    _entity.assembly_probability_f, _entity.assembly_hri_f,
+                    _entity.system_effect, _entity.system_severity,
+                    _entity.system_probability, _entity.system_hri,
+                    _entity.system_mitigation, _entity.system_severity_f,
+                    _entity.system_probability_f, _entity.system_hri_f,
+                    _entity.remarks, _entity.function_1, _entity.function_2,
+                    _entity.function_3, _entity.function_4, _entity.function_5,
+                    _entity.result_1, _entity.result_2, _entity.result_3,
+                    _entity.result_4, _entity.result_5, _entity.user_blob_1,
+                    _entity.user_blob_2, _entity.user_blob_3,
+                    _entity.user_float_1, _entity.user_float_2,
+                    _entity.user_float_3, _entity.user_int_1,
+                    _entity.user_int_2, _entity.user_int_3
+                ]
 
-            try:
-                _row = _model.append(None, _data)
-            except TypeError:
-                _error_code = 1
-                _user_msg = _(u"One or more HazOp line items had the wrong "
-                              u"data type in it's data package and is not "
-                              u"displayed in the HazOp analysis.")
-                _debug_msg = ("RTK ERROR: Data for HazOp ID {0:s} for "
-                              "Hardware ID {1:s} is the wrong type for one or "
-                              "more columns.".format(
-                                  str(_node.identifier),
-                                  str(self._hardware_id)))
-                _row = None
-            except ValueError:
-                _error_code = 1
-                _user_msg = _(u"One or more HazOp line items was missing some "
-                              u"of it's data and is not displayed in the "
-                              u"HazOp analysis.")
-                _debug_msg = ("RTK ERROR: Too few fields for HazOp ID {0:s} "
-                              "for Hardware ID {1:s}.".format(
-                                  str(_node.identifier),
-                                  str(self._hardware_id)))
+                try:
+                    _row = _model.append(None, _data)
+                except TypeError:
+                    _error_code = 1
+                    _user_msg = _(u"One or more HazOp line items had the "
+                                  u"wrong data type in it's data package and "
+                                  u"is not displayed in the HazOp analysis.")
+                    _debug_msg = ("RTK ERROR: Data for HazOp ID {0:s} for "
+                                  "Hardware ID {1:s} is the wrong type for "
+                                  "one or more columns.".format(
+                                      str(_node.identifier),
+                                      str(self._hardware_id)))
+                    _row = None
+                except ValueError:
+                    _error_code = 1
+                    _user_msg = _(u"One or more HazOp line items was missing "
+                                  u"some of it's data and is not displayed in "
+                                  u"the HazOp analysis.")
+                    _debug_msg = ("RTK ERROR: Too few fields for HazOp ID "
+                                  "{0:s} for Hardware ID {1:s}.".format(
+                                      str(_node.identifier),
+                                      str(self._hardware_id)))
 
-            i += 1
+                i += 1
 
         return (_error_code, _user_msg, _debug_msg)
 
@@ -330,9 +333,9 @@ class HazOps(RTKWorkView):
             _row = _model.iter_next(_row)
 
         if not _return:
-            _nodes = self._dtc_data_controller.request_do_select_children(
+            _tree = self._dtc_data_controller.request_do_select_children(
                 self._hardware_id)
-            self._do_load_tree(_nodes)
+            self._do_load_tree(_tree)
 
         return _return
 
@@ -533,16 +536,20 @@ class HazOps(RTKWorkView):
 
         return _return
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to the `selectedHardware` signal from pypubsub.
 
         :return: None
         :rtype: None
         """
-        self._hardware_id = kwargs['module_id']
+        self._hardware_id = module_id
 
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['hazop']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers['hazops']
+            self._dtc_data_controller.request_do_select_all(
+                revision_id=self._revision_id)
+
         (_error_code, _user_msg, _debug_msg) = self._do_load_page()
 
         RTKWorkView.on_select(

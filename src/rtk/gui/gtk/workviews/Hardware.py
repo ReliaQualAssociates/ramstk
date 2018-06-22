@@ -893,7 +893,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Hardware Work View class gtk.Notebook() widgets.
 
@@ -904,11 +904,14 @@ class GeneralData(RTKWorkView):
         """
         _return = False
 
-        self._hardware_id = kwargs['module_id']
+        self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'hardware']
+
         self._do_load_page()
 
         return _return
@@ -1837,7 +1840,7 @@ class AssessmentInputs(RTKWorkView):
 
         return _return
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the hardware assessment input work view widgets.
 
@@ -1848,11 +1851,14 @@ class AssessmentInputs(RTKWorkView):
         """
         _return = False
 
-        self._hardware_id = kwargs['module_id']
+        self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'hardware']
+
         self._do_load_page()
 
         return _return
@@ -2483,7 +2489,7 @@ class AssessmentResults(RTKWorkView):
 
         return _hbox
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Hardware Work View class gtk.Notebook() widgets.
 
@@ -2494,11 +2500,14 @@ class AssessmentResults(RTKWorkView):
         """
         _return = False
 
-        self._hardware_id = kwargs['module_id']
+        self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'hardware']
+
         self._do_load_page()
 
         return _return

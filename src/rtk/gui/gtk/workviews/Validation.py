@@ -228,7 +228,7 @@ class GeneralData(RTKWorkView):
                                   self.txtStartDate)
 
         self._lst_handler_id.append(self.txtTask.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 0))
+            'changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
             self.cmbTaskType.connect('changed', self._on_combo_changed, 1))
         self._lst_handler_id.append(
@@ -244,10 +244,10 @@ class GeneralData(RTKWorkView):
             self.txtMaxAcceptable.connect('changed', self._on_focus_out, 6))
         self._lst_handler_id.append(
             self.txtVarAcceptable.connect('changed', self._on_focus_out, 7))
-        self.txtStartDate.connect('changed', self._on_focus_out, None, 8)
+        self.txtStartDate.connect('changed', self._on_focus_out, 8)
         self._lst_handler_id.append(
             self.txtStartDate.connect('changed', self._on_focus_out, 8))
-        self.txtEndDate.connect('changed', self._on_focus_out, None, 9)
+        self.txtEndDate.connect('changed', self._on_focus_out, 9)
         self._lst_handler_id.append(
             self.txtEndDate.connect('changed', self._on_focus_out, 9))
         self._lst_handler_id.append(
@@ -440,7 +440,7 @@ class GeneralData(RTKWorkView):
         _return = False
 
         (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean,
-         _time_ul) = self._dtc_data_controller.request_do_calculate_program()
+         _time_ul) = self._dtc_data_controller.request_do_calculate_all()
 
         self.txtProjectCostLL.set_text(str(self.fmt.format(_cost_ll)))
         self.txtProjectCost.set_text(str(self.fmt.format(_cost_mean)))
@@ -508,7 +508,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _do_set_revision(self, **kwargs):
+    def _do_set_revision(self, module_id):
         """
         Set the revision ID attribute when a Revision is selected.
 
@@ -516,7 +516,7 @@ class GeneralData(RTKWorkView):
         :return: None
         :rtype: None
         """
-        self._revision_id = kwargs['module_id']
+        self._revision_id = module_id
 
         return None
 
@@ -927,14 +927,14 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Validation Work View class gtk.Notebook() widgets.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._validation_id = kwargs['module_id']
+        self._validation_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
@@ -1024,6 +1024,7 @@ class BurndownCurve(RTKWorkView):
         self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
+        pub.subscribe(self._on_select, 'selectedValidation')
         pub.subscribe(self._do_request_plot, 'calculatedProgram')
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
@@ -1036,27 +1037,6 @@ class BurndownCurve(RTKWorkView):
         :rtype: bool
         """
         _return = False
-
-        _y_actual = self._dtc_data_controller.request_get_actual_burndown()
-
-        if _y_actual:
-            self.burndown.do_add_line(
-                x_values=_y_actual.keys(),
-                y_values=_y_actual.values(),
-                marker='o')
-
-        else:
-            _prompt = _(u"Actual program status information is not "
-                        u"available.  You must calculate the program to make "
-                        u"this information available for plotting.")
-            _dialog = rtk.RTKMessageDialog(
-                _prompt, self._dic_icons['important'], 'warning')
-            _response = _dialog.do_run()
-
-            if _response == gtk.RESPONSE_OK:
-                _dialog.do_destroy()
-
-            _return = True
 
         (_y_minimum, _y_average, _y_maximum
          ) = self._dtc_data_controller.request_get_planned_burndown()
@@ -1127,6 +1107,27 @@ class BurndownCurve(RTKWorkView):
                         patchB=Ellipse((2, -1), 0.5, 0.5),
                         relpos=(0.2, 0.5)))
 
+        _y_actual = self._dtc_data_controller.request_get_actual_burndown()
+
+        if _y_actual:
+            self.burndown.do_add_line(
+                x_values=_y_actual.keys(),
+                y_values=_y_actual.values(),
+                marker='o')
+
+        else:
+            _prompt = _(u"Actual program status information is not "
+                        u"available.  You must calculate the program to make "
+                        u"this information available for plotting.")
+            _dialog = rtk.RTKMessageDialog(
+                _prompt, self._dic_icons['important'], 'warning')
+            _response = _dialog.do_run()
+
+            if _response == gtk.RESPONSE_OK:
+                _dialog.do_destroy()
+
+            _return = True
+
         return _return
 
     def _do_request_calculate_all(self, __button):
@@ -1156,8 +1157,7 @@ class BurndownCurve(RTKWorkView):
         """
         _return = False
 
-        self._do_load_planned_burndown()
-        self._do_load_burndown_status()
+        self._do_load_page()
 
         self.burndown.do_make_title(_(u"Total Validation Effort"))
         self.burndown.do_make_labels(
@@ -1243,14 +1243,14 @@ class BurndownCurve(RTKWorkView):
 
         return _buttonbox
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Validation Work View class gtk.Notebook() widgets.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._validation_id = kwargs['module_id']
+        self._validation_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__

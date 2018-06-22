@@ -472,7 +472,6 @@ class ModuleView(RTKModuleView):
         :return: None
         :rtype: None
         """
-
         def _load_row(model, __path, row, self):
             """
             Load the row associated with the selected Validation task.
@@ -510,7 +509,7 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_select_revision(self, **kwargs):
+    def _on_select_revision(self, module_id):
         """
         Load the Validation Module View RTKTreeView().
 
@@ -520,13 +519,13 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._revision_id = kwargs['module_id']
+        self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['validation']
         _validations = self._dtc_data_controller.request_do_select_all(
-            self._revision_id)
+            revision_id=self._revision_id)
 
         _return = RTKModuleView.on_select_revision(self, tree=_validations)
         if _return:

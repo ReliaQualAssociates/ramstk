@@ -403,9 +403,11 @@ class ModuleView(RTKModuleView):
         """
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
-        _revisions = self._dtc_data_controller.request_do_select_all()
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'revision']
 
+        _revisions = self._dtc_data_controller.request_do_select_all()
         _return = RTKModuleView.on_select_revision(self, tree=_revisions)
         if _return:
             _prompt = _(u"An error occured while loading Revisions into the "

@@ -62,7 +62,6 @@ class PoF(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = None
         self._hardware_id = None
 
         # Initialize public dictionary attributes.
@@ -70,8 +69,8 @@ class PoF(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['pof']
+        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['pof'])
         _fmt_path = "/root/tree[@name='PoF']/column"
         _tooltip = _(u"Displays the Physics of Failure (PoF) Analysis for the "
                      u"currently selected hardware item.")
@@ -122,7 +121,7 @@ class PoF(RTKWorkView):
         _model.clear()
 
         _tree = self._dtc_data_controller.request_do_select_all(
-            self._hardware_id, functional=False)
+            parent_id=self._hardware_id, functional=False)
 
         _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
@@ -641,7 +640,7 @@ class PoF(RTKWorkView):
                 (self._mdcRTK.RTK_CONFIGURATION.RTK_MEASURABLE_PARAMETERS[
                     _item][1], ))
 
-        # Load the measureable parameter into the gtk.CellRendererCombo().
+        # Load the load history into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[7])
         _model.append(('', ))
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_LOAD_HISTORY:
@@ -766,7 +765,7 @@ class PoF(RTKWorkView):
 
         return _return
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to `selectedHardware` signal from pypubsub.
 
@@ -774,7 +773,7 @@ class PoF(RTKWorkView):
         :return: None
         :rtype: None
         """
-        self._hardware_id = kwargs['module_id']
+        self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
@@ -782,7 +781,7 @@ class PoF(RTKWorkView):
             self._dtc_data_controller = self._mdcRTK.dic_controllers['pof']
 
         _pof = self._dtc_data_controller.request_do_select_all(
-            self._function_id, functional=True)
+            parent_id=self._hardware_id, functional=False)
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
             tree=_pof, row=None)
 

@@ -549,7 +549,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Requirement Work View gtk.Notebook() widgets.
 
@@ -560,7 +560,7 @@ class GeneralData(RTKWorkView):
         """
         _return = False
 
-        self._requirement_id = kwargs['module_id']
+        self._requirement_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
@@ -1091,7 +1091,7 @@ class RequirementAnalysis(RTKWorkView):
 
         return _hpaned
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Requirement Analysis Work View gtk.Notebook() widgets.
 
@@ -1101,7 +1101,7 @@ class RequirementAnalysis(RTKWorkView):
         """
         _return = False
 
-        self._requirement_id = kwargs['module_id']
+        self._requirement_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__

@@ -80,8 +80,9 @@ class SimilarItem(RTKWorkView):
         # Initialize public scalar attributes.
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['similaritem']
+        _fmt_file = (
+            controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+            controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['similaritem'])
         _fmt_path = "/root/tree[@name='SimilarItem']/column"
         _tooltip = _(u"Displays the Similar Item Analysis for the currently "
                      u"selected Hardware item.")
@@ -893,7 +894,7 @@ class SimilarItem(RTKWorkView):
 
         return False
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to the `selectedHardware` signal from pypubsub.
 
@@ -901,7 +902,7 @@ class SimilarItem(RTKWorkView):
         :return: None
         :rtype: None
         """
-        self._parent_id = kwargs['module_id']
+        self._parent_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__

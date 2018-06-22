@@ -246,7 +246,7 @@ class ListView(RTKListView):
         _data = []
         _model = self.treeview.get_model()
 
-        _node = tree.nodes[SortedDict(_tree.nodes).keys()[0]]
+        _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
 
         try:
@@ -285,12 +285,12 @@ class ListView(RTKListView):
                 _return = True
 
         except AttributeError:
-            _row = None
+            _new_row = None
             _return = True
 
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_page(_child_tree, _new_row)
+        for _n in _tree.children(_node.identifier):
+            _child_tree = _tree.subtree(_n.identifier)
+            self._do_load_page(tree=_child_tree, row=_new_row)
 
         return _return
 
@@ -638,7 +638,7 @@ class ListView(RTKListView):
 
         return False
 
-    def _on_select_revision(self, **kwargs):
+    def _on_select_revision(self, module_id):
         """
         Load the Usage Profile List View gtk.TreeModel().
 
@@ -648,7 +648,7 @@ class ListView(RTKListView):
         """
         _return = False
 
-        self._revision_id = kwargs['module_id']
+        self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
@@ -656,7 +656,7 @@ class ListView(RTKListView):
         _profile = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
 
-        _return = self._do_load_page(self, tree=_profile, row=None)
+        _return = self._do_load_page(tree=_profile, row=None)
         if _return:
             _prompt = _(u"An error occured while loading the Usage "
                         u"Profile for Revision ID {0:d} into the List "
