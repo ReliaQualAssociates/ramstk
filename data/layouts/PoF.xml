@@ -1,38 +1,12 @@
 <!--
 -*- coding: utf-8 -*-
 
-      alt_format.xml is part of the RTK Project
+      PoF.xml is part of the RTK Project
 
       Copyright 2011-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
 
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
 <!-- This file contains information used by the RTK application to draw
@@ -40,7 +14,7 @@ various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
 <root>
-    <tree name="ALT">
+    <tree name="PoF">
         <column>
             <defaulttitle>Mode ID</defaulttitle>
             <usertitle>Mode ID</usertitle>
@@ -51,17 +25,17 @@ experience. -->
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Mechanism ID</defaulttitle>
-            <usertitle>Mechanism ID</usertitle>
-            <datatype>gint</datatype>
+            <defaulttitle>Description</defaulttitle>
+            <usertitle>Description</usertitle>
+            <datatype>gchararray</datatype>
             <position>1</position>
             <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <editable>1</editable>
+            <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Mechanism Description</defaulttitle>
-            <usertitle>Mechanism Description</usertitle>
+            <defaulttitle>End Effect</defaulttitle>
+            <usertitle>End Effect</usertitle>
             <datatype>gchararray</datatype>
             <position>2</position>
             <widget>text</widget>
@@ -69,53 +43,53 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Damaging Conditions</defaulttitle>
-            <usertitle>Damaging Conditions</usertitle>
+            <defaulttitle>Severity</defaulttitle>
+            <usertitle>Severity</usertitle>
             <datatype>gchararray</datatype>
             <position>3</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Damage Model</defaulttitle>
-            <usertitle>Damage Model</usertitle>
+            <defaulttitle>Mode Probability</defaulttitle>
+            <usertitle>Mode Probability</usertitle>
             <datatype>gchararray</datatype>
             <position>4</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
+				<column>
+				    <defaulttitle>Damage Model</defaulttitle>
+				    <usertitle>Damage Model</usertitle>
+				    <datatype>gchararray</datatype>
+				    <position>5</position>
+				    <widget>combo</widget>
+				    <editable>1</editable>
+				    <visible>1</visible>
+			  </column>
         <column>
-            <defaulttitle>Primary Measureable Parameter</defaulttitle>
-            <usertitle>Primary Measureable Parameter</usertitle>
-            <datatype>gchararray</datatype>
-            <position>5</position>
-            <widget>text</widget>
-            <editable>1</editable>
-            <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Secondary Measureable Parameter</defaulttitle>
-            <usertitle>Secondary Measureable Parameter</usertitle>
+            <defaulttitle>Measureable Parameter</defaulttitle>
+            <usertitle>Measureable Parameter</usertitle>
             <datatype>gchararray</datatype>
             <position>6</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Tertiary Measureable Parameter</defaulttitle>
-            <usertitle>Tertiary Measureable Parameter</usertitle>
+            <defaulttitle>Load History</defaulttitle>
+            <usertitle>Load History</usertitle>
             <datatype>gchararray</datatype>
             <position>7</position>
-            <widget>text</widget>
+            <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Mean Load History</defaulttitle>
-            <usertitle>Mean Load History</usertitle>
+            <defaulttitle>Boundary Conditions</defaulttitle>
+            <usertitle>Boundary Conditions</usertitle>
             <datatype>gchararray</datatype>
             <position>8</position>
             <widget>text</widget>
@@ -123,11 +97,20 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Required Boundary Conditions</defaulttitle>
-            <usertitle>Required Boundary Conditions</usertitle>
+            <defaulttitle>Priority</defaulttitle>
+            <usertitle>Priority</usertitle>
             <datatype>gchararray</datatype>
             <position>9</position>
-            <widget>text</widget>
+            <widget>spin</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Remarks</defaulttitle>
+            <usertitle>Remarks</usertitle>
+            <datatype>gchararray</datatype>
+            <position>10</position>
+            <widget>blob</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
