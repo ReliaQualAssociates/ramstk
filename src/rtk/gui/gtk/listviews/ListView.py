@@ -7,7 +7,7 @@
 """RTKListView Meta-Class Module."""
 
 # Import other RTK modules.
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import gobject, gtk
 from rtk.gui.gtk import rtk
 
 
@@ -73,7 +73,6 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _type = gobject.type_name(model.get_column_type(position))

@@ -7,6 +7,7 @@
 """Hazard Analysis Data Model."""
 
 from treelib import tree
+from treelib.exceptions import NodeIDAbsentError
 
 # Import other RTK modules.
 from rtk.modules import RTKDataModel
@@ -48,8 +49,8 @@ class HazardAnalysisDataModel(RTKDataModel):
         in the connected RTK Program database.  It then adds each to the
         HazardAnalysis data model treelib.Tree().
 
-        :param int revision_id: the Revision ID the Hazard Analysis are
-                                associated with.
+        :param int hardware_id: the Hardware ID the Hazards are associated
+                                with.
         :return: tree; the Tree() of RTKHazardAnalysis data models.
         :rtype: :class:`treelib.Tree`
         """
@@ -95,7 +96,12 @@ class HazardAnalysisDataModel(RTKDataModel):
                  (Hardware) ID.
         :rtype: list
         """
-        return self.tree.children(node_id)
+        try:
+            _children = self.tree.subtree(node_id)
+        except NodeIDAbsentError:
+            _children = None
+
+        return _children
 
     def do_insert(self, **kwargs):
         """
