@@ -6,9 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKWorkBook Module."""
 
-# Import modules for localization support.
-import gettext
-
 from pubsub import pub
 
 # Import other RTK modules.
@@ -24,8 +21,7 @@ from rtk.gui.gtk.workviews import wvwRevisionGD, wvwRevisionAR
 from rtk.gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
 from rtk.gui.gtk.workviews import wvwHardwareGD, wvwHardwareAI, wvwHardwareAR
 from rtk.gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
-
-_ = gettext.gettext
+from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
 class WorkBook(RTKBook):  # pylint: disable=R0904
@@ -101,6 +97,8 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
 
         self._on_module_change(module='revision')
 
+        self.connect('window_state_event', self._on_window_state_event)
+
         self.add(self.notebook)
         self.show_all()
 
@@ -121,3 +119,21 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
             self.notebook.insert_page(_workspace, _workspace.hbx_tab_label, -1)
 
         return _return
+
+    def _on_window_state_event(self, window, event):
+        """
+        Iconify or deiconify all three books together.
+
+        :return: None
+        :rtype: None
+        """
+        if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
+            for _window in ['listbook', 'modulebook', 'workbook']:
+                self._mdcRTK.dic_books[_window].iconify()
+        elif event.new_window_state == 0:
+            for _window in ['listbook', 'modulebook', 'workbook']:
+                self._mdcRTK.dic_books[_window].deiconify()
+        elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            window.maximize()
+
+        return None

@@ -8,9 +8,6 @@
 
 import sys
 
-# Import modules for localization support.
-import gettext
-
 from pubsub import pub
 
 # Import modules required for the GUI.
@@ -37,8 +34,7 @@ from rtk.gui.gtk.moduleviews import mvwHardware
 from rtk.gui.gtk.moduleviews import mvwValidation
 from rtk.gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
     Options
-
-_ = gettext.gettext
+from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
 class ModuleBook(RTKBook):  # pylint: disable=R0904
@@ -134,6 +130,8 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _vbox.pack_start(self._make_toolbar(), expand=False, fill=False)
         _vbox.pack_start(self.notebook, expand=True, fill=True)
         _vbox.pack_start(self.statusbar, expand=False, fill=False)
+
+        self.connect('window_state_event', self._on_window_state_event)
 
         self.add(_vbox)
 
@@ -460,6 +458,24 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         pub.sendMessage('mvwSwitchedPage', module=_module)
 
         return False
+
+    def _on_window_state_event(self, window, event):
+        """
+        Iconify or deiconify all three books together.
+
+        :return: None
+        :rtype: None
+        """
+        if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
+            for _window in ['listbook', 'modulebook', 'workbook']:
+                self._mdcRTK.dic_books[_window].iconify()
+        elif event.new_window_state == 0:
+            for _window in ['listbook', 'modulebook', 'workbook']:
+                self._mdcRTK.dic_books[_window].deiconify()
+        elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            window.maximize()
+
+        return None
 
     def _request_save_project(self, __widget, end=False):
         """

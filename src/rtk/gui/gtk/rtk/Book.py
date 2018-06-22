@@ -4,12 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTK Book.
-
-This module contains the base class for all the RTK books.  It provides the
-basis for the RTKListBook, RTKModuleBook, and RTKWorkBook.
-"""
+"""The Base RTK Book."""
 
 import sys
 
@@ -45,7 +40,6 @@ def destroy(__widget, __event=None):
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
-
     gtk.main_quit()
 
     return False
@@ -53,8 +47,10 @@ def destroy(__widget, __event=None):
 
 class RTKBook(gtk.Window):  # pylint: disable=R0904
     """
-    This is the base view for the pyGTK multiple window interface List Book,
-    Module Book, and Work Book.  Attributes of the RTKBook are:
+    The base view for the pyGTK multiple window interface Books.
+
+    This is the base class for the List Book, Module Book, and Work Book.
+    Attributes of the RTKBook are:
 
     :ivar list _lst_handler_id:
     :ivar _mdcRTK: the RTK master data controller.
@@ -84,7 +80,6 @@ class RTKBook(gtk.Window):  # pylint: disable=R0904
         :param controller: the RTK master data controller.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         gtk.Window.__init__(self)
 
         # Initialize private dictionary attributes.
@@ -118,15 +113,13 @@ class RTKBook(gtk.Window):  # pylint: disable=R0904
 
         self.connect('delete_event', destroy)
 
-    def _on_module_change(self):
+    def _on_module_change(self, module=''):  # pylint: disable=unused-argument
         """
-        Method to load the correct List Views for the RTK module that was
-        selected in the Module Book.
+        Load the correct Views for the RTK module selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # We remove any existing pages from the Book.  New pages will be added

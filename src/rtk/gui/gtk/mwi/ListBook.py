@@ -6,9 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTK List Book Module."""
 
-# Import modules for localization support.
-import gettext
-
 from pubsub import pub
 
 # Import other RTK modules.
@@ -17,8 +14,7 @@ from rtk.gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition, \
     lvwStakeholder
 from rtk.gui.gtk.matrixviews import FunctionHardware, RequirementHardware, \
     RequirementSoftware, RequirementValidation
-
-_ = gettext.gettext
+from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
 class ListBook(RTKBook):  # pylint: disable=R0904
@@ -90,6 +86,8 @@ class ListBook(RTKBook):  # pylint: disable=R0904
         else:
             self.notebook.set_tab_pos(self._bottom_tab)
 
+        self.connect('window_state_event', self._on_window_state_event)
+
         self.add(self.notebook)
 
         self.show_all()
@@ -111,3 +109,21 @@ class ListBook(RTKBook):  # pylint: disable=R0904
             self.notebook.insert_page(_list, _list.hbx_tab_label, -1)
 
         return _return
+
+    def _on_window_state_event(self, window, event):
+        """
+        Iconify or deiconify all three books together.
+
+        :return: None
+        :rtype: None
+        """
+        if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
+            for _window in ['listbook', 'modulebook', 'workbook']:
+                self._mdcRTK.dic_books[_window].iconify()
+        elif event.new_window_state == 0:
+            for _window in ['listbook', 'modulebook', 'workbook']:
+                self._mdcRTK.dic_books[_window].deiconify()
+        elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
+            window.maximize()
+
+        return None
