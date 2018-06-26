@@ -196,9 +196,12 @@ class GeneralData(RTKWorkView):
         self.cmbRequirementType.handler_block(self._lst_handler_id[2])
         _types = self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE
         self.cmbRequirementType.set_active(0)
+        _idx = 1
         for _key, _type in _types.iteritems():
             if _type[1] == _requirement.requirement_type:
-                self.cmbRequirementType.set_active(int(_key))
+                self.cmbRequirementType.set_active(_idx)
+            else:
+                _idx += 1
         self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
 
         self.txtSpecification.handler_block(self._lst_handler_id[4])
@@ -407,7 +410,7 @@ class GeneralData(RTKWorkView):
                 _index = 11
                 _prefix = _model.get_value(_row, 0)
                 _text = _model.get_value(_row, 1)
-                _requirement.requirement_type = _text
+                _requirement.requirement_type = str(_text)
                 _code = _requirement.create_code(_prefix)
                 self.txtCode.set_text(str(_requirement.requirement_code))
             elif index == 7:

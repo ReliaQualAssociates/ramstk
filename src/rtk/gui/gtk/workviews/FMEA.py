@@ -117,7 +117,7 @@ class FMEA(RTKWorkView):
 
         return _model
 
-    def _do_refresh_view(self, row):
+    def _do_refresh_view(self, model, path, row):
         """
         Refresh the (D)FME(C)A Work View after a successful calculation.
 
@@ -126,43 +126,24 @@ class FMEA(RTKWorkView):
         """
         _return = False
 
-        _model = self.treeview.get_model()
+        #_model = self.treeview.get_model()
 
         if row is not None:
             if self._functional:
-                _node_id = _model.get_value(row, 18)
+                _node_id = model.get_value(row, 18)
             else:
-                _node_id = _model.get_value(row, 43)
+                _node_id = model.get_value(row, 43)
             _level = self._get_level(_node_id)
             _node = self._dtc_data_controller.request_do_select(_node_id)
 
             if _level == 'mode':
-                _model.set_value(row, self._lst_col_order[17],
+                model.set_value(row, self._lst_col_order[17],
                                  _node.mode_hazard_rate)
-                _model.set_value(row, self._lst_col_order[19],
+                model.set_value(row, self._lst_col_order[19],
                                  _node.mode_criticality)
             elif _level == 'mechanism' or _level == 'cause':
-                _model.set_value(row, self._lst_col_order[24], _node.rpn)
-                _model.set_value(row, self._lst_col_order[37], _node.rpn_new)
-
-            if _model.iter_has_child(row) and _level != 'cause':
-                _row = _model.iter_children(row)
-            else:
-                _row = _model.iter_next(row)
-
-            self._do_refresh_view(_row)
-
-        # For hardware FMECA needs to display the item criticality.
-        if not self._functional:
-            _str_item_crit = ""
-            _dic_item_crit = self._dtc_data_controller.request_item_criticality(
-            )
-            for _key in _dic_item_crit:
-                _str_item_crit = (_str_item_crit + _(u"{0:s}: {1:g}\n").format(
-                    _key, _dic_item_crit[_key]))
-
-            self.txtItemCriticality.do_get_buffer().set_text(
-                str(_str_item_crit))
+                model.set_value(row, self._lst_col_order[24], _node.rpn)
+                model.set_value(row, self._lst_col_order[37], _node.rpn_new)
 
         return _return
 
@@ -179,14 +160,23 @@ class FMEA(RTKWorkView):
         _criticality = self.chkCriticality.get_active()
         _rpn = self.chkRPN.get_active()
         if not self._dtc_data_controller.request_do_calculate(
-                self._item_hazard_rate, criticality=_criticality, rpn=_rpn):
+                None, item_hr=self._item_hazard_rate, criticality=_criticality, rpn=_rpn):
             _model = self.treeview.get_model()
-            _row = _model.get_iter_root()
-            while _row is not None:
-                self._do_refresh_view(_row)
-                _row = _model.iter_next(_row)
+            _model.foreach(self._do_refresh_view)
         else:
             _return = True
+
+        # For hardware FMECA needs to display the item criticality.
+        if not self._functional:
+            _str_item_crit = ""
+            _dic_item_crit = self._dtc_data_controller.request_item_criticality(
+            )
+            for _key in _dic_item_crit:
+                _str_item_crit = (_str_item_crit + _(u"{0:s}: {1:g}\n").format(
+                    _key, _dic_item_crit[_key]))
+
+            self.txtItemCriticality.do_get_buffer().set_text(
+                str(_str_item_crit))
 
         return _return
 
@@ -668,7 +658,6 @@ class FFMEA(FMEA):
 
         _data = []
         _model = self.treeview.get_model()
-        _model.clear()
 
         _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
@@ -1308,10 +1297,6 @@ class DFMECA(FMEA):
 
         _data = []
         _model = self.treeview.get_model()
-        _model.clear()
-
-        _tree = self._dtc_data_controller.request_do_select_all(
-            parent_id=self._hardware_id, functional=False)
 
         _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
@@ -1587,8 +1572,12 @@ class DFMECA(FMEA):
         """
         Retrieve the integer value of the RPN Occurence score based on name.
 
-        :param str,int occurrence: the noun name given to the RPN Occurence score (score=True) or the integer value of the RPN Occurrence score.
-        :keyword bool score: indicates whether to return the RPN Occurrence score for passed noun name (default) or the noun name of the passed RPN Occurence score.
+        :param str,int occurrence: the noun name given to the RPN Occurence
+                                   score (score=True) or the integer value of
+                                   the RPN Occurrence score.
+        :keyword bool score: indicates whether to return the RPN Occurrence
+                             score for passed noun name (default) or the noun
+                             name of the passed RPN Occurence score.
         :return: _rpn_occurrence
         :rtype: int or str depending on value of keyword score.
         """
@@ -1726,7 +1715,7 @@ class DFMECA(FMEA):
         _model = self._get_cell_model(self._lst_col_order[25])
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_CATEGORY:
             _model.append(
-                (self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_CATEGORY[_item][0],
+                (self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_CATEGORY[_item][1],
                  ))
 
         # Load the users into the gtk.CellRendererCombo().
@@ -1773,6 +1762,9 @@ class DFMECA(FMEA):
             'hardware'].request_do_select(
                 node_id=self._hardware_id,
                 table='reliability').hazard_rate_logistics
+
+        _model = self.treeview.get_model()
+        _model.clear()
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__

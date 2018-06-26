@@ -387,7 +387,7 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: _attributes
         :rtype: dict
         """
-        _hr_multiplier = kwargs['hr_multiplier']
+        _hr_multiplier = float(kwargs['hr_multiplier'])
         _attributes = self.tree.get_node(node_id).data
 
         if _attributes is not None:

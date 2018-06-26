@@ -409,7 +409,9 @@ class ListView(RTKListView):
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['definition']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers['definition']
+
         _definitions = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
 

@@ -118,10 +118,6 @@ class PoF(RTKWorkView):
 
         _data = []
         _model = self.treeview.get_model()
-        _model.clear()
-
-        _tree = self._dtc_data_controller.request_do_select_all(
-            parent_id=self._hardware_id, functional=False)
 
         _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
@@ -342,7 +338,8 @@ class PoF(RTKWorkView):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _entity = self._dtc_data_controller.request_select(model[path][12])
+            _entity = self._dtc_data_controller.request_do_select(
+                model[path][12])
 
             if _entity.is_opload:
                 _entity.description = model[path][self._lst_col_order[1]]
@@ -774,6 +771,9 @@ class PoF(RTKWorkView):
         :rtype: None
         """
         self._hardware_id = module_id
+
+        _model = self.treeview.get_model()
+        _model.clear()
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__

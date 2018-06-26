@@ -14,7 +14,7 @@ TMP_DIR = VIRTUAL_ENV + '/tmp'
 DATA_DIR = TMP_DIR + '/data'
 LOG_DIR = TMP_DIR + '/logs'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.rtk'
-TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB2.rtk'
+TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.rtk'
 TEST_PROGRAM_DB_URI = 'sqlite:///' + TEST_PROGRAM_DB_PATH
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
 

@@ -7,6 +7,7 @@
 """The RTKBaseView Module."""
 
 import locale
+from sortedcontainers import SortedDict
 
 # Import other RTK Widget classes.
 from rtk.gui.gtk.rtk import RTKTreeView
@@ -246,7 +247,24 @@ class RTKBaseView(object):
         try:
             _return = self.treeview.do_load_tree(_tree)
         except AttributeError:
-            print self.treeview
+            for _node in _tree.nodes.values()[1:]:
+                _entity = _node.data
+
+                _attributes = []
+                if _entity is not None:
+                    # For simple data models that return an RTK database table instance
+                    # for the data object, the first try statement will create the list
+                    # of attribute values.
+                    _temp = _entity.get_attributes()
+
+                    for _key in _temp:
+                        _attributes.append(_temp[_key])
+
+                try:
+                    _row = _model.append(_attributes[:2])
+                except ValueError:
+                    _row = None
+                    _return = True
 
         _row = _model.get_iter_root()
         self.treeview.expand_all()

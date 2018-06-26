@@ -329,7 +329,7 @@ class Model(object):
         # Load dictionaries from RTKCategory.                                 #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKCategory).\
-                filter(RTKCategory.category_id == 'action').all():
+                filter(RTKCategory.cat_type == 'action').all():
             _attributes = _record.get_attributes()
             configuration.RTK_ACTION_CATEGORY[_record.category_id] = (
                 _attributes['name'], _attributes['description'],

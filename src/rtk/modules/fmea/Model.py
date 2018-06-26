@@ -1186,11 +1186,16 @@ class FMEADataModel(RTKDataModel):
         _criticality = kwargs['criticality']
         _rpn = kwargs['rpn']
         _item_hr = kwargs['item_hr']
+        _error_code = 0
+        _msg = ''
 
         if _criticality:
-            return self._do_calculate_criticality(_item_hr)
-        elif _rpn:
-            return self._do_calculate_rpn()
+            (_error_code, _msg) = self._do_calculate_criticality(_item_hr)
+
+        if _rpn:
+            (_error_code, _msg) = self._do_calculate_rpn()
+
+        return (_error_code, _msg)
 
     def _do_calculate_criticality(self, item_hr):
         """
