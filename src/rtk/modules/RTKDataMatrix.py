@@ -168,7 +168,7 @@ class RTKDataMatrix(object):
                       'integers, not str.  This will be fixed when all the ' \
                       'RTK database tables are converted to return dicts ' \
                       'from the get_attributes() method.  Matrix {0:s} is ' \
-                      'not working.'.format(matrix_type)
+                      'not working.  See issue #59'.format(matrix_type)
 
             self.n_col += 1
 

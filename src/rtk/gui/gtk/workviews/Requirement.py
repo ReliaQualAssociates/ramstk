@@ -772,10 +772,10 @@ class RequirementAnalysis(RTKWorkView):
                 _requirement.q_verifiable_4 = self._lst_verifiable_a[4]
                 _requirement.q_verifiable_5 = self._lst_verifiable_a[5]
         except IndexError:
-            print(
-                "FIXME: Handle IndexError in "
-                "rtk.gui.gtk.workview.Requirement.RequirementAnalysis._do_toggle_cell "
-                "see issue #94.")
+            _debug_msg = ("RTK ERROR: No position {0:d} in Requirements "
+                          "Analysis question list for index {1:d}.").format(
+                              _position, index)
+            self._mdcRTK.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_debug_msg)
 
         return _return
 
@@ -1094,7 +1094,7 @@ class RequirementAnalysis(RTKWorkView):
 
         return _hpaned
 
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
+    def _on_select(self, module_id, **kwargs):
         """
         Load the Requirement Analysis Work View gtk.Notebook() widgets.
 
@@ -1102,13 +1102,10 @@ class RequirementAnalysis(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._requirement_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['requirement']
-        self._do_load_page()
 
-        return _return
+        return self._do_load_page(**kwargs)
