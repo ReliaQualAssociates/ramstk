@@ -7,6 +7,7 @@
 """The RTKBaseView Module."""
 
 import locale
+from sortedcontainers import SortedDict
 
 # Import other RTK Widget classes.
 from rtk.gui.gtk.rtk import RTKTreeView
@@ -101,8 +102,9 @@ class RTKBaseView(object):
                                                                     'bg']
                 _fg_color = controller.RTK_CONFIGURATION.RTK_COLORS[_module +
                                                                     'fg']
-                _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-                    '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE[_module]
+                _fmt_file = (
+                    controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+                    controller.RTK_CONFIGURATION.RTK_FORMAT_FILE[_module])
                 _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
 
                 self.treeview = RTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
@@ -232,7 +234,7 @@ class RTKBaseView(object):
 
         :param tree: the treelib Tree() that should be loaded into the View's
                      RTKTreeView.
-        :type tree: :py:class:`treelib.Tree`
+        :type tree: :class:`treelib.Tree`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -242,7 +244,27 @@ class RTKBaseView(object):
         _model = self.treeview.get_model()
         _model.clear()
 
-        _return = self.treeview.do_load_tree(_tree)
+        try:
+            _return = self.treeview.do_load_tree(_tree)
+        except AttributeError:
+            for _node in _tree.nodes.values()[1:]:
+                _entity = _node.data
+
+                _attributes = []
+                if _entity is not None:
+                    # For simple data models that return an RTK database table instance
+                    # for the data object, the first try statement will create the list
+                    # of attribute values.
+                    _temp = _entity.get_attributes()
+
+                    for _key in _temp:
+                        _attributes.append(_temp[_key])
+
+                try:
+                    _row = _model.append(_attributes[:2])
+                except ValueError:
+                    _row = None
+                    _return = True
 
         _row = _model.get_iter_root()
         self.treeview.expand_all()

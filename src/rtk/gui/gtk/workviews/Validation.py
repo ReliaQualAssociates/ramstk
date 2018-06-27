@@ -74,7 +74,7 @@ class GeneralData(RTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Validation package.
 
@@ -228,52 +228,46 @@ class GeneralData(RTKWorkView):
                                   self.txtStartDate)
 
         self._lst_handler_id.append(self.txtTask.do_get_buffer().connect(
-            'changed', self._on_focus_out, None, 0))
+            'changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
             self.cmbTaskType.connect('changed', self._on_combo_changed, 1))
         self._lst_handler_id.append(
-            self.txtSpecification.connect('focus-out-event',
-                                          self._on_focus_out, 2))
+            self.txtSpecification.connect('changed', self._on_focus_out, 2))
         self._lst_handler_id.append(
             self.cmbMeasurementUnit.connect('changed', self._on_combo_changed,
                                             3))
         self._lst_handler_id.append(
-            self.txtMinAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 4))
+            self.txtMinAcceptable.connect('changed', self._on_focus_out, 4))
         self._lst_handler_id.append(
-            self.txtMeanAcceptable.connect('focus-out-event',
-                                           self._on_focus_out, 5))
+            self.txtMeanAcceptable.connect('changed', self._on_focus_out, 5))
         self._lst_handler_id.append(
-            self.txtMaxAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 6))
+            self.txtMaxAcceptable.connect('changed', self._on_focus_out, 6))
         self._lst_handler_id.append(
-            self.txtVarAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 7))
-        self.txtStartDate.connect('changed', self._on_focus_out, None, 8)
+            self.txtVarAcceptable.connect('changed', self._on_focus_out, 7))
+        self.txtStartDate.connect('changed', self._on_focus_out, 8)
         self._lst_handler_id.append(
-            self.txtStartDate.connect('focus-out-event', self._on_focus_out,
-                                      8))
-        self.txtEndDate.connect('changed', self._on_focus_out, None, 9)
+            self.txtStartDate.connect('changed', self._on_focus_out, 8))
+        self.txtEndDate.connect('changed', self._on_focus_out, 9)
         self._lst_handler_id.append(
-            self.txtEndDate.connect('focus-out-event', self._on_focus_out, 9))
+            self.txtEndDate.connect('changed', self._on_focus_out, 9))
         self._lst_handler_id.append(
             self.spnStatus.connect('value-changed', self._on_value_changed,
                                    10))
         self._lst_handler_id.append(
-            self.txtMinTime.connect('focus-out-event', self._on_focus_out, 11))
+            self.txtMinTime.connect('changed', self._on_focus_out, 11))
         self._lst_handler_id.append(
-            self.txtExpTime.connect('focus-out-event', self._on_focus_out, 12))
+            self.txtExpTime.connect('changed', self._on_focus_out, 12))
         self._lst_handler_id.append(
-            self.txtMaxTime.connect('focus-out-event', self._on_focus_out, 13))
+            self.txtMaxTime.connect('changed', self._on_focus_out, 13))
         self._lst_handler_id.append(
-            self.txtMinCost.connect('focus-out-event', self._on_focus_out, 14))
+            self.txtMinCost.connect('changed', self._on_focus_out, 14))
         self._lst_handler_id.append(
-            self.txtExpCost.connect('focus-out-event', self._on_focus_out, 15))
+            self.txtExpCost.connect('changed', self._on_focus_out, 15))
         self._lst_handler_id.append(
-            self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
+            self.txtMaxCost.connect('changed', self._on_focus_out, 16))
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_general_data_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         self.txtCode.hide()
@@ -284,6 +278,121 @@ class GeneralData(RTKWorkView):
         pub.subscribe(self._on_select, 'selectedValidation')
         pub.subscribe(self._on_select, 'calculatedValidation')
         pub.subscribe(self._on_edit, 'mvwEditedValidation')
+
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Load the Validation General Data page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _validation = self._dtc_data_controller.request_do_select(
+            self._validation_id)
+
+        self.txtID.set_text(str(_validation.validation_id))
+
+        _buffer = self.txtTask.do_get_buffer()
+        _buffer.handler_block(self._lst_handler_id[0])
+        _buffer.set_text(_validation.description)
+        _buffer.handler_unblock(self._lst_handler_id[0])
+
+        self.cmbTaskType.handler_block(self._lst_handler_id[1])
+        _types = self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE
+        _index = 1
+        self.cmbTaskType.set_active(0)
+        for _key, _type in _types.iteritems():
+            if _type[1] == _validation.task_type:
+                self.cmbTaskType.set_active(_index)
+            else:
+                _index += 1
+        self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
+
+        self.txtSpecification.handler_block(self._lst_handler_id[2])
+        self.txtSpecification.set_text(str(_validation.task_specification))
+        self.txtSpecification.handler_unblock(self._lst_handler_id[2])
+
+        self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
+        _units = self._mdcRTK.RTK_CONFIGURATION.RTK_MEASUREMENT_UNITS
+        self.cmbMeasurementUnit.set_active(0)
+        for _key, _unit in _units.iteritems():
+            if _unit[1] == _validation.measurement_unit:
+                self.cmbMeasurementUnit.set_active(int(_key))
+        self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
+
+        self.txtMinAcceptable.handler_block(self._lst_handler_id[4])
+        self.txtMinAcceptable.set_text(
+            str(self.fmt.format(_validation.acceptable_minimum)))
+        self.txtMinAcceptable.handler_unblock(self._lst_handler_id[4])
+
+        self.txtMeanAcceptable.handler_block(self._lst_handler_id[5])
+        self.txtMeanAcceptable.set_text(
+            str(self.fmt.format(_validation.acceptable_mean)))
+        self.txtMeanAcceptable.handler_unblock(self._lst_handler_id[5])
+
+        self.txtMaxAcceptable.handler_block(self._lst_handler_id[6])
+        self.txtMaxAcceptable.set_text(
+            str(self.fmt.format(_validation.acceptable_maximum)))
+        self.txtMaxAcceptable.handler_unblock(self._lst_handler_id[6])
+
+        self.txtVarAcceptable.handler_block(self._lst_handler_id[7])
+        self.txtVarAcceptable.set_text(
+            str(self.fmt.format(_validation.acceptable_variance)))
+        self.txtVarAcceptable.handler_unblock(self._lst_handler_id[7])
+
+        self.txtStartDate.handler_block(self._lst_handler_id[8])
+        _date_start = datetime.strftime(_validation.date_start, '%Y-%m-%d')
+        self.txtStartDate.set_text(_date_start)
+        self.txtStartDate.handler_unblock(self._lst_handler_id[8])
+
+        self.txtEndDate.handler_block(self._lst_handler_id[9])
+        _date_end = datetime.strftime(_validation.date_end, '%Y-%m-%d')
+        self.txtEndDate.set_text(_date_end)
+        self.txtEndDate.handler_unblock(self._lst_handler_id[9])
+
+        self.spnStatus.handler_block(self._lst_handler_id[10])
+        self.spnStatus.set_value(_validation.status)
+        self.spnStatus.handler_unblock(self._lst_handler_id[10])
+
+        self.txtMinTime.handler_block(self._lst_handler_id[11])
+        self.txtMinTime.set_text(
+            str(self.fmt.format(_validation.time_minimum)))
+        self.txtMinTime.handler_unblock(self._lst_handler_id[11])
+
+        self.txtExpTime.handler_block(self._lst_handler_id[12])
+        self.txtExpTime.set_text(
+            str(self.fmt.format(_validation.time_average)))
+        self.txtExpTime.handler_unblock(self._lst_handler_id[12])
+
+        self.txtMaxTime.handler_block(self._lst_handler_id[13])
+        self.txtMaxTime.set_text(
+            str(self.fmt.format(_validation.time_maximum)))
+        self.txtMaxTime.handler_unblock(self._lst_handler_id[13])
+
+        self.txtMinCost.handler_block(self._lst_handler_id[14])
+        self.txtMinCost.set_text(
+            str(self.fmt.format(_validation.cost_minimum)))
+        self.txtMinCost.handler_unblock(self._lst_handler_id[14])
+
+        self.txtExpCost.handler_block(self._lst_handler_id[15])
+        self.txtExpCost.set_text(
+            str(self.fmt.format(_validation.cost_average)))
+        self.txtExpCost.handler_unblock(self._lst_handler_id[15])
+
+        self.txtMaxCost.handler_block(self._lst_handler_id[16])
+        self.txtMaxCost.set_text(
+            str(self.fmt.format(_validation.cost_maximum)))
+        self.txtMaxCost.handler_unblock(self._lst_handler_id[16])
+
+        self.txtMeanTimeLL.set_text(str(self.fmt.format(_validation.time_ll)))
+        self.txtMeanTime.set_text(str(self.fmt.format(_validation.time_mean)))
+        self.txtMeanTimeUL.set_text(str(self.fmt.format(_validation.time_ul)))
+        self.txtMeanCostLL.set_text(str(self.fmt.format(_validation.cost_ll)))
+        self.txtMeanCost.set_text(str(self.fmt.format(_validation.cost_mean)))
+        self.txtMeanCostUL.set_text(str(self.fmt.format(_validation.cost_ul)))
+
+        return _return
 
     def _do_request_calculate(self, __button):
         """
@@ -299,7 +408,7 @@ class GeneralData(RTKWorkView):
         _error_code = 0
         _msg = ''
 
-        if self._dtc_data_controller.request_calculate(self._validation_id):
+        if self._dtc_data_controller.request_do_calculate(self._validation_id):
             _error_code = 1
             _msg = 'Error calculating Validation activity cost and time.'
 
@@ -319,7 +428,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _do_request_calculate_program(self, __button):
+    def _do_request_calculate_all(self, __button):
         """
         Request to calculate program cost and time.
 
@@ -331,7 +440,7 @@ class GeneralData(RTKWorkView):
         _return = False
 
         (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean,
-         _time_ul) = self._dtc_data_controller.request_calculate_program()
+         _time_ul) = self._dtc_data_controller.request_do_calculate_all()
 
         self.txtProjectCostLL.set_text(str(self.fmt.format(_cost_ll)))
         self.txtProjectCost.set_text(str(self.fmt.format(_cost_mean)))
@@ -351,7 +460,7 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._validation_id)
+        return self._dtc_data_controller.request_do_update(self._validation_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -362,10 +471,10 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = self._dtc_data_controller.request_update_all()
+        _return = self._dtc_data_controller.request_do_update_all()
 
         if not _return:
-            _return = self._dtc_data_controller.request_update_status()
+            _return = self._dtc_data_controller.request_do_update_status()
 
         return _return
 
@@ -411,7 +520,7 @@ class GeneralData(RTKWorkView):
 
         return None
 
-    def _make_general_data_page(self):
+    def _make_page(self):
         """
         Make the Validation class gtk.Notebook() general data page.
 
@@ -550,7 +659,7 @@ class GeneralData(RTKWorkView):
 
         return _hbox
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Validation class Work View.
 
@@ -569,13 +678,19 @@ class GeneralData(RTKWorkView):
               u"open RTK Program database.")
         ]
         _callbacks = [
-            self._do_request_calculate, self._do_request_calculate_program,
+            self._do_request_calculate, self._do_request_calculate_all,
             self._do_request_update, self._do_request_update_all
         ]
         _icons = ['calculate', 'calculate-all', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -600,7 +715,7 @@ class GeneralData(RTKWorkView):
         combo.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _validation = self._dtc_data_controller.request_select(
+            _validation = self._dtc_data_controller.request_do_select(
                 self._validation_id)
 
             if index == 1:
@@ -634,7 +749,7 @@ class GeneralData(RTKWorkView):
         """
         _return = False
 
-        _validation = self._dtc_data_controller.request_select(
+        _validation = self._dtc_data_controller.request_do_select(
             self._validation_id)
 
         if index == 2:
@@ -717,7 +832,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_focus_out(self, entry, __event, index):
+    def _on_focus_out(self, entry, index):
         """
         Handle changes made in RTKEntry() and RTKTextView() widgets.
 
@@ -745,7 +860,7 @@ class GeneralData(RTKWorkView):
         entry.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _validation = self._dtc_data_controller.request_select(
+            _validation = self._dtc_data_controller.request_do_select(
                 self._validation_id)
 
             if index == 0:
@@ -812,127 +927,22 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, module_id, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Validation Work View class gtk.Notebook() widgets.
 
-        :param int validation_id: the Validation ID of the selected/edited
-                                  Validation.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._validation_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['validation']
-        _validation = self._dtc_data_controller.request_select(
-            self._validation_id)
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'validation']
 
-        self.txtID.set_text(str(_validation.validation_id))
-
-        _buffer = self.txtTask.do_get_buffer()
-        _buffer.handler_block(self._lst_handler_id[0])
-        _buffer.set_text(_validation.description)
-        _buffer.handler_unblock(self._lst_handler_id[0])
-
-        self.cmbTaskType.handler_block(self._lst_handler_id[1])
-        _types = self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE
-        _index = 1
-        self.cmbTaskType.set_active(0)
-        for _key, _type in _types.iteritems():
-            if _type[1] == _validation.task_type:
-                self.cmbTaskType.set_active(_index)
-            else:
-                _index += 1
-        self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
-
-        self.txtSpecification.handler_block(self._lst_handler_id[2])
-        self.txtSpecification.set_text(str(_validation.task_specification))
-        self.txtSpecification.handler_unblock(self._lst_handler_id[2])
-
-        self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
-        _units = self._mdcRTK.RTK_CONFIGURATION.RTK_MEASUREMENT_UNITS
-        self.cmbMeasurementUnit.set_active(0)
-        for _key, _unit in _units.iteritems():
-            if _unit[1] == _validation.measurement_unit:
-                self.cmbMeasurementUnit.set_active(int(_key))
-        self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
-
-        self.txtMinAcceptable.handler_block(self._lst_handler_id[4])
-        self.txtMinAcceptable.set_text(
-            str(self.fmt.format(_validation.acceptable_minimum)))
-        self.txtMinAcceptable.handler_unblock(self._lst_handler_id[4])
-
-        self.txtMeanAcceptable.handler_block(self._lst_handler_id[5])
-        self.txtMeanAcceptable.set_text(
-            str(self.fmt.format(_validation.acceptable_mean)))
-        self.txtMeanAcceptable.handler_unblock(self._lst_handler_id[5])
-
-        self.txtMaxAcceptable.handler_block(self._lst_handler_id[6])
-        self.txtMaxAcceptable.set_text(
-            str(self.fmt.format(_validation.acceptable_maximum)))
-        self.txtMaxAcceptable.handler_unblock(self._lst_handler_id[6])
-
-        self.txtVarAcceptable.handler_block(self._lst_handler_id[7])
-        self.txtVarAcceptable.set_text(
-            str(self.fmt.format(_validation.acceptable_variance)))
-        self.txtVarAcceptable.handler_unblock(self._lst_handler_id[7])
-
-        self.txtStartDate.handler_block(self._lst_handler_id[8])
-        _date_start = datetime.strftime(_validation.date_start, '%Y-%m-%d')
-        self.txtStartDate.set_text(_date_start)
-        self.txtStartDate.handler_unblock(self._lst_handler_id[8])
-
-        self.txtEndDate.handler_block(self._lst_handler_id[9])
-        _date_end = datetime.strftime(_validation.date_end, '%Y-%m-%d')
-        self.txtEndDate.set_text(_date_end)
-        self.txtEndDate.handler_unblock(self._lst_handler_id[9])
-
-        self.spnStatus.handler_block(self._lst_handler_id[10])
-        self.spnStatus.set_value(_validation.status)
-        self.spnStatus.handler_unblock(self._lst_handler_id[10])
-
-        self.txtMinTime.handler_block(self._lst_handler_id[11])
-        self.txtMinTime.set_text(
-            str(self.fmt.format(_validation.time_minimum)))
-        self.txtMinTime.handler_unblock(self._lst_handler_id[11])
-
-        self.txtExpTime.handler_block(self._lst_handler_id[12])
-        self.txtExpTime.set_text(
-            str(self.fmt.format(_validation.time_average)))
-        self.txtExpTime.handler_unblock(self._lst_handler_id[12])
-
-        self.txtMaxTime.handler_block(self._lst_handler_id[13])
-        self.txtMaxTime.set_text(
-            str(self.fmt.format(_validation.time_maximum)))
-        self.txtMaxTime.handler_unblock(self._lst_handler_id[13])
-
-        self.txtMinCost.handler_block(self._lst_handler_id[14])
-        self.txtMinCost.set_text(
-            str(self.fmt.format(_validation.cost_minimum)))
-        self.txtMinCost.handler_unblock(self._lst_handler_id[14])
-
-        self.txtExpCost.handler_block(self._lst_handler_id[15])
-        self.txtExpCost.set_text(
-            str(self.fmt.format(_validation.cost_average)))
-        self.txtExpCost.handler_unblock(self._lst_handler_id[15])
-
-        self.txtMaxCost.handler_block(self._lst_handler_id[16])
-        self.txtMaxCost.set_text(
-            str(self.fmt.format(_validation.cost_maximum)))
-        self.txtMaxCost.handler_unblock(self._lst_handler_id[16])
-
-        self.txtMeanTimeLL.set_text(str(self.fmt.format(_validation.time_ll)))
-        self.txtMeanTime.set_text(str(self.fmt.format(_validation.time_mean)))
-        self.txtMeanTimeUL.set_text(str(self.fmt.format(_validation.time_ul)))
-        self.txtMeanCostLL.set_text(str(self.fmt.format(_validation.cost_ll)))
-        self.txtMeanCost.set_text(str(self.fmt.format(_validation.cost_mean)))
-        self.txtMeanCostUL.set_text(str(self.fmt.format(_validation.cost_ul)))
-
-        return _return
+        return self._do_load_page()
 
     def _on_value_changed(self, spinbutton, index):
         """
@@ -952,7 +962,7 @@ class GeneralData(RTKWorkView):
         """
         spinbutton.handler_block(self._lst_handler_id[index])
 
-        _validation = self._dtc_data_controller.request_select(
+        _validation = self._dtc_data_controller.request_do_select(
             self._validation_id)
 
         if index == 10:
@@ -981,7 +991,7 @@ class BurndownCurve(RTKWorkView):
                     program V&V task effort.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Validation package.
 
@@ -1011,14 +1021,13 @@ class BurndownCurve(RTKWorkView):
         self.burndown = rtk.RTKPlot()
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(
-            self._make_burndown_curve_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
+        pub.subscribe(self._on_select, 'selectedValidation')
         pub.subscribe(self._do_request_plot, 'calculatedProgram')
 
-    # pylint: disable=unused-argument
-    def _do_load_burndown_status(self, module_id=None):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
         Load the actual burndown progress.
 
@@ -1029,46 +1038,8 @@ class BurndownCurve(RTKWorkView):
         """
         _return = False
 
-        _y_actual = self._dtc_data_controller.request_actual_burndown()
-
-        if _y_actual:
-            self.burndown.do_add_line(
-                x_values=_y_actual.keys(),
-                y_values=_y_actual.values(),
-                marker='o')
-
-        else:
-            _prompt = _(u"Actual program status information is not "
-                        u"available.  You must calculate the program to make "
-                        u"this information available for plotting.")
-            _dialog = rtk.RTKMessageDialog(
-                _prompt, self._dic_icons['important'], 'warning')
-            _response = _dialog.do_run()
-
-            if _response == gtk.RESPONSE_OK:
-                _dialog.do_destroy()
-
-            _return = True
-
-        return _return
-
-    def _do_load_planned_burndown(self, module_id=None):
-        """
-        Load the Validation class effort progress plot.
-
-        :param int module_id: unused; needed for compatibility with pubsub
-                              message.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['validation']
-
-        (_y_minimum, _y_average,
-         _y_maximum) = self._dtc_data_controller.request_planned_burndown()
+        (_y_minimum, _y_average, _y_maximum
+         ) = self._dtc_data_controller.request_get_planned_burndown()
 
         self.burndown.axis.cla()
         self.burndown.axis.grid(True, which='both')
@@ -1090,8 +1061,7 @@ class BurndownCurve(RTKWorkView):
                 y_values=_time_average,
                 plot_type='date',
                 marker='b-')
-            self._x_pos = int(
-                (max(_y_average.keys()) - min(_y_average.keys())) / 2)
+            _x_pos = int((max(_y_average.keys()) - min(_y_average.keys())) / 2)
         if _y_minimum:
             self.burndown.do_load_plot(
                 x_values=_y_minimum.keys(),
@@ -1100,7 +1070,7 @@ class BurndownCurve(RTKWorkView):
                 marker='g--')
 
         (_assessment_dates,
-         _targets) = self._dtc_data_controller.request_assessments()
+         _targets) = self._dtc_data_controller.request_get_assessment_points()
 
         # Add a vertical line at the scheduled end-date for each task
         # identified as a Reliability Assessment.  Add an annotation box
@@ -1137,9 +1107,30 @@ class BurndownCurve(RTKWorkView):
                         patchB=Ellipse((2, -1), 0.5, 0.5),
                         relpos=(0.2, 0.5)))
 
+        _y_actual = self._dtc_data_controller.request_get_actual_burndown()
+
+        if _y_actual:
+            self.burndown.do_add_line(
+                x_values=_y_actual.keys(),
+                y_values=_y_actual.values(),
+                marker='o')
+
+        else:
+            _prompt = _(u"Actual program status information is not "
+                        u"available.  You must calculate the program to make "
+                        u"this information available for plotting.")
+            _dialog = rtk.RTKMessageDialog(
+                _prompt, self._dic_icons['important'], 'warning')
+            _response = _dialog.do_run()
+
+            if _response == gtk.RESPONSE_OK:
+                _dialog.do_destroy()
+
+            _return = True
+
         return _return
 
-    def _do_request_calculate_program(self, __button):
+    def _do_request_calculate_all(self, __button):
         """
         Request to calculate program cost and time.
 
@@ -1151,7 +1142,7 @@ class BurndownCurve(RTKWorkView):
         _return = False
 
         (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean,
-         _time_ul) = self._dtc_data_controller.request_calculate_program()
+         _time_ul) = self._dtc_data_controller.request_do_calculate_all()
 
         return _return
 
@@ -1166,8 +1157,7 @@ class BurndownCurve(RTKWorkView):
         """
         _return = False
 
-        self._do_load_planned_burndown()
-        self._do_load_burndown_status()
+        self._do_load_page()
 
         self.burndown.do_make_title(_(u"Total Validation Effort"))
         self.burndown.do_make_labels(
@@ -1188,14 +1178,14 @@ class BurndownCurve(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = self._dtc_data_controller.request_update_all()
+        _return = self._dtc_data_controller.request_do_update_all()
 
         if not _return:
-            _return = self._dtc_data_controller.request_update_status()
+            _return = self._dtc_data_controller.request_do_update_status()
 
         return _return
 
-    def _make_burndown_curve_page(self):
+    def _make_page(self):
         """
         Make the Validation class gtk.Notebook() burndown curve page.
 
@@ -1221,7 +1211,7 @@ class BurndownCurve(RTKWorkView):
 
         return _frame
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Validation class Work View.
 
@@ -1237,12 +1227,35 @@ class BurndownCurve(RTKWorkView):
               u"open RTK Program database.")
         ]
         _callbacks = [
-            self._do_request_calculate_program, self._do_request_plot,
+            self._do_request_calculate_all, self._do_request_plot,
             self._do_request_update_all
         ]
         _icons = ['calculate-all', 'plot', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
+
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
+        """
+        Load the Validation Work View class gtk.Notebook() widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        self._validation_id = module_id
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'validation']
+
+        return self._do_load_page()

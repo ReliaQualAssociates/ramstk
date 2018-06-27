@@ -138,7 +138,7 @@ class FMEADataController(RTKDataController):
         _msg = 'RTK SUCCESS: Calculating (D)FME(C)A.'
 
         try:
-            _error_code, _msg = self._dtm_data_model.do_calculate(**kwargs)
+            _error_code, _msg = self._dtm_data_model.do_calculate(node_id, **kwargs)
         except OutOfRangeError:
             _error_code = 50
             _msg = ("RTK WARNING: OutOfRangeError raised when calculating "

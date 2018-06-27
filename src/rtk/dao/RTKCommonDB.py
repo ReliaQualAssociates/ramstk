@@ -835,8 +835,9 @@ def create_common_db(**kwargs):
     # Incident, requirement, and validation types.
     for __, _value in RTK_TYPES.items():
         _record = RTKType()
-        _record.description = _value[0]
-        _record.model_type = _value[1]
+        _record.code = _value[0]
+        _record.description = _value[1]
+        _record.type_type = _value[2]
         session.add(_record)
 
     _user = RTKUser()

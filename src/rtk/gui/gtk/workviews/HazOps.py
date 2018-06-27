@@ -12,7 +12,7 @@ from pubsub import pub
 # Import other RTK modules.
 from rtk.Configuration import RTK_FAILURE_PROBABILITY
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk.Widget import _, gtk, gobject
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from .WorkView import RTKWorkView
 
 
@@ -38,7 +38,7 @@ class HazOps(RTKWorkView):
     +-------+-------------------------------------------+
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the HazOps.
 
@@ -52,7 +52,6 @@ class HazOps(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._revision_id = None
         self._hardware_id = None
         self._hazops_id = None
 
@@ -63,8 +62,8 @@ class HazOps(RTKWorkView):
         # Initialize public scalar attributes.
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['hazops']
+        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['hazops'])
         _fmt_path = "/root/tree[@name='HazOps']/column"
         _tooltip = _(u"Displays the HazOps Analysis for the currently "
                      u"selected Hardware item.")
@@ -75,7 +74,7 @@ class HazOps(RTKWorkView):
         self.treeview.set_tooltip_text(_tooltip)
 
         # Load the potential hazards into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(3)
+        _model = self._get_cell_model(3)
         for _key in controller.RTK_CONFIGURATION.RTK_HAZARDS:
             _hazard = '{0:s}, {1:s}'.format(
                 controller.RTK_CONFIGURATION.RTK_HAZARDS[_key][0],
@@ -84,14 +83,14 @@ class HazOps(RTKWorkView):
 
         # Load the severity classes into the gtk.CellRendererCombo().
         for i in [6, 10, 14, 18]:
-            _model = self._do_get_cell_model(i)
+            _model = self._get_cell_model(i)
             for _key in controller.RTK_CONFIGURATION.RTK_SEVERITY:
                 _severity = controller.RTK_CONFIGURATION.RTK_SEVERITY[_key][1]
                 _model.append((_severity, ))
 
         # Load the failure probabilities into the gtk.CellRendererCombo().
         for i in [7, 11, 15, 19]:
-            _model = self._do_get_cell_model(i)
+            _model = self._get_cell_model(i)
             for _item in RTK_FAILURE_PROBABILITY:
                 _model.append((_item[0], ))
 
@@ -120,11 +119,10 @@ class HazOps(RTKWorkView):
         self.hbx_tab_label.pack_start(_label)
 
         self.pack_start(self._make_buttonbox(), False, True)
-        self.pack_end(self._make_treeview(), True, True)
+        self.pack_end(self._make_page(), True, True)
         self.show_all()
 
         #pub.subscribe(self._do_refresh_view, 'calculatedHazOps')
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedHardware')
 
     def _do_change_row(self, treeview):
@@ -175,7 +173,8 @@ class HazOps(RTKWorkView):
                                           model):
 
             _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazops_id)
-            _hazops = self._dtc_data_controller.request_select(_node_id)
+            _hazops = self._dtc_data_controller.request_do_select_all(
+                hardware_id=_node_id)
 
             if position == self._lst_col_order[3]:
                 _hazops.potential_hazard = model[path][self._lst_col_order[3]]
@@ -220,7 +219,7 @@ class HazOps(RTKWorkView):
 
         return _return
 
-    def _do_get_cell_model(self, column):
+    def _get_cell_model(self, column):
         """
         Retrieve the gtk.CellRendererCombo() gtk.TreeModel().
 
@@ -235,63 +234,81 @@ class HazOps(RTKWorkView):
 
         return _model
 
-    def _do_load_tree(self, nodes):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
         Iterate through the tree and load the HazOps RTKTreeView().
 
-        :param nodes: a list of treelib Node()s to load.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _user_msg, _debug_msg); the error code, message
+                 to be displayed to the user, and the message to be written to
+                 the debug log.
+        :rtype: (int, str, str)
         """
-        _return = False
+        _tree = None
+        _error_code = 0
+        _user_msg = ""
+        _debug_msg = ""
 
         _data = []
         _model = self.treeview.get_model()
         _model.clear()
 
-        i = 1
-        for _node in nodes:
-            _entity = _node.data
-            _node_id = _node.identifier
+        _tree = self._dtc_data_controller.request_do_select_children(
+            self._hardware_id)
 
-            _data = [
-                _entity.revision_id, _entity.hardware_id, _entity.hazard_id,
-                _entity.potential_hazard, _entity.potential_cause,
-                _entity.assembly_effect, _entity.assembly_severity,
-                _entity.assembly_probability, _entity.assembly_hri,
-                _entity.assembly_mitigation, _entity.assembly_severity_f,
-                _entity.assembly_probability_f, _entity.assembly_hri_f,
-                _entity.system_effect, _entity.system_severity,
-                _entity.system_probability, _entity.system_hri,
-                _entity.system_mitigation, _entity.system_severity_f,
-                _entity.system_probability_f, _entity.system_hri_f,
-                _entity.remarks, _entity.function_1, _entity.function_2,
-                _entity.function_3, _entity.function_4, _entity.function_5,
-                _entity.result_1, _entity.result_2, _entity.result_3,
-                _entity.result_4, _entity.result_5, _entity.user_blob_1,
-                _entity.user_blob_2, _entity.user_blob_3, _entity.user_float_1,
-                _entity.user_float_2, _entity.user_float_3, _entity.user_int_1,
-                _entity.user_int_2, _entity.user_int_3
-            ]
+        if _tree is not None:
+            i = 1
+            for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
+                _entity = _node.data
+                _node_id = _node.identifier
 
-            try:
-                _row = _model.append(None, _data)
-            except TypeError:
-                print "FIXME: Handle TypeError in " \
-                      "gtk.gui.workviews.HazOps.HazOps._do_load_tree."
-                _return = True
-            except ValueError:
-                print "FIXME: Handle ValueError in " \
-                      "gtk.gui.workviews.HazOps.HazOps._do_load_tree."
-                _return = True
-            except AttributeError:
-                print "FIXME: Handle AttributeError in " \
-                      "gtk.gui.workviews.HazOps.HazOps._do_load_tree."
-                _return = True
+                _data = [
+                    _entity.revision_id, _entity.hardware_id,
+                    _entity.hazard_id, _entity.potential_hazard,
+                    _entity.potential_cause, _entity.assembly_effect,
+                    _entity.assembly_severity, _entity.assembly_probability,
+                    _entity.assembly_hri, _entity.assembly_mitigation,
+                    _entity.assembly_severity_f,
+                    _entity.assembly_probability_f, _entity.assembly_hri_f,
+                    _entity.system_effect, _entity.system_severity,
+                    _entity.system_probability, _entity.system_hri,
+                    _entity.system_mitigation, _entity.system_severity_f,
+                    _entity.system_probability_f, _entity.system_hri_f,
+                    _entity.remarks, _entity.function_1, _entity.function_2,
+                    _entity.function_3, _entity.function_4, _entity.function_5,
+                    _entity.result_1, _entity.result_2, _entity.result_3,
+                    _entity.result_4, _entity.result_5, _entity.user_blob_1,
+                    _entity.user_blob_2, _entity.user_blob_3,
+                    _entity.user_float_1, _entity.user_float_2,
+                    _entity.user_float_3, _entity.user_int_1,
+                    _entity.user_int_2, _entity.user_int_3
+                ]
 
-            i += 1
+                try:
+                    _row = _model.append(None, _data)
+                except TypeError:
+                    _error_code = 1
+                    _user_msg = _(u"One or more HazOp line items had the "
+                                  u"wrong data type in it's data package and "
+                                  u"is not displayed in the HazOp analysis.")
+                    _debug_msg = ("RTK ERROR: Data for HazOp ID {0:s} for "
+                                  "Hardware ID {1:s} is the wrong type for "
+                                  "one or more columns.".format(
+                                      str(_node.identifier),
+                                      str(self._hardware_id)))
+                    _row = None
+                except ValueError:
+                    _error_code = 1
+                    _user_msg = _(u"One or more HazOp line items was missing "
+                                  u"some of it's data and is not displayed in "
+                                  u"the HazOp analysis.")
+                    _debug_msg = ("RTK ERROR: Too few fields for HazOp ID "
+                                  "{0:s} for Hardware ID {1:s}.".format(
+                                      str(_node.identifier),
+                                      str(self._hardware_id)))
 
-        return _return
+                i += 1
+
+        return (_error_code, _user_msg, _debug_msg)
 
     def _do_request_calculate(self, __button):
         """
@@ -310,14 +327,15 @@ class HazOps(RTKWorkView):
         while _row is not None:
             _node_id = '{0:d}.{1:d}'.format(
                 _model.get_value(_row, 1), _model.get_value(_row, 2))
-            _return = (_return or
-                       self._dtc_data_controller.request_calculate(_node_id))
+            _return = (
+                _return
+                or self._dtc_data_controller.request_do_calculate(_node_id))
             _row = _model.iter_next(_row)
 
         if not _return:
-            _nodes = self._dtc_data_controller.request_select_children(
+            _tree = self._dtc_data_controller.request_do_select_children(
                 self._hardware_id)
-            self._do_load_tree(_nodes)
+            self._do_load_tree(_tree)
 
         return _return
 
@@ -330,9 +348,19 @@ class HazOps(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_delete(self._hazard_id)
+        return self._dtc_data_controller.request_do_delete(self._hazard_id)
 
-    def _do_request_insert(self, __button):
+    def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Request to insert a new hazard into the HazOps.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_insert(
+            revision_id=self._revision_id, hardware_id=self._hardware_id)
+
+    def _do_request_insert_sibling(self, __button, **kwargs):
         """
         Request to insert a new hazard into the HazOps.
 
@@ -341,8 +369,7 @@ class HazOps(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_insert(
-            self._revision_id, hardware_id=self._hardware_id)
+        return self._do_request_do_insert(**kwargs)
 
     def _do_request_update(self, __button):
         """
@@ -355,7 +382,7 @@ class HazOps(RTKWorkView):
         """
         _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazops_id)
 
-        return self._dtc_data_controller.request_update(_node_id)
+        return self._dtc_data_controller.request_do_update(_node_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -366,9 +393,10 @@ class HazOps(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all(self._hardware_id)
+        return self._dtc_data_controller.request_do_update_all(
+            self._hardware_id)
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the HazOps class Work View.
 
@@ -391,12 +419,18 @@ class HazOps(RTKWorkView):
         ]
         _icons = ['calculate', 'add', 'remove', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
-    def _make_treeview(self):
+    def _make_page(self):
         """
         Make the HazOps RTKTreeview().
 
@@ -445,50 +479,85 @@ class HazOps(RTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            print "FIXME: Rick clicking should launch a pop-up menu with " \
-                  "options to insert sibling, insert child, delete " \
-                  "(selected), save (selected), and save all in " \
-                  "rtk.gui.gtk.workviews.HazOps._on_button_press()."
+            _menu = gtk.Menu()
+            _menu.popup(None, None, None, event.button, event.time)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_sibling'])
+            _menu_item.set_label(_(u"Add Hazard"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert_sibling)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['remove'])
+            _menu_item.set_label(_(u"Remove Selected Hazard"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_delete)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['calculate'])
+            _menu_item.set_label(_(u"Calculate HazOp"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_calculate)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save'])
+            _menu_item.set_label(_(u"Save Selected Hazard"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save-al'])
+            _menu_item.set_label(_(u"Save All Hazards"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update_all)
+            _menu_item.show()
+            _menu.append(_menu_item)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
         return _return
 
-    def _on_select(self, module_id):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to the `selectedHardware` signal from pypubsub.
 
-        :param int module_id: the ID of the Hardware that was selected.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self._hardware_id = module_id
 
-        _nodes = self._dtc_data_controller.request_select_children(
-            self._hardware_id)
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers['hazops']
+            self._dtc_data_controller.request_do_select_all(
+                revision_id=self._revision_id)
 
-        return self._do_load_tree(_nodes)
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page()
 
-    def _on_select_revision(self, module_id):
-        """
-        Respond to the `selectedRevision` signal from pypubsub.
+        RTKWorkView.on_select(
+            self,
+            title=_(u"Analyzing Hazards for Hardware ID {0:d}").format(
+                self._hardware_id),
+            error_code=_error_code,
+            user_msg=_user_msg,
+            debug_msg=_debug_msg)
 
-        This method is called whenever a new Revision is selected in the RTK
-        Module View.  It selects all the HazOps for the Revision ID passed
-        and builds the treelib Tree() to hold them all for use.
-
-        :param int module_id: the Revision ID to select the HazOps for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._revision_id = module_id
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = \
-            self._mdcRTK.dic_controllers['hazops']
-        _tree = self._dtc_data_controller.request_select_all(module_id)
-
-        return _return
+        return None

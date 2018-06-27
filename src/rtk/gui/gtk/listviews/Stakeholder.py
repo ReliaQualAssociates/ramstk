@@ -9,7 +9,7 @@ from pubsub import pub
 
 # Import other RTK modules.
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from .ListView import RTKListView
 
 
@@ -201,7 +201,7 @@ class ListView(RTKListView):
 
         return _return
 
-    def _do_request_insert(self, **kwargs):
+    def _do_request_insert(self, **kwargs):     # pylint: disable=unused-argument
         """
         Request to add a Stakeholder.
 
@@ -212,7 +212,8 @@ class ListView(RTKListView):
         """
         _return = False
 
-        if not self._dtc_data_controller.request_do_insert(self._stakeholder_id):
+        if not self._dtc_data_controller.request_do_insert(
+                self._stakeholder_id):
             self._on_select_stakeholder(self._stakeholder_id)
         else:
             _prompt = _(u"An error occurred attempting to add a stakeholder "
@@ -244,7 +245,8 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._stakeholder_id)
+        return self._dtc_data_controller.request_do_update(
+            self._stakeholder_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -438,7 +440,7 @@ class ListView(RTKListView):
 
         return False
 
-    def _on_select_revision(self, **kwargs):
+    def _on_select_revision(self, module_id):
         """
         Load the Stakeholder List View gtk.TreeModel().
 
@@ -449,14 +451,14 @@ class ListView(RTKListView):
         """
         _return = False
 
-        self._revision_id = kwargs['module_id']
+        self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['stakeholder']
         _stakeholders = \
-            self._dtc_data_controller.request_do_select_all(self._revision_id)
+            self._dtc_data_controller.request_do_select_all(revision_id=self._revision_id)
 
         _model = self.treeview.get_model()
         _model.clear()

@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKMatrixView Meta-Class Module
--------------------------------------------------------------------------------
-"""
+"""The RTKMatrixView Meta-Class Module."""
 
 # Import other RTK modules.
 from rtk.gui.gtk.rtk.Widget import _, gobject, gtk

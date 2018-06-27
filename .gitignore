@@ -23,37 +23,28 @@ target/
 *.pyc
 *.pyo
 
+# Sphinx and LaTeX intermediatei, working, and output directories and files to ignore.
+*.aux
+*.dot
+*.log
+*.pdf
+*.synctex.gz
+_build/
+_static/
+_templates/
+
 # RTK specific directories and files to ignore
 .gtm/
 *.csv
 *.glade
+*.html
 *.log
 *.txt
 *.xls*
 .coverage
-*html
-_build/
-docs/developer
-docs/_temp/
-docs/_build
-docs/generated/
-docs/specs/
-docs/_static/
-docs/_templates/
-rtk-RQA/
-tests/_test_results/
-CodeCounts.sql
-FailureModes.sql
+_temp/
 Makefile
-Notes
-RTKModuleTemplate.py
-RTKUML.xmi
-code.counts
-geany_run_script.sh
 pylintout
-/.eric6project/RTK.e4q
-/.eric6project/RTK.e6t
-/RTK.e4p
 coverage.xml
 
 # Override settings for some specific files.

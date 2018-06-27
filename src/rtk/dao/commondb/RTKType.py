@@ -28,7 +28,7 @@ class RTKType(RTK_BASE):
     code = Column('fld_code', String(256), default='Type Code')
     description = Column(
         'fld_description', String(512), default='Type Description')
-    type_type = Column('fld_type', Integer, default='unknown')
+    type_type = Column('fld_type', String(256), default='unknown')
 
     def get_attributes(self):
         """

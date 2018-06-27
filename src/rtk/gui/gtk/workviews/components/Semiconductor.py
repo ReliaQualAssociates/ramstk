@@ -169,18 +169,14 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
                      ], ["PD-216"], ["PT-2G"], ["PT-2G"], ["PT-6B"], ["PH-13"],
                      ["PH-16"], ["PH-56"], ["PY-58"], ["PY-373"]]
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Semiconductor assessment input view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                semiconductor.
-        :param int subcategory_id: the ID of the semiconductor subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -232,7 +228,7 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
             tooltip=_(
                 u"The junction-case thermal resistance of the semiconductor."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -255,7 +251,7 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.txtThetaJC.connect('changed', self._on_focus_out, 8))
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):
         """
         Load the semiconductor RKTComboBox()s.
 
@@ -269,7 +265,7 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         """
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
         # Load the quality level RTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
@@ -323,7 +319,56 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Semiconductor assesment input widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        if _attributes['hazard_rate_method_id'] == 2:
+            self.cmbApplication.handler_block(self._lst_handler_id[1])
+            self.cmbApplication.set_active(_attributes['application_id'])
+            self.cmbApplication.handler_unblock(self._lst_handler_id[1])
+
+            self.cmbConstruction.handler_block(self._lst_handler_id[2])
+            self.cmbConstruction.set_active(_attributes['construction_id'])
+            self.cmbConstruction.handler_unblock(self._lst_handler_id[2])
+
+            self.cmbMatching.handler_block(self._lst_handler_id[3])
+            self.cmbMatching.set_active(_attributes['matching_id'])
+            self.cmbMatching.handler_unblock(self._lst_handler_id[3])
+
+            self.cmbPackage.handler_block(self._lst_handler_id[4])
+            self.cmbPackage.set_active(_attributes['package_id'])
+            self.cmbPackage.handler_unblock(self._lst_handler_id[4])
+
+            self.cmbType.handler_block(self._lst_handler_id[5])
+            self.cmbType.set_active(_attributes['type_id'])
+            self.cmbType.handler_unblock(self._lst_handler_id[5])
+
+            self.txtFrequencyOperating.handler_block(self._lst_handler_id[6])
+            self.txtFrequencyOperating.set_text(
+                str(self.fmt.format(_attributes['frequency_operating'])))
+            self.txtFrequencyOperating.handler_unblock(self._lst_handler_id[6])
+
+            self.txtNElements.handler_block(self._lst_handler_id[7])
+            self.txtNElements.set_text(
+                str(self.fmt.format(_attributes['n_elements'])))
+            self.txtNElements.handler_unblock(self._lst_handler_id[7])
+
+            self.txtThetaJC.handler_block(self._lst_handler_id[8])
+            self.txtThetaJC.set_text(
+                str(self.fmt.format(_attributes['theta_jc'])))
+            self.txtThetaJC.handler_unblock(self._lst_handler_id[8])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected semiconductor.
 
@@ -366,18 +411,18 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
         Make the semiconductor gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._do_load_comboboxes(self._subcategory_id)
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
         self._do_set_sensitive()
 
         # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.cmbPackage, _x_pos, _y_pos[1])
         self.put(self.cmbType, _x_pos, _y_pos[2])
@@ -496,7 +541,7 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the semiconductor assessment input work view widgets.
 
@@ -505,51 +550,11 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        if _attributes['hazard_rate_method_id'] == 2:
-            self.cmbApplication.handler_block(self._lst_handler_id[1])
-            self.cmbApplication.set_active(_attributes['application_id'])
-            self.cmbApplication.handler_unblock(self._lst_handler_id[1])
-
-            self.cmbConstruction.handler_block(self._lst_handler_id[2])
-            self.cmbConstruction.set_active(_attributes['construction_id'])
-            self.cmbConstruction.handler_unblock(self._lst_handler_id[2])
-
-            self.cmbMatching.handler_block(self._lst_handler_id[3])
-            self.cmbMatching.set_active(_attributes['matching_id'])
-            self.cmbMatching.handler_unblock(self._lst_handler_id[3])
-
-            self.cmbPackage.handler_block(self._lst_handler_id[4])
-            self.cmbPackage.set_active(_attributes['package_id'])
-            self.cmbPackage.handler_unblock(self._lst_handler_id[4])
-
-            self.cmbType.handler_block(self._lst_handler_id[5])
-            self.cmbType.set_active(_attributes['type_id'])
-            self.cmbType.handler_unblock(self._lst_handler_id[5])
-
-            self.txtFrequencyOperating.handler_block(self._lst_handler_id[6])
-            self.txtFrequencyOperating.set_text(
-                str(self.fmt.format(_attributes['frequency_operating'])))
-            self.txtFrequencyOperating.handler_unblock(self._lst_handler_id[6])
-
-            self.txtNElements.handler_block(self._lst_handler_id[7])
-            self.txtNElements.set_text(
-                str(self.fmt.format(_attributes['n_elements'])))
-            self.txtNElements.handler_unblock(self._lst_handler_id[7])
-
-            self.txtThetaJC.handler_block(self._lst_handler_id[8])
-            self.txtThetaJC.set_text(
-                str(self.fmt.format(_attributes['theta_jc'])))
-            self.txtThetaJC.handler_unblock(self._lst_handler_id[8])
-
-        self._do_set_sensitive()
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class SemiconductorAssessmentResults(AssessmentResults):
@@ -601,18 +606,14 @@ class SemiconductorAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>I</sub>\u03C0<sub>A</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>"
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Semiconductor assessment result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                semiconductor.
-        :param int subcategory_id: the ID of the semiconductor subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -677,12 +678,12 @@ class SemiconductorAssessmentResults(AssessmentResults):
             bold=True,
             tooltip=_(u"The electrical stress factor for the semiconductor."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):
         """
         Load the semiconductor assessment results page.
 
@@ -691,7 +692,7 @@ class SemiconductorAssessmentResults(AssessmentResults):
         """
         _return = False
 
-        _attributes = AssessmentResults.do_load_page(self)
+        _attributes = AssessmentResults.do_load_page(self, **kwargs)
 
         self.txtPiT.set_text(str(self.fmt.format(_attributes['piT'])))
         self.txtPiA.set_text(str(self.fmt.format(_attributes['piA'])))
@@ -704,14 +705,14 @@ class SemiconductorAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected semiconductor.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = AssessmentResults.do_set_sensitive(self)
+        _return = AssessmentResults.do_set_sensitive(self, **kwargs)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
@@ -743,17 +744,15 @@ class SemiconductorAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the semiconductor gtk.Notebook() assessment results page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._do_set_sensitive()
-
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtPiT, _x_pos, _y_pos[3])
         self.put(self.txtPiA, _x_pos, _y_pos[4])
@@ -766,7 +765,7 @@ class SemiconductorAssessmentResults(AssessmentResults):
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the semiconductor assessment input work view widgets.
 
@@ -775,11 +774,8 @@ class SemiconductorAssessmentResults(AssessmentResults):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)

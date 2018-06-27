@@ -279,13 +279,13 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
         if button.get_property('name') == 'assembly':
-            _part=0
+            _part = 0
         else:
-            _part=1
+            _part = 1
 
         return self._do_request_insert(sibling=False, part=_part)
 
-    def _do_request_insert_sibling(self, button, **kwargs): # pylint: disable=unused-argument
+    def _do_request_insert_sibling(self, button, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new sibling Hardware assembly.
 
@@ -295,9 +295,9 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
         if button.get_property('name') == 'assembly':
-            _part=0
+            _part = 0
         else:
-            _part=1
+            _part = 1
 
         return self._do_request_insert(sibling=False, part=_part)
 
@@ -351,10 +351,8 @@ class ModuleView(RTKModuleView):
               u"database.")
         ]
         _callbacks = [
-            self._do_request_insert_sibling,
-            self._do_request_insert_child,
-            self._do_request_insert_sibling,
-            self._do_request_insert_child,
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_delete, self._do_request_calculate_all,
             self._do_request_update, self._do_request_update_all
         ]
@@ -528,7 +526,6 @@ class ModuleView(RTKModuleView):
         :return: None
         :rtype: None
         """
-
         def _load_row(model, __path, row, self):
             """
             Load the row associated with node_id.
@@ -587,7 +584,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _on_select_revision(self, **kwargs):
+    def _on_select_revision(self, module_id):
         """
         Load the Hardware Module View RTKTreeView().
 
@@ -596,13 +593,13 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._revision_id = kwargs['module_id']
+        self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
         _hardware = self._dtc_data_controller.request_do_select_all(
-            self._revision_id)
+            revision_id=self._revision_id)
 
         _return = RTKModuleView.on_select_revision(self, tree=_hardware)
         if _return:

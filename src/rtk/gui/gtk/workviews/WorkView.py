@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKWorkView Meta-Class Module."""
 
+from pubsub import pub
+
 # Import other RTK modules.
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
@@ -68,7 +70,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
                        cost/operating hour for the RTK module.
     """
 
-    def __init__(self, controller, module=None):
+    def __init__(self, controller, **kwargs):
         """
         Initialize the RTKWorkView meta-class.
 
@@ -76,13 +78,14 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         :type controller: :class:`rtk.RTK.RTK`
         :keyword str module: the RTK Module this RTKWorkView is the bassis for.
         """
+        _module = kwargs['module']
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller, module=module)
+        rtk.RTKBaseView.__init__(self, controller, module=_module)
 
         self._module = None
-        for __, char in enumerate(module):
+        for __, char in enumerate(_module):
             if char.isalpha():
-                self._module = module.capitalize()
+                self._module = _module.capitalize()
 
         # Initialize private dictionary attributes.
 
@@ -138,6 +141,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         """
 
         # Initialize private scalar attributes.
+        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -298,6 +302,8 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
                       u"per operating hour for "
                       u"the selected {0:s}.").format(self._module))
 
+        pub.subscribe(self._on_select_revision, 'selectedRevision')
+
     def _make_assessment_results_page(self):
         """
         Create the gtk.Notebook() page for displaying assessment results.
@@ -376,9 +382,13 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
 
-    def on_select(self, **kwargs):  # pylint: disable=W0613
+    def on_select(self, **kwargs):
         """
         Respond to load the Work View gtk.Notebook() widgets.
+
+        This method handles the results of the an individual module's
+        _on_select() method.  It sets the title of the RTK Work Book and
+        raises an error dialog if needed.
 
         :return: None
         :rtype: None
@@ -388,13 +398,28 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         _user_msg = kwargs['user_msg']
         _debug_msg = kwargs['debug_msg']
 
-        _workbook = self.get_parent().get_parent()
-        _workbook.set_title(_title)
+        try:
+            _workbook = self.get_parent().get_parent()
+            _workbook.set_title(_title)
+        except AttributeError:
+            pass
 
         if _error_code != 0:
+            self._mdcRTK.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_debug_msg)
             _dialog = rtk.RTKMessageDialog(_user_msg, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _dialog.destroy()
+
+        return None
+
+    def _on_select_revision(self, **kwargs):
+        """
+        Respond to the `selectedRevision` signal from pypubsub.
+
+        :return: None
+        :rtype: None
+        """
+        self._revision_id = kwargs['module_id']
 
         return None

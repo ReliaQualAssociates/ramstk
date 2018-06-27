@@ -37,7 +37,7 @@ class Allocation(RTKWorkView):
     +-------+-------------------------------------------+
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Allocation.
 
@@ -61,8 +61,9 @@ class Allocation(RTKWorkView):
         # Initialize public scalar attributes.
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['allocation']
+        _fmt_file = (
+            controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+            controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['allocation'])
         _fmt_path = "/root/tree[@name='Allocation']/column"
         _tooltip = _(u"Displays the Allocation Analysis for the currently "
                      u"selected Hardware item.")
@@ -106,13 +107,11 @@ class Allocation(RTKWorkView):
             self.cmbAllocationGoal.connect('changed', self._on_combo_changed,
                                            3))
         self._lst_handler_id.append(
-            self.txtReliabilityGoal.connect('focus-out-event',
-                                            self._on_focus_out, 4))
+            self.txtReliabilityGoal.connect('changed', self._on_focus_out, 4))
         self._lst_handler_id.append(
-            self.txtHazardRateGoal.connect('focus-out-event',
-                                           self._on_focus_out, 5))
+            self.txtHazardRateGoal.connect('changed', self._on_focus_out, 5))
         self._lst_handler_id.append(
-            self.txtMTBFGoal.connect('focus-out-event', self._on_focus_out, 6))
+            self.txtMTBFGoal.connect('changed', self._on_focus_out, 6))
 
         for i in [
                 self._lst_col_order[3], self._lst_col_order[5],
@@ -141,12 +140,10 @@ class Allocation(RTKWorkView):
         self.pack_start(self._make_buttonbox(), False, True)
         _hbox = gtk.HBox()
         _hbox.pack_start(self._make_goalbox(), False, True)
-        _hbox.pack_end(self._make_treeview(), True, True)
+        _hbox.pack_end(self._make_page(), True, True)
         self.pack_end(_hbox, True, True)
         self.show_all()
 
-        pub.subscribe(self._do_refresh_view, 'calculatedAllocation')
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedHardware')
 
     def _do_change_row(self, treeview):
@@ -194,7 +191,7 @@ class Allocation(RTKWorkView):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _allocation = self._dtc_data_controller.request_select(
+            _allocation = self._dtc_data_controller.request_do_select(
                 self._allocation_id)
 
             if position == self._lst_col_order[3]:
@@ -220,75 +217,26 @@ class Allocation(RTKWorkView):
 
         return _return
 
-    def _do_load_tree(self, tree):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
         Iterate through the tree and load the Allocation RTKTreeView().
 
-        :param tree: the treelib Tree() holding the (partial) Allocation to
-                     load.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _user_msg, _debug_msg); the error code, message
+                 to be displayed to the user, and the message to be written to
+                 the debug log.
+        :rtype: (int, str, str)
         """
-        _return = False
+        _tree = None
+        _error_code = 0
+        _user_msg = ""
+        _debug_msg = ""
 
         _data = []
-        _model = self.treeview.get_model()
-
-        i = 1
-        for _node in tree.children(SortedDict(tree.nodes).keys()[0]):
-            _entity = _node.data
-            _node_id = _node.identifier
-
-            _name = self._dtc_data_controller.lst_name[i - 1]
-            _availability = self._dtc_data_controller.lst_availability[i]
-            _hazard_rate = self._dtc_data_controller.lst_hazard_rates[i]
-            _mtbf = self._dtc_data_controller.lst_mtbf[i]
-            _reliability = self._dtc_data_controller.lst_reliability[i]
-            _data = [
-                _entity.revision_id, _entity.hardware_id, _name,
-                _entity.included, _entity.n_sub_systems,
-                _entity.n_sub_elements, _entity.mission_time,
-                _entity.duty_cycle, _entity.int_factor, _entity.soa_factor,
-                _entity.op_time_factor, _entity.env_factor,
-                _entity.weight_factor, _entity.percent_weight_factor,
-                _hazard_rate, _entity.hazard_rate_alloc, _mtbf,
-                _entity.mtbf_alloc, _reliability, _entity.reliability_alloc,
-                _availability, _entity.availability_alloc
-            ]
-
-            try:
-                _row = _model.append(None, _data)
-            except TypeError:
-                print "FIXME: Handle TypeError in " \
-                      "gtk.gui.workviews.Allocation.Allocation._do_load_tree."
-                _return = True
-            except ValueError:
-                print "FIXME: Handle ValueError in " \
-                      "gtk.gui.workviews.Allocation.Allocation._do_load_tree."
-                _return = True
-            except AttributeError:
-                print "FIXME: Handle AttributeError in " \
-                      "gtk.gui.workviews.Allocation.Allocation._do_load_tree."
-                _return = True
-
-            i += 1
-
-        return _return
-
-    def _do_refresh_view(self):
-        """
-        Refresh the Allocation Work View after a successful calculation.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
 
         _model = self.treeview.get_model()
         _model.clear()
 
-        _parent = self._dtc_data_controller.request_select(self._parent_id)
-
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
         if _parent is not None:
             self.cmbAllocationMethod.set_active(_parent.method_id)
             self.cmbAllocationGoal.set_active(_parent.goal_measure_id)
@@ -298,12 +246,75 @@ class Allocation(RTKWorkView):
             self.txtReliabilityGoal.set_text(
                 str(self.fmt.format(_parent.reliability_goal)))
 
-            _tree = self._dtc_data_controller.request_children(self._parent_id)
-            self._do_load_tree(_tree)
-        else:
-            _return = True
+            _tree = self._dtc_data_controller.request_do_select_children(
+                self._parent_id)
 
-        return _return
+        if _tree is not None:
+            i = 1
+            for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
+                try:
+                    _entity = _node.data
+                    _node_id = _node.identifier
+
+                    _name = self._dtc_data_controller.lst_name[i - 1]
+                    _availability = self._dtc_data_controller.lst_availability[
+                        i]
+                    _hazard_rate = self._dtc_data_controller.lst_hazard_rates[
+                        i]
+                    _mtbf = self._dtc_data_controller.lst_mtbf[i]
+                    _reliability = self._dtc_data_controller.lst_reliability[i]
+                    _data = [
+                        _entity.revision_id, _entity.hardware_id, _name,
+                        _entity.included, _entity.n_sub_systems,
+                        _entity.n_sub_elements, _entity.mission_time,
+                        _entity.duty_cycle, _entity.int_factor,
+                        _entity.soa_factor, _entity.op_time_factor,
+                        _entity.env_factor, _entity.weight_factor,
+                        _entity.percent_weight_factor, _hazard_rate,
+                        _entity.hazard_rate_alloc, _mtbf, _entity.mtbf_alloc,
+                        _reliability, _entity.reliability_alloc, _availability,
+                        _entity.availability_alloc
+                    ]
+
+                    try:
+                        _row = _model.append(None, _data)
+                    except TypeError:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Allocation line items had "
+                                      u"the wrong data type in it's data "
+                                      u"package and is not displayed in the "
+                                      u"Allocation.")
+                        _debug_msg = ("RTK ERROR: Data for Allocation ID "
+                                      "{0:s} for Hardware ID {1:s} is the "
+                                      "wrong type for one or more "
+                                      "columns.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
+                    except ValueError:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Allocation line items was "
+                                      u"missing some of it's data and is not "
+                                      u"displayed in the Allocation.")
+                        _debug_msg = ("RTK ERROR: Too few fields for "
+                                      "Allocation ID {0:s} for Hardware ID "
+                                      "{1:s}.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
+                except AttributeError:
+                    if _node.identifier != 0:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Allocation line items was "
+                                      u"missing it's data package and is not "
+                                      u"displayed in the Allocation.")
+                        _debug_msg = ("RTK ERROR: There is no data package "
+                                      "for Allocation ID {0:s} for Hardware "
+                                      "ID {1:s}.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
+
+                i += 1
+
+        return (_error_code, _user_msg, _debug_msg)
 
     def _do_request_calculate(self, __button):
         """
@@ -313,7 +324,20 @@ class Allocation(RTKWorkView):
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_calculate(self._parent_id)
+        return self._dtc_data_controller.request_do_calculate(self._parent_id)
+
+    def _do_request_update(self, __button):
+        """
+        Request to save the currently selected entity in the Allocation.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _model, _row = self.treeview.get_selection().get_selected()
+
+        return self._dtc_data_controller.request_do_update(self._hardware_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -324,26 +348,23 @@ class Allocation(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
-    def _do_set_visible(self, visible, hidden, editable):
+    def _do_set_visible(self, **kwargs):
         """
         Set the Allocation treeview columns visible and hidden.
 
-        :param list visible: a list of integers indicating the columns to set
-                             visible.
-        :param list hidden: a list of integers indicating the columns to set
-                            hidden.
-        :param list editable: a list of integers indicating the columns to set
-                              editable.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _visible = kwargs['visible']
+        _hidden = kwargs['hidden']
+        _editable = kwargs['editable']
         _return = False
 
-        for _col in hidden:
+        for _col in _hidden:
             self.treeview.get_column(_col).set_visible(0)
-        for _col in visible:
+        for _col in _visible:
             self.treeview.get_column(_col).set_visible(1)
             _column = self.treeview.get_column(_col)
             _cells = _column.get_cell_renderers()
@@ -354,7 +375,7 @@ class Allocation(RTKWorkView):
                 except TypeError:
                     _cell.set_property('cell-background', 'light gray')
 
-        for _col in editable:
+        for _col in _editable:
             _column = self.treeview.get_column(_col)
             _cells = _column.get_cell_renderers()
             for __, _cell in enumerate(_cells):
@@ -366,7 +387,7 @@ class Allocation(RTKWorkView):
 
         return _return
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylin: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Allocation class Work View.
 
@@ -375,13 +396,26 @@ class Allocation(RTKWorkView):
         """
         _tooltips = [
             _(u"Calculate the Allocation."),
+            _(u"Save the currently selected line in the Allocation to the "
+              u"open RTK Program database."),
             _(u"Save the Allocation to the open RTK Program database.")
         ]
-        _callbacks = [self._do_request_calculate, self._do_request_update_all]
-        _icons = ['calculate', 'save']
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _callbacks = [
+            self._do_request_calculate, self._do_request_update,
+            self._do_request_update_all
+        ]
+
+        _icons = ['calculate', 'save', 'save-all']
+
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -427,7 +461,7 @@ class Allocation(RTKWorkView):
 
         return _frame
 
-    def _make_treeview(self):
+    def _make_page(self):
         """
         Make the Allocation RTKTreeview().
 
@@ -476,10 +510,38 @@ class Allocation(RTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            print "FIXME: Rick clicking should launch a pop-up menu with " \
-                  "options to insert sibling, insert child, delete " \
-                  "(selected), save (selected), and save all in " \
-                  "rtk.gui.gtk.workviews.Allocation._on_button_press()."
+            _menu = gtk.Menu()
+            _menu.popup(None, None, None, event.button, event.time)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['calculate'])
+            _menu_item.set_label(_(u"Calculate"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_calculate)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save'])
+            _menu_item.set_label(_(u"Save Selected"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save-all'])
+            _menu_item.set_label(_(u"Save Allocation"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update_all)
+            _menu_item.show()
+            _menu.append(_menu_item)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -500,7 +562,7 @@ class Allocation(RTKWorkView):
 
         combo.handler_block(self._lst_handler_id[index])
 
-        _parent = self._dtc_data_controller.request_select(self._parent_id)
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
 
         if _parent is not None:
             if index == 2:
@@ -532,7 +594,8 @@ class Allocation(RTKWorkView):
                     _hidden = [0, 1, 4, 5, 6, 7, 20, 21]
                     _editable = [3, 8, 9, 10, 11]
 
-                _return = self._do_set_visible(_visible, _hidden, _editable)
+                _return = self._do_set_visible(
+                    visible=_visible, hidden=_hidden, editable=_editable)
 
             elif index == 3:
                 _parent.goal_measure_id = combo.get_active()
@@ -588,9 +651,9 @@ class Allocation(RTKWorkView):
 
         return False
 
-    def _on_focus_out(self, entry, __event, index):
+    def _on_focus_out(self, entry, index):
         """
-        Respond to gtk.Entry() 'focus_out' signals.
+        Respond to gtk.Entry() 'changed' signals.
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -603,7 +666,7 @@ class Allocation(RTKWorkView):
         """
         entry.handler_block(self._lst_handler_id[index])
 
-        _parent = self._dtc_data_controller.request_select(self._parent_id)
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
         if _parent is not None:
             if index == 4:  # Reliability goal
                 _parent.reliability_goal = float(entry.get_text())
@@ -651,36 +714,29 @@ class Allocation(RTKWorkView):
 
         return False
 
-    def _on_select(self, module_id):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to the `selectedHardware` signal from pypubsub.
 
-        :param int module_id: the ID of the Hardware that was selected.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self._parent_id = module_id
 
-        return self._do_refresh_view()
-
-    def _on_select_revision(self, module_id):
-        """
-        Respond to the `selectedRevision` signal from pypubsub.
-
-        This method is called whenever a new Revision is selected in the RTK
-        Module View.  It selects all the Allocations for the Revision ID passed
-        and builds the treelib Tree() to hold them all for use.
-
-        :param int module_id: the Revision ID to select the Allocations for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = \
-            self._mdcRTK.dic_controllers['allocation']
-        self._dtc_data_controller.request_select_all(module_id)
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'allocation']
 
-        return _return
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page()
+
+        RTKWorkView.on_select(
+            self,
+            title=_(u"Allocating Reliability Requirement for Hardware ID "
+                    u"{0:d}").format(self._parent_id),
+            error_code=_error_code,
+            user_msg=_user_msg,
+            debug_msg=_debug_msg)
+
+        return None

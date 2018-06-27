@@ -84,18 +84,14 @@ class InductorAssessmentInputs(AssessmentInputs):
             [_(u"Insulation Class O")]]
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Inductor assessment input view.
 
         :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                inductor.
-        :param int subcategory_id: the ID of the inductor subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -139,7 +135,7 @@ class InductorAssessmentInputs(AssessmentInputs):
         self.txtWeight = rtk.RTKEntry(
             width=125, tooltip=_(u"The transformer weight (in lbf)."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -158,17 +154,16 @@ class InductorAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.txtWeight.connect('changed', self._on_focus_out, 6))
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):
         """
         Load the Inductor RKTComboBox()s.
 
-        :param int subcategory_id: the newly selected inductor subcategory ID.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
         # Load the quality level RTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
@@ -216,7 +211,46 @@ class InductorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Inductor assesment input widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        self.cmbFamily.handler_block(self._lst_handler_id[3])
+        self.cmbFamily.set_active(_attributes['family_id'])
+        self.cmbFamily.handler_unblock(self._lst_handler_id[3])
+
+        if _attributes['hazard_rate_method_id'] == 2:
+            self.cmbSpecification.handler_block(self._lst_handler_id[1])
+            self.cmbSpecification.set_active(_attributes['specification_id'])
+            self.cmbSpecification.handler_unblock(self._lst_handler_id[1])
+
+            self.cmbInsulation.handler_block(self._lst_handler_id[2])
+            self.cmbInsulation.set_active(_attributes['insulation_id'])
+            self.cmbInsulation.handler_unblock(self._lst_handler_id[2])
+
+            self.cmbConstruction.handler_block(self._lst_handler_id[4])
+            self.cmbConstruction.set_active(_attributes['construction_id'])
+            self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
+
+            self.txtArea.handler_block(self._lst_handler_id[5])
+            self.txtArea.set_text(str(self.fmt.format(_attributes['area'])))
+            self.txtArea.handler_unblock(self._lst_handler_id[5])
+
+            self.txtWeight.handler_block(self._lst_handler_id[6])
+            self.txtWeight.set_text(
+                str(self.fmt.format(_attributes['weight'])))
+            self.txtWeight.handler_unblock(self._lst_handler_id[6])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected inductor.
 
@@ -251,19 +285,19 @@ class InductorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
-        Make the Hardware class gtk.Notebook() assessment input page.
+        Make the Inductor gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        self._do_load_comboboxes(self._subcategory_id)
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
         self._do_set_sensitive()
 
         # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.cmbSpecification, _x_pos, _y_pos[1])
         self.put(self.cmbInsulation, _x_pos, _y_pos[2])
@@ -372,7 +406,7 @@ class InductorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the inductor assessment input work view widgets.
 
@@ -381,41 +415,11 @@ class InductorAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        self.cmbFamily.handler_block(self._lst_handler_id[3])
-        self.cmbFamily.set_active(_attributes['family_id'])
-        self.cmbFamily.handler_unblock(self._lst_handler_id[3])
-
-        if _attributes['hazard_rate_method_id'] == 2:
-            self.cmbSpecification.handler_block(self._lst_handler_id[1])
-            self.cmbSpecification.set_active(_attributes['specification_id'])
-            self.cmbSpecification.handler_unblock(self._lst_handler_id[1])
-
-            self.cmbInsulation.handler_block(self._lst_handler_id[2])
-            self.cmbInsulation.set_active(_attributes['insulation_id'])
-            self.cmbInsulation.handler_unblock(self._lst_handler_id[2])
-
-            self.cmbConstruction.handler_block(self._lst_handler_id[4])
-            self.cmbConstruction.set_active(_attributes['construction_id'])
-            self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
-
-            self.txtArea.handler_block(self._lst_handler_id[5])
-            self.txtArea.set_text(str(self.fmt.format(_attributes['area'])))
-            self.txtArea.handler_unblock(self._lst_handler_id[5])
-
-            self.txtWeight.handler_block(self._lst_handler_id[6])
-            self.txtWeight.set_text(
-                str(self.fmt.format(_attributes['weight'])))
-            self.txtWeight.handler_unblock(self._lst_handler_id[6])
-
-        self._do_set_sensitive()
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class InductorAssessmentResults(AssessmentResults):
@@ -438,7 +442,7 @@ class InductorAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Inductor assessment result view.
 
@@ -448,8 +452,7 @@ class InductorAssessmentResults(AssessmentResults):
                                 inductor.
         :param int subcategory_id: the ID of the inductor subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -472,12 +475,12 @@ class InductorAssessmentResults(AssessmentResults):
             bold=True,
             tooltip=_(u"The construction factor for the coil."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):
         """
         Load the inductive device assessment results wodgets.
 
@@ -486,20 +489,20 @@ class InductorAssessmentResults(AssessmentResults):
         """
         _return = False
 
-        _attributes = AssessmentResults.do_load_page(self)
+        _attributes = AssessmentResults.do_load_page(self, **kwargs)
 
         self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected inductor.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = AssessmentResults.do_set_sensitive(self)
+        _return = AssessmentResults.do_set_sensitive(self, **kwargs)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
@@ -515,7 +518,7 @@ class InductorAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the inductor gtk.Notebook() assessment results page.
 
@@ -525,13 +528,13 @@ class InductorAssessmentResults(AssessmentResults):
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtPiC, _x_pos, _y_pos[3])
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the inductor assessment input work view widgets.
 
@@ -540,11 +543,8 @@ class InductorAssessmentResults(AssessmentResults):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)

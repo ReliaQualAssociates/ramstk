@@ -136,7 +136,7 @@ def _initialize_loggers(configuration):
     _import_log = Utilities.create_logger("RTK.import", logging.WARNING,
                                           __import_log)
 
-    return _debug_log, _user_log, _import_log
+    return (_debug_log, _user_log, _import_log)
 
 
 class NoOptionError(Exception):
@@ -329,7 +329,7 @@ class Model(object):
         # Load dictionaries from RTKCategory.                                 #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKCategory).\
-                filter(RTKCategory.category_id == 'action').all():
+                filter(RTKCategory.cat_type == 'action').all():
             _attributes = _record.get_attributes()
             configuration.RTK_ACTION_CATEGORY[_record.category_id] = (
                 _attributes['name'], _attributes['description'],

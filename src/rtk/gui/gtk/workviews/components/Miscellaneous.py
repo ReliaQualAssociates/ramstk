@@ -50,18 +50,14 @@ class MiscAssessmentInputs(AssessmentInputs):
     +-------+----------------------------+
     """
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Miscellaneous assessment input view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                miscellaneous.
-        :param int subcategory_id: the ID of the miscellaneous subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -90,7 +86,7 @@ class MiscAssessmentInputs(AssessmentInputs):
             tooltip=_(u"The utilization factor (illuminate hours / equipment "
                       u"operate hours) of the lamp."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -104,7 +100,7 @@ class MiscAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.txtUtilization.connect('changed', self._on_focus_out, 4))
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):  # pylint: disable=unused-argument
         """
         Load the miscellaneous RKTComboBox()s.
 
@@ -118,7 +114,7 @@ class MiscAssessmentInputs(AssessmentInputs):
         """
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
         # Load the quality level RTKComboBox().
         self.cmbQuality.do_load_combo([["MIL-SPEC"], [_(u"Lower")]])
@@ -141,7 +137,41 @@ class MiscAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Miscellaneous assesment input widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        if self._subcategory_id == 4:  # Lamp
+            self.cmbApplication.handler_block(self._lst_handler_id[1])
+            self.cmbApplication.set_active(_attributes['application_id'])
+            self.cmbApplication.handler_unblock(self._lst_handler_id[1])
+        elif self._subcategory_id == 2:  # Filter
+            self.cmbType.handler_block(self._lst_handler_id[2])
+            self.cmbType.set_active(_attributes['type_id'])
+            self.cmbType.handler_unblock(self._lst_handler_id[2])
+
+        if _attributes['hazard_rate_method_id'] == 2:
+            if self._subcategory_id == 1:  # Crystal
+                self.txtFrequency.handler_block(self._lst_handler_id[3])
+                self.txtFrequency.set_text(
+                    str(self.fmt.format(_attributes['frequency_operating'])))
+                self.txtFrequency.handler_unblock(self._lst_handler_id[3])
+            elif self._subcategory_id == 4:  # Lamp
+                self.txtUtilization.handler_block(self._lst_handler_id[4])
+                self.txtUtilization.set_text(
+                    str(self.fmt.format(_attributes['duty_cycle'])))
+                self.txtUtilization.handler_unblock(self._lst_handler_id[4])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected miscellaneous.
 
@@ -177,18 +207,17 @@ class MiscAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
         Make the Misc hardware class gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._do_load_comboboxes(self._subcategory_id)
-        self._do_set_sensitive()
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
 
         # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.cmbApplication, _x_pos, _y_pos[1])
         self.put(self.cmbType, _x_pos, _y_pos[2])
@@ -293,7 +322,7 @@ class MiscAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the miscellaneous assessment input work view widgets.
 
@@ -302,34 +331,11 @@ class MiscAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        if self._subcategory_id == 4:  # Lamp
-            self.cmbApplication.handler_block(self._lst_handler_id[1])
-            self.cmbApplication.set_active(_attributes['application_id'])
-            self.cmbApplication.handler_unblock(self._lst_handler_id[1])
-        elif self._subcategory_id == 2:  # Filter
-            self.cmbType.handler_block(self._lst_handler_id[2])
-            self.cmbType.set_active(_attributes['type_id'])
-            self.cmbType.handler_unblock(self._lst_handler_id[2])
-
-        if _attributes['hazard_rate_method_id'] == 2:
-            if self._subcategory_id == 1:  # Crystal
-                self.txtFrequency.handler_block(self._lst_handler_id[3])
-                self.txtFrequency.set_text(
-                    str(self.fmt.format(_attributes['frequency_operating'])))
-                self.txtFrequency.handler_unblock(self._lst_handler_id[3])
-            elif self._subcategory_id == 4:  # Lamp
-                self.txtUtilization.handler_block(self._lst_handler_id[4])
-                self.txtUtilization.set_text(
-                    str(self.fmt.format(_attributes['duty_cycle'])))
-                self.txtUtilization.handler_unblock(self._lst_handler_id[4])
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class MiscAssessmentResults(AssessmentResults):
@@ -360,18 +366,14 @@ class MiscAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>U</sub>\u03C0<sub>A</sub>\u03C0<sub>E</sub></span>"
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Miscellaneous assessment result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                miscellaneous.
-        :param int subcategory_id: the ID of the miscellaneous subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -400,12 +402,12 @@ class MiscAssessmentResults(AssessmentResults):
             bold=True,
             tooltip=_(u"The application factor for the lamp."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):
         """
         Load the miscellaneous devices assessment results page.
 
@@ -414,7 +416,7 @@ class MiscAssessmentResults(AssessmentResults):
         """
         _return = False
 
-        _attributes = AssessmentResults.do_load_page(self)
+        _attributes = AssessmentResults.do_load_page(self, **kwargs)
 
         self.txtPiU.set_text(str(self.fmt.format(_attributes['piU'])))
         self.txtPiA.set_text(str(self.fmt.format(_attributes['piA'])))
@@ -427,14 +429,14 @@ class MiscAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):
         """
-        Set widget sensitivity as needed for the selected miscellaneous.
+        Set widget sensitivity as needed for the selected Misc hardware.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = AssessmentResults.do_set_sensitive(self)
+        _return = AssessmentResults.do_set_sensitive(self, **kwargs)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
@@ -456,7 +458,7 @@ class MiscAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the Misc hardware item gtk.Notebook() assessment results page.
 
@@ -466,14 +468,14 @@ class MiscAssessmentResults(AssessmentResults):
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtPiU, _x_pos, _y_pos[3])
         self.put(self.txtPiA, _x_pos, _y_pos[4])
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the miscellaneous assessment input work view widgets.
 
@@ -482,11 +484,8 @@ class MiscAssessmentResults(AssessmentResults):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)

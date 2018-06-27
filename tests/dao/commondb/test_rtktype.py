@@ -15,7 +15,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
-ATTRIBUTES = {'type_id':1, 'code':'Type Code', 'description':'PLN', 'type_type':'unknown'}
+ATTRIBUTES = {'type_id':1, 'code':'PLN', 'description':'Planning', 'type_type':'incident'}
 
 
 @pytest.mark.integration
@@ -30,9 +30,9 @@ def test_rtktype_create(test_common_dao):
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_type'
     assert DUT.type_id == 1
-    assert DUT.code == 'Type Code'
-    assert DUT.description == 'PLN'
-    assert DUT.type_type == 'unknown'
+    assert DUT.code == 'PLN'
+    assert DUT.description == 'Planning'
+    assert DUT.type_type == 'incident'
 
 
 @pytest.mark.integration

@@ -42,14 +42,15 @@ class FMEA(RTKWorkView):
 
     _lst_control_type = [_(u"Prevention"), _(u"Detection")]
 
-    def __init__(self, controller, module='FMEA'):
+    def __init__(self, controller, **kwargs):
         """
         Initialize the Work View for the FMEA.
 
         :param controller: the RTK master data controller instance.
         :type controller: :class:`rtk.RTK.RTK`
         """
-        RTKWorkView.__init__(self, controller, module=module)
+        _module = kwargs['module']
+        RTKWorkView.__init__(self, controller, module=_module)
 
         # Initialize private dictionary attributes.
         self._dic_icons['mode'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
@@ -69,8 +70,7 @@ class FMEA(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = None
-        self._functional = bool(module == 'FFMEA')
+        self._functional = bool(_module == 'FFMEA')
         self._item_hazard_rate = 0.0
 
         # Initialize public dictionary attributes.
@@ -102,7 +102,7 @@ class FMEA(RTKWorkView):
         self.txtItemCriticality.modify_base(gtk.STATE_SELECTED, _bg_color)
         self.txtItemCriticality.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
 
-    def _do_get_cell_model(self, column):
+    def _get_cell_model(self, column):
         """
         Retrieve the gtk.CellRendererCombo() gtk.TreeModel().
 
@@ -117,7 +117,7 @@ class FMEA(RTKWorkView):
 
         return _model
 
-    def _do_refresh_view(self, row):
+    def _do_refresh_view(self, model, path, row):
         """
         Refresh the (D)FME(C)A Work View after a successful calculation.
 
@@ -126,43 +126,24 @@ class FMEA(RTKWorkView):
         """
         _return = False
 
-        _model = self.treeview.get_model()
+        #_model = self.treeview.get_model()
 
         if row is not None:
             if self._functional:
-                _node_id = _model.get_value(row, 18)
+                _node_id = model.get_value(row, 18)
             else:
-                _node_id = _model.get_value(row, 43)
+                _node_id = model.get_value(row, 43)
             _level = self._get_level(_node_id)
-            _node = self._dtc_data_controller.request_select(_node_id)
+            _node = self._dtc_data_controller.request_do_select(_node_id)
 
             if _level == 'mode':
-                _model.set_value(row, self._lst_col_order[17],
+                model.set_value(row, self._lst_col_order[17],
                                  _node.mode_hazard_rate)
-                _model.set_value(row, self._lst_col_order[19],
+                model.set_value(row, self._lst_col_order[19],
                                  _node.mode_criticality)
             elif _level == 'mechanism' or _level == 'cause':
-                _model.set_value(row, self._lst_col_order[24], _node.rpn)
-                _model.set_value(row, self._lst_col_order[37], _node.rpn_new)
-
-            if _model.iter_has_child(row) and _level != 'cause':
-                _row = _model.iter_children(row)
-            else:
-                _row = _model.iter_next(row)
-
-            self._do_refresh_view(_row)
-
-        # For hardware FMECA needs to display the item criticality.
-        if not self._functional:
-            _str_item_crit = ""
-            _dic_item_crit = self._dtc_data_controller.request_item_criticality(
-            )
-            for _key in _dic_item_crit:
-                _str_item_crit = (_str_item_crit + _(u"{0:s}: {1:g}\n").format(
-                    _key, _dic_item_crit[_key]))
-
-            self.txtItemCriticality.do_get_buffer().set_text(
-                str(_str_item_crit))
+                model.set_value(row, self._lst_col_order[24], _node.rpn)
+                model.set_value(row, self._lst_col_order[37], _node.rpn_new)
 
         return _return
 
@@ -178,15 +159,24 @@ class FMEA(RTKWorkView):
 
         _criticality = self.chkCriticality.get_active()
         _rpn = self.chkRPN.get_active()
-        if not self._dtc_data_controller.request_calculate(
-                self._item_hazard_rate, criticality=_criticality, rpn=_rpn):
+        if not self._dtc_data_controller.request_do_calculate(
+                None, item_hr=self._item_hazard_rate, criticality=_criticality, rpn=_rpn):
             _model = self.treeview.get_model()
-            _row = _model.get_iter_root()
-            while _row is not None:
-                self._do_refresh_view(_row)
-                _row = _model.iter_next(_row)
+            _model.foreach(self._do_refresh_view)
         else:
             _return = True
+
+        # For hardware FMECA needs to display the item criticality.
+        if not self._functional:
+            _str_item_crit = ""
+            _dic_item_crit = self._dtc_data_controller.request_item_criticality(
+            )
+            for _key in _dic_item_crit:
+                _str_item_crit = (_str_item_crit + _(u"{0:s}: {1:g}\n").format(
+                    _key, _dic_item_crit[_key]))
+
+            self.txtItemCriticality.do_get_buffer().set_text(
+                str(_str_item_crit))
 
         return _return
 
@@ -208,7 +198,7 @@ class FMEA(RTKWorkView):
 
         # Delete the selected entity from the RTK Program database and then
         # refresh the TreeView.
-        if not self._dtc_data_controller.request_delete(_node_id):
+        if not self._dtc_data_controller.request_do_delete(_node_id):
             if self._functional:
                 self._on_select(module_id=self._function_id)
             else:
@@ -217,26 +207,6 @@ class FMEA(RTKWorkView):
             _return = True
 
         return _return
-
-    def _do_request_insert_sibling(self, __button):
-        """
-        Request to insert a new entity to the FMEA at the same level.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :return: False if sucessful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=True)
-
-    def _do_request_insert_child(self, __button):
-        """
-        Request to insert a new entity to the FMEA at the next level.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :return: False if sucessful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=False)
 
     def do_request_insert(self, **kwargs):
         """
@@ -290,6 +260,43 @@ class FMEA(RTKWorkView):
 
         return _return
 
+    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
+        """
+        Request to insert a new entity to the FMEA at the next level.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :return: False if sucessful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=False)
+
+    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
+        """
+        Request to insert a new entity to the FMEA at the same level.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :return: False if sucessful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=True)
+
+    def _do_request_update(self, __button):
+        """
+        Request to save the currently selected entity in the FMEA.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _model, _row = self.treeview.get_selection().get_selected()
+        if self._functional:
+            _node_id = _model.get_value(_row, 18)
+        else:
+            _node_id = _model.get_value(_row, 43)
+
+        return self._dtc_data_controller.request_do_update(_node_id)
+
     def _do_request_update_all(self, __button):
         """
         Request to save all the entities in the FMEA.
@@ -299,9 +306,9 @@ class FMEA(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the FMEA class Work View.
 
@@ -326,12 +333,18 @@ class FMEA(RTKWorkView):
             'insert_sibling', 'insert_child', 'remove', 'calculate', 'save'
         ]
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
-    def _make_treeview(self):
+    def _make_page(self):
         """
         Make the FMEA RTKTreeview().
 
@@ -447,7 +460,7 @@ class FFMEA(FMEA):
     and Effects Analysis (FFMEA). The attributes of a FFMEA Work View are:
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Functional FMEA.
 
@@ -468,8 +481,8 @@ class FFMEA(FMEA):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['ffmea']
+        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['ffmea'])
         _fmt_path = "/root/tree[@name='FFMEA']/column"
         _tooltip = _(u"Displays the Functional Failure Mode and Effects "
                      u"Analysis (FFMEA) for the currently selected "
@@ -496,7 +509,7 @@ class FFMEA(FMEA):
         self.hbx_tab_label.pack_start(_label)
 
         self.pack_start(self._make_buttonbox(), False, True)
-        self.pack_end(self._make_treeview(), True, True)
+        self.pack_end(self._make_page(), True, True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedFunction')
@@ -597,7 +610,8 @@ class FFMEA(FMEA):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _entity = self._dtc_data_controller.request_select(model[path][18])
+            _entity = self._dtc_data_controller.request_do_select(
+                model[path][18])
 
             if _entity.is_mode:
                 _entity.description = model[path][self._lst_col_order[1]]
@@ -627,17 +641,17 @@ class FFMEA(FMEA):
 
         return _return
 
-    def _do_load_tree(self, tree, row=None):
+    def _do_load_page(self, **kwargs):
         """
         Iterate through the tree and load the Functional FMEA RTKTreeView().
 
-        :param tree: the treelib Tree() holding the (partial) FMEA to load.
-        :param row: the parent gtk.Iter() of the entity being added to the
-                    FMEA RTKTreeView().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _user_msg, _debug_msg); the error code, message
+                 to be displayed to the user, and the message to be written to
+                 the debug log.
+        :rtype: (int, str, str)
         """
-        _return = False
+        _tree = kwargs['tree']
+        _row = kwargs['row']
         _error_code = 0
         _debug_msg = ''
         _user_msg = ''
@@ -645,7 +659,7 @@ class FFMEA(FMEA):
         _data = []
         _model = self.treeview.get_model()
 
-        _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
+        _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
         try:
             if _entity.is_mode:
@@ -659,7 +673,7 @@ class FFMEA(FMEA):
                     _entity.remarks, _icon, _node.identifier
                 ]
                 _row = None
-            elif _entity.is_cause and row is not None:
+            elif _entity.is_cause and _row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['cause'], 22, 22)
                 _data = [
@@ -667,7 +681,7 @@ class FFMEA(FMEA):
                     '', '', '', '', '', 0, '', 0, '', '', _icon,
                     _node.identifier
                 ]
-            elif _entity.is_control and row is not None:
+            elif _entity.is_control and _row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['control'], 22, 22)
                 _data = [
@@ -675,7 +689,7 @@ class FFMEA(FMEA):
                     '', '', '', '', '', '', 0, '', 0, '', '', _icon,
                     _node.identifier
                 ]
-            elif _entity.is_action and row is not None:
+            elif _entity.is_action and _row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['action'], 22, 22)
                 _data = [
@@ -687,9 +701,8 @@ class FFMEA(FMEA):
                     _icon, _node.identifier
                 ]
 
-            # ISSUE #88: Handle Errors in FMEA WorkView _do_load_tree() Method
             try:
-                _row = _model.append(row, _data)
+                _new_row = _model.append(_row, _data)
             except TypeError:
                 _error_code = 1
                 _user_msg = _(u"One or more Functional FMEA line items had "
@@ -700,7 +713,7 @@ class FFMEA(FMEA):
                               "columns.".format(
                                   str(_node.identifier),
                                   str(self._function_id)))
-                _row = None
+                _new_row = None
             except ValueError:
                 _error_code = 1
                 _user_msg = _(
@@ -710,7 +723,7 @@ class FFMEA(FMEA):
                     "RTK ERROR: Too few fields for FMEA ID {0:s} for Function "
                     "ID {1:s}.".format(
                         str(_node.identifier), str(self._function_id)))
-                _row = None
+                _new_row = None
 
         except AttributeError:
             if _node.identifier != 0:
@@ -723,13 +736,21 @@ class FFMEA(FMEA):
                     "for Function ID {1:s}.".format(
                         str(_node.identifier), str(self._function_id)))
 
-            _row = None
+            _new_row = None
 
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(_child_tree, _row)
+        for _n in _tree.children(_node.identifier):
+            _child_tree = _tree.subtree(_n.identifier)
+            self._do_load_page(tree=_child_tree, row=_new_row)
 
-        return _error_code, _user_msg, _debug_msg
+        _row = _model.get_iter_root()
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
+
+        return (_error_code, _user_msg, _debug_msg)
 
     def _do_request_insert(self, **kwargs):
         """
@@ -741,10 +762,10 @@ class FFMEA(FMEA):
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
+        _sibling = kwargs['sibling']
         _return = False
         _choose = False
         _undefined = False
-        _sibling = kwargs['sibling']
 
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
@@ -818,7 +839,7 @@ class FFMEA(FMEA):
 
         return _level
 
-    def _make_treeview(self):
+    def _make_page(self):
         """
         Make the (D)FME(C)A RTKTreeview().
 
@@ -826,20 +847,20 @@ class FFMEA(FMEA):
         :rtype: :class:`gtk.Frame`
         """
         # Load the severity classes into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[7])
+        _model = self._get_cell_model(self._lst_col_order[7])
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_SEVERITY:
             _severity = self._mdcRTK.RTK_CONFIGURATION.RTK_SEVERITY[_item][1]
             _model.append((_severity, ))
 
         # Load the users into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[8])
+        _model = self._get_cell_model(self._lst_col_order[8])
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_USERS:
             _user = self._mdcRTK.RTK_CONFIGURATION.RTK_USERS[_item][0] + ', ' \
                     + self._mdcRTK.RTK_CONFIGURATION.RTK_USERS[_item][1]
             _model.append((_user, ))
 
         # Load the status values into the gtk.CellRendererCombo()
-        _model = self._do_get_cell_model(self._lst_col_order[10])
+        _model = self._get_cell_model(self._lst_col_order[10])
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_STATUS:
             _status = \
                 self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_STATUS[_item][0]
@@ -866,38 +887,33 @@ class FFMEA(FMEA):
                 _cell[0].connect('edited', self._do_edit_cell, i,
                                  self.treeview.get_model())
 
-        return FMEA._make_treeview(self)
+        return FMEA._make_page(self)
 
-    def _on_select(self, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to selectedFunction signal from pypubsub.
 
-        :param int function_id: the ID of the Function that was selected.
         :return: None
         :rtype: None
         """
-        self._function_id = kwargs['module_id']
+        self._function_id = module_id
 
         _model = self.treeview.get_model()
         _model.clear()
 
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['ffmea']
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers['ffmea']
 
         _fmea = self._dtc_data_controller.request_do_select_all(
-            self._function_id, functional=True)
-        (_error_code, _user_msg, _debug_msg) = self._do_load_tree(_fmea)
-
-        _row = _model.get_iter_root()
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
+            parent_id=self._function_id, functional=True)
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page(
+            tree=_fmea, row=None)
 
         RTKWorkView.on_select(
             self,
-            title=_(u"Analyzing FMEA for Function ID {0:d}").format(
+            title=_(u"Analyzing Failure Modes for Function ID {0:d}").format(
                 self._function_id),
             error_code=_error_code,
             user_msg=_user_msg,
@@ -915,7 +931,7 @@ class DFMECA(FMEA):
     a (D)FME(C)A Work View are:
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Hardware (D)FME(C)A.
 
@@ -937,8 +953,8 @@ class DFMECA(FMEA):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['dfmeca']
+        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['dfmeca'])
         _fmt_path = "/root/tree[@name='DFMECA']/column"
         _tooltip = _(u"Displays the (Design) Failure Mode and Effects "
                      u"(and Criticality) Analysis [(D)FME(C)A] for the "
@@ -971,7 +987,7 @@ class DFMECA(FMEA):
         self.hbx_tab_label.pack_start(_label)
 
         self.pack_start(self._make_buttonbox(), False, True)
-        self.pack_end(self._make_dfmea(), True, True)
+        self.pack_end(self._make_methodbox(), True, True)
         self.show_all()
 
         pub.subscribe(self._do_load_missions, 'selectedRevision')
@@ -1127,7 +1143,8 @@ class DFMECA(FMEA):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _entity = self._dtc_data_controller.request_select(model[path][43])
+            _entity = self._dtc_data_controller.request_do_select(
+                model[path][43])
 
             if _entity.is_mode:
                 _entity.description = model[path][self._lst_col_order[1]]
@@ -1217,7 +1234,7 @@ class DFMECA(FMEA):
         """
         _return = False
 
-        _model = self._do_get_cell_model(self._lst_col_order[3])
+        _model = self._get_cell_model(self._lst_col_order[3])
         _model.clear()
         _model.append(('', ))
 
@@ -1239,8 +1256,8 @@ class DFMECA(FMEA):
         """
         _return = False
 
-        _tree = self._mdcRTK.dic_controllers['profile'].request_select_all(
-            module_id)
+        _tree = self._mdcRTK.dic_controllers['profile'].request_do_select_all(
+            revision_id=module_id)
 
         _missions = _tree.children(0)
         for _mission in _missions:
@@ -1251,7 +1268,7 @@ class DFMECA(FMEA):
                 _phases.append(_phase.data.description)
             self._dic_mission_phases[_mission.data.description] = _phases
 
-        _model = self._do_get_cell_model(self._lst_col_order[2])
+        _model = self._get_cell_model(self._lst_col_order[2])
         _model.clear()
         _model.append(('', ))
 
@@ -1263,22 +1280,25 @@ class DFMECA(FMEA):
 
         return _return
 
-    def _do_load_tree(self, tree, row=None):
+    def _do_load_page(self, **kwargs):
         """
         Iterate through the tree and load the Hardware FMEA RTKTreeView().
 
-        :param tree: the treelib Tree() holding the (partial) FMEA to load.
-        :param row: the parent gtk.Iter() of the entity being added to the
-                    FMEA RTKTreeView().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _user_msg, _debug_msg); the error code, message
+                 to be displayed to the user, and the message to be written to
+                 the debug log.
+        :rtype: (int, str, str)
         """
-        _return = False
+        _tree = kwargs['tree']
+        _row = kwargs['row']
+        _error_code = 0
+        _user_msg = ""
+        _debug_msg = ""
 
         _data = []
         _model = self.treeview.get_model()
 
-        _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
+        _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
         _entity = _node.data
         if _entity is not None:
             try:
@@ -1356,7 +1376,7 @@ class DFMECA(FMEA):
                     _occurrence_new, _detection_new, _entity.rpn_new, 0, 0, 0,
                     '', _icon, _node.identifier
                 ]
-            elif _entity.is_control and row is not None:
+            elif _entity.is_control and _row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['control'], 22, 22)
                 _data = [
@@ -1367,7 +1387,7 @@ class DFMECA(FMEA):
                     _occurrence_new, _detection_new, 0, 0, 0, 0, '', _icon,
                     _node.identifier
                 ]
-            elif _entity.is_action and row is not None:
+            elif _entity.is_action and _row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['action'], 22, 22)
                 _data = [
@@ -1383,7 +1403,7 @@ class DFMECA(FMEA):
                 ]
 
             try:
-                _row = _model.append(row, _data)
+                _new_row = _model.append(_row, _data)
             except TypeError:
                 _error_code = 1
                 _user_msg = _(u"One or more Hardware FMEA line items had "
@@ -1394,7 +1414,7 @@ class DFMECA(FMEA):
                               "columns.".format(
                                   str(_node.identifier),
                                   str(self._hardware_id)))
-                _row = None
+                _new_row = None
             except ValueError:
                 _error_code = 1
                 _user_msg = _(
@@ -1404,7 +1424,7 @@ class DFMECA(FMEA):
                     "RTK ERROR: Too few fields for FMEA ID {0:s} for Hardware "
                     "ID {1:s}.".format(
                         str(_node.identifier), str(self._hardware_id)))
-                _row = None
+                _new_row = None
 
         except AttributeError:
             if _node.identifier != 0:
@@ -1416,13 +1436,21 @@ class DFMECA(FMEA):
                     "RTK ERROR: There is no data package for FMEA ID {0:s} "
                     "for Hardware ID {1:s}.".format(
                         str(_node.identifier), str(self._hardware_id)))
-            _row = None
+            _new_row = None
 
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(_child_tree, _row)
+        for _n in _tree.children(_node.identifier):
+            _child_tree = _tree.subtree(_n.identifier)
+            self._do_load_page(tree=_child_tree, row=_new_row)
 
-        return None
+        _row = _model.get_iter_root()
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
+
+        return (_error_code, _user_msg, _debug_msg)
 
     def _do_request_insert(self, **kwargs):
         """
@@ -1431,10 +1459,10 @@ class DFMECA(FMEA):
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
+        _sibling = kwargs['sibling']
         _return = False
         _choose = False
         _undefined = False
-        _sibling = kwargs['sibling']
 
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
@@ -1544,8 +1572,12 @@ class DFMECA(FMEA):
         """
         Retrieve the integer value of the RPN Occurence score based on name.
 
-        :param str,int occurrence: the noun name given to the RPN Occurence score (score=True) or the integer value of the RPN Occurrence score.
-        :keyword bool score: indicates whether to return the RPN Occurrence score for passed noun name (default) or the noun name of the passed RPN Occurence score.
+        :param str,int occurrence: the noun name given to the RPN Occurence
+                                   score (score=True) or the integer value of
+                                   the RPN Occurrence score.
+        :keyword bool score: indicates whether to return the RPN Occurrence
+                             score for passed noun name (default) or the noun
+                             name of the passed RPN Occurence score.
         :return: _rpn_occurrence
         :rtype: int or str depending on value of keyword score.
         """
@@ -1573,8 +1605,12 @@ class DFMECA(FMEA):
         """
         Retrieve the integer value of the RPN Occurence score based on name.
 
-        :param str,int detection: the noun name given to the RPN Occurence score (score=True) or the integer value of the RPN Detection score.
-        :keyword bool score: indicates whether to return the RPN Detection score for passed noun name (default) or the noun name of the passed RPN Occurence score.
+        :param str,int detection: the noun name given to the RPN Occurence
+                                  score (score=True) or the integer value of
+                                  the RPN Detection score.
+        :keyword bool score: indicates whether to return the RPN Detection
+                             score for passed noun name (default) or the noun
+                             name of the passed RPN Occurence score.
         :return: _rpn_detection
         :rtype: int or str depending on value of keyword score.
         """
@@ -1598,7 +1634,7 @@ class DFMECA(FMEA):
 
         return _rpn_detection
 
-    def _make_dfmea(self):
+    def _make_methodbox(self):
         """
         Make the (D)FME(C)A option box.
 
@@ -1614,7 +1650,7 @@ class DFMECA(FMEA):
         _fixed.put(self.chkRPN, 5, 35)
         _fixed.put(self.txtItemCriticality.scrollwindow, 550, 5)
 
-        _vbox.pack_end(self._make_treeview(), True, True)
+        _vbox.pack_end(self._make_page(), True, True)
 
         # By default, calculate both Task 102 and RPN.
         self.chkCriticality.set_active(True)
@@ -1622,7 +1658,7 @@ class DFMECA(FMEA):
 
         return _vbox
 
-    def _make_treeview(self):
+    def _make_page(self):
         """
         Make the (D)FME(C)A RTKTreeview().
 
@@ -1630,14 +1666,14 @@ class DFMECA(FMEA):
         :rtype: :class:`gtk.Frame`
         """
         # Load the severity classes into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[12])
+        _model = self._get_cell_model(self._lst_col_order[12])
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_SEVERITY:
             _model.append(
                 (self._mdcRTK.RTK_CONFIGURATION.RTK_SEVERITY[_item][1], ))
 
         # Load the RPN severity classes into the gtk.CellRendererCombo().
         for _position in [21, 34]:
-            _model = self._do_get_cell_model(self._lst_col_order[_position])
+            _model = self._get_cell_model(self._lst_col_order[_position])
             _model.append(('', ))
             for _item in sorted(
                     self._mdcRTK.RTK_CONFIGURATION.RTK_RPN_SEVERITY):
@@ -1647,7 +1683,7 @@ class DFMECA(FMEA):
 
         # Load the RPN occurrence classes into the gtk.CellRendererCombo().
         for _position in [22, 35]:
-            _model = self._do_get_cell_model(self._lst_col_order[_position])
+            _model = self._get_cell_model(self._lst_col_order[_position])
             _model.append(('', ))
             for _item in sorted(
                     self._mdcRTK.RTK_CONFIGURATION.RTK_RPN_OCCURRENCE):
@@ -1657,7 +1693,7 @@ class DFMECA(FMEA):
 
         # Load the RPN detection classes into the gtk.CellRendererCombo().
         for _position in [23, 36]:
-            _model = self._do_get_cell_model(self._lst_col_order[_position])
+            _model = self._get_cell_model(self._lst_col_order[_position])
             _model.append(('', ))
             for _item in sorted(
                     self._mdcRTK.RTK_CONFIGURATION.RTK_RPN_DETECTION):
@@ -1666,31 +1702,31 @@ class DFMECA(FMEA):
                         1], ))
 
         # Load the failure probabilities into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[14])
+        _model = self._get_cell_model(self._lst_col_order[14])
         for _item in RTK_FAILURE_PROBABILITY:
             _model.append((_item[0], ))
 
         # Load the control type gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[20])
+        _model = self._get_cell_model(self._lst_col_order[20])
         for _item in RTK_CONTROL_TYPES:
             _model.append((_item, ))
 
         # Load the action category gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[25])
+        _model = self._get_cell_model(self._lst_col_order[25])
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_CATEGORY:
             _model.append(
-                (self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_CATEGORY[_item][0],
+                (self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_CATEGORY[_item][1],
                  ))
 
         # Load the users into the gtk.CellRendererCombo().
-        _model = self._do_get_cell_model(self._lst_col_order[26])
+        _model = self._get_cell_model(self._lst_col_order[26])
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_USERS:
             _user = self._mdcRTK.RTK_CONFIGURATION.RTK_USERS[_item][0] + \
                     ', ' + self._mdcRTK.RTK_CONFIGURATION.RTK_USERS[_item][1]
             _model.append((_user, ))
 
         # Load the status values into the gtk.CellRendererCombo()
-        _model = self._do_get_cell_model(self._lst_col_order[28])
+        _model = self._get_cell_model(self._lst_col_order[28])
         for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_STATUS:
             _model.append(
                 (self._mdcRTK.RTK_CONFIGURATION.RTK_ACTION_STATUS[_item][0], ))
@@ -1711,7 +1747,7 @@ class DFMECA(FMEA):
                 _cell[0].connect('edited', self._do_edit_cell, i,
                                  self.treeview.get_model())
 
-        return FMEA._make_treeview(self)
+        return FMEA._make_page(self)
 
     def _on_select(self, **kwargs):
         """
@@ -1723,24 +1759,29 @@ class DFMECA(FMEA):
         """
         self._hardware_id = kwargs['module_id']
         self._item_hazard_rate = self._mdcRTK.dic_controllers[
-            'hardware'].request_select(self._hardware_id,
-                                       'reliability').hazard_rate_logistics
+            'hardware'].request_do_select(
+                node_id=self._hardware_id,
+                table='reliability').hazard_rate_logistics
 
         _model = self.treeview.get_model()
         _model.clear()
 
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['dfmeca']
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers['dfmeca']
 
         _fmea = self._dtc_data_controller.request_do_select_all(
-            self._hardware_id, functional=False)
-        self._do_load_tree(_fmea)
+            parent_id=self._hardware_id, functional=False)
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page(
+            tree=_fmea, row=None)
 
-        _row = _model.get_iter_root()
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
+        RTKWorkView.on_select(
+            self,
+            title=_(u"Analyzing Failure Modes for Hardware ID "
+                    u"{0:d}").format(self._hardware_id),
+            error_code=_error_code,
+            user_msg=_user_msg,
+            debug_msg=_debug_msg)
 
         return None

@@ -7,6 +7,7 @@
 """SimilarItem Work View."""
 
 from pubsub import pub
+from sortedcontainers import SortedDict
 
 # Import other RTK modules.
 from rtk.gui.gtk import rtk
@@ -36,7 +37,7 @@ class SimilarItem(RTKWorkView):
     +-------+-------------------------------------------+
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Similar Item.
 
@@ -46,8 +47,8 @@ class SimilarItem(RTKWorkView):
         RTKWorkView.__init__(self, controller, module='SimilarItem')
 
         # Initialize private dictionary attributes.
-        self._dic_icons[
-            'edit'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/edit.png'
+        self._dic_icons['edit'] = (
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/edit.png')
         self._dic_quality = {
             'Space': 1,
             'Full Military': 2,
@@ -79,8 +80,9 @@ class SimilarItem(RTKWorkView):
         # Initialize public scalar attributes.
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['similaritem']
+        _fmt_file = (
+            controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
+            controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['similaritem'])
         _fmt_path = "/root/tree[@name='SimilarItem']/column"
         _tooltip = _(u"Displays the Similar Item Analysis for the currently "
                      u"selected Hardware item.")
@@ -123,12 +125,12 @@ class SimilarItem(RTKWorkView):
         self.pack_start(self._make_buttonbox(), False, True)
         _hbox = gtk.HBox()
         _hbox.pack_start(self._make_methodbox(), False, True)
-        _hbox.pack_end(self._make_treeview(), True, True)
+        _hbox.pack_end(self._make_page(), True, True)
         self.pack_end(_hbox, True, True)
         self.show_all()
 
         #pub.subscribe(self._do_refresh_view, 'calculatedSimilarItem')
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
+        #pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedHardware')
 
     def _do_change_row(self, treeview):
@@ -158,7 +160,7 @@ class SimilarItem(RTKWorkView):
 
         return _return
 
-    def _do_edit_cell(self, __cell, path, new_text, position, model):
+    def _do_edit_cell(self, __cell, path, new_text, position, model):  # pylint: disable=too-many-branches
         """
         Handle edits of the Similar Item Work View RTKTreeview().
 
@@ -178,7 +180,7 @@ class SimilarItem(RTKWorkView):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _similaritem = self._dtc_data_controller.request_select(
+            _similaritem = self._dtc_data_controller.request_do_select(
                 self._hardware_id)
 
             if position == self._lst_col_order[4]:
@@ -299,97 +301,143 @@ class SimilarItem(RTKWorkView):
 
         return _return
 
-    def _do_load_tree(self, nodes):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
         Iterate through the tree and load the Similar Item RTKTreeView().
 
-        :param nodes: a list of treelib Node()s to load.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _user_msg, _debug_msg); the error code, message
+                 to be displayed to the user, and the message to be written to
+                 the debug log.
+        :rtype: (int, str, str)
         """
-        _return = False
+        _tree = None
+        _error_code = 0
+        _user_msg = ""
+        _debug_msg = ""
 
         _data = []
+
         _model = self.treeview.get_model()
         _model.clear()
 
-        i = 1
-        for _node in nodes:
-            _entity = _node.data
-            _node_id = _node.identifier
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
+        if _parent is not None:
+            self.cmbSimilarItemMethod.handler_block(self._lst_handler_id[2])
+            self.cmbSimilarItemMethod.set_active(_parent._method_id)
+            self.cmbSimilarItemMethod.handler_unblock(self._lst_handler_id[2])
 
-            _assembly = self._dtc_hw_controller.request_get_attributes(
-                _node_id)['description']
-            _hazard_rate = self._dtc_hw_controller.request_select(
-                _node_id, 'reliability').hazard_rate_logistics
+            _tree = self._dtc_data_controller.request_do_select_children(
+                self._parent_id)
 
-            try:
-                _quality_from = self._dic_quality.keys()[
-                    self._dic_quality.values().index(_entity.quality_from_id)]
-            except ValueError:
-                _quality_from = ''
-            try:
-                _quality_to = self._dic_quality.keys()[
-                    self._dic_quality.values().index(_entity.quality_to_id)]
-            except ValueError:
-                _quality_to = ''
-            try:
-                _environment_from = self._dic_environment.keys()[
-                    self._dic_environment.values().index(
-                        _entity.environment_from_id)]
-            except ValueError:
-                _environment_from = ''
-            try:
-                _environment_to = self._dic_environment.keys()[
-                    self._dic_environment.values().index(
-                        _entity.environment_to_id)]
-            except ValueError:
-                _environment_to = ''
+        if _tree is not None:
+            i = 1
+            for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
+                try:
+                    _entity = _node.data
+                    _node_id = _node.identifier
 
-            _data = [
-                _entity.revision_id, _entity.hardware_id, _assembly,
-                _hazard_rate, _quality_from, _quality_to, _environment_from,
-                _environment_to, _entity.temperature_from,
-                _entity.temperature_to, _entity.change_description_1,
-                _entity.change_factor_1, _entity.change_description_2,
-                _entity.change_factor_2, _entity.change_description_3,
-                _entity.change_factor_3, _entity.change_description_4,
-                _entity.change_factor_4, _entity.change_description_5,
-                _entity.change_factor_5, _entity.change_description_6,
-                _entity.change_factor_6, _entity.change_description_7,
-                _entity.change_factor_7, _entity.change_description_8,
-                _entity.change_factor_8, _entity.change_description_9,
-                _entity.change_factor_9, _entity.change_description_10,
-                _entity.change_factor_10, _entity.function_1,
-                _entity.function_2, _entity.function_3, _entity.function_4,
-                _entity.function_5, _entity.result_1, _entity.result_2,
-                _entity.result_3, _entity.result_4, _entity.result_5,
-                _entity.user_blob_1, _entity.user_blob_2, _entity.user_blob_3,
-                _entity.user_blob_4, _entity.user_blob_5, _entity.user_float_1,
-                _entity.user_float_2, _entity.user_float_3,
-                _entity.user_float_4, _entity.user_float_5, _entity.user_int_1,
-                _entity.user_int_2, _entity.user_int_3, _entity.user_int_4,
-                _entity.user_int_5, _entity.parent_id
-            ]
+                    _assembly = self._dtc_hw_controller.request_get_attributes(
+                        _node_id)['description']
+                    _hazard_rate = self._dtc_hw_controller.request_do_select(
+                        _node_id, 'reliability').hazard_rate_logistics
 
-            try:
-                _row = _model.append(None, _data)
-            except TypeError:
-                print "FIXME: Handle TypeError in " \
-                      "gtk.gui.workviews.SimilarItem.SimilarItem._do_load_tree."
-                _return = True
-            except ValueError:
-                print "FIXME: Handle ValueError in " \
-                      "gtk.gui.workviews.SimilarItem.SimilarItem._do_load_tree."
-                _return = True
-            except AttributeError:
-                print "FIXME: Handle AttributeError in " \
-                      "gtk.gui.workviews.SimilarItem.SimilarItem._do_load_tree."
-                _return = True
+                    try:
+                        _quality_from = self._dic_quality.keys()[
+                            self._dic_quality.values().index(
+                                _entity.quality_from_id)]
+                    except ValueError:
+                        _quality_from = ''
+                    try:
+                        _quality_to = self._dic_quality.keys()[
+                            self._dic_quality.values().index(
+                                _entity.quality_to_id)]
+                    except ValueError:
+                        _quality_to = ''
+                    try:
+                        _environment_from = self._dic_environment.keys()[
+                            self._dic_environment.values().index(
+                                _entity.environment_from_id)]
+                    except ValueError:
+                        _environment_from = ''
+                    try:
+                        _environment_to = self._dic_environment.keys()[
+                            self._dic_environment.values().index(
+                                _entity.environment_to_id)]
+                    except ValueError:
+                        _environment_to = ''
 
-            i += 1
+                    _data = [
+                        _entity.revision_id, _entity.hardware_id, _assembly,
+                        _hazard_rate, _quality_from, _quality_to,
+                        _environment_from, _environment_to,
+                        _entity.temperature_from, _entity.temperature_to,
+                        _entity.change_description_1, _entity.change_factor_1,
+                        _entity.change_description_2, _entity.change_factor_2,
+                        _entity.change_description_3, _entity.change_factor_3,
+                        _entity.change_description_4, _entity.change_factor_4,
+                        _entity.change_description_5, _entity.change_factor_5,
+                        _entity.change_description_6, _entity.change_factor_6,
+                        _entity.change_description_7, _entity.change_factor_7,
+                        _entity.change_description_8, _entity.change_factor_8,
+                        _entity.change_description_9, _entity.change_factor_9,
+                        _entity.change_description_10,
+                        _entity.change_factor_10, _entity.function_1,
+                        _entity.function_2, _entity.function_3,
+                        _entity.function_4, _entity.function_5,
+                        _entity.result_1, _entity.result_2, _entity.result_3,
+                        _entity.result_4, _entity.result_5,
+                        _entity.user_blob_1, _entity.user_blob_2,
+                        _entity.user_blob_3, _entity.user_blob_4,
+                        _entity.user_blob_5, _entity.user_float_1,
+                        _entity.user_float_2, _entity.user_float_3,
+                        _entity.user_float_4, _entity.user_float_5,
+                        _entity.user_int_1, _entity.user_int_2,
+                        _entity.user_int_3, _entity.user_int_4,
+                        _entity.user_int_5, _entity.parent_id
+                    ]
 
-        return _return
+                    try:
+                        _row = _model.append(None, _data)
+                    except TypeError:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Similar Item line items "
+                                      u"had the wrong data type in it's data "
+                                      u"package and is not displayed in the "
+                                      u"Similar Item analysis.")
+                        _debug_msg = ("RTK ERROR: Data for Similar Item ID "
+                                      "{0:s} for Hardware ID {1:s} is the "
+                                      "wrong type for one or more "
+                                      "columns.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
+                        _row = None
+                    except ValueError:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Similar Item line items "
+                                      u"was missing some of it's data and is "
+                                      u"not displayed in the Similar Item "
+                                      u"analysis.")
+                        _debug_msg = ("RTK ERROR: Too few fields for "
+                                      "Similar Item ID {0:s} for Hardware ID "
+                                      "{1:s}.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
+                except AttributeError:
+                    if _node.identifier != 0:
+                        _error_code = 1
+                        _user_msg = _(u"One or more Similar Item line items "
+                                      u"was missing it's data package and is "
+                                      u"not displayed in the Similar Item "
+                                      u"analysis.")
+                        _debug_msg = ("RTK ERROR: There is no data package "
+                                      "for Similar Item ID {0:s} for Hardware "
+                                      "ID {1:s}.".format(
+                                          str(_node.identifier),
+                                          str(self._hardware_id)))
+
+                i += 1
+
+        return (_error_code, _user_msg, _debug_msg)
 
     def _do_request_calculate(self, __button):
         """
@@ -410,12 +458,13 @@ class SimilarItem(RTKWorkView):
         while _row is not None:
             _node_id = _model.get_value(_row, 1)
             _hazard_rate = _model.get_value(_row, 3)
-            _return = (_return or self._dtc_data_controller.request_calculate(
-                _node_id, _hazard_rate))
+            _return = (_return
+                       or self._dtc_data_controller.request_do_calculate(
+                           _node_id, _hazard_rate))
             _row = _model.iter_next(_row)
 
         if not _return:
-            _nodes = self._dtc_data_controller.request_select_children(
+            _nodes = self._dtc_data_controller.request_do_select_children(
                 self._parent_id)
             self._do_load_tree(_nodes)
         rtk.Widget.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
@@ -519,7 +568,7 @@ class SimilarItem(RTKWorkView):
                 _row = _model.get_iter_root()
                 while _row is not None:
                     _hardware_id = _model.get_value(_row, 1)
-                    _similaritem = self._dtc_data_controller.request_select(
+                    _similaritem = self._dtc_data_controller.request_do_select(
                         _hardware_id)
                     _similaritem.function_1 = _txtFunction1.get_text()
                     _similaritem.function_2 = _txtFunction2.get_text()
@@ -531,10 +580,10 @@ class SimilarItem(RTKWorkView):
                     _model.set_value(_row, 32, _similaritem.function_3)
                     _model.set_value(_row, 33, _similaritem.function_4)
                     _model.set_value(_row, 34, _similaritem.function_5)
-                    self._dtc_data_controller.request_update(_hardware_id)
+                    self._dtc_data_controller.request_do_update(_hardware_id)
                     _row = _model.iter_next(_row)
             else:
-                _similaritem = self._dtc_data_controller.request_select(
+                _similaritem = self._dtc_data_controller.request_do_select(
                     self._hardware_id)
                 _similaritem.function_1 = _txtFunction1.get_text()
                 _similaritem.function_2 = _txtFunction2.get_text()
@@ -546,7 +595,7 @@ class SimilarItem(RTKWorkView):
                 _model.set_value(_row, 32, _similaritem.function_3)
                 _model.set_value(_row, 33, _similaritem.function_4)
                 _model.set_value(_row, 34, _similaritem.function_5)
-                self._dtc_data_controller.request_update(self._hardware_id)
+                self._dtc_data_controller.request_do_update(self._hardware_id)
 
         _dialog.destroy()
 
@@ -561,7 +610,7 @@ class SimilarItem(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._hardware_id)
+        return self._dtc_data_controller.request_do_update(self._hardware_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -572,24 +621,22 @@ class SimilarItem(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_all()
+        return self._dtc_data_controller.request_do_update_all()
 
-    def _do_set_visible(self, visible, editable):
+    def _do_set_visible(self, **kwargs):
         """
         Set the Similar Item treeview columns visible and hidden.
 
-        :param list visible: a list of integers indicating the columns to set
-                             visible.
-        :param list editable: a list of integers indicating the columns to set
-                              editable.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _visible = kwargs['visible']
+        _editable = kwargs['editable']
         _return = False
 
         for _column in self.treeview.get_columns():
             _column.set_visible(0)
-        for _col in visible:
+        for _col in _visible:
             self.treeview.get_column(_col).set_visible(1)
             _column = self.treeview.get_column(_col)
             _cells = _column.get_cell_renderers()
@@ -600,7 +647,7 @@ class SimilarItem(RTKWorkView):
                 except TypeError:
                     _cell.set_property('cell-background', 'light gray')
 
-        for _col in editable:
+        for _col in _editable:
             _column = self.treeview.get_column(_col)
             _cells = _column.get_cell_renderers()
             for __, _cell in enumerate(_cells):
@@ -612,7 +659,22 @@ class SimilarItem(RTKWorkView):
 
         return _return
 
-    def _make_buttonbox(self):
+    def _get_cell_model(self, column):
+        """
+        Retrieve the gtk.CellRendererCombo() gtk.TreeModel().
+
+        :param int column: the column number to retrieve the cell from.
+        :return: _model
+        :rtype: :class:`gtk.TreeModel`
+        """
+        _column = self.treeview.get_column(column)
+        _cell = _column.get_cell_renderers()[0]
+        _model = _cell.get_property('model')
+        _model.clear()
+
+        return _model
+
+    def _make_buttonbox(self, **kwargs):  # pytest: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Similar Item class Work View.
 
@@ -633,8 +695,14 @@ class SimilarItem(RTKWorkView):
         ]
         _icons = ['edit', 'calculate', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
@@ -661,25 +729,23 @@ class SimilarItem(RTKWorkView):
 
         return _frame
 
-    def _make_treeview(self):
+    def _make_page(self):
         """
         Make the Similar Item RTKTreeview().
 
         :return: a gtk.Frame() containing the instance of gtk.Treeview().
         :rtype: :class:`gtk.Frame`
         """
+        # Load the quality from and quality to gtk.CellRendererCombo().
         for _idx in [4, 5]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[_idx]).get_cell_renderers()[0]
-            _model = _cell.get_property('model')
+            _model = self._get_cell_model(_idx)
             for _quality in self._dic_quality:
                 _model.append([
                     _quality,
                 ])
+        # Load the environment from and environment to gtk.CellRendererCombo().
         for _idx in [6, 7]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[_idx]).get_cell_renderers()[0]
-            _model = _cell.get_property('model')
+            _model = self._get_cell_model(_idx)
             for _environment in self._dic_environment:
                 _model.append([
                     _environment,
@@ -727,10 +793,48 @@ class SimilarItem(RTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            print "FIXME: Rick clicking should launch a pop-up menu with " \
-                  "options to insert sibling, insert child, delete " \
-                  "(selected), save (selected), and save all in " \
-                  "rtk.gui.gtk.workviews.SimilarItem._on_button_press()."
+            _menu = gtk.Menu()
+            _menu.popup(None, None, None, event.button, event.time)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['edit'])
+            _menu_item.set_label(_(u"Edit Function"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_edit_function)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['calculate'])
+            _menu_item.set_label(_(u"Calculate"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_calculate)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save'])
+            _menu_item.set_label(_(u"Save Selected"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save-all'])
+            _menu_item.set_label(_(u"Save Allocation"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update_all)
+            _menu_item.show()
+            _menu.append(_menu_item)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -754,11 +858,11 @@ class SimilarItem(RTKWorkView):
         combo.handler_block(self._lst_handler_id[index])
 
         _method_id = combo.get_active()
-        _parent = self._dtc_data_controller.request_select(self._parent_id)
+        _parent = self._dtc_data_controller.request_do_select(self._parent_id)
 
         if _parent is not None:
             _parent.method_id = _method_id
-            for _child in self._dtc_data_controller.request_select_children(
+            for _child in self._dtc_data_controller.request_do_select_children(
                     self._parent_id):
                 _child.data.method_id = _method_id
 
@@ -783,59 +887,40 @@ class SimilarItem(RTKWorkView):
                     if _value == 1:
                         _editable.append(_index)
 
-            _return = self._do_set_visible(_visible, _editable)
+            _return = self._do_set_visible(
+                visible=_visible, editable=_editable)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
         return False
 
-    def _on_select(self, module_id):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to the `selectedHardware` signal from pypubsub.
 
         :param int module_id: the ID of the Hardware that was selected.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self._parent_id = module_id
 
-        try:
-            self._method_id = self._dtc_data_controller.request_select(
-                self._parent_id).method_id
-        except AttributeError:
-            self._method_id = 0
-
-        self.cmbSimilarItemMethod.handler_block(self._lst_handler_id[2])
-        self.cmbSimilarItemMethod.set_active(self._method_id)
-        self.cmbSimilarItemMethod.handler_unblock(self._lst_handler_id[2])
-
-        _nodes = self._dtc_data_controller.request_select_children(
-            self._parent_id)
-
-        return self._do_load_tree(_nodes)
-
-    def _on_select_revision(self, module_id):
-        """
-        Respond to the `selectedRevision` signal from pypubsub.
-
-        This method is called whenever a new Revision is selected in the RTK
-        Module View.  It selects all the Similar Item for the Revision ID
-        passedand builds the treelib Tree() to hold them all for use.
-
-        :param int module_id: the Revision ID to select the SimilarItem for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._revision_id = module_id
-
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = \
-            self._mdcRTK.dic_controllers['similaritem']
-        _tree = self._dtc_data_controller.request_select_all(module_id)
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'similaritem']
 
-        self._dtc_hw_controller = self._mdcRTK.dic_controllers['hardware']
+        if self._dtc_hw_controller is None:
+            self._dtc_hw_controller = self._mdcRTK.dic_controllers['hardware']
 
-        return _return
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page()
+
+        RTKWorkView.on_select(
+            self,
+            title=_(u"Similar Item Analysis for Hardware ID "
+                    u"{0:d}").format(self._parent_id),
+            error_code=_error_code,
+            user_msg=_user_msg,
+            debug_msg=_debug_msg)
+
+        return None

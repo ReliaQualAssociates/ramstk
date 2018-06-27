@@ -158,7 +158,7 @@ class GeneralData(RTKWorkView):
         _(u"Cost Method:")
     ], ["", _(u"Attachments:"), _(u"Remarks:")]]
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Hardware package.
 
@@ -316,12 +316,135 @@ class GeneralData(RTKWorkView):
             self.txtYearMade.connect('changed', self._on_focus_out, 22))
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_general_data_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._do_load_subcategory, 'changedCategory')
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._on_edit, 'mvwEditedHardware')
+
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Load the Hardware General Data page.
+
+        :return: False if successful or True if an error occurs.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        # Disable the category RTKCombo() if the hardware item is not a part.
+        if _attributes['part'] == 1:
+            self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
+            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
+
+            self.cmbCategory.set_active(_attributes['category_id'])
+
+            self.cmbSubcategory.handler_block(self._lst_handler_id[5])
+            self._do_load_subcategory(_attributes['category_id'])
+            self.cmbSubcategory.set_active(_attributes['subcategory_id'])
+            self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
+
+        else:
+            self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
+            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
+
+            # Clear the subcategory RTKComboBox() always so it is empty
+            # whenever an assembly is selected.
+            _model = self.cmbSubcategory.get_model()
+            _model.clear()
+
+        self.chkRepairable.handler_block(self._lst_handler_id[0])
+        self.chkRepairable.set_active(_attributes['repairable'])
+        self.chkRepairable.handler_unblock(self._lst_handler_id[0])
+
+        self.chkTagged.handler_block(self._lst_handler_id[1])
+        self.chkTagged.set_active(_attributes['tagged_part'])
+        self.chkTagged.handler_unblock(self._lst_handler_id[1])
+
+        self.cmbCostType.handler_block(self._lst_handler_id[3])
+        self.cmbCostType.set_active(_attributes['cost_type_id'])
+        self.cmbCostType.handler_unblock(self._lst_handler_id[3])
+
+        self.cmbManufacturer.handler_block(self._lst_handler_id[4])
+        self.cmbManufacturer.set_active(_attributes['manufacturer_id'])
+        self.cmbManufacturer.handler_unblock(self._lst_handler_id[4])
+
+        self.txtAltPartNum.handler_block(self._lst_handler_id[6])
+        self.txtAltPartNum.set_text(str(_attributes['alt_part_num']))
+        self.txtAltPartNum.handler_unblock(self._lst_handler_id[6])
+
+        _textbuffer = self.txtAttachments.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[7])
+        _textbuffer.set_text(_attributes['attachments'])
+        _textbuffer.handler_unblock(self._lst_handler_id[7])
+
+        self.txtCAGECode.handler_block(self._lst_handler_id[8])
+        self.txtCAGECode.set_text(str(_attributes['cage_code']))
+        self.txtCAGECode.handler_unblock(self._lst_handler_id[8])
+
+        self.txtCompRefDes.handler_block(self._lst_handler_id[9])
+        self.txtCompRefDes.set_text(str(_attributes['comp_ref_des']))
+        self.txtCompRefDes.handler_unblock(self._lst_handler_id[9])
+
+        self.txtCost.handler_block(self._lst_handler_id[10])
+        self.txtCost.set_text(str(locale.currency(_attributes['cost'])))
+        self.txtCost.handler_unblock(self._lst_handler_id[10])
+
+        _textbuffer = self.txtDescription.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[11])
+        _textbuffer.set_text(str(_attributes['description']))
+        _textbuffer.handler_unblock(self._lst_handler_id[11])
+
+        self.txtFigureNumber.handler_block(self._lst_handler_id[12])
+        self.txtFigureNumber.set_text(str(_attributes['figure_number']))
+        self.txtFigureNumber.handler_unblock(self._lst_handler_id[12])
+
+        self.txtLCN.handler_block(self._lst_handler_id[13])
+        self.txtLCN.set_text(str(_attributes['lcn']))
+        self.txtLCN.handler_unblock(self._lst_handler_id[13])
+
+        self.txtName.handler_block(self._lst_handler_id[14])
+        self.txtName.set_text(str(_attributes['name']))
+        self.txtName.handler_unblock(self._lst_handler_id[14])
+
+        self.txtNSN.handler_block(self._lst_handler_id[15])
+        self.txtNSN.set_text(str(_attributes['nsn']))
+        self.txtNSN.handler_unblock(self._lst_handler_id[15])
+
+        self.txtPageNumber.handler_block(self._lst_handler_id[16])
+        self.txtPageNumber.set_text(str(_attributes['page_number']))
+        self.txtPageNumber.handler_unblock(self._lst_handler_id[16])
+
+        self.txtPartNumber.handler_block(self._lst_handler_id[17])
+        self.txtPartNumber.set_text(str(_attributes['part_number']))
+        self.txtPartNumber.handler_unblock(self._lst_handler_id[17])
+
+        self.txtQuantity.handler_block(self._lst_handler_id[18])
+        self.txtQuantity.set_text(str(_attributes['quantity']))
+        self.txtQuantity.handler_unblock(self._lst_handler_id[18])
+
+        self.txtRefDes.handler_block(self._lst_handler_id[19])
+        self.txtRefDes.set_text(str(_attributes['ref_des']))
+        self.txtRefDes.handler_unblock(self._lst_handler_id[19])
+
+        _textbuffer = self.txtRemarks.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[20])
+        _textbuffer.set_text(_attributes['remarks'])
+        _textbuffer.handler_unblock(self._lst_handler_id[20])
+
+        self.txtSpecification.handler_block(self._lst_handler_id[21])
+        self.txtSpecification.set_text(
+            str(_attributes['specification_number']))
+        self.txtSpecification.handler_unblock(self._lst_handler_id[21])
+
+        self.txtYearMade.handler_block(self._lst_handler_id[22])
+        self.txtYearMade.set_text(str(_attributes['year_of_manufacture']))
+        self.txtYearMade.handler_unblock(self._lst_handler_id[22])
+
+        return _return
 
     def _do_load_subcategory(self, category_id):
         """
@@ -381,16 +504,27 @@ class GeneralData(RTKWorkView):
 
     def _do_request_update(self, __button):
         """
-        Send request to save the currently selected Hardware.
+        Send request to save the currently selected Hardware item.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._hardware_id)
+        return self._dtc_data_controller.request_do_update(self._hardware_id)
 
-    def _make_buttonbox(self):
+    def _do_request_update_all(self, __button):
+        """
+        Send request to save all Hardware items.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_update_all()
+
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Hardware class Work View.
 
@@ -402,19 +536,27 @@ class GeneralData(RTKWorkView):
             _(u"Creates the composite reference designator for the selected "
               u"hardware item."),
             _(u"Saves the currently selected Hardware to the open "
-              u"RTK Project database."),
+              u"RTK Program database."),
+            _(u"Saves all Hardware to the open RTK Program database."),
         ]
         _callbacks = [
-            self._do_request_make_comp_ref_des, self._do_request_update
+            self._do_request_make_comp_ref_des, self._do_request_update,
+            self._do_request_update_all
         ]
-        _icons = ['comp_ref_des', 'save']
+        _icons = ['comp_ref_des', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
-    def _make_general_data_page(self):
+    def _make_page(self):
         """
         Make the Hardware class gtk.Notebook() general data page.
 
@@ -751,7 +893,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, module_id, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Hardware Work View class gtk.Notebook() widgets.
 
@@ -766,119 +908,11 @@ class GeneralData(RTKWorkView):
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'hardware']
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        # Disable the category RTKCombo() if the hardware item is not a part.
-        if _attributes['part'] == 1:
-            self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
-            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
-
-            self.cmbCategory.set_active(_attributes['category_id'])
-
-            self.cmbSubcategory.handler_block(self._lst_handler_id[5])
-            self._do_load_subcategory(_attributes['category_id'])
-            self.cmbSubcategory.set_active(_attributes['subcategory_id'])
-            self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
-
-        else:
-            self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
-            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
-
-            # Clear the subcategory RTKComboBox() always so it is empty
-            # whenever an assembly is selected.
-            _model = self.cmbSubcategory.get_model()
-            _model.clear()
-
-        self.chkRepairable.handler_block(self._lst_handler_id[0])
-        self.chkRepairable.set_active(_attributes['repairable'])
-        self.chkRepairable.handler_unblock(self._lst_handler_id[0])
-
-        self.chkTagged.handler_block(self._lst_handler_id[1])
-        self.chkTagged.set_active(_attributes['tagged_part'])
-        self.chkTagged.handler_unblock(self._lst_handler_id[1])
-
-        self.cmbCostType.handler_block(self._lst_handler_id[3])
-        self.cmbCostType.set_active(_attributes['cost_type_id'])
-        self.cmbCostType.handler_unblock(self._lst_handler_id[3])
-
-        self.cmbManufacturer.handler_block(self._lst_handler_id[4])
-        self.cmbManufacturer.set_active(_attributes['manufacturer_id'])
-        self.cmbManufacturer.handler_unblock(self._lst_handler_id[4])
-
-        self.txtAltPartNum.handler_block(self._lst_handler_id[6])
-        self.txtAltPartNum.set_text(str(_attributes['alt_part_num']))
-        self.txtAltPartNum.handler_unblock(self._lst_handler_id[6])
-
-        _textbuffer = self.txtAttachments.do_get_buffer()
-        _textbuffer.handler_block(self._lst_handler_id[7])
-        _textbuffer.set_text(_attributes['attachments'])
-        _textbuffer.handler_unblock(self._lst_handler_id[7])
-
-        self.txtCAGECode.handler_block(self._lst_handler_id[8])
-        self.txtCAGECode.set_text(str(_attributes['cage_code']))
-        self.txtCAGECode.handler_unblock(self._lst_handler_id[8])
-
-        self.txtCompRefDes.handler_block(self._lst_handler_id[9])
-        self.txtCompRefDes.set_text(str(_attributes['comp_ref_des']))
-        self.txtCompRefDes.handler_unblock(self._lst_handler_id[9])
-
-        self.txtCost.handler_block(self._lst_handler_id[10])
-        self.txtCost.set_text(str(locale.currency(_attributes['cost'])))
-        self.txtCost.handler_unblock(self._lst_handler_id[10])
-
-        _textbuffer = self.txtDescription.do_get_buffer()
-        _textbuffer.handler_block(self._lst_handler_id[11])
-        _textbuffer.set_text(str(_attributes['description']))
-        _textbuffer.handler_unblock(self._lst_handler_id[11])
-
-        self.txtFigureNumber.handler_block(self._lst_handler_id[12])
-        self.txtFigureNumber.set_text(str(_attributes['figure_number']))
-        self.txtFigureNumber.handler_unblock(self._lst_handler_id[12])
-
-        self.txtLCN.handler_block(self._lst_handler_id[13])
-        self.txtLCN.set_text(str(_attributes['lcn']))
-        self.txtLCN.handler_unblock(self._lst_handler_id[13])
-
-        self.txtName.handler_block(self._lst_handler_id[14])
-        self.txtName.set_text(str(_attributes['name']))
-        self.txtName.handler_unblock(self._lst_handler_id[14])
-
-        self.txtNSN.handler_block(self._lst_handler_id[15])
-        self.txtNSN.set_text(str(_attributes['nsn']))
-        self.txtNSN.handler_unblock(self._lst_handler_id[15])
-
-        self.txtPageNumber.handler_block(self._lst_handler_id[16])
-        self.txtPageNumber.set_text(str(_attributes['page_number']))
-        self.txtPageNumber.handler_unblock(self._lst_handler_id[16])
-
-        self.txtPartNumber.handler_block(self._lst_handler_id[17])
-        self.txtPartNumber.set_text(str(_attributes['part_number']))
-        self.txtPartNumber.handler_unblock(self._lst_handler_id[17])
-
-        self.txtQuantity.handler_block(self._lst_handler_id[18])
-        self.txtQuantity.set_text(str(_attributes['quantity']))
-        self.txtQuantity.handler_unblock(self._lst_handler_id[18])
-
-        self.txtRefDes.handler_block(self._lst_handler_id[19])
-        self.txtRefDes.set_text(str(_attributes['ref_des']))
-        self.txtRefDes.handler_unblock(self._lst_handler_id[19])
-
-        _textbuffer = self.txtRemarks.do_get_buffer()
-        _textbuffer.handler_block(self._lst_handler_id[20])
-        _textbuffer.set_text(_attributes['remarks'])
-        _textbuffer.handler_unblock(self._lst_handler_id[20])
-
-        self.txtSpecification.handler_block(self._lst_handler_id[21])
-        self.txtSpecification.set_text(
-            str(_attributes['specification_number']))
-        self.txtSpecification.handler_unblock(self._lst_handler_id[21])
-
-        self.txtYearMade.handler_block(self._lst_handler_id[22])
-        self.txtYearMade.set_text(str(_attributes['year_of_manufacture']))
-        self.txtYearMade.handler_unblock(self._lst_handler_id[22])
+        self._do_load_page()
 
         return _return
 
@@ -1027,7 +1061,7 @@ class AssessmentInputs(RTKWorkView):
         _(u"Duty Cycle:")
     ]]
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an instance of the Hardware assessment input view.
 
@@ -1159,12 +1193,200 @@ class AssessmentInputs(RTKWorkView):
             self.txtMissionTime.connect('changed', self._on_focus_out, 17))
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(
-            self._make_assessment_input_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
-        # pub.subscribe(self._on_edit, 'mvwEditedHardware')
+        pub.subscribe(self._on_edit, 'mvwEditedHardware')
+
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Load the Hardware Assessment Inputs page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+        _component_ai = None
+        _component_si = None
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        self.txtDutyCycle.handler_block(self._lst_handler_id[16])
+        self.txtDutyCycle.set_text(self.fmt.format(_attributes['duty_cycle']))
+        self.txtDutyCycle.handler_unblock(self._lst_handler_id[16])
+
+        self.txtMissionTime.handler_block(self._lst_handler_id[17])
+        self.txtMissionTime.set_text(
+            self.fmt.format(_attributes['mission_time']))
+        self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
+
+        # Clear the component-specific gtk.ScrolledWindow()s.
+        for _child in self.scwDesignRatings.get_children():
+            self.scwDesignRatings.remove(_child)
+
+        for _child in self.scwOperatingStress.get_children():
+            self.scwOperatingStress.remove(_child)
+
+        _component_si = Component.StressInputs(
+            self._dtc_data_controller,
+            hardware_id=self._hardware_id,
+            subcategory_id=_attributes['subcategory_id'])
+
+        # Add the appropriate component-specific work view to the
+        # gtk.ScrolledWindow()s.
+        if _attributes['category_id'] == 1:
+            _component_ai = wvwIntegratedCircuitAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 2:
+            _component_ai = wvwSemiconductorAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 3:
+            _component_ai = wvwResistorAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 4:
+            _component_ai = wvwCapacitorAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 5:
+            _component_ai = wvwInductorAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 6:
+            _component_ai = wvwRelayAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 7:
+            _component_ai = wvwSwitchAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 8:
+            _component_ai = wvwConnectionAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 9:
+            _component_ai = wvwMeterAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 10:
+            _component_ai = wvwMiscellaneousAI(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+
+        # Load the component-specific widgets.
+        if _component_ai is not None:
+            _component_ai.fmt = self.fmt
+            self.scwDesignRatings.add_with_viewport(_component_ai)
+            _component_ai.on_select(self._hardware_id)
+
+        if _component_si is not None:
+            _component_si.fmt = self.fmt
+            self.scwOperatingStress.add_with_viewport(_component_si)
+            _component_si.on_select(self._hardware_id)
+
+        self.scwDesignRatings.show_all()
+        self.scwOperatingStress.show_all()
+
+        self.cmbActiveEnviron.handler_block(self._lst_handler_id[0])
+        self.cmbActiveEnviron.set_active(_attributes['environment_active_id'])
+        self.cmbActiveEnviron.handler_unblock(self._lst_handler_id[0])
+
+        self.cmbDormantEnviron.handler_block(self._lst_handler_id[1])
+        self.cmbDormantEnviron.set_active(
+            _attributes['environment_dormant_id'])
+        self.cmbDormantEnviron.handler_unblock(self._lst_handler_id[1])
+
+        self.txtActiveTemp.handler_block(self._lst_handler_id[5])
+        self.txtActiveTemp.set_text(
+            self.fmt.format(_attributes['temperature_active']))
+        self.txtActiveTemp.handler_unblock(self._lst_handler_id[5])
+
+        self.txtDormantTemp.handler_block(self._lst_handler_id[7])
+        self.txtDormantTemp.set_text(
+            self.fmt.format(_attributes['temperature_dormant']))
+        self.txtDormantTemp.handler_unblock(self._lst_handler_id[7])
+
+        self.cmbFailureDist.handler_block(self._lst_handler_id[2])
+        self.cmbFailureDist.set_active(_attributes['failure_distribution_id'])
+        self.cmbFailureDist.handler_unblock(self._lst_handler_id[2])
+
+        self.cmbHRType.handler_block(self._lst_handler_id[3])
+        self.cmbHRType.set_active(_attributes['hazard_rate_type_id'])
+        self.cmbHRType.handler_unblock(self._lst_handler_id[3])
+
+        self.cmbHRMethod.handler_block(self._lst_handler_id[4])
+        self.cmbHRMethod.set_active(_attributes['hazard_rate_method_id'])
+        self.cmbHRMethod.handler_unblock(self._lst_handler_id[4])
+
+        self.txtAddAdjFactor.handler_block(self._lst_handler_id[6])
+        self.txtAddAdjFactor.set_text(
+            self.fmt.format(_attributes['add_adj_factor']))
+        self.txtAddAdjFactor.handler_unblock(self._lst_handler_id[6])
+
+        self.txtFailScale.handler_block(self._lst_handler_id[8])
+        self.txtFailScale.set_text(
+            self.fmt.format(_attributes['scale_parameter']))
+        self.txtFailScale.handler_unblock(self._lst_handler_id[8])
+
+        self.txtFailShape.handler_block(self._lst_handler_id[9])
+        self.txtFailShape.set_text(
+            self.fmt.format(_attributes['shape_parameter']))
+        self.txtFailShape.handler_unblock(self._lst_handler_id[9])
+
+        self.txtFailLocation.handler_block(self._lst_handler_id[10])
+        self.txtFailLocation.set_text(
+            self.fmt.format(_attributes['location_parameter']))
+        self.txtFailLocation.handler_unblock(self._lst_handler_id[10])
+
+        self.txtMultAdjFactor.handler_block(self._lst_handler_id[11])
+        self.txtMultAdjFactor.set_text(
+            self.fmt.format(_attributes['mult_adj_factor']))
+        self.txtMultAdjFactor.handler_unblock(self._lst_handler_id[11])
+
+        self.txtSpecifiedHt.handler_block(self._lst_handler_id[12])
+        self.txtSpecifiedHt.set_text(
+            self.fmt.format(_attributes['hazard_rate_specified']))
+        self.txtSpecifiedHt.handler_unblock(self._lst_handler_id[12])
+
+        self.txtSpecifiedHtVar.handler_block(self._lst_handler_id[13])
+        self.txtSpecifiedHtVar.set_text(
+            self.fmt.format(_attributes['hr_specified_variance']))
+        self.txtSpecifiedHtVar.handler_unblock(self._lst_handler_id[13])
+
+        self.txtSpecifiedMTBF.handler_block(self._lst_handler_id[14])
+        self.txtSpecifiedMTBF.set_text(
+            self.fmt.format(_attributes['mtbf_specified']))
+        self.txtSpecifiedMTBF.handler_unblock(self._lst_handler_id[14])
+
+        self.txtSpecifiedMTBFVar.handler_block(self._lst_handler_id[15])
+        self.txtSpecifiedMTBFVar.set_text(
+            self.fmt.format(_attributes['mtbf_spec_variance']))
+        self.txtSpecifiedMTBFVar.handler_unblock(self._lst_handler_id[15])
+
+        self._do_set_sensitive(type_id=_attributes['hazard_rate_type_id'])
+
+        # Set the calculate button sensitive only if the selected hardware
+        # item is a part.
+        if _attributes['part'] == 1:
+            self.get_children()[0].get_children()[0].set_sensitive(True)
+        else:
+            self.get_children()[0].get_children()[0].set_sensitive(False)
+
+        return _return
 
     def _do_request_calculate(self, __button):
         """
@@ -1180,7 +1402,10 @@ class AssessmentInputs(RTKWorkView):
         _error_code = 0
         _msg = ['', '']
 
-        if self._dtc_data_controller.request_calculate(self._hardware_id):
+        if self._dtc_data_controller.request_do_calculate(
+                self._hardware_id,
+                hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER
+        ):
             _error_code = 1
             _msg[0] = 'RTK ERROR: Calculating reliability attributes.'
 
@@ -1199,29 +1424,40 @@ class AssessmentInputs(RTKWorkView):
 
     def _do_request_update(self, __button):
         """
-        Send request to save the currently selected Hardware.
+        Send request to save the currently selected Hardware item.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._hardware_id)
+        return self._dtc_data_controller.request_do_update(self._hardware_id)
 
-    def _do_set_sensitive(self, type_id):
+    def _do_request_update_all(self, __button):
+        """
+        Send request to save all Hardware items.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_update_all()
+
+    def _do_set_sensitive(self, **kwargs):
         """
         Set certain widgets sensitive or insensitive.
 
         This method will set the sensitivity of various widgets depending on
         the reliability assessment type selected.
 
-        :param int type_id: the ID of the reliability assessment type selected.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _type_id = kwargs['type_id']
         _return = False
 
-        if type_id == 1:
+        if _type_id == 1:
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(True)
             self.txtFailLocation.set_sensitive(False)
@@ -1231,7 +1467,7 @@ class AssessmentInputs(RTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(False)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif type_id == 2:
+        elif _type_id == 2:
             self.cmbFailureDist.set_sensitive(True)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(True)
@@ -1241,7 +1477,7 @@ class AssessmentInputs(RTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(False)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif type_id == 3:
+        elif _type_id == 3:
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(False)
@@ -1251,7 +1487,7 @@ class AssessmentInputs(RTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(True)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif type_id == 4:
+        elif _type_id == 4:
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(False)
@@ -1264,7 +1500,39 @@ class AssessmentInputs(RTKWorkView):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the gtk.ButtonBox() for the Hardware class Work View.
+
+        :return: _buttonbox; the gtk.ButtonBox() for the Hardware class Work
+                 View.
+        :rtype: :class:`gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Calculate the currently selected Hardware item."),
+            _(u"Saves the currently selected Hardware item to the open "
+              u"RTK Program database."),
+            _(u"Saves all Hardware items to the open RTK Program database."),
+        ]
+        _callbacks = [
+            self._do_request_calculate, self._do_request_update,
+            self._do_request_update_all
+        ]
+
+        _icons = ['calculate', 'save', 'save-all']
+
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def _make_page(self):
         """
         Make the Hardware class gtk.Notebook() assessment input page.
 
@@ -1358,27 +1626,6 @@ class AssessmentInputs(RTKWorkView):
 
         return _hbox
 
-    def _make_buttonbox(self):
-        """
-        Make the gtk.ButtonBox() for the Hardware class Work View.
-
-        :return: _buttonbox; the gtk.ButtonBox() for the Hardware class Work
-                 View.
-        :rtype: :class:`gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Calculate the currently selected Hardware item."),
-            _(u"Saves the currently selected Hardware item to the open "
-              u"RTK Project database.")
-        ]
-        _callbacks = [self._do_request_calculate, self._do_request_update]
-
-        _icons = ['calculate', 'save']
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
-
-        return _buttonbox
-
     def _on_combo_changed(self, combo, index):
         """
         Retrieve RTKCombo() changes and assign to Hardware attribute.
@@ -1425,7 +1672,8 @@ class AssessmentInputs(RTKWorkView):
                 _attributes['hazard_rate_type_id'] = int(combo.get_active())
                 # Set certain widgets as sensitive and insensitive depending on
                 # the type of assessment selected.
-                self._do_set_sensitive(_attributes['hazard_rate_type_id'])
+                self._do_set_sensitive(
+                    type_id=_attributes['hazard_rate_type_id'])
             elif index == 4:
                 _attributes['hazard_rate_method_id'] = int(combo.get_active())
 
@@ -1433,6 +1681,76 @@ class AssessmentInputs(RTKWorkView):
                 self._hardware_id, _attributes)
 
         combo.handler_unblock(self._lst_handler_id[index])
+
+        return _return
+
+    def _on_edit(self, index, new_text):
+        """
+        Update Hardware Assessment Input gtk.Widgets() when attributes change.
+
+        This method is called whenever an attribute is edited in a different
+        view.
+
+        :param int index: the index in the Hardware attributes list of the
+                          attribute that was edited.
+        :param str new_text: the new text to update the gtk.Widget() with.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        if index == 5:
+            self.txtActiveTemp.handler_block(self._lst_handler_id[5])
+            self.txtActiveTemp.set_text(self.fmt.format(new_text))
+            self.txtActiveTemp.handler_unblock(self._lst_handler_id[5])
+        elif index == 6:
+            self.txtAddAdjFactor.handler_block(self._lst_handler_id[6])
+            self.txtAddAdjFactor.set_text(self.fmt.format(new_text))
+            self.txtAddAdjFactor.handler_unblock(self._lst_handler_id[6])
+        elif index == 7:
+            self.txtDormantTemp.handler_block(self._lst_handler_id[7])
+            self.txtDormantTemp.set_text(self.fmt.format(new_text))
+            self.txtDormantTemp.handler_unblock(self._lst_handler_id[7])
+        elif index == 8:
+            self.txtFailScale.handler_block(self._lst_handler_id[8])
+            self.txtFailScale.set_text(self.fmt.format(new_text))
+            self.txtFailScale.handler_unblock(self._lst_handler_id[8])
+        elif index == 9:
+            self.txtFailShape.handler_block(self._lst_handler_id[9])
+            self.txtFailShape.set_text(self.fmt.format(new_text))
+            self.txtFailShape.handler_unblock(self._lst_handler_id[9])
+        elif index == 10:
+            self.txtFailLocation.handler_block(self._lst_handler_id[10])
+            self.txtFailLocation.set_text(self.fmt.format(new_text))
+            self.txtFailLocation.handler_unblock(self._lst_handler_id[10])
+        elif index == 11:
+            self.txtMultAdjFactor.handler_block(self._lst_handler_id[11])
+            self.txtMultAdjFactor.set_text(self.fmt.format(new_text))
+            self.txtMultAdjFactor.handler_unblock(self._lst_handler_id[11])
+        elif index == 12:
+            self.txtSpecifiedHt.handler_block(self._lst_handler_id[12])
+            self.txtSpecifiedHt.set_text(self.fmt.format(new_text))
+            self.txtSpecifiedHt.handler_unblock(self._lst_handler_id[12])
+        elif index == 13:
+            self.txtSpecifiedHtVar.handler_block(self._lst_handler_id[13])
+            self.txtSpecifiedHtVar.set_text(self.fmt.format(new_text))
+            self.txtSpecifiedHtVar.handler_unblock(self._lst_handler_id[13])
+        elif index == 14:
+            self.txtSpecifiedMTBF.handler_block(self._lst_handler_id[14])
+            self.txtSpecifiedMTBF.set_text(self.fmt.format(new_text))
+            self.txtSpecifiedMTBF.handler_unblock(self._lst_handler_id[14])
+        elif index == 15:
+            self.txtSpecifiedMTBFVar.handler_block(self._lst_handler_id[15])
+            self.txtSpecifiedMTBFVar.set_text(self.fmt.format(new_text))
+            self.txtSpecifiedMTBFVar.handler_unblock(self._lst_handler_id[15])
+        elif index == 16:
+            self.txtDutyCycle.handler_block(self._lst_handler_id[16])
+            self.txtDutyCycle.set_text(self.fmt.format(new_text))
+            self.txtDutyCycle.handler_unblock(self._lst_handler_id[16])
+        elif index == 17:
+            self.txtMissionTime.handler_block(self._lst_handler_id[17])
+            self.txtMissionTime.set_text(self.fmt.format(new_text))
+            self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
 
         return _return
 
@@ -1537,7 +1855,7 @@ class AssessmentInputs(RTKWorkView):
 
         return _return
 
-    def _on_select(self, module_id, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the hardware assessment input work view widgets.
 
@@ -1546,180 +1864,15 @@ class AssessmentInputs(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-        _component_ai = None
-        _component_si = None
-
         self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'hardware']
 
-        self.txtDutyCycle.handler_block(self._lst_handler_id[16])
-        self.txtDutyCycle.set_text(self.fmt.format(_attributes['duty_cycle']))
-        self.txtDutyCycle.handler_unblock(self._lst_handler_id[16])
-
-        self.txtMissionTime.handler_block(self._lst_handler_id[17])
-        self.txtMissionTime.set_text(
-            self.fmt.format(_attributes['mission_time']))
-        self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
-
-        # Clear the component-specific gtk.ScrolledWindow()s.
-        for _child in self.scwDesignRatings.get_children():
-            self.scwDesignRatings.remove(_child)
-
-        for _child in self.scwOperatingStress.get_children():
-            self.scwOperatingStress.remove(_child)
-
-        _component_si = Component.StressInputs(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-        # Add the appropriate component-specific work view to the
-        # gtk.ScrolledWindow()s.
-        if _attributes['category_id'] == 1:
-            _component_ai = wvwIntegratedCircuitAI(
-                self._dtc_data_controller, self._hardware_id,
-                _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 2:
-            _component_ai = wvwSemiconductorAI(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 3:
-            _component_ai = wvwResistorAI(self._dtc_data_controller,
-                                          self._hardware_id,
-                                          _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 4:
-            _component_ai = wvwCapacitorAI(self._dtc_data_controller,
-                                           self._hardware_id,
-                                           _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 5:
-            _component_ai = wvwInductorAI(self._dtc_data_controller,
-                                          self._hardware_id,
-                                          _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 6:
-            _component_ai = wvwRelayAI(self._dtc_data_controller,
-                                       self._hardware_id,
-                                       _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 7:
-            _component_ai = wvwSwitchAI(self._dtc_data_controller,
-                                        self._hardware_id,
-                                        _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 8:
-            _component_ai = wvwConnectionAI(self._dtc_data_controller,
-                                            self._hardware_id,
-                                            _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 9:
-            _component_ai = wvwMeterAI(self._dtc_data_controller,
-                                       self._hardware_id,
-                                       _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 10:
-            _component_ai = wvwMiscellaneousAI(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-
-        # Load the component-specific widgets.
-        if _component_ai is not None:
-            _component_ai.fmt = self.fmt
-            self.scwDesignRatings.add_with_viewport(_component_ai)
-            _component_ai.on_select(module_id)
-
-        if _component_si is not None:
-            _component_si.fmt = self.fmt
-            self.scwOperatingStress.add_with_viewport(_component_si)
-            _component_si.on_select(module_id)
-
-        self.scwDesignRatings.show_all()
-        self.scwOperatingStress.show_all()
-
-        self.cmbActiveEnviron.handler_block(self._lst_handler_id[0])
-        self.cmbActiveEnviron.set_active(_attributes['environment_active_id'])
-        self.cmbActiveEnviron.handler_unblock(self._lst_handler_id[0])
-
-        self.cmbDormantEnviron.handler_block(self._lst_handler_id[1])
-        self.cmbDormantEnviron.set_active(
-            _attributes['environment_dormant_id'])
-        self.cmbDormantEnviron.handler_unblock(self._lst_handler_id[1])
-
-        self.txtActiveTemp.handler_block(self._lst_handler_id[5])
-        self.txtActiveTemp.set_text(
-            self.fmt.format(_attributes['temperature_active']))
-        self.txtActiveTemp.handler_unblock(self._lst_handler_id[5])
-
-        self.txtDormantTemp.handler_block(self._lst_handler_id[7])
-        self.txtDormantTemp.set_text(
-            self.fmt.format(_attributes['temperature_dormant']))
-        self.txtDormantTemp.handler_unblock(self._lst_handler_id[7])
-
-        self.cmbFailureDist.handler_block(self._lst_handler_id[2])
-        self.cmbFailureDist.set_active(_attributes['failure_distribution_id'])
-        self.cmbFailureDist.handler_unblock(self._lst_handler_id[2])
-
-        self.cmbHRType.handler_block(self._lst_handler_id[3])
-        self.cmbHRType.set_active(_attributes['hazard_rate_type_id'])
-        self.cmbHRType.handler_unblock(self._lst_handler_id[3])
-
-        self.cmbHRMethod.handler_block(self._lst_handler_id[4])
-        self.cmbHRMethod.set_active(_attributes['hazard_rate_method_id'])
-        self.cmbHRMethod.handler_unblock(self._lst_handler_id[4])
-
-        self.txtAddAdjFactor.handler_block(self._lst_handler_id[6])
-        self.txtAddAdjFactor.set_text(
-            self.fmt.format(_attributes['add_adj_factor']))
-        self.txtAddAdjFactor.handler_unblock(self._lst_handler_id[6])
-
-        self.txtFailScale.handler_block(self._lst_handler_id[8])
-        self.txtFailScale.set_text(
-            self.fmt.format(_attributes['scale_parameter']))
-        self.txtFailScale.handler_unblock(self._lst_handler_id[8])
-
-        self.txtFailShape.handler_block(self._lst_handler_id[9])
-        self.txtFailShape.set_text(
-            self.fmt.format(_attributes['shape_parameter']))
-        self.txtFailShape.handler_unblock(self._lst_handler_id[9])
-
-        self.txtFailLocation.handler_block(self._lst_handler_id[10])
-        self.txtFailLocation.set_text(
-            self.fmt.format(_attributes['location_parameter']))
-        self.txtFailLocation.handler_unblock(self._lst_handler_id[10])
-
-        self.txtMultAdjFactor.handler_block(self._lst_handler_id[11])
-        self.txtMultAdjFactor.set_text(
-            self.fmt.format(_attributes['mult_adj_factor']))
-        self.txtMultAdjFactor.handler_unblock(self._lst_handler_id[11])
-
-        self.txtSpecifiedHt.handler_block(self._lst_handler_id[12])
-        self.txtSpecifiedHt.set_text(
-            self.fmt.format(_attributes['hazard_rate_specified']))
-        self.txtSpecifiedHt.handler_unblock(self._lst_handler_id[12])
-
-        self.txtSpecifiedHtVar.handler_block(self._lst_handler_id[13])
-        self.txtSpecifiedHtVar.set_text(
-            self.fmt.format(_attributes['hr_specified_variance']))
-        self.txtSpecifiedHtVar.handler_unblock(self._lst_handler_id[13])
-
-        self.txtSpecifiedMTBF.handler_block(self._lst_handler_id[14])
-        self.txtSpecifiedMTBF.set_text(
-            self.fmt.format(_attributes['mtbf_specified']))
-        self.txtSpecifiedMTBF.handler_unblock(self._lst_handler_id[14])
-
-        self.txtSpecifiedMTBFVar.handler_block(self._lst_handler_id[15])
-        self.txtSpecifiedMTBFVar.set_text(
-            self.fmt.format(_attributes['mtbf_spec_variance']))
-        self.txtSpecifiedMTBFVar.handler_unblock(self._lst_handler_id[15])
-
-        self._do_set_sensitive(_attributes['hazard_rate_type_id'])
-
-        # Set the calculate button sensitive only if the selected hardware
-        # item is a part.
-        if _attributes['part'] == 1:
-            self.get_children()[0].get_children()[0].set_sensitive(True)
-        else:
-            self.get_children()[0].get_children()[0].set_sensitive(False)
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class AssessmentResults(RTKWorkView):
@@ -1809,7 +1962,7 @@ class AssessmentResults(RTKWorkView):
         _(u"Total # of Parts:")
     ]]
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Hardware package.
 
@@ -2013,14 +2166,13 @@ class AssessmentResults(RTKWorkView):
                       u"item."))
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(
-            self._make_assessment_results_page(), expand=True, fill=True)
+        self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
         Load the assessment result page widgets with attribute values.
 
@@ -2028,6 +2180,8 @@ class AssessmentResults(RTKWorkView):
         :rtype: bool
         """
         _return = False
+        _component_ar = None
+        _component_sr = None
 
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
@@ -2091,6 +2245,89 @@ class AssessmentResults(RTKWorkView):
         self.txtMissionRtVar.set_text(
             str(self.fmt.format(_attributes['reliability_miss_variance'])))
 
+        # Clear the component-specific gtk.ScrolledWindow()s.
+        for _child in self.scwReliability.get_children():
+            self.scwReliability.remove(_child)
+
+        for _child in self.scwStress.get_children():
+            self.scwStress.remove(_child)
+
+        _component_sr = Component.StressResults(
+            self._dtc_data_controller,
+            hardware_id=self._hardware_id,
+            subcategory_id=_attributes['subcategory_id'])
+
+        # Add the appropriate component-specific work view to the
+        # gtk.ScrolledWindow()s.
+        if _attributes['category_id'] == 1:
+            _component_ar = wvwIntegratedCircuitAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 2:
+            _component_ar = wvwSemiconductorAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 3:
+            _component_ar = wvwResistorAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 4:
+            _component_ar = wvwCapacitorAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 5:
+            _component_ar = wvwInductorAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 6:
+            _component_ar = wvwRelayAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 7:
+            _component_ar = wvwSwitchAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 8:
+            _component_ar = wvwConnectionAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 9:
+            _component_ar = wvwMeterAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+        elif _attributes['category_id'] == 10:
+            _component_ar = wvwMiscellaneousAR(
+                self._dtc_data_controller,
+                hardware_id=self._hardware_id,
+                subcategory_id=_attributes['subcategory_id'])
+
+        # Load the component-specific widgets.
+        if _component_ar is not None:
+            _component_ar.fmt = self.fmt
+            self.scwReliability.add_with_viewport(_component_ar)
+            _component_ar.on_select(self._hardware_id)
+
+        if _component_sr is not None:
+            _component_sr.fmt = self.fmt
+            self.scwStress.add_with_viewport(_component_sr)
+            _component_sr.on_select(self._hardware_id)
+
+        # Set the calculate button sensitive only if the selected hardware
+        # item is a part.
+        if _attributes['part'] == 1:
+            self.get_children()[0].get_children()[0].set_sensitive(True)
+        else:
+            self.get_children()[0].get_children()[0].set_sensitive(False)
+
         return _return
 
     def _do_request_calculate(self, __button):
@@ -2107,7 +2344,10 @@ class AssessmentResults(RTKWorkView):
         _error_code = 0
         _msg = ['', '']
 
-        if self._dtc_data_controller.request_calculate(self._hardware_id):
+        if self._dtc_data_controller.request_do_calculate(
+                self._hardware_id,
+                hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER
+        ):
             _error_code = 1
             _msg[0] = 'RTK ERROR: Calculating reliability attributes.'
 
@@ -2133,9 +2373,52 @@ class AssessmentResults(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update(self._hardware_id)
+        return self._dtc_data_controller.request_do_update(self._hardware_id)
 
-    def _make_assessment_results_page(self):
+    def _do_request_update_all(self, __button):
+        """
+        Send request to save all Hardware items.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_update_all()
+
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the gtk.ButtonBox() for the Hardware class Work View.
+
+        :return: _buttonbox; the gtk.ButtonBox() for the Hardware class Work
+                 View.
+        :rtype: :class:`gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Calculate the currently selected Hardware item."),
+            _(u"Saves the currently selected Hardware item to the open "
+              u"RTK Program database."),
+            _(u"Saves all Hardware items to the open RTK Program database."),
+        ]
+        _callbacks = [
+            self._do_request_calculate, self._do_request_update,
+            self._do_request_update_all
+        ]
+
+        _icons = ['calculate', 'save', 'save-all']
+
+        _buttonbox = RTKWorkView._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def _make_page(self):
         """
         Make the Hardware class gtk.Notebook() assessment results page.
 
@@ -2232,28 +2515,7 @@ class AssessmentResults(RTKWorkView):
 
         return _hbox
 
-    def _make_buttonbox(self):
-        """
-        Make the gtk.ButtonBox() for the Hardware class Work View.
-
-        :return: _buttonbox; the gtk.ButtonBox() for the Hardware class Work
-                 View.
-        :rtype: :class:`gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Calculate the currently selected Hardware item."),
-            _(u"Saves the currently selected Hardware item to the open "
-              u"RTK Project database.")
-        ]
-        _callbacks = [self._do_request_calculate, self._do_request_update]
-
-        _icons = ['calculate', 'save']
-        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
-                                                 _callbacks, 'vertical')
-
-        return _buttonbox
-
-    def _on_select(self, module_id, **kwargs):
+    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Load the Hardware Work View class gtk.Notebook() widgets.
 
@@ -2263,88 +2525,15 @@ class AssessmentResults(RTKWorkView):
         :rtype: bool
         """
         _return = False
-        _component_ar = None
-        _component_sr = None
 
         self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        if self._dtc_data_controller is None:
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'hardware']
 
         self._do_load_page()
-
-        # Clear the component-specific gtk.ScrolledWindow()s.
-        for _child in self.scwReliability.get_children():
-            self.scwReliability.remove(_child)
-
-        for _child in self.scwStress.get_children():
-            self.scwStress.remove(_child)
-
-        _component_sr = Component.StressResults(self._dtc_data_controller,
-                                                self._hardware_id,
-                                                _attributes['subcategory_id'])
-        # Add the appropriate component-specific work view to the
-        # gtk.ScrolledWindow()s.
-        if _attributes['category_id'] == 1:
-            _component_ar = wvwIntegratedCircuitAR(
-                self._dtc_data_controller, self._hardware_id,
-                _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 2:
-            _component_ar = wvwSemiconductorAR(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 3:
-            _component_ar = wvwResistorAR(self._dtc_data_controller,
-                                          self._hardware_id,
-                                          _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 4:
-            _component_ar = wvwCapacitorAR(self._dtc_data_controller,
-                                           self._hardware_id,
-                                           _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 5:
-            _component_ar = wvwInductorAR(self._dtc_data_controller,
-                                          self._hardware_id,
-                                          _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 6:
-            _component_ar = wvwRelayAR(self._dtc_data_controller,
-                                       self._hardware_id,
-                                       _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 7:
-            _component_ar = wvwSwitchAR(self._dtc_data_controller,
-                                        self._hardware_id,
-                                        _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 8:
-            _component_ar = wvwConnectionAR(self._dtc_data_controller,
-                                            self._hardware_id,
-                                            _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 9:
-            _component_ar = wvwMeterAR(self._dtc_data_controller,
-                                       self._hardware_id,
-                                       _attributes['subcategory_id'])
-        elif _attributes['category_id'] == 10:
-            _component_ar = wvwMiscellaneousAR(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-
-        # Load the component-specific widgets.
-        if _component_ar is not None:
-            _component_ar.fmt = self.fmt
-            self.scwReliability.add_with_viewport(_component_ar)
-            _component_ar.on_select(module_id)
-
-        if _component_sr is not None:
-            _component_sr.fmt = self.fmt
-            self.scwStress.add_with_viewport(_component_sr)
-            _component_sr.on_select(module_id)
-
-        # Set the calculate button sensitive only if the selected hardware
-        # item is a part.
-        if _attributes['part'] == 1:
-            self.get_children()[0].get_children()[0].set_sensitive(True)
-        else:
-            self.get_children()[0].get_children()[0].set_sensitive(False)
 
         return _return

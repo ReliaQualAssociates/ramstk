@@ -136,7 +136,7 @@ class RTKDataController(object):
 
         return _entity.set_attributes(attributes)
 
-    def request_last_id(self, **kwargs):    # pylint: disable=unused-argument
+    def request_last_id(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request the last entity ID used in the RTK Program database.
 

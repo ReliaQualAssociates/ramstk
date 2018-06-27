@@ -81,7 +81,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_update_matrix(
+        return self._dtc_data_controller.request_do_update_matrix(
             self._revision_id, self._matrix_type)
 
     def _make_buttonbox(self):
@@ -103,12 +103,18 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
             'save',
         ]
 
-        _buttonbox = rtk.RTKBaseMatrix._make_buttonbox(self, _icons, _tooltips,
-                                                       _callbacks, 'vertical')
+        _buttonbox = rtk.RTKBaseMatrix._make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
 
         return _buttonbox
 
-    def _on_select_revision(self, **kwargs):
+    def _on_select_revision(self, module_id):
         """
         Load the Function:Hardware Matrix View gtk.TreeModel().
 
@@ -117,11 +123,11 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._revision_id = kwargs['module_id']
+        self._revision_id = module_id
 
         self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
         (_matrix, _column_hdrs,
-         _row_hdrs) = self._dtc_data_controller.request_select_all_matrix(
+         _row_hdrs) = self._dtc_data_controller.request_do_select_all_matrix(
              self._revision_id, self._matrix_type)
 
         return rtk.RTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
