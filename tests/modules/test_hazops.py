@@ -73,9 +73,9 @@ def test_do_select_children(test_dao):
 
     _nodes = DUT.do_select_children(2)
 
-    assert isinstance(_nodes, list)
-    assert isinstance(_nodes[0].data, RTKHazardAnalysis)
-    assert _nodes[0].identifier == '2.2'
+    assert isinstance(_nodes, Tree)
+    assert isinstance(_nodes['2.2'].data, RTKHazardAnalysis)
+    assert _nodes['2.2'].identifier == '2.2'
 
 
 @pytest.mark.integration
@@ -154,11 +154,11 @@ def test_do_update_all(test_dao):
     DUT = dtmHazardAnalysis(test_dao)
     DUT.do_select_all(revision_id=1)
 
-    _error_code, _msg = DUT.do_update_all(hardware_id=1)
+    _error_code, _msg = DUT.do_update_all(hardware_id=3)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating all records in the HazOps table "
-                    "for Hardware ID 1.")
+                    "for Hardware ID 3.")
 
 
 @pytest.mark.integration
@@ -273,7 +273,7 @@ def test_request_do_update_all(test_dao, test_configuration):
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
     DUT.request_do_select_all(revision_id=1)
 
-    assert not DUT.request_do_update_all(hardware_id=1)
+    assert not DUT.request_do_update_all(hardware_id=2)
 
 
 @pytest.mark.integration

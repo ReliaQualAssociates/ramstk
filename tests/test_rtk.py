@@ -1,7 +1,6 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.TestRTK.py is part of The RTK Project
+#       rtk.tests.test_rtk.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -111,7 +110,14 @@ def test_load_globals(test_common_dao, test_dao):
 
     assert isinstance(DUT.tree, Tree)
 
-    assert _configuration.RTK_ACTION_CATEGORY == {}
+    assert _configuration.RTK_ACTION_CATEGORY == {
+        38: (u'ENGD', u'Engineering, Design', u'action', 1),
+        39: (u'ENGR', u'Engineering, Reliability', u'action', 1),
+        40: (u'ENGS', u'Engineering, Systems', u'action', 1),
+        41: (u'MAN', u'Manufacturing', u'action', 1),
+        42: (u'TEST', u'Test', u'action', 1),
+        43: (u'VANDV', u'Verification & Validation', u'action', 1)
+    }
     assert _configuration.RTK_INCIDENT_CATEGORY == {
         35: (u'HW', u'Hardware', u'incident', 1),
         36: (u'SW', u'Software', u'incident', 1),
@@ -276,10 +282,55 @@ def test_load_globals(test_common_dao, test_dao):
             u'incident'),
         10: (u'Closed', u'Incident has been closed.', u'incident')
     }
-
-    assert _configuration.RTK_INCIDENT_TYPE == {}
-    assert _configuration.RTK_REQUIREMENT_TYPE == {}
-    assert _configuration.RTK_VALIDATION_TYPE == {}
+    assert _configuration.RTK_INCIDENT_TYPE == {
+        1: (u'PLN', u'Planning', u'incident'),
+        2: (u'CON', u'Concept', u'incident'),
+        3: (u'RQMT', u'Requirement', u'incident'),
+        4: (u'DES', u'Design', u'incident'),
+        5: (u'COD', u'Coding', u'incident'),
+        6: (u'DB', u'Database', u'incident'),
+        7: (u'TI', u'Test Information', u'incident'),
+        8: (u'MAN', u'Manuals', u'incident'),
+        9: (u'OTH', u'Other', u'incident')
+    }
+    assert _configuration.RTK_REQUIREMENT_TYPE == {
+        10: (u'FUN', u'Functional', u'requirement'),
+        11: (u'PRF', u'Performance', u'requirement'),
+        12: (u'REG', u'Regulatory', u'requirement'),
+        13: (u'REL', u'Reliability', u'requirement'),
+        14: (u'SAF', u'Safety', u'requirement'),
+        15: (u'SVC', u'Serviceability', u'requirement'),
+        16: (u'USE', u'Useability', u'requirement')
+    }
+    assert _configuration.RTK_VALIDATION_TYPE == {
+        17: (u'DOE', u'Manufacturing Test, DOE', u'validation'),
+        18: (u'ESS', u'Manufacturing Test, ESS', u'validation'),
+        19: (u'HSS', u'Manufacturing Test, HASS', u'validation'),
+        20: (u'PRT', u'Manufacturing Test, PRAT', u'validation'),
+        21: (u'RAA', u'Reliability, Assessment', u'validation'),
+        22: (u'RDA', u'Reliability, Durability Analysis', u'validation'),
+        23: (u'RFF', u'Reliability, FFMEA', u'validation'),
+        24: (u'RDF', u'Reliability, (D)FMEA', u'validation'),
+        25: (u'RCA', u'Reliability, Root Cause Analysis', u'validation'),
+        26: (u'RSA', u'Reliability, Survival Analysis', u'validation'),
+        27: (u'ALT', u'Reliability Test, ALT', u'validation'),
+        28: (u'RDT', u'Reliability Test, Demonstration', u'validation'),
+        29: (u'HLT', u'Reliability Test, HALT', u'validation'),
+        30: (u'RGT', u'Reliability Test, Growth', u'validation'),
+        31: (u'FTA', u'Safety, Fault Tree Analysis', u'validation'),
+        32: (u'PHA', u'Safety, Hazards Analysis', u'validation'),
+        33: (u'EMA', u'System Engineering, Electromagnetic Analysis',
+             u'validation'),
+        34: (u'FEA', u'System Engineering, FEA', u'validation'),
+        35: (u'2DM', u'System Engineering, 2D Model', u'validation'),
+        36: (u'3DM', u'System Engineering, 3D Model', u'validation'),
+        37: (u'SRD', u'System Engineering, Robust Design', u'validation'),
+        38: (u'SCA', u'System Engineering, Sneak Circuit Analysis',
+             u'validation'),
+        39: (u'THA', u'System Engineering, Thermal Analysis', u'validation'),
+        40: (u'TOL', u'System Engineering, Tolerance Analysis', u'validation'),
+        41: (u'WCA', u'System Engineering, Worst Case Analysis', u'validation')
+    }
 
     assert _configuration.RTK_CATEGORIES == {
         1: u'Integrated Circuit',

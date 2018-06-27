@@ -155,17 +155,17 @@ class HazardAnalysisDataModel(RTKDataModel):
         """
         Update the selected HazOps in the RTKHazardAnalysis table.
 
-        :param int node_id: the HazOps ID to save to the RTK Program
+        :param str node_id: the HazOps ID to save to the RTK Program
                             database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _error_code, _msg = RTKDataModel.do_update(self, node_id)
-
+        print _error_code, _msg
         if _error_code != 0:
             _error_code = 2207
             _msg = 'RTK ERROR: Attempted to save non-existent Hazard ' \
-                   'Analysis ID {0:d}.'.format(node_id)
+                   'Analysis ID {0:s}.'.format(str(node_id))
 
         return _error_code, _msg
 
@@ -180,18 +180,17 @@ class HazardAnalysisDataModel(RTKDataModel):
         _error_code = 0
         _msg = ''
 
-        for _node in self.do_select_children(_hardware_id):
+        for _node in self.do_select_children(_hardware_id).all_nodes()[1:]:
             try:
-                _id = '{0:d}.{1:d}'.format(_hardware_id, _node.data.hazard_id)
-                _error_code, _debug_msg = self.do_update(_id)
-
+                _error_code, _debug_msg = self.do_update(_node.identifier)
                 _msg = _msg + _debug_msg + '\n'
-
             except AttributeError:
                 _error_code = 1
                 _msg = ("RTK ERROR: One or more records in the HazOps table "
                         "for Hardware ID {0:d} did not "
                         "update.").format(_hardware_id)
+            except NodeIDAbsentError:
+                pass
 
         if _error_code == 0:
             _msg = ("RTK SUCCESS: Updating all records in the HazOps table "
