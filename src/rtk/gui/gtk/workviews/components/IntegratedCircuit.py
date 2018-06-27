@@ -122,19 +122,14 @@ class ICAssessmentInputs(AssessmentInputs):
         10: [[_(u"Logic and Custom")], [_(u"Gate Array")]]
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Integrated Circuit assessment input view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.IntegratedCircuitDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                integrated circuit.
-        :param int subcategory_id: the ID of the integrated circuit
-                                   subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -226,7 +221,7 @@ class ICAssessmentInputs(AssessmentInputs):
             tooltip=_(u"The number of years the generic device type has been "
                       u"in production."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -267,7 +262,7 @@ class ICAssessmentInputs(AssessmentInputs):
             self.txtYearsInProduction.connect('changed', self._on_focus_out,
                                               16))
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):
         """
         Load the integrated circuit RKTComboBox()s.
 
@@ -276,9 +271,11 @@ class ICAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _subcategory_id = kwargs['subcategory_id']
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(
+            self, subcategory_id=_subcategory_id)
 
         # Load the quality level RTKComboBox().
         self.cmbQuality.do_load_combo([[_(u"Class S")], [_(u"Class B")],
@@ -336,7 +333,127 @@ class ICAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Integrated Circuit assesment input widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        if self._subcategory_id == 10:
+            self.cmbManufacturing.handler_block(self._lst_handler_id[4])
+            self.cmbManufacturing.set_active(_attributes['manufacturing_id'])
+            self.cmbManufacturing.handler_unblock(self._lst_handler_id[4])
+
+            self.cmbType.handler_block(self._lst_handler_id[7])
+            self.cmbType.set_active(_attributes['type_id'])
+            self.cmbType.handler_unblock(self._lst_handler_id[7])
+
+            self.txtArea.handler_block(self._lst_handler_id[8])
+            self.txtArea.set_text(str(self.fmt.format(_attributes['area'])))
+            self.txtArea.handler_unblock(self._lst_handler_id[8])
+
+            self.txtFeatureSize.handler_block(self._lst_handler_id[9])
+            self.txtFeatureSize.set_text(
+                str(self.fmt.format(_attributes['feature_size'])))
+            self.txtFeatureSize.handler_unblock(self._lst_handler_id[9])
+
+            self.txtVoltageESD.handler_block(self._lst_handler_id[15])
+            self.txtVoltageESD.set_text(
+                str(self.fmt.format(_attributes['voltage_esd'])))
+            self.txtVoltageESD.handler_unblock(self._lst_handler_id[15])
+
+        if _attributes['hazard_rate_method_id'] == 1:
+            self.txtNElements.handler_block(self._lst_handler_id[12])
+            self.txtNElements.set_text(str(_attributes['n_elements']))
+            self.txtNElements.handler_unblock(self._lst_handler_id[12])
+
+            if self._subcategory_id in [1, 2, 3, 4, 5, 8]:
+                self.cmbTechnology.handler_block(self._lst_handler_id[6])
+                self.cmbTechnology.set_active(_attributes['technology_id'])
+                self.cmbTechnology.handler_unblock(self._lst_handler_id[6])
+
+        elif _attributes['hazard_rate_method_id'] == 2:
+            self.cmbPackage.handler_block(self._lst_handler_id[5])
+            self.cmbPackage.set_active(_attributes['package_id'])
+            self.cmbPackage.handler_unblock(self._lst_handler_id[5])
+
+            self.txtArea.handler_block(self._lst_handler_id[8])
+            self.txtArea.set_text(str(self.fmt.format(_attributes['area'])))
+            self.txtArea.handler_unblock(self._lst_handler_id[8])
+
+            self.txtNElements.handler_block(self._lst_handler_id[12])
+            self.txtNElements.set_text(str(_attributes['n_elements']))
+            self.txtNElements.handler_unblock(self._lst_handler_id[12])
+
+            self.txtThetaJC.handler_block(self._lst_handler_id[14])
+            self.txtThetaJC.set_text(
+                str(self.fmt.format(_attributes['theta_jc'])))
+            self.txtThetaJC.handler_unblock(self._lst_handler_id[14])
+
+            if self._subcategory_id in [1, 2, 3, 4]:
+                self.cmbTechnology.handler_block(self._lst_handler_id[6])
+                self.cmbTechnology.set_active(_attributes['technology_id'])
+                self.cmbTechnology.handler_unblock(self._lst_handler_id[6])
+
+                self.txtNActivePins.handler_block(self._lst_handler_id[10])
+                self.txtNActivePins.set_text(str(_attributes['n_active_pins']))
+                self.txtNActivePins.handler_unblock(self._lst_handler_id[10])
+
+                self.txtYearsInProduction.handler_block(
+                    self._lst_handler_id[16])
+                self.txtYearsInProduction.set_text(
+                    str(_attributes['years_in_production']))
+                self.txtYearsInProduction.handler_unblock(
+                    self._lst_handler_id[16])
+            elif self._subcategory_id in [5, 7, 8]:
+                self.cmbTechnology.handler_block(self._lst_handler_id[6])
+                self.cmbTechnology.set_active(_attributes['technology_id'])
+                self.cmbTechnology.handler_unblock(self._lst_handler_id[6])
+            elif self._subcategory_id == 6:
+                self.cmbConstruction.handler_block(self._lst_handler_id[2])
+                self.cmbConstruction.set_active(_attributes['construction_id'])
+                self.cmbConstruction.handler_unblock(self._lst_handler_id[2])
+
+                self.cmbTechnology.handler_block(self._lst_handler_id[6])
+                self.cmbTechnology.set_active(_attributes['technology_id'])
+                self.cmbTechnology.handler_unblock(self._lst_handler_id[6])
+
+                self.cmbType.handler_block(self._lst_handler_id[7])
+                self.cmbType.set_active(_attributes['type_id'])  # Use for ECC.
+                self.cmbType.handler_unblock(self._lst_handler_id[7])
+
+                self.txtNCycles.handler_block(self._lst_handler_id[11])
+                self.txtNCycles.set_text(str(_attributes['n_cycles']))
+                self.txtNCycles.handler_unblock(self._lst_handler_id[11])
+
+                self.txtOperatingLife.handler_block(self._lst_handler_id[13])
+                self.txtOperatingLife.set_text(
+                    str(self.fmt.format(_attributes['operating_life'])))
+                self.txtOperatingLife.handler_unblock(self._lst_handler_id[13])
+            elif self._subcategory_id == 9:
+                self.cmbApplication.handler_block(self._lst_handler_id[1])
+                self.cmbApplication.set_active(_attributes['application_id'])
+                self.cmbApplication.handler_unblock(self._lst_handler_id[1])
+
+                self.cmbType.handler_block(self._lst_handler_id[7])
+                self.cmbType.set_active(_attributes['type_id'])
+                self.cmbType.handler_unblock(self._lst_handler_id[7])
+
+                self.txtYearsInProduction.handler_block(
+                    self._lst_handler_id[16])
+                self.txtYearsInProduction.set_text(
+                    str(_attributes['years_in_production']))
+                self.txtYearsInProduction.handler_unblock(
+                    self._lst_handler_id[16])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected integrated circuit.
 
@@ -407,18 +524,18 @@ class ICAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
         Make the integrated circuit class gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._do_load_comboboxes(self._subcategory_id)
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
         self._do_set_sensitive()
 
         # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.cmbPackage, _x_pos, _y_pos[1])
         self.put(self.txtArea, _x_pos, _y_pos[2])
@@ -569,7 +686,7 @@ class ICAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the integrated circuit assessment input work view widgets.
 
@@ -578,122 +695,11 @@ class ICAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        if self._subcategory_id == 10:
-            self.cmbManufacturing.handler_block(self._lst_handler_id[4])
-            self.cmbManufacturing.set_active(_attributes['manufacturing_id'])
-            self.cmbManufacturing.handler_unblock(self._lst_handler_id[4])
-
-            self.cmbType.handler_block(self._lst_handler_id[7])
-            self.cmbType.set_active(_attributes['type_id'])
-            self.cmbType.handler_unblock(self._lst_handler_id[7])
-
-            self.txtArea.handler_block(self._lst_handler_id[8])
-            self.txtArea.set_text(str(self.fmt.format(_attributes['area'])))
-            self.txtArea.handler_unblock(self._lst_handler_id[8])
-
-            self.txtFeatureSize.handler_block(self._lst_handler_id[9])
-            self.txtFeatureSize.set_text(
-                str(self.fmt.format(_attributes['feature_size'])))
-            self.txtFeatureSize.handler_unblock(self._lst_handler_id[9])
-
-            self.txtVoltageESD.handler_block(self._lst_handler_id[15])
-            self.txtVoltageESD.set_text(
-                str(self.fmt.format(_attributes['voltage_esd'])))
-            self.txtVoltageESD.handler_unblock(self._lst_handler_id[15])
-
-        if _attributes['hazard_rate_method_id'] == 1:
-            self.txtNElements.handler_block(self._lst_handler_id[12])
-            self.txtNElements.set_text(str(_attributes['n_elements']))
-            self.txtNElements.handler_unblock(self._lst_handler_id[12])
-
-            if self._subcategory_id in [1, 2, 3, 4, 5, 8]:
-                self.cmbTechnology.handler_block(self._lst_handler_id[6])
-                self.cmbTechnology.set_active(_attributes['technology_id'])
-                self.cmbTechnology.handler_unblock(self._lst_handler_id[6])
-
-        elif _attributes['hazard_rate_method_id'] == 2:
-            self.cmbPackage.handler_block(self._lst_handler_id[5])
-            self.cmbPackage.set_active(_attributes['package_id'])
-            self.cmbPackage.handler_unblock(self._lst_handler_id[5])
-
-            self.txtArea.handler_block(self._lst_handler_id[8])
-            self.txtArea.set_text(str(self.fmt.format(_attributes['area'])))
-            self.txtArea.handler_unblock(self._lst_handler_id[8])
-
-            self.txtNElements.handler_block(self._lst_handler_id[12])
-            self.txtNElements.set_text(str(_attributes['n_elements']))
-            self.txtNElements.handler_unblock(self._lst_handler_id[12])
-
-            self.txtThetaJC.handler_block(self._lst_handler_id[14])
-            self.txtThetaJC.set_text(
-                str(self.fmt.format(_attributes['theta_jc'])))
-            self.txtThetaJC.handler_unblock(self._lst_handler_id[14])
-
-            if self._subcategory_id in [1, 2, 3, 4]:
-                self.cmbTechnology.handler_block(self._lst_handler_id[6])
-                self.cmbTechnology.set_active(_attributes['technology_id'])
-                self.cmbTechnology.handler_unblock(self._lst_handler_id[6])
-
-                self.txtNActivePins.handler_block(self._lst_handler_id[10])
-                self.txtNActivePins.set_text(str(_attributes['n_active_pins']))
-                self.txtNActivePins.handler_unblock(self._lst_handler_id[10])
-
-                self.txtYearsInProduction.handler_block(
-                    self._lst_handler_id[16])
-                self.txtYearsInProduction.set_text(
-                    str(_attributes['years_in_production']))
-                self.txtYearsInProduction.handler_unblock(
-                    self._lst_handler_id[16])
-            elif self._subcategory_id in [5, 7, 8]:
-                self.cmbTechnology.handler_block(self._lst_handler_id[6])
-                self.cmbTechnology.set_active(_attributes['technology_id'])
-                self.cmbTechnology.handler_unblock(self._lst_handler_id[6])
-            elif self._subcategory_id == 6:
-                self.cmbConstruction.handler_block(self._lst_handler_id[2])
-                self.cmbConstruction.set_active(_attributes['construction_id'])
-                self.cmbConstruction.handler_unblock(self._lst_handler_id[2])
-
-                self.cmbTechnology.handler_block(self._lst_handler_id[6])
-                self.cmbTechnology.set_active(_attributes['technology_id'])
-                self.cmbTechnology.handler_unblock(self._lst_handler_id[6])
-
-                self.cmbType.handler_block(self._lst_handler_id[7])
-                self.cmbType.set_active(_attributes['type_id'])  # Use for ECC.
-                self.cmbType.handler_unblock(self._lst_handler_id[7])
-
-                self.txtNCycles.handler_block(self._lst_handler_id[11])
-                self.txtNCycles.set_text(str(_attributes['n_cycles']))
-                self.txtNCycles.handler_unblock(self._lst_handler_id[11])
-
-                self.txtOperatingLife.handler_block(self._lst_handler_id[13])
-                self.txtOperatingLife.set_text(
-                    str(self.fmt.format(_attributes['operating_life'])))
-                self.txtOperatingLife.handler_unblock(self._lst_handler_id[13])
-            elif self._subcategory_id == 9:
-                self.cmbApplication.handler_block(self._lst_handler_id[1])
-                self.cmbApplication.set_active(_attributes['application_id'])
-                self.cmbApplication.handler_unblock(self._lst_handler_id[1])
-
-                self.cmbType.handler_block(self._lst_handler_id[7])
-                self.cmbType.set_active(_attributes['type_id'])
-                self.cmbType.handler_unblock(self._lst_handler_id[7])
-
-                self.txtYearsInProduction.handler_block(
-                    self._lst_handler_id[16])
-                self.txtYearsInProduction.set_text(
-                    str(_attributes['years_in_production']))
-                self.txtYearsInProduction.handler_unblock(
-                    self._lst_handler_id[16])
-
-        self._do_set_sensitive()
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class ICAssessmentResults(AssessmentResults):
@@ -753,18 +759,14 @@ class ICAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub>CD</sub> + \u03BB<sub>BP</sub>\u03C0<sub>E</sub>\u03C0<sub>Q</sub>\u03C0<sub>PT</sub> + \u03BB<sub>EOS</sub></span>"
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Integrated Circuit assessment result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.IntegratedCircuitBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                integrated circuit.
-        :param int subcategory_id: the ID of the integrated circuit subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -865,12 +867,12 @@ class ICAssessmentResults(AssessmentResults):
             tooltip=_(u"The application correction factor for the GaAs "
                       u"device."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):
         """
         Load the integrated circuit assessment results page.
 
@@ -879,7 +881,7 @@ class ICAssessmentResults(AssessmentResults):
         """
         _return = False
 
-        _attributes = AssessmentResults.do_load_page(self)
+        _attributes = AssessmentResults.do_load_page(self, *kwargs)
 
         self.txtC1.set_text(str(self.fmt.format(_attributes['C1'])))
         self.txtPiT.set_text(str(self.fmt.format(_attributes['piT'])))
@@ -900,14 +902,16 @@ class ICAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected integrated circuit.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = AssessmentResults.do_set_sensitive(self)
+        _return = False
+
+        AssessmentResults.do_set_sensitive(self, **kwargs)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
@@ -955,7 +959,7 @@ class ICAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the integrated circuit gtk.Notebook() assessment results page.
 
@@ -965,7 +969,7 @@ class ICAssessmentResults(AssessmentResults):
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtC1, _x_pos, _y_pos[3])
         self.put(self.txtPiT, _x_pos, _y_pos[4])
@@ -982,7 +986,7 @@ class ICAssessmentResults(AssessmentResults):
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the integrated circuit assessment input work view widgets.
 
@@ -991,11 +995,8 @@ class ICAssessmentResults(AssessmentResults):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)

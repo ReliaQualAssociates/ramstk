@@ -215,18 +215,14 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
     # Define private list attributes.
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Capacitor assessment input view.
 
         :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                capacitor.
-        :param int subcategory_id: the ID of the capacitor subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -269,7 +265,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             width=125,
             tooltip=_(u"The equivalent series resistance of the capcaitor."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -291,20 +287,19 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
         # pub.subscribe(self._do_load_comboboxes, 'changedSubcategory')
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):
         """
         Load the specification RKTComboBox().
 
         This method is used to load the specification RTKComboBox() whenever
         the capacitor subcategory is changed.
 
-        :param int subcategory_id: the newly selected capacitor subcategory ID.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
         # Load the quality level RTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
@@ -335,7 +330,48 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Capacitor Assessment Inputs page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        # We don't block the callback signal otherwise the style
+        # RTKComboBox() will not be loaded and set.
+        self.cmbSpecification.set_active(_attributes['specification_id'])
+
+        if (_attributes['hazard_rate_method_id'] != 1
+                and self._subcategory_id == 1):
+            self.cmbStyle.handler_block(self._lst_handler_id[2])
+            self.cmbStyle.set_active(_attributes['type_id'])
+            self.cmbStyle.handler_unblock(self._lst_handler_id[2])
+
+            self.cmbConfiguration.handler_block(self._lst_handler_id[3])
+            self.cmbConfiguration.set_active(_attributes['configuration_id'])
+            self.cmbConfiguration.handler_unblock(self._lst_handler_id[3])
+
+            self.cmbConstruction.handler_block(self._lst_handler_id[4])
+            self.cmbConstruction.set_active(_attributes['construction_id'])
+            self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
+
+            self.txtCapacitance.handler_block(self._lst_handler_id[5])
+            self.txtCapacitance.set_text(
+                str(self.fmt.format(_attributes['capacitance'])))
+            self.txtCapacitance.handler_unblock(self._lst_handler_id[5])
+
+            self.txtESR.handler_block(self._lst_handler_id[6])
+            self.txtESR.set_text(
+                str(self.fmt.format(_attributes['resistance'])))
+            self.txtESR.handler_unblock(self._lst_handler_id[6])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected capacitor.
 
@@ -379,7 +415,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
         Make the Capacitor class gtk.Notebook() assessment input page.
 
@@ -387,11 +423,11 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        self._do_load_comboboxes(self._subcategory_id)
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.txtCapacitance, _x_pos, _y_pos[1])
         self.put(self.cmbSpecification, _x_pos, _y_pos[2])
@@ -515,50 +551,20 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
-        Load the capacitor assessment input work view widgets.
+        Load the Capacitor assessment input work view widgets.
 
         :param int module_id: the Hardware ID of the selected/edited
                               capacitor.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
+        self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        # We don't block the callback signal otherwise the style
-        # RTKComboBox() will not be loaded and set.
-        self.cmbSpecification.set_active(_attributes['specification_id'])
-
-        self._do_set_sensitive()
-
-        if (_attributes['hazard_rate_method_id'] != 1
-                and self._subcategory_id == 1):
-            self.cmbStyle.handler_block(self._lst_handler_id[2])
-            self.cmbStyle.set_active(_attributes['type_id'])
-            self.cmbStyle.handler_unblock(self._lst_handler_id[2])
-
-            self.cmbConfiguration.handler_block(self._lst_handler_id[3])
-            self.cmbConfiguration.set_active(_attributes['configuration_id'])
-            self.cmbConfiguration.handler_unblock(self._lst_handler_id[3])
-
-            self.cmbConstruction.handler_block(self._lst_handler_id[4])
-            self.cmbConstruction.set_active(_attributes['construction_id'])
-            self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
-
-            self.txtCapacitance.handler_block(self._lst_handler_id[5])
-            self.txtCapacitance.set_text(
-                str(self.fmt.format(_attributes['capacitance'])))
-            self.txtCapacitance.handler_unblock(self._lst_handler_id[5])
-
-            self.txtESR.handler_block(self._lst_handler_id[6])
-            self.txtESR.set_text(
-                str(self.fmt.format(_attributes['resistance'])))
-            self.txtESR.handler_unblock(self._lst_handler_id[6])
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class CapacitorAssessmentResults(AssessmentResults):
@@ -617,18 +623,14 @@ class CapacitorAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Capacitor assessment result view.
 
         :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                capacitor.
-        :param int subcategory_id: the ID of the capacitor subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -663,12 +665,12 @@ class CapacitorAssessmentResults(AssessmentResults):
             bold=True,
             tooltip=_(u"The construction factor for the capacitor."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
         Load the capacitor assessment results page.
 
@@ -677,7 +679,7 @@ class CapacitorAssessmentResults(AssessmentResults):
         """
         _return = False
 
-        _attributes = AssessmentResults.do_load_page(self)
+        _attributes = AssessmentResults.do_load_page(self, **kwargs)
 
         self.txtPiCV.set_text(str(self.fmt.format(_attributes['piCV'])))
         self.txtPiCF.set_text(str(self.fmt.format(_attributes['piCF'])))
@@ -685,7 +687,7 @@ class CapacitorAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected capacitor.
 
@@ -709,7 +711,7 @@ class CapacitorAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the capacitor gtk.Notebook() assessment results page.
 
@@ -719,7 +721,7 @@ class CapacitorAssessmentResults(AssessmentResults):
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtPiCV, _x_pos, _y_pos[3])
         self.put(self.txtPiCF, _x_pos, _y_pos[4])
@@ -727,7 +729,7 @@ class CapacitorAssessmentResults(AssessmentResults):
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the capacitor assessment input work view widgets.
 
@@ -736,11 +738,8 @@ class CapacitorAssessmentResults(AssessmentResults):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)

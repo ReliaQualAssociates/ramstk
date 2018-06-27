@@ -164,18 +164,14 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         }
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Connection assessment input view.
 
         :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                connection.
-        :param int subcategory_id: the ID of the connection subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -232,7 +228,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             tooltip=_(u"The number of circuit planes for wave soldered "
                       u"connections."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -259,17 +255,16 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.txtNPlanes.connect('changed', self._on_focus_out, 10))
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):
         """
         Load the connection RKTComboBox()s.
 
-        :param int subcategory_id: the newly selected connection subcategory ID.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
         # Load the quality level RTKComboBox().
         _attributes = self._dtc_data_controller.request_get_attributes(
@@ -300,7 +295,78 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Connection assessment input widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        # Load the subcategory RTKComboBox.  We need to block the quality and
+        # connector type RTKComboBoxes otherwise loading them causes the
+        # respective attributes to be set to -1.
+        self.cmbQuality.handler_block(self._lst_handler_id[0])
+        self.cmbType.handler_block(self._lst_handler_id[1])
+        self._do_load_comboboxes(subcategory_id=_attributes['subcategory_id'])
+        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        self.cmbType.handler_unblock(self._lst_handler_id[1])
+
+        # We don't block the callback signal otherwise the specification
+        # RTKComboBox() will not be loaded and set.
+        self.cmbType.set_active(_attributes['type_id'])
+
+        if _attributes['hazard_rate_method_id'] == 2:
+            # We don't block the callback signal otherwise the insert
+            # RTKComboBox() will not be loaded and set.
+            self.cmbSpecification.set_active(_attributes['specification_id'])
+
+            self.cmbInsert.handler_block(self._lst_handler_id[3])
+            self.cmbInsert.set_active(_attributes['insert_id'])
+            self.cmbInsert.handler_unblock(self._lst_handler_id[3])
+
+            self.txtContactGauge.handler_block(self._lst_handler_id[4])
+            self.txtContactGauge.set_text(
+                str(self.fmt.format(_attributes['contact_gauge'])))
+            self.txtContactGauge.handler_unblock(self._lst_handler_id[4])
+
+            self.txtActivePins.handler_block(self._lst_handler_id[5])
+            self.txtActivePins.set_text(
+                str(self.fmt.format(_attributes['n_active_pins'])))
+            self.txtActivePins.handler_unblock(self._lst_handler_id[5])
+
+            self.txtAmpsContact.handler_block(self._lst_handler_id[6])
+            self.txtAmpsContact.set_text(
+                str(self.fmt.format(_attributes['current_operating'])))
+            self.txtAmpsContact.handler_unblock(self._lst_handler_id[6])
+
+            self.txtMating.handler_block(self._lst_handler_id[7])
+            self.txtMating.set_text(
+                str(self.fmt.format(_attributes['n_cycles'])))
+            self.txtMating.handler_unblock(self._lst_handler_id[7])
+
+            if self._subcategory_id == 4:
+                self.txtNWave.handler_block(self._lst_handler_id[8])
+                self.txtNWave.set_text(
+                    str(self.fmt.format(_attributes['n_wave_soldered'])))
+                self.txtNWave.handler_unblock(self._lst_handler_id[8])
+
+                self.txtNHand.handler_block(self._lst_handler_id[9])
+                self.txtNHand.set_text(
+                    str(self.fmt.format(_attributes['n_hand_soldered'])))
+                self.txtNHand.handler_unblock(self._lst_handler_id[9])
+
+                self.txtNPlanes.handler_block(self._lst_handler_id[10])
+                self.txtNPlanes.set_text(
+                    str(self.fmt.format(_attributes['n_circuit_planes'])))
+                self.txtNPlanes.handler_unblock(self._lst_handler_id[10])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected connection.
 
@@ -359,7 +425,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
         Make the Connection class gtk.Notebook() assessment input page.
 
@@ -367,11 +433,11 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        self._do_load_comboboxes(self._subcategory_id)
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
         self._do_set_sensitive()
 
         # Build the container for connections.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.cmbType, _x_pos, _y_pos[1])
         self.put(self.cmbSpecification, _x_pos, _y_pos[2])
@@ -515,7 +581,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the connection assessment input work view widgets.
 
@@ -524,71 +590,11 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
+        self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        # Load the subcategory RTKComboBox.  We need to block the quality and
-        # connector type RTKComboBoxes otherwise loading them causes the
-        # respective attributes to be set to -1.
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbType.handler_block(self._lst_handler_id[1])
-        self._do_load_comboboxes(_attributes['subcategory_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
-        self.cmbType.handler_unblock(self._lst_handler_id[1])
-
-        # We don't block the callback signal otherwise the specification
-        # RTKComboBox() will not be loaded and set.
-        self.cmbType.set_active(_attributes['type_id'])
-
-        if _attributes['hazard_rate_method_id'] == 2:
-            # We don't block the callback signal otherwise the insert
-            # RTKComboBox() will not be loaded and set.
-            self.cmbSpecification.set_active(_attributes['specification_id'])
-
-            self.cmbInsert.handler_block(self._lst_handler_id[3])
-            self.cmbInsert.set_active(_attributes['insert_id'])
-            self.cmbInsert.handler_unblock(self._lst_handler_id[3])
-
-            self.txtContactGauge.handler_block(self._lst_handler_id[4])
-            self.txtContactGauge.set_text(
-                str(self.fmt.format(_attributes['contact_gauge'])))
-            self.txtContactGauge.handler_unblock(self._lst_handler_id[4])
-
-            self.txtActivePins.handler_block(self._lst_handler_id[5])
-            self.txtActivePins.set_text(
-                str(self.fmt.format(_attributes['n_active_pins'])))
-            self.txtActivePins.handler_unblock(self._lst_handler_id[5])
-
-            self.txtAmpsContact.handler_block(self._lst_handler_id[6])
-            self.txtAmpsContact.set_text(
-                str(self.fmt.format(_attributes['current_operating'])))
-            self.txtAmpsContact.handler_unblock(self._lst_handler_id[6])
-
-            self.txtMating.handler_block(self._lst_handler_id[7])
-            self.txtMating.set_text(
-                str(self.fmt.format(_attributes['n_cycles'])))
-            self.txtMating.handler_unblock(self._lst_handler_id[7])
-
-            if self._subcategory_id == 4:
-                self.txtNWave.handler_block(self._lst_handler_id[8])
-                self.txtNWave.set_text(
-                    str(self.fmt.format(_attributes['n_wave_soldered'])))
-                self.txtNWave.handler_unblock(self._lst_handler_id[8])
-
-                self.txtNHand.handler_block(self._lst_handler_id[9])
-                self.txtNHand.set_text(
-                    str(self.fmt.format(_attributes['n_hand_soldered'])))
-                self.txtNHand.handler_unblock(self._lst_handler_id[9])
-
-                self.txtNPlanes.handler_block(self._lst_handler_id[10])
-                self.txtNPlanes.set_text(
-                    str(self.fmt.format(_attributes['n_circuit_planes'])))
-                self.txtNPlanes.handler_unblock(self._lst_handler_id[10])
-
-        self._do_set_sensitive()
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class ConnectionAssessmentResults(AssessmentResults):
@@ -619,18 +625,14 @@ class ConnectionAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Connection assessment result view.
 
         :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                connection.
-        :param int subcategory_id: the ID of the connection subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -665,12 +667,12 @@ class ConnectionAssessmentResults(AssessmentResults):
             bold=True,
             tooltip=_(u"The complexity factor for the connection."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
         Load the connection assessment results page.
 
@@ -687,14 +689,14 @@ class ConnectionAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected connection.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = AssessmentResults.do_set_sensitive(self)
+        _return = AssessmentResults.do_set_sensitive(self, **kwargs)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
@@ -717,7 +719,7 @@ class ConnectionAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the connection gtk.Notebook() assessment results page.
 
@@ -727,7 +729,7 @@ class ConnectionAssessmentResults(AssessmentResults):
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtPiK, _x_pos, _y_pos[3])
         self.put(self.txtPiP, _x_pos, _y_pos[4])
@@ -735,7 +737,7 @@ class ConnectionAssessmentResults(AssessmentResults):
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the connection assessment input work view widgets.
 
@@ -744,11 +746,8 @@ class ConnectionAssessmentResults(AssessmentResults):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)

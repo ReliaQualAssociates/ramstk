@@ -83,18 +83,14 @@ class SwitchAssessmentInputs(AssessmentInputs):
         5: [[u"SPST"], [u"DPST"], [u"3PST"], [u"4PST"]]
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Switch assessment input view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                switch.
-        :param int subcategory_id: the ID of the switch subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -130,7 +126,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
             width=125,
             tooltip=_(u"The number of active contacts in the switch."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -146,20 +142,19 @@ class SwitchAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.txtNElements.connect('changed', self._on_focus_out, 5))
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):
         """
         Load the switch RKTComboBox().
 
         This method is used to load the specification RTKComboBox() whenever
         the switch subcategory is changed.
 
-        :param int subcategory_id: the newly selected switch subcategory ID.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
         # Load the quality level RTKComboBox().
         self.cmbQuality.do_load_combo([["MIL-SPEC"], [_(u"Lower")]])
@@ -190,7 +185,43 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Switch assesment input widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        if _attributes['hazard_rate_method_id'] == 2:
+            self.cmbApplication.handler_block(self._lst_handler_id[1])
+            self.cmbApplication.set_active(_attributes['application_id'])
+            self.cmbApplication.handler_unblock(self._lst_handler_id[1])
+
+            self.cmbConstruction.handler_block(self._lst_handler_id[2])
+            self.cmbConstruction.set_active(_attributes['construction_id'])
+            self.cmbConstruction.handler_unblock(self._lst_handler_id[2])
+
+            self.cmbContactForm.handler_block(self._lst_handler_id[3])
+            self.cmbContactForm.set_active(_attributes['contact_form_id'])
+            self.cmbContactForm.handler_unblock(self._lst_handler_id[3])
+
+            self.txtNCycles.handler_block(self._lst_handler_id[4])
+            self.txtNCycles.set_text(
+                str(self.fmt.format(_attributes['n_cycles'])))
+            self.txtNCycles.handler_unblock(self._lst_handler_id[4])
+
+            self.txtNElements.handler_block(self._lst_handler_id[5])
+            self.txtNElements.set_text(
+                str(self.fmt.format(_attributes['n_elements'])))
+            self.txtNElements.handler_unblock(self._lst_handler_id[5])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected switch.
 
@@ -225,18 +256,17 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
         Make the Switch class gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._do_load_comboboxes(self._subcategory_id)
-        self._do_set_sensitive()
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
 
         # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.cmbApplication, _x_pos, _y_pos[1])
         self.put(self.cmbConstruction, _x_pos, _y_pos[2])
@@ -344,7 +374,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the switch assessment input work view widgets.
 
@@ -353,38 +383,11 @@ class SwitchAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        if _attributes['hazard_rate_method_id'] == 2:
-            self.cmbApplication.handler_block(self._lst_handler_id[1])
-            self.cmbApplication.set_active(_attributes['application_id'])
-            self.cmbApplication.handler_unblock(self._lst_handler_id[1])
-
-            self.cmbConstruction.handler_block(self._lst_handler_id[2])
-            self.cmbConstruction.set_active(_attributes['construction_id'])
-            self.cmbConstruction.handler_unblock(self._lst_handler_id[2])
-
-            self.cmbContactForm.handler_block(self._lst_handler_id[3])
-            self.cmbContactForm.set_active(_attributes['contact_form_id'])
-            self.cmbContactForm.handler_unblock(self._lst_handler_id[3])
-
-            self.txtNCycles.handler_block(self._lst_handler_id[4])
-            self.txtNCycles.set_text(
-                str(self.fmt.format(_attributes['n_cycles'])))
-            self.txtNCycles.handler_unblock(self._lst_handler_id[4])
-
-            self.txtNElements.handler_block(self._lst_handler_id[5])
-            self.txtNElements.set_text(
-                str(self.fmt.format(_attributes['n_elements'])))
-            self.txtNElements.handler_unblock(self._lst_handler_id[5])
-
-        self._do_set_sensitive()
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class SwitchAssessmentResults(AssessmentResults):
@@ -417,18 +420,14 @@ class SwitchAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>U</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Switch assessment result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                switch.
-        :param int subcategory_id: the ID of the switch subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -475,12 +474,12 @@ class SwitchAssessmentResults(AssessmentResults):
             bold=True,
             tooltip=_(u"The use factor for the breaker."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):
         """
         Load the switch assessment results page.
 
@@ -489,7 +488,7 @@ class SwitchAssessmentResults(AssessmentResults):
         """
         _return = False
 
-        _attributes = AssessmentResults.do_load_page(self)
+        _attributes = AssessmentResults.do_load_page(self, **kwargs)
 
         self.txtPiCYC.set_text(str(self.fmt.format(_attributes['piCYC'])))
         self.txtPiL.set_text(str(self.fmt.format(_attributes['piL'])))
@@ -499,14 +498,14 @@ class SwitchAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected switch.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = AssessmentResults.do_set_sensitive(self)
+        _return = AssessmentResults.do_set_sensitive(self, **kwargs)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
@@ -533,7 +532,7 @@ class SwitchAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the switch gtk.Notebook() assessment results page.
 
@@ -543,7 +542,7 @@ class SwitchAssessmentResults(AssessmentResults):
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtPiCYC, _x_pos, _y_pos[3])
         self.put(self.txtPiL, _x_pos, _y_pos[4])
@@ -553,7 +552,7 @@ class SwitchAssessmentResults(AssessmentResults):
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the switch assessment input work view widgets.
 
@@ -562,11 +561,8 @@ class SwitchAssessmentResults(AssessmentResults):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)

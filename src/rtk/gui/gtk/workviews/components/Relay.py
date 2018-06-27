@@ -137,18 +137,14 @@ class RelayAssessmentInputs(AssessmentInputs):
                            [_(u"0 - 5 Amp")], [_(u"5 - 20 Amp")],
                            [_(u"20 - 600 Amp")]]
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Relay assessment input view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                relay.
-        :param int subcategory_id: the ID of the relay subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -190,7 +186,7 @@ class RelayAssessmentInputs(AssessmentInputs):
             width=125,
             tooltip=_(u"The number of relay on/off cycles per hour."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -212,20 +208,19 @@ class RelayAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.txtCycles.connect('changed', self._on_focus_out, 7))
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):
         """
         Load the relay RKTComboBox()s.
 
         This method is used to load the specification RTKComboBox() whenever
         the relay subcategory is changed.
 
-        :param int subcategory_id: the newly selected relay subcategory ID.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
         # Load the quality level RTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
@@ -259,7 +254,63 @@ class RelayAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Relay assesment input widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        self.cmbType.handler_block(self._lst_handler_id[1])
+        self.cmbType.set_active(_attributes['type_id'])
+        self.cmbType.handler_unblock(self._lst_handler_id[1])
+
+        if _attributes['hazard_rate_method_id'] == 2:
+            self.cmbLoadType.handler_block(self._lst_handler_id[2])
+            self.cmbLoadType.set_active(_attributes['technology_id'])
+            self.cmbLoadType.handler_unblock(self._lst_handler_id[2])
+
+            self.cmbContactForm.handler_block(self._lst_handler_id[3])
+            self.cmbContactForm.set_active(_attributes['contact_form_id'])
+            self.cmbContactForm.handler_unblock(self._lst_handler_id[3])
+
+            self.cmbContactRating.handler_block(self._lst_handler_id[4])
+            self.cmbContactRating.set_active(_attributes['contact_rating_id'])
+            # Load the application RTKComboBox().
+            try:
+                _data = self._dic_application[_attributes['contact_rating_id']]
+            except KeyError:
+                _data = []
+            self.cmbApplication.do_load_combo(_data)
+            self.cmbContactRating.handler_unblock(self._lst_handler_id[4])
+
+            self.cmbApplication.handler_block(self._lst_handler_id[5])
+            self.cmbApplication.set_active(_attributes['application_id'])
+            # Load the construction RTKComboBox().
+            try:
+                _data = self._dic_construction[_attributes[
+                    'contact_rating_id']][_attributes['application_id']]
+            except KeyError:
+                _data = []
+            self.cmbConstruction.do_load_combo(_data)
+            self.cmbApplication.handler_unblock(self._lst_handler_id[5])
+
+            self.cmbConstruction.handler_block(self._lst_handler_id[6])
+            self.cmbConstruction.set_active(_attributes['construction_id'])
+            self.cmbConstruction.handler_unblock(self._lst_handler_id[6])
+
+            self.txtCycles.handler_block(self._lst_handler_id[7])
+            self.txtCycles.set_text(
+                str(self.fmt.format(_attributes['n_cycles'])))
+            self.txtCycles.handler_unblock(self._lst_handler_id[7])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected relay.
 
@@ -290,18 +341,17 @@ class RelayAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
         Make the Hardware class gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._do_load_comboboxes(self._subcategory_id)
-        self._do_set_sensitive()
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
 
         # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.cmbType, _x_pos, _y_pos[1])
         self.put(self.cmbLoadType, _x_pos, _y_pos[2])
@@ -429,67 +479,18 @@ class RelayAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the relay assessment input work view widgets.
 
-        :param int module_id: the Hardware ID of the selected/edited
-                              relay.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        self.cmbType.handler_block(self._lst_handler_id[1])
-        self.cmbType.set_active(_attributes['type_id'])
-        self.cmbType.handler_unblock(self._lst_handler_id[1])
-
-        if _attributes['hazard_rate_method_id'] == 2:
-            self.cmbLoadType.handler_block(self._lst_handler_id[2])
-            self.cmbLoadType.set_active(_attributes['technology_id'])
-            self.cmbLoadType.handler_unblock(self._lst_handler_id[2])
-
-            self.cmbContactForm.handler_block(self._lst_handler_id[3])
-            self.cmbContactForm.set_active(_attributes['contact_form_id'])
-            self.cmbContactForm.handler_unblock(self._lst_handler_id[3])
-
-            self.cmbContactRating.handler_block(self._lst_handler_id[4])
-            self.cmbContactRating.set_active(_attributes['contact_rating_id'])
-            # Load the application RTKComboBox().
-            try:
-                _data = self._dic_application[_attributes['contact_rating_id']]
-            except KeyError:
-                _data = []
-            self.cmbApplication.do_load_combo(_data)
-            self.cmbContactRating.handler_unblock(self._lst_handler_id[4])
-
-            self.cmbApplication.handler_block(self._lst_handler_id[5])
-            self.cmbApplication.set_active(_attributes['application_id'])
-            # Load the construction RTKComboBox().
-            try:
-                _data = self._dic_construction[_attributes[
-                    'contact_rating_id']][_attributes['application_id']]
-            except KeyError:
-                _data = []
-            self.cmbConstruction.do_load_combo(_data)
-            self.cmbApplication.handler_unblock(self._lst_handler_id[5])
-
-            self.cmbConstruction.handler_block(self._lst_handler_id[6])
-            self.cmbConstruction.set_active(_attributes['construction_id'])
-            self.cmbConstruction.handler_unblock(self._lst_handler_id[6])
-
-            self.txtCycles.handler_block(self._lst_handler_id[7])
-            self.txtCycles.set_text(
-                str(self.fmt.format(_attributes['n_cycles'])))
-            self.txtCycles.handler_unblock(self._lst_handler_id[7])
-
-        self._do_set_sensitive()
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class RelayAssessmentResults(AssessmentResults):
@@ -516,18 +517,14 @@ class RelayAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Relay assessment result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                relay.
-        :param int subcategory_id: the ID of the relay subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -569,21 +566,21 @@ class RelayAssessmentResults(AssessmentResults):
             bold=True,
             tooltip=_(u"The load stress factor for the relay."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):
         """
-        Load the relay assessment results wodgets.
+        Load the Relay assessment results wodgets.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _attributes = AssessmentResults.do_load_page(self)
+        _attributes = AssessmentResults.do_load_page(self, **kwargs)
 
         self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
         self.txtPiCYC.set_text(str(self.fmt.format(_attributes['piCYC'])))
@@ -592,14 +589,14 @@ class RelayAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected relay.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = AssessmentResults.do_set_sensitive(self)
+        _return = AssessmentResults.do_set_sensitive(self, **kwargs)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
@@ -618,7 +615,7 @@ class RelayAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the relay gtk.Notebook() assessment results page.
 
@@ -628,7 +625,7 @@ class RelayAssessmentResults(AssessmentResults):
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtPiC, _x_pos, _y_pos[3])
         self.put(self.txtPiCYC, _x_pos, _y_pos[4])
@@ -637,20 +634,17 @@ class RelayAssessmentResults(AssessmentResults):
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
-        Load the relay assessment input work view widgets.
+        Load the Relay assessment input work view widgets.
 
         :param int module_id: the Hardware ID of the selected/edited
                               relay.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)

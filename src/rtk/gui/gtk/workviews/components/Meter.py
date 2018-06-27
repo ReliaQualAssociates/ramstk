@@ -65,7 +65,7 @@ class MeterAssessmentInputs(AssessmentInputs):
         2: [[_(u"Direct Current")], [_(u"Alternating Current")]]
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Meter assessment input view.
 
@@ -74,8 +74,7 @@ class MeterAssessmentInputs(AssessmentInputs):
         :param int hardware_id: the hardware ID of the currently selected meter.
         :param int subcategory_id: the ID of the meter subcategory.
         """
-        AssessmentInputs.__init__(self, controller, hardware_id,
-                                  subcategory_id)
+        AssessmentInputs.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -97,7 +96,7 @@ class MeterAssessmentInputs(AssessmentInputs):
         self.cmbType = rtk.RTKComboBox(
             index=0, simple=False, tooltip=_(u"The type of meter."))
 
-        self._make_assessment_input_page()
+        self._make_page()
         self.show_all()
 
         self._lst_handler_id.append(
@@ -107,7 +106,7 @@ class MeterAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.cmbType.connect('changed', self._on_combo_changed, 2))
 
-    def _do_load_comboboxes(self, subcategory_id):
+    def _do_load_comboboxes(self, **kwargs):
         """
         Load the meter RKTComboBox()s.
 
@@ -118,9 +117,11 @@ class MeterAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _subcategory_id = kwargs['subcategory_id']
         _return = False
 
-        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(
+            self, subcategory_id=_subcategory_id)
 
         # Load the quality level RTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
@@ -145,7 +146,28 @@ class MeterAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_load_page(self, **kwargs):
+        """
+        Load the Meter assesment input widgets.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+
+        self.cmbApplication.handler_block(self._lst_handler_id[1])
+        self.cmbApplication.set_active(_attributes['application_id'])
+        self.cmbApplication.handler_unblock(self._lst_handler_id[1])
+
+        self.cmbType.handler_block(self._lst_handler_id[2])
+        self.cmbType.set_active(_attributes['type_id'])
+        self.cmbType.handler_unblock(self._lst_handler_id[2])
+
+        return _return
+
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected meter.
 
@@ -166,18 +188,18 @@ class MeterAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def _make_assessment_input_page(self):
+    def _make_page(self):
         """
         Make the Meter class gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._do_load_comboboxes(self._subcategory_id)
+        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
         self._do_set_sensitive()
 
         # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
+        _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
         self.put(self.cmbType, _x_pos, _y_pos[1])
         self.put(self.cmbApplication, _x_pos, _y_pos[2])
@@ -225,7 +247,7 @@ class MeterAssessmentInputs(AssessmentInputs):
 
         return _return
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the meter assessment input work view widgets.
 
@@ -234,23 +256,11 @@ class MeterAssessmentInputs(AssessmentInputs):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        _attributes = AssessmentInputs.on_select(self, module_id)
+        self._do_set_sensitive(**kwargs)
 
-        self.cmbApplication.handler_block(self._lst_handler_id[1])
-        self.cmbApplication.set_active(_attributes['application_id'])
-        self.cmbApplication.handler_unblock(self._lst_handler_id[1])
-
-        self.cmbType.handler_block(self._lst_handler_id[2])
-        self.cmbType.set_active(_attributes['type_id'])
-        self.cmbType.handler_unblock(self._lst_handler_id[2])
-
-        self._do_set_sensitive()
-
-        return _return
+        return self._do_load_page(**kwargs)
 
 
 class MeterAssessmentResults(AssessmentResults):
@@ -276,18 +286,14 @@ class MeterAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>"
     }
 
-    def __init__(self, controller, hardware_id, subcategory_id):
+    def __init__(self, controller, **kwargs):
         """
         Initialize an instance of the Meter assessment result view.
 
         :param controller: the meter data controller instance.
         :type controller: :class:`rtk.meter.Controller.MeterBoMDataController`
-        :param int hardware_id: the meter ID of the currently selected
-                                meter.
-        :param int subcategory_id: the ID of the meter subcategory.
         """
-        AssessmentResults.__init__(self, controller, hardware_id,
-                                   subcategory_id)
+        AssessmentResults.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -322,12 +328,12 @@ class MeterAssessmentResults(AssessmentResults):
             bold=True,
             tooltip=_(u"The temperature stress factor for the meter."))
 
-        self._make_assessment_results_page()
+        self._make_page()
         self.show_all()
 
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self):
+    def _do_load_page(self, **kwargs):
         """
         Load the meter assessment results page.
 
@@ -336,7 +342,7 @@ class MeterAssessmentResults(AssessmentResults):
         """
         _return = False
 
-        _attributes = AssessmentResults.do_load_page(self)
+        _attributes = AssessmentResults.do_load_page(self, **kwargs)
 
         self.txtPiA.set_text(str(self.fmt.format(_attributes['piA'])))
         self.txtPiF.set_text(str(self.fmt.format(_attributes['piF'])))
@@ -344,14 +350,16 @@ class MeterAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _do_set_sensitive(self):
+    def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected meter.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = AssessmentResults.do_set_sensitive(self)
+        _return = False
+
+        AssessmentResults.do_set_sensitive(self, *kwargs)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
@@ -370,7 +378,7 @@ class MeterAssessmentResults(AssessmentResults):
 
         return _return
 
-    def _make_assessment_results_page(self):
+    def _make_page(self):
         """
         Make the meter gtk.Notebook() assessment results page.
 
@@ -380,7 +388,7 @@ class MeterAssessmentResults(AssessmentResults):
         self._do_set_sensitive()
 
         # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
+        _x_pos, _y_pos = AssessmentResults.make_page(self)
 
         self.put(self.txtPiA, _x_pos, _y_pos[3])
         self.put(self.txtPiF, _x_pos, _y_pos[4])
@@ -388,7 +396,7 @@ class MeterAssessmentResults(AssessmentResults):
 
         return None
 
-    def on_select(self, module_id=None):
+    def on_select(self, module_id, **kwargs):
         """
         Load the meter assessment input work view widgets.
 
@@ -397,11 +405,8 @@ class MeterAssessmentResults(AssessmentResults):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
-        self._do_set_sensitive()
-        self._do_load_page()
+        self._do_set_sensitive(**kwargs)
 
-        return _return
+        return self._do_load_page(**kwargs)
