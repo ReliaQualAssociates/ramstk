@@ -7,26 +7,30 @@
 """The RTKMatrixView Meta-Class Module."""
 
 # Import other RTK modules.
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import gtk
 from rtk.gui.gtk import rtk
 
 
 class RTKMatrixView(gtk.HBox, rtk.RTKBaseMatrix):
     """
-    This is the meta class for all RTK Matrix View classes.  Attributes of the
-    RTKMatrixView are:
+    This is the meta class for all RTK Matrix View classes.
+
+    Attributes of the RTKMatrixView are:
+
+    :ivar hbx_tab_label: the gtk.HBox() containing the label for the List and
+                         Matrix View page.
+    :type hbx_tab_label: :class:`gtk.HBox`
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):
         """
-        Method to initialize the List View.
+        Initialize the List View.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         gtk.HBox.__init__(self)
-        rtk.RTKMatrixView.__init__(self, controller)
+        rtk.RTKBaseMatrix.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 

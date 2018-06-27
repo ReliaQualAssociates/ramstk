@@ -377,7 +377,7 @@ class RTKTreeView(gtk.TreeView):
             cell.set_property('editable', editable)
             cell.set_property('foreground', fg_color)
             cell.set_property('wrap-width', 250)
-            cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            cell.set_property('wrap-mode', pango.WRAP_WORD)
         else:
             cell.set_property('activatable', editable)
 

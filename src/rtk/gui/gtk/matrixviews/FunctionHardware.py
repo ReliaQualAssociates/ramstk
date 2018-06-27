@@ -4,22 +4,20 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Function:Hardware Matrix View Module
--------------------------------------------------------------------------------
-"""
+"""The Function:Hardware Matrix View Module."""
 
 from pubsub import pub
 
 # Import other RTK modules.
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
 
 
 class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
     """
-    This is the Function:Hardware RTK Matrix View.  Attributes of the
-    Function:Hardware Matrix View are:
+    This is the Function:Hardware RTK Matrix View.
+
+    Attributes of the Function:Hardware Matrix View are:
     """
 
     def __init__(self, controller, **kwargs):
@@ -84,7 +82,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         return self._dtc_data_controller.request_do_update_matrix(
             self._revision_id, self._matrix_type)
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):    # pylint: disable=unused-argument
         """
         Make the buttonbox for the Function:Hardware Matrix View.
 

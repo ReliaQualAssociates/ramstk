@@ -5,34 +5,31 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Requirement:Hardware Matrix View Module
--------------------------------------------------------------------------------
-"""
+"""The Requirement:Hardware Matrix View Module."""
 
 from pubsub import pub
 
 # Import other RTK modules.
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
 
 
 class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
     """
-    This is the Requirement:Hardware RTK Matrix View.  Attributes of the
-    Requirement:Hardware Matrix View are:
+    This is the Requirement:Hardware RTK Matrix View.
+
+    Attributes of the Requirement:Hardware Matrix View are:
     """
 
     def __init__(self, controller, **kwargs):
         """
-        Method to initialize the List View.
+        Initialize the Requirement:Hardware Matrix View.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         gtk.HBox.__init__(self)
-        rtk.RTKBaseMatrix.__init__(self, controller)
+        rtk.RTKBaseMatrix.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -76,27 +73,24 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Requirement:Hardware Matrix row.
+        Save the currently selected Requirement:Hardware Matrix row.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_do_update_matrix(
             self._revision_id, self._matrix_type)
 
-    def _make_buttonbox(self):
+    def _make_buttonbox(self, **kwargs):    # pylint: disable=unused-argument
         """
-        Method to create the buttonbox for the Requirement:Hardware Matrix
-        View.
+        Create the buttonbox for the Requirement:Hardware Matrix View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Requirement:Hardware
                              Matrix View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             _(u"Save the Requirement:Hardware Matrix to the open RTK "
               u"Program database."),
@@ -121,8 +115,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def _on_select_revision(self, module_id):
         """
-        Method to load the Requirement:Hardware Matrix View gtk.TreeModel() with
-        matrix information whenever a new Revision is selected.
+        Load the Requirement:Hardware Matrix View with matrix information.
 
         :param int revision_id: the Revision ID to select the
                                 Requirement:Hardware matrix for.

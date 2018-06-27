@@ -4,12 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKBaseMatrix Module
--------------------------------------------------------------------------------
-
-This module contains the base class for all the RTK data matrix views.
-"""
+"""The RTKBaseMatrix Module."""
 
 # Import modules for localization support.
 import gettext
@@ -24,8 +19,9 @@ _ = gettext.gettext
 
 class RTKBaseMatrix(object):
     """
-    The RTK base widget for displaying RTK Matrix views.  The attributes of an
-    RTKBaseMatrix are:
+    The RTK base widget for displaying RTK Matrix views.
+
+    The attributes of an RTKBaseMatrix are:
 
     :ivar list _dic_icons: dictionary of icons to use in the various RTKMatrix
                            views.
@@ -33,17 +29,16 @@ class RTKBaseMatrix(object):
     :ivar int _n_columns: the number of columns in the matrix.
     :ivar int _n_rows: the number rows in the matrix.
     :ivar matrix: the gtk.TreeView() displaying the RTKDataMatrix.
-    :type matrix: :py:class:`gtk.TreeView`
+    :type matrix: :class:`gtk.TreeView`
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
-        Method to initialize an instance of the RTKMatrix widget class.
+        Initialize an instance of the RTKMatrix widget class.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         # Initialize private dictionary attributes.
         self._dic_icons = {
             0:
@@ -82,11 +77,10 @@ class RTKBaseMatrix(object):
 
     def do_load_matrix(self, matrix, column_headings, row_headings, rows):
         """
-        Method to load the RTKMatrix view with the values from the
-        RTKDataMatrix that is passed to this method.
+        Load the RTKMatrix view with the values from the RTKDataMatrix.
 
         :param matrix: the RTKDataMatrix to display in the RTKMatrix widget.
-        :type matrix: :py:class:`rtk.datamodels.RTKDataMatrix.RTKDataMatrix`
+        :type matrix: :class:`rtk.datamodels.RTKDataMatrix.RTKDataMatrix`
         :param dict column_headings: the dicionary containing the headings to
                                      use for the matrix columns.  Keys are the
                                      column <MODULE> IDs; values are a noun
@@ -100,7 +94,6 @@ class RTKBaseMatrix(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._rtk_matrix = matrix
@@ -183,24 +176,22 @@ class RTKBaseMatrix(object):
     # pylint: disable=too-many-arguments
     def _do_edit_cell(self, cell, path, row, position, col_index, model):
         """
-        Callback method to respond to changed signals for the
-        gtk.CellRendererCombo() in the RTKMatrix.
+        Respond to `changed` signals for the gtk.CellRendererCombo()s.
 
         :param cell: the gtk.CellRendererCombo() calling this method.
-        :type cell: :py:class:`gtk.CellRendererCombo`
+        :type cell: :class:`gtk.CellRendererCombo`
         :param str path: the path of the selected row in the RTKMatrix.
         :param row: the gtk.TreeIter() for the gtk.CellRendererCombo() in the
                     selected row in the RTKMatrix.
-        :type row: :py:class:`gtk.TreeIter`
+        :type row: :class:`gtk.TreeIter`
         :param int position: the position of the cell in the RTKMatrix.
         :param int col_index: the column_item_id of the Matrix cell to be
                               edited.
         :param model: the gtk.TreeModel() associated with the RTKMatrix.
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _model = cell.get_property('model')
 
         _column_item_id = col_index
@@ -224,19 +215,18 @@ class RTKBaseMatrix(object):
 
     def _do_set_properties(self, cell, editable, position, col_index, model):
         """
-        Method to set common properties of gtk.CellRenderers().
+        Set common properties of gtk.CellRenderers().
 
         :param cell: the cell whose properties are to be set.
-        :type cell: :py:class:`gtk.CellRenderer`
+        :type cell: :class:`gtk.CellRenderer`
         :param bool editable: indicates whether or not the cell is editable.
         :param int position: the position in the gtk.TreeModel() that this
                              cell falls.
         :param int col_index: the column_item_id of the Matrix cell to be
                               edited.
-        :param model: the `:py:class:gtk.TreeModel` associated with the
+        :param model: the :class:`gtk.TreeModel` associated with the
                       treeview.
         """
-
         cell.set_property('background', '#FFFFFF')
         cell.set_property('editable', editable)
         cell.set_property('foreground', '#000000')
@@ -245,26 +235,25 @@ class RTKBaseMatrix(object):
         cell.set_property('yalign', 0.1)
         cell.connect('changed', self._do_edit_cell, position, col_index, model)
 
-    # pylint: disable=too-many-arguments
-    def _make_buttonbox(self,
-                        icons,
-                        tooltips,
-                        callbacks,
-                        orientation='horizontal',
-                        height=-1,
-                        width=-1):
+    def _make_buttonbox(self, **kwargs):
         """
-        Method to create the buttonbox for RTK Matrix Views.  This method
-        creates the base buttonbox used by all RTK Matrix Views.  Use a
-        buttonbox for an RTK Matrix View if there are only buttons to be added.
+        Create the buttonbox for RTK Matrix Views.
 
-        :param list icons: list of icon names to place on the toolbuttons.
-                           The items in the list are keys in _dic_icons.
+        This method creates the base buttonbox used by all RTK Matrix Views.
+        Use a buttonbox for an RTK Matrix View if there are only buttons to be
+        added.
+
         :return: _buttonbox
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
+        _icons = kwargs['icons']
+        _tooltips = kwargs['tooltips']
+        _callbacks = kwargs['callbacks']
+        _orientation = kwargs['orientation']
+        _height = kwargs['height']
+        _width = kwargs['width']
 
-        if orientation == 'horizontal':
+        if _orientation == 'horizontal':
             _buttonbox = gtk.HButtonBox()
         else:
             _buttonbox = gtk.VButtonBox()
@@ -272,25 +261,25 @@ class RTKBaseMatrix(object):
         _buttonbox.set_layout(gtk.BUTTONBOX_START)
 
         i = 0
-        for _icon in icons:
+        for _icon in _icons:
             _image = gtk.Image()
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                self._dic_icons[_icon], height, width)
+                self._dic_icons[_icon], _height, _width)
             _image.set_from_pixbuf(_icon)
 
             _button = gtk.Button()
             _button.set_image(_image)
 
-            _button.props.width_request = width
-            _button.props.height_request = height
+            _button.props.width_request = _width
+            _button.props.height_request = _height
 
             try:
-                _button.set_tooltip_markup(tooltips[i])
+                _button.set_tooltip_markup(_tooltips[i])
             except IndexError:
                 _button.set_tooltip_markup("")
 
             try:
-                _button.connect('clicked', callbacks[i])
+                _button.connect('clicked', _callbacks[i])
             except IndexError:
                 _button.set_sensitive(False)
 
@@ -303,12 +292,11 @@ class RTKBaseMatrix(object):
     @staticmethod
     def _make_combo_cell():
         """
-        Method to make a gtk.CellRendererCombo().
+        Make a gtk.CellRendererCombo().
 
         :return: _cell
         :rtype: :py:class:`gtk.CellRendererCombo`
         """
-
         _cell = gtk.CellRendererCombo()
         _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
         _cellmodel.append([""])
@@ -322,7 +310,7 @@ class RTKBaseMatrix(object):
 
     def _make_column(self, cells, heading, visible=True):
         """
-        Method to make a gtk.TreeViewColumn()
+        Make a gtk.TreeViewColumn().
 
         :param list cells: list of gtk.CellRenderer()s that are to be packed in
                            the column.
@@ -330,7 +318,6 @@ class RTKBaseMatrix(object):
         :return: _column
         :rtype: :py:class:`gtk.TreeViewColumn`
         """
-
         _column = gtk.TreeViewColumn("")
 
         for _cell in cells:
@@ -353,23 +340,22 @@ class RTKBaseMatrix(object):
     @staticmethod
     def _on_resize_wrap(column, __param, cell):
         """
-        Method to dynamically set the wrap-width property for a
-        gtk.CellRenderer() in the gtk.TreeView() when the column width is
-        resized.
+        Dynamically set the wrap-width property for a gtk.CellRenderer().
+
+        This method is called when the column width is resized.
 
         :param column: the gtk.TreeViewColumn() being resized.
-        :type column: :py:class:`gtk.TreeViewColumn`
+        :type column: :class:`gtk.TreeViewColumn`
         :param GParamInt __param: the triggering parameter.
         :param cell: the gtk.CellRenderer() that needs to be resized.
-        :type cell: :py:class:`gtk.CellRenderer`
+        :type cell: :class:`gtk.CellRenderer`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _width = column.get_width()
 
         if _width <= 0:
-            return
+            return True
         else:
             _width += 10
 

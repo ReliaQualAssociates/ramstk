@@ -10,14 +10,14 @@ from pubsub import pub
 
 # Import other RTK modules.
 from rtk.gui.gtk.rtk import RTKBook
-from rtk.gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition, \
-    lvwStakeholder
-from rtk.gui.gtk.matrixviews import FunctionHardware, RequirementHardware, \
-    RequirementSoftware, RequirementValidation
+from rtk.gui.gtk.listviews import (lvwUsageProfile, lvwFailureDefinition,
+                                   lvwStakeholder)
+from rtk.gui.gtk.matrixviews import (FunctionHardware, RequirementHardware,
+                                     RequirementValidation)
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
-class ListBook(RTKBook):  # pylint: disable=R0904
+class ListBook(RTKBook):
     """
     This is the List Book class for the pyGTK multiple window interface.
 
@@ -57,7 +57,6 @@ class ListBook(RTKBook):  # pylint: disable=R0904
             'requirement': [
                 lvwStakeholder(controller),
                 RequirementHardware(controller, matrix_type='rqrmnt_hrdwr'),
-                RequirementSoftware(controller, matrix_type='rqrmnt_sftwr'),
                 RequirementValidation(controller, matrix_type='rqrmnt_vldtn')
             ],
             'validation': [],
