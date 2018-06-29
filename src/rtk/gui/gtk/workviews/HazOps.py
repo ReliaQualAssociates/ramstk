@@ -173,8 +173,8 @@ class HazOps(RTKWorkView):
                                           model):
 
             _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazops_id)
-            _hazops = self._dtc_data_controller.request_do_select_all(
-                hardware_id=_node_id)
+            _hazops = self._dtc_data_controller.request_do_select(
+                _node_id)
 
             if position == self._lst_col_order[3]:
                 _hazops.potential_hazard = model[path][self._lst_col_order[3]]
@@ -369,7 +369,7 @@ class HazOps(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_do_insert(**kwargs)
+        return self._do_request_insert(**kwargs)
 
     def _do_request_update(self, __button):
         """
@@ -394,7 +394,7 @@ class HazOps(RTKWorkView):
         :rtype: bool
         """
         return self._dtc_data_controller.request_do_update_all(
-            self._hardware_id)
+            hardware_id=self._hardware_id)
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -413,7 +413,7 @@ class HazOps(RTKWorkView):
               u"open RTK Program database.")
         ]
         _callbacks = [
-            self._do_request_calculate, self._do_request_insert,
+            self._do_request_calculate, self._do_request_insert_sibling,
             self._do_request_delete, self._do_request_update,
             self._do_request_update_all
         ]
