@@ -261,7 +261,6 @@ class ModuleView(RTKModuleView):
 
         if not self._dtc_data_controller.request_do_insert():
             self._on_select_validation()
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['validation'][1] += 1
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"Validation.")

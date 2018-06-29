@@ -1404,7 +1404,7 @@ class AssessmentInputs(RTKWorkView):
 
         if self._dtc_data_controller.request_do_calculate(
                 self._hardware_id,
-                hr_multiplier=self._configuration.RTK_HR_MULTIPLIER
+                hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER
         ):
             _error_code = 1
             _msg[0] = 'RTK ERROR: Calculating reliability attributes.'

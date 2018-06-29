@@ -166,7 +166,8 @@ class ModuleView(RTKModuleView):
         """
         _return = False
 
-        self._dtc_data_controller.request_do_calculate_all()
+        self._dtc_data_controller.request_do_calculate_all(
+            hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER)
 
         return _return
 
@@ -244,13 +245,10 @@ class ModuleView(RTKModuleView):
         if not self._dtc_data_controller.request_do_insert(
                 revision_id=self._revision_id, parent_id=_parent_id,
                 part=_part):
-            # TODO: Add code to the FMEA Class to respond to the 'insertedHardware' pubsub message and insert a set of hardwareal failure modes.
-            # TODO: Add code to the Matrix Class to respond to the 'insertedHardware' pubsub message and insert a record into each of the Hardware-X matrices.
+
             self._on_select_revision(self._revision_id)
-            if _part == 0:
-                self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['assembly'][1] += 1
-            elif _part == 1:
-                self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['part'][1] += 1
+            if _part == 1:
+                print "TODO: Add code to the FMEA Class to respond to the 'insertedHardware' pubsub message and insert a set of hardware failure modes."
 
             self.treeview.set_cursor(_path)
 
@@ -269,7 +267,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert_child(self, button, **kwargs):  # pylint: disable=unused-argument
+    def _do_request_insert_child(self, button, assembly, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new child Hardware assembly.
 
@@ -278,14 +276,14 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if button.get_property('name') == 'assembly':
+        if button.get_property('name') == 'assembly' or assembly:
             _part = 0
         else:
             _part = 1
 
         return self._do_request_insert(sibling=False, part=_part)
 
-    def _do_request_insert_sibling(self, button, **kwargs):  # pylint: disable=unused-argument
+    def _do_request_insert_sibling(self, button, assembly, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new sibling Hardware assembly.
 
@@ -294,7 +292,7 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if button.get_property('name') == 'assembly':
+        if button.get_property('name') == 'assembly' or assembly:
             _part = 0
         else:
             _part = 1
@@ -438,8 +436,8 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add Sibling Assembly"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate',
-                               self._do_request_insert_sibling_assembly)
+            _menu_item.connect('activate', self._do_request_insert_sibling,
+                               True)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -449,8 +447,7 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add Child Assembly"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate',
-                               self._do_request_insert_child_assembly)
+            _menu_item.connect('activate', self._do_request_insert_child, True)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -460,8 +457,8 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add Sibling Piece Part"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate',
-                               self._do_request_insert_sibling_part)
+            _menu_item.connect('activate', self._do_request_insert_sibling,
+                               False)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -471,7 +468,8 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add Child Piece Part"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_child_part)
+            _menu_item.connect('activate', self._do_request_insert_child,
+                               False)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -526,6 +524,7 @@ class ModuleView(RTKModuleView):
         :return: None
         :rtype: None
         """
+
         def _load_row(model, __path, row, self):
             """
             Load the row associated with node_id.
@@ -610,5 +609,9 @@ class ModuleView(RTKModuleView):
                                            'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
+        else:
+            for _analysis in ['allocation', 'hazops', 'similaritem']:
+                _dtc_data_controller = self._mdcRTK.dic_controllers[_analysis]
+                _dtc_data_controller.request_do_select_all(revision_id=self._revision_id)
 
         return _return

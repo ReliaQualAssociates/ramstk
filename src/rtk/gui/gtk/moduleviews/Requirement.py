@@ -293,8 +293,6 @@ class ModuleView(RTKModuleView):
                 _model.append(_row, _data)
                 _path = _model.get_path(_row)
                 self.treeview.expand_row(_path, True)
-
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['requirement'][1] += 1
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"requirement to Revision "

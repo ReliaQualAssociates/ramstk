@@ -220,7 +220,6 @@ class ModuleView(RTKModuleView):
             # TODO: Add code to the FMEA Class to respond to the 'insertedFunction' pubsub message and insert a set of functional failure modes.
             # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
             self._on_select_revision(self._revision_id)
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['function'][1] += 1
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"function to Revision "

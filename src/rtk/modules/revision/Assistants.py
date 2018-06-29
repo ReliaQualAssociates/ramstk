@@ -223,13 +223,8 @@ class AddRevision(object):
 
         # Create the Revision code.
         _code = self.txtRevisionCode.get_text()
-        if _code == '' or _code is None:
-            _code = '{0:s} {1:s}'.format(
-                str(Configuration.RTK_PREFIX[0]),
-                str(Configuration.RTK_PREFIX[1]))
-
-            # Increment the Revision index.
-            Configuration.RTK_PREFIX[1] += 1
+        if _code is None:
+            _code = 'REVISION'
 
         _name = self.txtRevisionName.get_text()
         if _name == '' or _name is None:
