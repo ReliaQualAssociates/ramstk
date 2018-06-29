@@ -137,14 +137,18 @@ class HardwareBoMDataController(RTKDataController):
             _heading = self.request_do_select(
                 _hardware_id, table='general').ref_des
 
+            # We add a record for each of the Hardware:X matrices.
             for _matrix in ['hrdwr_rqrmnt', 'hrdwr_vldtn']:
-                self.request_do_insert_matrix(
-                    _matrix, _hardware_id, heading=_heading, row=True)
+                if not _part:
+                    self.request_do_insert_matrix(
+                        _matrix, _hardware_id, heading=_heading, row=True)
 
             if not self._test:
                 pub.sendMessage(
                     'insertedHardware',
-                    hardware_id=self._dtm_data_model.dtm_hardware.last_id)
+                    revision_id=_revision_id,
+                    hardware_id=self._dtm_data_model.dtm_hardware.last_id,
+                    parent_id=_parent_id)
         else:
             _msg = _msg + '  Failed to add a new Hardware item to the RTK ' \
                 'Program database.'
@@ -205,8 +209,11 @@ class HardwareBoMDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
+        if not self._test:
+            pub.sendMessage('deletedHardware', node_id=node_id)
+
         return RTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedHardware')
+                                                   None)
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -358,7 +365,7 @@ class HardwareBoMDataController(RTKDataController):
 
         return _return
 
-    def request_last_id(self, **kwargs):    # pylint: disable=unused-argument
+    def request_last_id(self, **kwargs):  # pylint: disable=unused-argument
         """
         Request the last Hardware ID used.
 

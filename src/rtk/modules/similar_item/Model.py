@@ -93,7 +93,7 @@ class SimilarItemDataModel(RTKDataModel):
         try:
             _children = self.tree.children(node_id)
         except NodeIDAbsentError:
-            _children = []
+            _children = None
 
         return _children
 

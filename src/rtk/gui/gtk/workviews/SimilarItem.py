@@ -323,23 +323,22 @@ class SimilarItem(RTKWorkView):
         _parent = self._dtc_data_controller.request_do_select(self._parent_id)
         if _parent is not None:
             self.cmbSimilarItemMethod.handler_block(self._lst_handler_id[2])
-            self.cmbSimilarItemMethod.set_active(_parent._method_id)
+            self.cmbSimilarItemMethod.set_active(_parent.method_id)
             self.cmbSimilarItemMethod.handler_unblock(self._lst_handler_id[2])
 
-            _tree = self._dtc_data_controller.request_do_select_children(
-                self._parent_id)
-
-        if _tree is not None:
+        _children = self._dtc_data_controller.request_do_select_children(
+            self._parent_id)
+        if _children is not None:
             i = 1
-            for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
+            for _child in _children:
                 try:
-                    _entity = _node.data
-                    _node_id = _node.identifier
+                    _entity = _child.data
+                    _node_id = _child.identifier
 
                     _assembly = self._dtc_hw_controller.request_get_attributes(
                         _node_id)['description']
                     _hazard_rate = self._dtc_hw_controller.request_do_select(
-                        _node_id, 'reliability').hazard_rate_logistics
+                        _node_id, table='reliability').hazard_rate_logistics
 
                     try:
                         _quality_from = self._dic_quality.keys()[
@@ -408,7 +407,7 @@ class SimilarItem(RTKWorkView):
                                       "{0:s} for Hardware ID {1:s} is the "
                                       "wrong type for one or more "
                                       "columns.".format(
-                                          str(_node.identifier),
+                                          str(_node_id),
                                           str(self._hardware_id)))
                         _row = None
                     except ValueError:
@@ -420,7 +419,7 @@ class SimilarItem(RTKWorkView):
                         _debug_msg = ("RTK ERROR: Too few fields for "
                                       "Similar Item ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
-                                          str(_node.identifier),
+                                          str(_node_id),
                                           str(self._hardware_id)))
                 except AttributeError:
                     if _node.identifier != 0:
@@ -432,7 +431,7 @@ class SimilarItem(RTKWorkView):
                         _debug_msg = ("RTK ERROR: There is no data package "
                                       "for Similar Item ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
-                                          str(_node.identifier),
+                                          str(_node_id),
                                           str(self._hardware_id)))
 
                 i += 1
@@ -460,7 +459,7 @@ class SimilarItem(RTKWorkView):
             _hazard_rate = _model.get_value(_row, 3)
             _return = (_return
                        or self._dtc_data_controller.request_do_calculate(
-                           _node_id, _hazard_rate))
+                           _node_id, hazard_rate=_hazard_rate))
             _row = _model.iter_next(_row)
 
         if not _return:
@@ -894,7 +893,7 @@ class SimilarItem(RTKWorkView):
 
         return False
 
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
+    def _on_select(self, module_id, **kwargs):
         """
         Respond to the `selectedHardware` signal from pypubsub.
 
@@ -913,7 +912,7 @@ class SimilarItem(RTKWorkView):
         if self._dtc_hw_controller is None:
             self._dtc_hw_controller = self._mdcRTK.dic_controllers['hardware']
 
-        (_error_code, _user_msg, _debug_msg) = self._do_load_page()
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page(**kwargs)
 
         RTKWorkView.on_select(
             self,

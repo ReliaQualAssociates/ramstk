@@ -115,8 +115,8 @@ def test_do_delete_non_existent_id(test_dao):
 
     _error_code, _msg = DUT.do_delete(300)
 
-    assert _error_code == 2005
-    assert _msg == ("  RTK ERROR: Attempted to delete non-existent Allocation "
+    assert _error_code == 1
+    assert _msg == ("\n  RTK ERROR: Attempted to delete non-existent Allocation "
                     "ID 300.")
 
 
@@ -375,8 +375,14 @@ def test_request_do_calculate(test_dao, test_configuration):
 
     DUT.request_do_select(1).reliability_goal = 0.99975
 
-    # The [parent, child 1, child 2, child 3, child 4] hazard rates.
-    _hazard_rates = [0.005862, 0.000392, 0.000168, 0.0000982, 0.000212]
+    assert not DUT.request_do_calculate(1, method='arinc')
 
-    assert not DUT.request_do_calculate(
-        1, method='arinc', hazard_rates=_hazard_rates)
+@pytest.mark.integration
+def test_request_do_calculate_all(test_dao, test_configuration):
+    """ request_do_calculate_all() should return False on success. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_do_select_all(revision_id=1)
+
+    DUT.request_do_select(1).reliability_goal = 0.99975
+
+    assert not DUT.request_do_calculate_all(method='arinc')

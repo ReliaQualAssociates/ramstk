@@ -246,23 +246,24 @@ class Allocation(RTKWorkView):
             self.txtReliabilityGoal.set_text(
                 str(self.fmt.format(_parent.reliability_goal)))
 
-            _tree = self._dtc_data_controller.request_do_select_children(
-                self._parent_id)
-
-        if _tree is not None:
-            i = 1
-            for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
+        _children = self._dtc_data_controller.request_do_select_children(
+            self._parent_id)
+        if _children is not None:
+            for _child in _children:
                 try:
-                    _entity = _node.data
-                    _node_id = _node.identifier
+                    _entity = _child.data
+                    _node_id = _child.identifier
 
-                    _name = self._dtc_data_controller.lst_name[i - 1]
-                    _availability = self._dtc_data_controller.lst_availability[
-                        i]
-                    _hazard_rate = self._dtc_data_controller.lst_hazard_rates[
-                        i]
-                    _mtbf = self._dtc_data_controller.lst_mtbf[i]
-                    _reliability = self._dtc_data_controller.lst_reliability[i]
+                    _name = self._dtc_data_controller.dic_hardware_data[
+                        _node_id][0]
+                    _availability = self._dtc_data_controller.dic_hardware_data[
+                        _node_id][1]
+                    _hazard_rate = self._dtc_data_controller.dic_hardware_data[
+                        _node_id][2]
+                    _mtbf = self._dtc_data_controller.dic_hardware_data[
+                        _node_id][3]
+                    _reliability = self._dtc_data_controller.dic_hardware_data[
+                        _node_id][4]
                     _data = [
                         _entity.revision_id, _entity.hardware_id, _name,
                         _entity.included, _entity.n_sub_systems,
@@ -289,7 +290,7 @@ class Allocation(RTKWorkView):
                                       "wrong type for one or more "
                                       "columns.".format(
                                           str(_node.identifier),
-                                          str(self._hardware_id)))
+                                          str(self._parent_id)))
                     except ValueError:
                         _error_code = 1
                         _user_msg = _(u"One or more Allocation line items was "
@@ -299,7 +300,7 @@ class Allocation(RTKWorkView):
                                       "Allocation ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
                                           str(_node.identifier),
-                                          str(self._hardware_id)))
+                                          str(self._parent_id)))
                 except AttributeError:
                     if _node.identifier != 0:
                         _error_code = 1
@@ -310,9 +311,7 @@ class Allocation(RTKWorkView):
                                       "for Allocation ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
                                           str(_node.identifier),
-                                          str(self._hardware_id)))
-
-                i += 1
+                                          str(self._parent_id)))
 
         return (_error_code, _user_msg, _debug_msg)
 
@@ -324,7 +323,23 @@ class Allocation(RTKWorkView):
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_calculate(self._parent_id)
+        if not self._dtc_data_controller.request_do_calculate(self._parent_id):
+            self._do_load_page()
+
+        return None
+
+    def _do_request_calculate_all(self, __button):
+        """
+        Calculate the Allocation RPN or criticality for all items.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :return: False if sucessful or True if an error is encountered.
+        :rtype: bool
+        """
+        if not self._dtc_data_controller.request_do_calculate_all():
+            self._do_load_page()
+
+        return None
 
     def _do_request_update(self, __button):
         """
@@ -337,7 +352,7 @@ class Allocation(RTKWorkView):
         """
         _model, _row = self.treeview.get_selection().get_selected()
 
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        return self._dtc_data_controller.request_do_update(self._parent_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -395,7 +410,7 @@ class Allocation(RTKWorkView):
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Calculate the Allocation."),
+            _(u"Calculate the currently selected child hardware item."),
             _(u"Save the currently selected line in the Allocation to the "
               u"open RTK Program database."),
             _(u"Save the Allocation to the open RTK Program database.")
@@ -714,7 +729,7 @@ class Allocation(RTKWorkView):
 
         return False
 
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
+    def _on_select(self, module_id, **kwargs):
         """
         Respond to the `selectedHardware` signal from pypubsub.
 
@@ -729,7 +744,7 @@ class Allocation(RTKWorkView):
             self._dtc_data_controller = self._mdcRTK.dic_controllers[
                 'allocation']
 
-        (_error_code, _user_msg, _debug_msg) = self._do_load_page()
+        (_error_code, _user_msg, _debug_msg) = self._do_load_page(**kwargs)
 
         RTKWorkView.on_select(
             self,
