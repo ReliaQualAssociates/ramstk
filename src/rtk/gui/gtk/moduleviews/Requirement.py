@@ -393,57 +393,21 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Set up the gtk.TreeView() for Requirements.
+        Set up the Requirement Module View RTKTreeView().
+
+        This method sets all cells as non-editable to make the Requirement
+        Module View read-only.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        # Load the Owner gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(
-            self._lst_col_order[5]).get_cell_renderers()
-        _cellmodel = _cell[0].get_property('model')
-        _cellmodel.clear()
-        _cellmodel.append([""])
-        # Each _owner is (Description, Group Type).
-        for _index, _key in enumerate(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS):
-            _owner = self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS[_key]
-            _cellmodel.append([_owner[0]])
-
-        # Load the Priority gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(
-            self._lst_col_order[8]).get_cell_renderers()
-        _cellmodel = _cell[0].get_property('model')
-        _cellmodel.clear()
-        _cellmodel.append([""])
-        # Priority can be 1 - 5.
-        for i in range(1, 6):
-            _cellmodel.append([str(i)])
-
-        # Load the Requirements Type gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(
-            self._lst_col_order[11]).get_cell_renderers()
-        _cellmodel = _cell[0].get_property('model')
-        _cellmodel.clear()
-        _cellmodel.append([""])
-        # Each _type is (Code, Description, Type).
-        for _index, _key in enumerate(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE):
-            _type = self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE[_key]
-            _cellmodel.append([_type[1]])
-
-        for i in [3, 4, 6, 10]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-            _cell[0].connect('edited', self._do_edit_cell, i,
-                             self.treeview.get_model())
-
-        for i in [5, 8, 11]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-            _cell[0].connect('changed', self._do_change_cell, i)
+        _color = gtk.gdk.color_parse('#EEEEEE')
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            _cell.set_property('editable', False)
+            _cell.set_property('cell-background-gdk', _color)
 
         return _return
 

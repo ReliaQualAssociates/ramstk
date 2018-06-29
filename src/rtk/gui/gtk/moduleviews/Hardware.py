@@ -54,6 +54,7 @@ class ModuleView(RTKModuleView):
 
         # Initialize public scalar attributes.
 
+        self._make_treeview()
         self.treeview.set_tooltip_text(
             _(u"Displays the hierarchical list of "
               u"hardware items."))
@@ -380,22 +381,19 @@ class ModuleView(RTKModuleView):
         """
         Set up the Hardware Module View RTKTreeView().
 
-        This method is used to "personalize" the basic RTKTreeView for the
-        Hardware Module View.  Primarily which columns are editable.
+        This method sets all cells as non-editable to make the Hardware Module
+        View read-only.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        i = 0
+        _color = gtk.gdk.color_parse('#EEEEEE')
         for _column in self.treeview.get_columns():
             _cell = _column.get_cell_renderers()[0]
-            if _cell.get_property('editable'):
-                _cell.connect('edited', self._do_edit_cell,
-                              i, self._lst_col_order[i],
-                              self.treeview.get_model())
-            i += 1
+            _cell.set_property('editable', False)
+            _cell.set_property('cell-background-gdk', _color)
 
         return _return
 

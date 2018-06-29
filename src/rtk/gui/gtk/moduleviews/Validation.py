@@ -343,49 +343,21 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Set up the Validation RTKTreeView().
+        Set up the Validation Module View RTKTreeView().
+
+        This method sets all cells as non-editable to make the Validation
+        Module View read-only.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        # Load the gtk.CellRendererCombo() holding the task types.
-        _cell = self.treeview.get_column(
-            self._lst_col_order[3]).get_cell_renderers()
-        _model = _cell[0].get_property('model')
-        _model.clear()
-        _model.append([""])
-        for i in range(
-                len(self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE.values(
-                ))):
-            _model.append([
-                self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE.values()[i][
-                    1]
-            ])
-
-        # Load the gtk.CellRendererCombo() holding the measurement units.
-        _cell = self.treeview.get_column(
-            self._lst_col_order[5]).get_cell_renderers()
-        _model = _cell[0].get_property('model')
-        _model.clear()
-        _model.append([""])
-
-        for i in range(
-                len(self._mdcRTK.RTK_CONFIGURATION.RTK_MEASUREMENT_UNITS.
-                    values())):
-            _model.append([
-                self._mdcRTK.RTK_CONFIGURATION.RTK_MEASUREMENT_UNITS.values()[
-                    i][1]
-            ])
-
-        # Reset the limits of adjustment on the percent complete
-        # gtk.CellRendererSpin() to 0 - 100 with steps of 1.
-        _cell = self.treeview.get_column(
-            self._lst_col_order[12]).get_cell_renderers()[0]
-        _cell.set_property('digits', 0)
-        _adjustment = _cell.get_property('adjustment')
-        _adjustment.configure(0, 0, 100, 1, 0, 0)
+        _color = gtk.gdk.color_parse('#EEEEEE')
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            _cell.set_property('editable', False)
+            _cell.set_property('cell-background-gdk', _color)
 
         return _return
 

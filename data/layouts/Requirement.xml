@@ -68,7 +68,7 @@ experience. -->
             <usertitle>Owner</usertitle>
             <datatype>gchararray</datatype>
             <position>5</position>
-            <widget>combo</widget>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
             <key>owner</key>
@@ -98,7 +98,7 @@ experience. -->
             <usertitle>Priority</usertitle>
             <datatype>gint</datatype>
             <position>8</position>
-            <widget>combo</widget>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
             <key>priority</key>
@@ -128,7 +128,7 @@ experience. -->
             <usertitle>Requirement Type</usertitle>
             <datatype>gchararray</datatype>
             <position>11</position>
-            <widget>combo</widget>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
             <key>requirement_type</key>

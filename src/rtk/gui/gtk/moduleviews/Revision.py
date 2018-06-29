@@ -281,18 +281,21 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Set up the Revision RTKTreeView().
+        Set up the Revision Module View RTKTreeView().
+
+        This method sets all cells as non-editable to make the Revision Module
+        View read-only.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        for i in [17, 20, 22]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-            _cell[0].connect('edited', self._do_edit_cell, i,
-                             self.treeview.get_model())
+        _color = gtk.gdk.color_parse('#EEEEEE')
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            _cell.set_property('editable', False)
+            _cell.set_property('cell-background-gdk', _color)
 
         return _return
 

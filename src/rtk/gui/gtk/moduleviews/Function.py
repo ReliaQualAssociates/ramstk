@@ -322,19 +322,22 @@ class ModuleView(RTKModuleView):
         """
         Set up the Function Module View RTKTreeView().
 
-        This method is used to "personalize" the basic RTKTreeView for the
-        Function Module View.  Primarily which columns are editable.
+        This method sets all cells as non-editable to make the Function Module
+        View read-only.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        for i in [5, 15, 17]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-            _cell[0].connect('edited', self._do_edit_cell, i,
-                             self.treeview.get_model())
+        _color = gtk.gdk.color_parse('#EEEEEE')
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            try:
+                _cell.set_property('editable', False)
+            except TypeError:
+                _cell.set_property('activatable', False)
+            _cell.set_property('cell-background-gdk', _color)
 
         return _return
 

@@ -390,22 +390,26 @@ def calculate_217f_part_stress(**attributes):
         _cr = attributes['resistance'] / (attributes['voltage_dc_operating'] +
                                           attributes['voltage_ac_operating'])
         attributes['piSR'] = _dic_piSR[_cr]
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piCV'] * attributes['piQ'] * attributes['piE'] * attributes['piSR']
+        attributes['hazard_rate_active'] = (
+            attributes['lambda_b'] * attributes['piCV'] * attributes['piQ'] *
+            attributes['piE'] * attributes['piSR'])
     elif attributes['subcategory_id'] == 13:
         attributes['piC'] = _dic_piC[attributes['construction_id']]
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piCV'] * attributes['piQ'] * attributes['piE'] * attributes['piC']
+        attributes['hazard_rate_active'] = (
+            attributes['lambda_b'] * attributes['piCV'] * attributes['piQ'] *
+            attributes['piE'] * attributes['piC'])
     elif attributes['subcategory_id'] in [16, 17, 18]:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
+        attributes['hazard_rate_active'] = (
+            attributes['lambda_b'] * attributes['piQ'] * attributes['piE'])
     elif attributes['subcategory_id'] == 19:
         attributes['piCF'] = _dic_piCF[attributes['configuration_id']]
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piCF'] * attributes['piQ'] * attributes['piE']
+        attributes['hazard_rate_active'] = (
+            attributes['lambda_b'] * attributes['piCF'] * attributes['piQ'] *
+            attributes['piE'])
     else:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piCV'] * attributes['piQ'] * attributes['piE']
+        attributes['hazard_rate_active'] = (
+            attributes['lambda_b'] * attributes['piCV'] * attributes['piQ'] *
+            attributes['piE'])
 
     return attributes, _msg
 
