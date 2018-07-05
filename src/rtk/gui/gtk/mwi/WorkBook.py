@@ -114,7 +114,6 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
         _return = False
 
         RTKBook._on_module_change(self)
-
         for _workspace in self.dic_work_views[module]:
             self.notebook.insert_page(_workspace, _workspace.hbx_tab_label, -1)
 

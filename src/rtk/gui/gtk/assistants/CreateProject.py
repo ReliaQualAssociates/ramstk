@@ -4,31 +4,28 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Create Project Assistant Module"""
+"""Create Project Assistant Module."""
 
 from os import remove
 
 # Import other RTK modules.
-import rtk.Utilities
+import rtk.Utilities as Utilities
 from rtk.gui.gtk.rtk.Widget import _, gtk, set_cursor
 from rtk.gui.gtk import rtk
 
 
 class CreateProject(object):
-    """
-    This is the class used to create a new RTK Project database.
-    """
+    """This is the class used to create a new RTK Project database."""
 
     def __init__(self, __button, controller):
         """
-        Method to initialize an instance of the Create Project Assistant.
+        Initialize an instance of the Create Project Assistant.
 
         :param __button: the gtk.ToolButton() that launched this class.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :param controller: the RTK master data controller.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -44,15 +41,12 @@ class CreateProject(object):
 
         set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
-        self._request_create_project()
+        self._request_create_sqlite3_project()
 
         set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
 
-    def _request_create_project(self):
-        """
-        Method to create a RTK Project database using SQLite3.
-        """
-
+    def _request_create_sqlite3_project(self):
+        """Create a RTK Project database using SQLite3."""
         _dialog = gtk.FileChooserDialog(
             title=_(u"Create a RTK Program Database"),
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
@@ -77,7 +71,7 @@ class CreateProject(object):
                     height=-1,
                     bold=False,
                     wrap=True)
-                _dlgConfirm.vbox.pack_start(_label)  # pylint: disable=E1101
+                _dlgConfirm.vbox.pack_start(_label)
                 _label.show()
 
                 if _dlgConfirm.run() == gtk.RESPONSE_YES:
@@ -99,13 +93,13 @@ class CreateProject(object):
 
     def _cancel(self, __button):
         """
-        Method to destroy the Create Project Assistant.
+        Destroy the Create Project Assistant.
 
-        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param __button: the gtk.Button() that called this method.
+        :type __button: :class:`gtk.Button `
         :return: True
         :rtype: boolean
         """
-
         self.assistant.destroy()
 
         return True
