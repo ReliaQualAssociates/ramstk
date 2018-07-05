@@ -309,7 +309,12 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -320,7 +325,11 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -522,7 +531,6 @@ class ModuleView(RTKModuleView):
         :return: None
         :rtype: None
         """
-
         def _load_row(model, __path, row, self):
             """
             Load the row associated with node_id.
@@ -610,6 +618,7 @@ class ModuleView(RTKModuleView):
         else:
             for _analysis in ['allocation', 'hazops', 'similaritem']:
                 _dtc_data_controller = self._mdcRTK.dic_controllers[_analysis]
-                _dtc_data_controller.request_do_select_all(revision_id=self._revision_id)
+                _dtc_data_controller.request_do_select_all(
+                    revision_id=self._revision_id)
 
         return _return

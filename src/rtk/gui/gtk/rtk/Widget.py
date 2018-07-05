@@ -4,31 +4,27 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Widget Module
--------------------------------------------------------------------------------
-
-This module contains functions for interacting with RTK widgets.  This module
-is the base class for all RTK widgets.
-"""
+"""The RTK Widget Module."""
 
 import sys
 
 import gettext
 
 # Modules required for the GUI.
-import pango  # pylint: disable=E0401,W0611
+# Disable the unused-import because pango, pygtk, gtk, and gobject are all
+# imported from this module by all the other GUI modules.
+import pango                # pylint: disable=unused-import
 try:
-    import pygtk  # pylint: disable=W0611
+    import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    import gtk  # pylint: disable=W0611
+    import gtk
 except ImportError:
     sys.exit(1)
 try:
-    import gobject  # pylint: disable=W0611
+    import gobject          # pylint: disable=unused-import
 except ImportError:
     sys.exit(1)
 
@@ -42,9 +38,10 @@ _ = gettext.gettext
 
 def set_cursor(controller, cursor):
     """
-    Function to set the cursor for a gtk.gdk.Window()
+    Set the cursor for the Module, List, and Work Book gtk.gdk.Window().
 
-    :param controller: the :py:class:`rtk.RTK.RTK` master data controller.
+    :param controller: the RTK master data controller.
+    :type controller: :class:`rtk.RTK.RTK`
     :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only handles
                                   one of the following:
                                   - gtk.gdk.X_CURSOR
@@ -78,8 +75,9 @@ def set_cursor(controller, cursor):
                                   - gtk.gdk.TOP_LEFT_ARROW
                                   - gtk.gdk.WATCH - when application is busy
                                   - gtk.gdk.XTERM - selection bar
+    :return: None
+    :rtype: None
     """
-
     controller.dic_books['listbook'].get_window().set_cursor(
         gtk.gdk.Cursor(cursor))
     controller.dic_books['modulebook'].get_window().set_cursor(
@@ -89,4 +87,4 @@ def set_cursor(controller, cursor):
 
     gtk.gdk.flush()
 
-    return False
+    return None

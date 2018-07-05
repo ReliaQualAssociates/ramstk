@@ -7,7 +7,6 @@
 """SimilarItem Work View."""
 
 from pubsub import pub
-from sortedcontainers import SortedDict
 
 # Import other RTK modules.
 from rtk.gui.gtk import rtk
@@ -422,7 +421,7 @@ class SimilarItem(RTKWorkView):
                                           str(_node_id),
                                           str(self._hardware_id)))
                 except AttributeError:
-                    if _node.identifier != 0:
+                    if _node_id != 0:
                         _error_code = 1
                         _user_msg = _(u"One or more Similar Item line items "
                                       u"was missing it's data package and is "
@@ -609,7 +608,12 @@ class SimilarItem(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -620,7 +624,11 @@ class SimilarItem(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_set_visible(self, **kwargs):
         """

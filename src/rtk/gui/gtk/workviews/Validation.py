@@ -460,7 +460,12 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._validation_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._validation_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -471,10 +476,11 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        self.set_cursor(gtk.gdk.WATCH)
         _return = self._dtc_data_controller.request_do_update_all()
-
         if not _return:
             _return = self._dtc_data_controller.request_do_update_status()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
 
         return _return
 

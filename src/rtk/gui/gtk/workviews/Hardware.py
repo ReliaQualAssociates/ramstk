@@ -511,7 +511,12 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -522,7 +527,11 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -1431,7 +1440,12 @@ class AssessmentInputs(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -1442,7 +1456,11 @@ class AssessmentInputs(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_set_sensitive(self, **kwargs):
         """
@@ -2373,7 +2391,12 @@ class AssessmentResults(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -2384,7 +2407,11 @@ class AssessmentResults(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """

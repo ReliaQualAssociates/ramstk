@@ -6,7 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Allocation Work View."""
 
-from sortedcontainers import SortedDict
 from pubsub import pub
 
 # Import other RTK modules.
@@ -289,7 +288,7 @@ class Allocation(RTKWorkView):
                                       "{0:s} for Hardware ID {1:s} is the "
                                       "wrong type for one or more "
                                       "columns.".format(
-                                          str(_node.identifier),
+                                          str(_node_id),
                                           str(self._parent_id)))
                     except ValueError:
                         _error_code = 1
@@ -299,10 +298,10 @@ class Allocation(RTKWorkView):
                         _debug_msg = ("RTK ERROR: Too few fields for "
                                       "Allocation ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
-                                          str(_node.identifier),
+                                          str(_node_id),
                                           str(self._parent_id)))
                 except AttributeError:
-                    if _node.identifier != 0:
+                    if _node_id != 0:
                         _error_code = 1
                         _user_msg = _(u"One or more Allocation line items was "
                                       u"missing it's data package and is not "
@@ -310,7 +309,7 @@ class Allocation(RTKWorkView):
                         _debug_msg = ("RTK ERROR: There is no data package "
                                       "for Allocation ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
-                                          str(_node.identifier),
+                                          str(_node_id),
                                           str(self._parent_id)))
 
         return (_error_code, _user_msg, _debug_msg)
@@ -350,9 +349,11 @@ class Allocation(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _model, _row = self.treeview.get_selection().get_selected()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(self._parent_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
 
-        return self._dtc_data_controller.request_do_update(self._parent_id)
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -363,7 +364,11 @@ class Allocation(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_set_visible(self, **kwargs):
         """

@@ -203,7 +203,12 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._definition_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._definition_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -216,6 +221,7 @@ class ListView(RTKListView):
         """
         _return = False
 
+        self.set_cursor(gtk.gdk.WATCH)
         if not self._dtc_data_controller.request_do_update_all():
             self._on_select_revision(module_id=self._revision_id)
         else:
@@ -225,6 +231,8 @@ class ListView(RTKListView):
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
+
+        self.set_cursor(gtk.gdk.LEFT_PTR)
 
         return _return
 
@@ -410,7 +418,8 @@ class ListView(RTKListView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers['definition']
+            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+                'definition']
 
         _definitions = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
