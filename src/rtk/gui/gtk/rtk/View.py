@@ -275,3 +275,56 @@ class RTKBaseView(object):
             self.treeview.row_activated(_path, _column)
 
         return _return
+
+    def set_cursor(self, cursor):
+        """
+        Set the cursor for the Module, List, and Work Book gtk.gdk.Window().
+
+        :param controller: the RTK master data controller.
+        :type controller: :class:`rtk.RTK.RTK`
+        :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only
+                                      handles one of the following:
+                                        - gtk.gdk.X_CURSOR
+                                        - gtk.gdk.ARROW
+                                        - gtk.gdk.CENTER_PTR
+                                        - gtk.gdk.CIRCLE
+                                        - gtk.gdk.CROSS
+                                        - gtk.gdk.CROSS_REVERSE
+                                        - gtk.gdk.CROSSHAIR
+                                        - gtk.gdk.DIAMOND_CROSS
+                                        - gtk.gdk.DOUBLE_ARROW
+                                        - gtk.gdk.DRAFT_LARGE
+                                        - gtk.gdk.DRAFT_SMALL
+                                        - gtk.gdk.EXCHANGE
+                                        - gtk.gdk.FLEUR
+                                        - gtk.gdk.GUMBY
+                                        - gtk.gdk.HAND1
+                                        - gtk.gdk.HAND2
+                                        - gtk.gdk.LEFT_PTR - non-busy cursor
+                                        - gtk.gdk.PENCIL
+                                        - gtk.gdk.PLUS
+                                        - gtk.gdk.QUESTION_ARROW
+                                        - gtk.gdk.RIGHT_PTR
+                                        - gtk.gdk.SB_DOWN_ARROW
+                                        - gtk.gdk.SB_H_DOUBLE_ARROW
+                                        - gtk.gdk.SB_LEFT_ARROW
+                                        - gtk.gdk.SB_RIGHT_ARROW
+                                        - gtk.gdk.SB_UP_ARROW
+                                        - gtk.gdk.SB_V_DOUBLE_ARROW
+                                        - gtk.gdk.TCROSS
+                                        - gtk.gdk.TOP_LEFT_ARROW
+                                        - gtk.gdk.WATCH - when application is busy
+                                        - gtk.gdk.XTERM - selection bar
+        :return: None
+        :rtype: None
+        """
+        self._mdcRTK.dic_books['listbook'].get_window().set_cursor(
+            gtk.gdk.Cursor(cursor))
+        self._mdcRTK.dic_books['modulebook'].get_window().set_cursor(
+            gtk.gdk.Cursor(cursor))
+        self._mdcRTK.dic_books['workbook'].get_window().set_cursor(
+            gtk.gdk.Cursor(cursor))
+
+        gtk.gdk.flush()
+
+        return None

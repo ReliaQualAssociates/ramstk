@@ -487,7 +487,7 @@ class GeneralData(RTKWorkView):
 
         (
             _error_code, _msg
-        ) = self._dtc_data_controller.request_make_composite_reference_designator(
+        ) = self._dtc_data_controller.request_do_make_composite_reference_designator(
             node_id=self._hardware_id)
         if _error_code == 0:
             _attributes = self._dtc_data_controller.request_get_attributes(
@@ -511,7 +511,12 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -522,7 +527,11 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -679,7 +688,8 @@ class GeneralData(RTKWorkView):
 
             * gtk.Combo() 'changed' signal
 
-        This method emits the 'changedSubcategory' message.
+        This method emits the 'changedCategory' and 'changedSubcategory'
+        messages.
 
         :param combo: the RTKCombo() that called this method.
         :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
@@ -893,17 +903,14 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
+    def _on_select(self, module_id, **kwargs):
         """
         Load the Hardware Work View class gtk.Notebook() widgets.
 
-        :param int hardware_id: the Hardware ID of the selected/edited
-                                Hardware.
+        :param int module_id: the Hardware ID of the selected/edited Hardware.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
@@ -912,9 +919,7 @@ class GeneralData(RTKWorkView):
             self._dtc_data_controller = self._mdcRTK.dic_controllers[
                 'hardware']
 
-        self._do_load_page()
-
-        return _return
+        return self._do_load_page(**kwargs)
 
     def _on_toggled(self, togglebutton, index):
         """
@@ -1076,7 +1081,6 @@ class AssessmentInputs(RTKWorkView):
 
         # Initialize private scalar attributes.
         self._hardware_id = None
-        self._wvwCapacitorAI = None
 
         # Initialize public dictionary attributes.
 
@@ -1398,21 +1402,20 @@ class AssessmentInputs(RTKWorkView):
         :rtype: bool
         """
         _return = False
-
         _error_code = 0
-        _msg = ['', '']
+        _msg = ''
 
         if self._dtc_data_controller.request_do_calculate(
                 self._hardware_id,
                 hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER
         ):
             _error_code = 1
-            _msg[0] = 'RTK ERROR: Calculating reliability attributes.'
+            _msg = 'RTK ERROR: Calculating reliability attributes.'
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Hardware {0:d}. \n\n\t" + _msg[0] + "\n\t" +
-                        _msg[1] + "\n\n").format(self._hardware_id)
+                        u"Hardware {0:d}. \n\n\t" + _msg + "\n\n").format(
+                            self._hardware_id)
             _error_dialog = rtk.RTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
@@ -1431,7 +1434,12 @@ class AssessmentInputs(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -1442,7 +1450,11 @@ class AssessmentInputs(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_set_sensitive(self, **kwargs):
         """
@@ -1855,7 +1867,7 @@ class AssessmentInputs(RTKWorkView):
 
         return _return
 
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
+    def _on_select(self, module_id, **kwargs):
         """
         Load the hardware assessment input work view widgets.
 
@@ -2373,7 +2385,12 @@ class AssessmentResults(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -2384,7 +2401,11 @@ class AssessmentResults(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -2515,17 +2536,14 @@ class AssessmentResults(RTKWorkView):
 
         return _hbox
 
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
+    def _on_select(self, module_id, **kwargs):
         """
         Load the Hardware Work View class gtk.Notebook() widgets.
 
-        :param int hardware_id: the Hardware ID of the selected/edited
-                                Hardware.
+        :param int module_id: the Hardware ID of the selected/edited Hardware.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
@@ -2534,6 +2552,4 @@ class AssessmentResults(RTKWorkView):
             self._dtc_data_controller = self._mdcRTK.dic_controllers[
                 'hardware']
 
-        self._do_load_page()
-
-        return _return
+        return self._do_load_page(**kwargs)

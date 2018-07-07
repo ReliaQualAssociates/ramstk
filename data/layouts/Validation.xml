@@ -48,7 +48,7 @@ experience. -->
             <usertitle>V and V Activity Type</usertitle>
             <datatype>gchararray</datatype>
             <position>3</position>
-            <widget>combo</widget>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
             <key>task_type</key>
@@ -68,7 +68,7 @@ experience. -->
             <usertitle>Measurement Unit</usertitle>
             <datatype>gchararray</datatype>
             <position>5</position>
-            <widget>combo</widget>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
             <key>measurement_unit</key>
@@ -138,7 +138,7 @@ experience. -->
             <usertitle>% Complete</usertitle>
             <datatype>gfloat</datatype>
             <position>12</position>
-            <widget>spin</widget>
+            <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
             <key>status</key>

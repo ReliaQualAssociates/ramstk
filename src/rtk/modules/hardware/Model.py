@@ -12,8 +12,8 @@ from treelib.exceptions import DuplicatedNodeIdError
 # Import other RTK modules.
 from rtk.analyses.prediction import Component
 from rtk.modules import RTKDataModel
-from rtk.dao import RTKHardware, RTKDesignElectric, RTKDesignMechanic, \
-    RTKMilHdbkF, RTKNSWC, RTKReliability
+from rtk.dao import (RTKHardware, RTKDesignElectric, RTKDesignMechanic,
+    RTKMilHdbkF, RTKNSWC, RTKReliability)
 
 
 class HardwareBoMDataModel(RTKDataModel):
@@ -175,6 +175,7 @@ class HardwareBoMDataModel(RTKDataModel):
         _parent_id = kwargs['parent_id']
         _part = kwargs['part']
         _error_code = 0
+        _error_msg = ''
         _msg = ''
 
         _parent = self.dtm_hardware.do_select(_parent_id)
@@ -243,8 +244,6 @@ class HardwareBoMDataModel(RTKDataModel):
                 _reliability = self.dtm_reliability.do_select(_hardware_id)
                 _data.update(_reliability.get_attributes())
 
-            # FIXME: Add code to insert record to analyses tables (Allocation, Similar Item, etc.) in HardwareBoMDataModel.insert().
-
             self.tree.create_node(
                 _hardware.comp_ref_des,
                 _hardware_id,
@@ -282,11 +281,10 @@ class HardwareBoMDataModel(RTKDataModel):
             _hardware = self.dtm_hardware.tree.get_node(node_id).data
             if _hardware is not None:
                 _error_code, _msg = self.dao.db_delete(_hardware, _session)
-
         except AttributeError:
             _error_code = 2005
-            _msg = 'RTK ERROR: Attempted to delete non-existent Hardware ' \
-                   'BoM record ID {0:s}.'.format(str(node_id))
+            _msg = ('RTK ERROR: Attempted to delete non-existent Hardware '
+                    'BoM record ID {0:s}.').format(str(node_id))
 
         _session.close()
 
@@ -545,7 +543,7 @@ class HardwareBoMDataModel(RTKDataModel):
             # If there are children, calculate each of them first.
             for _subnode_id in self.tree.get_node(_node_id).fpointer:
                 _results = self.do_calculate_all(
-                    hazard_rate=_hr_multiplier, node_id=_subnode_id)
+                    node_id=_subnode_id, hr_multiplier=_hr_multiplier)
                 _cum_results[0] += _results[0]
                 _cum_results[1] += _results[1]
                 _cum_results[2] += _results[2]

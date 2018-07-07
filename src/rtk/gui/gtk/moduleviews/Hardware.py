@@ -54,6 +54,7 @@ class ModuleView(RTKModuleView):
 
         # Initialize public scalar attributes.
 
+        self._make_treeview()
         self.treeview.set_tooltip_text(
             _(u"Displays the hierarchical list of "
               u"hardware items."))
@@ -82,7 +83,7 @@ class ModuleView(RTKModuleView):
 
         pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_edit, 'wvwEditedHardware')
-        pub.subscribe(self._on_calculate, 'calculatedHardware')
+        pub.subscribe(self._on_calculate, 'calculatedAllHardware')
 
     def _do_change_row(self, treeview):
         """
@@ -166,7 +167,43 @@ class ModuleView(RTKModuleView):
         """
         _return = False
 
-        self._dtc_data_controller.request_do_calculate_all()
+        if not self._dtc_data_controller.request_do_calculate_all(
+                node_id=self._hardware_id,
+                hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER):
+            # Update Revision attributes with system-level attribute values.
+            _sys_attributes = self._dtc_data_controller.request_get_attributes(
+                1)
+            _revision_id = _sys_attributes['revision_id']
+            _dtc_revision = self._mdcRTK.dic_controllers['revision']
+            _rev_attributes = _dtc_revision.request_get_attributes(
+                _revision_id)
+
+            _rev_attributes['availability_logistics'] = _sys_attributes[
+                'availability_logistics']
+            _rev_attributes['availability_mission'] = _sys_attributes[
+                'availability_mission']
+            _rev_attributes['cost'] = _sys_attributes['total_cost']
+            _rev_attributes['cost_per_failure'] = _sys_attributes[
+                'cost_failure']
+            _rev_attributes['cost_per_hour'] = _sys_attributes['cost_hour']
+            _rev_attributes['hazard_rate_active'] = _sys_attributes[
+                'hazard_rate_active']
+            _rev_attributes['hazard_rate_dormant'] = _sys_attributes[
+                'hazard_rate_dormant']
+            _rev_attributes['hazard_rate_logistics'] = _sys_attributes[
+                'hazard_rate_logistics']
+            _rev_attributes['hazard_rate_mission'] = _sys_attributes[
+                'hazard_rate_mission']
+            _rev_attributes['mtbf_logistics'] = _sys_attributes[
+                'mtbf_logistics']
+            _rev_attributes['mtbf_mission'] = _sys_attributes['mtbf_mission']
+            _rev_attributes['n_parts'] = _sys_attributes['total_part_count']
+            _rev_attributes['reliability_logistics'] = _sys_attributes[
+                'reliability_logistics']
+            _rev_attributes['reliability_mission'] = _sys_attributes[
+                'reliability_mission']
+            _dtc_revision.request_set_attributes(_revision_id, _rev_attributes)
+            _dtc_revision.request_do_update(_revision_id)
 
         return _return
 
@@ -244,13 +281,10 @@ class ModuleView(RTKModuleView):
         if not self._dtc_data_controller.request_do_insert(
                 revision_id=self._revision_id, parent_id=_parent_id,
                 part=_part):
-            # TODO: Add code to the FMEA Class to respond to the 'insertedHardware' pubsub message and insert a set of hardwareal failure modes.
-            # TODO: Add code to the Matrix Class to respond to the 'insertedHardware' pubsub message and insert a record into each of the Hardware-X matrices.
+
             self._on_select_revision(self._revision_id)
-            if _part == 0:
-                self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['assembly'][1] += 1
-            elif _part == 1:
-                self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['part'][1] += 1
+            if _part == 1:
+                print "TODO: Add code to the FMEA Class to respond to the 'insertedHardware' pubsub message and insert a set of hardware failure modes."
 
             self.treeview.set_cursor(_path)
 
@@ -269,7 +303,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert_child(self, button, **kwargs):  # pylint: disable=unused-argument
+    def _do_request_insert_child(self, button, assembly, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new child Hardware assembly.
 
@@ -278,14 +312,14 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if button.get_property('name') == 'assembly':
+        if button.get_property('name') == 'assembly' or assembly:
             _part = 0
         else:
             _part = 1
 
         return self._do_request_insert(sibling=False, part=_part)
 
-    def _do_request_insert_sibling(self, button, **kwargs):  # pylint: disable=unused-argument
+    def _do_request_insert_sibling(self, button, assembly, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new sibling Hardware assembly.
 
@@ -294,7 +328,7 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if button.get_property('name') == 'assembly':
+        if button.get_property('name') == 'assembly' or assembly:
             _part = 0
         else:
             _part = 1
@@ -310,7 +344,12 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._hardware_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._hardware_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -321,7 +360,11 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -382,22 +425,19 @@ class ModuleView(RTKModuleView):
         """
         Set up the Hardware Module View RTKTreeView().
 
-        This method is used to "personalize" the basic RTKTreeView for the
-        Hardware Module View.  Primarily which columns are editable.
+        This method sets all cells as non-editable to make the Hardware Module
+        View read-only.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        i = 0
+        _color = gtk.gdk.color_parse('#EEEEEE')
         for _column in self.treeview.get_columns():
             _cell = _column.get_cell_renderers()[0]
-            if _cell.get_property('editable'):
-                _cell.connect('edited', self._do_edit_cell,
-                              i, self._lst_col_order[i],
-                              self.treeview.get_model())
-            i += 1
+            _cell.set_property('editable', False)
+            _cell.set_property('cell-background-gdk', _color)
 
         return _return
 
@@ -438,8 +478,8 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add Sibling Assembly"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate',
-                               self._do_request_insert_sibling_assembly)
+            _menu_item.connect('activate', self._do_request_insert_sibling,
+                               True)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -449,8 +489,7 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add Child Assembly"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate',
-                               self._do_request_insert_child_assembly)
+            _menu_item.connect('activate', self._do_request_insert_child, True)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -460,8 +499,8 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add Sibling Piece Part"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate',
-                               self._do_request_insert_sibling_part)
+            _menu_item.connect('activate', self._do_request_insert_sibling,
+                               False)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -471,7 +510,8 @@ class ModuleView(RTKModuleView):
             _menu_item.set_label(_(u"Add Child Piece Part"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_child_part)
+            _menu_item.connect('activate', self._do_request_insert_child,
+                               False)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -610,5 +650,10 @@ class ModuleView(RTKModuleView):
                                            'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
+        else:
+            for _analysis in ['allocation', 'hazops', 'similaritem']:
+                _dtc_data_controller = self._mdcRTK.dic_controllers[_analysis]
+                _dtc_data_controller.request_do_select_all(
+                    revision_id=self._revision_id)
 
         return _return

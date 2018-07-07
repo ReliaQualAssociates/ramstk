@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Models."""
 
+from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
+
 # Import other RTK modules.
 from rtk.modules import RTKDataModel
 from rtk.dao import RTKAllocation
@@ -14,16 +16,13 @@ from rtk.dao import RTKAllocation
 class AllocationDataModel(RTKDataModel):
     """
     Contain the attributes and methods of a reliability allocation.
-
-    An RTK Project will consist of one or more Modes.  The attributes of a
-    Mode are:
     """
 
     _tag = 'Allocations'
 
     def __init__(self, dao):
         """
-        Initialize a Allocation data model instance.
+        Initialize an Allocation data model instance.
 
         :param dao: the data access object for communicating with the RTK
                     Program database.
@@ -86,7 +85,12 @@ class AllocationDataModel(RTKDataModel):
                  (Hardware) ID.
         :rtype: list
         """
-        return self.tree.children(node_id)
+        try:
+            _children = self.tree.children(node_id)
+        except NodeIDAbsentError:
+            _children = None
+
+        return _children
 
     def do_insert(self, **kwargs):
         """
@@ -104,13 +108,20 @@ class AllocationDataModel(RTKDataModel):
                 _allocation,
             ])
 
-        self.tree.create_node(
-            'Allocation ID: {0:d}'.format(_allocation.hardware_id),
-            _allocation.hardware_id,
-            parent=_allocation.parent_id,
-            data=_allocation)
-
-        self.last_id = max(self.last_id, _allocation.hardware_id)
+        if _error_code == 0:
+            try:
+                self.tree.create_node(
+                    'Allocation ID: {0:d}'.format(_allocation.hardware_id),
+                    _allocation.hardware_id,
+                    parent=_allocation.parent_id,
+                    data=_allocation)
+                self.last_id = max(self.last_id, _allocation.hardware_id)
+            except DuplicatedNodeIdError:
+                _error_code = 1
+                _msg = ('RTK ERROR: Node ID {0:s} already exists in the '
+                        'Allocation tree for Hardware ID {1:s}').format(
+                             str(_allocation.hardware_id),
+                             str(_allocation.parent_id))
 
         return _error_code, _msg
 
@@ -128,9 +139,9 @@ class AllocationDataModel(RTKDataModel):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKDataModel.__init__
         if _error_code != 0:
-            _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
-                          'Allocation ID {0:d}.'.format(node_id)
+            _error_code = 1
+            _msg = _msg + ('\n  RTK ERROR: Attempted to delete non-existent '
+                           'Allocation ID {0:d}.').format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
 
@@ -245,7 +256,7 @@ class AllocationDataModel(RTKDataModel):
         _return = False
 
         # Calculate all Allocations, skipping the top node in the tree.
-        for _node in self.tree.all_nodes():
+        for _node in self.tree.all_nodes()[1:]:
             if _node.identifier != 0:
                 self.do_calculate(_node.identifier, **kwargs)
 

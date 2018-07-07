@@ -117,7 +117,7 @@ class FMEA(RTKWorkView):
 
         return _model
 
-    def _do_refresh_view(self, model, path, row):
+    def _do_refresh_view(self, model, __path, row):
         """
         Refresh the (D)FME(C)A Work View after a successful calculation.
 
@@ -125,8 +125,6 @@ class FMEA(RTKWorkView):
         :rtype: bool
         """
         _return = False
-
-        #_model = self.treeview.get_model()
 
         if row is not None:
             if self._functional:
@@ -138,9 +136,9 @@ class FMEA(RTKWorkView):
 
             if _level == 'mode':
                 model.set_value(row, self._lst_col_order[17],
-                                 _node.mode_hazard_rate)
+                                _node.mode_hazard_rate)
                 model.set_value(row, self._lst_col_order[19],
-                                 _node.mode_criticality)
+                                _node.mode_criticality)
             elif _level == 'mechanism' or _level == 'cause':
                 model.set_value(row, self._lst_col_order[24], _node.rpn)
                 model.set_value(row, self._lst_col_order[37], _node.rpn_new)
@@ -160,7 +158,10 @@ class FMEA(RTKWorkView):
         _criticality = self.chkCriticality.get_active()
         _rpn = self.chkRPN.get_active()
         if not self._dtc_data_controller.request_do_calculate(
-                None, item_hr=self._item_hazard_rate, criticality=_criticality, rpn=_rpn):
+                None,
+                item_hr=self._item_hazard_rate,
+                criticality=_criticality,
+                rpn=_rpn):
             _model = self.treeview.get_model()
             _model.foreach(self._do_refresh_view)
         else:
@@ -295,7 +296,11 @@ class FMEA(RTKWorkView):
         else:
             _node_id = _model.get_value(_row, 43)
 
-        return self._dtc_data_controller.request_do_update(_node_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(self._node_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -306,7 +311,11 @@ class FMEA(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """

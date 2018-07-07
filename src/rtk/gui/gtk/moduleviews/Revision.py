@@ -79,6 +79,7 @@ class ModuleView(RTKModuleView):
 
         self.show_all()
 
+        pub.subscribe(self._do_refresh_view, 'calculatedAllHardware')
         pub.subscribe(self._on_select_revision, 'openedProgram')
         pub.subscribe(self._on_select_revision, 'insertedRevision')
         pub.subscribe(self._on_select_revision, 'deletedRevision')
@@ -151,6 +152,78 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_refresh_view(self):
+        """
+        Refresh the view.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _model, _row = self.treeview.get_selection().get_selected()
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._revision_id)
+
+        # Update Revision attributes with system-level attribute values.
+        _dtc_hardware = self._mdcRTK.dic_controllers['hardware']
+        _sys_attributes = _dtc_hardware.request_get_attributes(1)
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._revision_id)
+
+        _attributes['availability_logistics'] = _sys_attributes[
+            'availability_logistics']
+        _attributes['availability_mission'] = _sys_attributes[
+            'availability_mission']
+        _attributes['cost'] = _sys_attributes['total_cost']
+        _attributes['cost_per_failure'] = _sys_attributes['cost_failure']
+        _attributes['cost_per_hour'] = _sys_attributes['cost_hour']
+        _attributes['hazard_rate_active'] = _sys_attributes[
+            'hazard_rate_active']
+        _attributes['hazard_rate_dormant'] = _sys_attributes[
+            'hazard_rate_dormant']
+        _attributes['hazard_rate_logistics'] = _sys_attributes[
+            'hazard_rate_logistics']
+        _attributes['hazard_rate_mission'] = _sys_attributes[
+            'hazard_rate_mission']
+        _attributes['mtbf_logistics'] = _sys_attributes['mtbf_logistics']
+        _attributes['mtbf_mission'] = _sys_attributes['mtbf_mission']
+        _attributes['n_parts'] = _sys_attributes['total_part_count']
+        _attributes['reliability_logistics'] = _sys_attributes[
+            'reliability_logistics']
+        _attributes['reliability_mission'] = _sys_attributes[
+            'reliability_mission']
+        self._dtc_data_controller.request_set_attributes(
+            self._revision_id, _attributes)
+        self._dtc_data_controller.request_do_update(self._revision_id)
+
+        _model.set(_row, self._lst_col_order[1],
+                   _attributes['availability_logistics'])
+        _model.set(_row, self._lst_col_order[2],
+                   _attributes['availability_mission'])
+        _model.set(_row, self._lst_col_order[3], _attributes['cost'])
+        _model.set(_row, self._lst_col_order[4],
+                   _attributes['cost_per_failure'])
+        _model.set(_row, self._lst_col_order[5], _attributes['cost_per_hour'])
+        _model.set(_row, self._lst_col_order[6],
+                   _attributes['hazard_rate_active'])
+        _model.set(_row, self._lst_col_order[7],
+                   _attributes['hazard_rate_dormant'])
+        _model.set(_row, self._lst_col_order[8],
+                   _attributes['hazard_rate_mission'])
+        _model.set(_row, self._lst_col_order[9],
+                   _attributes['hazard_rate_logistics'])
+        _model.set(_row, self._lst_col_order[14], _attributes['mtbf_mission'])
+        _model.set(_row, self._lst_col_order[15],
+                   _attributes['mtbf_logistics'])
+        _model.set(_row, self._lst_col_order[18],
+                   _attributes['reliability_mission'])
+        _model.set(_row, self._lst_col_order[19],
+                   _attributes['reliability_logistics'])
+        _model.set(_row, self._lst_col_order[21], _attributes['n_parts'])
+
+        return _return
+
     def _do_request_delete(self, __button):
         """
         Send request to delete the selected record from the RTKRevision table.
@@ -199,7 +272,6 @@ class ModuleView(RTKModuleView):
 
         if not self._dtc_data_controller.request_do_insert():
             self._on_select_revision()
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['revision'][1] += 1
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"Revision.")
@@ -234,7 +306,12 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._revision_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._revision_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -245,7 +322,11 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -282,18 +363,21 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Set up the Revision RTKTreeView().
+        Set up the Revision Module View RTKTreeView().
+
+        This method sets all cells as non-editable to make the Revision Module
+        View read-only.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        for i in [17, 20, 22]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-            _cell[0].connect('edited', self._do_edit_cell, i,
-                             self.treeview.get_model())
+        _color = gtk.gdk.color_parse('#EEEEEE')
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            _cell.set_property('editable', False)
+            _cell.set_property('cell-background-gdk', _color)
 
         return _return
 

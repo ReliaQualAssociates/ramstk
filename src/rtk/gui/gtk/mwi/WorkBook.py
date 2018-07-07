@@ -24,7 +24,7 @@ from rtk.gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
-class WorkBook(RTKBook):  # pylint: disable=R0904
+class WorkBook(RTKBook):
     """This is the Work Book for the pyGTK multiple window interface."""
 
     def __init__(self, controller):
@@ -114,7 +114,6 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
         _return = False
 
         RTKBook._on_module_change(self)
-
         for _workspace in self.dic_work_views[module]:
             self.notebook.insert_page(_workspace, _workspace.hbx_tab_label, -1)
 

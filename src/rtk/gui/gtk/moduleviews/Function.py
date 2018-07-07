@@ -220,7 +220,6 @@ class ModuleView(RTKModuleView):
             # TODO: Add code to the FMEA Class to respond to the 'insertedFunction' pubsub message and insert a set of functional failure modes.
             # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
             self._on_select_revision(self._revision_id)
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['function'][1] += 1
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"function to Revision "
@@ -267,7 +266,12 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update(self._function_id)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(
+            self._function_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -278,7 +282,11 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update_all()
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -323,19 +331,22 @@ class ModuleView(RTKModuleView):
         """
         Set up the Function Module View RTKTreeView().
 
-        This method is used to "personalize" the basic RTKTreeView for the
-        Function Module View.  Primarily which columns are editable.
+        This method sets all cells as non-editable to make the Function Module
+        View read-only.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        for i in [5, 15, 17]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-            _cell[0].connect('edited', self._do_edit_cell, i,
-                             self.treeview.get_model())
+        _color = gtk.gdk.color_parse('#EEEEEE')
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            try:
+                _cell.set_property('editable', False)
+            except TypeError:
+                _cell.set_property('activatable', False)
+            _cell.set_property('cell-background-gdk', _color)
 
         return _return
 

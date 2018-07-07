@@ -229,31 +229,6 @@ class Configuration(object):
     :cvar dict RTK_RPN_OCCURRENCE: Dictionary for RPN Occurrence categories.
     :cvar dict RTK_RPN_DETECTION: Dictionary for RPN Detection categories.
 
-    :cvar list RTK_PREFIX: List of prefixes to use for each RTK module.
-                           Prefixes in the list are:
-
-                           +-------+---------------------------+
-                           | Index | Next Prefix               |
-                           +=======+===========================+
-                           |   0   | Revision prefix           |
-                           +-------+---------------------------+
-                           |   1   | Function prefix           |
-                           +-------+---------------------------+
-                           |   2   | Hardware prefix           |
-                           +-------+---------------------------+
-                           |   3   | Part prefix               |
-                           +-------+---------------------------+
-                           |   4   | FMECA item prefix         |
-                           +-------+---------------------------+
-                           |   5   | FMECA mode prefix         |
-                           +-------+---------------------------+
-                           |   6   | FMECA effect prefix       |
-                           +-------+---------------------------+
-                           |   7   | FMECA cause prefix        |
-                           +-------+---------------------------+
-                           |   8   | Software prefix           |
-                           +-------+---------------------------+
-
     :cvar list RTK_MODULES: List to of active modules in the open RTK Program
                             database.  Where 1 = active and 0 = inactive.
 
@@ -412,7 +387,6 @@ class Configuration(object):
     RTK_MEASUREMENT_UNITS = {}
     RTK_MODULES = {}  # Static.
     RTK_PAGE_NUMBER = {}
-    RTK_PREFIX = {}  # Static.
     RTK_REQUIREMENT_TYPE = {}
     RTK_RPN_DETECTION = {}  # User updateable.
     RTK_RPN_OCCURRENCE = {}  # User updateable.

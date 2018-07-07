@@ -448,8 +448,11 @@ class ListView(RTKListView):
         """
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 9)
+        self.set_cursor(gtk.gdk.WATCH)
+        _return = self._dtc_data_controller.request_do_update(_node_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
 
-        return self._dtc_data_controller.request_do_update(_node_id)
+        return _return
 
     def _do_request_update_all(self, __button):
         """
