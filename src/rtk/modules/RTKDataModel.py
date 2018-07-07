@@ -109,9 +109,6 @@ class RTKDataModel(object):  # pragma: no cover
 
         return _error_code, _msg
 
-    def delete(self, node_id):
-        return self.do_delete(node_id)
-
     def do_delete(self, node_id):
         """
         Delete the instance of RTK<MODULE> from the RTK Program database.
@@ -140,9 +137,6 @@ class RTKDataModel(object):  # pragma: no cover
         _session.close()
 
         return _error_code, _msg
-
-    def update(self, node_id):
-        return self.do_update(node_id)
 
     def do_update(self, node_id):
         """

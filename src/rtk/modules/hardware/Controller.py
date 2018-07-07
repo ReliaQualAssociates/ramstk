@@ -444,7 +444,7 @@ class HardwareBoMDataController(RTKDataController):
                     _attributes = self.request_get_attributes(_node_id)
                     self.request_set_attributes(_node_id, _attributes)
 
-            pub.sendMessage('calculatedHardware')
+            pub.sendMessage('calculatedAllHardware')
         else:
             _return = True
 

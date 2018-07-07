@@ -23,6 +23,6 @@ recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs *.tex
 recursive-include locale *.pot
-recursive-include rtk *.py
+recursive-include src/rtk *.py
 
 recursive-exclude tests *

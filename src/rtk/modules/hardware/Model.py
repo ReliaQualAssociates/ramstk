@@ -543,7 +543,7 @@ class HardwareBoMDataModel(RTKDataModel):
             # If there are children, calculate each of them first.
             for _subnode_id in self.tree.get_node(_node_id).fpointer:
                 _results = self.do_calculate_all(
-                    hazard_rate=_hr_multiplier, node_id=_subnode_id)
+                    node_id=_subnode_id, hr_multiplier=_hr_multiplier)
                 _cum_results[0] += _results[0]
                 _cum_results[1] += _results[1]
                 _cum_results[2] += _results[2]

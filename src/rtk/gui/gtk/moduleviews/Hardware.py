@@ -83,7 +83,7 @@ class ModuleView(RTKModuleView):
 
         pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_edit, 'wvwEditedHardware')
-        pub.subscribe(self._on_calculate, 'calculatedHardware')
+        pub.subscribe(self._on_calculate, 'calculatedAllHardware')
 
     def _do_change_row(self, treeview):
         """
@@ -167,8 +167,43 @@ class ModuleView(RTKModuleView):
         """
         _return = False
 
-        self._dtc_data_controller.request_do_calculate_all(
-            hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER)
+        if not self._dtc_data_controller.request_do_calculate_all(
+                node_id=self._hardware_id,
+                hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER):
+            # Update Revision attributes with system-level attribute values.
+            _sys_attributes = self._dtc_data_controller.request_get_attributes(
+                1)
+            _revision_id = _sys_attributes['revision_id']
+            _dtc_revision = self._mdcRTK.dic_controllers['revision']
+            _rev_attributes = _dtc_revision.request_get_attributes(
+                _revision_id)
+
+            _rev_attributes['availability_logistics'] = _sys_attributes[
+                'availability_logistics']
+            _rev_attributes['availability_mission'] = _sys_attributes[
+                'availability_mission']
+            _rev_attributes['cost'] = _sys_attributes['total_cost']
+            _rev_attributes['cost_per_failure'] = _sys_attributes[
+                'cost_failure']
+            _rev_attributes['cost_per_hour'] = _sys_attributes['cost_hour']
+            _rev_attributes['hazard_rate_active'] = _sys_attributes[
+                'hazard_rate_active']
+            _rev_attributes['hazard_rate_dormant'] = _sys_attributes[
+                'hazard_rate_dormant']
+            _rev_attributes['hazard_rate_logistics'] = _sys_attributes[
+                'hazard_rate_logistics']
+            _rev_attributes['hazard_rate_mission'] = _sys_attributes[
+                'hazard_rate_mission']
+            _rev_attributes['mtbf_logistics'] = _sys_attributes[
+                'mtbf_logistics']
+            _rev_attributes['mtbf_mission'] = _sys_attributes['mtbf_mission']
+            _rev_attributes['n_parts'] = _sys_attributes['total_part_count']
+            _rev_attributes['reliability_logistics'] = _sys_attributes[
+                'reliability_logistics']
+            _rev_attributes['reliability_mission'] = _sys_attributes[
+                'reliability_mission']
+            _dtc_revision.request_set_attributes(_revision_id, _rev_attributes)
+            _dtc_revision.request_do_update(_revision_id)
 
         return _return
 
