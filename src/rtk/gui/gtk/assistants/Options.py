@@ -675,9 +675,9 @@ class Options(gtk.Window):  # pylint: disable=R0902
 
             # Set tab positions.
             self.cmbModuleBookTabPosition.set_active(_tab_pos[_parser.get(
-                'General', 'treetabpos')])
+                'General', 'moduletabpos')])
             self.cmbWorkBookTabPosition.set_active(_tab_pos[_parser.get(
-                'General', 'booktabpos')])
+                'General', 'worktabpos')])
             self.cmbListBookTabPosition.set_active(_tab_pos[_parser.get(
                 'General', 'listtabpos')])
 
@@ -740,18 +740,6 @@ class Options(gtk.Window):  # pylint: disable=R0902
                 self.btnHardwareFGColor.set_color(gtk.gdk.Color('#000000'))
             try:
                 _color = gtk.gdk.Color(
-                    '%s' % _parser.get('Colors', 'softwarebg'))
-                self.btnSoftwareBGColor.set_color(_color)
-            except (ValueError, NoOptionError):
-                self.btnSoftwareBGColor.set_color(gtk.gdk.Color('#FFFFFF'))
-            try:
-                _color = gtk.gdk.Color(
-                    '%s' % _parser.get('Colors', 'softwarefg'))
-                self.btnSoftwareFGColor.set_color(_color)
-            except (ValueError, NoOptionError):
-                self.btnSoftwareFGColor.set_color(gtk.gdk.Color('#000000'))
-            try:
-                _color = gtk.gdk.Color(
                     '%s' % _parser.get('Colors', 'validationbg'))
                 self.btnValidationBGColor.set_color(_color)
             except ValueError:
@@ -782,16 +770,6 @@ class Options(gtk.Window):  # pylint: disable=R0902
                 self.btnIncidentFGColor.set_color(_color)
             except ValueError:
                 self.btnIncidentFGColor.set_color(gtk.gdk.Color('#000000'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'partbg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'partfg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors',
-            #                                            'overstressbg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors',
-            #                                            'overstressfg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'taggedbg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors', 'taggedfg'))
-            # _color = gtk.gdk.Color('%s' % _parser.get('Colors',
-            #                                            'nofrmodelfg'))
 
         return False
 
@@ -1371,10 +1349,10 @@ class Options(gtk.Window):  # pylint: disable=R0902
 
             try:
                 _parser.set(
-                    'General', 'treetabpos',
+                    'General', 'moduletabpos',
                     self.cmbModuleBookTabPosition.get_active_text().lower())
             except AttributeError:
-                _parser.set('General', 'treetabpos', 'top')
+                _parser.set('General', 'moduletabpos', 'top')
 
             try:
                 _parser.set(
@@ -1385,10 +1363,10 @@ class Options(gtk.Window):  # pylint: disable=R0902
 
             try:
                 _parser.set(
-                    'General', 'booktabpos',
+                    'General', 'worktabpos',
                     self.cmbWorkBookTabPosition.get_active_text().lower())
             except AttributeError:
-                _parser.set('General', 'booktabpos', 'bottom')
+                _parser.set('General', 'worktabpos', 'bottom')
 
             _parser.set('Colors', 'revisionbg', Configuration.RTK_COLORS[0])
             _parser.set('Colors', 'revisionfg', Configuration.RTK_COLORS[1])
@@ -1404,15 +1382,6 @@ class Options(gtk.Window):  # pylint: disable=R0902
             _parser.set('Colors', 'rgfg', Configuration.RTK_COLORS[11])
             _parser.set('Colors', 'fracabg', Configuration.RTK_COLORS[12])
             _parser.set('Colors', 'fracafg', Configuration.RTK_COLORS[13])
-            _parser.set('Colors', 'partbg', Configuration.RTK_COLORS[14])
-            _parser.set('Colors', 'partfg', Configuration.RTK_COLORS[15])
-            _parser.set('Colors', 'overstressbg', Configuration.RTK_COLORS[16])
-            _parser.set('Colors', 'overstressfg', Configuration.RTK_COLORS[17])
-            _parser.set('Colors', 'taggedbg', Configuration.RTK_COLORS[18])
-            _parser.set('Colors', 'taggedfg', Configuration.RTK_COLORS[19])
-            _parser.set('Colors', 'nofrmodelfg', Configuration.RTK_COLORS[20])
-            _parser.set('Colors', 'softwarebg', Configuration.RTK_COLORS[21])
-            _parser.set('Colors', 'softwarefg', Configuration.RTK_COLORS[22])
 
             try:
                 _parser.write(open(_conf_file, 'w'))

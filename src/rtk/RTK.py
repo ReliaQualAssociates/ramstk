@@ -7,20 +7,13 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """This is the main program for the RTK application."""
 
-import gettext
 import logging
 import os
-import sys
 from datetime import date
 
 from sqlalchemy.orm import scoped_session  # pylint: disable=E0401
 from pubsub import pub  # pylint: disable=E0401
 from treelib import Tree  # pylint: disable=E0401
-
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
 
 # Import other RTK modules.
 # pylint: disable=E0401
@@ -45,7 +38,6 @@ from rtk.dao.commondb.RTKType import RTKType
 from rtk.dao.commondb.RTKUser import RTKUser
 from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 from rtk.dao.programdb.RTKRPN import RTKRPN
-# from datamodels.matrix.Matrix import Matrix
 from rtk.modules.revision import dtcRevision
 from rtk.modules.usage import dtcUsageProfile
 from rtk.modules.failure_definition import dtcFailureDefinition
@@ -58,16 +50,10 @@ from rtk.modules.allocation import dtcAllocation
 from rtk.modules.hazops import dtcHazardAnalysis
 from rtk.modules.similar_item import dtcSimilarItem
 from rtk.modules.pof import dtcPoF
-# from rtk.modules.software.BoM import BoM as SoftwareBoM
-# from rtk.modules.testing.Testing import Testing
-# from rtk.testing.growth.Growth import Growth
 from rtk.modules.validation import dtcValidation
-# from rtk.modules.incident.Incident import Incident
-# from rtk.incident.action.Action import Action
-# from rtk.incident.component.Component import Component
-# from rtk.modules.survival.Survival import Survival
 
-import rtk.gui.gtk.rtk.Widget as Widgets
+from rtk.gui.gtk.rtk.Widget import _, gtk
+from rtk.gui.gtk import rtk
 from rtk.gui.gtk.mwi import ListBook
 from rtk.gui.gtk.mwi import ModuleBook
 from rtk.gui.gtk.mwi import WorkBook
@@ -76,9 +62,6 @@ __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
-
-# Add localization support.
-_ = gettext.gettext
 
 
 def main():
@@ -525,27 +508,22 @@ class RTK(object):
                                 running instance of RTK.
 
                                 Keys are:
-                                    'revision'
+                                    'allocation'
                                     'function'
-                                    'requirement'
                                     'hardware'
-                                    'software'
-                                    'test'
+                                    'revision'
+                                    'requirement'
                                     'validation'
-                                    'incident'
                                     'survival'
                                     'matrices'
                                     'profile'
                                     'definition'
                                     'fmea'
                                     'stakeholder'
-                                    'allocation'
                                     'hazard'
                                     'similaritem'
                                     'pof'
                                     'growth'
-                                    'action'
-                                    'component'
                                 Values are the instance of each RTK data
                                 controller.
 
@@ -564,12 +542,29 @@ class RTK(object):
 
     RTK_CONFIGURATION = Configuration()
 
-    def __init__(self, **kwargs):  # pylint: disable=R0914
+    def __init__(self, **kwargs):
         """Initialize an instance of the RTK data controller."""
         # Read the site configuration file.
         self.RTK_CONFIGURATION.set_site_variables()
-        self.RTK_CONFIGURATION.set_user_variables()
-        self.RTK_CONFIGURATION.read_configuration()
+        if self.RTK_CONFIGURATION.set_user_variables():
+            _prompt = _(
+                u"A user-specific configuration directory could not "
+                u"be found at {0:s}.  You will be given the option to "
+                u"create and populate this directory.  If you choose "
+                u"not to, you will recieve this prompt every time you "
+                u"execute RTK.  Would you like to create and populate "
+                u"a user-specific configuration directory?").format(
+                    self.RTK_CONFIGURATION.RTK_HOME_DIR + "/.config/RTK")
+            _dialog = rtk.RTKMessageDialog(_prompt, '', 'question')
+            _response = _dialog.do_run()
+            _dialog.do_destroy()
+
+            if _response == gtk.RESPONSE_YES:
+                self.RTK_CONFIGURATION.create_user_configuration()
+
+            self.RTK_CONFIGURATION.set_user_variables(first_run=False)
+
+        self.RTK_CONFIGURATION.get_user_configuration()
 
         # Create loggers.
         (self.RTK_CONFIGURATION.RTK_DEBUG_LOG,
@@ -586,36 +581,28 @@ class RTK(object):
         # Initialize private list instance attributes.
         self.__test = kwargs['test']
         self._lst_modules = [
-            'revision', 'function', 'requirement', 'hardware', 'software',
-            'testing', 'validation', 'incident', 'survival'
+            'revision', 'function', 'requirement', 'hardware', 'validation'
         ]
 
         # Initialize private scalar instance attributes.
 
         # Initialize public dictionary instance attributes.
         self.dic_controllers = {
-            'revision': None,
+            'allocation': None,
+            'definition': None,
             'function': None,
+            'revision': None,
             'requirement': None,
             'hardware': None,
-            'software': None,
-            'testing': None,
             'validation': None,
-            'incident': None,
-            'survival': None,
             'matrices': None,
             'profile': None,
-            'definition': None,
             'ffmea': None,
             'fmea': None,
             'stakeholder': None,
-            'allocation': None,
             'hazard': None,
             'similaritem': None,
             'pof': None,
-            'growth': None,
-            'action': None,
-            'component': None
         }
         self.dic_books = {
             'listbook': None,
@@ -722,14 +709,8 @@ class RTK(object):
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['hardware'] = dtcHardwareBoM(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['software'] = SoftwareBoM()
-            # self.dic_controllers['test'] = Test()
             self.dic_controllers['validation'] = dtcValidation(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['incident'] = Incident()
-            # self.dic_controllers['survival'] = Survival()
-
-            # self.dic_controllers['matrices'] = Matrix()
             self.dic_controllers['profile'] = dtcUsageProfile(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['definition'] = dtcFailureDefinition(
@@ -754,8 +735,6 @@ class RTK(object):
                 functional=False)
             self.dic_controllers['pof'] = dtcPoF(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['growth'] = Growth()
-            # self.dic_controllers['action'] = Action()
 
             _program_info = self.rtk_model.read_program_info()[0]
 
@@ -767,22 +746,8 @@ class RTK(object):
                 _program_info.requirement_active
             self.RTK_CONFIGURATION.RTK_MODULES['hardware'] = \
                 _program_info.hardware_active
-            self.RTK_CONFIGURATION.RTK_MODULES['software'] = \
-                _program_info.software_active
-            self.RTK_CONFIGURATION.RTK_MODULES['testing'] = \
-                _program_info.testing_active
             self.RTK_CONFIGURATION.RTK_MODULES['validation'] = \
                 _program_info.vandv_active
-            self.RTK_CONFIGURATION.RTK_MODULES['incident'] = \
-                _program_info.fraca_active
-            self.RTK_CONFIGURATION.RTK_MODULES['survival'] = \
-                _program_info.survival_active
-            self.RTK_CONFIGURATION.RTK_MODULES['rcm'] = \
-                _program_info.rcm_active
-            self.RTK_CONFIGURATION.RTK_MODULES['rbd'] = \
-                _program_info.rbd_active
-            self.RTK_CONFIGURATION.RTK_MODULES['fta'] = \
-                _program_info.fta_active
 
             _page = 0
             for _module in self._lst_modules:
@@ -877,7 +842,7 @@ class RTK(object):
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
-            Widgets.rtk_warning(
+            rtk_warning(
                 _(u"Cannot find license file {0:s}.  If your "
                   u"license file is elsewhere, please place "
                   u"it in {1:s}.").format(_license_file,
@@ -890,14 +855,14 @@ class RTK(object):
 
         _error_code, _msg = self.rtk_model.validate_license(_license_key)
         if _error_code == 1:
-            Widgets.rtk_error(
+            rtk_error(
                 _(u"Invalid license (Invalid key).  Your "
                   u"license key is incorrect.  Closing the RTK "
                   u"application."))
             _return = True
         elif _error_code == 2:
             # noinspection PyUnresolvedReferences
-            Widgets.rtk_error(
+            rtk_error(
                 _(u"Invalid license (Expired).  Your license "
                   u"expired on {0:s}.  Closing the RTK "
                   u"application.").format(_expire_date.strftime('%Y-%d-%m')))

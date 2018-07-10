@@ -4,13 +4,11 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Contains utility functions for interacting with the RTK application.  Import
-this module in other modules that need to interact with the RTK application.
-"""
+"""Utility functions for interacting with the RTK application."""
 
 import os
 import os.path
+import sys
 
 # Add localization support.
 import gettext
@@ -24,40 +22,35 @@ __copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 
 class OutOfRangeError(Exception):
-    """
-    Exception raised when an input value is outside legal limits.
-    """
+    """Exception raised when an input value is outside legal limits."""
 
     def __init__(self, message):
         """
-        Method to initialize OutOfRangeError instance.
-        """
+        Initialize OutOfRangeError instance.
 
+        :param str message: the message to display to the user when this
+                            exception is raised.
+        """
         Exception.__init__(self)
 
         self.message = message
 
 
-class ParentError(Exception):
-    """
-    Exception raised when neither a hardware ID or function ID are passed or
-    when both a hardware ID and function ID are passed when initializing an
-    instance of the FMEA model.
-    """
+class NoParentError(Exception):
+    """Exception raised when a parent element does not exist."""
 
     pass
 
 
 class NoMatrixError(Exception):
-    """
-    Error to raise when no Matrices are returned.
-    """
+    """Exception raised when no Matrices are returned."""
+
     pass
 
 
 def create_logger(log_name, log_level, log_file, to_tty=False):
     """
-    This function creates a logger instance.
+    Create a logger instance.
 
     :param str log_name: the name of the log used in the application.
     :param str log_level: the level of messages to log.
@@ -68,7 +61,6 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     :return: _logger
     :rtype:
     """
-
     import logging
 
     _logger = logging.getLogger(log_name)
@@ -98,13 +90,12 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
 
 def date_to_ordinal(date):
     """
-    Converts date strings to ordinal dates for use in the database.
+    Convert date strings to ordinal dates for use in the database.
 
     :param str date: the date string to convert.
     :return: ordinal representation of the passed date.
     :rtype: int
     """
-
     from dateutil.parser import parse
 
     try:
@@ -115,26 +106,24 @@ def date_to_ordinal(date):
 
 def dir_exists(directory):
     """
-    Helper function to check if a directory exists.
+    Check if a directory exists.
 
     :param str directory: a string representing the directory path to check
                           for.
     :return: False if the directory does not exist, True otherwise.
     :rtype: bool
     """
-
     return os.path.isdir(directory)
 
 
 def error_handler(message):
     """
-    Function to convert string errors to integer error codes.
+    Convert string errors to integer error codes.
 
     :param str message: the message to convert to an error code.
     :return: _err_code
     :rtype: int
     """
-
     if 'argument must be a string or a number' in message[0]:  # Type error
         _error_code = 10  # pragma: no cover
     elif 'invalid literal for int() with base 10' in message[0]:  # Value error
@@ -157,19 +146,18 @@ def error_handler(message):
 
 def file_exists(_file):
     """
-    Helper function to check if a file exists.
+    Check if a file exists.
 
     :param str _file: a string representing the filepath to check for.
     :return: True if the file exists, False otherwise.
     :rtype: bool
     """
-
     return os.path.isfile(_file)
 
 
 def missing_to_default(field, default):
     """
-    Function to convert missing values into default values.
+    Convert missing values into default values.
 
     :param field: the original, missing, value.
     :param default: the new, default, value.
@@ -190,37 +178,38 @@ def none_to_default(field, default):
              otherwise.
     :rtype: any
     """
+    _return = field
     if field is None:
-        return default
-    else:
-        return field
+        _return = default
+
+    return _return
 
 
 def none_to_string(string):
     """
-    Converts None types to an empty string.
+    Convert None types to an empty string.
 
     :param str string: the string to convert.
     :return: string; the converted string.
     :rtype: str
     """
-
+    _return = string
     if string is None or string == 'None':
-        return ''
-    else:
-        return string
+        _return = ''
+
+    return _return
 
 
 def ordinal_to_date(ordinal):
     """
-    Converts ordinal dates to date strings in ISO-8601 format.  Defaults to
-    the current date if a bad value is passed as the argument.
+    Convert ordinal dates to date strings in ISO-8601 format.
+
+    Defaults to the current date if a bad value is passed as the argument.
 
     :param int ordinal: the ordinal date to convert.
     :return: the ISO-8601 date representation of the passed ordinal.
     :rtype: date
     """
-
     from datetime import datetime
 
     try:
@@ -232,14 +221,13 @@ def ordinal_to_date(ordinal):
 
 def split_string(string):
     """
-    Splits a colon-delimited string into its constituent parts.
+    Split a colon-delimited string into its constituent parts.
 
     :param list string: the colon delimited string that needs to be split into
                         a list.
     :return: _strlist
     :rtype: list of strings
     """
-
     _strlist = string.rsplit(':')
 
     return _strlist
@@ -263,13 +251,12 @@ def boolean_to_integer(boolean):
 
 def string_to_boolean(string):
     """
-    Converts string representations of TRUE/FALSE to an boolean value.
+    Convert string representations of TRUE/FALSE to an boolean value.
 
     :param str string: the string to convert.
     :return: _result
     :rtype: bool
     """
-
     _result = False
 
     _string = str(string)
@@ -279,3 +266,65 @@ def string_to_boolean(string):
         _result = True
 
     return _result
+
+
+def prefix(join=None):
+    """Return the prefix that this code was installed into."""
+    _return = False
+
+    # constants for this execution
+    _path = os.path.abspath(__file__)
+    _name = os.path.basename(os.path.dirname(_path))
+    _this = os.path.basename(_path)
+
+    # rule set
+    _rules = [
+        # to match: /usr/lib/python2.5/site-packages/project/prefix.py
+        # or: /usr/local/lib/python2.6/dist-packages/project/prefix.py
+        lambda x: x == 'lib',
+        lambda x: x == ('python%s' % sys.version[:3]),
+        lambda x: x in ['site-packages', 'dist-packages'],
+        lambda x: x == _name,  # 'project'
+        lambda x: x == _this,  # 'prefix.py'
+    ]
+
+    # matching engine
+    while len(_rules) > 0:
+        (_path, _token) = os.path.split(_path)
+        _rule = _rules.pop()
+        if not _rule(_token):
+            _return = True
+
+    # usually returns: /usr/ or /usr/local/ (but without slash postfix)
+    if join is None:
+        _return = _path
+    else:
+        _return = os.path.join(_path, join)  # add on join if it exists!
+
+    return _return
+
+
+def name(pop=[], suffix=None):
+    """
+    Return the name of this particular project.
+
+    If pop is a list containing more than one element, name() will remove those
+    items from the path tail before deciding on the project name. If there is
+    an element which does not exist in the path tail, then raise.  If a suffix
+    is specified, then it is removed if found at end.
+    """
+    _path = os.path.dirname(os.path.abspath(__file__))
+    if isinstance(pop, str):
+        pop = [pop]  # force single strings to list
+
+    while len(pop) > 0:
+        (_path, _tail) = os.path.split(_path)
+        if pop.pop() != _tail:
+            #if DEBUG: print 'tail: %s' % tail
+            raise ValueError('Element doesnʼt match path tail.')
+
+    _path = os.path.basename(_path)
+    if suffix is not None and _path.endswith(suffix):
+        _path = _path[0:-len(suffix)]
+
+    return _path

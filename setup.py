@@ -15,6 +15,7 @@ from setuptools.command.sdist import sdist
 if not sys.version_info[0] == 2:
     sys.exit("Sorry, Python 3 is not supported (yet)")
 
+# Lists of required packages for RTK.
 install_requires = [
     'defusedxml', 'lifelines', 'lxml', 'matplotlib==1.4.3', 'numpy', 'pandas',
     'PyPubSub==3.3.0', 'scipy', 'sortedcontainers', 'SQLAlchemy',
@@ -25,6 +26,7 @@ tests_require = [
     'python-coveralls'
 ]
 
+# Build lists of data files to install.
 layout_files = []
 directories = glob.glob('data/layouts/')
 for directory in directories:
@@ -49,8 +51,8 @@ class Install(_install):
         import os, shutil
 
         _builddir = os.path.abspath('.') + '/build'
-        print("Cleaning build directory: {0:s}...").format(_builddir)
         if os.path.isdir(_builddir):
+            print("Cleaning build directory: {0:s}...").format(_builddir)
             for _file in os.listdir(_builddir):
                 _file_path = os.path.join(_builddir, _file)
                 try:
