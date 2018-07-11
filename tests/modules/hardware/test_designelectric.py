@@ -114,7 +114,7 @@ def test_do_update(test_dao):
     _design_electric = DUT.do_select(3)
     _design_electric.resistance = 0.9832
 
-    _error_code, _msg = DUT.update(3)
+    _error_code, _msg = DUT.do_update(3)
 
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')

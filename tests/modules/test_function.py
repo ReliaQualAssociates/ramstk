@@ -99,7 +99,7 @@ def test_do_insert_sibling(test_dao):
                     "database.")
     assert DUT.last_id == 4
 
-    DUT.delete(DUT.last_id)
+    DUT.do_delete(DUT.last_id)
 
 
 @pytest.mark.integration
@@ -115,7 +115,7 @@ def test_do_insert_child(test_dao):
                     "database.")
     assert DUT.last_id == 4
 
-    DUT.delete(DUT.last_id)
+    DUT.do_delete(DUT.last_id)
 
 
 @pytest.mark.integration

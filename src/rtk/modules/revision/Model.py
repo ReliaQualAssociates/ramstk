@@ -149,13 +149,12 @@ class RevisionDataModel(RTKDataModel):
         """
         _error_code = 0
         _msg = ''
-
+        print self.tree.all_nodes()
         for _node in self.tree.all_nodes():
+            print _node
             try:
-                _error_code, _debug_msg = self.update(_node.data.revision_id)
-
+                _error_code, _debug_msg = self.do_update(_node.data.revision_id)
                 _msg = _msg + _debug_msg + '\n'
-
             except AttributeError:
                 _error_code = 1
                 _msg = ("RTK ERROR: One or more Revisions did not update.")

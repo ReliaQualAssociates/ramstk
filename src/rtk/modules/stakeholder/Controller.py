@@ -103,7 +103,7 @@ class StakeholderDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.update(node_id)
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedStakeholder')
