@@ -63,6 +63,36 @@ def test_do_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
+def test_request_do_delete_matrix_row(test_dao, test_configuration):
+    """ request_do_delete_matrix() should return False on successfully deleting a row. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    DUT.request_do_select_all_matrix(1, 'vldtn_hrdwr')
+    DUT.request_do_insert_matrix('vldtn_hrdwr', 5, 'Validation task from test')
+
+    assert not DUT.request_do_delete_matrix('vldtn_hrdwr', 5)
+
+
+@pytest.mark.integration
+def test_request_do_delete_matrix_non_existent_row(test_dao,
+                                                   test_configuration):
+    """ request_do_delete_matrix() should return True when attempting to delete a non-existent row. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    DUT.request_do_select_all_matrix(1, 'vldtn_hrdwr')
+
+    assert DUT.request_do_delete_matrix('vldtn_hrdwr', 5)
+
+
+@pytest.mark.integration
+def test_request_do_delete_matrix_column(test_dao, test_configuration):
+    """ request_do_delete_matrix() should return False on successfully deleting a column. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    DUT.request_do_select_all_matrix(1, 'vldtn_hrdwr')
+    DUT.request_do_insert_matrix('vldtn_hrdwr', 5, 'S1:SS1:A1', row=False)
+
+    assert not DUT.request_do_delete_matrix('vldtn_hrdwr', 5, row=False)
+
+
+@pytest.mark.integration
 def test_do_insert(test_dao):
     """ do_insert() should return False on success. """
     DUT = dtmValidation(test_dao)
@@ -74,6 +104,42 @@ def test_do_insert(test_dao):
     assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
                     'database.')
     assert DUT.last_id == 2
+
+
+@pytest.mark.integration
+def test_request_do_insert_matrix_row(test_dao, test_configuration):
+    """ request_do_insert_matrix() should return False on successfully inserting a row. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+        1, 'vldtn_hrdwr')
+
+    assert not DUT.request_do_insert_matrix('vldtn_hrdwr', 5,
+                                            'Validation task from test')
+    assert DUT._dmx_vldtn_hw_matrix.dic_row_hdrs[
+        5] == 'Validation task from test'
+
+
+@pytest.mark.integration
+def test_request_do_insert_matrix_duplicate_row(test_dao, test_configuration):
+    """ request_do_insert_matrix() should return True when attempting to insert a duplicate row. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+        1, 'vldtn_hrdwr')
+
+    assert DUT.request_do_insert_matrix('vldtn_hrdwr', 1,
+                                        'Validation task from test')
+
+
+@pytest.mark.integration
+def test_request_do_insert_matrix_column(test_dao, test_configuration):
+    """ request_do_insert_matrix() should return False on successfully inserting a column. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+        5, 'vldtn_hrdwr')
+
+    assert not DUT.request_do_insert_matrix(
+        'vldtn_hrdwr', 9, 'S1:SS1:A11', row=False)
+    assert DUT._dmx_vldtn_hw_matrix.dic_column_hdrs[9] == 'S1:SS1:A11'
 
 
 @pytest.mark.integration

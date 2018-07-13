@@ -13,3 +13,7 @@ from .FunctionHardware import MatrixView as FunctionHardware
 from .RequirementHardware import MatrixView as RequirementHardware
 from .RequirementSoftware import MatrixView as RequirementSoftware
 from .RequirementValidation import MatrixView as RequirementValidation
+from .HardwareRequirement import MatrixView as HardwareRequirement
+from .HardwareValidation import MatrixView as HardwareValidation
+from .ValidationRequirement import MatrixView as ValidationRequirement
+from .ValidationHardware import MatrixView as ValidationHardware

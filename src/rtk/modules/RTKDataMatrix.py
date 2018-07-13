@@ -7,7 +7,7 @@
 """Datamodels Package RTKDataMatrix."""
 
 import pandas as pd
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 
 # Import other RTK modules.
 from rtk.dao import RTKMatrix
@@ -39,29 +39,25 @@ class RTKDataMatrix(object):
     There are currently 10 matrices as defined by their matrix type.  These
     are:
 
-        +-------------+--------------+--------------+
-        |  Row Table  | Column Table |  Matrix Type |
-        +-------------+--------------+--------------+
-        | Function    | Hardware     | fnctn_hrdwr  |
-        +-------------+--------------+--------------+
-        | Function    | Software     | fnctn_sftwr  |
-        +-------------+--------------+--------------+
-        | Function    | Validation   | fnctn_vldtn  |
-        +-------------+--------------+--------------+
-        | Requirement | Hardware     | rqrmnt_hrdwr |
-        +-------------+--------------+--------------+
-        | Requirement | Software     | rqrmnt_sftwr |
-        +-------------+--------------+--------------+
-        | Requirement | Validation   | rqrmnt_vldtn |
-        +-------------+--------------+--------------+
-        | Hardware    | Testing      | hrdwr_tstng  |
-        +-------------+--------------+--------------+
-        | Hardware    | Validation   | hrdwr_vldtn  |
-        +-------------+--------------+--------------+
-        | Software    | Risk         |  sftwr_rsk   |
-        +-------------+--------------+--------------+
-        | Software    | Validation   | sftwr_vldtn  |
-        +-------------+--------------+--------------+
+        +-----------+-------------+--------------+--------------+
+        | Matrix ID |  Row Table  | Column Table |  Matrix Type |
+        +-----------+-------------+--------------+--------------+
+        |     1     | Function    | Hardware     | fnctn_hrdwr  |
+        +-----------+-------------+--------------+--------------+
+        |     2     | Function    | Validation   | fnctn_vldtn  |
+        +-----------+-------------+--------------+--------------+
+        |     3     | Requirement | Hardware     | rqrmnt_hrdwr |
+        +-----------+-------------+--------------+--------------+
+        |     4     | Requirement | Validation   | rqrmnt_vldtn |
+        +-----------+-------------+--------------+--------------+
+        |     5     | Hardware    | Requirement  | hrdwr_rqrmnt |
+        +-----------+-------------+--------------+--------------+
+        |     6     | Hardware    | Validation   | hrdwr_vldtn  |
+        +-----------+-------------+--------------+--------------+
+        |     7     | Validation  | Requirement  | vldtn_rqrmnt |
+        +-----------+-------------+--------------+--------------+
+        |     8     | Validation  | Hardware     | vldtn_hrdwr  |
+        +-----------+-------------+--------------+--------------+
     """
 
     _tag = 'matrix'
@@ -88,7 +84,52 @@ class RTKDataMatrix(object):
         self.n_row = 1
         self.n_col = 1
 
-    def select(self, col, row):
+    def do_create(self, revision_id, matrix_type, rkey='rkey', ckey='ckey'):
+        """
+        Create or refresh a data matrix.
+
+        :param int revision_id: the ID of the Revision the desired Matrix is
+                                associated with.
+        :param str matrix_type: the type of the Matrix to select all rows and
+                                all columns for.
+        :keyword int rkey: the key in the row table attributes containing the
+                           module ID.
+        :keyword int ckey: the key in the column table attributes containing
+                           the module ID.
+        """
+        _return = False
+
+        _lst_row_id = []
+        _lst_value = []
+        _dic_column = {}
+
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+
+        # Iterate over the rows (records from the "row" table) and then the
+        # columns (records from the "column" table) to create, ultimately, a
+        # pandas dataframe representation of the matrix.  Update the RTK
+        # Program database with the contents of this dataframe.
+        for _row in _session.query(self._row_table).filter(
+                self._row_table.revision_id == revision_id).all():
+            _attributes = _row.get_attributes()
+            _lst_row_id.append(_attributes[rkey])
+            _lst_value.append(0)
+
+            for _column in _session.query(self._column_table).filter(
+                    self._column_table.revision_id == revision_id).all():
+                _attributes = _column.get_attributes()
+                _column_id = _attributes[ckey]
+                _dic_column[_column_id] = pd.Series(
+                    _lst_value, index=_lst_row_id)
+
+        self.dtf_matrix = pd.DataFrame(_dic_column)
+
+        self.do_update(revision_id, matrix_type)
+
+        return _return
+
+    def do_select(self, col, row):
         """
         Select the value from the cell identified by col and row.
 
@@ -101,14 +142,13 @@ class RTKDataMatrix(object):
         """
         return self.dtf_matrix[col][row]
 
-    # pylint: disable=R0913
-    def select_all(self,
-                   revision_id,
-                   matrix_type,
-                   rkey='rkey',
-                   ckey='ckey',
-                   rheader=0,
-                   cheader=0):
+    def do_select_all(self,
+                      revision_id,
+                      matrix_type,
+                      rkey='rkey',
+                      ckey='ckey',
+                      rheader=0,
+                      cheader=0):
         """
         Select everything needed to build the matrix.
 
@@ -164,11 +204,11 @@ class RTKDataMatrix(object):
                 self.dic_column_hdrs[_attributes[ckey]] = _attributes[cheader]
             except TypeError:
                 print 'FIXME: Handle TypeError in ' \
-                      'RTKDataMatrix.select_all().  Tuple indices must be ' \
-                      'integers, not str.  This will be fixed when all the ' \
-                      'RTK database tables are converted to return dicts ' \
-                      'from the get_attributes() method.  Matrix {0:s} is ' \
-                      'not working.  See issue #59'.format(matrix_type)
+                      'RTKDataMatrix.do_select_all().  Tuple indices must ' \
+                      'be integers, not str.  This will be fixed when all ' \
+                      'the RTK database tables are converted to return ' \
+                      'dicts from the get_attributes() method.  Matrix {0:s} ' \
+                      'is not working.  See issue #59'.format(matrix_type)
 
             self.n_col += 1
 
@@ -192,7 +232,7 @@ class RTKDataMatrix(object):
 
         return _return
 
-    def insert(self, item_id, heading, row=True):
+    def do_insert(self, item_id, heading, row=True):
         """
         Insert a row or a column into the matrix.
 
@@ -239,7 +279,7 @@ class RTKDataMatrix(object):
 
         return _error_code, _msg
 
-    def delete(self, item_id, row=True):
+    def do_delete(self, item_id, row=True):
         """
         Delete a column or row from the Matrix.
 
@@ -275,7 +315,7 @@ class RTKDataMatrix(object):
 
         return _error_code, _msg
 
-    def update(self, revision_id, matrix_type):
+    def do_update(self, revision_id, matrix_type):
         """
         Update the Matrix associated with Matrix type.
 
@@ -293,6 +333,14 @@ class RTKDataMatrix(object):
             autocommit=False,
             expire_on_commit=False)
 
+        try:
+            _matrix_id = _session.query(RTKMatrix).filter(
+                RTKMatrix.matrix_type == matrix_type).first().matrix_id
+        except AttributeError:
+            _matrix_id = _session.query(
+                func.max(RTKMatrix.matrix_id).label("last_id")).one()
+            _matrix_id = int(_matrix_id.last_id) + 1
+
         for _column_item_id in list(self.dtf_matrix.columns):
             for _row_item_id in list(self.dtf_matrix.index):
                 _entity = _session.query(RTKMatrix).filter(
@@ -302,11 +350,21 @@ class RTKDataMatrix(object):
                          RTKMatrix.row_item_id == int(_row_item_id))).first()
 
                 try:
-                    if _entity is not None:
-                        _entity.value = int(
-                            self.dtf_matrix[_column_item_id][_row_item_id])
-                        _session.add(_entity)
-                        _error_code, _msg = self.dao.db_update(_session)
+                    # If there is no corresponding record in RTKMatrix, then
+                    # create a new RTKMatrix record and add it.
+                    if _entity is None:
+                        _entity = RTKMatrix()
+                        _entity.revision_id = revision_id
+                        _entity.matrix_id = _matrix_id
+                        _entity.matrix_type = matrix_type
+                        _entity.column_item_id = int(_column_item_id)
+                        _entity.row_item_id = int(_row_item_id)
+
+                    _entity.value = int(
+                        self.dtf_matrix[_column_item_id][_row_item_id])
+                    _session.add(_entity)
+                    _error_code, _msg = self.dao.db_update(_session)
+
                 except AttributeError:
                     _error_code = 6
                     _msg = 'RTK ERROR: Attempted to save non-existent ' \

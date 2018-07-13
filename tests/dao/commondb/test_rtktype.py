@@ -14,8 +14,12 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
-
-ATTRIBUTES = {'type_id':1, 'code':'PLN', 'description':'Planning', 'type_type':'incident'}
+ATTRIBUTES = {
+    'type_id': 1,
+    'code': 'PLN',
+    'description': 'Planning',
+    'type_type': 'incident'
+}
 
 
 @pytest.mark.integration
@@ -56,7 +60,7 @@ def test_set_attributes(test_common_dao):
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating RTKType {0:d} "
-                               "attributes.".format(DUT.type_id))
+                    "attributes.".format(DUT.type_id))
 
 
 @pytest.mark.integration

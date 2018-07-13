@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.matrixviews.RequirementHardware.py is part of the RTK
+#       rtk.gui.gtk.matrixviews.HardwareValidation.py is part of the RTK
 #       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""The Requirement:Hardware Matrix View Module."""
+"""The Hardware:Validation Matrix View Module."""
 
 from pubsub import pub
 
@@ -16,14 +16,14 @@ from rtk.gui.gtk import rtk
 
 class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
     """
-    This is the Requirement:Hardware RTK Matrix View.
+    This is the Hardware:Validation RTK Matrix View.
 
-    Attributes of the Requirement:Hardware Matrix View are:
+    Attributes of the Hardware:Validation Matrix View are:
     """
 
     def __init__(self, controller, **kwargs):
         """
-        Initialize the Requirement:Hardware Matrix View.
+        Initialize the Hardware:Validation Matrix View.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
@@ -48,13 +48,13 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         self.hbx_tab_label = gtk.HBox()
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Requirement\nHardware") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Hardware\nValidation") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
         _label.set_tooltip_text(
-            _(u"Displays requirement/hardware matrix for the "
+            _(u"Displays hardware/validation matrix for the "
               u"selected revision."))
 
         # self.hbx_tab_label.pack_start(_image)
@@ -73,7 +73,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def _do_request_create(self, __button):
         """
-        Save the currently selected Validation:Requirement Matrix row.
+        Save the currently selected Validation:Hardware Matrix row.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
@@ -85,7 +85,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def _do_request_update(self, __button):
         """
-        Save the currently selected Requirement:Hardware Matrix row.
+        Save the currently selected Hardware:Validation Matrix row.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
@@ -97,16 +97,16 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Create the buttonbox for the Requirement:Hardware Matrix View.
+        Create the buttonbox for the Hardware:Validation Matrix View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Requirement:Hardware
+        :return: _buttonbox; the gtk.ButtonBox() for the Hardware:Validation
                              Matrix View.
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Save the Requirement:Hardware Matrix to the open RTK "
+            _(u"Save the Hardware:Validation Matrix to the open RTK "
               u"Program database."),
-            _(u"Create or refresh the Requirement:Hardware Matrix.")
+            _(u"Create or refresh the Hardware:Validation Matrix.")
         ]
         _callbacks = [self._do_request_update, self._do_request_create]
         _icons = ['save', 'save']
@@ -124,21 +124,21 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def _on_select_revision(self, module_id):
         """
-        Load the Requirement:Hardware Matrix View with matrix information.
+        Load the Hardware:Validation Matrix View with matrix information.
 
         :param int revision_id: the Revision ID to select the
-                                Requirement:Hardware matrix for.
+                                Hardware:Validation matrix for.
         :return: None
         :rtype: None
         """
         self._revision_id = module_id
 
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['requirement']
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
         (_matrix, _column_hdrs,
          _row_hdrs) = self._dtc_data_controller.request_do_select_all_matrix(
              self._revision_id, self._matrix_type)
         if _matrix is not None:
             rtk.RTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
-                                             _row_hdrs, _(u"Requirement"))
+                                             _row_hdrs, _(u"Hardware"))
 
         return None

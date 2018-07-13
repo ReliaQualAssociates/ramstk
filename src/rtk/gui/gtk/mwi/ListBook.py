@@ -13,7 +13,9 @@ from rtk.gui.gtk.rtk import RTKBook
 from rtk.gui.gtk.listviews import (lvwUsageProfile, lvwFailureDefinition,
                                    lvwStakeholder)
 from rtk.gui.gtk.matrixviews import (FunctionHardware, RequirementHardware,
-                                     RequirementValidation)
+                                     RequirementValidation,
+                                     HardwareRequirement, HardwareValidation,
+                                     ValidationRequirement, ValidationHardware)
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
@@ -59,8 +61,14 @@ class ListBook(RTKBook):
                 RequirementHardware(controller, matrix_type='rqrmnt_hrdwr'),
                 RequirementValidation(controller, matrix_type='rqrmnt_vldtn')
             ],
-            'validation': [],
-            'hardware': []
+            'hardware': [
+                HardwareRequirement(controller, matrix_type='hrdwr_rqrmnt'),
+                HardwareValidation(controller, matrix_type='hrdwr_vldtn')
+            ],
+            'validation': [
+                ValidationRequirement(controller, matrix_type='vldtn_rqrmnt'),
+                ValidationHardware(controller, matrix_type='vldtn_hrdwr')
+            ]
         }
 
         # Initialize public list attributes.
@@ -68,7 +76,7 @@ class ListBook(RTKBook):
         # Initialize public scalar attributes.
 
         # Set the properties for the ListBook and it's widgets.
-        self.set_title(_(u"RTK Matrices and Lists"))
+        self.set_title(_(u"RTK Lists and Matrices"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)

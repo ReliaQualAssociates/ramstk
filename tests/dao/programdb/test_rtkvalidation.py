@@ -45,7 +45,8 @@ ATTRIBUTES = {
     'cost_ll': 0.0,
     'cost_ul': 0.0,
     'time_ll': 0.0,
-    'time_ul': 0.0
+    'time_ul': 0.0,
+    'name': ''
 }
 
 
@@ -78,6 +79,7 @@ def test_rtkvalidation_create(test_dao):
     assert DUT.date_start == date.today()
     assert DUT.description == 'Test Validation'
     assert DUT.measurement_unit == ''
+    assert DUT.name == ''
     assert DUT.status == 0.0
     assert DUT.task_type == ''
     assert DUT.task_specification == ''

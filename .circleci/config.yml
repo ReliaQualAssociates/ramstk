@@ -33,7 +33,7 @@ jobs:
             pip install matplotlib==1.4.3
 
       - save_cache:
-          key: deps-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}
           paths:
             - ./venv
 

@@ -20,7 +20,7 @@ class RTKType(RTK_BASE):
     __table_args__ = {'extend_existing': True}
 
     type_id = Column(
-        'fld_model_id',
+        'fld_type_id',
         Integer,
         primary_key=True,
         autoincrement=True,

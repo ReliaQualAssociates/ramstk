@@ -237,34 +237,37 @@ class GeneralData(RTKWorkView):
             self.cmbMeasurementUnit.connect('changed', self._on_combo_changed,
                                             3))
         self._lst_handler_id.append(
-            self.txtMinAcceptable.connect('changed', self._on_focus_out, 4))
+            self.txtMinAcceptable.connect('focus-out-event',
+                                          self._on_focus_out, 4))
         self._lst_handler_id.append(
-            self.txtMeanAcceptable.connect('changed', self._on_focus_out, 5))
+            self.txtMeanAcceptable.connect('focus-out-event',
+                                           self._on_focus_out, 5))
         self._lst_handler_id.append(
-            self.txtMaxAcceptable.connect('changed', self._on_focus_out, 6))
+            self.txtMaxAcceptable.connect('focus-out-event',
+                                          self._on_focus_out, 6))
         self._lst_handler_id.append(
-            self.txtVarAcceptable.connect('changed', self._on_focus_out, 7))
-        self.txtStartDate.connect('changed', self._on_focus_out, 8)
+            self.txtVarAcceptable.connect('focus-out-event',
+                                          self._on_focus_out, 7))
         self._lst_handler_id.append(
-            self.txtStartDate.connect('changed', self._on_focus_out, 8))
-        self.txtEndDate.connect('changed', self._on_focus_out, 9)
+            self.txtStartDate.connect('focus-out-event', self._on_focus_out,
+                                      8))
         self._lst_handler_id.append(
-            self.txtEndDate.connect('changed', self._on_focus_out, 9))
+            self.txtEndDate.connect('focus-out-event', self._on_focus_out, 9))
         self._lst_handler_id.append(
             self.spnStatus.connect('value-changed', self._on_value_changed,
                                    10))
         self._lst_handler_id.append(
-            self.txtMinTime.connect('changed', self._on_focus_out, 11))
+            self.txtMinTime.connect('focus-out-event', self._on_focus_out, 11))
         self._lst_handler_id.append(
-            self.txtExpTime.connect('changed', self._on_focus_out, 12))
+            self.txtExpTime.connect('focus-out-event', self._on_focus_out, 12))
         self._lst_handler_id.append(
-            self.txtMaxTime.connect('changed', self._on_focus_out, 13))
+            self.txtMaxTime.connect('focus-out-event', self._on_focus_out, 13))
         self._lst_handler_id.append(
-            self.txtMinCost.connect('changed', self._on_focus_out, 14))
+            self.txtMinCost.connect('focus-out-event', self._on_focus_out, 14))
         self._lst_handler_id.append(
-            self.txtExpCost.connect('changed', self._on_focus_out, 15))
+            self.txtExpCost.connect('focus-out-event', self._on_focus_out, 15))
         self._lst_handler_id.append(
-            self.txtMaxCost.connect('changed', self._on_focus_out, 16))
+            self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
         self.pack_start(self._make_page(), expand=True, fill=True)
@@ -728,6 +731,15 @@ class GeneralData(RTKWorkView):
                 _index = 3
                 _new_text = combo.get_active_text()
                 _validation.task_type = _new_text
+
+                # Update the Validation task name for the selected Validation
+                # task.
+                _types = self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE
+                for _key, _type in _types.iteritems():
+                    if _type[1] == _validation.task_type:
+                        _validation.name = '{0:s}-{1:04d}'.format(
+                            _type[0], int(self._validation_id))
+                print _validation.name
             elif index == 3:
                 _index = 5
                 _new_text = combo.get_active_text()
@@ -838,7 +850,7 @@ class GeneralData(RTKWorkView):
 
         return _return
 
-    def _on_focus_out(self, entry, index):
+    def _on_focus_out(self, entry, __event, index):
         """
         Handle changes made in RTKEntry() and RTKTextView() widgets.
 

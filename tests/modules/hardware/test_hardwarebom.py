@@ -480,7 +480,7 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
         1, 'hrdwr_vldtn')
 
     assert isinstance(_matrix, pd.DataFrame)
-    assert _column_hdrs[1] == 'Test Validation'
+    assert _column_hdrs[1] == ''
     assert _row_hdrs[1] == 'S1'
     assert _row_hdrs[2] == 'S1:SS1'
     assert _row_hdrs[3] == 'S1:SS2'
