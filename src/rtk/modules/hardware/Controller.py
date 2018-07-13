@@ -58,6 +58,29 @@ class HardwareBoMDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
+    def request_do_create(self, revision_id, matrix_type):
+        """
+        Request to create or refresh a Hardware matrix.
+
+        :param int revision_id: the ID of the Revision the desired Matrix is
+                                associated with.
+        :param str matrix_type: the type of the Matrix to select all rows and
+        """
+        if matrix_type == 'hrdwr_rqrmnt':
+            self._dmx_hw_rqrmnt_matrix.do_create(
+                revision_id,
+                matrix_type,
+                rkey='hardware_id',
+                ckey='requirement_id')
+        elif matrix_type == 'hrdwr_vldtn':
+            self._dmx_hw_vldtn_matrix.do_create(
+                revision_id,
+                matrix_type,
+                rkey='hardware_id',
+                ckey='validation_id')
+
+        return
+
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Hardware.
@@ -80,7 +103,7 @@ class HardwareBoMDataController(RTKDataController):
         _row_hdrs = []
 
         if matrix_type == 'hrdwr_rqrmnt':
-            self._dmx_hw_rqrmnt_matrix.select_all(
+            self._dmx_hw_rqrmnt_matrix.do_select_all(
                 revision_id,
                 matrix_type,
                 rkey='hardware_id',
@@ -92,7 +115,7 @@ class HardwareBoMDataController(RTKDataController):
             _row_hdrs = self._dmx_hw_rqrmnt_matrix.dic_row_hdrs
 
         elif matrix_type == 'hrdwr_tstng':
-            self._dmx_hw_tstng_matrix.select_all(
+            self._dmx_hw_tstng_matrix.do_select_all(
                 revision_id,
                 matrix_type,
                 rkey='hardware_id',
@@ -104,13 +127,13 @@ class HardwareBoMDataController(RTKDataController):
             _row_hdrs = self._dmx_hw_tstng_matrix.dic_row_hdrs
 
         elif matrix_type == 'hrdwr_vldtn':
-            self._dmx_hw_vldtn_matrix.select_all(
+            self._dmx_hw_vldtn_matrix.do_select_all(
                 revision_id,
                 matrix_type,
                 rkey='hardware_id',
                 ckey='validation_id',
                 rheader='comp_ref_des',
-                cheader='description')
+                cheader='name')
             _matrix = self._dmx_hw_vldtn_matrix.dtf_matrix
             _column_hdrs = self._dmx_hw_vldtn_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_hw_vldtn_matrix.dic_row_hdrs
@@ -177,15 +200,15 @@ class HardwareBoMDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'hrdwr_rqrmnt':
-            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.insert(
+            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_insert(
                 item_id, heading, row=row)
 
         if matrix_type == 'hrdwr_tstng':
-            _error_code, _msg = self._dmx_hw_tstng_matrix.insert(
+            _error_code, _msg = self._dmx_hw_tstng_matrix.do_insert(
                 item_id, heading, row=row)
 
         if matrix_type == 'hrdwr_vldtn':
-            _error_code, _msg = self._dmx_hw_vldtn_matrix.insert(
+            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_insert(
                 item_id, heading, row=row)
 
         if _error_code == 0 and not self._test:
@@ -233,15 +256,15 @@ class HardwareBoMDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'hrdwr_rqrmnt':
-            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.delete(
+            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_delete(
                 item_id, row=row)
 
         if matrix_type == 'hrdwr_tstng':
-            _error_code, _msg = self._dmx_hw_tstng_matrix.delete(
+            _error_code, _msg = self._dmx_hw_tstng_matrix.do_delete(
                 item_id, row=row)
 
         if matrix_type == 'hrdwr_vldtn':
-            _error_code, _msg = self._dmx_hw_vldtn_matrix.delete(
+            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_delete(
                 item_id, row=row)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
@@ -277,15 +300,15 @@ class HardwareBoMDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'hrdwr_rqrmnt':
-            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.update(
+            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_update(
                 revision_id, matrix_type)
 
         elif matrix_type == 'hrdwr_tstng':
-            _error_code, _msg = self._dmx_hw_tstng_matrix.update(
+            _error_code, _msg = self._dmx_hw_tstng_matrix.do_update(
                 revision_id, matrix_type)
 
         elif matrix_type == 'hrdwr_vldtn':
-            _error_code, _msg = self._dmx_hw_vldtn_matrix.update(
+            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_update(
                 revision_id, matrix_type)
         else:
             _error_code = 6

@@ -59,6 +59,29 @@ class RequirementDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
+    def request_do_create(self, revision_id, matrix_type):
+        """
+        Request to create or refresh a Requirement matrix.
+
+        :param int revision_id: the ID of the Revision the desired Matrix is
+                                associated with.
+        :param str matrix_type: the type of the Matrix to select all rows and
+        """
+        if matrix_type == 'rqrmnt_hrdwr':
+            self._dmx_rqmt_hw_matrix.do_create(
+                revision_id,
+                matrix_type,
+                rkey='requirement_id',
+                ckey='hardware_id')
+        elif matrix_type == 'rqrmnt_vldtn':
+            self._dmx_rqmt_val_matrix.do_create(
+                revision_id,
+                matrix_type,
+                rkey='requirement_id',
+                ckey='validation_id')
+
+        return
+
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Requirement module.
@@ -81,7 +104,7 @@ class RequirementDataController(RTKDataController):
         _row_hdrs = []
 
         if matrix_type == 'rqrmnt_hrdwr':
-            self._dmx_rqmt_hw_matrix.select_all(
+            self._dmx_rqmt_hw_matrix.do_select_all(
                 revision_id,
                 matrix_type,
                 rkey='requirement_id',
@@ -93,7 +116,7 @@ class RequirementDataController(RTKDataController):
             _row_hdrs = self._dmx_rqmt_hw_matrix.dic_row_hdrs
 
         elif matrix_type == 'rqrmnt_sftwr':
-            self._dmx_rqmt_sw_matrix.select_all(
+            self._dmx_rqmt_sw_matrix.do_select_all(
                 revision_id,
                 matrix_type,
                 rkey='requirement_id',
@@ -105,13 +128,13 @@ class RequirementDataController(RTKDataController):
             _row_hdrs = self._dmx_rqmt_sw_matrix.dic_row_hdrs
 
         elif matrix_type == 'rqrmnt_vldtn':
-            self._dmx_rqmt_val_matrix.select_all(
+            self._dmx_rqmt_val_matrix.do_select_all(
                 revision_id,
                 matrix_type,
                 rkey='requirement_id',
                 ckey='validation_id',
                 rheader='requirement_code',
-                cheader='description')
+                cheader='name')
             _matrix = self._dmx_rqmt_val_matrix.dtf_matrix
             _column_hdrs = self._dmx_rqmt_val_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_rqmt_val_matrix.dic_row_hdrs
@@ -151,7 +174,7 @@ class RequirementDataController(RTKDataController):
         Request the to add a new row or column to the Data Matrix.
 
         :param str matrix_type: the type of the Matrix to retrieve.  Current
-                                Function matrix types are:
+                                Requirement matrix types are:
 
                                 rqrmnt_hrdwr = Requirement:Hardware
                                 rqrmnt_sftwr = Requirement:Software
@@ -166,13 +189,13 @@ class RequirementDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'rqrmnt_hrdwr':
-            _error_code, _msg = self._dmx_rqmt_hw_matrix.insert(
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.do_insert(
                 item_id, heading, row=row)
         elif matrix_type == 'rqrmnt_sftwr':
-            _error_code, _msg = self._dmx_rqmt_sw_matrix.insert(
+            _error_code, _msg = self._dmx_rqmt_sw_matrix.do_insert(
                 item_id, heading, row=row)
         elif matrix_type == 'rqrmnt_vldtn':
-            _error_code, _msg = self._dmx_rqmt_val_matrix.insert(
+            _error_code, _msg = self._dmx_rqmt_val_matrix.do_insert(
                 item_id, heading, row=row)
 
         if _error_code == 0 and not self._test:
@@ -218,13 +241,13 @@ class RequirementDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'rqrmnt_hrdwr':
-            _error_code, _msg = self._dmx_rqmt_hw_matrix.delete(
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.do_delete(
                 item_id, row=row)
         elif matrix_type == 'rqrmnt_sftwr':
-            _error_code, _msg = self._dmx_rqmt_sw_matrix.delete(
+            _error_code, _msg = self._dmx_rqmt_sw_matrix.do_delete(
                 item_id, row=row)
         elif matrix_type == 'rqrmnt_vldtn':
-            _error_code, _msg = self._dmx_rqmt_val_matrix.delete(
+            _error_code, _msg = self._dmx_rqmt_val_matrix.do_delete(
                 item_id, row=row)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
@@ -260,13 +283,13 @@ class RequirementDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'rqrmnt_hrdwr':
-            _error_code, _msg = self._dmx_rqmt_hw_matrix.update(
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.do_update(
                 revision_id, matrix_type)
         elif matrix_type == 'rqrmnt_sftwr':
-            _error_code, _msg = self._dmx_rqmt_sw_matrix.update(
+            _error_code, _msg = self._dmx_rqmt_sw_matrix.do_update(
                 revision_id, matrix_type)
         elif matrix_type == 'rqrmnt_vldtn':
-            _error_code, _msg = self._dmx_rqmt_val_matrix.update(
+            _error_code, _msg = self._dmx_rqmt_val_matrix.do_update(
                 revision_id, matrix_type)
         else:
             _error_code = 6

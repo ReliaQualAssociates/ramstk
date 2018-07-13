@@ -821,9 +821,9 @@ class DesignElectricDataModel(RTKDataModel):
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.select_all() method because we don't want
-        # to clear the tree or we'll only be left with the last hardware ID
-        # passed.
+        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # want to clear the tree or we'll only be left with the last hardware
+        # ID passed.
         _session = self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
@@ -983,9 +983,9 @@ class DesignMechanicDataModel(RTKDataModel):
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.select_all() method because we don't want
-        # to clear the tree or we'll only be left with the last hardware ID
-        # passed.
+        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # want to clear the tree or we'll only be left with the last hardware
+        # ID passed.
         _session = self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
@@ -1145,9 +1145,9 @@ class MilHdbkFDataModel(RTKDataModel):
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.select_all() method because we don't want
-        # to clear the tree or we'll only be left with the last hardware ID
-        # passed.
+        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # want to clear the tree or we'll only be left with the last hardware
+        # ID passed.
         _session = self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
@@ -1307,9 +1307,9 @@ class NSWCDataModel(RTKDataModel):
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.select_all() method because we don't want
-        # to clear the tree or we'll only be left with the last hardware ID
-        # passed.
+        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # want to clear the tree or we'll only be left with the last hardware
+        # ID passed.
         _session = self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
@@ -1464,9 +1464,9 @@ class ReliabilityDataModel(RTKDataModel):
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.select_all() method because we don't want
-        # to clear the tree or we'll only be left with the last hardware ID
-        # passed.
+        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # want to clear the tree or we'll only be left with the last hardware
+        # ID passed.
         _session = self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 

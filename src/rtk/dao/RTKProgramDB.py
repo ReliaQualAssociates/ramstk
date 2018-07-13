@@ -325,8 +325,7 @@ def do_create_test_database(database):
         _mode = RTKMode()
         _mode.function_id = _function.function_id
         _mode.hardware_id = -1
-        _mode.description = (
-        "Test Functional Failure Mode #{0:d}").format(i)
+        _mode.description = ("Test Functional Failure Mode #{0:d}").format(i)
         session.add(_mode)
         session.commit()
 
@@ -334,21 +333,21 @@ def do_create_test_database(database):
         _cause.mode_id = _mode.mode_id
         _cause.mechanism_id = -1
         _cause.description = ("Test Functional FMEA Cause "
-                  "#{0:d} for Mode ID {1:d}").format(
-                      i, _mode.mode_id)
+                              "#{0:d} for Mode ID {1:d}").format(
+                                  i, _mode.mode_id)
         session.add(_cause)
         session.commit()
 
         _control = RTKControl()
         _control.cause_id = _cause.cause_id
         _control.description = (
-        "Test Functional FMEA Control #{0:d} for Cause ID {1:d}"
-        ).format(i, _cause.cause_id)
+            "Test Functional FMEA Control #{0:d} for Cause ID {1:d}").format(
+                i, _cause.cause_id)
         _action = RTKAction()
         _action.cause_id = _cause.cause_id
         _action.action_recommended = (
-        "Test Functional FMEA Recommended "
-        "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
+            "Test Functional FMEA Recommended "
+            "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
         session.add(_control)
         session.add(_action)
         _dic_rows[i] = _function.function_id
@@ -588,6 +587,15 @@ def do_create_test_database(database):
         _matrix.column_item_id = 1
         _matrix.row_id = _ckey
         _matrix.row_item_id = _dic_cols[_ckey]
+        session.add(_matrix)
+        _matrix = RTKMatrix()
+        _matrix.revision_id = _revision.revision_id
+        _matrix.matrix_id = 5
+        _matrix.matrix_type = 'vldtn_hrdwr'
+        _matrix.column_id = _ckey
+        _matrix.column_item_id = _dic_cols[_ckey]
+        _matrix.row_id = 1
+        _matrix.row_item_id = 1
         session.add(_matrix)
     session.commit()
 

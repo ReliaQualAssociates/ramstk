@@ -55,6 +55,23 @@ class FunctionDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
+    def request_do_create(self, revision_id, matrix_type):
+        """
+        Request to create or refresh a Function matrix.
+
+        :param int revision_id: the ID of the Revision the desired Matrix is
+                                associated with.
+        :param str matrix_type: the type of the Matrix to select all rows and
+        """
+        if matrix_type == 'fnctn_hrdwr':
+            self._dmx_fctn_hw_matrix.do_create(
+                revision_id,
+                matrix_type,
+                rkey='function_id',
+                ckey='hardware_id')
+
+        return
+
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Function.
@@ -77,7 +94,7 @@ class FunctionDataController(RTKDataController):
         _row_hdrs = []
 
         if matrix_type == 'fnctn_hrdwr':
-            self._dmx_fctn_hw_matrix.select_all(
+            self._dmx_fctn_hw_matrix.do_select_all(
                 revision_id,
                 matrix_type,
                 rkey='function_id',
@@ -137,7 +154,7 @@ class FunctionDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'fnctn_hrdwr':
-            _error_code, _msg = self._dmx_fctn_hw_matrix.insert(
+            _error_code, _msg = self._dmx_fctn_hw_matrix.do_insert(
                 item_id, heading, row=row)
 
         if _error_code == 0 and not self._test:
@@ -182,7 +199,7 @@ class FunctionDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'fnctn_hrdwr':
-            _error_code, _msg = self._dmx_fctn_hw_matrix.delete(
+            _error_code, _msg = self._dmx_fctn_hw_matrix.do_delete(
                 item_id, row=row)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
@@ -212,7 +229,7 @@ class FunctionDataController(RTKDataController):
         :rtype: bool
         """
         if matrix_type == 'fnctn_hrdwr':
-            _error_code, _msg = self._dmx_fctn_hw_matrix.update(
+            _error_code, _msg = self._dmx_fctn_hw_matrix.do_update(
                 revision_id, matrix_type)
         else:
             _error_code = 6

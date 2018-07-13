@@ -56,6 +56,7 @@ class RTKValidation(RTK_BASE):
     date_start = Column('fld_date_start', Date, default=date.today())
     description = Column('fld_description', BLOB, default='')
     measurement_unit = Column('fld_measurement_unit', String(256), default='')
+    name = Column('fld_name', String(256), default='')
     status = Column('fld_status', Float, default=0.0)
     task_type = Column('fld_type', String(256), default='')
     task_specification = Column(
@@ -103,6 +104,7 @@ class RTKValidation(RTK_BASE):
             'date_start': self.date_start,
             'description': self.description,
             'measurement_unit': self.measurement_unit,
+            'name': self.name,
             'status': self.status,
             'task_type': self.task_type,
             'task_specification': self.task_specification,
@@ -161,6 +163,8 @@ class RTKValidation(RTK_BASE):
                 none_to_default(attributes['description'], ''))
             self.measurement_unit = str(
                 none_to_default(attributes['measurement_unit'], ''))
+            self.name = str(
+                none_to_default(attributes['name'], ''))
             self.status = float(none_to_default(attributes['status'], 0.0))
             self.task_type = str(none_to_default(attributes['task_type'], ''))
             self.task_specification = str(

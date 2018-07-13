@@ -70,6 +70,18 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
         pub.subscribe(self._on_select_revision, 'selectedRevision')
 
+    def _do_request_create(self, __button):
+        """
+        Save the currently selected Validation:Requirement Matrix row.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_do_create(
+            self._revision_id, self._matrix_type)
+
     def _do_request_update(self, __button):
         """
         Save the currently selected Function:Hardware Matrix row.
@@ -82,7 +94,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         return self._dtc_data_controller.request_do_update_matrix(
             self._revision_id, self._matrix_type)
 
-    def _make_buttonbox(self, **kwargs):    # pylint: disable=unused-argument
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the buttonbox for the Function:Hardware Matrix View.
 
@@ -93,13 +105,10 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         _tooltips = [
             _(u"Save the Function:Hardware Matrix to the open RTK "
               u"Program database."),
+            _(u'Create or refresh the Function:Hardware Matrix.')
         ]
-        _callbacks = [
-            self._do_request_update,
-        ]
-        _icons = [
-            'save',
-        ]
+        _callbacks = [self._do_request_update, self._do_request_create]
+        _icons = ['save', 'save']
 
         _buttonbox = rtk.RTKBaseMatrix._make_buttonbox(
             self,
@@ -118,8 +127,8 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
         :param int revision_id: the Revision ID to select the Function:Hardware
                                 matrix for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self._revision_id = module_id
 
@@ -127,6 +136,8 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         (_matrix, _column_hdrs,
          _row_hdrs) = self._dtc_data_controller.request_do_select_all_matrix(
              self._revision_id, self._matrix_type)
+        if _matrix is not None:
+            rtk.RTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
+                                             _row_hdrs, _(u"Function"))
 
-        return rtk.RTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
-                                                _row_hdrs, _(u"Function"))
+        return None
