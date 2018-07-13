@@ -269,7 +269,7 @@ class RTKDataMatrix(object):
             _values = [0] * len(self.dtf_matrix.index)
 
             try:
-                self.dtf_matrix.do_insert(self.n_col, item_id, _values)
+                self.dtf_matrix.insert(self.n_col, item_id, _values)
                 self.n_col = len(self.dtf_matrix.columns)
             except ValueError:
                 _error_code = 6
