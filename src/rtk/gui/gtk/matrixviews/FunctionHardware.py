@@ -108,7 +108,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
             _(u'Create or refresh the Function:Hardware Matrix.')
         ]
         _callbacks = [self._do_request_update, self._do_request_create]
-        _icons = ['save', 'save']
+        _icons = ['save', 'view-refresh']
 
         _buttonbox = rtk.RTKBaseMatrix._make_buttonbox(
             self,

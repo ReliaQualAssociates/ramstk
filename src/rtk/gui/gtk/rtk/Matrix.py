@@ -50,7 +50,10 @@ class RTKBaseMatrix(object):
             'save':
             controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save.png',
             'save-all':
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save-all.png'
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save-all.png',
+            'view-refresh':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+            '/32x32/view-refresh.png',
         }
 
         # Initialize private list attributes.

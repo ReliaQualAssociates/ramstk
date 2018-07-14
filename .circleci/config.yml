@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps-{{ .Branch }}-{{ checksum "requirements_dev.txt" }}
       - run:
           name: Install PyGTK
           command: |
@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Install RTK runtime dependencies
           command: |
-            python -m venv venv
+            python -m virtualenv venv
             . venv/bin/activate
             pip install -U pip
             pip install -U setuptools>12.0

@@ -308,7 +308,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
         # New file button.
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Create a new RTK Project Database."))
+        _button.set_tooltip_text(_(u"Create a new RTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/new.png')
         _button.set_icon_widget(_image)
@@ -319,8 +319,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         # Connect button
         _button = gtk.ToolButton()
         _button.set_tooltip_text(
-            _(u"Connect to an existing RTK Project "
-              u"Database."))
+            _(u"Connect to an existing RTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
@@ -331,8 +330,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         # Delete button
         _button = gtk.ToolButton()
         _button.set_tooltip_text(
-            _(u"Deletes an existing RTK Program "
-              u"Database."))
+            _(u"Deletes an existing RTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/delete.png')
         _button.set_icon_widget(_image)
