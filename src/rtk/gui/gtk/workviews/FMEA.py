@@ -522,6 +522,7 @@ class FFMEA(FMEA):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedFunction')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
 
     def _do_change_row(self, treeview):
         """
@@ -602,6 +603,22 @@ class FFMEA(FMEA):
         treeview.handler_unblock(self._lst_handler_id[0])
 
         return _return
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        for _column in _columns:
+            self.treeview.remove_column(_column)
+
+        _model.clear()
+
+        return None
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
@@ -1002,6 +1019,7 @@ class DFMECA(FMEA):
         pub.subscribe(self._do_load_missions, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_load_missions, 'editedUsage')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
 
     def _do_change_row(self, treeview):
         """
@@ -1131,6 +1149,27 @@ class DFMECA(FMEA):
         treeview.handler_unblock(self._lst_handler_id[0])
 
         return _return
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        for _column in _columns:
+            self.treeview.remove_column(_column)
+
+        _model.clear()
+
+        self.chkCriticality.set_active(False)
+        self.chkRPN.set_active(False)
+        _buffer = self.txtItemCriticality.do_get_buffer()
+        _buffer.set_text('')
+
+        return None
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """

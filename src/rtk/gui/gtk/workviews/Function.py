@@ -107,6 +107,30 @@ class GeneralData(RTKWorkView):
 
         pub.subscribe(self._on_select, 'selectedFunction')
         pub.subscribe(self._on_edit, 'mvwEditedFunction')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.set_text('')
+        self.txtCode.handler_unblock(self._lst_handler_id[0])
+        self.txtName.handler_block(self._lst_handler_id[1])
+        self.txtName.set_text('')
+        self.txtName.handler_unblock(self._lst_handler_id[1])
+        _buffer = self.txtRemarks.do_get_buffer()
+        _buffer.handler_block(self._lst_handler_id[2])
+        _buffer.set_text('')
+        _buffer.handler_block(self._lst_handler_id[2])
+        self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
+        self.chkSafetyCritical.set_active(False)
+        self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
+
+        return None
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """

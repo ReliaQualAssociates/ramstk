@@ -37,7 +37,12 @@ class RTKType(RTK_BASE):
         :return: {type_id, description, type_type} pairs.
         :rtype: dict
         """
-        _attributes = {'type_id':self.type_id, 'code':self.code, 'description':self.description, 'type_type':self.type_type}
+        _attributes = {
+            'type_id': self.type_id,
+            'code': self.code,
+            'description': self.description,
+            'type_type': self.type_type
+        }
 
         return _attributes
 
@@ -56,7 +61,8 @@ class RTKType(RTK_BASE):
 
         try:
             self.code = str(none_to_default(attributes['code'], ''))
-            self.description = str(none_to_default(attributes['description'], ''))
+            self.description = str(
+                none_to_default(attributes['description'], ''))
             self.type_type = str(none_to_default(attributes['type_type'], ''))
         except KeyError as _err:
             _error_code = 40

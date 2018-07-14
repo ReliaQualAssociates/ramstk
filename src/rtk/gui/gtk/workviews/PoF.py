@@ -100,6 +100,23 @@ class PoF(RTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        for _column in _columns:
+            self.treeview.remove_column(_column)
+
+        _model.clear()
+
+        return None
 
     def _do_load_page(self, **kwargs):
         """

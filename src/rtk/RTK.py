@@ -231,10 +231,10 @@ class Model(object):
 
         return _error_code, _msg
 
-    def close_program(self):
+    def do_close_program(self):
         """Close the open RTK Program database."""
         self.program_dao.db_close()
-
+        print self.program_dao.engine, self.program_dao.session, self.program_dao.metadata, self.program_dao.database
         return None
 
     def save_program(self):
@@ -777,7 +777,7 @@ class RTK(object):
 
         return _return
 
-    def request_close_program(self):
+    def request_do_close_program(self):
         """
         Request the open RTK Program database be closed.
 
@@ -795,7 +795,10 @@ class RTK(object):
         if not self.__test:
             pub.sendMessage('closedProgram')
 
-        return self.rtk_model.close_program()
+        if not self.rtk_model.do_close_program():
+            self.loaded = False
+
+        return self.loaded
 
     def request_save_program(self):
         """

@@ -168,6 +168,60 @@ class GeneralData(RTKWorkView):
         pub.subscribe(self._on_select, 'selectedRequirement')
         pub.subscribe(self._on_edit, 'mvwEditedRequirement')
         pub.subscribe(self._on_edit, 'calculatedRequirement')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.set_text('')
+        self.txtCode.handler_unblock(self._lst_handler_id[0])
+
+        self.txtName.handler_block(self._lst_handler_id[1])
+        self.txtName.set_text('')
+        self.txtName.handler_unblock(self._lst_handler_id[1])
+
+        self.chkDerived.handler_block(self._lst_handler_id[3])
+        self.chkDerived.set_active(False)
+        self.chkDerived.handler_unblock(self._lst_handler_id[3])
+
+        self.cmbRequirementType.handler_block(self._lst_handler_id[2])
+        self.cmbRequirementType.set_active(0)
+        self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
+
+        self.txtSpecification.handler_block(self._lst_handler_id[4])
+        self.txtSpecification.set_text('')
+        self.txtSpecification.handler_unblock(self._lst_handler_id[4])
+
+        self.txtPageNum.handler_block(self._lst_handler_id[5])
+        self.txtPageNum.set_text('')
+        self.txtPageNum.handler_unblock(self._lst_handler_id[5])
+
+        self.txtFigNum.handler_block(self._lst_handler_id[6])
+        self.txtFigNum.set_text('')
+        self.txtFigNum.handler_unblock(self._lst_handler_id[6])
+
+        self.cmbPriority.handler_block(self._lst_handler_id[7])
+        self.cmbPriority.set_active(0)
+        self.cmbPriority.handler_unblock(self._lst_handler_id[7])
+
+        self.cmbOwner.handler_block(self._lst_handler_id[8])
+        self.cmbOwner.set_active(0)
+        self.cmbOwner.handler_unblock(self._lst_handler_id[8])
+
+        self.chkValidated.handler_block(self._lst_handler_id[9])
+        self.chkValidated.set_active(False)
+        self.chkValidated.handler_unblock(self._lst_handler_id[9])
+
+        self.txtValidatedDate.handler_block(self._lst_handler_id[10])
+        self.txtValidatedDate.set_text('')
+        self.txtValidatedDate.handler_unblock(self._lst_handler_id[10])
+
+        return None
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -680,6 +734,27 @@ class RequirementAnalysis(RTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedRequirement')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        for _treeview in [
+                self.tvwClear, self.tvwComplete, self.tvwConsistent,
+                self.tvwVerifiable
+        ]:
+            _model = _treeview.get_model()
+            _columns = _treeview.get_columns()
+            for _column in _columns:
+                _treeview.remove_column(_column)
+
+            _model.clear()
+
+        return None
 
     def _do_request_update(self, __button):
         """

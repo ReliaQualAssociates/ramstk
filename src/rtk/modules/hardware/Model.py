@@ -13,7 +13,7 @@ from treelib.exceptions import DuplicatedNodeIdError
 from rtk.analyses.prediction import Component
 from rtk.modules import RTKDataModel
 from rtk.dao import (RTKHardware, RTKDesignElectric, RTKDesignMechanic,
-    RTKMilHdbkF, RTKNSWC, RTKReliability)
+                     RTKMilHdbkF, RTKNSWC, RTKReliability)
 
 
 class HardwareBoMDataModel(RTKDataModel):

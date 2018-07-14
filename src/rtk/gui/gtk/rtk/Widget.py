@@ -13,7 +13,7 @@ import gettext
 # Modules required for the GUI.
 # Disable the unused-import because pango, pygtk, gtk, and gobject are all
 # imported from this module by all the other GUI modules.
-import pango                # pylint: disable=unused-import
+import pango  # pylint: disable=unused-import
 try:
     import pygtk
     pygtk.require('2.0')
@@ -24,7 +24,7 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    import gobject          # pylint: disable=unused-import
+    import gobject  # pylint: disable=unused-import
 except ImportError:
     sys.exit(1)
 

@@ -6,8 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Revision Work View."""
 
-import locale
-
 from pubsub import pub
 
 # Import other RTK modules.
@@ -69,10 +67,10 @@ class GeneralData(RTKWorkView):
         self.txtCode = rtk.RTKEntry(
             width=125, tooltip=_(u"A unique code for the selected revision."))
         self.txtName = rtk.RTKEntry(
-            width=800, tooltip=_(u"The name of the selected revision."))
+            width=600, tooltip=_(u"The name of the selected revision."))
         self.txtRemarks = rtk.RTKTextView(
             gtk.TextBuffer(),
-            width=400,
+            width=600,
             tooltip=_(u"Enter any remarks associated with the "
                       u"selected revision."))
 
@@ -89,6 +87,27 @@ class GeneralData(RTKWorkView):
 
         pub.subscribe(self._on_select, 'selectedRevision')
         pub.subscribe(self._on_edit, 'mvwEditedRevision')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtName.handler_block(self._lst_handler_id[0])
+        self.txtName.set_text('')
+        self.txtName.handler_unblock(self._lst_handler_id[0])
+        _buffer = self.txtRemarks.do_get_buffer()
+        _buffer.handler_block(self._lst_handler_id[1])
+        _buffer.set_text('')
+        _buffer.handler_block(self._lst_handler_id[1])
+        self.txtCode.handler_block(self._lst_handler_id[2])
+        self.txtCode.set_text('')
+        self.txtCode.handler_unblock(self._lst_handler_id[2])
+
+        return None
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -102,16 +121,16 @@ class GeneralData(RTKWorkView):
         _revision = self._dtc_data_controller.request_do_select(
             self._revision_id)
 
-        self.txtTotalCost.set_text(str(locale.currency(_revision.cost)))
-        self.txtCostFailure.set_text(
-            str(locale.currency(_revision.cost_failure)))
-        self.txtCostHour.set_text(str(locale.currency(_revision.cost_hour)))
-        self.txtName.set_text(_revision.name)
-        _buffer = self.txtRemarks.do_get_buffer()
-        _buffer.set_text(_revision.remarks)
-        self.txtPartCount.set_text(
-            str('{0:0.0f}'.format(_revision.total_part_count)))
+        self.txtCode.handler_block(self._lst_handler_id[2])
         self.txtCode.set_text(str(_revision.revision_code))
+        self.txtCode.handler_unblock(self._lst_handler_id[2])
+        self.txtName.handler_block(self._lst_handler_id[0])
+        self.txtName.set_text(_revision.name)
+        self.txtName.handler_unblock(self._lst_handler_id[0])
+        _buffer = self.txtRemarks.do_get_buffer()
+        _buffer.handler_block(self._lst_handler_id[1])
+        _buffer.set_text(_revision.remarks)
+        _buffer.handler_unblock(self._lst_handler_id[1])
 
         return _return
 

@@ -281,6 +281,94 @@ class GeneralData(RTKWorkView):
         pub.subscribe(self._on_select, 'selectedValidation')
         pub.subscribe(self._on_select, 'calculatedValidation')
         pub.subscribe(self._on_edit, 'mvwEditedValidation')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtID.set_text('')
+
+        _buffer = self.txtTask.do_get_buffer()
+        _buffer.handler_block(self._lst_handler_id[0])
+        _buffer.set_text('')
+        _buffer.handler_unblock(self._lst_handler_id[0])
+
+        self.cmbTaskType.handler_block(self._lst_handler_id[1])
+        self.cmbTaskType.set_active(0)
+        self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
+
+        self.txtSpecification.handler_block(self._lst_handler_id[2])
+        self.txtSpecification.set_text('')
+        self.txtSpecification.handler_unblock(self._lst_handler_id[2])
+
+        self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
+        self.cmbMeasurementUnit.set_active(0)
+        self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
+
+        self.txtMinAcceptable.handler_block(self._lst_handler_id[4])
+        self.txtMinAcceptable.set_text('')
+        self.txtMinAcceptable.handler_unblock(self._lst_handler_id[4])
+
+        self.txtMeanAcceptable.handler_block(self._lst_handler_id[5])
+        self.txtMeanAcceptable.set_text('')
+        self.txtMeanAcceptable.handler_unblock(self._lst_handler_id[5])
+
+        self.txtMaxAcceptable.handler_block(self._lst_handler_id[6])
+        self.txtMaxAcceptable.set_text('')
+        self.txtMaxAcceptable.handler_unblock(self._lst_handler_id[6])
+
+        self.txtVarAcceptable.handler_block(self._lst_handler_id[7])
+        self.txtVarAcceptable.set_text('')
+        self.txtVarAcceptable.handler_unblock(self._lst_handler_id[7])
+
+        self.txtStartDate.handler_block(self._lst_handler_id[8])
+        self.txtStartDate.set_text('')
+        self.txtStartDate.handler_unblock(self._lst_handler_id[8])
+
+        self.txtEndDate.handler_block(self._lst_handler_id[9])
+        self.txtEndDate.set_text('')
+        self.txtEndDate.handler_unblock(self._lst_handler_id[9])
+
+        self.spnStatus.handler_block(self._lst_handler_id[10])
+        self.spnStatus.set_value(0.0)
+        self.spnStatus.handler_unblock(self._lst_handler_id[10])
+
+        self.txtMinTime.handler_block(self._lst_handler_id[11])
+        self.txtMinTime.set_text('')
+        self.txtMinTime.handler_unblock(self._lst_handler_id[11])
+
+        self.txtExpTime.handler_block(self._lst_handler_id[12])
+        self.txtExpTime.set_text('')
+        self.txtExpTime.handler_unblock(self._lst_handler_id[12])
+
+        self.txtMaxTime.handler_block(self._lst_handler_id[13])
+        self.txtMaxTime.set_text('')
+        self.txtMaxTime.handler_unblock(self._lst_handler_id[13])
+
+        self.txtMinCost.handler_block(self._lst_handler_id[14])
+        self.txtMinCost.set_text('')
+        self.txtMinCost.handler_unblock(self._lst_handler_id[14])
+
+        self.txtExpCost.handler_block(self._lst_handler_id[15])
+        self.txtExpCost.set_text('')
+        self.txtExpCost.handler_unblock(self._lst_handler_id[15])
+
+        self.txtMaxCost.handler_block(self._lst_handler_id[16])
+        self.txtMaxCost.set_text('')
+        self.txtMaxCost.handler_unblock(self._lst_handler_id[16])
+
+        self.txtMeanTimeLL.set_text('')
+        self.txtMeanTime.set_text('')
+        self.txtMeanTimeUL.set_text('')
+        self.txtMeanCostLL.set_text('')
+        self.txtMeanCost.set_text('')
+        self.txtMeanCostUL.set_text('')
+
+        return None
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -1044,6 +1132,20 @@ class BurndownCurve(RTKWorkView):
 
         pub.subscribe(self._on_select, 'selectedValidation')
         pub.subscribe(self._do_request_plot, 'calculatedProgram')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.burndown.axis.cla()
+        self.burndown.figure.clf()
+        self.burndown.plot.draw()
+
+        return None
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
