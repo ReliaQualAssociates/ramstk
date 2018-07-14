@@ -144,6 +144,29 @@ class Allocation(RTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        for _column in _columns:
+            self.treeview.remove_column(_column)
+
+        _model.clear()
+
+        self.cmbAllocationMethod.set_active(0)
+        self.cmbAllocationGoal.set_active(0)
+        self.txtHazardRateGoal.set_text('')
+        self.txtMTBFGoal.set_text('')
+        self.txtReliabilityGoal.set_text('')
+
+        return None
 
     def _do_change_row(self, treeview):
         """
@@ -288,8 +311,7 @@ class Allocation(RTKWorkView):
                                       "{0:s} for Hardware ID {1:s} is the "
                                       "wrong type for one or more "
                                       "columns.".format(
-                                          str(_node_id),
-                                          str(self._parent_id)))
+                                          str(_node_id), str(self._parent_id)))
                     except ValueError:
                         _error_code = 1
                         _user_msg = _(u"One or more Allocation line items was "
@@ -298,8 +320,7 @@ class Allocation(RTKWorkView):
                         _debug_msg = ("RTK ERROR: Too few fields for "
                                       "Allocation ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
-                                          str(_node_id),
-                                          str(self._parent_id)))
+                                          str(_node_id), str(self._parent_id)))
                 except AttributeError:
                     if _node_id != 0:
                         _error_code = 1
@@ -309,8 +330,7 @@ class Allocation(RTKWorkView):
                         _debug_msg = ("RTK ERROR: There is no data package "
                                       "for Allocation ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
-                                          str(_node_id),
-                                          str(self._parent_id)))
+                                          str(_node_id), str(self._parent_id)))
 
         return (_error_code, _user_msg, _debug_msg)
 

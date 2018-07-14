@@ -16,8 +16,8 @@ from rtk.gui.gtk.workviews import wvwFFMEA, wvwDFMECA
 from rtk.gui.gtk.workviews import wvwHazOps
 from rtk.gui.gtk.workviews import wvwPoF
 from rtk.gui.gtk.workviews import wvwSimilarItem
-from rtk.gui.gtk.workviews import wvwFunctionGD, wvwFunctionAR
-from rtk.gui.gtk.workviews import wvwRevisionGD, wvwRevisionAR
+from rtk.gui.gtk.workviews import wvwFunctionGD
+from rtk.gui.gtk.workviews import wvwRevisionGD
 from rtk.gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
 from rtk.gui.gtk.workviews import wvwHardwareGD, wvwHardwareAI, wvwHardwareAR
 from rtk.gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
@@ -44,12 +44,12 @@ class WorkBook(RTKBook):
 
         # Initialize public dictionary attributes.
         self.dic_work_views = {
-            'revision': [wvwRevisionGD(controller),
-                         wvwRevisionAR(controller)],
+            'revision': [
+                wvwRevisionGD(controller),
+            ],
             'function': [
                 wvwFunctionGD(controller),
                 wvwFFMEA(controller),
-                wvwFunctionAR(controller)
             ],
             'requirement':
             [wvwRequirementGD(controller),

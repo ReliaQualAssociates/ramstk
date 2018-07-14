@@ -11,6 +11,7 @@ import gettext
 from sqlalchemy import create_engine, exc, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 # Import tables objects for the RTK Common database.
 from .RTKCommonDB import create_common_db
@@ -81,8 +82,12 @@ class DAO(object):
         :rtype: bool
         """
         self.session.close()
+        self.RTK_SESSION.close_all()
         self.engine.dispose()
+        self.session = None
+        self.engine = None
         self.metadata = None
+        self.database = None
 
         return False
 

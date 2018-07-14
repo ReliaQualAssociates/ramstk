@@ -131,6 +131,27 @@ class SimilarItem(RTKWorkView):
         #pub.subscribe(self._do_refresh_view, 'calculatedSimilarItem')
         #pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedHardware')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        for _column in _columns:
+            self.treeview.remove_column(_column)
+
+        _model.clear()
+
+        self.cmbSimilarItemMethod.handler_block(self._lst_handler_id[2])
+        self.cmbSimilarItemMethod.set_active(0)
+        self.cmbSimilarItemMethod.handler_unblock(self._lst_handler_id[2])
+
+        return None
 
     def _do_change_row(self, treeview):
         """

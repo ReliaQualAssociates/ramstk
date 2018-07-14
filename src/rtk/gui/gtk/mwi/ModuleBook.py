@@ -142,6 +142,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
         pub.subscribe(self._on_request_open, 'requestOpen')
         pub.subscribe(self._on_open, 'openedProgram')
+        pub.subscribe(self._on_close, 'closedProgram')
 
     def _make_menu(self):
         """
@@ -177,7 +178,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu.append(_menu_item)
 
         _menu_item = gtk.MenuItem(label=_(u"_Close"), use_underline=True)
-        _menu_item.connect('activate', self._request_close_project)
+        _menu_item.connect('activate', self._do_request_close_project)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
@@ -401,6 +402,19 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
         return _return
 
+    def _on_close(self):
+        """
+        Update the Modules Views when a RTK Program database is closed.
+
+        :return: None
+        :rtype: None
+        """
+        for _moduleview in self._lst_module_views:
+            _model = _moduleview[0].treeview.get_model()
+            _model.clear()
+
+        return None
+
     def _on_open(self):
         """
         Update the status bar and clear the progress bar.
@@ -492,7 +506,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
         return False
 
-    def _request_close_project(self, __widget):
+    def _do_request_close_project(self, __widget):
         """
         Request to close the open RTK Program.
 
@@ -500,6 +514,6 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._mdcRTK.close_project()
+        self._mdcRTK.request_do_close_program()
 
         return False

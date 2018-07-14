@@ -322,6 +322,108 @@ class GeneralData(RTKWorkView):
         pub.subscribe(self._do_load_subcategory, 'changedCategory')
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._on_edit, 'mvwEditedHardware')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbCategory.set_active(0)
+        self.cmbSubcategory.handler_block(self._lst_handler_id[5])
+        self.cmbSubcategory.set_active(0)
+        self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
+
+        self.chkRepairable.handler_block(self._lst_handler_id[0])
+        self.chkRepairable.set_active(False)
+        self.chkRepairable.handler_unblock(self._lst_handler_id[0])
+
+        self.chkTagged.handler_block(self._lst_handler_id[1])
+        self.chkTagged.set_active(False)
+        self.chkTagged.handler_unblock(self._lst_handler_id[1])
+
+        self.cmbCostType.handler_block(self._lst_handler_id[3])
+        self.cmbCostType.set_active(0)
+        self.cmbCostType.handler_unblock(self._lst_handler_id[3])
+
+        self.cmbManufacturer.handler_block(self._lst_handler_id[4])
+        self.cmbManufacturer.set_active(0)
+        self.cmbManufacturer.handler_unblock(self._lst_handler_id[4])
+
+        self.txtAltPartNum.handler_block(self._lst_handler_id[6])
+        self.txtAltPartNum.set_text('')
+        self.txtAltPartNum.handler_unblock(self._lst_handler_id[6])
+
+        _textbuffer = self.txtAttachments.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[7])
+        _textbuffer.set_text('')
+        _textbuffer.handler_unblock(self._lst_handler_id[7])
+
+        self.txtCAGECode.handler_block(self._lst_handler_id[8])
+        self.txtCAGECode.set_text('')
+        self.txtCAGECode.handler_unblock(self._lst_handler_id[8])
+
+        self.txtCompRefDes.handler_block(self._lst_handler_id[9])
+        self.txtCompRefDes.set_text('')
+        self.txtCompRefDes.handler_unblock(self._lst_handler_id[9])
+
+        self.txtCost.handler_block(self._lst_handler_id[10])
+        self.txtCost.set_text('')
+        self.txtCost.handler_unblock(self._lst_handler_id[10])
+
+        _textbuffer = self.txtDescription.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[11])
+        _textbuffer.set_text('')
+        _textbuffer.handler_unblock(self._lst_handler_id[11])
+
+        self.txtFigureNumber.handler_block(self._lst_handler_id[12])
+        self.txtFigureNumber.set_text('')
+        self.txtFigureNumber.handler_unblock(self._lst_handler_id[12])
+
+        self.txtLCN.handler_block(self._lst_handler_id[13])
+        self.txtLCN.set_text('')
+        self.txtLCN.handler_unblock(self._lst_handler_id[13])
+
+        self.txtName.handler_block(self._lst_handler_id[14])
+        self.txtName.set_text('')
+        self.txtName.handler_unblock(self._lst_handler_id[14])
+
+        self.txtNSN.handler_block(self._lst_handler_id[15])
+        self.txtNSN.set_text('')
+        self.txtNSN.handler_unblock(self._lst_handler_id[15])
+
+        self.txtPageNumber.handler_block(self._lst_handler_id[16])
+        self.txtPageNumber.set_text('')
+        self.txtPageNumber.handler_unblock(self._lst_handler_id[16])
+
+        self.txtPartNumber.handler_block(self._lst_handler_id[17])
+        self.txtPartNumber.set_text('')
+        self.txtPartNumber.handler_unblock(self._lst_handler_id[17])
+
+        self.txtQuantity.handler_block(self._lst_handler_id[18])
+        self.txtQuantity.set_text('')
+        self.txtQuantity.handler_unblock(self._lst_handler_id[18])
+
+        self.txtRefDes.handler_block(self._lst_handler_id[19])
+        self.txtRefDes.set_text('')
+        self.txtRefDes.handler_unblock(self._lst_handler_id[19])
+
+        _textbuffer = self.txtRemarks.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[20])
+        _textbuffer.set_text('')
+        _textbuffer.handler_unblock(self._lst_handler_id[20])
+
+        self.txtSpecification.handler_block(self._lst_handler_id[21])
+        self.txtSpecification.set_text('')
+        self.txtSpecification.handler_unblock(self._lst_handler_id[21])
+
+        self.txtYearMade.handler_block(self._lst_handler_id[22])
+        self.txtYearMade.set_text('')
+        self.txtYearMade.handler_unblock(self._lst_handler_id[22])
+
+        return None
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -1202,6 +1304,95 @@ class AssessmentInputs(RTKWorkView):
 
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._on_edit, 'mvwEditedHardware')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtDutyCycle.handler_block(self._lst_handler_id[16])
+        self.txtDutyCycle.set_text('')
+        self.txtDutyCycle.handler_unblock(self._lst_handler_id[16])
+
+        self.txtMissionTime.handler_block(self._lst_handler_id[17])
+        self.txtMissionTime.set_text('')
+        self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
+
+        # Clear the component-specific gtk.ScrolledWindow()s.
+        for _child in self.scwDesignRatings.get_children():
+            self.scwDesignRatings.remove(_child)
+
+        for _child in self.scwOperatingStress.get_children():
+            self.scwOperatingStress.remove(_child)
+
+        self.cmbActiveEnviron.handler_block(self._lst_handler_id[0])
+        self.cmbActiveEnviron.set_active(0)
+        self.cmbActiveEnviron.handler_unblock(self._lst_handler_id[0])
+
+        self.cmbDormantEnviron.handler_block(self._lst_handler_id[1])
+        self.cmbDormantEnviron.set_active(0)
+        self.cmbDormantEnviron.handler_unblock(self._lst_handler_id[1])
+
+        self.txtActiveTemp.handler_block(self._lst_handler_id[5])
+        self.txtActiveTemp.set_text('')
+        self.txtActiveTemp.handler_unblock(self._lst_handler_id[5])
+
+        self.txtDormantTemp.handler_block(self._lst_handler_id[7])
+        self.txtDormantTemp.set_text('')
+        self.txtDormantTemp.handler_unblock(self._lst_handler_id[7])
+
+        self.cmbFailureDist.handler_block(self._lst_handler_id[2])
+        self.cmbFailureDist.set_active(0)
+        self.cmbFailureDist.handler_unblock(self._lst_handler_id[2])
+
+        self.cmbHRType.handler_block(self._lst_handler_id[3])
+        self.cmbHRType.set_active(0)
+        self.cmbHRType.handler_unblock(self._lst_handler_id[3])
+
+        self.cmbHRMethod.handler_block(self._lst_handler_id[4])
+        self.cmbHRMethod.set_active(0)
+        self.cmbHRMethod.handler_unblock(self._lst_handler_id[4])
+
+        self.txtAddAdjFactor.handler_block(self._lst_handler_id[6])
+        self.txtAddAdjFactor.set_text('')
+        self.txtAddAdjFactor.handler_unblock(self._lst_handler_id[6])
+
+        self.txtFailScale.handler_block(self._lst_handler_id[8])
+        self.txtFailScale.set_text('')
+        self.txtFailScale.handler_unblock(self._lst_handler_id[8])
+
+        self.txtFailShape.handler_block(self._lst_handler_id[9])
+        self.txtFailShape.set_text('')
+        self.txtFailShape.handler_unblock(self._lst_handler_id[9])
+
+        self.txtFailLocation.handler_block(self._lst_handler_id[10])
+        self.txtFailLocation.set_text('')
+        self.txtFailLocation.handler_unblock(self._lst_handler_id[10])
+
+        self.txtMultAdjFactor.handler_block(self._lst_handler_id[11])
+        self.txtMultAdjFactor.set_text('')
+        self.txtMultAdjFactor.handler_unblock(self._lst_handler_id[11])
+
+        self.txtSpecifiedHt.handler_block(self._lst_handler_id[12])
+        self.txtSpecifiedHt.set_text('')
+        self.txtSpecifiedHt.handler_unblock(self._lst_handler_id[12])
+
+        self.txtSpecifiedHtVar.handler_block(self._lst_handler_id[13])
+        self.txtSpecifiedHtVar.set_text('')
+        self.txtSpecifiedHtVar.handler_unblock(self._lst_handler_id[13])
+
+        self.txtSpecifiedMTBF.handler_block(self._lst_handler_id[14])
+        self.txtSpecifiedMTBF.set_text('')
+        self.txtSpecifiedMTBF.handler_unblock(self._lst_handler_id[14])
+
+        self.txtSpecifiedMTBFVar.handler_block(self._lst_handler_id[15])
+        self.txtSpecifiedMTBFVar.set_text('')
+        self.txtSpecifiedMTBFVar.handler_unblock(self._lst_handler_id[15])
+
+        return None
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -2183,6 +2374,50 @@ class AssessmentResults(RTKWorkView):
 
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_load_page, 'calculatedHardware')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def _do_clear_page(self):
+        """
+        Clear the contents of the page.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtTotalCost.set_text('')
+        self.txtCostFailure.set_text('')
+        self.txtCostHour.set_text('')
+        self.txtPartCount.set_text('')
+        self.txtActiveHt.set_text('')
+        self.txtActiveHtVar.set_text('')
+        self.txtDormantHt.set_text('')
+        self.txtDormantHtVar.set_text('')
+        self.txtSoftwareHt.set_text('')
+        self.txtPercentHt.set_text('')
+        self.txtLogisticsAt.set_text('')
+        self.txtLogisticsAtVar.set_text('')
+        self.txtLogisticsHt.set_text('')
+        self.txtLogisticsHtVar.set_text('')
+        self.txtLogisticsMTBF.set_text('')
+        self.txtLogisticsMTBFVar.set_text('')
+        self.txtLogisticsRt.set_text('')
+        self.txtLogisticsRtVar.set_text('')
+        self.txtMissionAt.set_text('')
+        self.txtMissionAtVar.set_text('')
+        self.txtMissionHt.set_text('')
+        self.txtMissionHtVar.set_text('')
+        self.txtMissionMTBF.set_text('')
+        self.txtMissionMTBFVar.set_text('')
+        self.txtMissionRt.set_text('')
+        self.txtMissionRtVar.set_text('')
+
+        # Clear the component-specific gtk.ScrolledWindow()s.
+        for _child in self.scwReliability.get_children():
+            self.scwReliability.remove(_child)
+
+        for _child in self.scwStress.get_children():
+            self.scwStress.remove(_child)
+
+        return None
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """

@@ -100,6 +100,30 @@ class ListBook(RTKBook):
         self.show_all()
 
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
+        pub.subscribe(self._on_close, 'closedProgram')
+
+    def _on_close(self):
+        """
+        Update the Modules Views when a RTK Program database is closed.
+
+        :return: None
+        :rtype: None
+        """
+        for _key in self.dic_list_view:
+            for _listview in self.dic_list_view[_key]:
+                try:
+                    _view = _listview.treeview
+                except AttributeError:
+                    _view = _listview.matrix
+
+                _model = _view.get_model()
+                _columns = _view.get_columns()
+                for _column in _columns:
+                    _view.remove_column(_column)
+
+                _model.clear()
+
+        return None
 
     def _on_module_change(self, module=''):
         """
