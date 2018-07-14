@@ -479,7 +479,7 @@ class Configuration(object):
         :rtype: bool
         """
         import glob
-        from distutils import dir_util, file_util   # pylint: disable=no-name-in-module
+        from distutils import dir_util, file_util  # pylint: disable=no-name-in-module
 
         _return = False
 

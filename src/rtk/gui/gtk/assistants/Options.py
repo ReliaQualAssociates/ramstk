@@ -1159,15 +1159,15 @@ class Options(gtk.Window):  # pylint: disable=R0902
 
         if self.rdoMeasurement.get_active():
             _query = "DELETE FROM tbl_measurement_units \
-                      WHERE fld_measurement_id=%d"                                                                                                                                                                                                                                                           % \
+                      WHERE fld_measurement_id=%d"                                                                                                                                                                                                                                                                                                             % \
                      _model.get_value(_row, 0)
         elif self.rdoRequirementTypes.get_active():
             _query = "DELETE FROM tbl_requirement_type \
-                      WHERE fld_requirement_type_id=%d"                                                                                                                                                                                                                                                                                    % \
+                      WHERE fld_requirement_type_id=%d"                                                                                                                                                                                                                                                                                                                                           % \
                      _model.get_value(_row, 0)
         elif self.rdoVandVTasks.get_active():
             _query = "DELETE tbl_validation_type \
-                      WHERE fld_validation_type_id=%d"                                                                                                                                                                                                                                                                               % \
+                      WHERE fld_validation_type_id=%d"                                                                                                                                                                                                                                                                                                                                     % \
                      _model.get_value(_row, 0)
         elif self.rdoUsers.get_active():
             Widgets.rtk_information(

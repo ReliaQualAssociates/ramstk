@@ -120,8 +120,8 @@ class AllocationDataModel(RTKDataModel):
                 _error_code = 1
                 _msg = ('RTK ERROR: Node ID {0:s} already exists in the '
                         'Allocation tree for Hardware ID {1:s}').format(
-                             str(_allocation.hardware_id),
-                             str(_allocation.parent_id))
+                            str(_allocation.hardware_id),
+                            str(_allocation.parent_id))
 
         return _error_code, _msg
 

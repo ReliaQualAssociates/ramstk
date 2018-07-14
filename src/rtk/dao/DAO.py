@@ -123,7 +123,7 @@ class DAO(object):
         except (IOError, exc.SQLAlchemyError, exc.DBAPIError,
                 exc.OperationalError):
             return True
-        except ArgumentError:   # pylint: disable=undefined-variable
+        except ArgumentError:  # pylint: disable=undefined-variable
             print "Bad common database URI: {0:s}".format(database)
             return True
 
@@ -142,7 +142,7 @@ class DAO(object):
         except (IOError, exc.SQLAlchemyError, exc.DBAPIError,
                 exc.OperationalError):
             return True
-        except ArgumentError:   # pylint: disable=undefined-variable
+        except ArgumentError:  # pylint: disable=undefined-variable
             print "Bad program database URI: {0:s}".format(database)
             return True
 

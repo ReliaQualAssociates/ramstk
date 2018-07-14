@@ -566,6 +566,7 @@ class ModuleView(RTKModuleView):
         :return: None
         :rtype: None
         """
+
         def _load_row(model, __path, row, self):
             """
             Load the row associated with node_id.

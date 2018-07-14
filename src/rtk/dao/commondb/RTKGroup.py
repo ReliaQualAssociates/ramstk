@@ -40,7 +40,11 @@ class RTKGroup(RTK_BASE):
         :return: {workgroup_id, description, group_type} pairs
         :rtype: dict
         """
-        _attributes = {'group_id':self.group_id, 'description':self.description, 'group_type':self.group_type}
+        _attributes = {
+            'group_id': self.group_id,
+            'description': self.description,
+            'group_type': self.group_type
+        }
 
         return _attributes
 
@@ -59,8 +63,10 @@ class RTKGroup(RTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'], 'Group Description'))
-            self.group_type = str(none_to_default(attributes['group_type'], ''))
+                none_to_default(attributes['description'],
+                                'Group Description'))
+            self.group_type = str(
+                none_to_default(attributes['group_type'], ''))
         except KeyError as _err:
             _error_code = 40
             _msg = ("RTK ERROR: Missing attribute {0:s} in attribute "

@@ -153,7 +153,8 @@ class RevisionDataModel(RTKDataModel):
         for _node in self.tree.all_nodes():
             print _node
             try:
-                _error_code, _debug_msg = self.do_update(_node.data.revision_id)
+                _error_code, _debug_msg = self.do_update(
+                    _node.data.revision_id)
                 _msg = _msg + _debug_msg + '\n'
             except AttributeError:
                 _error_code = 1

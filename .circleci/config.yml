@@ -15,13 +15,15 @@ jobs:
       - run:
           name: Install PyGTK
           command: |
+            python -m virtualenv venv
+            . venv/bin/activate
             echo "Installing PyGTK"
             sudo apt-get update
             sudo apt-get install -yqq python-gtk2 python-gtk2-dev
       - run:
           name: Install RTK runtime dependencies
           command: |
-            python -m virtualenv venv
+            echo "Installing RTK Development and Runtime Dependencies"
             . venv/bin/activate
             pip install -U pip
             pip install -U setuptools>12.0
@@ -40,6 +42,7 @@ jobs:
       - run:
           name: Test RTK
           command: |
+            echo "Executing RTK Test Suite"
             . venv/bin/activate
             python setup.py test
 
