@@ -1,8 +1,11 @@
-# Contributing to the Reliability ToolKit (RTK)
+# Contributing to The RAMS ToolKit (RAMSTK)
 
 Thank you for taking the time to contribute!
 
-The following is a set of guidelines for contributing to RTK, which is hosted in the [RTK repository](https://github.com/weibullguy/rtk) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to RAMSTK, which is
+hosted in the [RAMSTK repository](https://github.com/weibullguy/rtk) on GitHub.
+These are mostly guidelines, not rules. Use your best judgment, and feel free
+to propose changes to this document in a pull request.
 
 [How Can I Contribute?](#how-can-i-contribute)
   * [Reporting Bugs](#reporting-bugs)
@@ -13,7 +16,7 @@ The following is a set of guidelines for contributing to RTK, which is hosted in
 
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for RTK. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
+This section guides you through submitting a bug report for RAMSTK. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
 
 > **Note:** If you find a **Closed** issue that seems like it is the same thing that you're experiencing, open a new issue and include a link to the original issue in the body of your new one.
 
@@ -25,24 +28,49 @@ This section guides you through submitting a bug report for RTK. Following these
 
 Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/).
 
-Explain the problem and include additional details to help maintainers reproduce the problem:
+Explain the problem and include additional details to help maintainers
+reproduce the problem.  An issue template is provided to assist you in filing
+good reports.
 
 * **Use a clear and descriptive title** for the issue to identify the problem.
-* **Describe the exact steps which reproduce the problem** in as many details as possible; **don't just say what you did, but explain how you did it**. For example, if you moved the cursor to the end of a line, explain if you used the mouse, or a keyboard shortcut.
-* **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples. If you're providing snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
-* **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
-* **Explain which behavior you expected to see instead and why.**
-* **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem.  You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
-* **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened.
+* **Explain which behavior you expected to see instead and why.**  At a minimum
+  fill in the user story template in the **Expected Behavior** section of the
+  issue template.
 
-Include details about your configuration and environment:
+  As a <type of RAMSTK user>, I want <state a goal> so that <some reason>.
 
-* **Which version of RTK are you using?**
-* **What's the name and version of the OS you're using**?
+  Additional details should be added below the completed user story.  The user
+  story will be translated into an engineering specification and, if necessary,
+  decomposed into additional user stories.
+* **Describe the behavior you actually observed** and point out what exactly is
+  the problem with that behavior.
+* **Describe the exact steps which reproduce the problem** in as many details
+  as possible; **don't just say what you did, but explain how you did it**. For
+  example, if you moved the cursor to the end of a line, explain if you used
+  the mouse, or a keyboard shortcut.
+* **If the problem wasn't triggered by a specific action**, describe what you
+  were doing before the problem happened.
+* **Provide specific examples to demonstrate the steps**. Include links to
+  files or GitHub projects, or copy/pasteable snippets, which you use in those
+  examples. If you're providing snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
+* **Include screenshots and animated GIFs** which show you following the
+  described steps and clearly demonstrate the problem.  You can use
+  [this tool](https://www.cockos.com/licecap/) to record GIFs on Windows, and
+  [this tool](https://github.com/colinkeenan/silentcast) or
+  [this tool](https://github.com/GNOME/byzanz) on Linux.
+* Include details requested in the issue template about your configuration and
+  environment.  You can execute something such as the following to get the
+  required run-time package versions for the list above.  You will need a copy
+  of the requirements_run.txt file in the repository.
+
+    `for file in $(cat requirements.txt | cut -d '=' -f1);
+        do version=$(pip show $file | grep Version: | cut -d ':' -f2-);
+        echo $file ==$version;
+     done`
 
 ### Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for RTK, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
+This section guides you through submitting an enhancement suggestion for RAMSTK, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
 
 Before creating enhancement suggestions, please check [this list](#before-submitting-an-enhancement-suggestion) as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion).
 
@@ -54,12 +82,27 @@ Before creating enhancement suggestions, please check [this list](#before-submit
 
 Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/).
 
-* **Use a clear and descriptive title** for the issue to identify the suggestion.
-* **Provide a step-by-step description of the suggested enhancement** in as many details as possible.
-* **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets which you use in those examples, as [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
-* **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
-* **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of RTK which the suggestion is related to. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
-* **Explain why this enhancement would be useful** to most RTK users.
+* **Use a clear and descriptive title** for the issue to identify the
+  suggestion.
+* **Provide a step-by-step description of the suggested enhancement** in as
+  many details as possible.  At a minimum fill in the user story template in
+  the **Expected Behavior** section of the issue template.
+
+  As a <type of RAMSTK user>, I want <state a goal> so that <some reason>.
+
+  Additional details should be added below the completed user story.  The user
+  story will be translated into an engineering specification and, if necessary,
+  decomposed into additional user stories.
+* **Provide specific examples to demonstrate the steps**. Include
+  copy/pasteable snippets which you use in those examples, as [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
+* **Describe the current behavior** and **explain which behavior you expected
+  to see instead** and why.
+* **Include screenshots and animated GIFs** which help you demonstrate the
+  steps or point out the part of RAMSTK which the suggestion is related to. You
+  can use [this tool](https://www.cockos.com/licecap/) to record GIFs on
+  Windows, and [this tool](https://github.com/colinkeenan/silentcast) or
+  [this tool](https://github.com/GNOME/byzanz) on Linux.
+* **Explain why this enhancement would be useful** to most RAMSTK users.
 
 ### Pull Requests
 
@@ -73,20 +116,24 @@ Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com
 
 ### Git Commit Messages
 
-* Use the present tense
-* Use the imperative mood
-* Limit the first line to 72 characters or less
-* Reference pull requests and issues after the first line
+* Use the present tense.
+* Use the imperative mood.
+* Limit the first line to 72 characters or less.
+* Reference pull requests and issues after the first line.
 
 ### Guidelines
 
 #### Never Commit Code That Doesn't Have a Test
 
-And make sure the test(s) pass before committing.  If you add functionality of RTK, there should be one or more tests for the new functionality.  There should be a test to ensure the new code works with good inputs.
+And make sure the test(s) pass before committing.  If you add functionality to
+RAMSTK, there should be one or more tests for the new functionality.  There
+should be a test to ensure the new code works with good inputs.
 
 #### Never Commit Code That Doesn't Run
 
-Run the code and correct all errors before committing. Make sure that newly added files are committed. If they are missing your local copy will run fine but nobody else will be able to run RTK.  This is not desirable.
+Run the code and correct all errors before committing.  Make sure that newly
+added files are committed.  If they are missing your local copy will run fine
+but nobody else will be able to run RAMSTK.  This is not desirable.
 
 #### Double check what you commit
 
@@ -110,11 +157,11 @@ Source control systems are not a substitute for developer communication.
 
 #### Announce Changes in Advance
 
-When you plan to make changes which affect a lot of different code in RTK's codebase, announce them in advance.  By announcing the changes in advance, developers are prepared, and can express concerns before something gets broken.
+When you plan to make changes which affect a lot of different code in RAMSTK's codebase, announce them in advance.  By announcing the changes in advance, developers are prepared, and can express concerns before something gets broken.
 
 #### Code Review by Other Developers
 
-Don't commit changes to the public API of RTK without prior review by other developers. Requiring a review for these changes is intended to avoid problems for the users of the APIs and to improve the quality of the APIs.
+Don't commit changes to the public API of RAMSTK without prior review by other developers. Requiring a review for these changes is intended to avoid problems for the users of the APIs and to improve the quality of the APIs.
 
 #### Take Responsibility for Your Commits
 
