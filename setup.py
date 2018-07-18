@@ -12,6 +12,21 @@ from setuptools import find_packages, setup
 from setuptools.command.install import install as _install
 from setuptools.command.sdist import sdist
 
+__appname__ = 'RAMSTK'
+__version__ = '1.0.0dev'
+__author__ = "Doyle 'weibullguy' Rowland"
+__email__ = "andrew.rowland@reliaqual.com"
+__trove__ = [
+             'Development Status :: 4 - Beta',
+             'Environment :: Win32 (MS Windows)',
+             'Environment :: X11 Applications :: GTK',
+             'Intended Audience :: Other Audience',
+             'License :: OSI Approved :: BSD License',
+             'Programming Language :: Python :: 2.7',
+             'Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)'
+        ]
+
+
 if not sys.version_info[0] == 2:
     sys.exit("Sorry, Python 3 is not supported (yet)")
 
@@ -88,27 +103,27 @@ class Sdist(sdist):
 
 if __name__ == '__main__':
     setup(
-        name='RTK',
-        version='0.5',
-        description='''RAMS analysis tool''',
-        long_description='''The Reliability ToolKit (RTK) is a suite of tools
-        for performing and documenting RAMS analyses.''',
-        author="Doyle 'weibullguy' Rowland",
-        author_email="andrew.rowland@reliaqual.com",
+        name=__appname__,
+        version=__version__,
+        description='''Toolkit for RAMS analyses''',
+        long_description='''The RAMS ToolKit (RAMSTK) is a suite of tools
+        for performing and documenting reliability, availability,
+        maintainability, and safety (RAMS) analyses.''',
+        author=__author__,
+        author_email=__email__,
         license='BSD-3',
         url='https://github.com/weibullguy/rtk',
         python_requires='>=2.7, <4',
         install_requires=install_requires,
         setup_requires=['pytest_runner', 'Babel'],
         tests_require=tests_require,
-        keywords='reliability RAMS engineering quality safety',
+        keywords='''reliability availability maintainability safety RAMS
+        engineering quality''',
         scripts=[],
         packages=find_packages('src', exclude=['tests']),
         package_dir={'': 'src'},
         py_modules=['rtk.Configuration', 'rtk.RTK', 'rtk.Utilities'],
-        classifiers=[
-            'Development Status :: 3 - Alpha', 'Programming Language :: Python'
-        ],
+        classifiers=__trove__,
         entry_points={
             'console_scripts': ['rtk = rtk.RTK:main'],
         },

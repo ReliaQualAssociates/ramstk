@@ -16,12 +16,12 @@ Develop Branch:
 [![Coverage Status](https://coveralls.io/repos/github/weibullguy/rtk/badge.svg?branch=develop)](https://coveralls.io/github/weibullguy/rtk?branch=develop)
 [![Documentation Status](https://readthedocs.org/projects/rtk/badge/?version=develop)](http://rtk.readthedocs.io/en/develop/?badge=develop)
 
-# rtk
-Reliability, Availability, Maintainability, Safety (RAMS) analysis program.
+# RAMSTK
+ToolKit for Reliability, Availability, Maintainability, Safety (RAMS) analyses.
 
-RTK is an open-source application similar to PTC's Windchill Quality or the
-Reliasoft line of products. The Reliability ToolKit (RTK) currently has modules
-for:
+The RAMS ToolKit (RAMSTK) is an open-source application similar to PTC's
+Windchill Quality or the Reliasoft line of products. RAMSTK currently has
+modules for:
 
 * Function Module
     * Functional decomposition
