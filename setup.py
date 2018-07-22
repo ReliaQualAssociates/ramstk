@@ -12,6 +12,11 @@ from setuptools import find_packages, setup
 from setuptools.command.install import install as _install
 from setuptools.command.sdist import sdist
 
+# Read the contents of your README file
+here = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(here, 'README.md')) as f:
+    __long_description__ = f.read()
+
 __appname__ = 'RAMSTK'
 __version__ = '1.0.0dev'
 __author__ = "Doyle 'weibullguy' Rowland"
@@ -105,10 +110,11 @@ if __name__ == '__main__':
     setup(
         name=__appname__,
         version=__version__,
-        description='''Toolkit for RAMS analyses''',
-        long_description='''The RAMS ToolKit (RAMSTK) is a suite of tools
+        description='''The RAMS ToolKit (RAMSTK) is a suite of tools
         for performing and documenting reliability, availability,
-        maintainability, and safety (RAMS) analyses.''',
+        maintainability, and safety (RAMS) analyses''',
+        long_description=__long_description__,
+        long_description_content_type='text/markdown',
         author=__author__,
         author_email=__email__,
         license='BSD-3',

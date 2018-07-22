@@ -30,18 +30,29 @@ class RTKSiteInfo(RTK_BASE):
     product_key = Column('fld_product_key', String(512), default='')
     expire_on = Column(
         'fld_expire_on', Date, default=date.today() + timedelta(30))
+    function_enabled = Column('fld_function_enabled', Integer, default=0)
+    requirement_enabled = Column('fld_requirement_enabled', Integer, default=0)
+    hardware_enabled = Column('fld_hardware_enabled', Integer, default=0)
+    vandv_enabled = Column('fld_vandv_enabled', Integer, default=0)
+    fmea_enabled = Column('fld_fmea_enabled', Integer, default=0)
 
     def get_attributes(self):
         """
         Retrieve the current values of the RTKSiteInfo data model attributes.
 
-        :return: {site_id, product_key, expire_on} pairs.
+        :return: {site_id, product_key, expire_on, function_enabled,
+                  requirement_enabled, vandv_enabled, fmea_enabled} pairs.
         :rtype: dict
         """
         _attributes = {
             'site_id': self.site_id,
             'product_key': self.product_key,
-            'expire_on': self.expire_on
+            'expire_on': self.expire_on,
+            'function_enabled': self.function_enabled,
+            'requirement_enabled': self.requirement_enabled,
+            'hardware_enabled': self.hardware_enabled,
+            'vandv_enabled': self.vandv_enabled,
+            'fmea_enabled': self.fmea_enabled
         }
 
         return _attributes
@@ -55,14 +66,23 @@ class RTKSiteInfo(RTK_BASE):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = "RTK SUCCESS: Updating RTKSiteInfo {0:d} attributes.". \
-            format(self.site_id)
+        _msg = "RTK SUCCESS: Updating RTKSiteInfo attributes."
 
         try:
             self.product_key = str(
                 none_to_default(attributes['product_key'], '0000'))
             self.expire_on = none_to_default(attributes['expire_on'],
                                              date.today() + timedelta(30))
+            self.function_enabled = int(
+                none_to_default(attributes['function_enabled'], 0))
+            self.requirement_enabled = int(
+                none_to_default(attributes['requirement_enabled'], 0))
+            self.hardware_enabled = int(
+                none_to_default(attributes['hardware_enabled'], 0))
+            self.vandv_enabled = int(
+                none_to_default(attributes['vandv_enabled'], 0))
+            self.fmea_enabled = int(
+                none_to_default(attributes['fmea_enabled'], 0))
         except KeyError as _err:
             _error_code = 40
             _msg = ("RTK ERROR: Missing attribute {0:s} in attribute "

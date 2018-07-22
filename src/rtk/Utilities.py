@@ -249,6 +249,25 @@ def boolean_to_integer(boolean):
     return _result
 
 
+def integer_to_boolean(integer):
+    """
+    Convert an integer to boolean value.
+
+    Any value greater than zero is returned as True, all others are returned as
+    False.
+
+    :param int integer: the integer to convert.
+    :return: _result
+    :rtype: bool
+    """
+    _result = False
+
+    if integer > 0:
+        _result = True
+
+    return _result
+
+
 def string_to_boolean(string):
     """
     Convert string representations of TRUE/FALSE to an boolean value.

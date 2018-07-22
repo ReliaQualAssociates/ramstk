@@ -36,7 +36,6 @@ from rtk.dao.commondb.RTKStatus import RTKStatus
 from rtk.dao.commondb.RTKSubCategory import RTKSubCategory
 from rtk.dao.commondb.RTKType import RTKType
 from rtk.dao.commondb.RTKUser import RTKUser
-from rtk.dao.programdb.RTKProgramInfo import RTKProgramInfo
 from rtk.dao.programdb.RTKRPN import RTKRPN
 from rtk.modules.revision import dtcRevision
 from rtk.modules.usage import dtcUsageProfile
@@ -51,6 +50,7 @@ from rtk.modules.hazops import dtcHazardAnalysis
 from rtk.modules.similar_item import dtcSimilarItem
 from rtk.modules.pof import dtcPoF
 from rtk.modules.validation import dtcValidation
+from rtk.modules.options import dtcOptions
 
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
@@ -193,17 +193,7 @@ class Model(object):
 
         return _error_code, _msg
 
-    def read_program_info(self):
-        """
-        Read the program info table from the RTK Program database.
-
-        :return: the list of RTKProgramInfo objects for each row in the
-                 rtk_program_info table in the RTK Program database.
-        :rtype: :class:`dao.RTKProgramInfo.RTKProgramInfo`
-        """
-        return self.program_session.query(RTKProgramInfo).all()
-
-    def open_program(self, database):
+    def do_open_program(self, database):
         """
         Open an RTK Program database for analyses.
 
@@ -237,7 +227,7 @@ class Model(object):
         print self.program_dao.engine, self.program_dao.session, self.program_dao.metadata, self.program_dao.database
         return None
 
-    def save_program(self):
+    def do_save_program(self):
         """
         Save the open RTK Program database.
 
@@ -257,7 +247,7 @@ class Model(object):
         pass
 
     # pylint: disable=too-many-branches
-    def load_globals(self, configuration):
+    def do_load_globals(self, configuration):
         """
         Load the RTK Program global constants.
 
@@ -524,6 +514,7 @@ class RTK(object):
                                     'similaritem'
                                     'pof'
                                     'growth'
+                                    'options'
                                 Values are the instance of each RTK data
                                 controller.
 
@@ -572,22 +563,19 @@ class RTK(object):
          self.RTK_CONFIGURATION.RTK_IMPORT_LOG) = \
             _initialize_loggers(self.RTK_CONFIGURATION)
 
-        # Validate the license.
-        # if self._validate_license():
-        #    sys.exit(2)
-
         # Initialize private dictionary instance attributes.
 
         # Initialize private list instance attributes.
         self.__test = kwargs['test']
         self._lst_modules = [
-            'revision', 'function', 'requirement', 'hardware', 'validation'
+            'function', 'requirement', 'hardware', 'validation'
         ]
 
         # Initialize private scalar instance attributes.
 
         # Initialize public dictionary instance attributes.
         self.dic_controllers = {
+            'options': None,
             'allocation': None,
             'definition': None,
             'function': None,
@@ -626,7 +614,20 @@ class RTK(object):
 
         # Create an instance of the RTK Data Model and load global constants.
         self.rtk_model = Model(_dao, DAO())
-        self.request_load_globals()
+        self.request_do_load_globals()
+
+        # Create an Options module instance and read the Site options.
+        self.dic_controllers['options'] = dtcOptions(
+            self.rtk_model.program_dao,
+            self.RTK_CONFIGURATION,
+            site_dao=_dao,
+            test=False)
+        self.dic_controllers['options'].request_do_select_all(
+            site=True, program=False)
+
+        # Validate the license.
+        # if self._validate_license():
+        #    sys.exit(2)
 
         # Create RTK Books.  These need to be initialized after reading the
         # configuration.
@@ -672,16 +673,16 @@ class RTK(object):
 
         return _return
 
-    def request_load_globals(self):
+    def request_do_load_globals(self):
         """
         Request to load all the global Configuration variables.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self.rtk_model.load_globals(self.RTK_CONFIGURATION)
+        return self.rtk_model.do_load_globals(self.RTK_CONFIGURATION)
 
-    def request_open_program(self):
+    def request_do_open_program(self):
         """
         Request an RTK Program database be opened for analyses.
 
@@ -698,7 +699,7 @@ class RTK(object):
 
         # If the database was successfully opened, create an instance of each
         # of the slave data controllers.
-        _error_code, _msg = self.rtk_model.open_program(_database)
+        _error_code, _msg = self.rtk_model.do_open_program(_database)
         if _error_code == 0:
             pub.sendMessage('requestOpen')
             self.dic_controllers['revision'] = dtcRevision(
@@ -736,18 +737,19 @@ class RTK(object):
             self.dic_controllers['pof'] = dtcPoF(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
 
-            _program_info = self.rtk_model.read_program_info()[0]
-
-            self.RTK_CONFIGURATION.RTK_MODULES['revision'] = \
-                _program_info.revision_active
+            # Find which modules are active for the program being opened.
+            self.dic_controllers['options'].request_do_select_all(
+                site=False, program=True)
+            _program_info = self.dic_controllers[
+                'options'].request_get_options(site=False, program=True)
             self.RTK_CONFIGURATION.RTK_MODULES['function'] = \
-                _program_info.function_active
+                _program_info['function_active']
             self.RTK_CONFIGURATION.RTK_MODULES['requirement'] = \
-                _program_info.requirement_active
+                _program_info['requirement_active']
             self.RTK_CONFIGURATION.RTK_MODULES['hardware'] = \
-                _program_info.hardware_active
+                _program_info['hardware_active']
             self.RTK_CONFIGURATION.RTK_MODULES['validation'] = \
-                _program_info.vandv_active
+                _program_info['vandv_active']
 
             _page = 0
             for _module in self._lst_modules:
@@ -800,7 +802,7 @@ class RTK(object):
 
         return self.loaded
 
-    def request_save_program(self):
+    def request_do_save_program(self):
         """
         Request the open RTK Program database be saved.
 
@@ -814,7 +816,7 @@ class RTK(object):
             format(self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
         self.dic_books['modulebook'].statusbar.push(2, _message)
 
-        _error_code, _msg = self.rtk_model.save_program()
+        _error_code, _msg = self.rtk_model.do_save_program()
 
         if _error_code == 0:
             self.RTK_CONFIGURATION.RTK_USER_LOG.info(_msg)

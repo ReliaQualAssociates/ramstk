@@ -79,11 +79,11 @@ class OpenProject(object):
 
         Widgets.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
-        self._request_open_project()
+        self._do_request_open_project()
 
         Widgets.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
 
-    def _request_open_project(self):
+    def _do_request_open_project(self):
         """
         Method to open or connect to an RTK Program database.
 
@@ -125,6 +125,6 @@ class OpenProject(object):
 
         _dialog.destroy()
 
-        self._mdcRTK.request_open_program()
+        self._mdcRTK.request_do_open_program()
 
         return _return

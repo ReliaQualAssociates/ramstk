@@ -20,12 +20,12 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 ATTRIBUTES = {
     'vandv_active': 1,
     'fta_active': 0,
-    'revision_active': 1,
     'requirement_active': 1,
     'function_active': 1,
+    'fmea_active': 1,
     'software_active': 1,
     'last_saved': date.today(),
-    'program_id': 1,
+    'revision_id': 1,
     'method': u'STANDARD',
     'survival_active': 1,
     'created_on': date.today(),
@@ -50,13 +50,13 @@ def test_rtkprograminfo_create(test_dao):
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'rtk_program_info'
-    assert DUT.program_id == 1
-    assert DUT.revision_active == 1
+    assert DUT.revision_id == 1
     assert DUT.function_active == 1
     assert DUT.requirement_active == 1
     assert DUT.hardware_active == 1
-    assert DUT.software_active == 1
     assert DUT.vandv_active == 1
+    assert DUT.fmea_active == 1
+    assert DUT.software_active == 1
     assert DUT.testing_active == 1
     assert DUT.fraca_active == 1
     assert DUT.survival_active == 1
@@ -90,8 +90,7 @@ def test_set_attributes(test_dao):
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating RTKProgramInfo {0:d} "
-                    "attributes.".format(DUT.program_id))
+    assert _msg == ("RTK SUCCESS: Updating RTKProgramInfo attributes.")
 
 
 @pytest.mark.integration

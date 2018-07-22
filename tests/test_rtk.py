@@ -93,7 +93,7 @@ def test_open_program(test_common_dao, test_dao, test_configuration):
     _configuration = test_configuration
     _database = _configuration.RTK_BACKEND + ':///' + \
                 _configuration.RTK_PROG_INFO['database']
-    _error_code, _msg = DUT.open_program(_database)
+    _error_code, _msg = DUT.do_open_program(_database)
 
     assert _error_code == 0
     assert _msg == (
@@ -106,7 +106,7 @@ def test_load_globals(test_common_dao, test_dao):
     DUT = Model(test_common_dao, test_dao)
     _configuration = Configuration()
 
-    assert not DUT.load_globals(_configuration)
+    assert not DUT.do_load_globals(_configuration)
 
     assert isinstance(DUT.tree, Tree)
 
@@ -846,7 +846,7 @@ def test_request_validate_license():
 
 
 @pytest.mark.broken_test
-def test_request_load_globals(test_configuration):
+def test_request_do_load_globals(test_configuration):
     """ request_load_globals() should return False on success. """
     _configuration = test_configuration
     DUT = RTK(test=True)
@@ -855,7 +855,7 @@ def test_request_load_globals(test_configuration):
                 _configuration.RTK_COM_INFO['database']
     DUT.rtk_model.program_dao.db_connect(_database)
 
-    assert not DUT.request_load_globals()
+    assert not DUT.request_do_load_globals()
 
 
 @pytest.mark.broken_test
@@ -868,12 +868,12 @@ def test_request_create_program(test_configuration):
 
 
 @pytest.mark.broken_test
-def test_request_open_program(test_configuration):
+def test_request_do_open_program(test_configuration):
     """ request_open_program() should return False on success. """
     DUT = RTK(test=True)
     DUT.RTK_CONFIGURATION = test_configuration
 
-    assert not DUT.request_open_program()
+    assert not DUT.request_do_open_program()
     assert DUT.RTK_CONFIGURATION.RTK_PREFIX == {
         'function': [u'FUNC', 0],
         'requirement': [u'RQMT', 0],

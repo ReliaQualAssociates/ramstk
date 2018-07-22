@@ -32,8 +32,8 @@ from rtk.gui.gtk.moduleviews import mvwFunction
 from rtk.gui.gtk.moduleviews import mvwRequirement
 from rtk.gui.gtk.moduleviews import mvwHardware
 from rtk.gui.gtk.moduleviews import mvwValidation
-from rtk.gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
-    Options
+from rtk.gui.gtk.assistants import (CreateProject, OpenProject, DeleteProject,
+    Options)
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
