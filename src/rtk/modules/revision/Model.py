@@ -149,9 +149,8 @@ class RevisionDataModel(RTKDataModel):
         """
         _error_code = 0
         _msg = ''
-        print self.tree.all_nodes()
+
         for _node in self.tree.all_nodes():
-            print _node
             try:
                 _error_code, _debug_msg = self.do_update(
                     _node.data.revision_id)

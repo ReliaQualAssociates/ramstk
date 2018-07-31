@@ -56,11 +56,11 @@ RAMSTK is built on the concept of modules where a module is a collection of rela
       - MIL-STD-1629A, Task 102 Criticality Analysis
   - Physics of failure analysis
 * Validation Module
-      - Task description
-      - Task acceptance value(s)
-      - Task time
-      - Task cost
-      - Overall validation plan time/cost estimates
+  - Task description
+  - Task acceptance value(s)
+  - Task time
+  - Task cost
+  - Overall validation plan time/cost estimates
 
 ## 💾 Installing
 
