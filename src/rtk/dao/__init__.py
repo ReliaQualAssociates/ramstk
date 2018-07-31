@@ -18,6 +18,7 @@ from .commondb.RTKManufacturer import RTKManufacturer
 from .commondb.RTKMeasurement import RTKMeasurement
 from .commondb.RTKMethod import RTKMethod
 from .commondb.RTKModel import RTKModel
+from .commondb.RTKRPN import RTKRPN
 from .commondb.RTKSiteInfo import RTKSiteInfo
 from .commondb.RTKStakeholders import RTKStakeholders
 from .commondb.RTKStatus import RTKStatus
@@ -56,7 +57,6 @@ from .programdb.RTKProgramStatus import RTKProgramStatus
 from .programdb.RTKReliability import RTKReliability
 from .programdb.RTKRequirement import RTKRequirement
 from .programdb.RTKRevision import RTKRevision
-from .programdb.RTKRPN import RTKRPN
 from .programdb.RTKSimilarItem import RTKSimilarItem
 from .programdb.RTKSoftware import RTKSoftware
 from .programdb.RTKSoftwareDevelopment import RTKSoftwareDevelopment

@@ -36,7 +36,7 @@ from rtk.dao.commondb.RTKStatus import RTKStatus
 from rtk.dao.commondb.RTKSubCategory import RTKSubCategory
 from rtk.dao.commondb.RTKType import RTKType
 from rtk.dao.commondb.RTKUser import RTKUser
-from rtk.dao.programdb.RTKRPN import RTKRPN
+from rtk.dao.commondb.RTKRPN import RTKRPN
 from rtk.modules.revision import dtcRevision
 from rtk.modules.usage import dtcUsageProfile
 from rtk.modules.failure_definition import dtcFailureDefinition

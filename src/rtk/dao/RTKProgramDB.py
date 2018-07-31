@@ -12,68 +12,6 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 RTK_BASE = declarative_base()
 
-# This file contains all the dictionaries defining the default fields for each
-# of the tables in the RTK Program database.
-RTK_RPNS = {
-    0: ('None', 'No effect.', 'severity', 1),
-    1: ('Very Minor', 'System operable with minimal interference.', 'severity',
-        2),
-    2: ('Minor', 'System operable with some degradation of '
-        'performance.', 'severity', 3),
-    3: ('Very Low', 'System operable with significant degradation of '
-        'performance.', 'severity', 4),
-    4: ('Low', 'System inoperable without damage.', 'severity', 5),
-    5: ('Moderate', 'System inoperable with minor damage.', 'severity', 6),
-    6: ('High', 'System inoperable with system damage.', 'severity', 7),
-    7: ('Very High', 'System inoperable with destructive failure '
-        'without compromising safety.', 'severity', 8),
-    8: ('Hazardous, with warning',
-        'Failure effects safe system operation with warning.', 'severity', 9),
-    9:
-    ('Hazardous, without warning',
-     'Failure effects safe system operation without warning.', 'severity', 10),
-    10: ('Remote', 'Failure rate is 1 in 1,500,000.', 'occurrence', 1),
-    11: ('Very Low', 'Failure rate is 1 in 150,000.', 'occurrence', 2),
-    12: ('Low', 'Failure rate is 1 in 15,000', 'occurrence', 3),
-    13: ('Moderately Low', 'Failure rate is 1 in 2000.', 'occurrence', 4),
-    14: ('Moderate', 'Failure rate is 1 in 400.', 'occurrence', 5),
-    15: ('Moderately High', 'Failure rate is 1 in 80.', 'occurrence', 6),
-    16: ('High', 'Failure rate is 1 in 20.', 'occurrence', 7),
-    17: ('Very High', 'Failure rate is 1 in 8.', 'occurrence', 8),
-    18: ('Extremely High', 'Failure rate is 1 in 3.', 'occurrence', 9),
-    19: ('Dangerously High', 'Failure rate is > 1 in 2.', 'occurrence', 10),
-    20: ('Almost Certain',
-         'Design control will almost certainly detect a potential '
-         'mechanism/cause and subsequent failure mode.', 'detection', 1),
-    21: ('Very High', 'Very high chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 2),
-    22: ('High', 'High chance the existing design controls will or '
-         'can detect a potential mechanism/cause and subsequent '
-         'failure mode.', 'detection', 3),
-    23: ('Moderately High', 'Moderately high chance the existing '
-         'design controls will or can detect a potential '
-         'mechanism/cause and subsequent failure mode.', 'detection', 4),
-    24: ('Moderate', 'Moderate chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 5),
-    25: ('Low', 'Low chance the existing design controls will or can '
-         'detect a potential mechanism/cause and subsequent failure '
-         'mode.', 'detection', 6),
-    26: ('Very Low', 'Very low chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 7),
-    27: ('Remote', 'Remote chance the existing design controls will '
-         'or can detect a potential mechanism/cause and subsequent '
-         'failure mode.', 'detection', 8),
-    28: ('Very Remote', 'Very remote chance the existing design '
-         'controls will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 9),
-    29: ('Absolute Uncertainty', 'Existing design controls will not '
-         'or cannot detect a potential mechanism/cause and subsequent '
-         'failure mode; there is no design control.', 'detection', 10)
-}
-
 
 def create_program_db(**kwargs):
     """Create and populate a RTK Program database."""
@@ -84,7 +22,7 @@ def create_program_db(**kwargs):
         RTKIncidentAction, RTKIncidentDetail, RTKLoadHistory, RTKMatrix,
         RTKMechanism, RTKMilHdbkF, RTKMission, RTKMissionPhase, RTKMode,
         RTKNSWC, RTKOpLoad, RTKOpStress, RTKProgramInfo, RTKProgramStatus,
-        RTKReliability, RTKRequirement, RTKRevision, RTKRPN, RTKSimilarItem,
+        RTKReliability, RTKRequirement, RTKRevision, RTKSimilarItem,
         RTKSoftware, RTKSoftwareDevelopment, RTKSoftwareReview,
         RTKSoftwareTest, RTKStakeholder, RTKSurvival, RTKSurvivalData, RTKTest,
         RTKTestMethod, RTKUnits, RTKValidation)
@@ -129,7 +67,6 @@ def create_program_db(**kwargs):
     RTKReliability.__table__.create(bind=engine)
     RTKRequirement.__table__.create(bind=engine)
     RTKRevision.__table__.create(bind=engine)
-    RTKRPN.__table__.create(bind=engine)
     RTKSimilarItem.__table__.create(bind=engine)
     RTKSoftware.__table__.create(bind=engine)
     RTKSoftwareDevelopment.__table__.create(bind=engine)
@@ -219,7 +156,7 @@ def do_create_test_database(database):
         RTKIncidentAction, RTKIncidentDetail, RTKLoadHistory, RTKMatrix,
         RTKMechanism, RTKMilHdbkF, RTKMission, RTKMissionPhase, RTKMode,
         RTKNSWC, RTKOpLoad, RTKOpStress, RTKProgramInfo, RTKProgramStatus,
-        RTKReliability, RTKRequirement, RTKRevision, RTKRPN, RTKSimilarItem,
+        RTKReliability, RTKRequirement, RTKRevision, RTKSimilarItem,
         RTKSoftware, RTKSoftwareDevelopment, RTKSoftwareReview,
         RTKSoftwareTest, RTKStakeholder, RTKSurvival, RTKSurvivalData, RTKTest,
         RTKTestMethod, RTKUnits, RTKValidation)
@@ -262,7 +199,6 @@ def do_create_test_database(database):
     RTKReliability.__table__.create(bind=engine)
     RTKRequirement.__table__.create(bind=engine)
     RTKRevision.__table__.create(bind=engine)
-    RTKRPN.__table__.create(bind=engine)
     RTKSimilarItem.__table__.create(bind=engine)
     RTKSoftware.__table__.create(bind=engine)
     RTKSoftwareDevelopment.__table__.create(bind=engine)

@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.conftest.py is part of The RTK Project
+#
+# All rights reserved.
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+"""RAMSTK test suite configuration module."""
+
 import os
 import glob
 
@@ -27,7 +35,7 @@ IMPORT_LOG = LOG_DIR + '/RTK_import.log'
 
 @pytest.fixture(scope='session')
 def test_common_dao():
-    """ Create a test DAO object for testing against an RTK Common DB. """
+    """Create a test DAO object for testing against an RTK Common DB."""
     # Create the tmp directory if it doesn't exist.
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
@@ -46,7 +54,7 @@ def test_common_dao():
 
 @pytest.fixture(scope='session')
 def test_dao():
-    """ Create a test DAO object for testing against an RTK Program DB. """
+    """Create a test DAO object for testing against an RTK Program DB."""
     # Create the tmp directory if it doesn't exist.
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
@@ -69,10 +77,7 @@ def test_dao():
 
 @pytest.fixture(scope='session')
 def test_configuration():
-    """ Create configuration object to use for testing. """
-    import fileinput
-    from shutil import copyfile
-
+    """Create configuration object to use for testing."""
     # Create the data directory if it doesn't exist.
     if not os.path.exists(DATA_DIR):
         os.makedirs(DATA_DIR)
@@ -86,13 +91,6 @@ def test_configuration():
     configuration.RTK_SITE_DIR = CONF_DIR
     configuration.RTK_CONF_DIR = CONF_DIR
     configuration.RTK_PROG_CONF = configuration.RTK_CONF_DIR + '/RTK.conf'
-    #copyfile(SRC_DIR + '/data/RTK.conf', configuration.RTK_PROG_CONF)
-    #for line in fileinput.input(configuration.RTK_PROG_CONF, inplace=True):
-        # Inside this loop the STDOUT will be redirected to the file
-        # the comma after each print statement is needed to avoid double line
-        # breaks.
-     #   print line.replace("database =", "database = " + TEST_PROGRAM_DB_PATH),
-      #  print line.replace("sitedir =", "sitedir = " + TMP_DIR),
 
     configuration.RTK_COM_BACKEND = 'sqlite'
     configuration.RTK_COM_INFO['host'] = 'localhost'
@@ -106,7 +104,11 @@ def test_configuration():
     configuration.RTK_MTIME = 100.0
     configuration.RTK_DEC_PLACES = 6
     configuration.RTK_MODE_SOURCE = 1
-    configuration.RTK_TABPOS = {'modulebook': 'top', 'listbook': 'bottom', 'workbook': 'bottom'}
+    configuration.RTK_TABPOS = {
+        'modulebook': 'top',
+        'listbook': 'bottom',
+        'workbook': 'bottom'
+    }
 
     configuration.RTK_BACKEND = 'sqlite'
     configuration.RTK_PROG_INFO['host'] = 'localhost'
@@ -120,8 +122,35 @@ def test_configuration():
     configuration.RTK_LOG_DIR = LOG_DIR
     configuration.RTK_PROG_DIR = TMP_DIR
 
-    configuration.RTK_FORMAT_FILE = {'allocation': 'Allocation.xml', 'dfmeca': 'DFMECA.xml', 'failure_definition': 'FailureDefinition.xml', 'ffmea': 'FFMEA.xml', 'function': 'Function.xml', 'hardware': 'Hardware.xml', 'hazops': 'HazOps.xml', 'pof': 'PoF.xml', 'requirement': 'Requirement.xml', 'revision': 'Revision.xml', 'similaritem': 'SimilarItem.xml', 'stakeholder': 'Stakeholder.xml', 'validation': 'Validation.xml'}
-    configuration.RTK_COLORS = {'functionbg': '#FFFFFF', 'functionfg': '#000000', 'hardwarebg': '#FFFFFF', 'hardwarefg': '#000000', 'requirementbg': '#FFFFFF', 'requirementfg': '#000000', 'revisionbg': '#FFFFFF', 'revisionfg': '#000000', 'stakeholderbg': '#FFFFFF', 'stakeholderfg': '#000000', 'validationbg': '#FFFFFF', 'validationfg': '#000000'}
+    configuration.RTK_FORMAT_FILE = {
+        'allocation': 'Allocation.xml',
+        'dfmeca': 'DFMECA.xml',
+        'failure_definition': 'FailureDefinition.xml',
+        'ffmea': 'FFMEA.xml',
+        'function': 'Function.xml',
+        'hardware': 'Hardware.xml',
+        'hazops': 'HazOps.xml',
+        'pof': 'PoF.xml',
+        'requirement': 'Requirement.xml',
+        'revision': 'Revision.xml',
+        'similaritem': 'SimilarItem.xml',
+        'stakeholder': 'Stakeholder.xml',
+        'validation': 'Validation.xml'
+    }
+    configuration.RTK_COLORS = {
+        'functionbg': '#FFFFFF',
+        'functionfg': '#000000',
+        'hardwarebg': '#FFFFFF',
+        'hardwarefg': '#000000',
+        'requirementbg': '#FFFFFF',
+        'requirementfg': '#000000',
+        'revisionbg': '#FFFFFF',
+        'revisionfg': '#000000',
+        'stakeholderbg': '#FFFFFF',
+        'stakeholderfg': '#000000',
+        'validationbg': '#FFFFFF',
+        'validationfg': '#000000'
+    }
 
     configuration.set_user_configuration()
 
