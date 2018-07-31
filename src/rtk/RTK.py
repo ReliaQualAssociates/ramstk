@@ -174,7 +174,7 @@ class Model(object):
         self.site_session = scoped_session(site_session)
         self.program_session = None
 
-    def create_program(self, database):
+    def do_create_program(self, database):
         """
         Create a new RTK Program database.
 
@@ -239,7 +239,7 @@ class Model(object):
 
         return _error_code, _msg
 
-    def delete_program(self):
+    def do_delete_program(self):
         """
         Delete an existing RTK Program database.
 
@@ -458,7 +458,7 @@ class Model(object):
 
         return _return
 
-    def validate_license(self, license_key):
+    def do_validate_license(self, license_key):
         """
         Validate the license and the license expiration date.
 
@@ -656,7 +656,7 @@ class RTK(object):
             _(u"RTK is not currently connected to a "
               u"project database."))
 
-    def request_create_program(self):
+    def request_do_create_program(self):
         """
         Request a new RTK Program database be created.
 
@@ -670,7 +670,7 @@ class RTK(object):
             _database = self.RTK_CONFIGURATION.RTK_BACKEND + ':///' + \
                 self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
 
-        _error_code, _msg = self.rtk_model.create_program(_database)
+        _error_code, _msg = self.rtk_model.do_create_program(_database)
         if _error_code == 0:
             self.request_open_program()
             self.RTK_CONFIGURATION.RTK_USER_LOG.info(_msg)
@@ -842,7 +842,7 @@ class RTK(object):
 
         return _return
 
-    def request_validate_license(self):
+    def request_do_validate_license(self):
         """
         Request the RTK license be validated.
 

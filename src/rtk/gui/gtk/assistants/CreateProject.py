@@ -87,7 +87,7 @@ class CreateProject(object):
 
         _dialog.destroy()
 
-        self._mdcRTK.request_create_program()
+        self._mdcRTK.request_do_create_program()
 
         return False
 
