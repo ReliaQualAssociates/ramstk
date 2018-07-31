@@ -32,8 +32,7 @@ from rtk.gui.gtk.moduleviews import mvwFunction
 from rtk.gui.gtk.moduleviews import mvwRequirement
 from rtk.gui.gtk.moduleviews import mvwHardware
 from rtk.gui.gtk.moduleviews import mvwValidation
-from rtk.gui.gtk.assistants import (CreateProject, OpenProject, DeleteProject,
-                                    Options, Preferences)
+from rtk.gui.gtk.assistants import (CreateProject, OpenProject, Options, Preferences)
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
@@ -272,13 +271,13 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _toolbar.insert(_button, _position)
         _position += 1
 
-        # Delete button
+        # Close button
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Closes the open RTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/delete.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', DeleteProject, self._mdcRTK)
+        _button.connect('clicked', self._do_request_close_project)
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -347,7 +346,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
     def _on_close(self):
         """
-        Update the Modules Views when a RTK Program database is closed.
+        Update the Module View when a RTK Program database is closed.
 
         :return: None
         :rtype: None
@@ -437,8 +436,8 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         Request to save the open RTK Program.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this method.
-        :keyword bool close: indicates whether or not to quit RTK after saving
-                             the project.
+        :keyword bool end: indicates whether or not to quit RTK after saving
+                           the project.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

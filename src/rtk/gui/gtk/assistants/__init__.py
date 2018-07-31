@@ -7,7 +7,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 
 from .CreateProject import CreateProject
-from .DeleteProject import DeleteProject
 from .OpenProject import OpenProject
 from .Options import Options
 from .Preferences import Preferences
