@@ -786,7 +786,7 @@ def test_do_validate_license(test_common_dao, test_dao):
     """ do_validate_license() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
 
-    (_error_code, _msg) = DUT.validate_license('0000')
+    (_error_code, _msg) = DUT.do_validate_license('0000')
 
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Validating RTK License.')
@@ -839,7 +839,7 @@ def test_initialize_controller():
 
 @pytest.mark.broken_test
 def test_request_do_validate_license():
-    """ request_validate_license() should return False on success. """
+    """ do_request_validate_license() should return False on success. """
     DUT = RTK(test=True)
 
     assert not DUT.request_do_validate_license()
