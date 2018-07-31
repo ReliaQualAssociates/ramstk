@@ -58,14 +58,14 @@ def test_initialize_model(test_common_dao, test_dao):
 
 
 @pytest.mark.integration
-def test_create_new_program(test_common_dao, test_dao, test_configuration):
-    """ create_program() should return a zero error code on success. """
+def test_do_create_new_program(test_common_dao, test_dao, test_configuration):
+    """ do_create_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
 
     _configuration = test_configuration
     _database = (
         _configuration.RTK_BACKEND + ':///' + TEMPDIR + '/_rtk_test_db.rtk')
-    _error_code, _msg = DUT.create_program(_database)
+    _error_code, _msg = DUT.do_create_program(_database)
 
     assert _error_code == 0
     assert _msg == (
@@ -73,12 +73,12 @@ def test_create_new_program(test_common_dao, test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_create_new_program_failed(test_common_dao, test_dao):
-    """ create_program() should return a non-zero error code on failure. """
+def test_do_create_new_program_failed(test_common_dao, test_dao):
+    """ do_create_program() should return a non-zero error code on failure. """
     DUT = Model(test_common_dao, test_dao)
 
     _database = 'sqlite:/' + TEMPDIR + '/BigAssTestDB.rtk'
-    _error_code, _msg = DUT.create_program(_database)
+    _error_code, _msg = DUT.do_create_program(_database)
 
     assert _error_code == 1
     assert _msg == ('RTK ERROR: Failed to create RTK Program database '
@@ -86,14 +86,14 @@ def test_create_new_program_failed(test_common_dao, test_dao):
 
 
 @pytest.mark.integration
-def test_open_program(test_common_dao, test_dao, test_configuration):
-    """ open_program() should return a zero error code on success. """
+def test_do_open_program(test_common_dao, test_dao, test_configuration):
+    """ do_open_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
 
     _configuration = test_configuration
     _database = _configuration.RTK_BACKEND + ':///' + \
                 _configuration.RTK_PROG_INFO['database']
-    _error_code, _msg = DUT.open_program(_database)
+    _error_code, _msg = DUT.do_open_program(_database)
 
     assert _error_code == 0
     assert _msg == (
@@ -106,7 +106,7 @@ def test_load_globals(test_common_dao, test_dao):
     DUT = Model(test_common_dao, test_dao)
     _configuration = Configuration()
 
-    assert not DUT.load_globals(_configuration)
+    assert not DUT.do_load_globals(_configuration)
 
     assert isinstance(DUT.tree, Tree)
 
@@ -782,22 +782,22 @@ def test_load_globals(test_common_dao, test_dao):
 
 
 @pytest.mark.integration
-def test_validate_license(test_common_dao, test_dao):
-    """ validate_license() should return a zero error code on success. """
+def test_do_validate_license(test_common_dao, test_dao):
+    """ do_validate_license() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
 
-    (_error_code, _msg) = DUT.validate_license('0000')
+    (_error_code, _msg) = DUT.do_validate_license('0000')
 
     assert _error_code == 0
     assert _msg == ('RTK SUCCESS: Validating RTK License.')
 
 
 @pytest.mark.integration
-def test_validate_license_wrong_key(test_common_dao, test_dao):
-    """ validate_license() should return a 1 error code when the license key is wrong. """
+def test_do_validate_license_wrong_key(test_common_dao, test_dao):
+    """ do_validate_license() should return a 1 error code when the license key is wrong. """
     DUT = Model(test_common_dao, test_dao)
 
-    _error_code, _msg = DUT.validate_license('')
+    _error_code, _msg = DUT.do_validate_license('')
 
     assert _error_code == 1
     assert _msg == ('RTK ERROR: Invalid license (Invalid key).  Your license '
@@ -838,15 +838,15 @@ def test_initialize_controller():
 
 
 @pytest.mark.broken_test
-def test_request_validate_license():
-    """ request_validate_license() should return False on success. """
+def test_request_do_validate_license():
+    """ do_request_validate_license() should return False on success. """
     DUT = RTK(test=True)
 
-    assert not DUT.request_validate_license()
+    assert not DUT.request_do_validate_license()
 
 
 @pytest.mark.broken_test
-def test_request_load_globals(test_configuration):
+def test_request_do_load_globals(test_configuration):
     """ request_load_globals() should return False on success. """
     _configuration = test_configuration
     DUT = RTK(test=True)
@@ -855,25 +855,25 @@ def test_request_load_globals(test_configuration):
                 _configuration.RTK_COM_INFO['database']
     DUT.rtk_model.program_dao.db_connect(_database)
 
-    assert not DUT.request_load_globals()
+    assert not DUT.request_do_load_globals()
 
 
 @pytest.mark.broken_test
-def test_request_create_program(test_configuration):
+def test_request_do_create_program(test_configuration):
     """ request_create_program() should return False on success. """
     DUT = RTK(test=True)
     DUT.RTK_CONFIGURATION = test_configuration
 
-    assert not DUT.request_create_program()
+    assert not DUT.request_do_create_program()
 
 
 @pytest.mark.broken_test
-def test_request_open_program(test_configuration):
+def test_request_do_open_program(test_configuration):
     """ request_open_program() should return False on success. """
     DUT = RTK(test=True)
     DUT.RTK_CONFIGURATION = test_configuration
 
-    assert not DUT.request_open_program()
+    assert not DUT.request_do_open_program()
     assert DUT.RTK_CONFIGURATION.RTK_PREFIX == {
         'function': [u'FUNC', 0],
         'requirement': [u'RQMT', 0],
@@ -903,7 +903,7 @@ def test_request_open_program(test_configuration):
 
 
 @pytest.mark.broken_test
-def test_request_save_program():
+def test_request_do_save_program():
     """ request_save_program() should return False on success. """
     DUT = RTK(test=True)
     DUT.RTK_CONFIGURATION.RTK_BACKEND = 'sqlite'
@@ -914,13 +914,13 @@ def test_request_save_program():
         'user': '',
         'password': ''
     }
-    DUT.request_open_program()
+    DUT.request_do_open_program()
 
-    assert not DUT.request_save_program()
+    assert not DUT.request_do_save_program()
 
 
 @pytest.mark.broken_test
-def test_request_close_program():
+def test_request_do_close_program():
     """ request_close_program() should return False on success. """
     DUT = RTK(test=True)
     DUT.RTK_CONFIGURATION.RTK_BACKEND = 'sqlite'
@@ -931,6 +931,6 @@ def test_request_close_program():
         'user': '',
         'password': ''
     }
-    DUT.request_open_program()
+    DUT.request_do_open_program()
 
-    assert not DUT.request_close_program()
+    assert not DUT.request_do_close_program()

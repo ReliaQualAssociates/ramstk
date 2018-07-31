@@ -1,11 +1,14 @@
 ### Expected Behavior ###
 
-### Actual Behavior ###
+As a <type of RAMSTK user>, I want <state a goal> so that <some reason>.
 
-### Steps to Reproduce the Problem ###
+### Actual Behavior (NOT required for Enhancement type issues.) ###
 
-### Operating Environment ###
+### Steps to Reproduce the Problem (NOT required for Enhancement type issues.) ###
 
+### Operating Environment (NOT required for QA type issues.) ###
+
+* RAMSTK Version:
 * Operating System:
 * OS Distribution (if Linux):
 * OS Version:
@@ -27,12 +30,3 @@
   * treelib ==
   * xlrd ==
   * xlwt ==
-
-Execute something such as the following to get the required run-time package
-versions for the list above.  You will need a copy of the requirements.txt file
-in the repository.
-
-    `for file in $(cat requirements.txt | cut -d '=' -f1);
-        do version=$(pip show $file | grep Version: | cut -d ':' -f2-);
-        echo $file ==$version;
-     done`

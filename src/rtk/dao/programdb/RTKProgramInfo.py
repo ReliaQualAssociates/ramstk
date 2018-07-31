@@ -25,18 +25,18 @@ class RTKProgramInfo(RTK_BASE):
     __tablename__ = 'rtk_program_info'
     __table_args__ = {'extend_existing': True}
 
-    program_id = Column(
-        'fld_program_id',
+    revision_id = Column(
+        'fld_revision_id',
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False)
-    revision_active = Column('fld_revision_active', Integer, default=1)
     function_active = Column('fld_function_active', Integer, default=1)
     requirement_active = Column('fld_requirement_active', Integer, default=1)
     hardware_active = Column('fld_hardware_active', Integer, default=1)
     software_active = Column('fld_software_active', Integer, default=1)
     vandv_active = Column('fld_vandv_active', Integer, default=1)
+    fmea_active = Column('fld_fmea_active', Integer, default=1)
     testing_active = Column('fld_testing_active', Integer, default=1)
     fraca_active = Column('fld_fraca_active', Integer, default=1)
     survival_active = Column('fld_survival_active', Integer, default=1)
@@ -53,21 +53,21 @@ class RTKProgramInfo(RTK_BASE):
         """
         Retrieve the current values of RTKProgramInfo data model attributes.
 
-        :return: {program_id, revision_active, function_active,
-                  requirement_active, hardware_active, software_active,
-                  vandv_active, testing_active, fraca_active, survival_active,
-                  rcm_active, rbd_active, fta_active, created_on, created_by,
-                  last_saved, last_saved_by, method} pairs.
+        :return: {revision_id, function_active, requirement_active,
+                  hardware_active, software_active, vandv_active,
+                  testing_active, fraca_active, survival_active, rcm_active,
+                  rbd_active, fta_active, created_on, created_by, last_saved,
+                  last_saved_by, method} pairs.
         :rtype: dict
         """
         _attributes = {
-            'program_id': self.program_id,
-            'revision_active': self.revision_active,
+            'revision_id': self.revision_id,
             'function_active': self.function_active,
             'requirement_active': self.requirement_active,
             'hardware_active': self.hardware_active,
-            'software_active': self.software_active,
             'vandv_active': self.vandv_active,
+            'fmea_active': self.fmea_active,
+            'software_active': self.software_active,
             'testing_active': self.testing_active,
             'fraca_active': self.fraca_active,
             'survival_active': self.survival_active,
@@ -92,22 +92,21 @@ class RTKProgramInfo(RTK_BASE):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = "RTK SUCCESS: Updating RTKProgramInfo {0:d} attributes.". \
-            format(self.program_id)
+        _msg = ("RTK SUCCESS: Updating RTKProgramInfo attributes.")
 
         try:
-            self.revision_active = int(
-                none_to_default(attributes['revision_active'], 1))
             self.function_active = int(
                 none_to_default(attributes['function_active'], 1))
             self.requirement_active = int(
                 none_to_default(attributes['requirement_active'], 1))
             self.hardware_active = int(
                 none_to_default(attributes['hardware_active'], 1))
-            self.software_active = int(
-                none_to_default(attributes['software_active'], 1))
             self.vandv_active = int(
                 none_to_default(attributes['vandv_active'], 1))
+            self.fmea_active = int(
+                none_to_default(attributes['fmea_active'], 1))
+            self.software_active = int(
+                none_to_default(attributes['software_active'], 1))
             self.testing_active = int(
                 none_to_default(attributes['testing_active'], 1))
             self.fraca_active = int(

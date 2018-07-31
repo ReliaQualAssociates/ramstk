@@ -82,7 +82,7 @@ class RTKMessageDialog(gtk.MessageDialog):
 
     def __init__(self, prompt, icon, criticality, parent=None):
         """
-        Method to initialize runtime error, warning, and information dialogs.
+        Initialize runtime error, warning, and information dialogs.
 
         :param str prompt: the prompt to display in the dialog.
         :param str icon: the absolute path to the icon to display on the
@@ -142,13 +142,13 @@ class RTKMessageDialog(gtk.MessageDialog):
 
     def do_run(self):
         """
-        Method to run the RTK Message Dialog.
+        Run the RTK Message Dialog.
         """
         return self.run()
 
     def do_destroy(self):
         """
-        Method to destroy the RTK Message Dialog.
+        Destroy the RTK Message Dialog.
         """
         self.destroy()
 

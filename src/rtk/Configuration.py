@@ -344,7 +344,7 @@ class Configuration(object):
     # Define global list class attributes.
     RTK_RISK_POINTS = [4, 10]
 
-    # Define public scalare class attributes.
+    # Define public scalar class attributes.
     RTK_MODE = ''
     RTK_SITE_CONF = ''
     RTK_PROG_CONF = ''
@@ -361,6 +361,7 @@ class Configuration(object):
     RTK_MODE_SOURCE = 1  # 1=FMD-97
     RTK_COM_BACKEND = ''
     RTK_BACKEND = ''
+    RTK_REPORT_SIZE = 'letter'
     RTK_HR_MULTIPLIER = 1000000.0
     RTK_DEC_PLACES = 6
     RTK_MTIME = 100.0
@@ -410,7 +411,7 @@ class Configuration(object):
         self.RTK_PROG_DIR = self.RTK_HOME_DIR + '/analyses/rtk/'
         self.RTK_CONF_DIR = self.RTK_SITE_DIR
 
-    def _get_site_configuration(self):
+    def get_site_configuration(self):
         """
         Read the site configuration file.
 
@@ -445,13 +446,6 @@ class Configuration(object):
         _return = False
 
         _config = ConfigParser.ConfigParser()
-
-        _config.add_section('Modules')
-        _config.set('Modules', 'function', 'True')
-        _config.set('Modules', 'hardware', 'True')
-        _config.set('Modules', 'requirement', 'True')
-        _config.set('Modules', 'revision', 'True')
-        _config.set('Modules', 'validation', 'True')
 
         _config.add_section('Backend')
         _config.set('Backend', 'host', 'localhost')
@@ -488,7 +482,7 @@ class Configuration(object):
         # Create the directories needed for the user.  Always prefer the RTK
         # directories in the user's $HOME over the system-wide directories.
         # Configuration directory.
-        self.RTK_CONF_DIR = self.RTK_HOME_DIR + '/.config/RTK2'
+        self.RTK_CONF_DIR = self.RTK_HOME_DIR + '/.config/RTK'
         try:
             makedirs(self.RTK_CONF_DIR)
             self.RTK_PROG_CONF = self.RTK_CONF_DIR + '/RTK.conf'
@@ -540,6 +534,7 @@ class Configuration(object):
 
         # Create the default RTK user configuration file.
         _config.add_section('General')
+        _config.set('General', 'firstrun', True)
         _config.set('General', 'reportsize', 'letter')
         _config.set('General', 'frmultiplier', 1000000.0)
         _config.set('General', 'calcreltime', 100.0)
@@ -637,6 +632,7 @@ class Configuration(object):
             self.RTK_LOG_DIR = _config.get('Directories', 'logdir')
             self.RTK_PROG_DIR = _config.get('Directories', 'progdir')
 
+            self.RTK_REPORT_SIZE = _config.get('General', 'reportsize')
             self.RTK_HR_MULTIPLIER = _config.get('General', 'frmultiplier')
             self.RTK_DEC_PLACES = _config.get('General', 'decimal')
             self.RTK_MTIME = _config.get('General', 'calcreltime')
@@ -678,7 +674,7 @@ class Configuration(object):
         if not Utilities.file_exists(self.RTK_SITE_CONF):
             self._set_site_configuration()
 
-        self._get_site_configuration()
+        self.get_site_configuration()
 
         return False
 
@@ -694,7 +690,8 @@ class Configuration(object):
         if Utilities.file_exists(self.RTK_PROG_CONF):
             _config = ConfigParser.ConfigParser()
             _config.add_section('General')
-            _config.set('General', 'reportsize', 'letter')
+            #_config.set('General', 'firstrun', True)
+            _config.set('General', 'reportsize', self.RTK_REPORT_SIZE)
             _config.set('General', 'parallelcalcs', 'False')
             _config.set('General', 'frmultiplier', self.RTK_HR_MULTIPLIER)
             _config.set('General', 'calcreltime', self.RTK_MTIME)

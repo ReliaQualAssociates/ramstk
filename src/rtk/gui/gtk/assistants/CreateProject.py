@@ -13,6 +13,11 @@ import rtk.Utilities as Utilities
 from rtk.gui.gtk.rtk.Widget import _, gtk, set_cursor
 from rtk.gui.gtk import rtk
 
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2007 - 2018 Doyle "weibullguy" Rowland'
+
 
 class CreateProject(object):
     """This is the class used to create a new RTK Project database."""
@@ -87,7 +92,7 @@ class CreateProject(object):
 
         _dialog.destroy()
 
-        self._mdcRTK.request_create_program()
+        self._mdcRTK.request_do_create_program()
 
         return False
 

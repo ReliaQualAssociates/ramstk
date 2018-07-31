@@ -20,7 +20,12 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 ATTRIBUTES = {
     'site_id': 1,
     'product_key': '0000',
-    'expire_on': date.today() + timedelta(30)
+    'expire_on': date.today() + timedelta(30),
+    'function_enabled': 0,
+    'requirement_enabled': 0,
+    'hardware_enabled': 0,
+    'vandv_enabled': 0,
+    'fmea_enabled': 0
 }
 
 
@@ -60,8 +65,7 @@ def test_set_attributes(test_common_dao):
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating RTKSiteInfo {0:d} "
-                    "attributes.".format(DUT.site_id))
+    assert _msg == ("RTK SUCCESS: Updating RTKSiteInfo attributes.")
 
 
 @pytest.mark.integration

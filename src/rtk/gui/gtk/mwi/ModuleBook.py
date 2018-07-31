@@ -32,8 +32,7 @@ from rtk.gui.gtk.moduleviews import mvwFunction
 from rtk.gui.gtk.moduleviews import mvwRequirement
 from rtk.gui.gtk.moduleviews import mvwHardware
 from rtk.gui.gtk.moduleviews import mvwValidation
-from rtk.gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
-    Options
+from rtk.gui.gtk.assistants import (CreateProject, OpenProject, Options, Preferences)
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
@@ -100,12 +99,14 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         self.set_default_size(_width, _height)
         self.move(0, 0)
 
-        if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'left':
+        if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+                'modulebook'].lower() == 'left':
             self.notebook.set_tab_pos(self._left_tab)
         elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
-                'modulebook'] == 'right':
+                'modulebook'].lower() == 'right':
             self.notebook.set_tab_pos(self._right_tab)
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'top':
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+                'modulebook'].lower() == 'top':
             self.notebook.set_tab_pos(self._top_tab)
         else:
             self.notebook.set_tab_pos(self._bottom_tab)
@@ -155,7 +156,12 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
         _menu = gtk.Menu()
 
-        _menu_item = gtk.MenuItem(label=_(u"New _Project"), use_underline=True)
+        _menu_item = gtk.ImageMenuItem()
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/16x16/new.png')
+        _menu_item.set_label(_(u"New _Program"))
+        _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', CreateProject, self._mdcRTK)
         _menu.append(_menu_item)
 
@@ -193,92 +199,31 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _mnuFile = gtk.MenuItem(label=_(u"_File"), use_underline=True)
         _mnuFile.set_submenu(_menu)
 
+        # Create the Edit menu.
         _menu = gtk.Menu()
+
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/undo.png')
-        _menu_item.set_label(_(u"Undo"))
+        _image.set_from_file(_icon_dir + '/16x16/preferences.png')
+        _menu_item.set_label(_(u"_Preferences"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        # _menu_item.connect('activate', Utilities.undo)
-        _menu.append(_menu_item)
-        _menu_item = gtk.ImageMenuItem()
-        _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/redo.png')
-        _menu_item.set_label(_(u"Redo"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        # _menu_item.connect('activate', Utilities.redo)
-        _menu.append(_menu_item)
-        _menu_item = gtk.ImageMenuItem()
-        _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/cut.png')
-        _menu_item.set_label(_(u"Cut"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        # _menu_item.connect('activate', Utilities.cut_copy_paste, 0)
-        _menu.append(_menu_item)
-        _menu_item = gtk.ImageMenuItem()
-        _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/copy.png')
-        _menu_item.set_label(_(u"Copy"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        # _menu_item.connect('activate', Utilities.cut_copy_paste, 1)
-        _menu.append(_menu_item)
-        _menu_item = gtk.ImageMenuItem()
-        _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/16x16/paste.png')
-        _menu_item.set_label(_(u"Paste"))
-        _menu_item.set_image(_image)
-        _menu_item.set_property('use_underline', True)
-        # _menu_item.connect('activate', Utilities.cut_copy_paste, 2)
-        _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"Select _All"), use_underline=True)
-        # _menu_item.connect('activate', Utilities.select_all)
+        _menu_item.connect('activate', Preferences, self._mdcRTK)
         _menu.append(_menu_item)
 
         _mnuEdit = gtk.MenuItem(label=_(u"_Edit"), use_underline=True)
         _mnuEdit.set_submenu(_menu)
 
+        # Create the Tools menu.
         _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_(u"_Find"), use_underline=True)
-        # _menu_item.connect('activate', Utilities.find, 0)
-        _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"Find _Next"), use_underline=True)
-        # _menu_item.connect('activate', Utilities.find, 1)
-        _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(
-            label=_(u"Find _Previous"), use_underline=True)
-        # _menu_item.connect('activate', Utilities.find, 2)
-        _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"_Replace"), use_underline=True)
-        # _menu_item.connect('activate', Utilities.find, 3)
-        _menu.append(_menu_item)
-
-        _mnuSearch = gtk.MenuItem(label=_(u"_Search"), use_underline=True)
-        _mnuSearch.set_submenu(_menu)
-
-        # Create the View menu.
-        _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_(u"Pro_cess Map"), use_underline=True)
-        # _menu_item.connect('activate', ProcessMap, self._app)
-        _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(
-            label=_(u"_Design Reviews"), use_underline=True)
-        # _menu_item.connect('activate', DesignReview, self._app)
-        _menu.append(_menu_item)
-
-        _mnuView = gtk.MenuItem(label=_(u"_Process"), use_underline=True)
-        _mnuView.set_submenu(_menu)
-
-        _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_(u"_Options"), use_underline=True)
+        _menu_item = gtk.ImageMenuItem()
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/16x16/options.png')
+        _menu_item.set_label(_(u"_Options"))
+        _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', Options, self._mdcRTK)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(
-            label=_(u"_Update Design Review Criteria"), use_underline=True)
-        # _menu_item.connect('activate', ReviewCriteria, self._app)
 
         _mnuTools = gtk.MenuItem(label=_(u"_Tools"), use_underline=True)
         _mnuTools.set_submenu(_menu)
@@ -286,8 +231,6 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menubar = gtk.MenuBar()
         _menubar.append(_mnuFile)
         _menubar.append(_mnuEdit)
-        _menubar.append(_mnuSearch)
-        _menubar.append(_mnuView)
         _menubar.append(_mnuTools)
 
         _menubar.show_all()
@@ -328,14 +271,13 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _toolbar.insert(_button, _position)
         _position += 1
 
-        # Delete button
+        # Close button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(
-            _(u"Deletes an existing RTK Program Database."))
+        _button.set_tooltip_text(_(u"Closes the open RTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/delete.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', DeleteProject, self._mdcRTK)
+        _button.connect('clicked', self._do_request_close_project)
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -404,7 +346,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
     def _on_close(self):
         """
-        Update the Modules Views when a RTK Program database is closed.
+        Update the Module View when a RTK Program database is closed.
 
         :return: None
         :rtype: None
@@ -494,8 +436,8 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         Request to save the open RTK Program.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this method.
-        :keyword bool close: indicates whether or not to quit RTK after saving
-                             the project.
+        :keyword bool end: indicates whether or not to quit RTK after saving
+                           the project.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
