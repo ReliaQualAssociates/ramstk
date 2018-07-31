@@ -30,9 +30,7 @@
 
 ## 🎨 Features
 
-RAMSTK is built on the concept of modules where a module is collection of
-related information and/or analyses pertinent to system development.  The
-modules currently included in RAMSTK are:
+RAMSTK is built on the concept of modules where a module is a collection of related information and/or analyses pertinent to system development.  The modules currently included in RAMSTK are:
 
 * Function Module
   - Functional decomposition

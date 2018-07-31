@@ -12,13 +12,13 @@ from rtk.dao import RTKSiteInfo, RTKProgramInfo
 
 
 class OptionsDataModel(RTKDataModel):
-    """Contains the attributes and methods of an Options."""
+    """Contains the attributes and methods of an Options data model."""
 
     _tag = 'Options'
 
     def __init__(self, dao, site_dao):
         """
-        Initialize a Options data model instance.
+        Initialize an Options data model instance.
 
         :param dao: the data access object for communicating with the RAMSTK
                     Program database.
@@ -83,7 +83,7 @@ class SiteOptionsDataModel(RTKDataModel):
 
     def __init__(self, dao):
         """
-        Initialize a Action data model instance.
+        Initialize a Site Options data model instance.
 
         :param dao: the data access object for communicating with the RTK
                     Program database.
@@ -158,7 +158,7 @@ class ProgramOptionsDataModel(RTKDataModel):
 
     def __init__(self, dao):
         """
-        Initialize a Action data model instance.
+        Initialize a Program Options data model instance.
 
         :param dao: the data access object for communicating with the RTK
                     Program database.

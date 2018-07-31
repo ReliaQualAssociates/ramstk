@@ -86,11 +86,14 @@ class WorkBook(RTKBook):
         self.set_default_size(_width, _height)
         self.move((_width / 1), (_height / 2))
 
-        if controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'left':
+        if controller.RTK_CONFIGURATION.RTK_TABPOS[
+                'workbook'].lower() == 'left':
             self.notebook.set_tab_pos(self._left_tab)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'right':
+        elif controller.RTK_CONFIGURATION.RTK_TABPOS[
+                'workbook'].lower() == 'right':
             self.notebook.set_tab_pos(self._right_tab)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'top':
+        elif controller.RTK_CONFIGURATION.RTK_TABPOS[
+                'workbook'].lower() == 'top':
             self.notebook.set_tab_pos(self._top_tab)
         else:
             self.notebook.set_tab_pos(self._bottom_tab)

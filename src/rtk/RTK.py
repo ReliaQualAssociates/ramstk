@@ -51,6 +51,7 @@ from rtk.modules.similar_item import dtcSimilarItem
 from rtk.modules.pof import dtcPoF
 from rtk.modules.validation import dtcValidation
 from rtk.modules.options import dtcOptions
+from rtk.modules.preferences import dtcPreferences
 
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
@@ -224,7 +225,7 @@ class Model(object):
     def do_close_program(self):
         """Close the open RTK Program database."""
         self.program_dao.db_close()
-        print self.program_dao.engine, self.program_dao.session, self.program_dao.metadata, self.program_dao.database
+
         return None
 
     def do_save_program(self):
@@ -292,11 +293,6 @@ class Model(object):
             configuration.RTK_CATEGORIES[
                 _record.category_id] = _record.description
             configuration.RTK_SUBCATEGORIES[_record.category_id] = _subcats
-
-        for _record in self.site_session.query(RTKStakeholders).all():
-            _attributes = _record.get_attributes()
-            configuration.RTK_STAKEHOLDERS[_record.stakeholders_id] = (
-                _attributes['stakeholder'], )
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKCategory.                                 #
@@ -447,6 +443,11 @@ class Model(object):
             configuration.RTK_MEASURABLE_PARAMETERS[_record.measurement_id] = (
                 _attributes['code'], _attributes['description'],
                 _attributes['measurement_type'])
+
+        for _record in self.site_session.query(RTKStakeholders).all():
+            _attributes = _record.get_attributes()
+            configuration.RTK_STAKEHOLDERS[_record.stakeholders_id] = (
+                _attributes['stakeholder'], )
 
         for _record in self.site_session.query(RTKUser).all():
             _attributes = _record.get_attributes()
@@ -624,6 +625,15 @@ class RTK(object):
             test=False)
         self.dic_controllers['options'].request_do_select_all(
             site=True, program=False)
+
+        # Create a Preferences module instance and read the user preferences.
+        self.dic_controllers['preferences'] = dtcPreferences(
+            self.rtk_model.program_dao,
+            self.RTK_CONFIGURATION,
+            site_dao=_dao,
+            test=False)
+        self.dic_controllers['preferences'].request_do_select_all(
+            site=True, user=True)
 
         # Validate the license.
         # if self._validate_license():

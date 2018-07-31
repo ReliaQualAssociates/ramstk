@@ -84,11 +84,14 @@ class ListBook(RTKBook):
         self.set_default_size((self._width / 3) - 10, (2 * self._height / 7))
         self.move((2 * self._width / 3), 0)
 
-        if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'left':
+        if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+                'listbook'].lower() == 'left':
             self.notebook.set_tab_pos(self._left_tab)
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'right':
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+                'listbook'].lower() == 'right':
             self.notebook.set_tab_pos(self._right_tab)
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'top':
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+                'listbook'].lower() == 'top':
             self.notebook.set_tab_pos(self._top_tab)
         else:
             self.notebook.set_tab_pos(self._bottom_tab)

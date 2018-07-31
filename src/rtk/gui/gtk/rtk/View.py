@@ -76,7 +76,10 @@ class RTKBaseView(object):
             '/32x32/insert_sibling.png',
             'insert_child':
             controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-            '/32x32/insert_child.png'
+            '/32x32/insert_child.png',
+            'cancel':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+            '/32x32/cancel.png',
         }
 
         # Initialize private list attributes.

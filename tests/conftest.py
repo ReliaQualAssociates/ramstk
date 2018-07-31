@@ -10,8 +10,10 @@ from rtk.dao.RTKProgramDB import do_create_test_database
 
 VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CONF_DIR = VIRTUAL_ENV + '/share/RTK'
+DATA_DIR = CONF_DIR + '/data'
+ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
-DATA_DIR = TMP_DIR + '/data'
 LOG_DIR = TMP_DIR + '/logs'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.rtk'
 TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.rtk'
@@ -81,21 +83,47 @@ def test_configuration():
 
     configuration = Configuration()
 
-    configuration.RTK_CONF_DIR = DATA_DIR
+    configuration.RTK_SITE_DIR = CONF_DIR
+    configuration.RTK_CONF_DIR = CONF_DIR
     configuration.RTK_PROG_CONF = configuration.RTK_CONF_DIR + '/RTK.conf'
-    copyfile(SRC_DIR + '/data/RTK.conf', configuration.RTK_PROG_CONF)
-    for line in fileinput.input(configuration.RTK_PROG_CONF, inplace=True):
+    #copyfile(SRC_DIR + '/data/RTK.conf', configuration.RTK_PROG_CONF)
+    #for line in fileinput.input(configuration.RTK_PROG_CONF, inplace=True):
         # Inside this loop the STDOUT will be redirected to the file
         # the comma after each print statement is needed to avoid double line
         # breaks.
-        print line.replace("database =", "database = " + TEST_PROGRAM_DB_PATH),
+     #   print line.replace("database =", "database = " + TEST_PROGRAM_DB_PATH),
+      #  print line.replace("sitedir =", "sitedir = " + TMP_DIR),
 
     configuration.RTK_COM_BACKEND = 'sqlite'
-    configuration.RTK_BACKEND = 'sqlite'
+    configuration.RTK_COM_INFO['host'] = 'localhost'
+    configuration.RTK_COM_INFO['socket'] = 3306
     configuration.RTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
-    configuration.RTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
+    configuration.RTK_COM_INFO['user'] = 'rtkcom'
+    configuration.RTK_COM_INFO['password'] = 'rtkcom'
 
-    configuration.RTK_LOG_DIR = TMP_DIR
+    configuration.RTK_REPORT_SIZE = 'letter'
+    configuration.RTK_HR_MULTIPLIER = 1000000.0
+    configuration.RTK_MTIME = 100.0
+    configuration.RTK_DEC_PLACES = 6
+    configuration.RTK_MODE_SOURCE = 1
+    configuration.RTK_TABPOS = {'modulebook': 'top', 'listbook': 'bottom', 'workbook': 'bottom'}
+
+    configuration.RTK_BACKEND = 'sqlite'
+    configuration.RTK_PROG_INFO['host'] = 'localhost'
+    configuration.RTK_PROG_INFO['socket'] = 3306
+    configuration.RTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
+    configuration.RTK_PROG_INFO['user'] = 'johnny.tester'
+    configuration.RTK_PROG_INFO['password'] = 'clear.text.password'
+
+    configuration.RTK_DATA_DIR = DATA_DIR
+    configuration.RTK_ICON_DIR = ICON_DIR
+    configuration.RTK_LOG_DIR = LOG_DIR
+    configuration.RTK_PROG_DIR = TMP_DIR
+
+    configuration.RTK_FORMAT_FILE = {'allocation': 'Allocation.xml', 'dfmeca': 'DFMECA.xml', 'failure_definition': 'FailureDefinition.xml', 'ffmea': 'FFMEA.xml', 'function': 'Function.xml', 'hardware': 'Hardware.xml', 'hazops': 'HazOps.xml', 'pof': 'PoF.xml', 'requirement': 'Requirement.xml', 'revision': 'Revision.xml', 'similaritem': 'SimilarItem.xml', 'stakeholder': 'Stakeholder.xml', 'validation': 'Validation.xml'}
+    configuration.RTK_COLORS = {'functionbg': '#FFFFFF', 'functionfg': '#000000', 'hardwarebg': '#FFFFFF', 'hardwarefg': '#000000', 'requirementbg': '#FFFFFF', 'requirementfg': '#000000', 'revisionbg': '#FFFFFF', 'revisionfg': '#000000', 'stakeholderbg': '#FFFFFF', 'stakeholderfg': '#000000', 'validationbg': '#FFFFFF', 'validationfg': '#000000'}
+
+    configuration.set_user_configuration()
 
     configuration.RTK_DEBUG_LOG = \
         Utilities.create_logger("RTK.debug", 'DEBUG', DEBUG_LOG)

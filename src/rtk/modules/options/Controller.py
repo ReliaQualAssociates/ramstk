@@ -83,7 +83,7 @@ class OptionsDataController(RTKDataController):
             (_error_code, _msg) = self._dtm_data_model.site_options.set_attributes(options)
         elif _program:
             (_error_code, _msg) = self._dtm_data_model.program_options.set_attributes(options)
-        print _msg
+
         return (_error_code, _msg)
 
     def request_do_update(self):
