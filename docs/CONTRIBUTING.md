@@ -106,10 +106,39 @@ Please refer to the RAMSTK [coding conventions](https://github.com/weibullguy/rt
 
 #### Git Commit Messages
 
-* Use the present tense.
-* Use the imperative mood.
-* Limit the first line to 72 characters or less.
-* Reference pull requests and issues after the first line.
+RAMSTK follows the AngularJS commit message [format]
+(https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
+since August 20, 2018.  All commit messages after that date must conform to the
+AngularJS format.
+
+##### Scope
+
+RAMSTK scopes for commit messages are:
+
+* Revision
+* Requirement
+* Function
+* Hardware
+* Validation
+
+Scope can be a colon separated string where the secondary scope is one of:
+
+* Usage
+* FailureDefinition
+* Stakeholder
+* Allocation
+* HazOps
+* SimilarItem
+* MIL217
+* FMEA
+* PoF
+
+Some examples of the extended scope format are:
+
+* Revision:Usage
+* Requirement:Stakeholder
+* Function:FMEA
+* Hardware:HazOps
 
 #### Always Add Descriptive Log Messages
 
