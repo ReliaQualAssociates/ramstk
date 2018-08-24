@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# RTK documentation build configuration file, created by
+# RAMSTK documentation build configuration file, created by
 # sphinx-quickstart on Sun Nov  5 21:46:52 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -22,9 +22,8 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('../../rtk/'), )
+sys.path.insert(0, os.path.abspath('../../src/rtk/'), )
 sys.path.append(os.path.join(os.path.dirname(__name__), '../../'))
-#sys.path.append('/home/arowland/.virtualenvs/RTK/lib/python2.7/site-packages')
 
 # -- General configuration ------------------------------------------------
 
@@ -56,8 +55,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'RTK'
-copyright = u'2017, Doyle Rowland'
+project = u'RAMSTK'
+copyright = u'2018, Doyle Rowland'
 author = u'Doyle Rowland'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -122,7 +121,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'RTKdoc'
+htmlhelp_basename = 'RAMSTKdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -149,7 +148,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'RTK.tex', u'RTK Documentation',
+    (master_doc, 'RAMSTK.tex', u'RAMSTK API Documentation',
      u'Doyle Rowland', 'manual'),
 ]
 
@@ -159,7 +158,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'rtk', u'RTK Documentation',
+    (master_doc, 'rtk', u'RAMSTK API Documentation',
      [author], 1)
 ]
 
@@ -170,8 +169,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'RTK', u'RTK Documentation',
-     author, 'RTK', 'One line description of project.',
+    (master_doc, 'RAMSTK', u'RAMSTK API Documentation',
+     author, 'RAMSTK', 'One line description of project.',
      'Miscellaneous'),
 ]
 

@@ -1,23 +1,22 @@
-Stakeholder Package
+Similar Item Analysis Package
 ===============================================================================
 
 .. toctree::
 
-
-Stakeholder Data Model
+Similar Item Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.modules.stakeholder.Model
+.. automodule:: rtk.modules.similar_item.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-Stakeholder Data Controller
+Similar Item Data Controller
 -------------------------------------------------------------------------------
-
-.. automodule:: rtk.modules.stakeholder.Controller
+.. automodule:: rtk.modules.similar_item.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
+

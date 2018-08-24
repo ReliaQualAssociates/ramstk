@@ -520,8 +520,8 @@ def test_request_do_map_field_function(test_dao, test_configuration,
 
 
 @pytest.mark.integration
-def test_request_do_insert_function_primary_key_violation(test_dao, test_configuration,
-                                    test_csv_file_function):
+def test_request_do_insert_function_primary_key_violation(
+        test_dao, test_configuration, test_csv_file_function):
     """
     request_do_insert() should return a three error code and count of zero
     inserted entities when there is a primary key violation.
@@ -530,7 +530,8 @@ def test_request_do_insert_function_primary_key_violation(test_dao, test_configu
 
     DUT.request_do_read_input('csv', test_csv_file_function)
 
-    for _idx, _key in enumerate(DUT._dtm_data_model._dic_field_map['Function']):
+    for _idx, _key in enumerate(
+            DUT._dtm_data_model._dic_field_map['Function']):
         DUT.request_do_map_to_field(
             'Function',
             list(DUT._dtm_data_model._input_data)[_idx], _key)

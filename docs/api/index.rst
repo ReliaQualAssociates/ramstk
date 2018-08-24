@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the Reliability ToolKit's (RTK) Documentation!
+Welcome to the RAMS ToolKit's (RAMSTK) Documentation!
 =========================================================
 
 .. toctree::

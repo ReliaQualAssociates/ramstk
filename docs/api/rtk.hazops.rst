@@ -1,23 +1,22 @@
-Stakeholder Package
+Hazardous Operations (HazOps) Analysis Package
 ===============================================================================
 
 .. toctree::
 
-
-Stakeholder Data Model
+HazOps Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.modules.stakeholder.Model
+.. automodule:: rtk.modules.hazops.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-Stakeholder Data Controller
+HazOps Data Controller
 -------------------------------------------------------------------------------
-
-.. automodule:: rtk.modules.stakeholder.Controller
+.. automodule:: rtk.modules.hazops.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
+

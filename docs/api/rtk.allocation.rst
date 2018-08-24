@@ -1,23 +1,22 @@
-Stakeholder Package
+Reliability Allocation Package
 ===============================================================================
 
 .. toctree::
 
-
-Stakeholder Data Model
+Allocation Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: rtk.modules.stakeholder.Model
+.. automodule:: rtk.modules.allocation.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-Stakeholder Data Controller
+Allocation Data Controller
 -------------------------------------------------------------------------------
-
-.. automodule:: rtk.modules.stakeholder.Controller
+.. automodule:: rtk.modules.allocation.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
+
