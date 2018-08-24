@@ -7,6 +7,8 @@
 """RAMSTK test suite configuration module."""
 
 import os
+import platform
+import sys
 import glob
 import csv
 import gettext
@@ -22,7 +24,18 @@ from rtk.dao.RTKProgramDB import do_create_test_database
 
 _ = gettext.gettext
 
-VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
+try:
+    VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
+except KeyError:
+    if platform.system() == 'Linux':
+        VIRTUAL_ENV = os.getenv('HOME') + '/.local'
+    elif platform.system() == 'Windows':
+        VIRTUAL_ENV = os.getenv('TEMP')
+    else:
+        print("The {0:s} system platform is not "
+              "supported.").format(platform.system())
+        sys.exit(1)
+
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONF_DIR = VIRTUAL_ENV + '/share/RTK'
 DATA_DIR = CONF_DIR + '/data'
