@@ -3,7 +3,7 @@ List View Package
 
 .. toctree::
 
-RTKListView Meta-Class Module
+List View Meta-Class Module
 -------------------------------------------------------------------------------
 
 .. automodule:: rtk.gui.gtk.listviews.ListView

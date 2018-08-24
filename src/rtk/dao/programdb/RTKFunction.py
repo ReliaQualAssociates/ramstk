@@ -121,7 +121,7 @@ class RTKFunction(RTK_BASE):
         """
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKFunction {0:d} attributes.". \
-               format(self.function_id)
+               format(int(self.function_id))
 
         try:
             self.availability_logistics = float(

@@ -1,11 +1,11 @@
 ===============================================================================
-The Reliability ToolKit (RTK)
+The RAMS ToolKit (RAMSTK)
 ===============================================================================
 
 .. toctree::
 
 -------------------------------------------------------------------------------
-RTK Module Packages
+RAMSTK Module Packages
 -------------------------------------------------------------------------------
 
 .. toctree::
@@ -13,25 +13,26 @@ RTK Module Packages
     rtk.revision
     rtk.failure_definition
     rtk.usage
-    rtk.function
     rtk.requirement
+    rtk.function
     rtk.stakeholder
     rtk.hardware
-    rtk.software
-    rtk.survival
-    rtk.testing
     rtk.validation
 
 -------------------------------------------------------------------------------
-RTK Analyses Packages
+RAMSTK Analyses Packages
 -------------------------------------------------------------------------------
 
 .. toctree::
 
+    rtk.allocation
     rtk.fmea
     rtk.pof
+    rtk.hazops
+    rtk.similar_item
 
-RTK Graphical User Interface Packages
+-------------------------------------------------------------------------------
+RAMSTK Graphical User Interface Packages
 -------------------------------------------------------------------------------
 
 .. toctree::
@@ -44,7 +45,7 @@ RTK Graphical User Interface Packages
     rtk.gui.gtk.widgets
 
 -------------------------------------------------------------------------------
-RTK Database Package
+RAMSTK Database Package
 -------------------------------------------------------------------------------
 
 .. toctree::
@@ -52,19 +53,46 @@ RTK Database Package
     rtk.dao
 
 -------------------------------------------------------------------------------
-RTK Datamodels, Configuration, and Utilities
+RAMSTK Datamodels, Configuration, and Utilities
 -------------------------------------------------------------------------------
 
-.. toctree::
+Configuration Module
+-------------------------------------------------------------------------------
+.. automodule::  rtk.Configuration
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
 
-    rtk.datamodels
-    rtk.configuration
+Data Controller Module
+-------------------------------------------------------------------------------
+.. automodule::  rtk.modules.RTKDataController
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
+Data Matrix Module
+-------------------------------------------------------------------------------
+.. automodule::  rtk.modules.RTKDataMatrix
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
+Data Model Module
+-------------------------------------------------------------------------------
+.. automodule::  rtk.modules.RTKDataModel
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
 
 ===============================================================================
 Module Contents
 ===============================================================================
 
-.. automodule:: rtk.rtk
+.. automodule:: rtk.RTK
     :members:
     :undoc-members:
     :show-inheritance:

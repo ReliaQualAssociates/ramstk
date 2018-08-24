@@ -6,8 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RAMSTK Configuration Options Module."""
 
-from os.path import basename
-
 # Import other RTK modules.
 from rtk.Utilities import boolean_to_integer, integer_to_boolean
 from rtk.gui.gtk.rtk.Widget import _, gtk
@@ -76,7 +74,7 @@ class Options(gtk.Window):
             label=_(u"Requirements Module Active"),
             tooltip=
             _(u"Activates/deactivates the Requirements module for this program."
-              ))
+             ))
         self.chkHardware = rtk.RTKCheckButton(
             label=_(u"Hardware Module Active"),
             tooltip=_(

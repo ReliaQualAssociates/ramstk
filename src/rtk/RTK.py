@@ -52,6 +52,7 @@ from rtk.modules.pof import dtcPoF
 from rtk.modules.validation import dtcValidation
 from rtk.modules.options import dtcOptions
 from rtk.modules.preferences import dtcPreferences
+from rtk.modules.imports import dtcImports
 
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
@@ -516,6 +517,7 @@ class RTK(object):
                                     'pof'
                                     'growth'
                                     'options'
+                                    'imports'
                                 Values are the instance of each RTK data
                                 controller.
 
@@ -592,6 +594,7 @@ class RTK(object):
             'hazard': None,
             'similaritem': None,
             'pof': None,
+            'imports': None,
         }
         self.dic_books = {
             'listbook': None,
@@ -634,6 +637,10 @@ class RTK(object):
             test=False)
         self.dic_controllers['preferences'].request_do_select_all(
             site=True, user=True)
+
+        # Create an Import module instance.
+        self.dic_controllers['imports'] = dtcImports(
+            self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
 
         # Validate the license.
         # if self._validate_license():
@@ -751,7 +758,8 @@ class RTK(object):
             self.dic_controllers['options'].request_do_select_all(
                 site=False, program=True)
             _program_info = self.dic_controllers[
-                'options'].request_get_options(site=False, program=True)
+                'options'].request_get_options(
+                    site=False, program=True)
             self.RTK_CONFIGURATION.RTK_MODULES['function'] = \
                 _program_info['function_active']
             self.RTK_CONFIGURATION.RTK_MODULES['requirement'] = \

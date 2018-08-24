@@ -1,34 +1,22 @@
-RTK Physics of Failure Analysis Sub-Package
-===========================================
+Physics of Failure (PoF) Analysis Package
+===============================================================================
 
 .. toctree::
 
-.. automodule:: rtk.modules.pof.PhysicsOfFailure
+PoF Data Models
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.modules.pof.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.modules.pof.Mechanism
+PoF Data Controller
+-------------------------------------------------------------------------------
+.. automodule:: rtk.modules.pof.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.modules.pof.Load
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: rtk.modules.pof.Stress
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: rtk.modules.pof.Method
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:

@@ -1,9 +1,9 @@
-MWI Package
+Multi-Window Interface (MWI) Package
 ===============================================================================
 
 .. toctree::
 
-RTK Book Meta-Class
+Book Meta-Class
 -------------------------------------------------------------------------------
 .. automodule:: rtk.gui.gtk.rtk.Book
     :members:
@@ -11,7 +11,7 @@ RTK Book Meta-Class
     :private-members:
     :show-inheritance:
 
-RTK List Book
+Lists and Matrices Book
 -------------------------------------------------------------------------------
 .. automodule:: rtk.gui.gtk.mwi.ListBook
     :members:
@@ -19,7 +19,7 @@ RTK List Book
     :private-members:
     :show-inheritance:
 
-RTK Module Book
+Module Book
 -------------------------------------------------------------------------------
 .. automodule:: rtk.gui.gtk.mwi.ModuleBook
     :members:
@@ -27,7 +27,7 @@ RTK Module Book
     :private-members:
     :show-inheritance:
 
-RTK Work Book
+Work Book
 -------------------------------------------------------------------------------
 .. automodule:: rtk.gui.gtk.mwi.WorkBook
     :members:

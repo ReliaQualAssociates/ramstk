@@ -120,7 +120,7 @@ def test_dao_db_add_no_item(test_configuration):
     ], DUT.session)
 
     assert _error_code == 1
-    assert _msg == ("RTK ERROR: Adding one or more items to the RTK "
+    assert _msg == ("RAMSTK ERROR: Adding one or more items to the RTK "
                     "Program database.")
 
 

@@ -1,4 +1,4 @@
-FMEA Package
+Failure Mode and Effects Analysis (FMEA) Package
 ===============================================================================
 
 .. toctree::
