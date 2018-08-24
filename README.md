@@ -6,10 +6,10 @@
 
 ***Please note the development branch is currently the default branch until version 1.0.0 is released.***
 
-[![Build Status](https://travis-ci.org/weibullguy/rtk.svg?branch=develop)](https://travis-ci.org/weibullguy/rtk)
+[![Build Status](https://travis-ci.org/weibullguy/ramstk.svg?branch=develop)](https://travis-ci.org/weibullguy/ramstk)
 [![Build status](https://ci.appveyor.com/api/projects/status/eh0md738pyoiick0/branch/develop?svg=true)](https://ci.appveyor.com/project/weibullguy/rtk/branch/develop)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/rtk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/rtk&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/rtk?utm_source=github.com&utm_medium=referral&utm_content=weibullguy/rtk&utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/ramstk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/ramstk&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/ramstk?utm_source=github.com&utm_medium=referral&utm_content=weibullguy/ramstk&utm_campaign=Badge_Coverage)
 [![Coverage Status](https://coveralls.io/repos/github/weibullguy/rtk/badge.svg?branch=develop)](https://coveralls.io/github/weibullguy/rtk?branch=develop)
 [![Documentation Status](https://readthedocs.org/projects/rtk/badge/?version=develop)](http://rtk.readthedocs.io/en/develop/?badge=develop)
 
@@ -75,7 +75,7 @@ RAMSTK requires PyGTK to be installed.  If you plan to install RAMSTK in a virtu
 To install from PyPI using pip, simply issue the following command:
 
 ```sh
-$ pip install RAMSTK
+$ pip install ramstk
 ```
 
 With the exception of PyGTK, pip will install any missing runtime dependencies automatically.
@@ -85,8 +85,8 @@ With the exception of PyGTK, pip will install any missing runtime dependencies a
 Install any missing RAMSTK dependencies using pip, your package manager, and/or build from source.  Then download the <version> of RAMSTK source from GitHub Releases you wish to install.
 
 ```sh
-$ tar -xf RAMSTK-<version>.tar.gz
-$ cd RAMSTK-<version>
+$ tar -xf ramstk-<version>.tar.gz
+$ cd ramstk-<version>
 $ python setup.py install
 ```
 
