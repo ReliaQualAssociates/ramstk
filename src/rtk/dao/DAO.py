@@ -173,7 +173,8 @@ class DAO(object):
                     _error_code = 2
                     _msg = ('RAMSTK ERROR: No database open when attempting '
                             'to insert record.')
-                elif 'PRIMARY KEY must be unique' in _error:
+                elif ('PRIMARY KEY must be unique' in _error) or (
+                        'UNIQUE constraint failed:' in _error):
                     _error_code = 3
                     _msg = ('RAMSTK ERROR: Primary key error: '
                             '{0:s}').format(_error)

@@ -18,7 +18,7 @@ with open(os.path.join(here, 'README.md')) as f:
     __long_description__ = f.read()
 
 __appname__ = 'RAMSTK'
-__version__ = '1.0.0dev'
+__version__ = '1.0.0.dev0'
 __author__ = "Doyle 'weibullguy' Rowland"
 __email__ = "andrew.rowland@reliaqual.com"
 __trove__ = [
