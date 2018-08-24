@@ -7,6 +7,7 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 
 from .CreateProject import CreateProject
+from .Import import RAMSTKImport as ImportProject
 from .OpenProject import OpenProject
 from .Options import Options
 from .Preferences import Preferences

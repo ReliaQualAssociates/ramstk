@@ -11,7 +11,6 @@ import gettext
 from sqlalchemy import create_engine, exc, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import NullPool
 
 # Import tables objects for the RTK Common database.
 from .RTKCommonDB import create_common_db
@@ -154,8 +153,8 @@ class DAO(object):
         :param item: the object to add to the RTK Program database.
         :param session: the SQLAlchemy scoped_session instance used to
                         communicate with the RTK Program database.
-        :type session: :py:class:`sqlalchemy.orm.scoped_session`
-        :return: (_error_code, _Msg); the error code and associated error
+        :type session: :class:`sqlalchemy.orm.scoped_session`
+        :return: (_error_code, _msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
@@ -168,11 +167,30 @@ class DAO(object):
                 session.add(_item)
                 session.commit()
             except (exc.SQLAlchemyError, exc.DBAPIError) as error:
-                print error
+                _error = '{0:s}'.format(error)
                 session.rollback()
-                _error_code = 1
-                _msg = "RTK ERROR: Adding one or more items to the RTK " \
-                       "Program database."
+                if 'Could not locate a bind' in _error:
+                    _error_code = 2
+                    _msg = ('RAMSTK ERROR: No database open when attempting '
+                            'to insert record.')
+                elif 'PRIMARY KEY must be unique' in _error:
+                    _error_code = 3
+                    _msg = ('RAMSTK ERROR: Primary key error: '
+                            '{0:s}').format(_error)
+                elif 'Date type only accepts Python date objects as input' in _error:
+                    _error_code = 4
+                    _msg = ('RAMSTK ERROR: Date field did not contain Python '
+                            'date object: {0:s}').format(_error)
+                else:
+                    print _error
+                    _error_code = 1
+                    _msg = (
+                        'RAMSTK ERROR: Adding one or more items to the RTK '
+                        'Program database.')
+            except ValueError as _error:
+                _error_code = 4
+                _msg = ('RAMSTK ERROR: Date field did not contain Python '
+                        'date object: {0:s}').format(_error)
 
         return _error_code, _msg
 

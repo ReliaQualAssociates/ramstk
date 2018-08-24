@@ -26,13 +26,12 @@ class RTKDataModel(object):  # pragma: no cover
 
     def __init__(self, dao):
         """
-        Method to initialize an RTK data model instance.
+        Initialize an RTK data model instance.
 
         :param dao: the data access object for communicating with the RTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -118,7 +117,6 @@ class RTKDataModel(object):  # pragma: no cover
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-
         _msg = ''
 
         _session = self.dao.RTK_SESSION(

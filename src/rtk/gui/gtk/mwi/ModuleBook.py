@@ -32,7 +32,7 @@ from rtk.gui.gtk.moduleviews import mvwFunction
 from rtk.gui.gtk.moduleviews import mvwRequirement
 from rtk.gui.gtk.moduleviews import mvwHardware
 from rtk.gui.gtk.moduleviews import mvwValidation
-from rtk.gui.gtk.assistants import (CreateProject, OpenProject, Options, Preferences)
+from rtk.gui.gtk.assistants import (CreateProject, OpenProject, Options, Preferences, ImportProject)
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
@@ -172,6 +172,10 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', OpenProject, self._mdcRTK)
+        _menu.append(_menu_item)
+
+        _menu_item = gtk.MenuItem(label=_(u"_Import Project"), use_underline=True)
+        _menu_item.connect('activate', ImportProject, self._mdcRTK)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
