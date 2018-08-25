@@ -8,6 +8,8 @@
 """Test class for testing the Preferences class. """
 
 import os
+import platform
+import sys
 import glob
 
 import pytest
@@ -22,7 +24,18 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2018 Andrew "weibullguy" Rowland'
 
-VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
+try:
+    VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
+except KeyError:
+    if platform.system() == 'Linux':
+        VIRTUAL_ENV = os.getenv('HOME') + '/.local'
+    elif platform.system() == 'Windows':
+        VIRTUAL_ENV = os.getenv('TEMP')
+    else:
+        print("The {0:s} system platform is not "
+              "supported.").format(platform.system())
+        sys.exit(1)
+
 CONF_DIR = VIRTUAL_ENV + '/share/RTK'
 DATA_DIR = CONF_DIR + '/data'
 ICON_DIR = CONF_DIR + '/icons'

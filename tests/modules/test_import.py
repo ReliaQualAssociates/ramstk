@@ -1,4 +1,3 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.modules.test_imports.py is part of The RTK Project
