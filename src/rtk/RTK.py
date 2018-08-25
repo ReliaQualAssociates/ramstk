@@ -97,21 +97,34 @@ def _initialize_loggers(configuration):
     :rtype: tuple
     """
     # Create loggers for the application.  The first is to store log
-    # information for RTK developers.  The second is to log errors for the
+    # information for RAMSTK developers.  The second is to log errors for the
     # user.  The user can use these errors to help find problems with their
-    # inputs and sich.
-    __user_log = configuration.RTK_LOG_DIR + '/RTK_user.log'
+    # inputs and sich.  The third is for logging errors encountered when
+    # importing data to RAMSTK.
     __error_log = configuration.RTK_LOG_DIR + '/RTK_debug.log'
+    __user_log = configuration.RTK_LOG_DIR + '/RTK_user.log'
     __import_log = configuration.RTK_LOG_DIR + '/RTK_import.log'
 
     if not Utilities.dir_exists(configuration.RTK_LOG_DIR):
         os.makedirs(configuration.RTK_LOG_DIR)
 
     if Utilities.file_exists(__user_log):
+        try:
+            __user_log.close()
+        except AttributeError:
+            pass
         os.remove(__user_log)
     if Utilities.file_exists(__error_log):
+        try:
+            __error_log.close()
+        except AttributeError:
+            pass
         os.remove(__error_log)
     if Utilities.file_exists(__import_log):
+        try:
+            __import_log.close()
+        except AttributeError:
+            pass
         os.remove(__import_log)
 
     _debug_log = Utilities.create_logger("RTK.debug", logging.DEBUG,
