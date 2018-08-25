@@ -16,8 +16,7 @@ install:
 - cmd: >-
     set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
 
-    cinst gtk-runtime
-    cinst pygtk-all-in-one_win32_py2.7
+    cinst gtk-runtime pygtk-all-in-one_win32_py2.7
 
     %PYTHON%\python.exe --version
 
@@ -42,7 +41,9 @@ after_test:
     %PYTHON%\python.exe setup.py bdist_wininst
     %PYTHON%\python.exe setup.py bdist_msi
 
-cache: pygtk-all-in-one-2.24.2.win32-py2.7.msi
+cache:
+    - pygtk-all-in-one-2.24.2.win32-py2.7.msi
+    - gtk2-runtime-2.24.10-2012-10-10-ash.exe
 
 artifacts:
 - path: dist\*
