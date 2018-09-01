@@ -16,7 +16,7 @@ from rtk.dao import DAO
 from rtk.modules.exports import dtmExports, dtcExports
 from rtk.modules.function import dtmFunction
 from rtk.modules.requirement import dtmRequirement
-from rtk.modules.hardware import dtmHardware, dtmDesignElectric, dtmReliability
+from rtk.modules.hardware import dtmHardwareBoM, dtmDesignElectric, dtmReliability
 from rtk.modules.validation import dtmValidation
 
 __author__ = 'Andrew Rowland'
@@ -115,7 +115,7 @@ def test_do_load_output_hardware(test_dao):
     """do_load_output() should return None when loading Hardware for export."""
     DUT = dtmExports(test_dao)
 
-    _hardware = dtmHardware(test_dao)
+    _hardware = dtmHardwareBoM(test_dao)
     _tree = _hardware.do_select_all(revision_id=1)
 
     assert DUT.do_load_output('Hardware', _tree) is None
