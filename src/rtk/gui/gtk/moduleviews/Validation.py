@@ -245,6 +245,17 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_export(self, __button):
+        """
+        Launch the Export assistant.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        return self.do_request_export('Validation')
+
     def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new record to the RTKValidation table.
@@ -331,13 +342,16 @@ class ModuleView(RTKModuleView):
             _(u"Save the currently selected Validation task to the open "
               u"RTK Program database."),
             _(u"Saves all Validation tasks to the open RTK Program "
-              u"database.")
+              u"database."),
+            _(u"Exports Verification tasks to an external file (CSV, Excel, "
+              u"and text files are supported).")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_delete,
-            self._do_request_update, self._do_request_update_all
+            self._do_request_update, self._do_request_update_all,
+            self._do_request_export
         ]
-        _icons = ['add', 'remove', 'save', 'save-all']
+        _icons = ['add', 'remove', 'save', 'save-all', 'export']
 
         _buttonbox = RTKModuleView._make_buttonbox(
             self,

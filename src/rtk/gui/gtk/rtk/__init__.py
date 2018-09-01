@@ -11,7 +11,7 @@ import Widget
 from .Book import RTKBook, destroy
 from .Button import RTKButton, RTKCheckButton, RTKOptionButton
 from .Combo import RTKComboBox
-from .Dialog import RTKDateSelect, RTKDialog, RTKMessageDialog
+from .Dialog import RTKDateSelect, RTKDialog, RTKFileChooser, RTKMessageDialog
 from .Entry import RTKEntry, RTKTextView
 from .Frame import RTKFrame
 # from .Helpers import rtk_file_select, rtk_set_cursor

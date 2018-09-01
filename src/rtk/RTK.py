@@ -53,6 +53,7 @@ from rtk.modules.validation import dtcValidation
 from rtk.modules.options import dtcOptions
 from rtk.modules.preferences import dtcPreferences
 from rtk.modules.imports import dtcImports
+from rtk.modules.exports import dtcExports
 
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
@@ -110,22 +111,22 @@ def _initialize_loggers(configuration):
 
     if Utilities.file_exists(__user_log):
         try:
-            __user_log.close()
-        except AttributeError:
-            pass
-        os.remove(__user_log)
+            os.remove(__user_log)
+        except WindowsError as _error:
+            print("Could not delete {0:s} because {1:s}.").format(__user_log,
+                                                                  _error)
     if Utilities.file_exists(__error_log):
         try:
-            __error_log.close()
-        except AttributeError:
-            pass
-        os.remove(__error_log)
+            os.remove(__error_log)
+        except WindowsError as _error:
+            print("Could not delete {0:s} because {1:s}.").format(__user_log,
+                                                                  _error)
     if Utilities.file_exists(__import_log):
         try:
-            __import_log.close()
-        except AttributeError:
-            pass
-        os.remove(__import_log)
+            os.remove(__import_log)
+        except WindowsError as _error:
+            print("Could not delete {0:s} because {1:s}.").format(__user_log,
+                                                                  _error)
 
     _debug_log = Utilities.create_logger("RTK.debug", logging.DEBUG,
                                          __error_log)
@@ -584,7 +585,7 @@ class RTK(object):
         # Initialize private list instance attributes.
         self.__test = kwargs['test']
         self._lst_modules = [
-            'function', 'requirement', 'hardware', 'validation'
+            'requirement', 'function', 'hardware', 'validation'
         ]
 
         # Initialize private scalar instance attributes.
@@ -608,6 +609,7 @@ class RTK(object):
             'similaritem': None,
             'pof': None,
             'imports': None,
+            'exports': None,
         }
         self.dic_books = {
             'listbook': None,
@@ -653,6 +655,10 @@ class RTK(object):
 
         # Create an Import module instance.
         self.dic_controllers['imports'] = dtcImports(
+            self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
+
+        # Create an Export module instance.
+        self.dic_controllers['exports'] = dtcExports(
             self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
 
         # Validate the license.
@@ -782,7 +788,7 @@ class RTK(object):
             self.RTK_CONFIGURATION.RTK_MODULES['validation'] = \
                 _program_info['vandv_active']
 
-            _page = 0
+            _page = 1
             for _module in self._lst_modules:
                 if self.RTK_CONFIGURATION.RTK_MODULES[_module] == 1:
                     self.RTK_CONFIGURATION.RTK_PAGE_NUMBER[_page] = _module

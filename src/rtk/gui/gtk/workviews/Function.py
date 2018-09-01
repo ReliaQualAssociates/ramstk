@@ -205,10 +205,9 @@ class GeneralData(RTKWorkView):
         _tooltips = [
             _(u"Saves the currently selected Function to the open "
               u"RTK Program database."),
-            _(u"Saves all Functions to the open RTK Program database.")
+            _(u"Saves all Functions to the open RTK Program database."),
         ]
         _callbacks = [self._do_request_update, self._do_request_update_all]
-
         _icons = ['save', 'save-all']
 
         _buttonbox = RTKWorkView._make_buttonbox(

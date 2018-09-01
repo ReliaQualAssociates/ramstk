@@ -7,6 +7,7 @@
 """The RTKModuleView Module."""
 
 # Import other RTK modules.
+from rtk.gui.gtk.assistants import ExportModule
 from rtk.gui.gtk.rtk.Widget import gobject, gtk
 from rtk.gui.gtk import rtk
 
@@ -85,3 +86,18 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
             model[path][position] = float(new_text)
 
         return _return
+
+    def do_request_export(self, module):
+        """
+        Launch the Export assistant.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        _tree = self._dtc_data_controller.request_do_select_all(
+            revision_id=self._revision_id)
+        ExportModule(self._mdcRTK, module, _tree)
+
+        return None
