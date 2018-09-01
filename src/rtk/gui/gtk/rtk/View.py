@@ -80,6 +80,12 @@ class RTKBaseView(object):
             'cancel':
             controller.RTK_CONFIGURATION.RTK_ICON_DIR +
             '/32x32/cancel.png',
+            'export':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+            '/32x32/export.png',
+            'warning':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+            '/32x32/warning.png',
         }
 
         # Initialize private list attributes.

@@ -248,6 +248,17 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_export(self, __button):
+        """
+        Launch the Export assistant.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        return self.do_request_export('Requirement')
+
     def _do_request_insert(self, **kwargs):
         """
         Request to insert a new Requirement into the RTK Program database.
@@ -377,15 +388,18 @@ class ModuleView(RTKModuleView):
             _(u"Remove the currently selected Requirement."),
             _(u"Save the currently selected Requirement to the open RTK "
               u"Program database."),
-            _(u"Saves all Requirements to the open RTK Program database.")
+            _(u"Saves all Requirements to the open RTK Program database."),
+            _(u"Exports Requirementss to an external file (CSV, Excel, and "
+              u"text files are supported).")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_update_all, self._do_request_export
         ]
         _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all',
+            'export'
         ]
 
         _buttonbox = RTKModuleView._make_buttonbox(

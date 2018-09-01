@@ -252,6 +252,17 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_export(self, __button):
+        """
+        Launch the Export assistant.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        return self.do_request_export('Hardware')
+
     def _do_request_insert(self, **kwargs):
         """
         Send request to insert a new Hardware into the RTK Program database.
@@ -391,17 +402,20 @@ class ModuleView(RTKModuleView):
             _(u"Save the currently selected Hardware item to the open "
               u"RTK Program database."),
             _(u"Saves all Hardware items to the open RTK Program "
-              u"database.")
+              u"database."),
+            _(u"Exports Hardware to an external file (CSV, Excel, and text "
+              u"files are supported).")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_delete, self._do_request_calculate_all,
-            self._do_request_update, self._do_request_update_all
+            self._do_request_update, self._do_request_update_all,
+            self._do_request_export
         ]
         _icons = [
             'insert_sibling', 'insert_child', 'insert_part', 'insert_part',
-            'remove', 'calculate_all', 'save', 'save-all'
+            'remove', 'calculate_all', 'save', 'save-all', 'export'
         ]
 
         _buttonbox = RTKModuleView._make_buttonbox(

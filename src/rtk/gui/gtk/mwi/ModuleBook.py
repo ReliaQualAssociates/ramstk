@@ -27,12 +27,14 @@ except ImportError:
 
 # Import other RTK modules.
 from rtk.gui.gtk.rtk import RTKBook, destroy
+from rtk.gui.gtk.assistants import ExportModule
 from rtk.gui.gtk.moduleviews import mvwRevision
 from rtk.gui.gtk.moduleviews import mvwFunction
 from rtk.gui.gtk.moduleviews import mvwRequirement
 from rtk.gui.gtk.moduleviews import mvwHardware
 from rtk.gui.gtk.moduleviews import mvwValidation
-from rtk.gui.gtk.assistants import (CreateProject, OpenProject, Options, Preferences, ImportProject)
+from rtk.gui.gtk.assistants import (CreateProject, OpenProject, Options,
+                                    Preferences, ImportProject)
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
@@ -68,13 +70,15 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         RTKBook.__init__(self, controller)
 
         # Initialize private dictionary attributes.
+        self._dic_module_views = {
+            'revision': mvwRevision(controller),
+            'requirement': mvwRequirement(controller),
+            'function': mvwFunction(controller),
+            'hardware': mvwHardware(controller),
+            'validation': mvwValidation(controller)
+        }
 
         # Initialize private list attributes.
-        self._lst_module_views = [[mvwRevision(controller),
-                                   0], [mvwFunction(controller),
-                                        1], [mvwRequirement(controller),
-                                             2], [mvwHardware(controller), 3],
-                                  [mvwValidation(controller), 4]]
 
         # Initialize private scalar attributes.
 
@@ -120,11 +124,9 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
             self.notebook.connect('switch-page', self._on_switch_page))
 
         # Insert a page for each of the active RTK Modules.
-        for _object in self._lst_module_views:
-            self.notebook.insert_page(
-                _object[0],
-                tab_label=_object[0].hbx_tab_label,
-                position=_object[1])
+        _object = mvwRevision(controller)
+        self.notebook.insert_page(
+            _object, tab_label=_object.hbx_tab_label, position=0)
 
         _vbox = gtk.VBox()
         _vbox.pack_start(self._make_menu(), expand=False, fill=False)
@@ -174,7 +176,8 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu_item.connect('activate', OpenProject, self._mdcRTK)
         _menu.append(_menu_item)
 
-        _menu_item = gtk.MenuItem(label=_(u"_Import Project"), use_underline=True)
+        _menu_item = gtk.MenuItem(
+            label=_(u"_Import Project"), use_underline=True)
         _menu_item.connect('activate', ImportProject, self._mdcRTK)
         _menu.append(_menu_item)
 
@@ -343,7 +346,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
             format(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
         self.statusbar.push(1, _message)
         self.set_title(
-            _(u"RTK - Analyzing {0:s}").format(
+            _(u"RAMSTK - Analyzing {0:s}").format(
                 self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
 
         return _return
@@ -355,9 +358,14 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         :return: None
         :rtype: None
         """
-        for _moduleview in self._lst_module_views:
-            _model = _moduleview[0].treeview.get_model()
-            _model.clear()
+        # Remove all the non-Revision pages.
+        _n_pages = self.notebook.get_n_pages()
+        for _page in xrange(_n_pages - 1):
+            self.notebook.remove_page(-1)
+
+        # Clear the Revision page treeview.
+        _model = self._dic_module_views['revision'].treeview.get_model()
+        _model.clear()
 
         return None
 
@@ -369,6 +377,13 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         :rtype: bool
         """
         _return = False
+
+        # Insert a page for each of the active RTK Modules.
+        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER:
+            _mkey = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[_key]
+            _module = self._dic_module_views[_mkey]
+            self.notebook.insert_page(
+                _module, tab_label=_module.hbx_tab_label, position=_key)
 
         self.statusbar.pop(1)
 
@@ -385,8 +400,8 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         :param int page_num: the newly selected page number.
 
                              0 = Revision Tree
-                             1 = Function Tree
-                             2 = Requirements Tree
+                             1 = Requirements Tree
+                             2 = Function Tree
                              3 = Hardware Tree
                              4 = Software Tree
                              5 = Testing Tree
@@ -402,16 +417,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         try:
             _module = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[page_num]
         except KeyError:
-            if page_num == 0:
-                _module = 'revision'
-            elif page_num == 1:
-                _module = 'function'
-            elif page_num == 2:
-                _module = 'requirement'
-            elif page_num == 3:
-                _module = 'hardware'
-            elif page_num == 4:  # TODO: Change this as other modules are added.
-                _module = 'validation'
+            _module = 'revision'
 
         pub.sendMessage('mvwSwitchedPage', module=_module)
 

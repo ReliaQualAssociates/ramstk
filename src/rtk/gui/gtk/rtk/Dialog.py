@@ -34,7 +34,7 @@ class RTKDialog(gtk.Dialog):
                  dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_OK, gtk.STOCK_CANCEL,
                              gtk.RESPONSE_CANCEL)):
         """
-        Method to create a RTK Dialog widget.
+        Initialize a RTK Dialog widget.
 
         :param str dlgtitle: the title text for the gtk.Dialog().
         :keyword gtk.Window dlgparent: the parent window to associate the
@@ -49,7 +49,6 @@ class RTKDialog(gtk.Dialog):
         :return: _dialog
         :rtype: gtk.Dialog
         """
-
         gtk.Dialog.__init__(
             self,
             title=dlgtitle,
@@ -61,16 +60,14 @@ class RTKDialog(gtk.Dialog):
 
     def do_run(self):
         """
-        Method to run the RTK Message Dialog.
+        Run the RTK Message Dialog.
         """
-
         return self.run()
 
     def do_destroy(self):
         """
-        Method to destroy the RTK Message Dialog.
+        Destroy the RTK Message Dialog.
         """
-
         self.destroy()
 
 
@@ -190,11 +187,11 @@ class RTKFileChooser(gtk.FileChooserDialog):
 
     def __init__(self, title, cwd):
         """
-        Method to initialize an instance of the RTKFileChooser dialog.
+        Initialize an instance of the RTKFileChooser dialog.
 
+        :param str title: the title of the dialog.
         :param str cwd: the absolute path to the file to open.
         """
-
         gtk.FileChooserDialog.__init__(
             self, title, None,
             gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
@@ -204,70 +201,43 @@ class RTKFileChooser(gtk.FileChooserDialog):
         self.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
         self.set_current_folder(cwd)
 
-        # Set some filters to select all files or only some text files.
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"Excel Files"))
+        _filter.add_pattern('*.xls')
+        _filter.add_pattern('*xlsm')
+        _filter.add_pattern('*xlsx')
+        self.add_filter(_filter)
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"Delimited Text Files"))
+        _filter.add_pattern('*.csv')
+        _filter.add_pattern('*.txt')
+        self.add_filter(_filter)
         _filter = gtk.FileFilter()
         _filter.set_name(u"All files")
         _filter.add_pattern("*")
         self.add_filter(_filter)
 
-        _filter = gtk.FileFilter()
-        _filter.set_name("Text Files (csv, txt)")
-        _filter.add_mime_type("text/csv")
-        _filter.add_mime_type("text/txt")
-        _filter.add_mime_type("application/xls")
-        _filter.add_pattern("*.csv")
-        _filter.add_pattern("*.txt")
-        _filter.add_pattern("*.xls")
-        self.add_filter(_filter)
-
     def do_run(self):
         """
-        Method to run the RTKFileChooser dialog.
+        Run the RTKFileChooser dialog.
+
+        :return: (_filename, _extension); the file name and file extension of
+                 the selected file.
+        :rtype: (str, str) or (None, None)
         """
+        _filename = None
+        _extension = None
 
         if self.run() == gtk.RESPONSE_ACCEPT:
             _filename = self.get_filename()
             __, _extension = os.path.splitext(_filename)
+        elif self.run() == gtk.RESPONSE_REJECT:
+            self.do_destroy()
 
-        if _extension == '.csv' or _extension == '.txt':
-            self._do_read_text_file(_filename)
-
-        return False
-
-    def _do_read_text_file(self, filename):
-        """
-        Method to read the contents of a text file.
-
-        :param str filename: the file to be read.
-        :return:
-        :rtype:
-        """
-
-        # Run the dialog and write the file.
-        _headers = []
-        _contents = []
-
-        __, _extension = os.path.splitext(filename)
-        _file = open(filename, 'r')
-        if _extension == '.csv':
-            _delimiter = ','
-        else:
-            _delimiter = '\t'
-
-        for _line in _file:
-            _contents.append([_line.rstrip('\n')])
-
-        _headers = str(_contents[0][0]).rsplit(_delimiter)
-        for i in range(len(_contents) - 1):
-            _contents[i] = str(_contents[i + 1][0]).rsplit(_delimiter)
-
-        self.destroy()
-
-        return _headers, _contents
+        return (_filename, _extension)
 
     def do_destroy(self):
         """
-        Method to destroy the RTKFileChooser dialog.
+        Destroy the RTKFileChooser dialog.
         """
-
         self.destroy()

@@ -7,9 +7,10 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 
 from .CreateProject import CreateProject
+from .Export import RAMSTKExport as ExportModule
+from .FMEA import AddControlAction
 from .Import import RAMSTKImport as ImportProject
 from .OpenProject import OpenProject
 from .Options import Options
-from .Preferences import Preferences
-from .FMEA import AddControlAction
 from .PoF import AddStressMethod
+from .Preferences import Preferences

@@ -343,3 +343,12 @@ def test_format_file():
     _layout.write(_test_file)
 
     yield _test_file
+
+@pytest.fixture
+def test_export_file():
+    """Create a test file base for export testing."""
+    # This simply creates the base name of the file and directory to create it
+    # in.  A test would need to add the appropriate file extension.
+    _test_file = TMP_DIR + '/test_export'
+
+    yield _test_file

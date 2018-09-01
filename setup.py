@@ -80,6 +80,14 @@ class Install(_install):
                 except Exception as _error:
                     print(_error)
 
+        _eggfile = os.path.abspath('.') + '/src/RAMSTK.egg-info'
+        print("Removing old egg...")
+        try:
+            if os.path.isfile(_eggfile):
+                os.unlink(_eggfile)
+        except Exception as _error:
+            print(_error)
+
     @staticmethod
     def post_install_script():
         """Execute after install."""
