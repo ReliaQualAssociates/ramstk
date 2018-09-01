@@ -10,21 +10,6 @@ import sys
 
 from pubsub import pub
 
-# Import modules required for the GUI.
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
 # Import other RTK modules.
 from rtk.gui.gtk.rtk import RTKBook, destroy
 from rtk.gui.gtk.assistants import ExportModule
