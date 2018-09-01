@@ -5,7 +5,7 @@ openpyxl==2.5.5
 pandas==0.22.0
 pypubsub==3.3.0
 sortedcontainers==1.5.9
-sqlalchemy==1.2.2
+sqlalchemy==1.2.10
 sqlalchemy-utils==0.32.21
 statsmodels==0.8.0
 treelib==1.5.1
