@@ -141,8 +141,9 @@ class RTKTreeView(gtk.TreeView):
         # Sort each of the lists according to the desired sequence provided in
         # the _position list.  This is necessary to allow for user-specific
         # ordering of columns in the RTKTreeView.
-        self.datatypes = [x for _, x in sorted(zip(self.order,
-                                                   self.datatypes))]
+        self.datatypes = [
+            x for _, x in sorted(zip(self.order, self.datatypes))
+        ]
         self.editable = [x for _, x in sorted(zip(self.order, self.editable))]
         self.headings = [x for _, x in sorted(zip(self.order, self.headings))]
         self.korder = [x for _, x in sorted(zip(_position, _keys))]
@@ -206,9 +207,9 @@ class RTKTreeView(gtk.TreeView):
                 _column = self._do_make_column([
                     _cell,
                 ], self.visible[_idx], self.headings[_idx])
-            _column.set_cell_data_func(_cell, self._format_cell,
-                                       (self.order[_idx],
-                                        self.datatypes[_idx]))
+            _column.set_cell_data_func(
+                _cell, self._format_cell,
+                (self.order[_idx], self.datatypes[_idx]))
 
             if _widget == 'toggle':
                 _column.set_attributes(_cell, active=self.order[_idx])
@@ -264,7 +265,7 @@ class RTKTreeView(gtk.TreeView):
 
             try:
                 _row = _model.append(row, _attributes)
-            except(TypeError, ValueError):
+            except (TypeError, ValueError):
                 _row = None
                 _return = True
 
