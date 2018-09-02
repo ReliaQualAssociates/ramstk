@@ -4,16 +4,12 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKTreeView Module.
+"""RTKTreeView Module."""
 
-This module contains RTK treeview and associated classes.  These classes are
-derived from the applicable pyGTK treeviews, but are provided with RTK specific
-property values and methods.  This ensures a consistent look and feel to
-widgets in the RTK application.
-"""
+import datetime
 
-import defusedxml.lxml as lxml
 from sortedcontainers import SortedDict
+import defusedxml.lxml as lxml
 
 # Import other RTK Widget classes.
 from .Widget import gobject, gtk, pango
@@ -24,27 +20,19 @@ class RTKTreeView(gtk.TreeView):
     """The RTKTreeView class."""
 
     # pylint: disable=R0913, R0914
+    # Retain the arguments for backwards compatibility.  Once all current
+    # RTKTreeView() instances are updated to use the new API, the arguments
+    # can be removed.
     def __init__(self,
                  fmt_path,
                  fmt_idx,
                  fmt_file,
-                 bg_col='white',
-                 fg_col='black',
+                 bg_col,
+                 fg_col,
                  pixbuf=False,
-                 indexed=False,
-                 aggregate=False):
+                 indexed=False):
         """
         Initialize an RTKTreeView() instance.
-
-        :param str fmt_path: the base XML path in the format file to read.
-        :param int fmt_idx: the index of the format file to use when creating
-                            the gtk.TreeView().
-        :keyword str bg_col: the background color to use for each row.
-                             Defaults to white.
-        :keyword str fg_col: the foreground (text) color to use for each row.
-                             Defaults to black.
-        :keyword bool pixbuf: indicates whether or not to append a PixBuf
-                              column to the gtk.TreeModel().
         """
         gtk.TreeView.__init__(self)
 
@@ -57,25 +45,51 @@ class RTKTreeView(gtk.TreeView):
         # Initialize public dictionary instance attributes.
 
         # Initialize public list instance attributes.
+        self.datatypes = []
         self.editable = []
         self.headings = []
         self.korder = []
         self.order = []
+        self.position = []
+        self.widgets = []
         self.visible = []
 
         # Initialize public scalar instance attributes.
+        self.pixbuf_col = None
+        self.index_col = None
 
+        # This is required for backwards compatibility.  Once current
+        # RTKTreeView() instances are updated to use the new API, this if
+        # block can be removed.
+        if fmt_file is not None:
+            self.do_parse_format(fmt_path, fmt_file, pixbuf, indexed)
+            self.make_model(bg_col, fg_col)
+
+    def do_parse_format(self, fmt_path, fmt_file, pixbuf=False, indexed=False):
+        """
+        Parse the format file for the RTKTreeView().
+
+        :param str fmt_path: the base XML path in the format file to read.
+        :param str fmt_file: the absolute path to the format file to read.
+        :keyword bool pixbuf: indicates whether or not to prepend a PixBuf
+                              column to the gtk.TreeModel().
+        :keyword bool indexed: indicates whether or not to append a column to
+                               the gtk.TreeModel() to hold indexing
+                               information.
+        :return: None
+        :rtype: None
+        """
         # Retrieve the column heading text from the format file.
         self.headings = lxml.parse(fmt_file).xpath(fmt_path + "/usertitle")
 
         # Retrieve the column datatype from the format file.
-        _datatypes = lxml.parse(fmt_file).xpath(fmt_path + "/datatype")
+        self.datatypes = lxml.parse(fmt_file).xpath(fmt_path + "/datatype")
 
         # Retrieve the column position from the format file.
         _position = lxml.parse(fmt_file).xpath(fmt_path + "/position")
 
         # Retrieve the cell renderer type from the format file.
-        _widgets = lxml.parse(fmt_file).xpath(fmt_path + "/widget")
+        self.widgets = lxml.parse(fmt_file).xpath(fmt_path + "/widget")
 
         # Retrieve whether or not the column is editable from the format file.
         self.editable = lxml.parse(fmt_file).xpath(fmt_path + "/editable")
@@ -83,129 +97,130 @@ class RTKTreeView(gtk.TreeView):
         # Retrieve whether or not the column is visible from the format file.
         self.visible = lxml.parse(fmt_file).xpath(fmt_path + "/visible")
 
+        # Initialize public scalar instance attributes.
         _keys = lxml.parse(fmt_file).xpath(fmt_path + "/key")
 
         # Create a list of GObject datatypes to pass to the model.
-        _types = []
-        for i in range(len(_datatypes)):  # pylint: disable=C0200
-            _datatypes[i] = _datatypes[i].text
-            self.headings[i] = self.headings[i].text.replace("  ", "\n")
-            _widgets[i] = _widgets[i].text
+        for i in range(len(self.datatypes)):  # pylint: disable=C0200
+            self.datatypes[i] = self.datatypes[i].text
             self.editable[i] = int(self.editable[i].text)
-            _position[i] = int(_position[i].text)
+            self.headings[i] = self.headings[i].text.replace("  ", "\n")
+            self.order.append(int(_position[i].text))
             self.visible[i] = int(self.visible[i].text)
-            _types.append(gobject.type_from_name(_datatypes[i]))
+            self.widgets[i] = self.widgets[i].text
+            _position[i] = int(_position[i].text)
+            # Not all format files will have keys.
             try:
                 _keys[i] = _keys[i].text
             except IndexError:
                 pass
 
-        # Sort each of the lists according to the desired sequence provided in
-        # the _position list.  This is necessary to all for user-specific
-        # ordering of columns in the RTKTreeView.
-        _datatypes = [x for _, x in sorted(zip(_position, _datatypes))]
-        self.headings = [x for _, x in sorted(zip(_position, self.headings))]
-        _widgets = [x for _, x in sorted(zip(_position, _widgets))]
-        self.editable = [x for _, x in sorted(zip(_position, self.editable))]
-        self.visible = [x for _, x in sorted(zip(_position, self.visible))]
-        _types = [x for _, x in sorted(zip(_position, _types))]
-        self.korder = [x for _, x in sorted(zip(_position, _keys))]
-
         # Append entries to each list if this RTKTreeView is to display an
         # icon at the beginning of the row (Usage Profile, Hardware, etc.)
         if pixbuf:
-            _datatypes.append('pixbuf')
-            self.headings.append('')
-            _types.append(gtk.gdk.Pixbuf)
-            _widgets.append('pixbuf')
+            self.datatypes.append('pixbuf')
             self.editable.append(0)
-            _position.append(len(_position))
+            self.headings.append('')
+            self.order.append(len(self.order))
+            self.pixbuf_col = int(len(self.datatypes)) - 1
             self.visible.append(1)
-            _pixbuf_col = int(len(_types)) - 1
-
-        # FIXME: What is this for?  It'll become obvious later...maybe.
-        elif fmt_idx in [15, 16]:
-            print fmt_file
-            _types.append(gobject.TYPE_INT)
-            _types.append(gobject.TYPE_STRING)
-            _types.append(gobject.TYPE_BOOLEAN)
-            _types.append(gtk.gdk.Pixbuf)
+            self.widgets.append('pixbuf')
 
         # We may want to add a column to hold indexing information for program
         # control.  This is used, for example, by aggregate data views to hold
         # the Node ID from the PyPubSub Tree().
         if indexed:
-            _datatypes.append('text')
-            self.headings.append('')
-            _types.append(gobject.TYPE_STRING)
-            _widgets.append('text')
+            self.datatypes.append('gchararray')
             self.editable.append(0)
-            _position.append(len(_position))
+            self.headings.append('')
+            self.order.append(len(self.order))
             self.visible.append(0)
-            _idx_col = int(len(_types)) - 1
+            self.widgets.append('text')
+            self.index_col = int(len(self.datatypes)) - 1
 
-        # Create the model.
+        # Sort each of the lists according to the desired sequence provided in
+        # the _position list.  This is necessary to allow for user-specific
+        # ordering of columns in the RTKTreeView.
+        self.datatypes = [x for _, x in sorted(zip(self.order,
+                                                   self.datatypes))]
+        self.editable = [x for _, x in sorted(zip(self.order, self.editable))]
+        self.headings = [x for _, x in sorted(zip(self.order, self.headings))]
+        self.korder = [x for _, x in sorted(zip(_position, _keys))]
+        self.visible = [x for _, x in sorted(zip(self.order, self.visible))]
+        self.widgets = [x for _, x in sorted(zip(self.order, self.widgets))]
+
+        return None
+
+    def make_model(self, bg_color='#000000', fg_color='#FFFFFF'):
+        """
+        Make the RTKTreeView() data model.
+
+        :keyword str bg_col: the background color to use for each row.
+                             Defaults to white.
+        :keyword str fg_col: the foreground (text) color to use for each row.
+                             Defaults to black.
+        :return:
+        :rtype:
+        """
+        _types = []
+
+        # Create a list of GObject datatypes to pass to the model.
+        for i in range(len(self.datatypes)):  # pylint: disable=C0200
+            if self.datatypes[i] == 'pixbuf':
+                _types.append(gtk.gdk.Pixbuf)
+            else:
+                _types.append(gobject.type_from_name(self.datatypes[i]))
+
         _model = gtk.TreeStore(*_types)
+        self.set_model(_model)
 
-        _n_cols = int(len(_types))
-        for i in range(_n_cols):
-            self.order.append(_position[i])
-
-            if _widgets[i] == 'combo':
+        for _idx, _widget in enumerate(self.widgets):
+            if _widget == 'combo':
                 _cell = self._do_make_combo_cell()
-                self._do_set_properties(_cell, bg_col, fg_col,
-                                        self.editable[i])
-            elif _widgets[i] == 'spin':
+                self._do_set_properties(_cell, bg_color, fg_color,
+                                        self.editable[_idx])
+            elif _widget == 'spin':
                 _cell = self._do_make_spin_cell()
-                self._do_set_properties(_cell, bg_col, fg_col,
-                                        self.editable[i])
-            elif _widgets[i] == 'toggle':
-                _cell = self._do_make_toggle_cell(self.editable[i])
-                self._do_set_properties(_cell, bg_col, fg_col,
-                                        self.editable[i])
-            elif _widgets[i] == 'blob':
+                self._do_set_properties(_cell, bg_color, fg_color,
+                                        self.editable[_idx])
+            elif _widget == 'toggle':
+                _cell = self._do_make_toggle_cell(self.editable[_idx])
+                self._do_set_properties(_cell, bg_color, fg_color,
+                                        self.editable[_idx])
+            elif _widget == 'blob':
                 _cell = self._do_make_text_cell(True)
-                self._do_set_properties(_cell, bg_col, fg_col,
-                                        self.editable[i])
+                self._do_set_properties(_cell, bg_color, fg_color,
+                                        self.editable[_idx])
             else:
                 _cell = self._do_make_text_cell()
-                self._do_set_properties(_cell, bg_col, fg_col,
-                                        self.editable[i])
+                self._do_set_properties(_cell, bg_color, fg_color,
+                                        self.editable[_idx])
 
-            if pixbuf and i == 0:
+            if self.pixbuf_col is not None and _idx == 0:
                 _pbcell = gtk.CellRendererPixbuf()
                 _pbcell.set_property('xalign', 0.5)
                 _column = self._do_make_column(
-                    [_pbcell, _cell], self.visible[i], self.headings[i])
-                _column.set_attributes(_pbcell, pixbuf=_pixbuf_col)
+                    [_pbcell, _cell], self.visible[_idx], self.headings[_idx])
+                _column.set_attributes(_pbcell, pixbuf=self.pixbuf_col)
             else:
                 _column = self._do_make_column([
                     _cell,
-                ], self.visible[i], self.headings[i])
+                ], self.visible[_idx], self.headings[_idx])
             _column.set_cell_data_func(_cell, self._format_cell,
-                                       (_position[i], _datatypes[i]))
+                                       (self.order[_idx],
+                                        self.datatypes[_idx]))
 
-            if _widgets[i] == 'toggle':
-                _column.set_attributes(_cell, active=_position[i])
-            elif _widgets[i] != 'pixbuf':
-                _column.set_attributes(_cell, text=_position[i])
+            if _widget == 'toggle':
+                _column.set_attributes(_cell, active=self.order[_idx])
+            elif _widget != 'pixbuf':
+                _column.set_attributes(_cell, text=self.order[_idx])
 
-            if i > 0:
+            if _idx > 0:
                 _column.set_reorderable(True)
 
             self.append_column(_column)
 
-        # FIXME: What is this for?  It'll become obvious later...maybe.
-        if fmt_idx == 9:
-            print fmt_file
-            column = gtk.TreeViewColumn("")
-            column.set_visible(0)
-            cell = gtk.CellRendererText()
-            column.pack_start(cell, True)
-            column.set_attributes(cell, text=_n_cols)
-            self.append_column(column)
-
-        self.set_model(_model)
+        return
 
     def do_load_tree(self, tree, row=None):
         """
@@ -233,6 +248,8 @@ class RTKTreeView(gtk.TreeView):
             try:
                 _temp = _entity.get_attributes()
                 for _key in self.korder:
+                    if isinstance(_temp[_key], datetime.date):
+                        _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
                     _attributes.append(_temp[_key])
             except AttributeError:
                 # For aggregate data models (Hardware, Software) that return a
@@ -247,7 +264,7 @@ class RTKTreeView(gtk.TreeView):
 
             try:
                 _row = _model.append(row, _attributes)
-            except ValueError:
+            except(TypeError, ValueError):
                 _row = None
                 _return = True
 
@@ -578,7 +595,7 @@ class CellRendererML(gtk.CellRendererText):
         elif response == gtk.RESPONSE_CANCEL:
             self.textedit_window.destroy()
         else:
-            print "response %i received" % response
+            print("response %i received" % response)
             self.textedit_window.destroy()
 
     def _keyhandler(self, __widget, event):

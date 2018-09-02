@@ -9,7 +9,7 @@
 [![Build Status](https://travis-ci.org/weibullguy/ramstk.svg?branch=develop)](https://travis-ci.org/weibullguy/ramstk)
 [![Build status](https://ci.appveyor.com/api/projects/status/b5vr2fix7birpon9/branch/develop?svg=true)](https://ci.appveyor.com/project/weibullguy/ramstk/branch/develop)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/project/weibullguy/ramstk/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/ramstk&amp;utm_campaign=Badge_Grade_Dashboard)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/ramstk?utm_source=github.com&utm_medium=referral&utm_content=weibullguy/ramstk&utm_campaign=Badge_Coverage)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/app/weibullguy/ramstk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/ramstk&amp;utm_campaign=Badge_Coverage)
 [![Coverage Status](https://coveralls.io/repos/github/weibullguy/ramstk/badge.svg?branch=develop)](https://coveralls.io/github/weibullguy/ramstk?branch=develop)
 [![Documentation Status](https://readthedocs.org/projects/rtk/badge/?version=develop)](http://rtk.readthedocs.io/en/develop/?badge=develop)
 
