@@ -14,7 +14,7 @@ with open(os.path.join(HERE, 'README.md')) as f:
     __long_description__ = f.read()
 
 __appname__ = 'RAMSTK'
-__version__ = '1.0.0.dev0'
+__version__ = '1.0.0.dev1'
 __author__ = "Doyle 'weibullguy' Rowland"
 __email__ = "andrew.rowland@reliaqual.com"
 __trove__ = [
@@ -33,8 +33,8 @@ if not sys.version_info[0] == 2:
 
 # Lists of required packages for RTK.
 INSTALL_REQUIRES = [
-    'defusedxml', 'lifelines', 'lxml', 'matplotlib==1.4.3', 'numpy', 'pandas',
-    'PyPubSub==3.3.0', 'scipy', 'sortedcontainers', 'SQLAlchemy',
+    'defusedxml', 'lifelines', 'matplotlib==1.4.3', 'numpy', 'pandas',
+    'PyPubSub==3.3.0', 'scipy', 'sortedcontainers==1.5.9', 'SQLAlchemy',
     'SQLAlchemy-Utils', 'statsmodels', 'treelib', 'xlrd', 'xlwt'
 ]
 TEST_REQUIRES = [
