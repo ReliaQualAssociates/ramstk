@@ -4,7 +4,7 @@ lxml==4.2.4
 openpyxl==2.5.5
 pandas==0.23.4
 pypubsub==3.3.0
-sortedcontainers==1.5.9
+sortedcontainers==2.0.4
 sqlalchemy==1.2.11
 sqlalchemy-utils==0.32.21
 statsmodels==0.9.0
