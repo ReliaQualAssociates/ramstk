@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.Allocation.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.Allocation.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,13 +8,13 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .WorkView import RTKWorkView
+from .WorkView import RAMSTKWorkView
 
 
-class Allocation(RTKWorkView):
+class Allocation(RAMSTKWorkView):
     """
     Display Allocation attribute data in the Work Book.
 
@@ -40,10 +40,10 @@ class Allocation(RTKWorkView):
         """
         Initialize the Work View for the Allocation.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Allocation')
+        RAMSTKWorkView.__init__(self, controller, module='Allocation')
 
         # Initialize private dictionary attributes.
 
@@ -61,35 +61,35 @@ class Allocation(RTKWorkView):
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
         _fmt_file = (
-            controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
-            controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['allocation'])
+            controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+            controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['allocation'])
         _fmt_path = "/root/tree[@name='Allocation']/column"
         _tooltip = _(u"Displays the Allocation Analysis for the currently "
                      u"selected Hardware item.")
 
-        self.treeview = rtk.RTKTreeView(
+        self.treeview = rtk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
         self._lst_col_order = self.treeview.order
         self.treeview.set_tooltip_text(_tooltip)
 
-        self.cmbAllocationGoal = rtk.RTKComboBox(
+        self.cmbAllocationGoal = rtk.RAMSTKComboBox(
             tooltip=_(
                 u"Selects the goal measure for the selected hardware assembly."
             ))
-        self.cmbAllocationMethod = rtk.RTKComboBox(
+        self.cmbAllocationMethod = rtk.RAMSTKComboBox(
             tooltip=_(
                 u"Selects the method for allocating the reliability goal for "
                 u"the selected hardware assembly."))
-        self.txtHazardRateGoal = rtk.RTKEntry(
+        self.txtHazardRateGoal = rtk.RAMSTKEntry(
             width=125,
             tooltip=(
                 u"Displays the hazard rate goal for the selected hardware "
                 u"item."))
-        self.txtMTBFGoal = rtk.RTKEntry(
+        self.txtMTBFGoal = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"Displays the MTBF goal for the selected hardware item."))
-        self.txtReliabilityGoal = rtk.RTKEntry(
+        self.txtReliabilityGoal = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"Displays the reliability goal for the selected hardware "
@@ -127,7 +127,7 @@ class Allocation(RTKWorkView):
                 _cell[0].connect('toggled', self._do_edit_cell, 'new text', i,
                                  self.treeview.get_model())
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Allocation"),
             height=30,
             width=-1,
@@ -170,12 +170,12 @@ class Allocation(RTKWorkView):
 
     def _do_change_row(self, treeview):
         """
-        Handle events for the Allocation Tree View RTKTreeView().
+        Handle events for the Allocation Tree View RAMSTKTreeView().
 
         This method is called whenever a Tree View row is activated.
 
-        :param treeview: the Allocation RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeViewRTKTreeView`
+        :param treeview: the Allocation RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeViewRAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -195,10 +195,10 @@ class Allocation(RTKWorkView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the Allocation Work View RTKTreeview().
+        Handle edits of the Allocation Work View RAMSTKTreeview().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RTKTreeView() path of the gtk.CellRenderer()
+        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
@@ -241,7 +241,7 @@ class Allocation(RTKWorkView):
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Iterate through the tree and load the Allocation RTKTreeView().
+        Iterate through the tree and load the Allocation RAMSTKTreeView().
 
         :return: (_error_code, _user_msg, _debug_msg); the error code, message
                  to be displayed to the user, and the message to be written to
@@ -307,7 +307,7 @@ class Allocation(RTKWorkView):
                                       u"the wrong data type in it's data "
                                       u"package and is not displayed in the "
                                       u"Allocation.")
-                        _debug_msg = ("RTK ERROR: Data for Allocation ID "
+                        _debug_msg = ("RAMSTK ERROR: Data for Allocation ID "
                                       "{0:s} for Hardware ID {1:s} is the "
                                       "wrong type for one or more "
                                       "columns.".format(
@@ -317,7 +317,7 @@ class Allocation(RTKWorkView):
                         _user_msg = _(u"One or more Allocation line items was "
                                       u"missing some of it's data and is not "
                                       u"displayed in the Allocation.")
-                        _debug_msg = ("RTK ERROR: Too few fields for "
+                        _debug_msg = ("RAMSTK ERROR: Too few fields for "
                                       "Allocation ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
                                           str(_node_id), str(self._parent_id)))
@@ -327,7 +327,7 @@ class Allocation(RTKWorkView):
                         _user_msg = _(u"One or more Allocation line items was "
                                       u"missing it's data package and is not "
                                       u"displayed in the Allocation.")
-                        _debug_msg = ("RTK ERROR: There is no data package "
+                        _debug_msg = ("RAMSTK ERROR: There is no data package "
                                       "for Allocation ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
                                           str(_node_id), str(self._parent_id)))
@@ -437,8 +437,8 @@ class Allocation(RTKWorkView):
         _tooltips = [
             _(u"Calculate the currently selected child hardware item."),
             _(u"Save the currently selected line in the Allocation to the "
-              u"open RTK Program database."),
-            _(u"Save the Allocation to the open RTK Program database.")
+              u"open RAMSTK Program database."),
+            _(u"Save the Allocation to the open RAMSTK Program database.")
         ]
 
         _callbacks = [
@@ -448,7 +448,7 @@ class Allocation(RTKWorkView):
 
         _icons = ['calculate', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -477,18 +477,18 @@ class Allocation(RTKWorkView):
 
         _fixed = gtk.Fixed()
 
-        _fixed.put(rtk.RTKLabel(_(u"Select Allocation Method")), 5, 5)
+        _fixed.put(rtk.RAMSTKLabel(_(u"Select Allocation Method")), 5, 5)
         _fixed.put(self.cmbAllocationMethod, 5, 30)
-        _fixed.put(rtk.RTKLabel(_(u"Select Goal Metric")), 5, 70)
+        _fixed.put(rtk.RAMSTKLabel(_(u"Select Goal Metric")), 5, 70)
         _fixed.put(self.cmbAllocationGoal, 5, 95)
-        _fixed.put(rtk.RTKLabel(_(u"R(t) Goal")), 5, 135)
+        _fixed.put(rtk.RAMSTKLabel(_(u"R(t) Goal")), 5, 135)
         _fixed.put(self.txtReliabilityGoal, 5, 160)
-        _fixed.put(rtk.RTKLabel(_(u"h(t) Goal")), 5, 200)
+        _fixed.put(rtk.RAMSTKLabel(_(u"h(t) Goal")), 5, 200)
         _fixed.put(self.txtHazardRateGoal, 5, 225)
-        _fixed.put(rtk.RTKLabel(_(u"MTBF Goal")), 5, 265)
+        _fixed.put(rtk.RAMSTKLabel(_(u"MTBF Goal")), 5, 265)
         _fixed.put(self.txtMTBFGoal, 5, 290)
 
-        _frame = rtk.RTKFrame(label=_(u"Allocation Goals and Method"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Allocation Goals and Method"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_fixed)
 
@@ -503,7 +503,7 @@ class Allocation(RTKWorkView):
 
     def _make_page(self):
         """
-        Make the Allocation RTKTreeview().
+        Make the Allocation RAMSTKTreeview().
 
         :return: a gtk.Frame() containing the instance of gtk.Treeview().
         :rtype: :class:`gtk.Frame`
@@ -512,7 +512,7 @@ class Allocation(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = rtk.RTKFrame(label=_(u"Allocation Analysis"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Allocation Analysis"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -522,10 +522,10 @@ class Allocation(RTKWorkView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Allocation Work View RTKTreeView().
+        Handle mouse clicks on the Allocation Work View RAMSTKTreeView().
 
-        :param treeview: the Allocation TreeView RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`.
+        :param treeview: the Allocation TreeView RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -764,14 +764,14 @@ class Allocation(RTKWorkView):
         self._parent_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'allocation']
 
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(**kwargs)
 
-        RTKWorkView.on_select(
+        RAMSTKWorkView.on_select(
             self,
             title=_(u"Allocating Reliability Requirement for Hardware ID "
                     u"{0:d}").format(self._parent_id),

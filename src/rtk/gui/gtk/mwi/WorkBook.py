@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.mwi.WorkBook.py is part of The RTK Project
+#       rtk.gui.gtk.mwi.WorkBook.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKWorkBook Module."""
+"""RAMSTKWorkBook Module."""
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.gui.gtk.rtk import RTKBook
+# Import other RAMSTK modules.
+from rtk.gui.gtk.rtk import RAMSTKBook
 
 from rtk.gui.gtk.workviews import wvwAllocation
 from rtk.gui.gtk.workviews import wvwFFMEA, wvwDFMECA
@@ -24,17 +24,17 @@ from rtk.gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
-class WorkBook(RTKBook):
+class WorkBook(RAMSTKBook):
     """This is the Work Book for the pyGTK multiple window interface."""
 
     def __init__(self, controller):
         """
         Initialize an instance of the Work View class.
 
-        :param controller: the RTK master data controller.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKBook.__init__(self, controller)
+        RAMSTKBook.__init__(self, controller)
 
         # Initialize private dictionary attributes.
 
@@ -74,7 +74,7 @@ class WorkBook(RTKBook):
         # Initialize public scalar attributes.
 
         # Set the properties for the ModuleBook and it's widgets.
-        self.set_title(_(u"RTK Work Book"))
+        self.set_title(_(u"RAMSTK Work Book"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
@@ -86,13 +86,13 @@ class WorkBook(RTKBook):
         self.set_default_size(_width, _height)
         self.move((_width / 1), (_height / 2))
 
-        if controller.RTK_CONFIGURATION.RTK_TABPOS[
+        if controller.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'left':
             self.notebook.set_tab_pos(self._left_tab)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS[
+        elif controller.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'right':
             self.notebook.set_tab_pos(self._right_tab)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS[
+        elif controller.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'top':
             self.notebook.set_tab_pos(self._top_tab)
         else:
@@ -109,14 +109,14 @@ class WorkBook(RTKBook):
 
     def _on_module_change(self, module=''):
         """
-        Load the Work Views for the RTK module selected in the Module Book.
+        Load the Work Views for the RAMSTK module selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        RTKBook._on_module_change(self)
+        RAMSTKBook._on_module_change(self)
         for _workspace in self.dic_work_views[module]:
             self.notebook.insert_page(_workspace, _workspace.hbx_tab_label, -1)
 
@@ -131,10 +131,10 @@ class WorkBook(RTKBook):
         """
         if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
             for _window in ['listbook', 'modulebook', 'workbook']:
-                self._mdcRTK.dic_books[_window].iconify()
+                self._mdcRAMSTK.dic_books[_window].iconify()
         elif event.new_window_state == 0:
             for _window in ['listbook', 'modulebook', 'workbook']:
-                self._mdcRTK.dic_books[_window].deiconify()
+                self._mdcRAMSTK.dic_books[_window].deiconify()
         elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
             window.maximize()
 

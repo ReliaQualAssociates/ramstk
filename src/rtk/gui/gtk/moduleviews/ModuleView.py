@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.moduleviews.ModuleView.py is part of the RTK Project
+#       rtk.gui.gtk.moduleviews.ModuleView.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""The RTKModuleView Module."""
+"""The RAMSTKModuleView Module."""
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk.assistants import ExportModule
 from rtk.gui.gtk.rtk.Widget import gobject, gtk
 from rtk.gui.gtk import rtk
 
 
-class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
+class RAMSTKModuleView(gtk.HBox, rtk.RAMSTKBaseView):
     """
-    Display data in the RTK Module Book.
+    Display data in the RAMSTK Module Book.
 
-    This is the meta class for all RTK Module View classes.  Attributes of the
-    RTKModuleView are:
+    This is the meta class for all RAMSTK Module View classes.  Attributes of the
+    RAMSTKModuleView are:
 
     :ivar _img_tab: the :class:`gtk.Image` to display on the tab.
     :ivar _lst_col_order: list containing the order of the columns in the
@@ -32,12 +32,12 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
         """
         Initialize the Module View.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :py:class:`rtk.RAMSTK.RAMSTK`
         :param str module: the module that is being loaded.
         """
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller, **kwargs)
+        rtk.RAMSTKBaseView.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -98,6 +98,6 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
         """
         _tree = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
-        ExportModule(self._mdcRTK, module, _tree)
+        ExportModule(self._mdcRAMSTK, module, _tree)
 
         return None

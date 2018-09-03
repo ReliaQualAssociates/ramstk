@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.fmea.test_fmea.py is part of The RTK Project
+#       tests.modules.fmea.test_fmea.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -11,11 +11,11 @@ from treelib import Tree
 
 import pytest
 
-from rtk.dao import RTKMode
-from rtk.dao import RTKMechanism
-from rtk.dao import RTKCause
-from rtk.dao import RTKControl
-from rtk.dao import RTKAction
+from rtk.dao import RAMSTKMode
+from rtk.dao import RAMSTKMechanism
+from rtk.dao import RAMSTKCause
+from rtk.dao import RAMSTKControl
+from rtk.dao import RAMSTKAction
 from rtk.modules.fmea import (dtcFMEA, dtmFMEA, dtmAction, dtmControl, dtmMode,
                               dtmMechanism, dtmCause)
 
@@ -80,85 +80,85 @@ def test_do_select_all_non_existent_function_id(test_dao):
 
 @pytest.mark.integration
 def test_do_select_mode(test_dao):
-    """ do_select() should return an instance of RTKMode on success. """
+    """ do_select() should return an instance of RAMSTKMode on success. """
     DUT = dtmFMEA(test_dao)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _entity = DUT.do_select('0.1')
-    assert isinstance(_entity, RTKMode)
+    assert isinstance(_entity, RAMSTKMode)
     assert _entity.description == ("Test Functional Failure Mode #1")
 
 
 @pytest.mark.integration
 def test_do_select_mechanism(test_dao):
-    """ do_select() should return an instance of RTKMechanism on success. """
+    """ do_select() should return an instance of RAMSTKMechanism on success. """
     DUT = dtmFMEA(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _entity = DUT.do_select('0.4.1')
 
-    assert isinstance(_entity, RTKMechanism)
+    assert isinstance(_entity, RAMSTKMechanism)
     assert _entity.description == 'Test Failure Mechanism #1 for Mode ID 4'
 
 
 @pytest.mark.integration
 def test_do_select_cause(test_dao):
-    """ do_select() should return an instance of RTKCause on success. """
+    """ do_select() should return an instance of RAMSTKCause on success. """
     DUT = dtmFMEA(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _entity = DUT.do_select('0.4.1.4')
 
-    assert isinstance(_entity, RTKCause)
+    assert isinstance(_entity, RAMSTKCause)
     assert _entity.description == 'Test Failure Cause #1 for Mechanism ID 1'
 
 
 @pytest.mark.integration
 def test_do_select_control_functional(test_dao):
-    """ do_select() should return an instance of RTKControl when selecting from a functional FMEA on success. """
+    """ do_select() should return an instance of RAMSTKControl when selecting from a functional FMEA on success. """
     DUT = dtmFMEA(test_dao)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _entity = DUT.do_select('0.1.1.1c')
 
-    assert isinstance(_entity, RTKControl)
+    assert isinstance(_entity, RAMSTKControl)
     assert _entity.description == (
         "Test Functional FMEA Control #1 for Cause ID 1")
 
 
 @pytest.mark.integration
 def test_do_select_control_hardware(test_dao):
-    """ do_select() should return an instance of RTKControl when selecting from a hardware FMEA on success. """
+    """ do_select() should return an instance of RAMSTKControl when selecting from a hardware FMEA on success. """
     DUT = dtmFMEA(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
     _entity = DUT.do_select('0.4.1.4.4c')
 
-    assert isinstance(_entity, RTKControl)
+    assert isinstance(_entity, RAMSTKControl)
     assert _entity.description == 'Test FMEA Control #1 for Cause ID 4'
 
 
 @pytest.mark.integration
 def test_do_select_action_functional(test_dao):
-    """ do_select() should return an instance of RTKAction when selecting from a functional FMEA on success. """
+    """ do_select() should return an instance of RAMSTKAction when selecting from a functional FMEA on success. """
     DUT = dtmFMEA(test_dao)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _entity = DUT.do_select('0.1.1.1a')
 
-    assert isinstance(_entity, RTKAction)
+    assert isinstance(_entity, RAMSTKAction)
     assert _entity.action_recommended == ("Test Functional FMEA Recommended "
                                           "Action #1 for Cause ID 1")
 
 
 @pytest.mark.integration
 def test_do_select_action_hardware(test_dao):
-    """ do_select() should return an instance of RTKAction when selecting from a hardware FMEA on success. """
+    """ do_select() should return an instance of RAMSTKAction when selecting from a hardware FMEA on success. """
     DUT = dtmFMEA(test_dao)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _entity = DUT.do_select('0.4.1.4.4a')
     print DUT.tree.nodes
-    assert isinstance(_entity, RTKAction)
+    assert isinstance(_entity, RAMSTKAction)
     assert _entity.action_recommended == ("Test FMEA Recommended Action #1 "
                                           "for Cause ID 4")
 
@@ -172,18 +172,18 @@ def test_do_insert_mode_functional(test_dao):
     _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='mode')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     _node_id = '0.' + str(DUT.dtm_mode.last_id)
 
     _mode = DUT.do_select(_node_id)
 
-    assert isinstance(_mode, RTKMode)
+    assert isinstance(_mode, RAMSTKMode)
     assert _mode.function_id == 1
     assert _mode.hardware_id == -1
 
     _tree_mode = DUT.tree.get_node(_node_id)
-    assert isinstance(_tree_mode.data, RTKMode)
+    assert isinstance(_tree_mode.data, RAMSTKMode)
     assert _tree_mode.data == _mode
 
 
@@ -196,18 +196,18 @@ def test_do_insert_mode_hardware(test_dao):
     _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='mode')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     _node_id = '0.' + str(DUT.dtm_mode.last_id)
 
     _mode = DUT.do_select(_node_id)
 
-    assert isinstance(_mode, RTKMode)
+    assert isinstance(_mode, RAMSTKMode)
     assert _mode.function_id == -1
     assert _mode.hardware_id == 1
 
     _tree_mode = DUT.tree.get_node(_node_id)
-    assert isinstance(_tree_mode.data, RTKMode)
+    assert isinstance(_tree_mode.data, RAMSTKMode)
     assert _mode == _tree_mode.data
 
 
@@ -220,7 +220,7 @@ def test_do_insert_mode_hardware_non_existant_level(test_dao):
     _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='juice')
 
     assert _error_code == 2005
-    assert _msg == ("RTK ERROR: Attempted to add an item to the FMEA with an "
+    assert _msg == ("RAMSTK ERROR: Attempted to add an item to the FMEA with an "
                     "undefined indenture level.  Level juice was requested.  "
                     "Must be one of mode, mechanism, cause, control, or "
                     "action.")
@@ -236,18 +236,18 @@ def test_do_insert_mechanism(test_dao):
         entity_id=4, parent_id='0.4', level='mechanism')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     _node_id = '0.4.' + str(DUT.dtm_mechanism.last_id)
 
     _mechanism = DUT.do_select(_node_id)
 
-    assert isinstance(_mechanism, RTKMechanism)
+    assert isinstance(_mechanism, RAMSTKMechanism)
     assert _mechanism.mode_id == 4
     assert _mechanism.mechanism_id == DUT.dtm_mechanism.last_id
 
     _tree_mechanism = DUT.tree.get_node(_node_id)
-    assert isinstance(_tree_mechanism.data, RTKMechanism)
+    assert isinstance(_tree_mechanism.data, RAMSTKMechanism)
     assert _mechanism == _tree_mechanism.data
 
 
@@ -261,19 +261,19 @@ def test_do_insert_cause(test_dao):
         entity_id=1, parent_id='0.4.1', level='cause')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
 
     _node_id = '0.4.1.' + str(DUT.dtm_cause.last_id)
 
     _cause = DUT.do_select(_node_id)
 
-    assert isinstance(_cause, RTKCause)
+    assert isinstance(_cause, RAMSTKCause)
     assert _cause.mechanism_id == 1
     assert _cause.cause_id == DUT.dtm_cause.last_id
 
     _tree_cause = DUT.tree.get_node(_node_id)
-    assert isinstance(_tree_cause.data, RTKCause)
+    assert isinstance(_tree_cause.data, RAMSTKCause)
     assert _tree_cause.data == _cause
 
 
@@ -287,17 +287,17 @@ def test_do_insert_control_functional(test_dao):
         entity_id=1, parent_id='0.1', level='control')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     _node_id = '0.1.' + str(DUT.dtm_control.last_id) + 'c'
 
     _control = DUT.do_select(_node_id)
 
-    assert isinstance(_control, RTKControl)
+    assert isinstance(_control, RAMSTKControl)
     assert _control.cause_id == 1
 
     _tree_control = DUT.tree.get_node(_node_id)
-    assert isinstance(_tree_control.data, RTKControl)
+    assert isinstance(_tree_control.data, RAMSTKControl)
     assert _control == _tree_control.data
 
 
@@ -311,17 +311,17 @@ def test_do_insert_control_hardware(test_dao):
         entity_id=4, parent_id='0.4.1.4', level='control')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     _node_id = '0.4.1.4.' + str(DUT.dtm_control.last_id) + 'c'
 
     _control = DUT.do_select(_node_id)
 
-    assert isinstance(_control, RTKControl)
+    assert isinstance(_control, RAMSTKControl)
     assert _control.cause_id == 4
 
     _tree_control = DUT.tree.get_node(_node_id)
-    assert isinstance(_tree_control.data, RTKControl)
+    assert isinstance(_tree_control.data, RAMSTKControl)
     assert _control == _tree_control.data
 
 
@@ -335,17 +335,17 @@ def test_do_insert_action_functional(test_dao):
         entity_id=1, parent_id='0.1', level='action')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     _node_id = '0.1.' + str(DUT.dtm_action.last_id) + 'a'
 
     _action = DUT.do_select(_node_id)
 
-    assert isinstance(_action, RTKAction)
+    assert isinstance(_action, RAMSTKAction)
     assert _action.cause_id == 1
 
     _tree_action = DUT.tree.get_node(_node_id)
-    assert isinstance(_tree_action.data, RTKAction)
+    assert isinstance(_tree_action.data, RAMSTKAction)
     assert _action == _tree_action.data
 
 
@@ -359,17 +359,17 @@ def test_do_insert_action_hardware(test_dao):
         entity_id=4, parent_id='0.4.1.4', level='action')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     _node_id = '0.4.1.4.' + str(DUT.dtm_action.last_id) + 'a'
 
     _action = DUT.do_select(_node_id)
 
-    assert isinstance(_action, RTKAction)
+    assert isinstance(_action, RAMSTKAction)
     assert _action.cause_id == 4
 
     _tree_action = DUT.tree.get_node(_node_id)
-    assert isinstance(_tree_action.data, RTKAction)
+    assert isinstance(_tree_action.data, RAMSTKAction)
     assert _action == _tree_action.data
 
 
@@ -383,7 +383,7 @@ def test_do_insert_non_existent_type(test_dao):
         entity_id=100, parent_id=0, level='scadamoosh')
 
     assert _error_code == 2005
-    assert _msg == ("RTK ERROR: Attempted to add an item to the FMEA with an "
+    assert _msg == ("RAMSTK ERROR: Attempted to add an item to the FMEA with an "
                     "undefined indenture level.  Level scadamoosh was "
                     "requested.  Must be one of mode, mechanism, cause, "
                     "control, or action.")
@@ -399,7 +399,7 @@ def test_do_insert_no_parent_in_tree(test_dao):
         entity_id=1, parent_id='mode_1', level='action')
 
     assert _error_code == 2005
-    assert _msg == ("RTK ERROR: Attempted to add an item under non-existent "
+    assert _msg == ("RAMSTK ERROR: Attempted to add an item under non-existent "
                     "Node ID: mode_1.")
 
 
@@ -415,7 +415,7 @@ def test_do_delete_control_functional(test_dao):
     _error_code, _msg = DUT.do_delete(_node_id)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                     "database.")
 
 
@@ -428,7 +428,7 @@ def test_do_delete_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_delete('scadamoosh_1')
 
     assert _error_code == 2005
-    assert _msg == ("  RTK ERROR: Attempted to delete non-existent entity "
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent entity "
                     "with Node ID scadamoosh_1 from the FMEA.")
 
 
@@ -441,7 +441,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update('0.1')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
 
 
 @pytest.mark.integration
@@ -453,7 +453,7 @@ def test_do_update_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_update('mode_1000')
 
     assert _error_code == 1
-    assert _msg == ("RTK ERROR: Attempted to save non-existent Functional "
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Functional "
                     "FMEA entity with Node ID mode_1000.")
 
 
@@ -466,7 +466,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all line items in the FMEA.")
+    assert _msg == ("RAMSTK SUCCESS: Updating all line items in the FMEA.")
 
 
 @pytest.mark.integration
@@ -483,7 +483,7 @@ def test_do_calculate_criticality(test_dao):
         '0.4', item_hr=0.00001, criticality=True, rpn=False)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Calculating failure mode 6 criticality.")
+    assert _msg == ("RAMSTK SUCCESS: Calculating failure mode 6 criticality.")
     assert _mode.mode_criticality == pytest.approx(0.0004)
 
 

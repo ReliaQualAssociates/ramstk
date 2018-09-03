@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.failure_definition.TestFailureDefinition.py is part of The
-#       RTK Project
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -15,7 +15,7 @@ import pytest
 from rtk.modules.failure_definition import (dtmFailureDefinition,
                                             dtcFailureDefinition)
 from rtk.dao import DAO
-from rtk.dao import RTKFailureDefinition
+from rtk.dao import RAMSTKFailureDefinition
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -41,23 +41,23 @@ def test_create_data_model(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKFailureDefinitions instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKFailureDefinitions instances on success. """
     DUT = dtmFailureDefinition(test_dao)
     _tree = DUT.do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RTKFailureDefinition)
+    assert isinstance(_tree.get_node(1).data, RAMSTKFailureDefinition)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKFailureDefinition data model on success. """
+    """ do_select() should return an instance of the RAMSTKFailureDefinition data model on success. """
     DUT = dtmFailureDefinition(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _definition = DUT.do_select(1)
 
-    assert isinstance(_definition, RTKFailureDefinition)
+    assert isinstance(_definition, RAMSTKFailureDefinition)
     assert _definition.definition_id == 1
     assert _definition.definition == 'Failure Definition'
 
@@ -80,7 +80,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
                     'database.')
     assert DUT.last_id == 2
 
@@ -94,7 +94,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
                     'database.')
 
 
@@ -107,7 +107,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RTK ERROR: Attempted to delete non-existent Failure '
+    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent Failure '
                     'Definition ID 300.')
 
 
@@ -123,7 +123,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -135,7 +135,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2207
-    assert _msg == ('RTK ERROR: Attempted to save non-existent Failure '
+    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Failure '
                     'Definition ID 100.')
 
 
@@ -148,7 +148,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the failure "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the failure "
                     "definition table.")
 
 
@@ -163,20 +163,20 @@ def test_controller_create(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_select_all(test_dao, test_configuration):
-    """ request_do_select_all() should return a Tree of RTKFailureDefinition models. """
+    """ request_do_select_all() should return a Tree of RAMSTKFailureDefinition models. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
     _tree = DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(_tree.get_node(1).data, RTKFailureDefinition)
+    assert isinstance(_tree.get_node(1).data, RAMSTKFailureDefinition)
 
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
-    """ request_do_select() should return an RTKFailureDefinition model. """
+    """ request_do_select() should return an RAMSTKFailureDefinition model. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(DUT.request_do_select(1), RTKFailureDefinition)
+    assert isinstance(DUT.request_do_select(1), RAMSTKFailureDefinition)
 
 
 @pytest.mark.integration
@@ -208,7 +208,7 @@ def test_request_set_attributes(test_dao, test_configuration):
     _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating RTKFailureDefinition 1 attributes.")
+    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKFailureDefinition 1 attributes.")
 
 
 @pytest.mark.integration
@@ -222,7 +222,7 @@ def test_request_do_insert(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_last_id(test_dao, test_configuration):
-    """ request_last_id() should return the last Revision ID used in the RTK Program database. """
+    """ request_last_id() should return the last Revision ID used in the RAMSTK Program database. """
     DUT = dtcFailureDefinition(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 

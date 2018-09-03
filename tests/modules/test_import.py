@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_imports.py is part of The RTK Project
+#       rtk.tests.modules.test_imports.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Doyle "weibullguy" Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -85,7 +85,7 @@ def test_do_read_input_excel(test_dao, test_excel_file):
 def test_do_map_field_function(test_dao, test_csv_file_function):
     """
     do_map_field() should return None and create a dictionary with
-    RTKFunction field mappings.
+    RAMSTKFunction field mappings.
     """
     DUT = dtmImports(test_dao)
 
@@ -106,7 +106,7 @@ def test_do_map_field_function(test_dao, test_csv_file_function):
 def test_do_map_field_requirement(test_dao, test_csv_file_requirement):
     """
     do_map_field() should return None and create a dictionary with
-    RTKRequirement field mappings.
+    RAMSTKRequirement field mappings.
     """
     DUT = dtmImports(test_dao)
 
@@ -134,7 +134,7 @@ def test_do_map_field_requirement(test_dao, test_csv_file_requirement):
 def test_do_map_field_hardware(test_dao, test_csv_file_hardware):
     """
     do_map_field() should return None and create a dictionary with
-    RTKHardware field mappings.
+    RAMSTKHardware field mappings.
     """
     DUT = dtmImports(test_dao)
 
@@ -179,7 +179,7 @@ def test_do_map_field_hardware(test_dao, test_csv_file_hardware):
 def test_do_map_field_design_electric(test_dao, test_csv_file_hardware):
     """
     do_map_field() should return None and create a dictionary with
-    RTKDesignElectric field mappings.
+    RAMSTKDesignElectric field mappings.
     """
     DUT = dtmImports(test_dao)
 
@@ -264,7 +264,7 @@ def test_do_map_field_design_electric(test_dao, test_csv_file_hardware):
 def test_do_map_field_reliability(test_dao, test_csv_file_hardware):
     """
     do_map_field() should return None and create a dictionary with
-    RTKReliability field mappings.
+    RAMSTKReliability field mappings.
     """
     DUT = dtmImports(test_dao)
 
@@ -303,7 +303,7 @@ def test_do_map_field_reliability(test_dao, test_csv_file_hardware):
 def test_do_map_field_validation(test_dao, test_csv_file_validation):
     """
     do_map_field() should return None and create a dictionary with
-    RTKValidation field mappings.
+    RAMSTKValidation field mappings.
     """
     DUT = dtmImports(test_dao)
 
@@ -342,7 +342,7 @@ def test_do_map_field_validation(test_dao, test_csv_file_validation):
 def test_do_insert_function(test_dao, test_csv_file_function):
     """
     do_insert() should return a zero error code on success and create a new
-    RTKFunction object with it's attributes set from the external file data.
+    RAMSTKFunction object with it's attributes set from the external file data.
     """
     DUT = dtmImports(test_dao)
 
@@ -355,14 +355,14 @@ def test_do_insert_function(test_dao, test_csv_file_function):
 
     assert _count == 2
     assert _error_code == 0
-    assert _msg == 'RTK SUCCESS: Adding one or more items to the RTK Program database.'
+    assert _msg == 'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.'
 
 
 @pytest.mark.integration
 def test_do_insert_requirement(test_dao, test_csv_file_requirement):
     """
     do_insert() should return a zero error code on success and create a new
-    RTKRequirement object with it's attributes set from the external file
+    RAMSTKRequirement object with it's attributes set from the external file
     data.
     """
     DUT = dtmImports(test_dao)
@@ -376,14 +376,14 @@ def test_do_insert_requirement(test_dao, test_csv_file_requirement):
 
     assert _count == 0
     assert _error_code == 0
-    assert _msg == 'RTK SUCCESS: Adding one or more items to the RTK Program database.'
+    assert _msg == 'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.'
 
 
 @pytest.mark.integration
 def test_do_insert_hardware(test_dao, test_csv_file_hardware):
     """
     do_insert() should return a zero error code on success and create a new
-    RTKHardware, RTKDesignElectric, and RTKReliability object with it's
+    RAMSTKHardware, RAMSTKDesignElectric, and RAMSTKReliability object with it's
     attributes set from the external file data.
     """
     DUT = dtmImports(test_dao)
@@ -411,14 +411,14 @@ def test_do_insert_hardware(test_dao, test_csv_file_hardware):
 
     assert _count == 0
     assert _error_code == 0
-    assert _msg == 'RTK SUCCESS: Adding one or more items to the RTK Program database.'
+    assert _msg == 'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.'
 
 
 @pytest.mark.integration
 def test_do_insert_validation(test_dao, test_csv_file_validation):
     """
     do_insert() should return a zero error code on success and create a new
-    RTKValidation object with it's attributes set from the external  file
+    RAMSTKValidation object with it's attributes set from the external  file
     data.
     """
     DUT = dtmImports(test_dao)
@@ -432,7 +432,7 @@ def test_do_insert_validation(test_dao, test_csv_file_validation):
 
     assert _count == 0
     assert _error_code == 0
-    assert _msg == 'RTK SUCCESS: Adding one or more items to the RTK Program database.'
+    assert _msg == 'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.'
 
 
 @pytest.mark.integration

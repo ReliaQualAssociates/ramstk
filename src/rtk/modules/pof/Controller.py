@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.pof.Controller.py is part of The RTK Project
+#       rtk.modules.pof.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Physics of Failure Package Data Controller."""
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
 from . import dtmPoF
 
 
-class PhysicsOfFailureDataController(RTKDataController):
+class PhysicsOfFailureDataController(RAMSTKDataController):
     """
-    Provide an interface between the PoF data model and an RTK view model.
+    Provide an interface between the PoF data model and an RAMSTK view model.
 
     A single PoF controller can manage one or more PoF data models.
     The attributes of a PoF data controller are:
@@ -23,14 +23,14 @@ class PhysicsOfFailureDataController(RTKDataController):
         """
         Initialize a PoF data controller instance.
 
-        :param dao: the RTK Program DAO instance to pass to the PoF Data
+        :param dao: the RAMSTK Program DAO instance to pass to the PoF Data
                     Model.
         :type dao: :class:`rtk.dao.DAO.DAO`
         :param configuration: the Configuration instance associated with the
-                              current instance of the RTK application.
+                              current instance of the RAMSTK application.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self, configuration, model=dtmPoF(dao), rtk_module='PoF', **kwargs)
 
         # Initialize private dictionary attributes.
@@ -69,13 +69,13 @@ class PhysicsOfFailureDataController(RTKDataController):
             entity_id=_entity_id, parent_id=_parent_id, level=_level)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
         else:
-            _msg = _msg + '  Failed to add a new PoF item to the RTK ' \
+            _msg = _msg + '  Failed to add a new PoF item to the RAMSTK ' \
                 'Program database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete(self, node_id):
@@ -89,12 +89,12 @@ class PhysicsOfFailureDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKOpLoad, RTKOpStress, or RTKTestMethod.
+        Request to update an RAMSTKOpLoad, RAMSTKOpStress, or RAMSTKTestMethod.
 
         :param int node_id: the PyPubSub Tree() ID of the entity to save.
         :return: False if successful or True if an error is encountered.
@@ -102,12 +102,12 @@ class PhysicsOfFailureDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_update_all(self, **kwargs):
         """
-        Request all PoF entities be saved to the RTK Program database.
+        Request all PoF entities be saved to the RAMSTK Program database.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -116,5 +116,5 @@ class PhysicsOfFailureDataController(RTKDataController):
 
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

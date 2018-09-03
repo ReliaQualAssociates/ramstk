@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_filter.py is part of The RTK Project
+#       tests.analyses.prediction.test_filter.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -62,7 +62,7 @@ def test_calculate_mil_hdbk_217f_part_count(type_id, quality_id,
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when '
+        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
                         'calculating filter, hardware ID: 6')
     else:
         assert _msg == ''
@@ -82,7 +82,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
     _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'filter, hardware ID: 6, type ID: 9, active environment '
                     'ID: 1')
     assert _attributes['lambda_b'] == 0.0
@@ -101,7 +101,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'filter, hardware ID: 6, type ID: 1, active environment '
                     'ID: 100')
     assert _attributes['lambda_b'] == 0.0
@@ -120,7 +120,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piQ is 0.0 when calculating filter, '
+    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating filter, '
                     'hardware ID: 6, quality ID: 4')
     assert _attributes['lambda_b'] == 0.022
     assert _attributes['piQ'] == 0.0
@@ -158,7 +158,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_type():
     _attributes, _msg = Filter.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == 'RTK WARNING: Base hazard rate is 0.0 when ' \
+    assert _msg == 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
                    'calculating filter, hardware ID: 6'
     assert pytest.approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 1.0
@@ -178,7 +178,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     _attributes, _msg = Filter.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == 'RTK WARNING: piQ is 0.0 when ' \
+    assert _msg == 'RAMSTK WARNING: piQ is 0.0 when ' \
                    'calculating filter, hardware ID: 6'
     assert pytest.approx(_attributes['lambda_b'], 0.012)
     assert _attributes['piQ'] == 0.0
@@ -198,7 +198,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     _attributes, _msg = Filter.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == 'RTK WARNING: piE is 0.0 when ' \
+    assert _msg == 'RAMSTK WARNING: piE is 0.0 when ' \
                    'calculating filter, hardware ID: 6'
     assert pytest.approx(_attributes['lambda_b'], 0.012)
     assert _attributes['piQ'] == 1.0

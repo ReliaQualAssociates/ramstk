@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.Requirement.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.Requirement.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,16 +8,16 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.Utilities import boolean_to_integer
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gobject, gtk, pango
-from .WorkView import RTKWorkView
+from .WorkView import RAMSTKWorkView
 
 
-class GeneralData(RTKWorkView):
+class GeneralData(RAMSTKWorkView):
     """
-    Display Requirement attribute data in the RTK Work Book.
+    Display Requirement attribute data in the RAMSTK Work Book.
 
     The Work View displays all the attributes for the selected Requirement. The
     attributes of a Work View are:
@@ -78,10 +78,10 @@ class GeneralData(RTKWorkView):
         """
         Initialize the Requirement Work View.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Requirement')
+        RAMSTKWorkView.__init__(self, controller, module='Requirement')
 
         # Initialize private dictionary attributes.
 
@@ -106,31 +106,31 @@ class GeneralData(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.btnValidateDate = rtk.RTKButton(height=25, width=25, label="...")
+        self.btnValidateDate = rtk.RAMSTKButton(height=25, width=25, label="...")
 
-        self.chkDerived = rtk.RTKCheckButton(
+        self.chkDerived = rtk.RAMSTKCheckButton(
             label=_(u"Requirement is derived."),
             tooltip=_(u"Indicates whether or not the selected requirement is "
                       u"derived."))
-        self.chkValidated = rtk.RTKCheckButton(
+        self.chkValidated = rtk.RAMSTKCheckButton(
             label=_(u"Requirement is validated."),
             tooltip=_(u"Indicates whether or not the selected requirement is "
                       u"validated."))
 
-        self.cmbOwner = rtk.RTKComboBox()
-        self.cmbRequirementType = rtk.RTKComboBox(index=1, simple=False)
-        self.cmbPriority = rtk.RTKComboBox(width=50)
+        self.cmbOwner = rtk.RAMSTKComboBox()
+        self.cmbRequirementType = rtk.RAMSTKComboBox(index=1, simple=False)
+        self.cmbPriority = rtk.RAMSTKComboBox(width=50)
 
-        self.txtCode = rtk.RTKEntry(
+        self.txtCode = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"A unique code for the selected requirement."))
-        self.txtFigNum = rtk.RTKEntry()
-        self.txtName = rtk.RTKEntry(
+        self.txtFigNum = rtk.RAMSTKEntry()
+        self.txtName = rtk.RAMSTKEntry(
             width=800,
             tooltip=_(u"The description of the selected requirement."))
-        self.txtPageNum = rtk.RTKEntry()
-        self.txtSpecification = rtk.RTKEntry()
-        self.txtValidatedDate = rtk.RTKEntry()
+        self.txtPageNum = rtk.RAMSTKEntry()
+        self.txtSpecification = rtk.RAMSTKEntry()
+        self.txtValidatedDate = rtk.RAMSTKEntry()
 
         # Connect to callback requirements for editable gtk.Widgets().
         self._lst_handler_id.append(
@@ -248,7 +248,7 @@ class GeneralData(RTKWorkView):
         self.chkDerived.handler_unblock(self._lst_handler_id[3])
 
         self.cmbRequirementType.handler_block(self._lst_handler_id[2])
-        _types = self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE
+        _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE
         self.cmbRequirementType.set_active(0)
         _idx = 1
         for _key, _type in _types.iteritems():
@@ -275,7 +275,7 @@ class GeneralData(RTKWorkView):
         self.cmbPriority.handler_unblock(self._lst_handler_id[7])
 
         self.cmbOwner.handler_block(self._lst_handler_id[8])
-        _groups = self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS
+        _groups = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS
         self.cmbOwner.set_active(0)
         for _key, _group in _groups.iteritems():
             if _group[0] == _requirement.owner:
@@ -333,8 +333,8 @@ class GeneralData(RTKWorkView):
 
         This method is used to select the validation date for the Requirement.
 
-        :param __button: the rtk.RTKButton() that called this method.
-        :type __button: :class:`rtk.gui.gtk.rtk.RTKButton`
+        :param __button: the rtk.RAMSTKButton() that called this method.
+        :type __button: :class:`rtk.gui.gtk.rtk.RAMSTKButton`
         :param __event: the gtk.gdk.Event() that called this method.
         :type __event: :class:`gtk.gdk.Event`
         :param entry: the gtk.Entry() that the new date should be displayed in.
@@ -342,7 +342,7 @@ class GeneralData(RTKWorkView):
         :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
         :rtype: str
         """
-        _dialog = rtk.RTKDateSelect()
+        _dialog = rtk.RAMSTKDateSelect()
 
         _date = _dialog.do_run()
         _dialog.do_destroy()
@@ -359,15 +359,15 @@ class GeneralData(RTKWorkView):
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            (u"Save the currently selected Requirement to the open RTK "
+            (u"Save the currently selected Requirement to the open RAMSTK "
              u"Program database."),
-            _(u"Save all Requirement to the open RTK Program database.")
+            _(u"Save all Requirement to the open RAMSTK Program database.")
         ]
         _callbacks = [self._do_request_update, self._do_request_update_all]
 
         _icons = ['save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -389,9 +389,9 @@ class GeneralData(RTKWorkView):
         # (Code, Description, Type).
         _types = []
         for _index, _key in enumerate(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE):
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE):
             _types.append(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE[_key])
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[_key])
         self.cmbRequirementType.do_load_combo(
             list(_types), index=1, simple=False)
 
@@ -399,8 +399,8 @@ class GeneralData(RTKWorkView):
         # (Description, Group Type).
         _owners = []
         for _index, _key in enumerate(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS):
-            _owners.append(self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS[_key])
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS):
+            _owners.append(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS[_key])
         self.cmbOwner.do_load_combo(list(_owners))
 
         # Load the priority gtk.Combo().
@@ -410,8 +410,8 @@ class GeneralData(RTKWorkView):
         # Build the General Data page.
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"General Information"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"General Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels, _fixed,
@@ -434,7 +434,7 @@ class GeneralData(RTKWorkView):
         _fixed.show_all()
 
         # Create the label for the gtk.Notebook() tab.
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"General\nData"),
             height=30,
             width=-1,
@@ -517,7 +517,7 @@ class GeneralData(RTKWorkView):
             self.txtFigNum.handler_unblock(self._lst_handler_id[6])
         elif index == 5:
             self.cmbOwner.handler_block(self._lst_handler_id[8])
-            _groups = self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS
+            _groups = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS
             for _key, _group in _groups.iteritems():
                 if _group[0] == new_text:
                     self.cmbOwner.set_property('active', int(_key))
@@ -540,7 +540,7 @@ class GeneralData(RTKWorkView):
             self.txtSpecification.handler_unblock(self._lst_handler_id[4])
         elif index == 11:
             self.cmbRequirementType.handler_block(self._lst_handler_id[2])
-            _types = self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE
+            _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE
             for _key, _type in _types.iteritems():
                 if _type[1] == new_text:
                     self.cmbRequirementType.set_property('active', int(_key))
@@ -554,7 +554,7 @@ class GeneralData(RTKWorkView):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve RTKEntry() changes and assign to Requirement attributes.
+        Retrieve RAMSTKEntry() changes and assign to Requirement attributes.
 
         This method retrieves changes to Requirement attributes through the
         various gtk.Widgets() and assign the new data to the appropriate
@@ -628,8 +628,8 @@ class GeneralData(RTKWorkView):
         self._requirement_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['requirement']
+        # It is defined in RAMSTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['requirement']
         self._do_load_page()
 
         return _return
@@ -671,9 +671,9 @@ class GeneralData(RTKWorkView):
         return _return
 
 
-class RequirementAnalysis(RTKWorkView):
+class RequirementAnalysis(RAMSTKWorkView):
     """
-    Display Requirement attribute data in the RTK Work Book.
+    Display Requirement attribute data in the RAMSTK Work Book.
 
     The Requirement Analysis Work View displays all the analysis questions and
     answers for the selected Requirement. The attributes of a Requirement
@@ -689,13 +689,13 @@ class RequirementAnalysis(RTKWorkView):
                                   the answers to the Verifiability questions.
     :ivar int _requirement_id: the ID of the Requirement Data Model currently
                                being controlled.
-    :ivar tvwClear: the :class:`gtk.RTKTreeView` listing all the Clarity
+    :ivar tvwClear: the :class:`gtk.RAMSTKTreeView` listing all the Clarity
                     questions and answers.
-    :ivar tvwComplete: the :class:`gtk.RTKTreeView` listing all the
+    :ivar tvwComplete: the :class:`gtk.RAMSTKTreeView` listing all the
                        Completeness questions and answers.
-    :ivar tvwConsistent: the :class:`gtk.RTKTreeView` listing all the
+    :ivar tvwConsistent: the :class:`gtk.RAMSTKTreeView` listing all the
                          Consistency questions and answers.
-    :ivar tvwVerifiable: the :class:`gtk.RTKTreeView` listing all the
+    :ivar tvwVerifiable: the :class:`gtk.RAMSTKTreeView` listing all the
                          Verifiability questions and answers.
     """
 
@@ -703,10 +703,10 @@ class RequirementAnalysis(RTKWorkView):
         """
         Initialize the Work View for the Requirement package.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Requirement')
+        RAMSTKWorkView.__init__(self, controller, module='Requirement')
 
         # Initialize private dictionary attributes.
 
@@ -789,7 +789,7 @@ class RequirementAnalysis(RTKWorkView):
 
     def _do_edit_cell(self, cell, path, new_text, position, model, index):  # pylint: disable=unused-argument
         """
-        Handle edits of the Requirement Analysis RTKTreeview().
+        Handle edits of the Requirement Analysis RAMSTKTreeview().
 
         :param cell: the gtk.CellRendererToggle() that was toggled.
         :type cell: :class:`gtk.CellRendererToggle`
@@ -863,10 +863,10 @@ class RequirementAnalysis(RTKWorkView):
                 _requirement.q_verifiable_4 = self._lst_verifiable_a[4]
                 _requirement.q_verifiable_5 = self._lst_verifiable_a[5]
         except IndexError:
-            _debug_msg = ("RTK ERROR: No position {0:d} in Requirements "
+            _debug_msg = ("RAMSTK ERROR: No position {0:d} in Requirements "
                           "Analysis question list for index {1:d}.").format(
                               _position, index)
-            self._mdcRTK.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_debug_msg)
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_debug_msg)
 
         return _return
 
@@ -944,15 +944,15 @@ class RequirementAnalysis(RTKWorkView):
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Save the currently selected Requirement to the open RTK "
+            _(u"Save the currently selected Requirement to the open RAMSTK "
               u"Program database."),
-            _(u"Save all Requirement to the open RTK Program database.")
+            _(u"Save all Requirement to the open RAMSTK Program database.")
         ]
         _callbacks = [self._do_request_update, self._do_request_update_all]
 
         _icons = ['save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -1063,7 +1063,7 @@ class RequirementAnalysis(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwClear)
 
-        _frame = rtk.RTKFrame(label=_(u"Clarity of Requirement"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Clarity of Requirement"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1075,7 +1075,7 @@ class RequirementAnalysis(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwComplete)
 
-        _frame = rtk.RTKFrame(label=_(u"Completeness of Requirement"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Completeness of Requirement"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1090,7 +1090,7 @@ class RequirementAnalysis(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwConsistent)
 
-        _frame = rtk.RTKFrame(label=_(u"Consistency of Requirement"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Consistency of Requirement"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1102,7 +1102,7 @@ class RequirementAnalysis(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwVerifiable)
 
-        _frame = rtk.RTKFrame(label=_(u"Verifiability of Requirement"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Verifiability of Requirement"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1196,7 +1196,7 @@ class RequirementAnalysis(RTKWorkView):
         self._requirement_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['requirement']
+        # It is defined in RAMSTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['requirement']
 
         return self._do_load_page(**kwargs)

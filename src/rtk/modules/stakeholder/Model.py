@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.stakeholder.Model.py is part of The RTK Project
+#       rtk.modules.stakeholder.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Stakeholder Package Data Model Module."""
 
-# Import other RTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKStakeholder
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKStakeholder
 
 
-class StakeholderDataModel(RTKDataModel):
+class StakeholderDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of Stakeholder.
 
@@ -26,11 +26,11 @@ class StakeholderDataModel(RTKDataModel):
         """
         Initialize a Stakeholder data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -46,20 +46,20 @@ class StakeholderDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Stakeholders from the RTK Program database.
+        Retrieve all the Stakeholders from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKStakeholder
-        table in the connected RTK Program database.  It then add each to the
+        This method retrieves all the records from the RAMSTKStakeholder
+        table in the connected RAMSTK Program database.  It then add each to the
         Stakeholder data model treelib.Tree().
 
-        :return: tree; the treelib Tree() of RTKStakeholder data models.
+        :return: tree; the treelib Tree() of RAMSTKStakeholder data models.
         :rtype: :class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        _session = RTKDataModel.do_select_all(self, **kwargs)
+        _session = RAMSTKDataModel.do_select_all(self, **kwargs)
 
-        for _stakeholder in _session.query(RTKStakeholder).filter(
-                RTKStakeholder.revision_id == _revision_id).all():
+        for _stakeholder in _session.query(RAMSTKStakeholder).filter(
+                RAMSTKStakeholder.revision_id == _revision_id).all():
             self.tree.create_node(
                 _stakeholder.description,
                 _stakeholder.stakeholder_id,
@@ -67,7 +67,7 @@ class StakeholderDataModel(RTKDataModel):
                 data=_stakeholder)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
 
         _session.close()
@@ -76,7 +76,7 @@ class StakeholderDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKStakeholder table.
+        Add a record to the RAMSTKStakeholder table.
 
         :param int revision_id: the Revision ID to add the Failure
                                 Definition against.
@@ -84,9 +84,9 @@ class StakeholderDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _revision_id = kwargs['revision_id']
-        _stakeholder = RTKStakeholder()
+        _stakeholder = RAMSTKStakeholder()
         _stakeholder.revision_id = _revision_id
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _stakeholder,
             ])
@@ -99,27 +99,27 @@ class StakeholderDataModel(RTKDataModel):
                 data=_stakeholder)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKStakeholder table.
+        Remove a record from the RAMSTKStakeholder table.
 
         :param int node_id: the ID of the Stakeholder to be
                                   removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Stakeholder ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -128,25 +128,25 @@ class StakeholderDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record in the RTKStakeholder table.
+        Update the record in the RAMSTKStakeholder table.
 
-        :param int node_id: the Stakeholder ID to save to the RTK
+        :param int node_id: the Stakeholder ID to save to the RAMSTK
                                   Program database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Stakeholder ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Stakeholder ' \
                    'ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKStakeholder records.
+        Update all RAMSTKStakeholder records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -162,11 +162,11 @@ class StakeholderDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the stakeholder "
+                _msg = ("RAMSTK ERROR: One or more records in the stakeholder "
                         "table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the stakeholder "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the stakeholder "
                     "table.")
 
         return _error_code, _msg

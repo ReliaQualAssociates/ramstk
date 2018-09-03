@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.Controller.py is part of The RTK Project
+#       rtk.hardware.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,16 +8,16 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
-from rtk.modules import RTKDataMatrix
-from rtk.dao import RTKHardware, RTKRequirement, RTKTest, RTKValidation
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
+from rtk.modules import RAMSTKDataMatrix
+from rtk.dao import RAMSTKHardware, RAMSTKRequirement, RAMSTKTest, RAMSTKValidation
 from . import dtmHardwareBoM
 
 
-class HardwareBoMDataController(RTKDataController):
+class HardwareBoMDataController(RAMSTKDataController):
     """
-    Provide an interface between the Hardware data model and an RTK view model.
+    Provide an interface between the Hardware data model and an RAMSTK view model.
 
     A single Hardware controller can manage one or more Hardware data models.
     The attributes of a Hardware data controller are:
@@ -27,14 +27,14 @@ class HardwareBoMDataController(RTKDataController):
         """
         Initialize a Hardware data controller instance.
 
-        :param dao: the RTK Program DAO instance to pass to the Hardware Data
+        :param dao: the RAMSTK Program DAO instance to pass to the Hardware Data
                     Model.
         :type dao: :class:`rtk.dao.DAO`
         :param configuration: the Configuration instance associated with the
-                              current instance of the RTK application.
+                              current instance of the RAMSTK application.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmHardwareBoM(dao),
@@ -46,11 +46,11 @@ class HardwareBoMDataController(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_hw_rqrmnt_matrix = RTKDataMatrix(dao, RTKHardware,
-                                                   RTKRequirement)
-        self._dmx_hw_tstng_matrix = RTKDataMatrix(dao, RTKHardware, RTKTest)
-        self._dmx_hw_vldtn_matrix = RTKDataMatrix(dao, RTKHardware,
-                                                  RTKValidation)
+        self._dmx_hw_rqrmnt_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
+                                                   RAMSTKRequirement)
+        self._dmx_hw_tstng_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware, RAMSTKTest)
+        self._dmx_hw_vldtn_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
+                                                  RAMSTKValidation)
 
         # Initialize public dictionary attributes.
 
@@ -142,7 +142,7 @@ class HardwareBoMDataController(RTKDataController):
 
     def request_do_insert(self, **kwargs):
         """
-        Request to add an RTKHardware table record.
+        Request to add an RAMSTKHardware table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -154,7 +154,7 @@ class HardwareBoMDataController(RTKDataController):
             revision_id=_revision_id, parent_id=_parent_id, part=_part)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             _hardware_id = self.request_last_id()
             _heading = self.request_do_select(
@@ -173,11 +173,11 @@ class HardwareBoMDataController(RTKDataController):
                     hardware_id=self._dtm_data_model.dtm_hardware.last_id,
                     parent_id=_parent_id)
         else:
-            _msg = _msg + '  Failed to add a new Hardware item to the RTK ' \
+            _msg = _msg + '  Failed to add a new Hardware item to the RAMSTK ' \
                 'Program database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_insert_matrix(self, matrix_type, item_id, heading,
@@ -218,12 +218,12 @@ class HardwareBoMDataController(RTKDataController):
                 item_id=item_id,
                 row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete(self, node_id):
         """
-        Request to delete an RTKHardware table record.
+        Request to delete an RAMSTKHardware table record.
 
         :param str node_id: the PyPubSub Tree() ID of the Hardware item to
                             delete.
@@ -235,7 +235,7 @@ class HardwareBoMDataController(RTKDataController):
         if not self._test:
             pub.sendMessage('deletedHardware', node_id=node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
@@ -267,12 +267,12 @@ class HardwareBoMDataController(RTKDataController):
             _error_code, _msg = self._dmx_hw_vldtn_matrix.do_delete(
                 item_id, row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedMatrix')
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKHardware table record.
+        Request to update an RAMSTKHardware table record.
 
         :param str node_id: the PyPubSub Tree() ID of the Hardware item to
                             save.
@@ -281,7 +281,7 @@ class HardwareBoMDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedHardware')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
@@ -312,22 +312,22 @@ class HardwareBoMDataController(RTKDataController):
                 revision_id, matrix_type)
         else:
             _error_code = 6
-            _msg = 'RTK ERROR: Attempted to update non-existent matrix ' \
+            _msg = 'RAMSTK ERROR: Attempted to update non-existent matrix ' \
                    '{0:s}.'.format(matrix_type)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedMatrix')
 
     def request_do_update_all(self, **kwargs):
         """
-        Request to update all records in the RTKHardware table.
+        Request to update all records in the RAMSTKHardware table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_get_attributes(self, node_id):
@@ -344,7 +344,7 @@ class HardwareBoMDataController(RTKDataController):
         """
         Set the attributes of the record associated with the Node ID.
 
-        :param int node_id: the ID of the record in the RTK Program database
+        :param int node_id: the ID of the record in the RAMSTK Program database
                             table whose attributes are to be set.
         :param dict attributes: the dictionary of attributes and values.
         :return: False if successful or True if an error is encountered.
@@ -358,32 +358,32 @@ class HardwareBoMDataController(RTKDataController):
         # Set the attributes for the individual tables.
         _error_code, _msg = self._dtm_data_model.dtm_hardware.do_select(
             node_id).set_attributes(attributes)
-        _return = (_return or RTKDataController.do_handle_results(
+        _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_design_electric.do_select(
             node_id).set_attributes(attributes)
-        _return = (_return or RTKDataController.do_handle_results(
+        _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_design_mechanic.do_select(
             node_id).set_attributes(attributes)
-        _return = (_return or RTKDataController.do_handle_results(
+        _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_mil_hdbk_f.do_select(
             node_id).set_attributes(attributes)
-        _return = (_return or RTKDataController.do_handle_results(
+        _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_nswc.do_select(
             node_id).set_attributes(attributes)
-        _return = (_return or RTKDataController.do_handle_results(
+        _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_reliability.do_select(
             node_id).set_attributes(attributes)
-        _return = (_return or RTKDataController.do_handle_results(
+        _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         return _return
@@ -414,7 +414,7 @@ class HardwareBoMDataController(RTKDataController):
         if self._dtm_data_model.dtm_hardware.do_make_composite_ref_des(
                 node_id):
             _error_code = 3005
-            _msg = 'RTK ERROR: Failed to create all composite reference ' \
+            _msg = 'RAMSTK ERROR: Failed to create all composite reference ' \
                    'designators for Node ID {0:d} and ' \
                    'children.'.format(node_id)
 

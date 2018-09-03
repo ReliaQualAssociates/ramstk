@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.revision.Controller.py is part of The RTK Project
+#       rtk.revision.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,16 +8,16 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
-from rtk.modules import RTKDataMatrix
-from rtk.dao import RTKHardware, RTKRequirement, RTKValidation
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
+from rtk.modules import RAMSTKDataMatrix
+from rtk.dao import RAMSTKHardware, RAMSTKRequirement, RAMSTKValidation
 from . import dtmValidation
 
 
-class ValidationDataController(RTKDataController):
+class ValidationDataController(RAMSTKDataController):
     """
-    Provide an interface between Validation data models and RTK views.
+    Provide an interface between Validation data models and RAMSTK views.
 
     A single Validation data controller can manage one or more Failure
     Validation data models.
@@ -28,12 +28,12 @@ class ValidationDataController(RTKDataController):
         Initialize a Validation data controller instance.
 
         :param dao: the data access object used to communicate with the
-                    connected RTK Program database.
+                    connected RAMSTK Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
-        :param configuration: the RTK configuration instance.
+        :param configuration: the RAMSTK configuration instance.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmValidation(dao),
@@ -45,10 +45,10 @@ class ValidationDataController(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_vldtn_rqrmnt_matrix = RTKDataMatrix(dao, RTKValidation,
-                                                      RTKRequirement)
-        self._dmx_vldtn_hw_matrix = RTKDataMatrix(dao, RTKValidation,
-                                                  RTKHardware)
+        self._dmx_vldtn_rqrmnt_matrix = RAMSTKDataMatrix(dao, RAMSTKValidation,
+                                                      RAMSTKRequirement)
+        self._dmx_vldtn_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKValidation,
+                                                  RAMSTKHardware)
 
         # Initialize public dictionary attributes.
 
@@ -126,7 +126,7 @@ class ValidationDataController(RTKDataController):
 
     def request_do_insert(self, **kwargs):
         """
-        Request to add an RTKValidation table record.
+        Request to add an RAMSTKValidation table record.
 
         :param int revision_id: the Revision ID this Validation will be
                                 associated with.
@@ -138,16 +138,16 @@ class ValidationDataController(RTKDataController):
             revision_id=_revision_id)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             if not self._test:
                 pub.sendMessage('insertedValidation')
         else:
             _msg = _msg + '  Failed to add a new Validation to the ' \
-                          'RTK Program database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+                          'RAMSTK Program database.'
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_insert_matrix(self, matrix_type, item_id, heading,
@@ -182,12 +182,12 @@ class ValidationDataController(RTKDataController):
                 item_id=item_id,
                 row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete(self, node_id):
         """
-        Request to delete an RTKValidation table record.
+        Request to delete an RAMSTKValidation table record.
 
         :param int node_id: the PyPubSub Tree() ID of the Validation task to
                             delete.
@@ -197,7 +197,7 @@ class ValidationDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedValidation')
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
@@ -223,12 +223,12 @@ class ValidationDataController(RTKDataController):
             _error_code, _msg = self._dmx_vldtn_hw_matrix.do_delete(
                 item_id, row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedMatrix')
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKValidation table record.
+        Request to update an RAMSTKValidation table record.
 
         :param int node_id: the PyPubSub Tree() ID of the Validation task to
                             delete.
@@ -238,7 +238,7 @@ class ValidationDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedValidation')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
@@ -263,22 +263,22 @@ class ValidationDataController(RTKDataController):
                 revision_id, matrix_type)
         else:
             _error_code = 6
-            _msg = 'RTK ERROR: Attempted to update non-existent matrix ' \
+            _msg = 'RAMSTK ERROR: Attempted to update non-existent matrix ' \
                    '{0:s}.'.format(matrix_type)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedMatrix')
 
     def request_do_update_all(self, **kwargs):
         """
-        Request to update all records in the RTKValidation table.
+        Request to update all records in the RAMSTKValidation table.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_update_status(self):
@@ -290,7 +290,7 @@ class ValidationDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update_status()
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
@@ -306,28 +306,28 @@ class ValidationDataController(RTKDataController):
         :rtype: bool
         """
         _return = False
-        _msg = 'RTK SUCCESS: Calculating Validation Task {0:d} cost and ' \
+        _msg = 'RAMSTK SUCCESS: Calculating Validation Task {0:d} cost and ' \
                'time metrics.'.format(node_id)
 
         _costs = self._dtm_data_model.do_calculate(node_id, metric='cost')
         _time = self._dtm_data_model.do_calculate(node_id, metric='time')
 
         if not _costs and not _time:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             if not self._test:
                 pub.sendMessage('calculatedValidation', module_id=node_id)
 
         elif _costs:
-            _msg = 'RTK ERROR: Calculating Validation Task {0:d} cost ' \
+            _msg = 'RAMSTK ERROR: Calculating Validation Task {0:d} cost ' \
                    'metrics.'.format(node_id)
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
             _return = True
 
         elif _time:
-            _msg = 'RTK ERROR: Calculating Validation Task {0:d} time ' \
+            _msg = 'RAMSTK ERROR: Calculating Validation Task {0:d} time ' \
                    'metrics.'.format(node_id)
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
             _return = True
 
         return _return

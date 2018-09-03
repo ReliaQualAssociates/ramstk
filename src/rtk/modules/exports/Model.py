@@ -10,10 +10,10 @@ import os
 import pandas as pd
 
 # Export other RAMSTK modules.
-from rtk.modules import RTKDataModel
+from rtk.modules import RAMSTKDataModel
 
 
-class ExportDataModel(RTKDataModel):
+class ExportDataModel(RAMSTKDataModel):
     """Contains the attributes and methods of an Export data model."""
 
     # Dictionary of RAMSTK export field headers.
@@ -139,7 +139,7 @@ class ExportDataModel(RTKDataModel):
                     Program database.
         :type dao: :class:`ramstk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 

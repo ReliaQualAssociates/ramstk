@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.moduleviews.Function.py is part of the RTK Project
+#       rtk.gui.gtk.moduleviews.Function.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,18 +8,18 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .ModuleView import RTKModuleView
+from .ModuleView import RAMSTKModuleView
 
 
-class ModuleView(RTKModuleView):
+class ModuleView(RAMSTKModuleView):
     """
-    Display Function attribute data in the RTK Module Book.
+    Display Function attribute data in the RAMSTK Module Book.
 
     The Function Module Book view displays all the Functions associated with
-    the RTK Program in a flat list.  The attributes of the Function Module View
+    the RAMSTK Program in a flat list.  The attributes of the Function Module View
     are:
 
     :ivar int _function_id: the ID of the currently selected Function.
@@ -30,13 +30,13 @@ class ModuleView(RTKModuleView):
         """
         Initialize the Module View for the Function package.
 
-        :param controller: the RTK Master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK Master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKModuleView.__init__(self, controller, module='function')
+        RAMSTKModuleView.__init__(self, controller, module='function')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/function.png'
 
         # Initialize private list attributes.
@@ -59,7 +59,7 @@ class ModuleView(RTKModuleView):
             self.treeview.connect('button_press_event', self._on_button_press))
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Functions"),
             width=-1,
             height=-1,
@@ -81,13 +81,13 @@ class ModuleView(RTKModuleView):
 
     def _do_change_row(self, treeview):
         """
-        Handle events for the Function package Module Book RTKTreeView().
+        Handle events for the Function package Module Book RAMSTKTreeView().
 
-        This method is called whenever a Module Book RTKTreeView() row is
+        This method is called whenever a Module Book RAMSTKTreeView() row is
         activated.
 
-        :param treeview: the Function Module View RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
+        :param treeview: the Function Module View RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -107,7 +107,7 @@ class ModuleView(RTKModuleView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the Function package Module View RTKTreeview().
+        Handle edits of the Function package Module View RAMSTKTreeview().
 
         :param __cell: the gtk.CellRenderer() that was edited.
         :type __cell: :class:`gtk.CellRenderer`
@@ -164,7 +164,7 @@ class ModuleView(RTKModuleView):
         _prompt = _(u"You are about to delete Function {0:d} and all data "
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._function_id)
-        _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['question'],
+        _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
                                        'question')
         _response = _dialog.do_run()
 
@@ -173,7 +173,7 @@ class ModuleView(RTKModuleView):
             if self._dtc_data_controller.request_do_delete(self._function_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Function {0:d}.").format(self._function_id)
-                _error_dialog = rtk.RTKMessageDialog(
+                _error_dialog = rtk.RAMSTKMessageDialog(
                     _prompt, self._dic_icons['error'], 'error')
                 if _error_dialog.do_run() == gtk.RESPONSE_OK:
                     _error_dialog.do_destroy()
@@ -208,7 +208,7 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert(self, **kwargs):
         """
-        Send request to insert a new Function into the RTK Program database.
+        Send request to insert a new Function into the RAMSTK Program database.
 
         :param bool sibling: indicates whether to insert a sibling (default)
                              Function or a child Function.
@@ -235,9 +235,9 @@ class ModuleView(RTKModuleView):
             _prompt = _(u"An error occurred while attempting to add a "
                         u"function to Revision "
                         u"{0:d}.").format(self._revision_id)
-            _error_dialog = rtk.RTKMessageDialog(
+            _error_dialog = rtk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
-            self._mdcRTK.debug_log.error(_prompt)
+            self._mdcRAMSTK.debug_log.error(_prompt)
 
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
@@ -314,8 +314,8 @@ class ModuleView(RTKModuleView):
               u"selected Function (i.e., a child function)."),
             _(u"Remove the currently selected Function."),
             _(u"Save the currently selected Function to the open "
-              u"RTK Program database."),
-            _(u"Saves all Functions to the open RTK Program "
+              u"RAMSTK Program database."),
+            _(u"Saves all Functions to the open RAMSTK Program "
               u"database."),
             _(u"Exports Functions to an external file (CSV, Excel, and text "
               u"files are supported).")
@@ -330,7 +330,7 @@ class ModuleView(RTKModuleView):
             'export'
         ]
 
-        _buttonbox = RTKModuleView._make_buttonbox(
+        _buttonbox = RAMSTKModuleView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -343,7 +343,7 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Set up the Function Module View RTKTreeView().
+        Set up the Function Module View RAMSTKTreeView().
 
         This method sets all cells as non-editable to make the Function Module
         View read-only.
@@ -366,10 +366,10 @@ class ModuleView(RTKModuleView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Function package Module View RTKTreeView().
+        Handle mouse clicks on the Function package Module View RAMSTKTreeView().
 
-        :param treeview: the Function Module View RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
+        :param treeview: the Function Module View RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -451,7 +451,7 @@ class ModuleView(RTKModuleView):
 
     def _on_edit(self, position, new_text):
         """
-        Update the Module View RTKTreeView().
+        Update the Module View RAMSTKTreeView().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -467,9 +467,9 @@ class ModuleView(RTKModuleView):
 
     def _on_select_revision(self, module_id):
         """
-        Load the Function Module View RTKTreeView().
+        Load the Function Module View RAMSTKTreeView().
 
-        This method is called whenever an RTK Program database is opened.
+        This method is called whenever an RAMSTK Program database is opened.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -477,17 +477,17 @@ class ModuleView(RTKModuleView):
         self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
+        # It is defined in RAMSTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['function']
         _functions = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
 
-        _return = RTKModuleView.on_select_revision(self, tree=_functions)
+        _return = RAMSTKModuleView.on_select_revision(self, tree=_functions)
         if _return:
             _prompt = _(u"An error occured while loading the Functions for "
                         u"Revision ID {0:d} into the Module "
                         u"View.").format(self._revision_id)
-            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
+            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()

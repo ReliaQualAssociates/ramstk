@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.Combo.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.Combo.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,19 +8,19 @@
 Combo Module
 -------------------------------------------------------------------------------
 
-This module contains RTK combobox and comboboxentry classes.  These classes are
-derived from the applicable pyGTK combobox, but are provided with RTK specific
+This module contains RAMSTK combobox and comboboxentry classes.  These classes are
+derived from the applicable pyGTK combobox, but are provided with RAMSTK specific
 property values and methods.  This ensures a consistent look and feel to
-widgets in the RTK application.
+widgets in the RAMSTK application.
 """
 
 # Import the rtk.Widget base class.
 from .Widget import gobject, gtk  # pylint: disable=E0401
 
 
-class RTKComboBox(gtk.ComboBox):
+class RAMSTKComboBox(gtk.ComboBox):
     """
-    This is the RTK Entry class.
+    This is the RAMSTK Entry class.
     """
 
     def __init__(self,
@@ -28,20 +28,20 @@ class RTKComboBox(gtk.ComboBox):
                  height=30,
                  index=0,
                  simple=True,
-                 tooltip='RTK WARNING: Missing tooltip.  '
+                 tooltip='RAMSTK WARNING: Missing tooltip.  '
                  'Please register an Enhancement type bug.'):
         """
-        Method to create RTK Combo widgets.
+        Method to create RAMSTK Combo widgets.
 
         :keyword int width: width of the gtk.ComboBox() widget.  Default is
                             200.
         :keyword int height: height of the gtk.ComboBox() widget.  Default is
                              30.
-        :keyword int index: the index in the RTKComboBox gtk.ListView() to
+        :keyword int index: the index in the RAMSTKComboBox gtk.ListView() to
                             display.  Default = 0.  Only needed with complex
-                            RTKComboBox.
+                            RAMSTKComboBox.
         :keyword bool simple: indicates whether this to make a simple (one
-                              item) or complex (three item) RTKComboBox.
+                              item) or complex (three item) RAMSTKComboBox.
         :keyword str tooltip: the tooltip text to display for the
         gtk.ComboBox().
         """
@@ -73,21 +73,21 @@ class RTKComboBox(gtk.ComboBox):
         :param list entries: the information to load into the gtk.ComboBox().
                              This is always a list of lists where each internal
                              list contains the information to be displayed and
-                             there is one internal list for each RTKComboBox
+                             there is one internal list for each RAMSTKComboBox
                              line.
         :keyword int index: the index in the internal list to display.  Only
                             used when doing a simple load.  Default is 0.
         :keyword bool simple: indicates whether this is a simple (one item) or
-                              complex (three item) RTKComboBox.  A
-                              simple (default) RTKComboBox contains and
-                              displays one field only.  A 'complex' RTKComboBox
+                              complex (three item) RAMSTKComboBox.  A
+                              simple (default) RAMSTKComboBox contains and
+                              displays one field only.  A 'complex' RAMSTKComboBox
                               contains three str fields, but only displays the
                               first field.  The other two fields are hidden and
                               used to store information associated with the
-                              items displayed in the RTKComboBox.  For example,
+                              items displayed in the RAMSTKComboBox.  For example,
                               if the name of an item is displayed, the other
                               two fields might contain a code and an index.
-                              These could be extracted for use in the RTK
+                              These could be extracted for use in the RAMSTK
                               Views.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -110,18 +110,18 @@ class RTKComboBox(gtk.ComboBox):
         return _return
 
 
-class RTKComboBoxEntry(gtk.ComboBoxEntry):
+class RAMSTKComboBoxEntry(gtk.ComboBoxEntry):
     """
-    This is the RTK Entry class.
+    This is the RAMSTK Entry class.
     """
 
     def __init__(self,
                  width=200,
                  height=30,
-                 tooltip='RTK WARNING: Missing tooltip.  '
+                 tooltip='RAMSTK WARNING: Missing tooltip.  '
                  'Please register an Enhancement type bug.'):
         """
-        Method to create RTK Combo widgets.
+        Method to create RAMSTK Combo widgets.
 
         :keyword int width: width of the gtk.ComboBox() widget.  Default is
                             200.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.hardware.test_hardwarebom.py is part of The RTK Project
+#       tests.modules.hardware.test_hardwarebom.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -16,7 +16,7 @@ import pytest
 from rtk.modules.hardware import (
     dtmHardware, dtmDesignElectric, dtmDesignMechanic, dtmMilHdbkF, dtmNSWC,
     dtmReliability, dtmHardwareBoM, dtcHardwareBoM)
-from rtk.dao import DAO, RTKHardware
+from rtk.dao import DAO, RAMSTKHardware
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -312,7 +312,7 @@ def test_data_model_create(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKHardware instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKHardware instances on success. """
     DUT = dtmHardwareBoM(test_dao)
 
     _tree = DUT.do_select_all(revision_id=1)
@@ -323,13 +323,13 @@ def test_do_select_all(test_dao):
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKHardware data model on success. """
+    """ do_select() should return an instance of the RAMSTKHardware data model on success. """
     DUT = dtmHardwareBoM(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(1, table='general')
 
-    assert isinstance(_hardware, RTKHardware)
+    assert isinstance(_hardware, RAMSTKHardware)
     assert _hardware.ref_des == 'S1'
     assert _hardware.cage_code == ''
 
@@ -351,7 +351,7 @@ def test_do_insert_sibling_assembly(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=0, part=0)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding a new hardware item to the RTK "
+    assert _msg == ("RAMSTK SUCCESS: Adding a new hardware item to the RAMSTK "
                     "Program database.")
 
 
@@ -364,7 +364,7 @@ def test_do_insert_child_assembly(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1, part=0)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding a new hardware item to the RTK "
+    assert _msg == ("RAMSTK SUCCESS: Adding a new hardware item to the RAMSTK "
                     "Program database.")
 
 
@@ -377,7 +377,7 @@ def test_do_insert_part(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1, part=1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding a new hardware item to the RTK "
+    assert _msg == ("RAMSTK SUCCESS: Adding a new hardware item to the RAMSTK "
                     "Program database.")
 
 
@@ -390,7 +390,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
                     'database.')
 
 
@@ -403,7 +403,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('RTK ERROR: Attempted to delete non-existent Hardware BoM '
+    assert _msg == ('RAMSTK ERROR: Attempted to delete non-existent Hardware BoM '
                     'record ID 300.')
 
 
@@ -419,7 +419,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -431,13 +431,13 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 12036
-    #assert _msg == ('RTK ERROR: Attempted to save non-existent Hardware ID '
-    #                '100.\n  RTK ERROR: Attempted to save non-existent '
-    #                'Reliability record ID 100.\n  RTK ERROR: Attempted to '
-    #                'save non-existent DesignElectric record ID 100.\n  RTK '
+    #assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Hardware ID '
+    #                '100.\n  RAMSTK ERROR: Attempted to save non-existent '
+    #                'Reliability record ID 100.\n  RAMSTK ERROR: Attempted to '
+    #                'save non-existent DesignElectric record ID 100.\n  RAMSTK '
     #                'ERROR: Attempted to save non-existent DesignMechanic '
-    #                'record ID 100.\n  RTK ERROR: Attempted to save '
-    #                'non-existent MilHdbkF record ID 100.\n  RTK ERROR: '
+    #                'record ID 100.\n  RAMSTK ERROR: Attempted to save '
+    #                'non-existent MilHdbkF record ID 100.\n  RAMSTK ERROR: '
     #                'Attempted to save non-existent NSWC record ID 100.\n')
 
 
@@ -450,7 +450,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the hardware bill "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the hardware bill "
                     "of materials.")
 
 
@@ -499,13 +499,13 @@ def test_request_do_update_matrix(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
-    """ request_do_select() should return an instance of the RTKHardware data model on success. """
+    """ request_do_select() should return an instance of the RAMSTKHardware data model on success. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
     _hardware = DUT.request_do_select(1, table='general')
 
-    assert isinstance(_hardware, RTKHardware)
+    assert isinstance(_hardware, RAMSTKHardware)
 
 
 @pytest.mark.integration
@@ -603,7 +603,7 @@ def test_request_do_delete_non_existent_id(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_get_attributes(test_dao, test_configuration):
-    """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs for the RTKHardware table. """
+    """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs for the RAMSTKHardware table. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
@@ -625,7 +625,7 @@ def test_request_set_attributes(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_set_attributes_missing_design_electric(
         test_dao, test_configuration):
-    """ request_set_attributes() should return True when an attribute for the RTKDesignElectric table is missing. """
+    """ request_set_attributes() should return True when an attribute for the RAMSTKDesignElectric table is missing. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
@@ -639,7 +639,7 @@ def test_request_set_attributes_missing_design_electric(
 @pytest.mark.integration
 def test_request_set_attributes_missing_design_mechanic(
         test_dao, test_configuration):
-    """ request_set_attributes() should return True when an attribute for the RTKDesignMechanic table is missing. """
+    """ request_set_attributes() should return True when an attribute for the RAMSTKDesignMechanic table is missing. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
@@ -653,7 +653,7 @@ def test_request_set_attributes_missing_design_mechanic(
 @pytest.mark.integration
 def test_request_set_attributes_missing_mil_hdbk_f(test_dao,
                                                    test_configuration):
-    """ request_set_attributes() should return True when an attribute for the RTKMilHdbkF table is missing. """
+    """ request_set_attributes() should return True when an attribute for the RAMSTKMilHdbkF table is missing. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
@@ -666,7 +666,7 @@ def test_request_set_attributes_missing_mil_hdbk_f(test_dao,
 
 @pytest.mark.integration
 def test_request_set_attributes_missing_nswc(test_dao, test_configuration):
-    """ request_set_attributes() should return True when an attribute for the RTKNSWC table is missing. """
+    """ request_set_attributes() should return True when an attribute for the RAMSTKNSWC table is missing. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
@@ -680,7 +680,7 @@ def test_request_set_attributes_missing_nswc(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_set_attributes_missing_reliability(test_dao,
                                                     test_configuration):
-    """ request_set_attributes() should return True when an attribute for the RTKReliability table is missing. """
+    """ request_set_attributes() should return True when an attribute for the RAMSTKReliability table is missing. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
@@ -693,7 +693,7 @@ def test_request_set_attributes_missing_reliability(test_dao,
 
 @pytest.mark.integration
 def test_request_last_id(test_dao, test_configuration):
-    """ request_last_id() should return the last Hardware ID used in the RTK Program database. """
+    """ request_last_id() should return the last Hardware ID used in the RAMSTK Program database. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 

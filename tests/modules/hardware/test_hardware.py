@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.hardware.test_hardware.py is part of The RTK Project
+#       tests.modules.hardware.test_hardware.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -12,7 +12,7 @@ import pytest
 
 from rtk.modules.hardware import dtmHardware
 from rtk.dao import DAO
-from rtk.dao import RTKHardware
+from rtk.dao import RAMSTKHardware
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -33,24 +33,24 @@ def test_data_model_create(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKHardware instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKHardware instances on success. """
     DUT = dtmHardware(test_dao)
 
     _tree = DUT.do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RTKHardware)
+    assert isinstance(_tree.get_node(1).data, RAMSTKHardware)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKHardware data model on success. """
+    """ do_select() should return an instance of the RAMSTKHardware data model on success. """
     DUT = dtmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(1)
 
-    assert isinstance(_hardware, RTKHardware)
+    assert isinstance(_hardware, RAMSTKHardware)
     assert _hardware.hardware_id == 1
     assert _hardware.cage_code == ''
 
@@ -74,7 +74,7 @@ def test_do_insert_sibling_assembly(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=0, part=0)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
                     'database.')
 
 
@@ -87,7 +87,7 @@ def test_do_insert_child_assembly(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1, part=0)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
                     'database.')
 
 
@@ -100,7 +100,7 @@ def test_do_delete_assembly(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
                     'database.')
 
 
@@ -113,7 +113,7 @@ def test_do_delete_assembly_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RTK ERROR: Attempted to delete non-existent Hardware '
+    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent Hardware '
                     'ID 300.')
 
 
@@ -129,7 +129,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -141,7 +141,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RTK ERROR: Attempted to save non-existent Hardware ID '
+    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Hardware ID '
                     '100.')
 
 
@@ -154,7 +154,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the hardware table.")
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the hardware table.")
 
 
 @pytest.mark.integration

@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.pof.test_pof.py is part of The RTK Project
+#       rtk.tests.modules.pof.test_pof.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -11,8 +11,8 @@ from treelib import Tree
 
 import pytest
 
-from rtk.dao import (RTKMode, RTKMechanism, RTKOpLoad, RTKOpStress,
-                     RTKTestMethod)
+from rtk.dao import (RAMSTKMode, RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress,
+                     RAMSTKTestMethod)
 from rtk.modules.pof import (dtcPoF, dtmOpLoad, dtmOpStress, dtmTestMethod,
                              dtmPoF)
 from rtk.modules.fmea import dtmMechanism
@@ -59,58 +59,58 @@ def test_do_select_all_non_existent_id(test_dao):
 
 @pytest.mark.integration
 def test_do_select_mode(test_dao):
-    """ do_select() should return an instance of RTKMode on success. """
+    """ do_select() should return an instance of RAMSTKMode on success. """
     DUT = dtmPoF(test_dao)
     DUT.do_select_all(parent_id=1)
 
     _entity = DUT.do_select('0.4')
 
-    assert isinstance(_entity, RTKMode)
+    assert isinstance(_entity, RAMSTKMode)
     assert _entity.description == 'System Test Failure Mode'
 
 
 @pytest.mark.integration
 def test_do_select_mechanism(test_dao):
-    """ do_select() should return an instance of RTKMechanism on success. """
+    """ do_select() should return an instance of RAMSTKMechanism on success. """
     DUT = dtmPoF(test_dao)
     DUT.do_select_all(parent_id=1)
 
     _entity = DUT.do_select('0.4.1')
 
-    assert isinstance(_entity, RTKMechanism)
+    assert isinstance(_entity, RAMSTKMechanism)
     assert _entity.description == 'Test Failure Mechanism #1 for Mode ID 4'
 
 
 @pytest.mark.integration
 def test_do_select_opload(test_dao):
-    """ do_elect() should return an instance of RTKOpLoad on success."""
+    """ do_elect() should return an instance of RAMSTKOpLoad on success."""
     DUT = dtmPoF(test_dao)
     DUT.do_select_all(parent_id=1)
     _entity = DUT.do_select('0.4.1.1')
 
-    assert isinstance(_entity, RTKOpLoad)
+    assert isinstance(_entity, RAMSTKOpLoad)
     assert _entity.description == 'Test Operating Load'
 
 
 @pytest.mark.integration
 def test_do_select_opstress(test_dao):
-    """ do_select() should return an instance of RTKOpStress on success."""
+    """ do_select() should return an instance of RAMSTKOpStress on success."""
     DUT = dtmPoF(test_dao)
     DUT.do_select_all(parent_id=1)
     _entity = DUT.do_select('0.4.1.1.1s')
 
-    assert isinstance(_entity, RTKOpStress)
+    assert isinstance(_entity, RAMSTKOpStress)
     assert _entity.description == 'Test Operating Stress'
 
 
 @pytest.mark.integration
 def test_do_select_test_method(test_dao):
-    """ do_select() should return an instance of RTKTestMethod on success."""
+    """ do_select() should return an instance of RAMSTKTestMethod on success."""
     DUT = dtmPoF(test_dao)
     DUT.do_select_all(parent_id=1)
     _entity = DUT.do_select('0.4.1.1.1t')
 
-    assert isinstance(_entity, RTKTestMethod)
+    assert isinstance(_entity, RAMSTKTestMethod)
     assert _entity.description == 'Test Test Method'
 
 
@@ -126,13 +126,13 @@ def test_do_insert_opload(test_dao):
     # Verify the insert went well.
     assert _error_code == 0
     assert _msg == (
-        "RTK SUCCESS: Adding one or more items to the RTK Program database.")
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.")
 
     # Verify the insert added an OpLoad.
     _node_id = '0.4.1.{0:d}'.format(DUT.dtm_opload.last_id)
     _opload = DUT.do_select(_node_id)
 
-    assert isinstance(_opload, RTKOpLoad)
+    assert isinstance(_opload, RAMSTKOpLoad)
 
 
 @pytest.mark.integration
@@ -147,13 +147,13 @@ def test_do_insert_opstress(test_dao):
     # Verify the insert went well.
     assert _error_code == 0
     assert _msg == (
-        "RTK SUCCESS: Adding one or more items to the RTK Program database.")
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.")
 
     # Verify the insert added an OpStress.
     _node_id = '0.4.1.1.{0:d}s'.format(DUT.dtm_opstress.last_id)
     _opstress = DUT.do_select(_node_id)
 
-    assert isinstance(_opstress, RTKOpStress)
+    assert isinstance(_opstress, RAMSTKOpStress)
 
 
 @pytest.mark.integration
@@ -168,13 +168,13 @@ def test_do_insert_test_method(test_dao):
     # Verify the insert went well.
     assert _error_code == 0
     assert _msg == (
-        "RTK SUCCESS: Adding one or more items to the RTK Program database.")
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.")
 
     # Verify the insert added an OpLoad.
     _node_id = '0.4.1.1.{0:d}t'.format(DUT.dtm_testmethod.last_id)
     _method = DUT.do_select(_node_id)
 
-    assert isinstance(_method, RTKTestMethod)
+    assert isinstance(_method, RAMSTKTestMethod)
 
 
 @pytest.mark.integration
@@ -188,7 +188,7 @@ def test_do_insert_non_existent_type(test_dao):
 
     # Verify the insert went well.
     assert _error_code == 2005
-    assert _msg == ("RTK ERROR: Attempted to add an item to the Physics of "
+    assert _msg == ("RAMSTK ERROR: Attempted to add an item to the Physics of "
                     "Failure with an undefined indenture level.  Level "
                     "scadamoosh was requested.  Must be one of opload, "
                     "opstress, or testmethod.")
@@ -204,7 +204,7 @@ def test_do_insert_no_parent_in_tree(test_dao):
         entity_id=1, parent_id='mechanism_1', level='opload')
 
     assert _error_code == 2005
-    assert _msg == ("RTK ERROR: Attempted to add an item under non-existent "
+    assert _msg == ("RAMSTK ERROR: Attempted to add an item under non-existent "
                     "Node ID: mechanism_1.")
 
 
@@ -219,7 +219,7 @@ def test_do_delete_opload(test_dao):
     _error_code, _msg = DUT.do_delete(_node_id)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                     "database.")
 
 
@@ -232,7 +232,7 @@ def test_do_delete_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_delete('scadamoosh_1')
 
     assert _error_code == 2005
-    assert _msg == ("  RTK ERROR: Attempted to delete non-existent entity "
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent entity "
                     "with Node ID scadamoosh_1 from the Physics of Failure.")
 
 
@@ -245,7 +245,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update('0.4.1')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
 
 
 @pytest.mark.integration
@@ -257,7 +257,7 @@ def test_do_update_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_update('mode_1000')
 
     assert _error_code == 2006
-    assert _msg == ("RTK ERROR: Attempted to save non-existent entity with "
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent entity with "
                     "Node ID mode_1000.")
 
 
@@ -270,7 +270,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all line items in the damage "
+    assert _msg == ("RAMSTK SUCCESS: Updating all line items in the damage "
                     "modeling worksheet.")
 
 

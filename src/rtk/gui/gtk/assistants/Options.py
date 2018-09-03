@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.assistants.Options.py is part of The RTK Project
+#       rtk.gui.gtk.assistants.Options.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RAMSTK Configuration Options Module."""
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.Utilities import boolean_to_integer, integer_to_boolean
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
@@ -35,23 +35,23 @@ class Options(gtk.Window):
 
         :param gtk.Widget __widget: the gtk.Widget() that called this class.
         :param controller: the RAMSTK master data controller.
-        :type controller: :class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
         gtk.Window.__init__(self)
 
         # Initialize private dictionary attributes.
         self._dic_icons = {
             'save':
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
             'cancel':
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/cancel.png'
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/cancel.png'
         }
 
         # Initialize private list attributes.
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
+        self._mdcRAMSTK = controller
         self._dtc_data_controller = controller.dic_controllers['options']
         self._last_id = -1
 
@@ -61,31 +61,31 @@ class Options(gtk.Window):
 
         # Initialize public scalar attributes.
         self.notebook = gtk.Notebook()
-        self.btnSave = rtk.RTKButton(
+        self.btnSave = rtk.RAMSTKButton(
             icon=self._dic_icons['save'], height=-1, width=-1)
-        self.btnQuit = rtk.RTKButton(
+        self.btnQuit = rtk.RAMSTKButton(
             icon=self._dic_icons['cancel'], height=-1, width=-1)
-        self.chkFunctions = rtk.RTKCheckButton(
+        self.chkFunctions = rtk.RAMSTKCheckButton(
             label=_(u"Function Module Active"),
             tooltip=_(
                 u"Activates/deactivates the Function module for this program.")
         )
-        self.chkRequirements = rtk.RTKCheckButton(
+        self.chkRequirements = rtk.RAMSTKCheckButton(
             label=_(u"Requirements Module Active"),
             tooltip=
             _(u"Activates/deactivates the Requirements module for this program."
              ))
-        self.chkHardware = rtk.RTKCheckButton(
+        self.chkHardware = rtk.RAMSTKCheckButton(
             label=_(u"Hardware Module Active"),
             tooltip=_(
                 u"Activates/deactivates the Hardware module for this program.")
         )
-        self.chkValidation = rtk.RTKCheckButton(
+        self.chkValidation = rtk.RAMSTKCheckButton(
             label=_(u"Validation Module Active"),
             tooltip=_(
                 u"Activates/deactivates the Validation module for this program."
             ))
-        self.chkFMEA = rtk.RTKCheckButton(
+        self.chkFMEA = rtk.RAMSTKCheckButton(
             label=_(u"(D)FME(C)A Module Active"),
             tooltip=_(
                 u"Activates/deactivates the (D)FME(C)A module for this program."
@@ -200,10 +200,10 @@ class Options(gtk.Window):
 
     def _on_toggled(self, togglebutton, index):
         """
-        Handle RTKCheckButton() 'toggle' signals.
+        Handle RAMSTKCheckButton() 'toggle' signals.
 
-        :param togglebutton: the RTKToggleButton() that called this method.
-        :type: :class:`rtk.gui.gtk.rtk.Button.RTKToggleButton`
+        :param togglebutton: the RAMSTKToggleButton() that called this method.
+        :type: :class:`rtk.gui.gtk.rtk.Button.RAMSTKToggleButton`
         :param int index: the index in the signal handler ID list.
         :return: False if successful or True if an error is encountered.
         :rtype: bool

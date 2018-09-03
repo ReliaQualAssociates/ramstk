@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.Utilities.py is part of The RTK Project
+#       rtk.Utilities.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Utility functions for interacting with the RTK application."""
+"""Utility functions for interacting with the RAMSTK application."""
 
 import os
 import os.path

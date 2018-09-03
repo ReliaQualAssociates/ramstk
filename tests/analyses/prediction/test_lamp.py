@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_lamp.py is part of The RTK Project
+#       tests.analyses.prediction.test_lamp.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -61,7 +61,7 @@ def test_calculate_mil_hdbk_217f_part_count(application_id,
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when '
+        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
                         'calculating lamp, hardware ID: 6, active environment '
                         'ID: {0:d}').format(environment_active_id)
     else:
@@ -82,7 +82,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RTK WARNING: Base hazard rate is 0.0 when calculating lamp, hardware '
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating lamp, hardware '
         'ID: 6, active environment ID: 100')
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['hazard_rate_active'] == 0.0

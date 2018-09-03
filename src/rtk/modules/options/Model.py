@@ -7,11 +7,11 @@
 """Options Data Model."""
 
 # Import other RAMSTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKSiteInfo, RTKProgramInfo
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKSiteInfo, RAMSTKProgramInfo
 
 
-class OptionsDataModel(RTKDataModel):
+class OptionsDataModel(RAMSTKDataModel):
     """Contains the attributes and methods of an Options data model."""
 
     _tag = 'Options'
@@ -24,7 +24,7 @@ class OptionsDataModel(RTKDataModel):
                     Program database.
         :type dao: :class:`ramstk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -46,8 +46,8 @@ class OptionsDataModel(RTKDataModel):
         """
         Retrieve Options from the RAMSTK Site and RAMSTK Program database.
 
-        This method retrieves all the records from the RTKSiteInfo table and
-        the RTKProgramInfo table in the connected RAMSTK Program database.  It
+        This method retrieves all the records from the RAMSTKSiteInfo table and
+        the RAMSTKProgramInfo table in the connected RAMSTK Program database.  It
         then adds each to the Options data model treelib.Tree().
 
         :return: None
@@ -65,7 +65,7 @@ class OptionsDataModel(RTKDataModel):
 
     def do_update(self):  # pylint: disable=arguments-differ
         """
-        Update the selected Options in the RTKProgramInfo table.
+        Update the selected Options in the RAMSTKProgramInfo table.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -76,7 +76,7 @@ class OptionsDataModel(RTKDataModel):
         return _return
 
 
-class SiteOptionsDataModel(RTKDataModel):
+class SiteOptionsDataModel(RAMSTKDataModel):
     """Contain the attributes and methods for Site-wide options."""
 
     _tag = 'SiteOpts'
@@ -85,11 +85,11 @@ class SiteOptionsDataModel(RTKDataModel):
         """
         Initialize a Site Options data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -106,19 +106,19 @@ class SiteOptionsDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Site configuration options from the RTK Site database.
+        Retrieve all the Site configuration options from the RAMSTK Site database.
 
-        This method retrieves all the records from the RTKSiteInfo table in the
-        connected RTK Site database.  There should only be one record in the
-        RTKSiteInfo database.
+        This method retrieves all the records from the RAMSTKSiteInfo table in the
+        connected RAMSTK Site database.  There should only be one record in the
+        RAMSTKSiteInfo database.
 
         :return: None
         :rtype: None
         """
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        self._site_info = _session.query(RTKSiteInfo).all()
+        self._site_info = _session.query(RAMSTKSiteInfo).all()
 
         _session.close()
 
@@ -126,14 +126,14 @@ class SiteOptionsDataModel(RTKDataModel):
 
     def do_update(self):  # pylint: disable=arguments-differ
         """
-        Update the record associated with Site ID to the RTK Site database.
+        Update the record associated with Site ID to the RAMSTK Site database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _return = False
 
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
@@ -151,7 +151,7 @@ class SiteOptionsDataModel(RTKDataModel):
         return _return
 
 
-class ProgramOptionsDataModel(RTKDataModel):
+class ProgramOptionsDataModel(RAMSTKDataModel):
     """Contains the attributes and methods for Program (user) options."""
 
     _tag = 'ProgramOpts'
@@ -160,11 +160,11 @@ class ProgramOptionsDataModel(RTKDataModel):
         """
         Initialize a Program Options data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -181,18 +181,18 @@ class ProgramOptionsDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Program options from the RTK Program database.
+        Retrieve all the Program options from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKProgramInfo table in
-        the connected RTK Program database.
+        This method retrieves all the records from the RAMSTKProgramInfo table in
+        the connected RAMSTK Program database.
 
         :return: None
         :rtype: None
         """
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        self._program_info = _session.query(RTKProgramInfo).all()
+        self._program_info = _session.query(RAMSTKProgramInfo).all()
 
         _session.close()
 
@@ -200,7 +200,7 @@ class ProgramOptionsDataModel(RTKDataModel):
 
     def do_update(self):  # pylint: disable=arguments-differ
         """
-        Update the record associated with Site ID to the RTK Site database.
+        Update the record associated with Site ID to the RAMSTK Site database.
 
         :param int node_id: the Mode ID of the Mode to save.
         :return: (_error_code, _msg); the error code and associated message.
@@ -208,7 +208,7 @@ class ProgramOptionsDataModel(RTKDataModel):
         """
         _return = False
 
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,

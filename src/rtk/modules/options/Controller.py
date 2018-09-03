@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.options.Controller.py is part of The RTK Project
+#       rtk.modules.options.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Options Package Data Controller Module."""
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
 from . import dtmOptions
 
 
-class OptionsDataController(RTKDataController):
+class OptionsDataController(RAMSTKDataController):
     """
-    Provide an interface between Options data models and RTK views.
+    Provide an interface between Options data models and RAMSTK views.
 
     A single Options data controller can manage one or more Options
     data models.
@@ -24,13 +24,13 @@ class OptionsDataController(RTKDataController):
         Initialize a Options data controller instance.
 
         :param dao: the data access object used to communicate with the
-                    connected RTK Program database.
+                    connected RAMSTK Program database.
         :type dao: :py:class:`rtk.dao.DAO.DAO`
-        :param configuration: the RTK configuration instance.
+        :param configuration: the RAMSTK configuration instance.
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
         _site_dao = kwargs['site_dao']
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmOptions(dao, _site_dao),
@@ -88,7 +88,7 @@ class OptionsDataController(RTKDataController):
 
     def request_do_update(self):
         """
-        Request to update an RTKOptions table record.
+        Request to update an RAMSTKOptions table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

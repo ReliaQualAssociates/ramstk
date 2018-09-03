@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.test_utilities.py is part of The RTK Project
+#       tests.test_utilities.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com

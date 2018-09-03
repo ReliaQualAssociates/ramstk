@@ -10,7 +10,7 @@ __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 # -*- coding: utf-8 -*-
 #
-#       tests.statistics.TestNHPP.py is part of The RTK Project
+#       tests.statistics.TestNHPP.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com

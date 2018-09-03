@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Relay.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.components.Relay.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,7 +8,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -17,7 +17,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class RelayAssessmentInputs(AssessmentInputs):
     """
-    Display Relay assessment input attribute data in the RTK Work Book.
+    Display Relay assessment input attribute data in the RAMSTK Work Book.
 
     The Relay assessment input view displays all the assessment inputs for
     the selected relay.  This includes, currently, inputs for
@@ -164,25 +164,25 @@ class RelayAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbType = rtk.RTKComboBox(
+        self.cmbType = rtk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The relay type."))
-        self.cmbLoadType = rtk.RTKComboBox(
+        self.cmbLoadType = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The type of load the relay is switching."))
-        self.cmbContactForm = rtk.RTKComboBox(
+        self.cmbContactForm = rtk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The contact form of the relay."))
-        self.cmbContactRating = rtk.RTKComboBox(
+        self.cmbContactRating = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The rating of the relay contacts."))
-        self.cmbApplication = rtk.RTKComboBox(
+        self.cmbApplication = rtk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The type of relay appliction."))
-        self.cmbConstruction = rtk.RTKComboBox(
+        self.cmbConstruction = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The method of construction of the relay."))
-        self.txtCycles = rtk.RTKEntry(
+        self.txtCycles = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of relay on/off cycles per hour."))
 
@@ -212,7 +212,7 @@ class RelayAssessmentInputs(AssessmentInputs):
         """
         Load the relay RKTComboBox()s.
 
-        This method is used to load the specification RTKComboBox() whenever
+        This method is used to load the specification RAMSTKComboBox() whenever
         the relay subcategory is changed.
 
         :return: False if successful or True if an error is encountered.
@@ -222,7 +222,7 @@ class RelayAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             _data = [[_(u"Established Reliability")], ["MIL-SPEC"],
                      [_(u"Lower")]]
@@ -233,7 +233,7 @@ class RelayAssessmentInputs(AssessmentInputs):
                 _data = []
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the relay type RTKComboBox().
+        # Load the relay type RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             _data = self._dic_pc_types[self._subcategory_id]
         else:
@@ -243,13 +243,13 @@ class RelayAssessmentInputs(AssessmentInputs):
                 _data = []
         self.cmbType.do_load_combo(_data)
 
-        # Load the load type RTKComboBox().
+        # Load the load type RAMSTKComboBox().
         self.cmbLoadType.do_load_combo(self._lst_technology)
 
-        # Load the contact form RTKComboBox().
+        # Load the contact form RAMSTKComboBox().
         self.cmbContactForm.do_load_combo(self._lst_contact_form)
 
-        # Load the contact rating RTKComboBox().
+        # Load the contact rating RAMSTKComboBox().
         self.cmbContactRating.do_load_combo(self._lst_contact_rating)
 
         return _return
@@ -280,7 +280,7 @@ class RelayAssessmentInputs(AssessmentInputs):
 
             self.cmbContactRating.handler_block(self._lst_handler_id[4])
             self.cmbContactRating.set_active(_attributes['contact_rating_id'])
-            # Load the application RTKComboBox().
+            # Load the application RAMSTKComboBox().
             try:
                 _data = self._dic_application[_attributes['contact_rating_id']]
             except KeyError:
@@ -290,7 +290,7 @@ class RelayAssessmentInputs(AssessmentInputs):
 
             self.cmbApplication.handler_block(self._lst_handler_id[5])
             self.cmbApplication.set_active(_attributes['application_id'])
-            # Load the construction RTKComboBox().
+            # Load the construction RAMSTKComboBox().
             try:
                 _data = self._dic_construction[_attributes[
                     'contact_rating_id']][_attributes['application_id']]
@@ -365,16 +365,16 @@ class RelayAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Relay attribute.
+        Retrieve RAMSTKCombo() changes and assign to Relay attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +-------+------------------+-------+------------------+
             | Index | Widget           | Index | Widget           |
@@ -404,7 +404,7 @@ class RelayAssessmentInputs(AssessmentInputs):
                 _attributes['contact_form_id'] = int(combo.get_active())
             elif index == 4:
                 _attributes['contact_rating_id'] = int(combo.get_active())
-                # Load the application RTKComboBox().
+                # Load the application RAMSTKComboBox().
                 try:
                     _data = self._dic_application[_attributes[
                         'contact_rating_id']]
@@ -413,7 +413,7 @@ class RelayAssessmentInputs(AssessmentInputs):
                 self.cmbApplication.do_load_combo(_data)
             elif index == 5:
                 _attributes['application_id'] = int(combo.get_active())
-                # Load the construction RTKComboBox().
+                # Load the construction RAMSTKComboBox().
                 try:
                     _data = self._dic_construction[_attributes[
                         'contact_rating_id']][_attributes['application_id']]
@@ -432,16 +432,16 @@ class RelayAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -495,7 +495,7 @@ class RelayAssessmentInputs(AssessmentInputs):
 
 class RelayAssessmentResults(AssessmentResults):
     """
-    Display Relay assessment results attribute data in the RTK Work Book.
+    Display Relay assessment results attribute data in the RAMSTK Work Book.
 
     The Relay assessment result view displays all the assessment results
     for the selected relay.  This includes, currently, results for
@@ -544,23 +544,23 @@ class RelayAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiC = rtk.RTKEntry(
+        self.txtPiC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The contact form factor for the relay."))
-        self.txtPiCYC = rtk.RTKEntry(
+        self.txtPiCYC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The cycling factor for the relay."))
-        self.txtPiF = rtk.RTKEntry(
+        self.txtPiF = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The application and construction factor for the "
                       u"relay."))
-        self.txtPiL = rtk.RTKEntry(
+        self.txtPiL = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

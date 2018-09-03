@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.mwi.ListBook.py is part of the RTK Project
+#       rtk.gui.gtk.mwi.ListBook.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTK List Book Module."""
+"""RAMSTK List Book Module."""
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.gui.gtk.rtk import RTKBook
+# Import other RAMSTK modules.
+from rtk.gui.gtk.rtk import RAMSTKBook
 from rtk.gui.gtk.listviews import (lvwUsageProfile, lvwFailureDefinition,
                                    lvwStakeholder)
 from rtk.gui.gtk.matrixviews import (FunctionHardware, RequirementHardware,
@@ -19,29 +19,29 @@ from rtk.gui.gtk.matrixviews import (FunctionHardware, RequirementHardware,
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
-class ListBook(RTKBook):
+class ListBook(RAMSTKBook):
     """
     This is the List Book class for the pyGTK multiple window interface.
 
     The List Book provides the container for any List Views and Matrix Views
-    associated with the RTK module selected in the RTK Module View.  Attributes
+    associated with the RAMSTK module selected in the RAMSTK Module View.  Attributes
     of the List Book are:
 
     :ivar dict dic_list_view: dictionary containing the List Views and/or
-                              Matrix Views to load into the RTK List Book for
-                              each RTK module.  Key is the RTK module name;
+                              Matrix Views to load into the RAMSTK List Book for
+                              each RAMSTK module.  Key is the RAMSTK module name;
                               value is a list of Views associated with that
-                              RTK module.
+                              RAMSTK module.
     """
 
     def __init__(self, controller):
         """
-        Initialize an instance of the RTK List View class.
+        Initialize an instance of the RAMSTK List View class.
 
-        :param controller: the RTK master data controller.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKBook.__init__(self, controller)
+        RAMSTKBook.__init__(self, controller)
 
         # Initialize private dictionary attributes.
 
@@ -76,7 +76,7 @@ class ListBook(RTKBook):
         # Initialize public scalar attributes.
 
         # Set the properties for the ListBook and it's widgets.
-        self.set_title(_(u"RTK Lists and Matrices"))
+        self.set_title(_(u"RAMSTK Lists and Matrices"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
@@ -84,13 +84,13 @@ class ListBook(RTKBook):
         self.set_default_size((self._width / 3) - 10, (2 * self._height / 7))
         self.move((2 * self._width / 3), 0)
 
-        if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'listbook'].lower() == 'left':
             self.notebook.set_tab_pos(self._left_tab)
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'listbook'].lower() == 'right':
             self.notebook.set_tab_pos(self._right_tab)
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'listbook'].lower() == 'top':
             self.notebook.set_tab_pos(self._top_tab)
         else:
@@ -107,7 +107,7 @@ class ListBook(RTKBook):
 
     def _on_close(self):
         """
-        Update the Modules Views when a RTK Program database is closed.
+        Update the Modules Views when a RAMSTK Program database is closed.
 
         :return: None
         :rtype: None
@@ -130,14 +130,14 @@ class ListBook(RTKBook):
 
     def _on_module_change(self, module=''):
         """
-        Load the List Views for the RTK module selected in the Module Book.
+        Load the List Views for the RAMSTK module selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        RTKBook._on_module_change(self)
+        RAMSTKBook._on_module_change(self)
 
         for _list in self.dic_list_view[module]:
             self.notebook.insert_page(_list, _list.hbx_tab_label, -1)
@@ -153,10 +153,10 @@ class ListBook(RTKBook):
         """
         if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
             for _window in ['listbook', 'modulebook', 'workbook']:
-                self._mdcRTK.dic_books[_window].iconify()
+                self._mdcRAMSTK.dic_books[_window].iconify()
         elif event.new_window_state == 0:
             for _window in ['listbook', 'modulebook', 'workbook']:
-                self._mdcRTK.dic_books[_window].deiconify()
+                self._mdcRAMSTK.dic_books[_window].deiconify()
         elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
             window.maximize()
 

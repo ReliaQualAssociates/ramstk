@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_inductor.py is part of The RTK Project
+#       tests.analyses.prediction.test_inductor.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -87,7 +87,7 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, family_id,
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when '
+        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
                         'calculating inductor, hardware ID: 6, subcategory '
                         'ID: {0:d}, family ID: {1:d}, and active '
                         'environment ID: {2:d}.').format(
@@ -111,7 +111,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     _attributes, _msg = Inductor.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'inductor, hardware ID: 6, subcategory ID: 0, family '
                     'ID: 1, and active environment ID: 1.')
     assert _attributes['lambda_b'] == 0.0
@@ -132,7 +132,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_family():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RTK WARNING: Base hazard rate is 0.0 when calculating '
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
         'inductor, hardware ID: 6, subcategory ID: 1, family ID: 0, and '
         'active environment ID: 1.')
     assert _attributes['lambda_b'] == 0.0
@@ -153,7 +153,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RTK WARNING: Base hazard rate is 0.0 when calculating '
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
         'inductor, hardware ID: 6, subcategory ID: 1, family ID: 1, and '
         'active environment ID: 100.')
     assert _attributes['lambda_b'] == 0.0
@@ -173,7 +173,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Inductor.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piQ is 0.0 when calculating inductor, '
+    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating inductor, '
                     'hardware ID: 6, quality ID: 11.')
     assert _attributes['lambda_b'] == 0.0035
     assert _attributes['piQ'] == 0.0
@@ -226,7 +226,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piQ is 0.0 when calculating inductor, '
+    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating inductor, '
                     'hardware ID: 6')
     assert pytest.approx(_attributes['lambda_b'], 0.0003462094)
     assert _attributes['piQ'] == 0.0
@@ -254,7 +254,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piE is 0.0 when calculating inductor, '
+    assert _msg == ('RAMSTK WARNING: piE is 0.0 when calculating inductor, '
                     'hardware ID: 6')
     assert pytest.approx(_attributes['lambda_b'], 0.0003462094)
     assert _attributes['piQ'] == 0.1
@@ -282,7 +282,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_insulation():
     _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'inductor, hardware ID: 6')
     assert pytest.approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 0.1

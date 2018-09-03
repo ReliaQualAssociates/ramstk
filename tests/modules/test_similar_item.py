@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_similar_item.py is part of The RTK Project
+#       rtk.tests.modules.test_similar_item.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -12,7 +12,7 @@ import pytest
 from treelib import Tree
 
 from rtk.dao import DAO
-from rtk.dao import RTKSimilarItem
+from rtk.dao import RAMSTKSimilarItem
 from rtk.modules.similar_item import dtmSimilarItem, dtcSimilarItem
 
 __author__ = 'Andrew Rowland'
@@ -38,18 +38,18 @@ def test_do_select_all(test_dao):
     _tree = DUT.do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(2).data, RTKSimilarItem)
+    assert isinstance(_tree.get_node(2).data, RAMSTKSimilarItem)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKSimilarItem data model on success. """
+    """ do_select() should return an instance of the RAMSTKSimilarItem data model on success. """
     DUT = dtmSimilarItem(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _similar_item = DUT.do_select(2)
 
-    assert isinstance(_similar_item, RTKSimilarItem)
+    assert isinstance(_similar_item, RAMSTKSimilarItem)
     assert _similar_item.hardware_id == 2
     assert _similar_item.change_description_1 == ''
     assert _similar_item.parent_id == 1
@@ -75,7 +75,7 @@ def test_do_select_children(test_dao):
     _nodes = DUT.do_select_children(1)
 
     assert isinstance(_nodes, list)
-    assert isinstance(_nodes[0].data, RTKSimilarItem)
+    assert isinstance(_nodes[0].data, RAMSTKSimilarItem)
     assert _nodes[0].identifier == 2
 
 
@@ -89,7 +89,7 @@ def test_do_insert(test_dao):
         revision_id=1, hardware_id=15, parent_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
                     "Program database.")
     assert DUT.last_id == 15
 
@@ -103,7 +103,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                     "database.")
 
 
@@ -117,7 +117,7 @@ def test_do_delete_non_existent_id(test_dao):
 
     assert _error_code == 2005
     assert _msg == (
-        "  RTK ERROR: Attempted to delete non-existent SimilarItem "
+        "  RAMSTK ERROR: Attempted to delete non-existent SimilarItem "
         "ID 300.")
 
 
@@ -133,7 +133,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
 
 
 @pytest.mark.integration
@@ -145,7 +145,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2207
-    assert _msg == ("RTK ERROR: Attempted to save non-existent SimilarItem "
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent SimilarItem "
                     "ID 100.")
 
 
@@ -158,7 +158,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all line items in the similar item "
+    assert _msg == ("RAMSTK SUCCESS: Updating all line items in the similar item "
                     "analysis worksheet.")
 
 
@@ -213,22 +213,22 @@ def test_create_similar_item_data_controller(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_select_all(test_dao, test_configuration):
-    """ request_do_select_all() should return a Tree of RTKSimilarItem data models. """
+    """ request_do_select_all() should return a Tree of RAMSTKSimilarItem data models. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
 
     _tree = DUT.request_do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(2).data, RTKSimilarItem)
+    assert isinstance(_tree.get_node(2).data, RAMSTKSimilarItem)
 
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
-    """ request_do_select() should return an RTKSimilarItem data model. """
+    """ request_do_select() should return an RAMSTKSimilarItem data model. """
     DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
     DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(DUT.request_do_select(2), RTKSimilarItem)
+    assert isinstance(DUT.request_do_select(2), RAMSTKSimilarItem)
 
 
 @pytest.mark.integration

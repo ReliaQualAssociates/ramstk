@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.HazOps.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.HazOps.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -9,14 +9,14 @@
 from sortedcontainers import SortedDict
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.Configuration import RTK_FAILURE_PROBABILITY
+# Import other RAMSTK modules.
+from rtk.Configuration import RAMSTK_FAILURE_PROBABILITY
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .WorkView import RTKWorkView
+from .WorkView import RAMSTKWorkView
 
 
-class HazOps(RTKWorkView):
+class HazOps(RAMSTKWorkView):
     """
     Display HazOps attribute data in the Work Book.
 
@@ -42,10 +42,10 @@ class HazOps(RTKWorkView):
         """
         Initialize the Work View for the HazOps.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='HazOps')
+        RAMSTKWorkView.__init__(self, controller, module='HazOps')
 
         # Initialize private dictionary attributes.
 
@@ -62,36 +62,36 @@ class HazOps(RTKWorkView):
         # Initialize public scalar attributes.
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
-        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
-                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['hazops'])
+        _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+                     controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['hazops'])
         _fmt_path = "/root/tree[@name='HazOps']/column"
         _tooltip = _(u"Displays the HazOps Analysis for the currently "
                      u"selected Hardware item.")
 
-        self.treeview = rtk.RTKTreeView(
+        self.treeview = rtk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
         self._lst_col_order = self.treeview.order
         self.treeview.set_tooltip_text(_tooltip)
 
         # Load the potential hazards into the gtk.CellRendererCombo().
         _model = self._get_cell_model(3)
-        for _key in controller.RTK_CONFIGURATION.RTK_HAZARDS:
+        for _key in controller.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS:
             _hazard = '{0:s}, {1:s}'.format(
-                controller.RTK_CONFIGURATION.RTK_HAZARDS[_key][0],
-                controller.RTK_CONFIGURATION.RTK_HAZARDS[_key][1])
+                controller.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS[_key][0],
+                controller.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS[_key][1])
             _model.append((_hazard, ))
 
         # Load the severity classes into the gtk.CellRendererCombo().
         for i in [6, 10, 14, 18]:
             _model = self._get_cell_model(i)
-            for _key in controller.RTK_CONFIGURATION.RTK_SEVERITY:
-                _severity = controller.RTK_CONFIGURATION.RTK_SEVERITY[_key][1]
+            for _key in controller.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
+                _severity = controller.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[_key][1]
                 _model.append((_severity, ))
 
         # Load the failure probabilities into the gtk.CellRendererCombo().
         for i in [7, 11, 15, 19]:
             _model = self._get_cell_model(i)
-            for _item in RTK_FAILURE_PROBABILITY:
+            for _item in RAMSTK_FAILURE_PROBABILITY:
                 _model.append((_item[0], ))
 
         self._lst_handler_id.append(
@@ -109,7 +109,7 @@ class HazOps(RTKWorkView):
                 _cell[0].connect('toggled', self._do_edit_cell, 'new text', i,
                                  self.treeview.get_model())
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"HazOps"),
             height=30,
             width=-1,
@@ -144,12 +144,12 @@ class HazOps(RTKWorkView):
 
     def _do_change_row(self, treeview):
         """
-        Handle events for the HazOps Tree View RTKTreeView().
+        Handle events for the HazOps Tree View RAMSTKTreeView().
 
         This method is called whenever a Tree View row is activated.
 
-        :param treeview: the HazOps RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeViewRTKTreeView`
+        :param treeview: the HazOps RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeViewRAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -171,10 +171,10 @@ class HazOps(RTKWorkView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the HazOps Work View RTKTreeview().
+        Handle edits of the HazOps Work View RAMSTKTreeview().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RTKTreeView() path of the gtk.CellRenderer()
+        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
@@ -252,7 +252,7 @@ class HazOps(RTKWorkView):
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Iterate through the tree and load the HazOps RTKTreeView().
+        Iterate through the tree and load the HazOps RAMSTKTreeView().
 
         :return: (_error_code, _user_msg, _debug_msg); the error code, message
                  to be displayed to the user, and the message to be written to
@@ -306,7 +306,7 @@ class HazOps(RTKWorkView):
                     _user_msg = _(u"One or more HazOp line items had the "
                                   u"wrong data type in it's data package and "
                                   u"is not displayed in the HazOp analysis.")
-                    _debug_msg = ("RTK ERROR: Data for HazOp ID {0:s} for "
+                    _debug_msg = ("RAMSTK ERROR: Data for HazOp ID {0:s} for "
                                   "Hardware ID {1:s} is the wrong type for "
                                   "one or more columns.".format(
                                       str(_node.identifier),
@@ -317,7 +317,7 @@ class HazOps(RTKWorkView):
                     _user_msg = _(u"One or more HazOp line items was missing "
                                   u"some of it's data and is not displayed in "
                                   u"the HazOp analysis.")
-                    _debug_msg = ("RTK ERROR: Too few fields for HazOp ID "
+                    _debug_msg = ("RAMSTK ERROR: Too few fields for HazOp ID "
                                   "{0:s} for Hardware ID {1:s}.".format(
                                       str(_node.identifier),
                                       str(self._hardware_id)))
@@ -432,9 +432,9 @@ class HazOps(RTKWorkView):
             _(u"Add a hazard to the HazOps analysis."),
             _(u"Remove the selected hazard and all associated data from the "
               u"HazOps analysis."),
-            _(u"Save the selected Hazard to the open RTK Program database."),
+            _(u"Save the selected Hazard to the open RAMSTK Program database."),
             _(u"Save all the Hazards for the selected Hardware item to the "
-              u"open RTK Program database.")
+              u"open RAMSTK Program database.")
         ]
         _callbacks = [
             self._do_request_calculate, self._do_request_insert_sibling,
@@ -443,7 +443,7 @@ class HazOps(RTKWorkView):
         ]
         _icons = ['calculate', 'add', 'remove', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -456,7 +456,7 @@ class HazOps(RTKWorkView):
 
     def _make_page(self):
         """
-        Make the HazOps RTKTreeview().
+        Make the HazOps RAMSTKTreeview().
 
         :return: a gtk.Frame() containing the instance of gtk.Treeview().
         :rtype: :class:`gtk.Frame`
@@ -465,7 +465,7 @@ class HazOps(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = rtk.RTKFrame(label=_(u"HazOps Analysis"))
+        _frame = rtk.RAMSTKFrame(label=_(u"HazOps Analysis"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -475,10 +475,10 @@ class HazOps(RTKWorkView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the HazOps Work View RTKTreeView().
+        Handle mouse clicks on the HazOps Work View RAMSTKTreeView().
 
-        :param treeview: the HazOps TreeView RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`.
+        :param treeview: the HazOps TreeView RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -570,13 +570,13 @@ class HazOps(RTKWorkView):
         self._hardware_id = module_id
 
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers['hazops']
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['hazops']
             self._dtc_data_controller.request_do_select_all(
                 revision_id=self._revision_id)
 
         (_error_code, _user_msg, _debug_msg) = self._do_load_page()
 
-        RTKWorkView.on_select(
+        RAMSTKWorkView.on_select(
             self,
             title=_(u"Analyzing Hazards for Hardware ID {0:d}").format(
                 self._hardware_id),

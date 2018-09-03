@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.physics_of_failure.Model.py is part of The RTK Project
+#       rtk.modules.physics_of_failure.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,17 +8,17 @@
 
 from treelib import tree
 
-# Import other RTK modules.
-from rtk.modules import RTKDataModel
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataModel
 from rtk.modules.fmea import dtmMode, dtmMechanism
-from rtk.dao import RTKOpLoad, RTKOpStress, RTKTestMethod
+from rtk.dao import RAMSTKOpLoad, RAMSTKOpStress, RAMSTKTestMethod
 
 
-class OpLoadDataModel(RTKDataModel):
+class OpLoadDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a failure OpLoad.
 
-    An RTK Project will consist of one or more OpLoads.  The attributes of a
+    An RAMSTK Project will consist of one or more OpLoads.  The attributes of a
     OpLoad are:
     """
 
@@ -28,11 +28,11 @@ class OpLoadDataModel(RTKDataModel):
         """
         Initialize a OpLoad data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -48,22 +48,22 @@ class OpLoadDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the operating loads from the RTK Program database.
+        Retrieve all the operating loads from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKOpLoad table in the
-        connected RTK Program database.  It then add each to the OpLoad data
+        This method retrieves all the records from the RAMSTKOpLoad table in the
+        connected RAMSTK Program database.  It then add each to the OpLoad data
         model treelib.Tree().
 
         :param int parent_id: the Mechanism ID the operating loads are
                               associated with.
-        :return: tree; the Tree() of RTKOpLoad data models.
+        :return: tree; the Tree() of RAMSTKOpLoad data models.
         :rtype: :class:`treelib.Tree`
         """
         _parent_id = kwargs['parent_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        _oploads = _session.query(RTKOpLoad).filter(
-            RTKOpLoad.mechanism_id == _parent_id).all()
+        _oploads = _session.query(RAMSTKOpLoad).filter(
+            RAMSTKOpLoad.mechanism_id == _parent_id).all()
 
         for _opload in _oploads:
             # We get and then set the attributes to replace any None values
@@ -74,7 +74,7 @@ class OpLoadDataModel(RTKDataModel):
                 _opload.description, _opload.load_id, parent=0, data=_opload)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _opload.load_id)
 
         _session.close()
@@ -83,14 +83,14 @@ class OpLoadDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Add a record to the RTKOpLoad table.
+        Add a record to the RAMSTKOpLoad table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _opload = RTKOpLoad()
+        _opload = RAMSTKOpLoad()
         _opload.mechanism_id = kwargs['mechanism_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _opload,
             ])
@@ -100,49 +100,49 @@ class OpLoadDataModel(RTKDataModel):
                 _opload.description, _opload.load_id, parent=0, data=_opload)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _opload.load_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKOpLoad table.
+        Remove a record from the RAMSTKOpLoad table.
 
-        :param int node_id: the ID of the RTKOpLoad record to be removed from the
-                            RTK Program database.
+        :param int node_id: the ID of the RAMSTKOpLoad record to be removed from the
+                            RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'OpLoad ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the OpLoad ID of the OpLoad to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent OpLoad ID ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent OpLoad ID ' \
                    '{0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKOpLoad table records in the RTK Program database.
+        Update all RAMSTKOpLoad table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -158,21 +158,21 @@ class OpLoadDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more operating loads in the damage "
+                _msg = ("RAMSTK ERROR: One or more operating loads in the damage "
                         "modeling worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all operating loads in the damage "
+            _msg = ("RAMSTK SUCCESS: Updating all operating loads in the damage "
                     "modeling worksheet.")
 
         return _error_code, _msg
 
 
-class OpStressDataModel(RTKDataModel):
+class OpStressDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a failure OpStress.
 
-    An RTK Project will consist of one or more OpStresss.  The attributes of a
+    An RAMSTK Project will consist of one or more OpStresss.  The attributes of a
     OpStress are:
     """
 
@@ -182,11 +182,11 @@ class OpStressDataModel(RTKDataModel):
         """
         Initialize a OpStress data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -202,22 +202,22 @@ class OpStressDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the operating stresss from the RTK Program database.
+        Retrieve all the operating stresss from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKOpStress table in the
-        connected RTK Program database.  It then add each to the OpStress data
+        This method retrieves all the records from the RAMSTKOpStress table in the
+        connected RAMSTK Program database.  It then add each to the OpStress data
         model treelib.Tree().
 
         :param int parent_id: the Mechanism ID the operating stresss are
                               associated with.
-        :return: tree; the Tree() of RTKOpStress data models.
+        :return: tree; the Tree() of RAMSTKOpStress data models.
         :rtype: :class:`treelib.Tree`
         """
         _load_id = kwargs['parent_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        _opstresses = _session.query(RTKOpStress).filter(
-            RTKOpStress.load_id == _load_id).all()
+        _opstresses = _session.query(RAMSTKOpStress).filter(
+            RAMSTKOpStress.load_id == _load_id).all()
 
         for _opstress in _opstresses:
             # We get and then set the attributes to replace any None values
@@ -231,7 +231,7 @@ class OpStressDataModel(RTKDataModel):
                 data=_opstress)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _opstress.stress_id)
 
         _session.close()
@@ -240,14 +240,14 @@ class OpStressDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Add a record to the RTKOpStress table.
+        Add a record to the RAMSTKOpStress table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _opstress = RTKOpStress()
+        _opstress = RAMSTKOpStress()
         _opstress.load_id = kwargs['load_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _opstress,
             ])
@@ -260,49 +260,49 @@ class OpStressDataModel(RTKDataModel):
                 data=_opstress)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _opstress.stress_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKOpStress table.
+        Remove a record from the RAMSTKOpStress table.
 
-        :param int node_id: the ID of the RTKOpStress record to be removed from the
-                            RTK Program database.
+        :param int node_id: the ID of the RAMSTKOpStress record to be removed from the
+                            RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'OpStress ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the OpStress ID of the OpStress to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent OpStress ID ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent OpStress ID ' \
                    '{0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKOpStress table records in the RTK Program database.
+        Update all RAMSTKOpStress table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -318,21 +318,21 @@ class OpStressDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more operating stresses in the "
+                _msg = ("RAMSTK ERROR: One or more operating stresses in the "
                         "damage modeling worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all operating stresses in the "
+            _msg = ("RAMSTK SUCCESS: Updating all operating stresses in the "
                     "damage modeling worksheet.")
 
         return _error_code, _msg
 
 
-class TestMethodDataModel(RTKDataModel):
+class TestMethodDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a failure TestMethod.
 
-    An RTK Project will consist of one or more TestMethods.  The attributes of a
+    An RAMSTK Project will consist of one or more TestMethods.  The attributes of a
     TestMethod are:
     """
 
@@ -342,11 +342,11 @@ class TestMethodDataModel(RTKDataModel):
         """
         Initialize a TestMethod data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -362,22 +362,22 @@ class TestMethodDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the operating stresss from the RTK Program database.
+        Retrieve all the operating stresss from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKTestMethod table in the
-        connected RTK Program database.  It then add each to the TestMethod data
+        This method retrieves all the records from the RAMSTKTestMethod table in the
+        connected RAMSTK Program database.  It then add each to the TestMethod data
         model treelib.Tree().
 
         :param int parent_id: the Mechanism ID the operating stresss are
                               associated with.
-        :return: tree; the Tree() of RTKTestMethod data models.
+        :return: tree; the Tree() of RAMSTKTestMethod data models.
         :rtype: :class:`treelib.Tree`
         """
         _parent_id = kwargs['parent_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        _testmethods = _session.query(RTKTestMethod).filter(
-            RTKTestMethod.load_id == _parent_id).all()
+        _testmethods = _session.query(RAMSTKTestMethod).filter(
+            RAMSTKTestMethod.load_id == _parent_id).all()
 
         for _testmethod in _testmethods:
             # We get and then set the attributes to replace any None values
@@ -391,7 +391,7 @@ class TestMethodDataModel(RTKDataModel):
                 data=_testmethod)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _testmethod.test_id)
 
         _session.close()
@@ -400,14 +400,14 @@ class TestMethodDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Add a record to the RTKTestMethod table.
+        Add a record to the RAMSTKTestMethod table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _testmethod = RTKTestMethod()
+        _testmethod = RAMSTKTestMethod()
         _testmethod.load_id = kwargs['load_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _testmethod,
             ])
@@ -420,49 +420,49 @@ class TestMethodDataModel(RTKDataModel):
                 data=_testmethod)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _testmethod.test_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKTestMethod table.
+        Remove a record from the RAMSTKTestMethod table.
 
-        :param int node_id: the ID of the RTKTestMethod record to be removed
-                            from the RTK Program database.
+        :param int node_id: the ID of the RAMSTKTestMethod record to be removed
+                            from the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'TestMethod ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the TestMethod ID of the TestMethod to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent TestMethod ID ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent TestMethod ID ' \
                    '{0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKTestMethod table records in the RTK Program database.
+        Update all RAMSTKTestMethod table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -478,17 +478,17 @@ class TestMethodDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more test methods in the damage "
+                _msg = ("RAMSTK ERROR: One or more test methods in the damage "
                         "modeling worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all test methods in the damage "
+            _msg = ("RAMSTK SUCCESS: Updating all test methods in the damage "
                     "modeling worksheet.")
 
         return _error_code, _msg
 
 
-class PhysicsOfFailureDataModel(RTKDataModel):
+class PhysicsOfFailureDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a PhysicsOfFailure (PoF).
 
@@ -520,11 +520,11 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         """
         Initialize a PhysicsOfFailure data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -554,7 +554,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         :rtype: :class:`treelib.Tree`
         """
         _mode_id = kwargs['parent_id']
-        RTKDataModel.do_select_all(self)
+        RAMSTKDataModel.do_select_all(self)
 
         _modes = self.dtm_mode.do_select_all(
             parent_id=_mode_id, functional=False).nodes
@@ -681,9 +681,9 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add an entity to the PhysicsOfFailure and RTK Program database..
+        Add an entity to the PhysicsOfFailure and RAMSTK Program database..
 
-        :param int entity_id: the RTK Program database Mechanism ID, OpLoad ID,
+        :param int entity_id: the RAMSTK Program database Mechanism ID, OpLoad ID,
                               or OpStress ID to add the entity to.
         :param str parent_id: the Node ID of the parent node in the treelib
                               Tree().
@@ -697,7 +697,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Adding an item to the PhysicsOfFailure.'
+        _msg = 'RAMSTK SUCCESS: Adding an item to the PhysicsOfFailure.'
         _entity = None
         _tag = 'Tag'
         _node_id = -1
@@ -729,7 +729,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
                                              self.dtm_testmethod.last_id)
         else:
             _error_code = 2005
-            _msg = ('RTK ERROR: Attempted to add an item to the Physics of '
+            _msg = ('RAMSTK ERROR: Attempted to add an item to the Physics of '
                     'Failure with an undefined indenture level.  Level {0:s} '
                     'was requested.  Must be one of opload, opstress, or '
                     'testmethod.').format(_level)
@@ -739,25 +739,25 @@ class PhysicsOfFailureDataModel(RTKDataModel):
                 _tag, _node_id, parent=_parent_id, data=_entity)
         except tree.NodeIDAbsentError:
             _error_code = 2005
-            _msg = 'RTK ERROR: Attempted to add an item under non-existent ' \
+            _msg = 'RAMSTK ERROR: Attempted to add an item under non-existent ' \
                    'Node ID: {0:s}.'.format(str(_parent_id))
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove record from the RTKOpLoad, RTKOpStress, or RTKTestMethod table.
+        Remove record from the RAMSTKOpLoad, RAMSTKOpStress, or RAMSTKTestMethod table.
 
-        :param int node_id: the ID of the RTKMode record to be removed from the
-                            RTK Program database.
+        :param int node_id: the ID of the RAMSTKMode record to be removed from the
+                            RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'entity with Node ID {0:s} from the ' \
                           'Physics of Failure.'.format(node_id)
 
@@ -765,24 +765,24 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the Mode ID of the Mode to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent entity with ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent entity with ' \
                    'Node ID {0:s}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKControl table records in the RTK Program database.
+        Update all RAMSTKControl table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -798,11 +798,11 @@ class PhysicsOfFailureDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more line items in the damage "
+                _msg = ("RAMSTK ERROR: One or more line items in the damage "
                         "modeling worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all line items in the damage "
+            _msg = ("RAMSTK SUCCESS: Updating all line items in the damage "
                     "modeling worksheet.")
 
         return _error_code, _msg

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.validation.Model.py is part of The RTK Project
+#       rtk.validation.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -11,18 +11,18 @@ from datetime import date
 from sortedcontainers import SortedDict
 from treelib import tree, Tree
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.Utilities import date_to_ordinal
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKProgramStatus, RTKValidation
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKProgramStatus, RAMSTKValidation
 from rtk.statistics.Bounds import calculate_beta_bounds
 
 
-class ValidationDataModel(RTKDataModel):
+class ValidationDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a Validation.
 
-    An RTK Project will consist of one or more Validations.  The attributes of a
+    An RAMSTK Project will consist of one or more Validations.  The attributes of a
     Validation are:
     """
 
@@ -32,11 +32,11 @@ class ValidationDataModel(RTKDataModel):
         """
         Initialize a Validation data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -54,7 +54,7 @@ class ValidationDataModel(RTKDataModel):
 
         # Add the root to the status Tree().  This is neccessary to allow
         # multiple entries at the top level as there can only be one root in a
-        # treelib Tree().  Manipulation and viewing of a RTK module tree needs
+        # treelib Tree().  Manipulation and viewing of a RAMSTK module tree needs
         # to ignore the root of the tree.
         try:
             self.status_tree.create_node(
@@ -65,20 +65,20 @@ class ValidationDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Validations from the RTK Program database.
+        Retrieve all the Validations from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKValidation table in
-        the connected RTK Program database.  It then add each to the Validation
+        This method retrieves all the records from the RAMSTKValidation table in
+        the connected RAMSTK Program database.  It then add each to the Validation
         data model treelib.Tree().
 
-        :return: tree; the Tree() of RTKValidation data models.
+        :return: tree; the Tree() of RAMSTKValidation data models.
         :rtype: :class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        for _validation in _session.query(RTKValidation).filter(
-                RTKValidation.revision_id == _revision_id).all():
+        for _validation in _session.query(RAMSTKValidation).filter(
+                RAMSTKValidation.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _validation.get_attributes()
@@ -90,13 +90,13 @@ class ValidationDataModel(RTKDataModel):
                 data=_validation)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _validation.validation_id)
 
         # Now select all the status updates.
         _today = False
-        for _status in _session.query(RTKProgramStatus).filter(
-                RTKProgramStatus.revision_id == _revision_id).all():
+        for _status in _session.query(RAMSTKProgramStatus).filter(
+                RAMSTKProgramStatus.revision_id == _revision_id).all():
             _attributes = _status.get_attributes()
             _status.set_attributes(_attributes)
             try:
@@ -111,10 +111,10 @@ class ValidationDataModel(RTKDataModel):
                 _today = True
 
         if not _today:
-            _status = RTKProgramStatus()
+            _status = RAMSTKProgramStatus()
             _status.revision_id = _revision_id
             _status.date_status = date.today()
-            _error_code, _msg = RTKDataModel.do_insert(
+            _error_code, _msg = RAMSTKDataModel.do_insert(
                 self, entities=[
                     _status,
                 ])
@@ -132,14 +132,14 @@ class ValidationDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Add a record to the RTKValidation table.
+        Add a record to the RAMSTKValidation table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _validation = RTKValidation()
+        _validation = RAMSTKValidation()
         _validation.revision_id = kwargs['revision_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _validation,
             ])
@@ -152,27 +152,27 @@ class ValidationDataModel(RTKDataModel):
                 data=_validation)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = _validation.validation_id
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKValidation table.
+        Remove a record from the RAMSTKValidation table.
 
-        :param int node_id entity: the ID of the RTKValidation record to be
-                                   removed from the RTK Program database.
+        :param int node_id entity: the ID of the RAMSTKValidation record to be
+                                   removed from the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Validation ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -181,24 +181,24 @@ class ValidationDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the Validation ID of the Validation to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Validation ID ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Validation ID ' \
                    '{0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):
         """
-        Update all RTKValidation table records in the RTK Program database.
+        Update all RAMSTKValidation table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -214,11 +214,11 @@ class ValidationDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the validation "
+                _msg = ("RAMSTK ERROR: One or more records in the validation "
                         "table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the validation "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the validation "
                     "table.")
 
         return _error_code, _msg
@@ -235,7 +235,7 @@ class ValidationDataModel(RTKDataModel):
 
         _node_id = date_to_ordinal(date.today())
 
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
@@ -248,7 +248,7 @@ class ValidationDataModel(RTKDataModel):
                 _error_code, _msg = self.dao.db_update(_session)
         except AttributeError:
             _error_code = 6
-            _msg = 'RTK ERROR: Attempted to save non-existent Program ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Program ' \
                    'Status for date {0:s}.'.format(str(_node_id))
 
         _session.close()

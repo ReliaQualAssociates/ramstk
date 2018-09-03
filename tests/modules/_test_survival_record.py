@@ -5,7 +5,7 @@ This is the test class for testing Record module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.survival.TestRecord.py is part of The RTK Project
+#       tests.survival.TestRecord.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -171,7 +171,7 @@ class TestRecordController(unittest.TestCase):
         Sets up the test fixture for the Record class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        _database = '/home/andrew/projects/RAMSTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Record()

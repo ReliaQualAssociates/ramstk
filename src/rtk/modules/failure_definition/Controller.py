@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.failure_definition.Controller.py is part of The RTK Project
+#       rtk.modules.failure_definition.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,14 +8,14 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
 from . import dtmFailureDefinition
 
 
-class FailureDefinitionDataController(RTKDataController):
+class FailureDefinitionDataController(RAMSTKDataController):
     """
-    Provide an interface between Failure Definition data models and RTK views.
+    Provide an interface between Failure Definition data models and RAMSTK views.
 
     A single Failure Definition data controller can manage one or more Failure
     Definition data models.
@@ -26,12 +26,12 @@ class FailureDefinitionDataController(RTKDataController):
         Initialize a Failure Definition data controller instance.
 
         :param dao: the data access object used to communicate with the
-                    connected RTK Program database.
+                    connected RAMSTK Program database.
         :type dao: :py:class:`rtk.dao.DAO.DAO`
-        :param configuration: the RTK configuration instance.
+        :param configuration: the RAMSTK configuration instance.
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmFailureDefinition(dao),
@@ -52,7 +52,7 @@ class FailureDefinitionDataController(RTKDataController):
 
     def request_do_insert(self, **kwargs):
         """
-        Request to add an RTKFailureDefinition table record.
+        Request to add an RAMSTKFailureDefinition table record.
 
         :param int revision_id: the Revision ID this Failure Definition will be
                                 associated with.
@@ -64,21 +64,21 @@ class FailureDefinitionDataController(RTKDataController):
             revision_id=_revision_id)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             if not self._test:
                 pub.sendMessage('insertedDefinition')
         else:
             _msg = _msg + '  Failed to add a new Failure Definition to the ' \
-                          'RTK Program database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+                          'RAMSTK Program database.'
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete(self, node_id):
         """
-        Request to delete an RTKFailureDefinition table record.
+        Request to delete an RAMSTKFailureDefinition table record.
 
         :param str node_id: the PyPubSub Tree() ID for the Failure Definition
                             to delete.
@@ -88,12 +88,12 @@ class FailureDefinitionDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedDefinition')
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKFailureDefinition table record.
+        Request to update an RAMSTKFailureDefinition table record.
 
         :param str node_id: the PyPubSub Tree() ID of the Failure Definition to
                             update.
@@ -103,17 +103,17 @@ class FailureDefinitionDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedDefinition')
 
     def request_do_update_all(self, **kwargs):
         """
-        Request to update all records in the RTKFailureDefinition table.
+        Request to update all records in the RAMSTKFailureDefinition table.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

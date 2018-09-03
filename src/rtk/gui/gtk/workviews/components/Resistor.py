@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Resistor.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.components.Resistor.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,7 +8,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -17,7 +17,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class ResistorAssessmentInputs(AssessmentInputs):
     """
-    Display Resistor assessment input attribute data in the RTK Work Book.
+    Display Resistor assessment input attribute data in the RAMSTK Work Book.
 
     The Resistor assessment input view displays all the assessment inputs for
     the selected resistor.  This includes, currently, inputs for
@@ -152,22 +152,22 @@ class ResistorAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbSpecification = rtk.RTKComboBox(
+        self.cmbSpecification = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The governing specification for the resistor."))
-        self.cmbType = rtk.RTKComboBox(
+        self.cmbType = rtk.RAMSTKComboBox(
             index=0, simple=False, tooltip=_(u"The type of thermistor."))
-        self.cmbStyle = rtk.RTKComboBox(
+        self.cmbStyle = rtk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The style of resistor."))
-        self.cmbConstruction = rtk.RTKComboBox(
+        self.cmbConstruction = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The method of construction of the resistor."))
-        self.txtResistance = rtk.RTKEntry(
+        self.txtResistance = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The resistance (in \u03A9) of the resistor."))
-        self.txtNElements = rtk.RTKEntry(
+        self.txtNElements = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of active resistors in a resistor network "
                       u"or the number of potentiometer taps."))
@@ -203,7 +203,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             _data = ["S", "R", "P", "M", ["MIL-SPEC"], [_(u"Lower")]]
         else:
@@ -213,14 +213,14 @@ class ResistorAssessmentInputs(AssessmentInputs):
                 _data = []
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the specification RTKComboBox().
+        # Load the specification RAMSTKComboBox().
         try:
             _data = self._dic_specifications[self._subcategory_id]
         except KeyError:
             _data = []
         self.cmbSpecification.do_load_combo(_data)
 
-        # Load the type RTKComboBox().
+        # Load the type RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             try:
                 _data = self._dic_types[self._subcategory_id]
@@ -230,7 +230,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
             _data = [[_(u"Bead")], [_(u"Disk")], [_(u"Rod")]]
         self.cmbType.do_load_combo(_data)
 
-        # Load the style RTKComboBox().
+        # Load the style RAMSTKComboBox().
         try:
             _data = self._dic_styles[_attributes['subcategory_id']][
                 _attributes['specification_id']]
@@ -238,7 +238,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbStyle.do_load_combo(_data)
 
-        # Load the construction RTKComboBox().
+        # Load the construction RAMSTKComboBox().
         try:
             _data = self._dic_construction[self._subcategory_id]
         except KeyError:
@@ -355,16 +355,16 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Resistor attribute.
+        Retrieve RAMSTKCombo() changes and assign to Resistor attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -402,16 +402,16 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -469,7 +469,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
 class ResistorAssessmentResults(AssessmentResults):
     """
-    Display Resistor assessment results attribute data in the RTK Work Book.
+    Display Resistor assessment results attribute data in the RAMSTK Work Book.
 
     The Resistor assessment result view displays all the assessment results
     for the selected resistor.  This includes, currently, results for
@@ -547,32 +547,32 @@ class ResistorAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiR = rtk.RTKEntry(
+        self.txtPiR = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The resistance factor for the resistor."))
-        self.txtPiT = rtk.RTKEntry(
+        self.txtPiT = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The temperature factor for the resistor."))
-        self.txtPiNR = rtk.RTKEntry(
+        self.txtPiNR = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The number of resistors factor for the resistor."))
-        self.txtPiTAPS = rtk.RTKEntry(
+        self.txtPiTAPS = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The potentiometer taps factor for the resistor."))
-        self.txtPiV = rtk.RTKEntry(
+        self.txtPiV = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The voltage factor for the resistor."))
-        self.txtPiC = rtk.RTKEntry(
+        self.txtPiC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

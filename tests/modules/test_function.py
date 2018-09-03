@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.test_function.py is part of The RTK Project
+#       tests.modules.test_function.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -11,9 +11,9 @@ import pytest
 from treelib import Tree
 import pandas as pd
 
-from rtk.dao import DAO, RTKFunction
+from rtk.dao import DAO, RAMSTKFunction
 from rtk.modules.function import dtcFunction, dtmFunction
-from rtk.modules import RTKDataMatrix
+from rtk.modules import RAMSTKDataMatrix
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -57,22 +57,22 @@ def test_create_data_model(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKFunction instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKFunction instances on success. """
     DUT = dtmFunction(test_dao)
     _tree = DUT.do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RTKFunction)
+    assert isinstance(_tree.get_node(1).data, RAMSTKFunction)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKFunction data model on success. """
+    """ do_select() should return an instance of the RAMSTKFunction data model on success. """
     DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
     _function = DUT.do_select(1)
 
-    assert isinstance(_function, RTKFunction)
+    assert isinstance(_function, RAMSTKFunction)
     assert _function.function_id == 1
     assert _function.availability_logistics == 1.0
 
@@ -95,7 +95,7 @@ def test_do_insert_sibling(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=0)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     assert DUT.last_id == 4
 
@@ -111,7 +111,7 @@ def test_do_insert_child(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
     assert DUT.last_id == 4
 
@@ -128,7 +128,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                     "database.")
 
 
@@ -141,7 +141,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RTK ERROR: Attempted to delete non-existent Function "
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Function "
                     "ID 300.")
 
 
@@ -157,7 +157,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
 
 
 @pytest.mark.integration
@@ -169,7 +169,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ("RTK ERROR: Attempted to save non-existent Function ID "
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Function ID "
                     "100.")
 
 
@@ -182,7 +182,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the function "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the function "
                     "table.")
 
 
@@ -193,16 +193,16 @@ def test_create_controller(test_dao, test_configuration):
 
     assert isinstance(DUT, dtcFunction)
     assert isinstance(DUT._dtm_data_model, dtmFunction)
-    assert isinstance(DUT._dmx_fctn_hw_matrix, RTKDataMatrix)
+    assert isinstance(DUT._dmx_fctn_hw_matrix, RAMSTKDataMatrix)
 
 
 @pytest.mark.integration
 def test_request_do_select_all(test_dao, test_configuration):
-    """ request_select_all() should return a Tree of RTKFunction models. """
+    """ request_select_all() should return a Tree of RAMSTKFunction models. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
     _tree = DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(_tree.get_node(1).data, RTKFunction)
+    assert isinstance(_tree.get_node(1).data, RAMSTKFunction)
 
 
 @pytest.mark.integration
@@ -228,13 +228,13 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
-    """ request_do_select() should return an RTKFunction model. """
+    """ request_do_select() should return an RAMSTKFunction model. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
     _function = DUT.request_do_select(1)
 
-    assert isinstance(_function, RTKFunction)
+    assert isinstance(_function, RAMSTKFunction)
 
 
 @pytest.mark.integration
@@ -410,12 +410,12 @@ def test_request_set_attributes(test_dao, test_configuration):
     _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating RTKFunction 1 attributes.")
+    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKFunction 1 attributes.")
 
 
 @pytest.mark.integration
 def test_request_last_id(test_dao, test_configuration):
-    """ request_last_id() should return the last Function ID used in the RTK Program database. """
+    """ request_last_id() should return the last Function ID used in the RAMSTK Program database. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 

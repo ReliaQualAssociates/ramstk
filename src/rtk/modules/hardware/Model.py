@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.hardware.Model.py is part of The RTK Project
+#       rtk.modules.hardware.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -9,14 +9,14 @@
 from math import exp
 from treelib.exceptions import DuplicatedNodeIdError
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.analyses.prediction import Component
-from rtk.modules import RTKDataModel
-from rtk.dao import (RTKHardware, RTKDesignElectric, RTKDesignMechanic,
-                     RTKMilHdbkF, RTKNSWC, RTKReliability)
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import (RAMSTKHardware, RAMSTKDesignElectric, RAMSTKDesignMechanic,
+                     RAMSTKMilHdbkF, RAMSTKNSWC, RAMSTKReliability)
 
 
-class HardwareBoMDataModel(RTKDataModel):
+class HardwareBoMDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a Hardware Bill of Materials (BoM).
 
@@ -39,11 +39,11 @@ class HardwareBoMDataModel(RTKDataModel):
         """
         Initialize a Hardware BoM data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -65,10 +65,10 @@ class HardwareBoMDataModel(RTKDataModel):
 
     def do_select(self, node_id, **kwargs):
         """
-        Retrieve the instance of the RTK<MODULE> model for the Node ID passed.
+        Retrieve the instance of the RAMSTK<MODULE> model for the Node ID passed.
 
         :param int node_id: the Node ID of the data package to retrieve.
-        :param str table: the RTK Program database table to select the entity
+        :param str table: the RAMSTK Program database table to select the entity
                           from.  Current options are:
 
                           * general
@@ -78,7 +78,7 @@ class HardwareBoMDataModel(RTKDataModel):
                           * nswc
                           * reliability
 
-        :return: the instance of the RTK<MODULE> class that was requested
+        :return: the instance of the RAMSTK<MODULE> class that was requested
                  or None if the requested Node ID does not exist.
         """
         _table = kwargs['table']
@@ -99,7 +99,7 @@ class HardwareBoMDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Hardware BoM data from the RTK Program database.
+        Retrieve all the Hardware BoM data from the RAMSTK Program database.
 
         :param int revision_id: the Revision ID to select the Hardware BoM for.
         :return: tree; the Tree() of data models.
@@ -157,7 +157,7 @@ class HardwareBoMDataModel(RTKDataModel):
                     data=_data)
 
                 # pylint: disable=attribute-defined-outside-init
-                # It is defined in RTKDataModel.__init__
+                # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _hardware_id)
             except DuplicatedNodeIdError:
                 pass
@@ -186,11 +186,11 @@ class HardwareBoMDataModel(RTKDataModel):
 
         if _parent_is_part == 1 and _part == 0:
             _error_code = 3006
-            _msg = ("RTK ERROR: You can not have a hardware assembly as a "
+            _msg = ("RAMSTK ERROR: You can not have a hardware assembly as a "
                     "child of a component/piece part.")
         elif _parent_is_part == 1 and _part == 1:
             _error_code = 3006
-            _msg = ("RTK ERROR: You can not have a component/piece part as a "
+            _msg = ("RAMSTK ERROR: You can not have a component/piece part as a "
                     "child of another component/piece part.")
         else:
             _error_code, _error_msg = self.dtm_hardware.do_insert(
@@ -251,11 +251,11 @@ class HardwareBoMDataModel(RTKDataModel):
                 data=_data)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _hardware_id)
 
             if _msg == '':
-                _msg = ("RTK SUCCESS: Adding a new hardware item to the RTK "
+                _msg = ("RAMSTK SUCCESS: Adding a new hardware item to the RAMSTK "
                         "Program database.")
 
         return _error_code, _msg
@@ -265,17 +265,17 @@ class HardwareBoMDataModel(RTKDataModel):
         Remove a Hardware item.
 
         :param int node_id: the ID of the Hardware item to be removed from the
-                            RTK Program database.
+                            RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _error_code = 0
         _msg = ''
 
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        # Delete the RTKHardware entry.  Other RTK Program database tables will
+        # Delete the RAMSTKHardware entry.  Other RAMSTK Program database tables will
         # delete their entries based on CASCADE behavior.
         try:
             _hardware = self.dtm_hardware.tree.get_node(node_id).data
@@ -283,13 +283,13 @@ class HardwareBoMDataModel(RTKDataModel):
                 _error_code, _msg = self.dao.db_delete(_hardware, _session)
         except AttributeError:
             _error_code = 2005
-            _msg = ('RTK ERROR: Attempted to delete non-existent Hardware '
+            _msg = ('RAMSTK ERROR: Attempted to delete non-existent Hardware '
                     'BoM record ID {0:s}.').format(str(node_id))
 
         _session.close()
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code == 0:
             self.tree.remove_node(node_id)
             # CASCADE DELETE removes the records from the database.  Now they
@@ -306,7 +306,7 @@ class HardwareBoMDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the Hardware ID of the Hardware to save.
         :return: (_error_code, _msg); the error code and associated message.
@@ -346,13 +346,13 @@ class HardwareBoMDataModel(RTKDataModel):
             _msg = _msg + _message + '\n'
 
         if _error_code == 0:
-            _msg = 'RTK SUCCESS: Updating the RTK Program database.'
+            _msg = 'RAMSTK SUCCESS: Updating the RAMSTK Program database.'
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKHardware table records in the RTK Program database.
+        Update all RAMSTKHardware table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -368,11 +368,11 @@ class HardwareBoMDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more line items in the hardware "
+                _msg = ("RAMSTK ERROR: One or more line items in the hardware "
                         "bill of materials did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the hardware bill "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the hardware bill "
                     "of materials.")
 
         return _error_code, _msg
@@ -587,11 +587,11 @@ class HardwareBoMDataModel(RTKDataModel):
         return _cum_results
 
 
-class HardwareDataModel(RTKDataModel):
+class HardwareDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a Hardware item.
 
-    An RTK Project will consist of one or more Hardware items.  The attributes
+    An RAMSTK Project will consist of one or more Hardware items.  The attributes
     of a Hardware item are:
     """
 
@@ -601,11 +601,11 @@ class HardwareDataModel(RTKDataModel):
         """
         Initialize a Hardware data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -621,21 +621,21 @@ class HardwareDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Hardware from the RTK Program database.
+        Retrieve all the Hardware from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKHardware table in the
-        connected RTK Program database.  It then add each to the Hardware data
+        This method retrieves all the records from the RAMSTKHardware table in the
+        connected RAMSTK Program database.  It then add each to the Hardware data
         model treelib.Tree().
 
         :param int revision_id: the Revision ID to select the hardware for.
-        :return: tree; the Tree() of RTKHardware data models.
+        :return: tree; the Tree() of RAMSTKHardware data models.
         :rtype: :class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        for _hardware in _session.query(RTKHardware).filter(
-                RTKHardware.revision_id == _revision_id).all():
+        for _hardware in _session.query(RAMSTKHardware).filter(
+                RAMSTKHardware.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _hardware.get_attributes()
@@ -648,7 +648,7 @@ class HardwareDataModel(RTKDataModel):
                     data=_hardware)
 
                 # pylint: disable=attribute-defined-outside-init
-                # It is defined in RTKDataModel.__init__
+                # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _hardware.hardware_id)
             except DuplicatedNodeIdError:
                 pass
@@ -659,16 +659,16 @@ class HardwareDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKHardware table.
+        Add a record to the RAMSTKHardware table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _hardware = RTKHardware()
+        _hardware = RAMSTKHardware()
         _hardware.revision_id = kwargs['revision_id']
         _hardware.parent_id = kwargs['parent_id']
         _hardware.part = kwargs['part']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _hardware,
             ])
@@ -681,27 +681,27 @@ class HardwareDataModel(RTKDataModel):
                 data=_hardware)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = _hardware.hardware_id
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKHardware table.
+        Remove a record from the RAMSTKHardware table.
 
-        :param int node_id: the ID of the RTKHardware record to be removed from
-                            the RTK Program database.
+        :param int node_id: the ID of the RAMSTKHardware record to be removed from
+                            the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Hardware ID {0:s}.'.format(str(node_id))
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -710,24 +710,24 @@ class HardwareDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the Hardware ID of the Hardware to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Hardware ID ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Hardware ID ' \
                    '{0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self):
         """
-        Update all RTKHardware table records in the RTK Program database.
+        Update all RAMSTKHardware table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -743,11 +743,11 @@ class HardwareDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the hardware table "
+                _msg = ("RAMSTK ERROR: One or more records in the hardware table "
                         "did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the hardware table.")
+            _msg = ("RAMSTK SUCCESS: Updating all records in the hardware table.")
 
         return _error_code, _msg
 
@@ -780,7 +780,7 @@ class HardwareDataModel(RTKDataModel):
         return _return
 
 
-class DesignElectricDataModel(RTKDataModel):
+class DesignElectricDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of an Electrical Design model."""
 
     _tag = 'DesignElectric'
@@ -789,11 +789,11 @@ class DesignElectricDataModel(RTKDataModel):
         """
         Initialize an Electrical Design parameter data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -809,26 +809,26 @@ class DesignElectricDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all RTKDesignElectric records from the RTK Program database.
+        Retrieve all RAMSTKDesignElectric records from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKDesignElectric table
-        in the connected RTK Program database.  It then add each to the
+        This method retrieves all the records from the RAMSTKDesignElectric table
+        in the connected RAMSTK Program database.  It then add each to the
         Design Electric data model treelib.Tree().
 
-        :return: tree; the treelib Tree() of RTKDesignElectric data models that
+        :return: tree; the treelib Tree() of RAMSTKDesignElectric data models that
                  comprise the DesignElectric tree.
         :rtype: :class:`treelib.Tree`
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # Don't use the RAMSTKDataModel.do_select_all() method because we don't
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        for _design in _session.query(RTKDesignElectric).\
-                filter(RTKDesignElectric.hardware_id == _hardware_id).all():
+        for _design in _session.query(RAMSTKDesignElectric).\
+                filter(RAMSTKDesignElectric.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _design.hardware_id,
@@ -837,7 +837,7 @@ class DesignElectricDataModel(RTKDataModel):
                     data=_design)
 
                 # pylint: disable=attribute-defined-outside-init
-                # It is defined in RTKDataModel.__init__
+                # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _design.hardware_id)
             except DuplicatedNodeIdError:
                 pass
@@ -848,14 +848,14 @@ class DesignElectricDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKDesignElectric table.
+        Add a record to the RAMSTKDesignElectric table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _design = RTKDesignElectric()
+        _design = RAMSTKDesignElectric()
         _design.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _design,
             ])
@@ -868,27 +868,27 @@ class DesignElectricDataModel(RTKDataModel):
                 data=_design)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _design.hardware_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKDesignElectric table.
+        Remove a record from the RAMSTKDesignElectric table.
 
-        :param int node_id: the ID of the RTKDesignElectric record to be
-                            removed from the RTK Program database.
+        :param int node_id: the ID of the RAMSTKDesignElectric record to be
+                            removed from the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'DesignElectric record ID ' \
                           '{0:s}.'.format(str(node_id))
         else:
@@ -898,25 +898,25 @@ class DesignElectricDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the DesignElectric ID of the DesignElectric record
                             to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent ' \
                    'DesignElectric record ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKDesignElectric table records in the RTK Program database.
+        Update all RAMSTKDesignElectric table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -932,17 +932,17 @@ class DesignElectricDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more line items in the electrical "
+                _msg = ("RAMSTK ERROR: One or more line items in the electrical "
                         "design table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the electrical "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the electrical "
                     "design table.")
 
         return _error_code, _msg
 
 
-class DesignMechanicDataModel(RTKDataModel):
+class DesignMechanicDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a Mechanical Design model."""
 
     _tag = 'DesignMechanic'
@@ -951,11 +951,11 @@ class DesignMechanicDataModel(RTKDataModel):
         """
         Initialize a Mechanical Design parameter data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -971,26 +971,26 @@ class DesignMechanicDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all RTKDesignMechanic records from the RTK Program database.
+        Retrieve all RAMSTKDesignMechanic records from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKDesignMechanic table
-        in the connected RTK Program database.  It then add each to the
+        This method retrieves all the records from the RAMSTKDesignMechanic table
+        in the connected RAMSTK Program database.  It then add each to the
         Mechanical Design parameter data model treelib.Tree().
 
-        :return: tree; the treelib Tree() of RTKDesignMechanic data models that
+        :return: tree; the treelib Tree() of RAMSTKDesignMechanic data models that
                  comprise the DesignMechanic tree.
         :rtype: :class:`treelib.Tree`
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # Don't use the RAMSTKDataModel.do_select_all() method because we don't
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        for _design in _session.query(RTKDesignMechanic).\
-                filter(RTKDesignMechanic.hardware_id == _hardware_id).all():
+        for _design in _session.query(RAMSTKDesignMechanic).\
+                filter(RAMSTKDesignMechanic.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _design.hardware_id,
@@ -999,7 +999,7 @@ class DesignMechanicDataModel(RTKDataModel):
                     data=_design)
 
                 # pylint: disable=attribute-defined-outside-init
-                # It is defined in RTKDataModel.__init__
+                # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _design.hardware_id)
             except DuplicatedNodeIdError:
                 pass
@@ -1010,14 +1010,14 @@ class DesignMechanicDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKDesignMechanic table.
+        Add a record to the RAMSTKDesignMechanic table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _design = RTKDesignMechanic()
+        _design = RAMSTKDesignMechanic()
         _design.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _design,
             ])
@@ -1030,27 +1030,27 @@ class DesignMechanicDataModel(RTKDataModel):
                 data=_design)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _design.hardware_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKDesignMechanic table.
+        Remove a record from the RAMSTKDesignMechanic table.
 
-        :param int node_id: the ID of the RTKDesignMechanic record to be
-                            removed from the RTK Program database.
+        :param int node_id: the ID of the RAMSTKDesignMechanic record to be
+                            removed from the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'DesignMechanic record ID ' \
                           '{0:s}.'.format(str(node_id))
         else:
@@ -1060,25 +1060,25 @@ class DesignMechanicDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the DesignMechanic ID of the DesignMechanic record
                             to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent ' \
                    'DesignMechanic record ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKDesignMechanic table records in the RTK Program database.
+        Update all RAMSTKDesignMechanic table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -1094,17 +1094,17 @@ class DesignMechanicDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more line items in the mechanical "
+                _msg = ("RAMSTK ERROR: One or more line items in the mechanical "
                         "design table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the mechanical "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the mechanical "
                     "design table.")
 
         return _error_code, _msg
 
 
-class MilHdbkFDataModel(RTKDataModel):
+class MilHdbkFDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a MIL-HDBK-217F model."""
 
     _tag = 'MilHdbkF'
@@ -1113,11 +1113,11 @@ class MilHdbkFDataModel(RTKDataModel):
         """
         Initialize a MIL-HDBK-217F data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -1133,26 +1133,26 @@ class MilHdbkFDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all RTKMilHdbkF records from the RTK Program database.
+        Retrieve all RAMSTKMilHdbkF records from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKMilHdbkF table
-        in the connected RTK Program database.  It then add each to the
+        This method retrieves all the records from the RAMSTKMilHdbkF table
+        in the connected RAMSTK Program database.  It then add each to the
         MIL-HDBK-217F data model treelib.Tree().
 
-        :return: tree; the treelib Tree() of RTKMilHdbkF data models that
+        :return: tree; the treelib Tree() of RAMSTKMilHdbkF data models that
                  comprise the MilHdbkF tree.
         :rtype: :class:`treelib.Tree`
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # Don't use the RAMSTKDataModel.do_select_all() method because we don't
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        for _milhdbkf in _session.query(RTKMilHdbkF).\
-                filter(RTKMilHdbkF.hardware_id == _hardware_id).all():
+        for _milhdbkf in _session.query(RAMSTKMilHdbkF).\
+                filter(RAMSTKMilHdbkF.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _milhdbkf.hardware_id,
@@ -1161,7 +1161,7 @@ class MilHdbkFDataModel(RTKDataModel):
                     data=_milhdbkf)
 
                 # pylint: disable=attribute-defined-outside-init
-                # It is defined in RTKDataModel.__init__
+                # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _milhdbkf.hardware_id)
             except DuplicatedNodeIdError:
                 pass
@@ -1172,14 +1172,14 @@ class MilHdbkFDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKMilHdbkF table.
+        Add a record to the RAMSTKMilHdbkF table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _milhdbkf = RTKMilHdbkF()
+        _milhdbkf = RAMSTKMilHdbkF()
         _milhdbkf.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _milhdbkf,
             ])
@@ -1192,27 +1192,27 @@ class MilHdbkFDataModel(RTKDataModel):
                 data=_milhdbkf)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _milhdbkf.hardware_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKMilHdbkF table.
+        Remove a record from the RAMSTKMilHdbkF table.
 
-        :param int node_id: the ID of the RTKMilHdbkF record to be
-                            removed from the RTK Program database.
+        :param int node_id: the ID of the RAMSTKMilHdbkF record to be
+                            removed from the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'MilHdbkF record ID ' \
                           '{0:s}.'.format(str(node_id))
         else:
@@ -1222,25 +1222,25 @@ class MilHdbkFDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the MilHdbkF ID of the MilHdbkF record
                             to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent ' \
                    'MilHdbkF record ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKMilHdbkF table records in the RTK Program database.
+        Update all RAMSTKMilHdbkF table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -1256,17 +1256,17 @@ class MilHdbkFDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the MIL-HDBK-217 "
+                _msg = ("RAMSTK ERROR: One or more records in the MIL-HDBK-217 "
                         "table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the MIL-HDBK-217 "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the MIL-HDBK-217 "
                     "table.")
 
         return _error_code, _msg
 
 
-class NSWCDataModel(RTKDataModel):
+class NSWCDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a NSWC model."""
 
     _tag = 'NSWC'
@@ -1275,11 +1275,11 @@ class NSWCDataModel(RTKDataModel):
         """
         Initialize a NSWC data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -1295,32 +1295,32 @@ class NSWCDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all RTKNSWC records from the RTK Program database.
+        Retrieve all RAMSTKNSWC records from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKNSWC table
-        in the connected RTK Program database.  It then add each to the
+        This method retrieves all the records from the RAMSTKNSWC table
+        in the connected RAMSTK Program database.  It then add each to the
         NSWC data model treelib.Tree().
 
-        :return: tree; the treelib Tree() of RTKNSWC data models that
+        :return: tree; the treelib Tree() of RAMSTKNSWC data models that
                  comprise the NSWC tree.
         :rtype: :class:`treelib.Tree`
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # Don't use the RAMSTKDataModel.do_select_all() method because we don't
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        for _nswc in _session.query(RTKNSWC).\
-                filter(RTKNSWC.hardware_id == _hardware_id).all():
+        for _nswc in _session.query(RAMSTKNSWC).\
+                filter(RAMSTKNSWC.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
 
                 # pylint: disable=attribute-defined-outside-init
-                # It is defined in RTKDataModel.__init__
+                # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _nswc.hardware_id)
             except DuplicatedNodeIdError:
                 pass
@@ -1331,14 +1331,14 @@ class NSWCDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKNSWC table.
+        Add a record to the RAMSTKNSWC table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _nswc = RTKNSWC()
+        _nswc = RAMSTKNSWC()
         _nswc.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _nswc,
             ])
@@ -1348,27 +1348,27 @@ class NSWCDataModel(RTKDataModel):
                 _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _nswc.hardware_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKNSWC table.
+        Remove a record from the RAMSTKNSWC table.
 
-        :param int node_id: the ID of the RTKNSWC record to be
-                            removed from the RTK Program database.
+        :param int node_id: the ID of the RAMSTKNSWC record to be
+                            removed from the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'NSWC record ID ' \
                           '{0:s}.'.format(str(node_id))
         else:
@@ -1378,25 +1378,25 @@ class NSWCDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the NSWC ID of the NSWC record
                             to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent ' \
                    'NSWC record ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self):
         """
-        Update all RTKNSWC table records in the RTK Program database.
+        Update all RAMSTKNSWC table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -1412,16 +1412,16 @@ class NSWCDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the NSWC table "
+                _msg = ("RAMSTK ERROR: One or more records in the NSWC table "
                         "did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the NSWC table.")
+            _msg = ("RAMSTK SUCCESS: Updating all records in the NSWC table.")
 
         return _error_code, _msg
 
 
-class ReliabilityDataModel(RTKDataModel):
+class ReliabilityDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a Reliability model."""
 
     _tag = 'Reliability'
@@ -1430,11 +1430,11 @@ class ReliabilityDataModel(RTKDataModel):
         """
         Initialize a Reliability data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -1450,28 +1450,28 @@ class ReliabilityDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all RTKReliability records from the RTK Program database.
+        Retrieve all RAMSTKReliability records from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKReliability table
-        in the connected RTK Program database.  It then add each to the
+        This method retrieves all the records from the RAMSTKReliability table
+        in the connected RAMSTK Program database.  It then add each to the
         Reliability data model treelib.Tree().
 
         :param int hardware_id: the ID of the Hardware item to retrieve the
                                 Reliability parameters for.
-        :return: tree; the treelib Tree() of RTKReliability data models that
+        :return: tree; the treelib Tree() of RAMSTKReliability data models that
                  comprise the Reliability tree.
         :rtype: :class:`treelib.Tree`
         """
         _hardware_id = kwargs['hardware_id']
 
-        # Don't use the RTKDataModel.do_select_all() method because we don't
+        # Don't use the RAMSTKDataModel.do_select_all() method because we don't
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        for _reliability in _session.query(RTKReliability).\
-                filter(RTKReliability.hardware_id == _hardware_id).all():
+        for _reliability in _session.query(RAMSTKReliability).\
+                filter(RAMSTKReliability.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
                     _reliability.hardware_id,
@@ -1480,7 +1480,7 @@ class ReliabilityDataModel(RTKDataModel):
                     data=_reliability)
 
                 # pylint: disable=attribute-defined-outside-init
-                # It is defined in RTKDataModel.__init__
+                # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _reliability.hardware_id)
             except DuplicatedNodeIdError:
                 pass
@@ -1491,14 +1491,14 @@ class ReliabilityDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKReliability table.
+        Add a record to the RAMSTKReliability table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _reliability = RTKReliability()
+        _reliability = RAMSTKReliability()
         _reliability.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _reliability,
             ])
@@ -1511,27 +1511,27 @@ class ReliabilityDataModel(RTKDataModel):
                 data=_reliability)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _reliability.hardware_id)
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKReliability table.
+        Remove a record from the RAMSTKReliability table.
 
-        :param int node_id: the ID of the RTKReliability record to be
-                            removed from the RTK Program database.
+        :param int node_id: the ID of the RAMSTKReliability record to be
+                            removed from the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Reliability record ID ' \
                           '{0:s}.'.format(str(node_id))
         else:
@@ -1541,25 +1541,25 @@ class ReliabilityDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the Reliability ID of the Reliability record
                             to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent ' \
                    'Reliability record ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKReliability table records in the RTK Program database.
+        Update all RAMSTKReliability table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -1575,11 +1575,11 @@ class ReliabilityDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the reliability "
+                _msg = ("RAMSTK ERROR: One or more records in the reliability "
                         "table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the reliability "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the reliability "
                     "table.")
 
         return _error_code, _msg

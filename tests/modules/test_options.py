@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_options.py is part of The RTK Project
+#       rtk.tests.modules.test_options.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -97,7 +97,7 @@ def test_create_options_data_controller(test_dao, test_common_dao,
 
 @pytest.mark.integration
 def test_request_do_select_all(test_dao, test_common_dao, test_configuration):
-    """ request_do_select_all() should return a Tree of RTKOptions data models. """
+    """ request_do_select_all() should return a Tree of RAMSTKOptions data models. """
     DUT = dtcOptions(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
 
@@ -156,7 +156,7 @@ def test_request_set_options_site(test_dao, test_common_dao, test_configuration)
     (_error_code, _msg) = DUT.request_set_options(_options, site=True, program=False)
 
     assert _error_code == 0
-    assert _msg == 'RTK SUCCESS: Updating RTKSiteInfo attributes.'
+    assert _msg == 'RAMSTK SUCCESS: Updating RAMSTKSiteInfo attributes.'
 
 @pytest.mark.integration
 def test_request_set_options_program(test_dao, test_common_dao, test_configuration):
@@ -171,7 +171,7 @@ def test_request_set_options_program(test_dao, test_common_dao, test_configurati
     (_error_code, _msg) = DUT.request_set_options(_options, site=False, program=True)
 
     assert _error_code == 0
-    assert _msg == 'RTK SUCCESS: Updating RTKProgramInfo attributes.'
+    assert _msg == 'RAMSTK SUCCESS: Updating RAMSTKProgramInfo attributes.'
 
 
 @pytest.mark.integration

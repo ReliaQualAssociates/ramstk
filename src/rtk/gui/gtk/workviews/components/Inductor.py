@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Inductor.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.components.Inductor.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,7 +8,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -17,7 +17,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class InductorAssessmentInputs(AssessmentInputs):
     """
-    Display Inductor assessment input attribute data in the RTK Work Book.
+    Display Inductor assessment input attribute data in the RAMSTK Work Book.
 
     The Inductor assessment input view displays all the assessment inputs for
     the selected inductor.  This includes, currently, inputs for
@@ -110,29 +110,29 @@ class InductorAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbInsulation = rtk.RTKComboBox(
+        self.cmbInsulation = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The insulation class of the inductive device."))
-        self.cmbSpecification = rtk.RTKComboBox(
+        self.cmbSpecification = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The governing specification for the inductive "
                       u"device."))
-        self.cmbFamily = rtk.RTKComboBox(
+        self.cmbFamily = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The application family of the transformer."))
-        self.cmbConstruction = rtk.RTKComboBox(
+        self.cmbConstruction = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The method of construction of the coil."))
 
-        self.txtArea = rtk.RTKEntry(
+        self.txtArea = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The case radiating surface (in square inches) of the "
                       u"inductive device."))
-        self.txtWeight = rtk.RTKEntry(
+        self.txtWeight = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"The transformer weight (in lbf)."))
 
         self._make_page()
@@ -165,7 +165,7 @@ class InductorAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             _data = [[_(u"Established Reliability")], ["MIL-SPEC"],
                      [_(u"Lower")]]
@@ -176,21 +176,21 @@ class InductorAssessmentInputs(AssessmentInputs):
                 _data = []
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the specification RTKComboBox().
+        # Load the specification RAMSTKComboBox().
         try:
             _data = self._dic_specifications[self._subcategory_id]
         except KeyError:
             _data = []
         self.cmbSpecification.do_load_combo(_data)
 
-        # Load the insulation class RTKComboBox().
+        # Load the insulation class RAMSTKComboBox().
         try:
             _data = self._dic_insulation[self._subcategory_id]
         except KeyError:
             _data = []
         self.cmbInsulation.do_load_combo(_data)
 
-        # Load the transformer family RTKComboBox().
+        # Load the transformer family RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             if self._subcategory_id == 1:
                 _data = [[_(u"Low Power Pulse Transformer")], [
@@ -206,7 +206,7 @@ class InductorAssessmentInputs(AssessmentInputs):
                      [_(u"RF Transformer")]]
         self.cmbFamily.do_load_combo(_data)
 
-        # load the coil construction RTKComboBox().
+        # load the coil construction RAMSTKComboBox().
         self.cmbConstruction.do_load_combo([[_(u"Fixed")], [_(u"Variable")]])
 
         return _return
@@ -310,16 +310,16 @@ class InductorAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Inductor attribute.
+        Retrieve RAMSTKCombo() changes and assign to Inductor attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -357,16 +357,16 @@ class InductorAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -424,7 +424,7 @@ class InductorAssessmentInputs(AssessmentInputs):
 
 class InductorAssessmentResults(AssessmentResults):
     """
-    Display Inductor assessment results attribute data in the RTK Work Book.
+    Display Inductor assessment results attribute data in the RAMSTK Work Book.
 
     The Inductor assessment result view displays all the assessment results
     for the selected inductor.  This includes, currently, results for
@@ -469,7 +469,7 @@ class InductorAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiC = rtk.RTKEntry(
+        self.txtPiC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

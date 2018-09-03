@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.Function.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.Function.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -10,26 +10,26 @@ import locale
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.Utilities import boolean_to_integer
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .WorkView import RTKWorkView
+from .WorkView import RAMSTKWorkView
 
 
-class GeneralData(RTKWorkView):
+class GeneralData(RAMSTKWorkView):
     """
-    Display Function attribute data in the RTK Work Book.
+    Display Function attribute data in the RAMSTK Work Book.
 
     The Work View displays all the general data attributes for the selected
     Function. The attributes of a Function General Data Work View are:
 
     :ivar int _function_id: the ID of the Function currently being displayed.
-    :ivar chkSafetyCritical: the :class:`rtk.gui.gtk.rtk.RTKCheckButton` to
+    :ivar chkSafetyCritical: the :class:`rtk.gui.gtk.rtk.RAMSTKCheckButton` to
                              display/edit the Function's safety criticality.
-    :ivar txtTotalCost: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtTotalCost: the :class:`rtk.gui.gtk.rtk.RAMSTKEntry` to display the
                         Function cost.
-    :ivar txtModeCount: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtModeCount: the :class:`rtk.gui.gtk.rtk.RAMSTKEntry` to display the
                         number of failure modes the function is susceptible to.
 
     Callbacks signals in _lst_handler_id:
@@ -51,10 +51,10 @@ class GeneralData(RTKWorkView):
         """
         Initialize the Work View for the Function package.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Function')
+        RAMSTKWorkView.__init__(self, controller, module='Function')
 
         # Initialize private dictionary attributes.
 
@@ -75,16 +75,16 @@ class GeneralData(RTKWorkView):
         # Initialize public scalar attributes.
 
         # General data page widgets.
-        self.chkSafetyCritical = rtk.RTKCheckButton(
+        self.chkSafetyCritical = rtk.RAMSTKCheckButton(
             label=_(u"Function is safety critical."),
             tooltip=_(u"Indicates whether or not the selected function is "
                       u"safety critical."))
 
-        self.txtCode = rtk.RTKEntry(
+        self.txtCode = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"A unique code for the selected function."))
-        self.txtName = rtk.RTKEntry(
+        self.txtName = rtk.RAMSTKEntry(
             width=800, tooltip=_(u"The name of the selected function."))
-        self.txtRemarks = rtk.RTKTextView(
+        self.txtRemarks = rtk.RAMSTKTextView(
             gtk.TextBuffer(),
             width=400,
             tooltip=_(u"Enter any remarks associated with the "
@@ -204,13 +204,13 @@ class GeneralData(RTKWorkView):
         """
         _tooltips = [
             _(u"Saves the currently selected Function to the open "
-              u"RTK Program database."),
-            _(u"Saves all Functions to the open RTK Program database."),
+              u"RAMSTK Program database."),
+            _(u"Saves all Functions to the open RAMSTK Program database."),
         ]
         _callbacks = [self._do_request_update, self._do_request_update_all]
         _icons = ['save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -230,8 +230,8 @@ class GeneralData(RTKWorkView):
         """
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"General Information"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"General Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels, _fixed,
@@ -245,7 +245,7 @@ class GeneralData(RTKWorkView):
 
         _fixed.show_all()
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"General\nData"),
             height=30,
             width=-1,
@@ -289,7 +289,7 @@ class GeneralData(RTKWorkView):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
@@ -348,9 +348,9 @@ class GeneralData(RTKWorkView):
         self._function_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'function']
         self._do_load_page()
 
@@ -358,10 +358,10 @@ class GeneralData(RTKWorkView):
 
     def _on_toggled(self, togglebutton, index):
         """
-        Handle RTKCheckButton() 'toggle' signals.
+        Handle RAMSTKCheckButton() 'toggle' signals.
 
-        :param togglebutton: the RTKToggleButton() that called this method.
-        :type: :class:`rtk.gui.gtk.rtk.Button.RTKToggleButton`
+        :param togglebutton: the RAMSTKToggleButton() that called this method.
+        :type: :class:`rtk.gui.gtk.rtk.Button.RAMSTKToggleButton`
         :param int index: the index in the signal handler ID list.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -382,9 +382,9 @@ class GeneralData(RTKWorkView):
         return _return
 
 
-class AssessmentResults(RTKWorkView):
+class AssessmentResults(RAMSTKWorkView):
     """
-    Display Function attribute data in the RTK Work Book.
+    Display Function attribute data in the RAMSTK Work Book.
 
     The Function Assessment Results view displays all the assessment results
     for the selected Function.  The attributes of a Function Assessment Results
@@ -397,10 +397,10 @@ class AssessmentResults(RTKWorkView):
         """
         Initialize the Work View for the Function package.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Function')
+        RAMSTKWorkView.__init__(self, controller, module='Function')
 
         # Initialize private dictionary attributes.
 
@@ -416,7 +416,7 @@ class AssessmentResults(RTKWorkView):
         # Initialize public scalar attributes.
         self._function_id = None
 
-        self.txtModeCount = rtk.RTKEntry(
+        self.txtModeCount = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
@@ -477,7 +477,7 @@ class AssessmentResults(RTKWorkView):
         :rtype: bool
         """
         (_hbx_page, __, _fxd_right, ___, _x_pos_r, __,
-         _y_pos_r) = RTKWorkView._make_assessment_results_page(self)
+         _y_pos_r) = RAMSTKWorkView._make_assessment_results_page(self)
 
         _fxd_right.put(self.txtModeCount, _x_pos_r, _y_pos_r[8] + 30)
         _fxd_right.show_all()
@@ -503,9 +503,9 @@ class AssessmentResults(RTKWorkView):
         self._function_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'function']
         self._do_load_page()
 

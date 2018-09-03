@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.mwi.ModuleBook.py is part of The RTK Project
+#       rtk.gui.gtk.mwi.ModuleBook.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -10,8 +10,8 @@ import sys
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.gui.gtk.rtk import RTKBook, destroy
+# Import other RAMSTK modules.
+from rtk.gui.gtk.rtk import RAMSTKBook, destroy
 from rtk.gui.gtk.assistants import ExportModule
 from rtk.gui.gtk.moduleviews import mvwRevision
 from rtk.gui.gtk.moduleviews import mvwFunction
@@ -23,21 +23,21 @@ from rtk.gui.gtk.assistants import (CreateProject, OpenProject, Options,
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
-class ModuleBook(RTKBook):  # pylint: disable=R0904
+class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
     """
-    Display Module Views for the RTK modules.
+    Display Module Views for the RAMSTK modules.
 
     Attributes of the Module Book are:
 
     :ivar list _lst_handler_id:
-    :ivar _mdcRTK: the RTK master data controller.
-    :type _mdcRTK: :class:`rtk.RTK.RTK`
-    :ivar notebook: the gtk.Notebook() widget used to hold each of the RTK
+    :ivar _mdcRAMSTK: the RAMSTK master data controller.
+    :type _mdcRAMSTK: :class:`rtk.RAMSTK.RAMSTK`
+    :ivar notebook: the gtk.Notebook() widget used to hold each of the RAMSTK
                     module WorkViews.
     :type notebook: :class:`gtk.Notebook`
-    :ivar menubar: the gtk.MenuBar() for the RTK ModuleBook menu.
+    :ivar menubar: the gtk.MenuBar() for the RAMSTK ModuleBook menu.
     :type menubar: :class:`gtk.MenuBar`
-    :ivar toolbar: the gtk.Toolbar() for the RTK ModuleBook tools.
+    :ivar toolbar: the gtk.Toolbar() for the RAMSTK ModuleBook tools.
     :type toolbar: :class:`gtk.Toolbar`
     :ivar statusbar: the gtk.Statusbar() for displaying messages.
     :type statusbar: :class:`gtk.Statusbar`
@@ -49,10 +49,10 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         """
         Initialize an instance of the Module Book class.
 
-        :param controller: the RTK master data controller.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKBook.__init__(self, controller)
+        RAMSTKBook.__init__(self, controller)
 
         # Initialize private dictionary attributes.
         self._dic_module_views = {
@@ -76,25 +76,25 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         self.statusbar = gtk.Statusbar()
 
         # Set the properties for the ModuleBook and it's widgets.
-        self.set_title(_(u"RTK Module Book"))
+        self.set_title(_(u"RAMSTK Module Book"))
 
-        if self._mdcRTK.RTK_CONFIGURATION.RTK_OS == 'Linux':
+        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_OS == 'Linux':
             _width = (2 * self._width / 3) - 10
             _height = 2 * self._height / 7
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_OS == 'Windows':
+        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_OS == 'Windows':
             _width = (2 * self._width / 3) - 30
             _height = 2 * self._height / 7
 
         self.set_default_size(_width, _height)
         self.move(0, 0)
 
-        if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'modulebook'].lower() == 'left':
             self.notebook.set_tab_pos(self._left_tab)
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'modulebook'].lower() == 'right':
             self.notebook.set_tab_pos(self._right_tab)
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'modulebook'].lower() == 'top':
             self.notebook.set_tab_pos(self._top_tab)
         else:
@@ -108,7 +108,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         self._lst_handler_id.append(
             self.notebook.connect('switch-page', self._on_switch_page))
 
-        # Insert a page for each of the active RTK Modules.
+        # Insert a page for each of the active RAMSTK Modules.
         _object = mvwRevision(controller)
         self.notebook.insert_page(
             _object, tab_label=_object.hbx_tab_label, position=0)
@@ -136,10 +136,10 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         """
         Make the menu for the Module Book.
 
-        :return _menubar: the gtk.MenuBar() for the RTK ModuleBook.
+        :return _menubar: the gtk.MenuBar() for the RAMSTK ModuleBook.
         :type _menubar: :class:`gtk.MenuBar`
         """
-        _icon_dir = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR
+        _icon_dir = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR
 
         _menu = gtk.Menu()
 
@@ -149,7 +149,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_(u"New _Program"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        _menu_item.connect('activate', CreateProject, self._mdcRTK)
+        _menu_item.connect('activate', CreateProject, self._mdcRAMSTK)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
@@ -158,12 +158,12 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_(u"_Open"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        _menu_item.connect('activate', OpenProject, self._mdcRTK)
+        _menu_item.connect('activate', OpenProject, self._mdcRAMSTK)
         _menu.append(_menu_item)
 
         _menu_item = gtk.MenuItem(
             label=_(u"_Import Project"), use_underline=True)
-        _menu_item.connect('activate', ImportProject, self._mdcRTK)
+        _menu_item.connect('activate', ImportProject, self._mdcRAMSTK)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
@@ -200,7 +200,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_(u"_Preferences"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        _menu_item.connect('activate', Preferences, self._mdcRTK)
+        _menu_item.connect('activate', Preferences, self._mdcRAMSTK)
         _menu.append(_menu_item)
 
         _mnuEdit = gtk.MenuItem(label=_(u"_Edit"), use_underline=True)
@@ -214,7 +214,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_(u"_Options"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        _menu_item.connect('activate', Options, self._mdcRTK)
+        _menu_item.connect('activate', Options, self._mdcRAMSTK)
         _menu.append(_menu_item)
 
         _mnuTools = gtk.MenuItem(label=_(u"_Tools"), use_underline=True)
@@ -233,10 +233,10 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         """
         Make the toolbar for the Module Book.
 
-        :return _toolbar: the gtk.Toolbar() for the RTK ModuleBook.
+        :return _toolbar: the gtk.Toolbar() for the RAMSTK ModuleBook.
         :type _toolbar: :class:`gtk.Toolbar`
         """
-        _icon_dir = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR
+        _icon_dir = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR
 
         _toolbar = gtk.Toolbar()
 
@@ -244,28 +244,28 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
         # New file button.
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Create a new RTK Program Database."))
+        _button.set_tooltip_text(_(u"Create a new RAMSTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/new.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', CreateProject, self._mdcRTK)
+        _button.connect('clicked', CreateProject, self._mdcRAMSTK)
         _toolbar.insert(_button, _position)
         _position += 1
 
         # Connect button
         _button = gtk.ToolButton()
         _button.set_tooltip_text(
-            _(u"Connect to an existing RTK Program Database."))
+            _(u"Connect to an existing RAMSTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', OpenProject, self._mdcRTK)
+        _button.connect('clicked', OpenProject, self._mdcRAMSTK)
         _toolbar.insert(_button, _position)
         _position += 1
 
         # Close button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Closes the open RTK Program Database."))
+        _button.set_tooltip_text(_(u"Closes the open RAMSTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/delete.png')
         _button.set_icon_widget(_image)
@@ -279,7 +279,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         # Save button
         _button = gtk.ToolButton()
         _button.set_tooltip_text(
-            _(u"Save the currently open RTK Project "
+            _(u"Save the currently open RAMSTK Project "
               u"Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/save.png')
@@ -294,7 +294,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         # Save and quit button
         _button = gtk.ToolButton()
         _button.set_tooltip_text(
-            _(u"Save the currently open RTK Program "
+            _(u"Save the currently open RAMSTK Program "
               u"Database then quits."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/save-exit.png')
@@ -307,7 +307,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _button = gtk.ToolButton()
         _button.set_tooltip_text(
             _(u"Quits without saving the currently open "
-              u"RTK Program Database."))
+              u"RAMSTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/exit.png')
         _button.set_icon_widget(_image)
@@ -328,17 +328,17 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _return = False
 
         _message = _(u"Opening Program Database {0:s}"). \
-            format(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
+            format(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])
         self.statusbar.push(1, _message)
         self.set_title(
             _(u"RAMSTK - Analyzing {0:s}").format(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']))
 
         return _return
 
     def _on_close(self):
         """
-        Update the Module View when a RTK Program database is closed.
+        Update the Module View when a RAMSTK Program database is closed.
 
         :return: None
         :rtype: None
@@ -363,9 +363,9 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         """
         _return = False
 
-        # Insert a page for each of the active RTK Modules.
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER:
-            _mkey = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[_key]
+        # Insert a page for each of the active RAMSTK Modules.
+        for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER:
+            _mkey = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
             self.notebook.insert_page(
                 _module, tab_label=_module.hbx_tab_label, position=_key)
@@ -397,10 +397,10 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # Key errors occur when no RTK Program database has been loaded.  In
+        # Key errors occur when no RAMSTK Program database has been loaded.  In
         # that case, select the Revision page to load.
         try:
-            _module = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[page_num]
+            _module = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[page_num]
         except KeyError:
             _module = 'revision'
 
@@ -417,10 +417,10 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         """
         if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
             for _window in ['listbook', 'modulebook', 'workbook']:
-                self._mdcRTK.dic_books[_window].iconify()
+                self._mdcRAMSTK.dic_books[_window].iconify()
         elif event.new_window_state == 0:
             for _window in ['listbook', 'modulebook', 'workbook']:
-                self._mdcRTK.dic_books[_window].deiconify()
+                self._mdcRAMSTK.dic_books[_window].deiconify()
         elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
             window.maximize()
 
@@ -428,15 +428,15 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
     def _request_save_project(self, __widget, end=False):
         """
-        Request to save the open RTK Program.
+        Request to save the open RAMSTK Program.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this method.
-        :keyword bool end: indicates whether or not to quit RTK after saving
+        :keyword bool end: indicates whether or not to quit RAMSTK after saving
                            the project.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._mdcRTK.save_project()
+        self._mdcRAMSTK.save_project()
 
         if end:
             destroy(__widget)
@@ -445,12 +445,12 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
 
     def _do_request_close_project(self, __widget):
         """
-        Request to close the open RTK Program.
+        Request to close the open RAMSTK Program.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this method.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._mdcRTK.request_do_close_program()
+        self._mdcRAMSTK.request_do_close_program()
 
         return False

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.SimilarItem.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.SimilarItem.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,13 +8,13 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .WorkView import RTKWorkView
+from .WorkView import RAMSTKWorkView
 
 
-class SimilarItem(RTKWorkView):
+class SimilarItem(RAMSTKWorkView):
     """
     Display Similar Item attribute data in the Work Book.
 
@@ -40,14 +40,14 @@ class SimilarItem(RTKWorkView):
         """
         Initialize the Work View for the Similar Item.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='SimilarItem')
+        RAMSTKWorkView.__init__(self, controller, module='SimilarItem')
 
         # Initialize private dictionary attributes.
         self._dic_icons['edit'] = (
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/edit.png')
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/edit.png')
         self._dic_quality = {
             'Space': 1,
             'Full Military': 2,
@@ -80,18 +80,18 @@ class SimilarItem(RTKWorkView):
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
         _fmt_file = (
-            controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
-            controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['similaritem'])
+            controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+            controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['similaritem'])
         _fmt_path = "/root/tree[@name='SimilarItem']/column"
         _tooltip = _(u"Displays the Similar Item Analysis for the currently "
                      u"selected Hardware item.")
 
-        self.treeview = rtk.RTKTreeView(
+        self.treeview = rtk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
         self._lst_col_order = self.treeview.order
         self.treeview.set_tooltip_text(_tooltip)
 
-        self.cmbSimilarItemMethod = rtk.RTKComboBox(
+        self.cmbSimilarItemMethod = rtk.RAMSTKComboBox(
             tooltip=_(u"Select the similar item analysis method."))
 
         self._lst_handler_id.append(
@@ -112,7 +112,7 @@ class SimilarItem(RTKWorkView):
                 _cell[0].connect('toggled', self._do_edit_cell, 'new text',
                                  _idx, self.treeview.get_model())
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"SimilarItem"),
             height=30,
             width=-1,
@@ -155,12 +155,12 @@ class SimilarItem(RTKWorkView):
 
     def _do_change_row(self, treeview):
         """
-        Handle events for the Similar Item Tree View RTKTreeView().
+        Handle events for the Similar Item Tree View RAMSTKTreeView().
 
         This method is called whenever a Tree View row is activated.
 
-        :param treeview: the SimilarItem RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeViewRTKTreeView`
+        :param treeview: the SimilarItem RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeViewRAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -182,10 +182,10 @@ class SimilarItem(RTKWorkView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):  # pylint: disable=too-many-branches
         """
-        Handle edits of the Similar Item Work View RTKTreeview().
+        Handle edits of the Similar Item Work View RAMSTKTreeview().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RTKTreeView() path of the gtk.CellRenderer()
+        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
@@ -323,7 +323,7 @@ class SimilarItem(RTKWorkView):
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Iterate through the tree and load the Similar Item RTKTreeView().
+        Iterate through the tree and load the Similar Item RAMSTKTreeView().
 
         :return: (_error_code, _user_msg, _debug_msg); the error code, message
                  to be displayed to the user, and the message to be written to
@@ -423,7 +423,7 @@ class SimilarItem(RTKWorkView):
                                       u"had the wrong data type in it's data "
                                       u"package and is not displayed in the "
                                       u"Similar Item analysis.")
-                        _debug_msg = ("RTK ERROR: Data for Similar Item ID "
+                        _debug_msg = ("RAMSTK ERROR: Data for Similar Item ID "
                                       "{0:s} for Hardware ID {1:s} is the "
                                       "wrong type for one or more "
                                       "columns.".format(
@@ -436,7 +436,7 @@ class SimilarItem(RTKWorkView):
                                       u"was missing some of it's data and is "
                                       u"not displayed in the Similar Item "
                                       u"analysis.")
-                        _debug_msg = ("RTK ERROR: Too few fields for "
+                        _debug_msg = ("RAMSTK ERROR: Too few fields for "
                                       "Similar Item ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
                                           str(_node_id),
@@ -448,7 +448,7 @@ class SimilarItem(RTKWorkView):
                                       u"was missing it's data package and is "
                                       u"not displayed in the Similar Item "
                                       u"analysis.")
-                        _debug_msg = ("RTK ERROR: There is no data package "
+                        _debug_msg = ("RAMSTK ERROR: There is no data package "
                                       "for Similar Item ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
                                           str(_node_id),
@@ -473,7 +473,7 @@ class SimilarItem(RTKWorkView):
 
         # Iterate through the hazards and calculate the Similar Item hazard
         # intensities.
-        rtk.Widget.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
+        rtk.Widget.set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
         while _row is not None:
             _node_id = _model.get_value(_row, 1)
             _hazard_rate = _model.get_value(_row, 3)
@@ -486,7 +486,7 @@ class SimilarItem(RTKWorkView):
             _nodes = self._dtc_data_controller.request_do_select_children(
                 self._parent_id)
             self._do_load_tree(_nodes)
-        rtk.Widget.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+        rtk.Widget.set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
 
         return _return
 
@@ -501,8 +501,8 @@ class SimilarItem(RTKWorkView):
         """
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _title = _(u"RTK - Edit Similar Item Analysis Functions")
-        _label = rtk.RTKLabel(
+        _title = _(u"RAMSTK - Edit Similar Item Analysis Functions")
+        _label = rtk.RAMSTKLabel(
             _(u"You can define up to five functions.  "
               u"You can use the system failure rate, "
               u"selected assembly failure rate, the "
@@ -518,7 +518,7 @@ class SimilarItem(RTKWorkView):
             width=600,
             height=-1,
             wrap=True)
-        _label2 = rtk.RTKLabel(
+        _label2 = rtk.RAMSTKLabel(
             _(u"For example, pi1*pi2+pi3, multiplies "
               u"the first two change factors and "
               u"adds the value to the third change "
@@ -528,7 +528,7 @@ class SimilarItem(RTKWorkView):
             wrap=True)
 
         # Build the dialog assistant.
-        _dialog = rtk.RTKDialog(_title)
+        _dialog = rtk.RAMSTKDialog(_title)
 
         _fixed = gtk.Fixed()
 
@@ -538,37 +538,37 @@ class SimilarItem(RTKWorkView):
         _fixed.put(_label2, 5, _y_pos)
         _y_pos += _label2.size_request()[1] + 10
 
-        _label = rtk.RTKLabel(_(u"User function 1:"))
-        _txtFunction1 = rtk.RTKEntry()
+        _label = rtk.RAMSTKLabel(_(u"User function 1:"))
+        _txtFunction1 = rtk.RAMSTKEntry()
         _txtFunction1.set_text(_model.get_value(_row, 30))
 
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction1, 195, _y_pos)
         _y_pos += 30
 
-        _label = rtk.RTKLabel(_(u"User function 2:"))
-        _txtFunction2 = rtk.RTKEntry()
+        _label = rtk.RAMSTKLabel(_(u"User function 2:"))
+        _txtFunction2 = rtk.RAMSTKEntry()
         _txtFunction2.set_text(_model.get_value(_row, 31))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction2, 195, _y_pos)
         _y_pos += 30
 
-        _label = rtk.RTKLabel(_(u"User function 3:"))
-        _txtFunction3 = rtk.RTKEntry()
+        _label = rtk.RAMSTKLabel(_(u"User function 3:"))
+        _txtFunction3 = rtk.RAMSTKEntry()
         _txtFunction3.set_text(_model.get_value(_row, 32))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction3, 195, _y_pos)
         _y_pos += 30
 
-        _label = rtk.RTKLabel(_(u"User function 4:"))
-        _txtFunction4 = rtk.RTKEntry()
+        _label = rtk.RAMSTKLabel(_(u"User function 4:"))
+        _txtFunction4 = rtk.RAMSTKEntry()
         _txtFunction4.set_text(_model.get_value(_row, 33))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction4, 195, _y_pos)
         _y_pos += 30
 
-        _label = rtk.RTKLabel(_(u"User function 5:"))
-        _txtFunction5 = rtk.RTKEntry()
+        _label = rtk.RAMSTKLabel(_(u"User function 5:"))
+        _txtFunction5 = rtk.RAMSTKEntry()
         _txtFunction5.set_text(_model.get_value(_row, 34))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction5, 195, _y_pos)
@@ -712,10 +712,10 @@ class SimilarItem(RTKWorkView):
         _tooltips = [
             _(u"Edit the Similar Item analysis functions."),
             _(u"Calculate the Similar Item analysis."),
-            _(u"Save the selected Similar Item analysis to the open RTK "
+            _(u"Save the selected Similar Item analysis to the open RAMSTK "
               u"Program database."),
             _(u"Save all the Similar Item analyses for the selected Hardware "
-              u"item to the open RTK Program database.")
+              u"item to the open RAMSTK Program database.")
         ]
         _callbacks = [
             self._do_request_edit_function, self._do_request_calculate,
@@ -723,7 +723,7 @@ class SimilarItem(RTKWorkView):
         ]
         _icons = ['edit', 'calculate', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -748,10 +748,10 @@ class SimilarItem(RTKWorkView):
 
         _fixed = gtk.Fixed()
 
-        _fixed.put(rtk.RTKLabel(_(u"Select Method")), 5, 5)
+        _fixed.put(rtk.RAMSTKLabel(_(u"Select Method")), 5, 5)
         _fixed.put(self.cmbSimilarItemMethod, 5, 30)
 
-        _frame = rtk.RTKFrame(label=_(u"Similar Item Method"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Similar Item Method"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_fixed)
 
@@ -759,7 +759,7 @@ class SimilarItem(RTKWorkView):
 
     def _make_page(self):
         """
-        Make the Similar Item RTKTreeview().
+        Make the Similar Item RAMSTKTreeview().
 
         :return: a gtk.Frame() containing the instance of gtk.Treeview().
         :rtype: :class:`gtk.Frame`
@@ -783,7 +783,7 @@ class SimilarItem(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = rtk.RTKFrame(label=_(u"Similar Item Analysis"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Similar Item Analysis"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -793,10 +793,10 @@ class SimilarItem(RTKWorkView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Similar Item Work View RTKTreeView().
+        Handle mouse clicks on the Similar Item Work View RAMSTKTreeView().
 
-        :param treeview: the Similar Item TreeView RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`.
+        :param treeview: the Similar Item TreeView RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -933,17 +933,17 @@ class SimilarItem(RTKWorkView):
         self._parent_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'similaritem']
 
         if self._dtc_hw_controller is None:
-            self._dtc_hw_controller = self._mdcRTK.dic_controllers['hardware']
+            self._dtc_hw_controller = self._mdcRAMSTK.dic_controllers['hardware']
 
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(**kwargs)
 
-        RTKWorkView.on_select(
+        RAMSTKWorkView.on_select(
             self,
             title=_(u"Similar Item Analysis for Hardware ID "
                     u"{0:d}").format(self._parent_id),

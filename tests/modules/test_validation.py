@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.test_validation.py is part of The RTK Project
+#       tests.modules.test_validation.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -12,7 +12,7 @@ from treelib import Tree
 import pytest
 
 from rtk.dao import DAO
-from rtk.dao import RTKValidation
+from rtk.dao import RAMSTKValidation
 from rtk.modules.validation import dtmValidation, dtcValidation
 
 __author__ = 'Andrew Rowland'
@@ -33,23 +33,23 @@ def test_data_model_create(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKValidation instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKValidation instances on success. """
     DUT = dtmValidation(test_dao)
     _tree = DUT.do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RTKValidation)
+    assert isinstance(_tree.get_node(1).data, RAMSTKValidation)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKValidation data model on success. """
+    """ do_select() should return an instance of the RAMSTKValidation data model on success. """
     DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _validation = DUT.do_select(1)
 
-    assert isinstance(_validation, RTKValidation)
+    assert isinstance(_validation, RAMSTKValidation)
     assert _validation.validation_id == 1
 
 
@@ -101,7 +101,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
                     'database.')
     assert DUT.last_id == 2
 
@@ -152,7 +152,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
                     'database.')
 
 
@@ -165,7 +165,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RTK ERROR: Attempted to delete non-existent '
+    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
                     'Validation ID 300.')
 
 
@@ -181,7 +181,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -193,7 +193,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RTK ERROR: Attempted to save non-existent Validation ID '
+    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Validation ID '
                     '100.')
 
 
@@ -206,7 +206,7 @@ def test_do_update_status(test_dao):
     _error_code, _msg = DUT.do_update_status()
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -218,7 +218,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the validation "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the validation "
                     "table.")
 
 
@@ -265,20 +265,20 @@ def test_data_controller_create(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_select_all(test_dao, test_configuration):
-    """ request_do_select_all() should return a Tree of RTKValidation models. """
+    """ request_do_select_all() should return a Tree of RAMSTKValidation models. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     _tree = DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(_tree.get_node(1).data, RTKValidation)
+    assert isinstance(_tree.get_node(1).data, RAMSTKValidation)
 
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
-    """ request_do_select() should return an RTKValidation model. """
+    """ request_do_select() should return an RAMSTKValidation model. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(DUT.request_do_select(1), RTKValidation)
+    assert isinstance(DUT.request_do_select(1), RAMSTKValidation)
 
 
 @pytest.mark.integration

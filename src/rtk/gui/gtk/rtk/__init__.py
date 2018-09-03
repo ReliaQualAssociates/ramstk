@@ -1,23 +1,23 @@
 # pylint: disable=C0111,W0611
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.__init__.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.__init__.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 
 import Widget
 
-from .Book import RTKBook, destroy
-from .Button import RTKButton, RTKCheckButton, RTKOptionButton
-from .Combo import RTKComboBox
-from .Dialog import RTKDateSelect, RTKDialog, RTKFileChooser, RTKMessageDialog
-from .Entry import RTKEntry, RTKTextView
-from .Frame import RTKFrame
+from .Book import RAMSTKBook, destroy
+from .Button import RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton
+from .Combo import RAMSTKComboBox
+from .Dialog import RAMSTKDateSelect, RAMSTKDialog, RAMSTKFileChooser, RAMSTKMessageDialog
+from .Entry import RAMSTKEntry, RAMSTKTextView
+from .Frame import RAMSTKFrame
 # from .Helpers import rtk_file_select, rtk_set_cursor
-from .Label import RTKLabel, make_label_group
-from .Matrix import RTKBaseMatrix
-from .Plot import RTKPlot
-from .ScrolledWindow import RTKScrolledWindow
-from .TreeView import RTKTreeView
-from .View import RTKBaseView
+from .Label import RAMSTKLabel, make_label_group
+from .Matrix import RAMSTKBaseMatrix
+from .Plot import RAMSTKPlot
+from .ScrolledWindow import RAMSTKScrolledWindow
+from .TreeView import RAMSTKTreeView
+from .View import RAMSTKBaseView

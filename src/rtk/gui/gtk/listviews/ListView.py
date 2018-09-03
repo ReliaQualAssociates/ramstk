@@ -1,26 +1,26 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.listviews.ListView.py is part of the RTK Project
+#       rtk.gui.gtk.listviews.ListView.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKListView Meta-Class Module."""
+"""RAMSTKListView Meta-Class Module."""
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk.rtk.Widget import gobject, gtk
 from rtk.gui.gtk import rtk
 
 
-class RTKListView(gtk.HBox, rtk.RTKBaseView):
+class RAMSTKListView(gtk.HBox, rtk.RAMSTKBaseView):
     """
-    Class to display data in the RTK List Book.
+    Class to display data in the RAMSTK List Book.
 
-    This is the meta class for all RTK List View classes.  Attributes of the
-    RTKListView are:
+    This is the meta class for all RAMSTK List View classes.  Attributes of the
+    RAMSTKListView are:
 
     :ivar list _lst_col_order: list containing the order of the columns in the
-                               List View RTKTreeView().
-    :ivar str _module: the capitalized name of the RTK module the List View is
+                               List View RAMSTKTreeView().
+    :ivar str _module: the capitalized name of the RAMSTK module the List View is
                        associated with.
     :ivar hbx_tab_label: the :class:`gtk.HBox` used for the label in the
                          ListBook.
@@ -32,13 +32,13 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
         """
         Initialize the List View.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
         _module = kwargs['module']
 
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller, **kwargs)
+        rtk.RAMSTKBaseView.__init__(self, controller, **kwargs)
 
         self._module = None
         for __, char in enumerate(_module):
@@ -60,7 +60,7 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model):
         """
-        Handle edits of the List View RTKTreeView().
+        Handle edits of the List View RAMSTKTreeView().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
@@ -90,7 +90,7 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
         Respond to load the List View gtk.Notebook() widgets.
 
         This method handles the results of the an individual module's
-        _on_select() method.  It sets the title of the RTK Work Book and
+        _on_select() method.  It sets the title of the RAMSTK Work Book and
         raises an error dialog if needed.
 
         :return: None
@@ -108,8 +108,8 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
             pass
 
         if _error_code != 0:
-            self._mdcRTK.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_debug_msg)
-            _dialog = rtk.RTKMessageDialog(_user_msg, self._dic_icons['error'],
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_debug_msg)
+            _dialog = rtk.RAMSTKMessageDialog(_user_msg, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _dialog.destroy()

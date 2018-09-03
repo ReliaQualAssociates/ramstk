@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Meter.py is part of the RTK
+#       rtk.gui.gtk.workviews.components.Meter.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -9,7 +9,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -18,7 +18,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class MeterAssessmentInputs(AssessmentInputs):
     """
-    Display Meter assessment input attribute data in the RTK Work Book.
+    Display Meter assessment input attribute data in the RAMSTK Work Book.
 
     The Meter assessment input view displays all the assessment inputs for
     the selected Meter item.  This includes, currently, inputs for
@@ -89,11 +89,11 @@ class MeterAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbApplication = rtk.RTKComboBox(
+        self.cmbApplication = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The appliction of the panel meter."))
-        self.cmbType = rtk.RTKComboBox(
+        self.cmbType = rtk.RAMSTKComboBox(
             index=0, simple=False, tooltip=_(u"The type of meter."))
 
         self._make_page()
@@ -110,7 +110,7 @@ class MeterAssessmentInputs(AssessmentInputs):
         """
         Load the meter RKTComboBox()s.
 
-        This method is used to load the specification RTKComboBox() whenever
+        This method is used to load the specification RAMSTKComboBox() whenever
         the meter subcategory is changed.
 
         :param int subcategory_id: the newly selected meter subcategory ID.
@@ -123,7 +123,7 @@ class MeterAssessmentInputs(AssessmentInputs):
         _attributes = AssessmentInputs.do_load_comboboxes(
             self, subcategory_id=_subcategory_id)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             _data = [["MIL-SPEC"], [_(u"Lower")]]
         else:
@@ -133,11 +133,11 @@ class MeterAssessmentInputs(AssessmentInputs):
                 _data = []
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the meter appliction RTKComboBox().
+        # Load the meter appliction RAMSTKComboBox().
         self.cmbApplication.do_load_combo([[_(u"Ammeter")], [_(u"Voltmeter")],
                                            [_(u"Other")]])
 
-        # Load the meter type RTKComboBox().
+        # Load the meter type RAMSTKComboBox().
         try:
             _data = self._dic_types[self._subcategory_id]
         except KeyError:
@@ -208,16 +208,16 @@ class MeterAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Meter attribute.
+        Retrieve RAMSTKCombo() changes and assign to Meter attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +-------+------------------+-------+------------------+
             | Index | Widget           | Index | Widget           |
@@ -265,7 +265,7 @@ class MeterAssessmentInputs(AssessmentInputs):
 
 class MeterAssessmentResults(AssessmentResults):
     """
-    Display Meter assessment results attribute data in the RTK Work Book.
+    Display Meter assessment results attribute data in the RAMSTK Work Book.
 
     The Meter assessment result view displays all the assessment results
     for the selected meter.  This includes, currently, results for
@@ -312,17 +312,17 @@ class MeterAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiA = rtk.RTKEntry(
+        self.txtPiA = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The application factor for the meter."))
-        self.txtPiF = rtk.RTKEntry(
+        self.txtPiF = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The function factor for the meter."))
-        self.txtPiT = rtk.RTKEntry(
+        self.txtPiT = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

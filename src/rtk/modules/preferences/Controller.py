@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.preferences.Controller.py is part of The RTK Project
+#       rtk.modules.preferences.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Preferences Package Data Controller Module."""
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
 from . import dtmPreferences
 
 
-class PreferencesDataController(RTKDataController):
+class PreferencesDataController(RAMSTKDataController):
     """
-    Provide an interface between Preferences data models and RTK views.
+    Provide an interface between Preferences data models and RAMSTK views.
 
     A single Preferences data controller can manage one or more Preferences
     data models.
@@ -24,13 +24,13 @@ class PreferencesDataController(RTKDataController):
         Initialize a Preferences data controller instance.
 
         :param dao: the data access object used to communicate with the
-                    connected RTK Program database.
+                    connected RAMSTK Program database.
         :type dao: :py:class:`rtk.dao.DAO.DAO`
-        :param configuration: the RTK configuration instance.
+        :param configuration: the RAMSTK configuration instance.
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
         _site_dao = kwargs['site_dao']
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmPreferences(dao, _site_dao, configuration),

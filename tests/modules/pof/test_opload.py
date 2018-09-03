@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.pof.test_opload.py is part of The RTK Project
+#       tests.modules.pof.test_opload.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -12,7 +12,7 @@ import pytest
 
 from rtk.modules.pof import dtmOpLoad
 from rtk.dao import DAO
-from rtk.dao import RTKOpLoad
+from rtk.dao import RAMSTKOpLoad
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -37,18 +37,18 @@ def test_do_select_all(test_dao):
     _tree = DUT.do_select_all(parent_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RTKOpLoad)
+    assert isinstance(_tree.get_node(1).data, RAMSTKOpLoad)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKOpLoad data model on success. """
+    """ do_select() should return an instance of the RAMSTKOpLoad data model on success. """
     DUT = dtmOpLoad(test_dao)
     DUT.do_select_all(parent_id=1)
 
     _opload = DUT.do_select(1)
 
-    assert isinstance(_opload, RTKOpLoad)
+    assert isinstance(_opload, RAMSTKOpLoad)
     assert _opload.load_id == 1
     assert _opload.description == 'Test Operating Load'
 
@@ -73,7 +73,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(mechanism_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
                     "Program database.")
     assert DUT.last_id == 2
 
@@ -87,7 +87,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                     "database.")
 
 
@@ -100,7 +100,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RTK ERROR: Attempted to delete non-existent OpLoad "
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent OpLoad "
                     "ID 300.")
 
 
@@ -116,7 +116,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
 
 
 @pytest.mark.integration
@@ -128,7 +128,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ("RTK ERROR: Attempted to save non-existent OpLoad ID 100.")
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent OpLoad ID 100.")
 
 
 @pytest.mark.integration
@@ -140,5 +140,5 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all operating loads in the damage "
+    assert _msg == ("RAMSTK SUCCESS: Updating all operating loads in the damage "
                     "modeling worksheet.")

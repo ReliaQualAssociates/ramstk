@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests._hardware.TestReliability.py is part of The RTK Project
+#       tests._hardware.TestReliability.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -12,7 +12,7 @@ from treelib import Tree
 import pytest
 
 from rtk.modules.hardware import dtmReliability
-from rtk.dao import DAO, RTKReliability
+from rtk.dao import DAO, RAMSTKReliability
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -33,24 +33,24 @@ def test_create(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKReliability instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKReliability instances on success. """
     DUT = dtmReliability(test_dao)
 
     _tree = DUT.do_select_all(hardware_id=2)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(2).data, RTKReliability)
+    assert isinstance(_tree.get_node(2).data, RAMSTKReliability)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKReliability data model on success. """
+    """ do_select() should return an instance of the RAMSTKReliability data model on success. """
     DUT = dtmReliability(test_dao)
     DUT.do_select_all(hardware_id=2)
 
     _reliability = DUT.do_select(2)
 
-    assert isinstance(_reliability, RTKReliability)
+    assert isinstance(_reliability, RAMSTKReliability)
     assert _reliability.hardware_id == 2
     assert _reliability.hazard_rate_percent == 0.0
 
@@ -74,7 +74,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(hardware_id=90)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
                     'database.')
 
 
@@ -87,7 +87,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
                     'database.')
 
 
@@ -100,7 +100,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RTK ERROR: Attempted to delete non-existent '
+    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
                     'Reliability record ID 300.')
 
 
@@ -116,7 +116,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(3)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -128,7 +128,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RTK ERROR: Attempted to save non-existent Reliability '
+    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Reliability '
                     'record ID 100.')
 
 
@@ -141,5 +141,5 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the reliability "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the reliability "
                     "table.")

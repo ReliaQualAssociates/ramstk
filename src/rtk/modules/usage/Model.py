@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.usage.Model.py is part of The RTK Project
+#       rtk.usage.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Usage Profile Package Data Models."""
 
-# Import other RTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKEnvironment, RTKMission, RTKMissionPhase
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
 
 
-class UsageProfileDataModel(RTKDataModel):
+class UsageProfileDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a Usage Profile.
 
@@ -39,11 +39,11 @@ class UsageProfileDataModel(RTKDataModel):
         """
         Initialize a Usage Profile data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -70,7 +70,7 @@ class UsageProfileDataModel(RTKDataModel):
         :rtype: :py:class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        RTKDataModel.do_select_all(self, **kwargs)
+        RAMSTKDataModel.do_select_all(self, **kwargs)
 
         # Build the tree.  We concatenate the Mission ID and the Phase ID to
         # create the Node() identifier for Mission Phases.  This prevents the
@@ -117,7 +117,7 @@ class UsageProfileDataModel(RTKDataModel):
                                     str(_environment.environment_id))
                                 # The parent must be the concatenated phase ID
                                 # used in the tree above, not the Phase ID
-                                # attribute of the RTKPhase object.
+                                # attribute of the RAMSTKPhase object.
                                 self.tree.create_node(
                                     tag=_environment.name,
                                     identifier=_env_id,
@@ -128,9 +128,9 @@ class UsageProfileDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add an entity to the Usage Profile and RTK Program database..
+        Add an entity to the Usage Profile and RAMSTK Program database..
 
-        :param int entity_id: the RTK Program database Revision ID, Mission ID,
+        :param int entity_id: the RAMSTK Program database Revision ID, Mission ID,
                               Mission Phase ID to add the entity to.
         :param int parent_id: the Node ID of the parent node in the treelib
                               Tree().
@@ -152,18 +152,18 @@ class UsageProfileDataModel(RTKDataModel):
         _level = kwargs['level']
 
         if _level == 'mission':
-            _entity = RTKMission()
+            _entity = RAMSTKMission()
             _entity.revision_id = _entity_id
         elif _level == 'phase':
-            _entity = RTKMissionPhase()
+            _entity = RAMSTKMissionPhase()
             _entity.mission_id = _entity_id
         elif _level == 'environment':
-            _entity = RTKEnvironment()
+            _entity = RAMSTKEnvironment()
             _entity.phase_id = _entity_id
         else:
             _entity = None
 
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _entity,
             ])
@@ -183,7 +183,7 @@ class UsageProfileDataModel(RTKDataModel):
                 _tag, _node_id, parent=_parent_id, data=_entity)
         else:
             _error_code = 2105
-            _msg = 'RTK ERROR: Attempted to add an item to the Usage ' \
+            _msg = 'RAMSTK ERROR: Attempted to add an item to the Usage ' \
                    'Profile with an undefined indenture level.  Level {0:s} ' \
                    'was requested.  Must be one of mission, phase, or ' \
                    'environment.'.format(_level)
@@ -192,19 +192,19 @@ class UsageProfileDataModel(RTKDataModel):
 
     def do_delete(self, node_id):
         """
-        Remove an entity from the Usage Profile and RTK Program database.
+        Remove an entity from the Usage Profile and RAMSTK Program database.
 
         :param int node_id: the Node ID of the entity to be removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Usage Profile entity with Node ID ' \
                           '{0:d}.'.format(node_id)
         else:
@@ -214,25 +214,25 @@ class UsageProfileDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the entity associated with Node ID to the RTK Program database.
+        Update the entity associated with Node ID to the RAMSTK Program database.
 
-        :param int node_id: the Node ID of the entity to save to the RTK
+        :param int node_id: the Node ID of the entity to save to the RAMSTK
                             Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Usage Profile ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Usage Profile ' \
                    'entity with Node ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all Usage Profile entities to the RTK Program database.
+        Update all Usage Profile entities to the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -247,17 +247,17 @@ class UsageProfileDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more line items in the usage "
+                _msg = ("RAMSTK ERROR: One or more line items in the usage "
                         "profile did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all line items in the usage "
+            _msg = ("RAMSTK SUCCESS: Updating all line items in the usage "
                     "profile.")
 
         return _error_code, _msg
 
 
-class MissionDataModel(RTKDataModel):
+class MissionDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a Mission.
 
@@ -272,11 +272,11 @@ class MissionDataModel(RTKDataModel):
         """
         Initialize a Mission data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -292,22 +292,22 @@ class MissionDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the RTKMission records from the RTK Program database.
+        Retrieve all the RAMSTKMission records from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKMIssion table in the
-        connected RTK Program database.  It then add each to the Mission data
+        This method retrieves all the records from the RAMSTKMIssion table in the
+        connected RAMSTK Program database.  It then add each to the Mission data
         model treelib.Tree().
 
         :param int revision_id: the ID of the Revision to retrieve the Mission.
-        :return: tree; the treelib Tree() of RTKMission data models that
+        :return: tree; the treelib Tree() of RAMSTKMission data models that
                  comprise the Mission tree.
         :rtype: :class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        _session = RTKDataModel.do_select_all(self, **kwargs)
+        _session = RAMSTKDataModel.do_select_all(self, **kwargs)
 
-        for _mission in _session.query(RTKMission).\
-                filter(RTKMission.revision_id == _revision_id).all():
+        for _mission in _session.query(RAMSTKMission).\
+                filter(RAMSTKMission.revision_id == _revision_id).all():
             self.tree.create_node(
                 _mission.description,
                 _mission.mission_id,
@@ -315,7 +315,7 @@ class MissionDataModel(RTKDataModel):
                 data=_mission)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _mission.mission_id)
 
         _session.close()
@@ -324,16 +324,16 @@ class MissionDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKMission table in the RTK Program database.
+        Add a record to the RAMSTKMission table in the RAMSTK Program database.
 
         :param int revision_id: the Revision ID to add the Mission to.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _revision_id = kwargs['revision_id']
-        _mission = RTKMission()
+        _mission = RAMSTKMission()
         _mission.revision_id = _revision_id
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _mission,
             ])
@@ -346,26 +346,26 @@ class MissionDataModel(RTKDataModel):
                 data=_mission)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = _mission.mission_id
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove the RTKMission record associated with Node ID.
+        Remove the RAMSTKMission record associated with Node ID.
 
         :param int node_id: the ID of the Mission to be removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Mission ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -374,25 +374,25 @@ class MissionDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the RTKMission record associated with Node ID.
+        Update the RAMSTKMission record associated with Node ID.
 
-        :param int node_id: the Mission ID of the Mission to save to the RTK
+        :param int node_id: the Mission ID of the Mission to save to the RAMSTK
                                Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Mission ID ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Mission ID ' \
                    '{0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKMission records.
+        Update all RAMSTKMission records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -408,17 +408,17 @@ class MissionDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the usage profile "
+                _msg = ("RAMSTK ERROR: One or more records in the usage profile "
                         "mission table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the usage profile "
                     "mission table.")
 
         return _error_code, _msg
 
 
-class MissionPhaseDataModel(RTKDataModel):
+class MissionPhaseDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a Mission.
 
@@ -433,11 +433,11 @@ class MissionPhaseDataModel(RTKDataModel):
         """
         Initialize a Mission Phase data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -453,24 +453,24 @@ class MissionPhaseDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the RTKMissionPhase records from the RTK Program database.
+        Retrieve all the RAMSTKMissionPhase records from the RAMSTK Program database.
 
         :param int mission_id: the Mission ID to selecte the Mission Phases
                                for.
-        :return: tree; the treelib Tree() of RTKMissionPhase data models that
+        :return: tree; the treelib Tree() of RAMSTKMissionPhase data models that
                  comprise the Mission Phase tree.
         :rtype: :class:`treelib.Tree`
         """
         _mission_id = kwargs['mission_id']
-        _session = RTKDataModel.do_select_all(self, **kwargs)
+        _session = RAMSTKDataModel.do_select_all(self, **kwargs)
 
-        for _phase in _session.query(RTKMissionPhase).\
-                filter(RTKMissionPhase.mission_id == _mission_id).all():
+        for _phase in _session.query(RAMSTKMissionPhase).\
+                filter(RAMSTKMissionPhase.mission_id == _mission_id).all():
             self.tree.create_node(
                 _phase.name, _phase.phase_id, parent=0, data=_phase)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _phase.phase_id)
 
         _session.close()
@@ -479,17 +479,17 @@ class MissionPhaseDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKMissionPhase table in the RTK Program database.
+        Add a record to the RAMSTKMissionPhase table in the RAMSTK Program database.
 
         :param int mission_id: the Mission ID to add the Mission Phase to.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _mission_id = kwargs['mission_id']
-        _phase = RTKMissionPhase()
+        _phase = RAMSTKMissionPhase()
         _phase.mission_id = _mission_id
 
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _phase,
             ])
@@ -499,26 +499,26 @@ class MissionPhaseDataModel(RTKDataModel):
                 _phase.name, _phase.phase_id, parent=0, data=_phase)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = _phase.phase_id
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove the RTKMissionPhase record associated with Node ID.
+        Remove the RAMSTKMissionPhase record associated with Node ID.
 
         :param int node_id: the ID of the Mission Phase to be removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Mission Phase ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -527,25 +527,25 @@ class MissionPhaseDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the RTKMissionPhase record associated with Node ID.
+        Update the RAMSTKMissionPhase record associated with Node ID.
 
-        :param int node_id: the Phase ID to save to the RTK Program
+        :param int node_id: the Phase ID to save to the RAMSTK Program
                              database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Mission Phase ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Mission Phase ' \
                    'ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKMissionPhase records.
+        Update all RAMSTKMissionPhase records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -561,17 +561,17 @@ class MissionPhaseDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the usage profile "
+                _msg = ("RAMSTK ERROR: One or more records in the usage profile "
                         "mission phase table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the usage profile "
                     "mission phase table.")
 
         return _error_code, _msg
 
 
-class EnvironmentDataModel(RTKDataModel):
+class EnvironmentDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of an Environment.
 
@@ -586,11 +586,11 @@ class EnvironmentDataModel(RTKDataModel):
         """
         Initialize an Environment data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -606,19 +606,19 @@ class EnvironmentDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the RTKEnvironment records from the RTK Program database.
+        Retrieve all the RAMSTKEnvironment records from the RAMSTK Program database.
 
         :param int phase_id: the Mission Phase ID to select the Environments
                              for.
-        :return: tree; the treelib Tree() of RTKEnvironment data models
+        :return: tree; the treelib Tree() of RAMSTKEnvironment data models
                  that comprise the Environment tree.
         :rtype: :py:class:`treelib.Tree`
         """
         _phase_id = kwargs['phase_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        for _environment in _session.query(RTKEnvironment).\
-                filter(RTKEnvironment.phase_id == _phase_id).all():
+        for _environment in _session.query(RAMSTKEnvironment).\
+                filter(RAMSTKEnvironment.phase_id == _phase_id).all():
             self.tree.create_node(
                 _environment.name,
                 _environment.environment_id,
@@ -626,7 +626,7 @@ class EnvironmentDataModel(RTKDataModel):
                 data=_environment)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _environment.environment_id)
 
         _session.close()
@@ -635,16 +635,16 @@ class EnvironmentDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKEnvironment table in the RTK Program database.
+        Add a record to the RAMSTKEnvironment table in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _phase_id = kwargs['phase_id']
-        _environment = RTKEnvironment()
+        _environment = RAMSTKEnvironment()
         _environment.phase_id = _phase_id
 
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _environment,
             ])
@@ -657,26 +657,26 @@ class EnvironmentDataModel(RTKDataModel):
                 data=_environment)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = _environment.environment_id
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove the RTKEnvironment record associated with Node ID.
+        Remove the RAMSTKEnvironment record associated with Node ID.
 
         :param int node_id: the ID of the Environment to be removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Environment ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -685,25 +685,25 @@ class EnvironmentDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the RTKEnvironment record associated with Node ID.
+        Update the RAMSTKEnvironment record associated with Node ID.
 
         :param str node_id: the PyPubSub Tree() node ID of the Environment to
-                            save to the RTK Program database.
+                            save to the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Environment ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Environment ' \
                    'ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKEnvironment records to the RTK Program database.
+        Update all RAMSTKEnvironment records to the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -719,11 +719,11 @@ class EnvironmentDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the usage profile "
+                _msg = ("RAMSTK ERROR: One or more records in the usage profile "
                         "environment table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the usage profile "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the usage profile "
                     "environment table.")
 
         return _error_code, _msg

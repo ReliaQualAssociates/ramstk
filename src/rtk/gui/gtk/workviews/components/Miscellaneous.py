@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Miscellaneous.py is part of the RTK
+#       rtk.gui.gtk.workviews.components.Miscellaneous.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -9,7 +9,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -18,7 +18,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class MiscAssessmentInputs(AssessmentInputs):
     """
-    Display Miscellaneous assessment input attribute data in the RTK Work Book.
+    Display Miscellaneous assessment input attribute data in the RAMSTK Work Book.
 
     The Miscellaneous hardware assessment input view displays all the
     assessment inputs for the selected miscellaneous hardware item.  This
@@ -74,14 +74,14 @@ class MiscAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbApplication = rtk.RTKComboBox(
+        self.cmbApplication = rtk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The application of the lamp."))
-        self.cmbType = rtk.RTKComboBox(
+        self.cmbType = rtk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The type of electronic filter."))
 
-        self.txtFrequency = rtk.RTKEntry(
+        self.txtFrequency = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"The operating frequency of the crystal."))
-        self.txtUtilization = rtk.RTKEntry(
+        self.txtUtilization = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The utilization factor (illuminate hours / equipment "
                       u"operate hours) of the lamp."))
@@ -104,7 +104,7 @@ class MiscAssessmentInputs(AssessmentInputs):
         """
         Load the miscellaneous RKTComboBox()s.
 
-        This method is used to load the specification RTKComboBox() whenever
+        This method is used to load the specification RAMSTKComboBox() whenever
         the miscellaneous subcategory is changed.
 
         :param int subcategory_id: the newly selected miscellaneous hardware
@@ -116,14 +116,14 @@ class MiscAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         self.cmbQuality.do_load_combo([["MIL-SPEC"], [_(u"Lower")]])
 
-        # Load the application RTKComboBox().
+        # Load the application RAMSTKComboBox().
         self.cmbApplication.do_load_combo([[_(u"Incandescent, AC")],
                                            [_(u"Incandescent, DC")]])
 
-        # Load the type RTKComboBox().
+        # Load the type RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             self.cmbType.do_load_combo(
                 [[_(u"Ceramic-Ferrite")], [_(u"Discrete LC Components")],
@@ -228,16 +228,16 @@ class MiscAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Miscellaneous attribute.
+        Retrieve RAMSTKCombo() changes and assign to Miscellaneous attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +---------+------------------+
             |  Index  | Widget           |
@@ -271,16 +271,16 @@ class MiscAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -340,7 +340,7 @@ class MiscAssessmentInputs(AssessmentInputs):
 
 class MiscAssessmentResults(AssessmentResults):
     """
-    Display Misc assessment results attribute data in the RTK Work Book.
+    Display Misc assessment results attribute data in the RAMSTK Work Book.
 
     The Miscellaneous hardware item assessment result view displays all the
     assessment results for the selected miscellaneous hardware item.  This
@@ -391,12 +391,12 @@ class MiscAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiU = rtk.RTKEntry(
+        self.txtPiU = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The utilization factor for the lamp."))
-        self.txtPiA = rtk.RTKEntry(
+        self.txtPiA = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

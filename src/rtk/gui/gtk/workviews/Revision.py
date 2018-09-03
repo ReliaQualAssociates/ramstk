@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.Revision.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.Revision.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,17 +8,17 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .WorkView import RTKWorkView
+from .WorkView import RAMSTKWorkView
 
 # from Assistants import AddRevision
 
 
-class GeneralData(RTKWorkView):
+class GeneralData(RAMSTKWorkView):
     """
-    Display general Revision attribute data in the RTK Work Book.
+    Display general Revision attribute data in the RAMSTK Work Book.
 
     The Revision Work View displays all the general data attributes for the
     selected Revision. The attributes of a Revision General Data Work View are:
@@ -42,10 +42,10 @@ class GeneralData(RTKWorkView):
         """
         Initialize the Revision Work View general data page.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :py:class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='revision')
+        RAMSTKWorkView.__init__(self, controller, module='revision')
 
         # Initialize private dictionary attributes.
 
@@ -64,11 +64,11 @@ class GeneralData(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtCode = rtk.RTKEntry(
+        self.txtCode = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"A unique code for the selected revision."))
-        self.txtName = rtk.RTKEntry(
+        self.txtName = rtk.RAMSTKEntry(
             width=600, tooltip=_(u"The name of the selected revision."))
-        self.txtRemarks = rtk.RTKTextView(
+        self.txtRemarks = rtk.RAMSTKTextView(
             gtk.TextBuffer(),
             width=600,
             tooltip=_(u"Enter any remarks associated with the "
@@ -175,14 +175,14 @@ class GeneralData(RTKWorkView):
         """
         _tooltips = [
             _(u"Saves the currently selected Revision to the open "
-              u"RTK Program database."),
-            _(u"Save all Revisions to the open RTK Program database.")
+              u"RAMSTK Program database."),
+            _(u"Save all Revisions to the open RAMSTK Program database.")
         ]
         _callbacks = [self._do_request_update, self._do_request_update_all]
 
         _icons = ['save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -202,8 +202,8 @@ class GeneralData(RTKWorkView):
         """
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"General Information"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"General Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels, _fixed,
@@ -216,7 +216,7 @@ class GeneralData(RTKWorkView):
 
         _fixed.show_all()
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"General\nData"),
             height=30,
             width=-1,
@@ -233,7 +233,7 @@ class GeneralData(RTKWorkView):
 
         This method updates the Revision Work View gtk.Widgets() with changes
         to the Revision data model attributes.  This method is called whenever
-        an attribute is edited in a different RTK View.
+        an attribute is edited in a different RAMSTK View.
 
         :param int index: the index in the Revision attributes list of the
                           attribute that was edited.
@@ -317,16 +317,16 @@ class GeneralData(RTKWorkView):
         _return = False
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
+        # It is defined in RAMSTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['revision']
         self._do_load_page()
 
         return _return
 
 
-class AssessmentResults(RTKWorkView):
+class AssessmentResults(RAMSTKWorkView):
     """
-    Display assessment results Revision attribute data in the RTK Work Book.
+    Display assessment results Revision attribute data in the RAMSTK Work Book.
 
     The Revision Assessment Results view displays all the assessment results
     for the selected Revision.  The attributes of a Revision Assessment Results
@@ -339,10 +339,10 @@ class AssessmentResults(RTKWorkView):
         """
         Initialize the Revision Work View assessment results page.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :py:class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Revision')
+        RAMSTKWorkView.__init__(self, controller, module='Revision')
 
         # Initialize private dictionary attributes.
 
@@ -400,9 +400,9 @@ class AssessmentResults(RTKWorkView):
         self.txtReliability.set_text(
             str(self.fmt.format(_revision.reliability_logistics)))
 
-        _title = _(u"RTK Work Book: Revision "
+        _title = _(u"RAMSTK Work Book: Revision "
                    u"(Analyzing {0:s})").format(_revision.name)
-        RTKWorkView.on_select(
+        RAMSTKWorkView.on_select(
             self, title=_title, error_code=0, user_msg='', debug_msg='')
 
         return _return
@@ -415,7 +415,7 @@ class AssessmentResults(RTKWorkView):
         :rtype: bool
         """
         (_hbx_page, __, __, __, __, __,
-         __) = RTKWorkView._make_assessment_results_page(self)
+         __) = RAMSTKWorkView._make_assessment_results_page(self)
 
         return _hbx_page
 
@@ -433,8 +433,8 @@ class AssessmentResults(RTKWorkView):
         self._revision_id = kwargs['module_id']
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
+        # It is defined in RAMSTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['revision']
         self._do_load_page()
 
         return _return

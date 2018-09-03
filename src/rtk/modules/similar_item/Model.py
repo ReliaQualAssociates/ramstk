@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.similar_item.Model.py is part of The RTK Project
+#       rtk.modules.similar_item.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,16 +8,16 @@
 
 from treelib.exceptions import NodeIDAbsentError
 
-# Import other RTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKSimilarItem
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKSimilarItem
 
 
-class SimilarItemDataModel(RTKDataModel):
+class SimilarItemDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a reliability similar_item.
 
-    An RTK Project will consist of one or more Modes.  The attributes of a
+    An RAMSTK Project will consist of one or more Modes.  The attributes of a
     Mode are:
     """
 
@@ -27,11 +27,11 @@ class SimilarItemDataModel(RTKDataModel):
         """
         Initialize a SimilarItem data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -47,22 +47,22 @@ class SimilarItemDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the SimilarItems from the RTK Program database.
+        Retrieve all the SimilarItems from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKSimilarItem table in
-        the connected RTK Program database.  It then adds each to the
+        This method retrieves all the records from the RAMSTKSimilarItem table in
+        the connected RAMSTK Program database.  It then adds each to the
         SimilarItem data model treelib.Tree().
 
         :param int revision_id: the Revision ID the SimilarItems are associated
                                 with.
-        :return: tree; the Tree() of RTKSimilarItem data models.
+        :return: tree; the Tree() of RAMSTKSimilarItem data models.
         :rtype: :class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        for _similar_item in _session.query(RTKSimilarItem).filter(
-                RTKSimilarItem.revision_id == _revision_id).all():
+        for _similar_item in _session.query(RAMSTKSimilarItem).filter(
+                RAMSTKSimilarItem.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _similar_item.get_attributes()
@@ -74,7 +74,7 @@ class SimilarItemDataModel(RTKDataModel):
                 data=_similar_item)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _similar_item.hardware_id)
 
         _session.close()
@@ -99,16 +99,16 @@ class SimilarItemDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKSimilarItem table.
+        Add a record to the RAMSTKSimilarItem table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _similar_item = RTKSimilarItem()
+        _similar_item = RAMSTKSimilarItem()
         _similar_item.revision_id = kwargs['revision_id']
         _similar_item.hardware_id = kwargs['hardware_id']
         _similar_item.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _similar_item,
             ])
@@ -125,20 +125,20 @@ class SimilarItemDataModel(RTKDataModel):
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKFailureDefinition table.
+        Remove a record from the RAMSTKFailureDefinition table.
 
         :param int node_id: the PyPubSub Tree() ID of the Similar Item to be
                             removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'SimilarItem ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -147,25 +147,25 @@ class SimilarItemDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record in the RTKSimilarItem table.
+        Update the record in the RAMSTKSimilarItem table.
 
-        :param int node_id: the SimilarItem ID to save to the RTK Program
+        :param int node_id: the SimilarItem ID to save to the RAMSTK Program
                             database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2207
-            _msg = 'RTK ERROR: Attempted to save non-existent SimilarItem ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent SimilarItem ' \
                    'ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKSimilarItem records.
+        Update all RAMSTKSimilarItem records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -181,11 +181,11 @@ class SimilarItemDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more line items in the similar "
+                _msg = ("RAMSTK ERROR: One or more line items in the similar "
                         "item analysis worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all line items in the similar item "
+            _msg = ("RAMSTK SUCCESS: Updating all line items in the similar item "
                     "analysis worksheet.")
 
         return _error_code, _msg

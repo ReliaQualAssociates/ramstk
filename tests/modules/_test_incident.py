@@ -5,7 +5,7 @@ This is the test class for testing Incident module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestIncident.py is part of The RTK Project
+#       tests.unit.TestIncident.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com

@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_preferences.py is part of The RTK Project
+#       rtk.tests.modules.test_preferences.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -14,7 +14,7 @@ import glob
 
 import pytest
 
-from rtk.dao import DAO, RTKUser
+from rtk.dao import DAO, RAMSTKUser
 from rtk.modules.preferences import dtmPreferences, dtcPreferences
 from rtk.modules.preferences.Model import (SitePreferencesDataModel,
                                            UserPreferencesDataModel)
@@ -36,7 +36,7 @@ except KeyError:
               "supported.").format(platform.system())
         sys.exit(1)
 
-CONF_DIR = VIRTUAL_ENV + '/share/RTK'
+CONF_DIR = VIRTUAL_ENV + '/share/RAMSTK'
 DATA_DIR = CONF_DIR + '/data'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
@@ -126,9 +126,9 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
         'listbook': 'bottom',
         'workbook': 'bottom'
     }
-    assert DUT.user_preferences['sitedir'] == VIRTUAL_ENV + '/share/RTK'
+    assert DUT.user_preferences['sitedir'] == VIRTUAL_ENV + '/share/RAMSTK'
     assert DUT.user_preferences['datadir'] == DATA_DIR
-    assert DUT.user_preferences['icondir'] == VIRTUAL_ENV + '/share/RTK/icons'
+    assert DUT.user_preferences['icondir'] == VIRTUAL_ENV + '/share/RAMSTK/icons'
     assert DUT.user_preferences['logdir'] == LOG_DIR
     assert DUT.user_preferences['progdir'] == TMP_DIR
     assert DUT.user_preferences['format_files'] == {
@@ -205,7 +205,7 @@ def test_create_preferences_data_controller(test_dao, test_common_dao,
 
 @pytest.mark.integration
 def test_request_do_select_all(test_dao, test_common_dao, test_configuration):
-    """ request_do_select_all() should return a Tree of RTKPreferences data models. """
+    """ request_do_select_all() should return a Tree of RAMSTKPreferences data models. """
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
 
@@ -262,7 +262,7 @@ def test_request_do_update(test_dao, test_common_dao, test_configuration):
     DUT.request_get_preferences(site=False, user=True)
     DUT._dtm_data_model.user_preferences['hr_multiplier'] = 1.0
 
-    _new_user = RTKUser()
+    _new_user = RAMSTKUser()
     _new_user.user_lname = 'Rowland'
     _new_user.user_fname = 'Andrew'
     _new_user.user_email = 'andrew.rowland@reliaqual.com'

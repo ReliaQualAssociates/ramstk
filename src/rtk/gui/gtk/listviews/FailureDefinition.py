@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.listviews.FailureDefinition.py is part of the RTK Project
+#       rtk.gui.gtk.listviews.FailureDefinition.py is part of the RAMSTK Project
 #
 # All rights reserved.
 """Failure Definition List View Module."""
@@ -10,13 +10,13 @@ from pubsub import pub  # pylint: disable=E0401
 # Modules required for the GUI.
 import pango
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
-from .ListView import RTKListView
+from .ListView import RAMSTKListView
 
 
-class ListView(RTKListView):
+class ListView(RAMSTKListView):
     """
     Display all the Failure Definitions associated with the selected Revision.
 
@@ -32,10 +32,10 @@ class ListView(RTKListView):
         """
         Initialize the List View for the Failure Definition package.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKListView.__init__(self, controller, module='failure_definition')
+        RAMSTKListView.__init__(self, controller, module='failure_definition')
 
         # Initialize private dictionary attributes.
 
@@ -89,10 +89,10 @@ class ListView(RTKListView):
         Handle row changes for the Failure Definition package List View.
 
         This method is called whenever a Failure Definition List View
-        RTKTreeView() row is activated or changed.
+        RAMSTKTreeView() row is activated or changed.
 
-        :param treeview: the Failure Definition List View RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
+        :param treeview: the Failure Definition List View RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -110,7 +110,7 @@ class ListView(RTKListView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the Failure Definition List View RTKTreeview().
+        Handle edits of the Failure Definition List View RAMSTKTreeview().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
@@ -123,7 +123,7 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        RTKListView._do_edit_cell(__cell, path, new_text, position, model)
+        RAMSTKListView._do_edit_cell(__cell, path, new_text, position, model)
 
         # Update the Failure Definition data model.
         _definition_id = model[path][0]
@@ -153,7 +153,7 @@ class ListView(RTKListView):
             _prompt = _(u"An error occurred attempting to delete failure "
                         u"definition {0:d} to Revision {1:d}.").\
                 format(_definition_id, self._revision_id)
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
 
@@ -177,7 +177,7 @@ class ListView(RTKListView):
             _prompt = _(u"An error occurred attempting to add a failure "
                         u"definition to Revision {0:d}.").\
                 format(self._revision_id)
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
 
@@ -228,7 +228,7 @@ class ListView(RTKListView):
             _prompt = _(u"An error occurred attempting to save the failure "
                         u"definitions for Revision {0:d}.").\
                 format(self._revision_id)
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
 
@@ -248,8 +248,8 @@ class ListView(RTKListView):
             _(u"Add a new Failure Definition."),
             _(u"Remove the currently selected Failure Definition."),
             _(u"Save the currently selected Failure Definition to "
-              u"the open RTK Program database."),
-            _(u"Save all of the Failure Definitions to the open RTK "
+              u"the open RAMSTK Program database."),
+            _(u"Save all of the Failure Definitions to the open RAMSTK "
               u"Program database."),
             _(u"Create the Failure Definition report.")
         ]
@@ -259,7 +259,7 @@ class ListView(RTKListView):
         ]
         _icons = ['add', 'remove', 'save', 'save-all', 'reports']
 
-        _buttonbox = RTKListView._make_buttonbox(
+        _buttonbox = RAMSTKListView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -272,7 +272,7 @@ class ListView(RTKListView):
 
     def _make_treeview(self):
         """
-        Set up the RTKTreeView() for Failure Definitions.
+        Set up the RAMSTKTreeView() for Failure Definitions.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -327,10 +327,10 @@ class ListView(RTKListView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Failure Definition List View RTKTreeView().
+        Handle mouse clicks on the Failure Definition List View RAMSTKTreeView().
 
         :param treeview: the Failure Definition ListView gtk.TreeView().
-        :type treeview: :class:`rtk.gui.rtk.TreeView.RTKTreeView`.
+        :type treeview: :class:`rtk.gui.rtk.TreeView.RAMSTKTreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -403,7 +403,7 @@ class ListView(RTKListView):
         """
         Load the Failure Definition List View gtk.TreeModel().
 
-        This method is called whenever a new Revision is selected in the RTK
+        This method is called whenever a new Revision is selected in the RAMSTK
         Module View.
 
         :param int module_id: the Revision ID to select the Failure
@@ -416,20 +416,20 @@ class ListView(RTKListView):
         self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'definition']
 
         _definitions = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
 
-        _return = RTKListView.on_select_revision(self, tree=_definitions)
+        _return = RAMSTKListView.on_select_revision(self, tree=_definitions)
         if _return:
             _prompt = _(u"An error occured while loading the Failure "
                         u"Definitions for Revision ID {0:d} into the List "
                         u"View.").format(self._revision_id)
-            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
+            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()

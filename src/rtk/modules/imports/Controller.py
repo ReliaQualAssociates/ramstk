@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.import.Controller.py is part of The RTK Project
+#       rtk.modules.import.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Import Package Data Controller Module."""
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
 from . import dtmImports
 
 
-class ImportDataController(RTKDataController):
+class ImportDataController(RAMSTKDataController):
     """
-    Provide an interface between Import data models and RTK views.
+    Provide an interface between Import data models and RAMSTK views.
 
     A single Import data controller can manage one or more Import
     data models.
@@ -24,12 +24,12 @@ class ImportDataController(RTKDataController):
         Initialize a Import data controller instance.
 
         :param dao: the data access object used to communicate with the
-                    connected RTK Program database.
+                    connected RAMSTK Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
-        :param configuration: the RTK configuration instance.
+        :param configuration: the RAMSTK configuration instance.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmImports(dao),
@@ -116,6 +116,6 @@ class ImportDataController(RTKDataController):
          _msg) = self._dtm_data_model.do_insert(module=module)
 
         if _error_code != 0:
-            self._configuration.RTK_IMPORT_LOG.error(_msg)
+            self._configuration.RAMSTK_IMPORT_LOG.error(_msg)
 
         return _count, _error_code, _msg

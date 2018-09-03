@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_capacitor.py is part of The RTK Project
+#       tests.analyses.prediction.test_capacitor.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -144,7 +144,7 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when '
+        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
                         'calculating capacitor, hardware ID: 6')
     else:
         assert _msg == ''
@@ -164,7 +164,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     _attributes, _msg = Capacitor.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'capacitor, hardware ID: 6')
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.030
@@ -182,7 +182,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_specification():
     _attributes, _msg = Capacitor.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'capacitor, hardware ID: 6')
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 0.030
@@ -201,7 +201,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     _attributes, _msg = Capacitor.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'capacitor, hardware ID: 6')
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.030

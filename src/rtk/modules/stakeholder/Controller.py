@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.stakeholder.Controller.py is part of The RTK Project
+#       rtk.modules.stakeholder.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,14 +8,14 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
 from . import dtmStakeholder
 
 
-class StakeholderDataController(RTKDataController):
+class StakeholderDataController(RAMSTKDataController):
     """
-    Provide an interface between the Stakeholder data model and an RTK View.
+    Provide an interface between the Stakeholder data model and an RAMSTK View.
 
     A single Stakeholder controller can manage one or more Stakeholder data
     models.  The attributes of a Stakeholder data controller are:
@@ -25,14 +25,14 @@ class StakeholderDataController(RTKDataController):
         """
         Initialize a Stakeholder data controller instance.
 
-        :param dao: the RTK Program DAO instance to pass to the Stakeholder
+        :param dao: the RAMSTK Program DAO instance to pass to the Stakeholder
                     Data Model.
         :type dao: :class:`rtk.dao.DAO`
         :param configuration: the Configuration instance associated with the
-                              current instance of the RTK application.
+                              current instance of the RAMSTK application.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmStakeholder(dao),
@@ -53,7 +53,7 @@ class StakeholderDataController(RTKDataController):
 
     def request_do_insert(self, **kwargs):
         """
-        Request to add an RTKStakeholder table record.
+        Request to add an RAMSTKStakeholder table record.
 
         :param int revision_id: the ID of the Revision to add the new
                                 Stakeholder to.
@@ -69,22 +69,22 @@ class StakeholderDataController(RTKDataController):
             revision_id=_revision_id)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             if not self._test:
                 pub.sendMessage(
                     'insertedStakeholder',
                     stakeholder_id=self._dtm_data_model.last_id)
         else:
-            _msg = _msg + '  Failed to add a new Stakeholder to the RTK ' \
+            _msg = _msg + '  Failed to add a new Stakeholder to the RAMSTK ' \
                 'Program database.'
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete(self, node_id):
         """
-        Request to delete an RTKStakeholder table record.
+        Request to delete an RAMSTKStakeholder table record.
 
         :param int stakeholder_id: the Stakeholder ID to delete.
         :return: False if successful or True if an error is encountered.
@@ -92,12 +92,12 @@ class StakeholderDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedStakeholder')
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKStakeholder table record.
+        Request to update an RAMSTKStakeholder table record.
 
         :param int stakeholder_id: the ID of the stakeholder to save.
         :return: False if successful or True if an error is encountered.
@@ -105,19 +105,19 @@ class StakeholderDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedStakeholder')
 
     def request_do_update_all(self):
         """
-        Request to update all records in the RTKStakeholder table.
+        Request to update all records in the RAMSTKStakeholder table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _error_code, _msg = self._dtm_data_model.do_update_all()
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_calculate(self, node_id, **kwargs):

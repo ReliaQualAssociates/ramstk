@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.assistants.Export.py is part of The RTK Project
+#       rtk.gui.gtk.assistants.Export.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007, 2018 Doyle "weibullguy" Rowland
@@ -9,9 +9,9 @@
 
 import os
 
-# Export other RTK modules.
+# Export other RAMSTK modules.
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk import RTKMessageDialog
+from rtk.gui.gtk.rtk import RAMSTKMessageDialog
 from rtk.gui.gtk.rtk.Widget import _, gobject, gtk, set_cursor
 
 __author__ = 'Doyle Rowland'
@@ -20,7 +20,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007, 2018 Doyle "weibullguy" Rowland'
 
 
-class RAMSTKExport(rtk.RTKFileChooser):
+class RAMSTKExport(rtk.RAMSTKFileChooser):
     """Assistant to walk user through the process of exporting records."""
 
     def __init__(self, controller, module, tree):
@@ -30,19 +30,19 @@ class RAMSTKExport(rtk.RTKFileChooser):
         :param __widget: the gtk.Widget() that called this class.
         :type __widget: :class:`gtk.Widget`
         :param controller: the RAMSTK master data controller.
-        :type controller: :class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         :param str module: the RAMSTK module to export.
         """
-        rtk.RTKFileChooser.__init__(self, _(u"RAMSTK Export"),
-                                    controller.RTK_CONFIGURATION.RTK_PROG_DIR)
+        rtk.RAMSTKFileChooser.__init__(self, _(u"RAMSTK Export"),
+                                    controller.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 
         # Initialize private dict variables.
 
         # Initialize private list variables.
 
         # Initialize private scalar variables.
-        self._mdcRTK = controller
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['exports']
+        self._mdcRAMSTK = controller
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['exports']
         self._module = module
         self._tree = tree
 
@@ -79,13 +79,13 @@ class RAMSTKExport(rtk.RTKFileChooser):
         :return: None
         :rtype: None
         """
-        set_cursor(self._mdcRTK, gtk.gdk.WATCH)
+        set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
 
         self._dtc_data_controller.request_do_load_output(
             self._module, self._tree)
         self._dtc_data_controller.request_do_export(filetype, filename)
 
-        set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+        set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -110,9 +110,9 @@ class RAMSTKExport(rtk.RTKFileChooser):
             if os.path.exists(_filename) == True:
                 _prompt = _(u"File {0:s} already exists.  "
                             u"Overwrite?").format(_filename)
-                _icon = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR + \
+                _icon = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
                         '/32x32/warning.png'
-                _dialog = RTKMessageDialog(_prompt, _icon, 'question')
+                _dialog = RAMSTKMessageDialog(_prompt, _icon, 'question')
                 _response = _dialog.do_run()
                 if _response == gtk.RESPONSE_YES:
                     _dialog.destroy()

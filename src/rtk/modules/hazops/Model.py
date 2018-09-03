@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.hazops.Model.py is part of The RTK Project
+#       rtk.modules.hazops.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -9,12 +9,12 @@
 from treelib import tree
 from treelib.exceptions import NodeIDAbsentError
 
-# Import other RTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKHazardAnalysis
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKHazardAnalysis
 
 
-class HazardAnalysisDataModel(RTKDataModel):
+class HazardAnalysisDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a Hazard Analysis."""
 
     _tag = 'HazardAnalysis'
@@ -23,11 +23,11 @@ class HazardAnalysisDataModel(RTKDataModel):
         """
         Initialize a Hazard Analysis data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -43,22 +43,22 @@ class HazardAnalysisDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Hazard Analysis from the RTK Program database.
+        Retrieve all the Hazard Analysis from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKHazardAnalysis table
-        in the connected RTK Program database.  It then adds each to the
+        This method retrieves all the records from the RAMSTKHazardAnalysis table
+        in the connected RAMSTK Program database.  It then adds each to the
         HazardAnalysis data model treelib.Tree().
 
         :param int hardware_id: the Hardware ID the Hazards are associated
                                 with.
-        :return: tree; the Tree() of RTKHazardAnalysis data models.
+        :return: tree; the Tree() of RAMSTKHazardAnalysis data models.
         :rtype: :class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        for _hazard_analysis in _session.query(RTKHazardAnalysis).filter(
-                RTKHazardAnalysis.revision_id == _revision_id).all():
+        for _hazard_analysis in _session.query(RAMSTKHazardAnalysis).filter(
+                RAMSTKHazardAnalysis.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _hazard_analysis.get_attributes()
@@ -80,7 +80,7 @@ class HazardAnalysisDataModel(RTKDataModel):
                 data=_hazard_analysis)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
 
         _session.close()
@@ -105,15 +105,15 @@ class HazardAnalysisDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKHazardAnalysis table.
+        Add a record to the RAMSTKHazardAnalysis table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _hazard_analysis = RTKHazardAnalysis()
+        _hazard_analysis = RAMSTKHazardAnalysis()
         _hazard_analysis.revision_id = kwargs['revision_id']
         _hazard_analysis.hardware_id = kwargs['hardware_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _hazard_analysis,
             ])
@@ -132,19 +132,19 @@ class HazardAnalysisDataModel(RTKDataModel):
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKHazardAnalysis table.
+        Remove a record from the RAMSTKHazardAnalysis table.
 
         :param int node_id: the ID of the Hazard Analysis to be removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Hazard Analysis ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -153,25 +153,25 @@ class HazardAnalysisDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the selected HazOps in the RTKHazardAnalysis table.
+        Update the selected HazOps in the RAMSTKHazardAnalysis table.
 
-        :param str node_id: the HazOps ID to save to the RTK Program
+        :param str node_id: the HazOps ID to save to the RAMSTK Program
                             database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
         print _error_code, _msg
         if _error_code != 0:
             _error_code = 2207
-            _msg = 'RTK ERROR: Attempted to save non-existent Hazard ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Hazard ' \
                    'Analysis ID {0:s}.'.format(str(node_id))
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):
         """
-        Update all RTKHazardAnalysis records for the selected Hardware item.
+        Update all RAMSTKHazardAnalysis records for the selected Hardware item.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -186,14 +186,14 @@ class HazardAnalysisDataModel(RTKDataModel):
                 _msg = _msg + _debug_msg + '\n'
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the HazOps table "
+                _msg = ("RAMSTK ERROR: One or more records in the HazOps table "
                         "for Hardware ID {0:d} did not "
                         "update.").format(_hardware_id)
             except NodeIDAbsentError:
                 pass
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the HazOps table "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the HazOps table "
                     "for Hardware ID {0:d}.").format(_hardware_id)
 
         return _error_code, _msg

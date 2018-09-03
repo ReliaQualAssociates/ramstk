@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.test_revision.py is part of The RTK Project
+#       tests.modules.test_revision.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -13,7 +13,7 @@ import pytest
 
 from rtk.modules.revision import dtmRevision, dtcRevision
 from rtk.dao import DAO
-from rtk.dao import RTKRevision
+from rtk.dao import RAMSTKRevision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -63,23 +63,23 @@ def test_create_data_model(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKRevision instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKRevision instances on success. """
     DUT = dtmRevision(test_dao)
     _tree = DUT.do_select_all()
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RTKRevision)
+    assert isinstance(_tree.get_node(1).data, RAMSTKRevision)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """  do_select() should return an instance of the RTKRevision data model on success. """
+    """  do_select() should return an instance of the RAMSTKRevision data model on success. """
     DUT = dtmRevision(test_dao)
     DUT.do_select_all()
 
     _revision = DUT.do_select(1)
 
-    assert isinstance(_revision, RTKRevision)
+    assert isinstance(_revision, RAMSTKRevision)
     assert _revision.revision_id == 1
     assert _revision.availability_logistics == 1.0
 
@@ -104,7 +104,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
                     "Program database.")
     assert DUT.last_id == 2
 
@@ -119,7 +119,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                     "database.")
 
 
@@ -132,7 +132,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RTK ERROR: Attempted to delete non-existent Revision "
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Revision "
                     "ID 300.")
 
 
@@ -148,7 +148,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
 
 
 @pytest.mark.integration
@@ -160,7 +160,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ("RTK ERROR: Attempted to save non-existent Revision ID "
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Revision ID "
                     "100.")
 
 
@@ -173,7 +173,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all Revisions.")
+    assert _msg == ("RAMSTK SUCCESS: Updating all Revisions.")
 
 
 @pytest.mark.integration
@@ -187,22 +187,22 @@ def test_create_data_controller(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_select_all(test_dao, test_configuration):
-    """ request_do_select_all() should return a Tree of RTKRevision models. """
+    """ request_do_select_all() should return a Tree of RAMSTKRevision models. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
     _tree = DUT.request_do_select_all()
 
-    assert isinstance(_tree.get_node(1).data, RTKRevision)
+    assert isinstance(_tree.get_node(1).data, RAMSTKRevision)
 
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
-    """ request_do_select() should return an RTKRevision model. """
+    """ request_do_select() should return an RAMSTKRevision model. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
     DUT.request_do_select_all()
 
     _revision = DUT.request_do_select(1)
 
-    assert isinstance(_revision, RTKRevision)
+    assert isinstance(_revision, RAMSTKRevision)
 
 
 @pytest.mark.integration
@@ -235,12 +235,12 @@ def test_request_set_attributes(test_dao, test_configuration):
     _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating RTKRevision 1 attributes.")
+    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKRevision 1 attributes.")
 
 
 @pytest.mark.integration
 def test_request_last_id(test_dao, test_configuration):
-    """ request_last_id() should return the last Revision ID used in the RTK Program database. """
+    """ request_last_id() should return the last Revision ID used in the RAMSTK Program database. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
     DUT.request_do_select_all()
 

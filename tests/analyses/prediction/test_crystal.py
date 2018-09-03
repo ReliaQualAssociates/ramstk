@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_crystal.py is part of The RTK Project
+#       tests.analyses.prediction.test_crystal.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -53,7 +53,7 @@ def test_calculate_mil_hdbk_217f_part_count(quality_id, environment_active_id):
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when '
+        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
                         'calculating crystal, hardware ID: 6')
     else:
         assert _msg == ''
@@ -72,7 +72,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     _attributes, _msg = Crystal.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'crystal, hardware ID: 6, subcategory ID: 1, active '
                     'environment ID: 100')
     assert _attributes['lambda_b'] == 0.0
@@ -90,7 +90,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Crystal.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piQ is 0.0 when calculating crystal, '
+    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating crystal, '
                     'hardware ID: 6 and quality ID: 100')
     assert _attributes['lambda_b'] == 0.032
     assert _attributes['piQ'] == 0.0
@@ -128,7 +128,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_frequency():
     _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'crystal, hardware ID: 6')
     assert approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 1.0
@@ -148,7 +148,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piQ is 0.0 when calculating crystal, '
+    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating crystal, '
                     'hardware ID: 6')
     assert approx(_attributes['lambda_b'], 0.02207717)
     assert _attributes['piQ'] == 0.0
@@ -168,7 +168,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piE is 0.0 when calculating crystal, '
+    assert _msg == ('RAMSTK WARNING: piE is 0.0 when calculating crystal, '
                     'hardware ID: 6')
     assert approx(_attributes['lambda_b'], 0.02207717)
     assert _attributes['piQ'] == 1.0

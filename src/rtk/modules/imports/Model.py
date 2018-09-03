@@ -13,13 +13,13 @@ import numpy as np
 import pandas as pd
 
 # Import other RAMSTK modules.
-from rtk.dao import (RTKDesignElectric, RTKDesignMechanic, RTKFunction,
-                     RTKHardware, RTKMilHdbkF, RTKNSWC, RTKReliability,
-                     RTKRequirement, RTKValidation)
-from rtk.modules import RTKDataModel
+from rtk.dao import (RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKFunction,
+                     RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKNSWC, RAMSTKReliability,
+                     RAMSTKRequirement, RAMSTKValidation)
+from rtk.modules import RAMSTKDataModel
 
 
-class ImportDataModel(RTKDataModel):
+class ImportDataModel(RAMSTKDataModel):
     """Contains the attributes and methods of an Import data model."""
 
     # Ordered dictionaries of RAMSTK inputs field headers.  Must use OrderdDict
@@ -204,7 +204,7 @@ class ImportDataModel(RTKDataModel):
                     Program database.
         :type dao: :class:`ramstk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -289,7 +289,7 @@ class ImportDataModel(RTKDataModel):
                 _entity = self._do_insert_validation(_row)
                 _entities.append(_entity)
 
-        _error_code, _msg = RTKDataModel.do_insert(self, entities=_entities)
+        _error_code, _msg = RAMSTKDataModel.do_insert(self, entities=_entities)
 
         if _error_code == 0:
             _count = len(_entities)
@@ -305,9 +305,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKFunction.RTKFunction`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKFunction.RAMSTKFunction`
         """
-        _function = RTKFunction()
+        _function = RAMSTKFunction()
         _map = self._dic_field_map['Function']
 
         _function.revision_id = self._get_input_value(_map, row, 'Revision ID',
@@ -333,9 +333,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKRequirement.RTKRequirement`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKRequirement.RAMSTKRequirement`
         """
-        _requirement = RTKRequirement()
+        _requirement = RAMSTKRequirement()
         _map = self._dic_field_map['Requirement']
 
         _requirement.revision_id = self._get_input_value(
@@ -373,9 +373,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKHardware.RTKHardware`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKHardware.RAMSTKHardware`
         """
-        _hardware = RTKHardware()
+        _hardware = RAMSTKHardware()
         _map = self._dic_field_map['Hardware']
 
         _hardware.revision_id = self._get_input_value(_map, row, 'Revision ID',
@@ -437,9 +437,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKHardware.RTKHardware`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKHardware.RAMSTKHardware`
         """
-        _design_electric = RTKDesignElectric()
+        _design_electric = RAMSTKDesignElectric()
         _map = self._dic_field_map['Hardware']
         _design_electric.hardware_id = self._get_input_value(
             _map, row, 'Hardware ID', 1)
@@ -563,9 +563,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKHardware.RTKHardware`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKHardware.RAMSTKHardware`
         """
-        _design_mechanic = RTKDesignMechanic()
+        _design_mechanic = RAMSTKDesignMechanic()
 
         _map = self._dic_field_map['Hardware']
         _design_mechanic.hardware_id = self._get_input_value(
@@ -685,9 +685,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKMilHdbkF.RTKMilHdbkF`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKMilHdbkF.RAMSTKMilHdbkF`
         """
-        _mil_hdbk_f = RTKMilHdbkF()
+        _mil_hdbk_f = RAMSTKMilHdbkF()
 
         _map = self._dic_field_map['Hardware']
         _mil_hdbk_f.hardware_id = self._get_input_value(
@@ -702,9 +702,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKNSWC.RTKNSWC`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKNSWC.RAMSTKNSWC`
         """
-        _mil_hdbk_f = RTKNSWC()
+        _mil_hdbk_f = RAMSTKNSWC()
 
         _map = self._dic_field_map['Hardware']
         _mil_hdbk_f.hardware_id = self._get_input_value(
@@ -719,9 +719,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKHardware.RTKHardware`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKHardware.RAMSTKHardware`
         """
-        _reliability = RTKReliability()
+        _reliability = RAMSTKReliability()
 
         _map = self._dic_field_map['Hardware']
         _reliability.hardware_id = self._get_input_value(
@@ -768,9 +768,9 @@ class ImportDataModel(RTKDataModel):
         :param row: the row from the pandas DataFrame containing the input data.
         :type row: :class:`pandas.Series`
         :return: _entity
-        :rtype: :class:`rtk.dao.programdb.RTKValidation.RTKValidation`
+        :rtype: :class:`rtk.dao.programdb.RAMSTKValidation.RAMSTKValidation`
         """
-        _validation = RTKValidation()
+        _validation = RAMSTKValidation()
         _map = self._dic_field_map['Validation']
 
         _validation.revision_id = self._get_input_value(

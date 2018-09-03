@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Switch.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.components.Switch.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,7 +8,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -17,7 +17,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class SwitchAssessmentInputs(AssessmentInputs):
     """
-    Display Switch assessment input attribute data in the RTK Work Book.
+    Display Switch assessment input attribute data in the RAMSTK Work Book.
 
     The Switch assessment input view displays all the assessment inputs for
     the selected switch.  This includes, currently, inputs for
@@ -108,21 +108,21 @@ class SwitchAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbApplication = rtk.RTKComboBox(
+        self.cmbApplication = rtk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The application of the switch."))
-        self.cmbConstruction = rtk.RTKComboBox(
+        self.cmbConstruction = rtk.RAMSTKComboBox(
             index=0,
             simple=False,
             tooltip=_(u"The construction method for "
                       u"the switch."))
-        self.cmbContactForm = rtk.RTKComboBox(
+        self.cmbContactForm = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The contact form and quantity of the switch."))
-        self.txtNCycles = rtk.RTKEntry(
+        self.txtNCycles = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of cycles per hour of the switch."))
-        self.txtNElements = rtk.RTKEntry(
+        self.txtNElements = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of active contacts in the switch."))
 
@@ -146,7 +146,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
         """
         Load the switch RKTComboBox().
 
-        This method is used to load the specification RTKComboBox() whenever
+        This method is used to load the specification RAMSTKComboBox() whenever
         the switch subcategory is changed.
 
         :return: False if successful or True if an error is encountered.
@@ -156,17 +156,17 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         self.cmbQuality.do_load_combo([["MIL-SPEC"], [_(u"Lower")]])
 
-        # Load the application RTKCOmboBOx().
+        # Load the application RAMSTKCOmboBOx().
         try:
             _data = self._dic_applications[self._subcategory_id]
         except KeyError:
             _data = []
         self.cmbApplication.do_load_combo(_data)
 
-        # Load the construction RTKComboBox().
+        # Load the construction RAMSTKComboBox().
         try:
             if _attributes['hazard_rate_method_id'] == 1:
                 _data = [[_(u"Thermal")], [_(u"Magnetic")]]
@@ -176,7 +176,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbConstruction.do_load_combo(_data)
 
-        # Load the contact form RTKComboBox().
+        # Load the contact form RAMSTKComboBox().
         try:
             _data = self._dic_contact_forms[self._subcategory_id]
         except KeyError:
@@ -280,16 +280,16 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Switch attribute.
+        Retrieve RAMSTKCombo() changes and assign to Switch attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +-------+------------------+-------+------------------+
             | Index | Widget           | Index | Widget           |
@@ -325,16 +325,16 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -392,7 +392,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
 class SwitchAssessmentResults(AssessmentResults):
     """
-    Display Switch assessment results attribute data in the RTK Work Book.
+    Display Switch assessment results attribute data in the RAMSTK Work Book.
 
     The Switch assessment result view displays all the assessment results
     for the selected switch.  This includes, currently, results for
@@ -448,27 +448,27 @@ class SwitchAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiCYC = rtk.RTKEntry(
+        self.txtPiCYC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The cycling factor for the switch."))
-        self.txtPiL = rtk.RTKEntry(
+        self.txtPiL = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The load stress factor for the switch."))
-        self.txtPiC = rtk.RTKEntry(
+        self.txtPiC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The contact form and quantity factor for the switch."))
-        self.txtPiN = rtk.RTKEntry(
+        self.txtPiN = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The number of active contacts factor for the switch."))
-        self.txtPiU = rtk.RTKEntry(
+        self.txtPiU = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

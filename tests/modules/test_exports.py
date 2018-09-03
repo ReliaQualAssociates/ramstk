@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_exports.py is part of The RTK Project
+#       rtk.tests.modules.test_exports.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Doyle "weibullguy" Rowland

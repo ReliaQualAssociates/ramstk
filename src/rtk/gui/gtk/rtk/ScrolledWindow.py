@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.ScrolledWindow.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.ScrolledWindow.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -10,14 +10,14 @@
 from .Widget import gtk  # pylint: disable=E0401
 
 
-class RTKScrolledWindow(gtk.ScrolledWindow):
+class RAMSTKScrolledWindow(gtk.ScrolledWindow):
     """
-    This is the RTK ScrolledWindow class.
+    This is the RAMSTK ScrolledWindow class.
 
-    This module contains RTK scrolled window classes.  These classes are
+    This module contains RAMSTK scrolled window classes.  These classes are
     derived from the applicable pyGTK scrolledwindow, but are provided with
-    RTK specific property values and methods.  This ensures a consistent look
-    and feel to widgets in the RTK application.
+    RAMSTK specific property values and methods.  This ensures a consistent look
+    and feel to widgets in the RAMSTK application.
     """
 
     def __init__(self, child, viewport=True):

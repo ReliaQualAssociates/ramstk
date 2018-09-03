@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.Configuration.py is part of The RTK Project
+#       rtk.Configuration.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Configuration information and methods for RTK."""
+"""Configuration information and methods for RAMSTK."""
 
 import ConfigParser
 from os import environ, path, makedirs
@@ -13,7 +13,7 @@ import sys
 # Add localization support.
 import gettext
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 import rtk.Utilities as Utilities
 
 _ = gettext.gettext
@@ -24,7 +24,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 # Define global list constants.
-RTK_ACTIVE_ENVIRONMENTS = [[_(u"Ground, Benign")], [_(u"Ground, Fixed")], [
+RAMSTK_ACTIVE_ENVIRONMENTS = [[_(u"Ground, Benign")], [_(u"Ground, Fixed")], [
     _(u"Ground, Mobile")
 ], [_(u"Naval, Sheltered")], [_(u"Naval, Unsheltered")], [
     _(u"Airborne, Inhabited, Cargo")
@@ -33,26 +33,26 @@ RTK_ACTIVE_ENVIRONMENTS = [[_(u"Ground, Benign")], [_(u"Ground, Fixed")], [
                                _(u"Airborne, Rotary Wing")
                            ], [_(u"Space, Flight")], [_(u"Missile, Flight")],
                            [_(u"Missile, Launch")]]
-RTK_DORMANT_ENVIRONMENTS = [[_(u"Airborne")], [_(u"Ground")], [_(u"Naval")],
+RAMSTK_DORMANT_ENVIRONMENTS = [[_(u"Airborne")], [_(u"Ground")], [_(u"Naval")],
                             [_(u"Space")]]
 
-RTK_ALLOCATION_MODELS = [[u'Equal Apportionment'], [u'ARINC Apportionment'], [
+RAMSTK_ALLOCATION_MODELS = [[u'Equal Apportionment'], [u'ARINC Apportionment'], [
     u'AGREE Apportionment'
 ], [u'Feasibility of Objectives'], [u'Repairable Systems Apportionment']]
 
-RTK_HR_TYPES = [[_(u"Assessed")], [_(u"Defined, Hazard Rate")],
+RAMSTK_HR_TYPES = [[_(u"Assessed")], [_(u"Defined, Hazard Rate")],
                 [_(u"Defined, MTBF")], [_(u"Defined, Distribution")]]
-RTK_HR_MODELS = [[_(u"MIL-HDBK-217F Parts Count")],
+RAMSTK_HR_MODELS = [[_(u"MIL-HDBK-217F Parts Count")],
                  [_(u"MIL-HDBK-217F Parts Stress")], [_(u"NSWC-11")]]
-RTK_HR_DISTRIBUTIONS = [[_(u"1P Exponential")], [_(u"2P Exponential")],
+RAMSTK_HR_DISTRIBUTIONS = [[_(u"1P Exponential")], [_(u"2P Exponential")],
                         [_(u"Gaussian")], [_(u"Lognormal")],
                         [_(u"2P Weibull")], [_(u"3P Weibull")]]
 
-RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
-RTK_COST_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
-RTK_MTTR_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
+RAMSTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
+RAMSTK_COST_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
+RAMSTK_MTTR_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
 
-RTK_CRITICALITY = [[
+RAMSTK_CRITICALITY = [[
     _(u"Catastrophic"),
     _(u"Could result in death, permanent total disability, loss exceeding "
       u"$1M, or irreversible severe environmental damage that violates law "
@@ -77,29 +77,29 @@ RTK_CRITICALITY = [[
       u"loss exceeding $2K but less than $10K, or minimal environmental "
       u"damage not violating law or regulation."), "IV", 1
 ]]
-RTK_FAILURE_PROBABILITY = [[_(u"Level E - Extremely Unlikely"),
+RAMSTK_FAILURE_PROBABILITY = [[_(u"Level E - Extremely Unlikely"),
                             1], [_(u"Level D - Remote"),
                                  2], [_(u"Level C - Occasional"), 3],
                            [_(u"Level B - Reasonably Probable"),
                             4], [_(u"Level A - Frequent"), 5]]
 
-RTK_SW_DEV_ENVIRONMENTS = [[_(u"Organic"), 1.0,
+RAMSTK_SW_DEV_ENVIRONMENTS = [[_(u"Organic"), 1.0,
                             0.76], [_(u"Semi-Detached"), 1.0, 1.0],
                            [_(u"Embedded"), 1.0, 1.3]]
-RTK_SW_DEV_PHASES = [[_(u"Concept/Planning (PCP)")], [
+RAMSTK_SW_DEV_PHASES = [[_(u"Concept/Planning (PCP)")], [
     _(u"Requirements Analysis (SRA)")
 ], [_(u"Preliminary Design Review (PDR)")],
                      [_(u"Critical Design Review (CDR)")],
                      [_(u"Test Readiness Review (TRR)")], [_(u"Released")]]
-RTK_SW_LEVELS = [[_(u"Software System"), 0], [_(u"Software Module"), 0],
+RAMSTK_SW_LEVELS = [[_(u"Software System"), 0], [_(u"Software Module"), 0],
                  [_(u"Software Unit"), 0]]
-RTK_SW_APPLICATION = [[_(u"Airborne"), 0.0128,
+RAMSTK_SW_APPLICATION = [[_(u"Airborne"), 0.0128,
                        6.28], [_(u"Strategic"), 0.0092,
                                1.2], [_(u"Tactical"), 0.0078, 13.8],
                       [_(u"Process Control"), 0.0018,
                        3.8], [_(u"Production Center"), 0.0085,
                               23.0], [_(u"Developmental"), 0.0123, 132.6]]
-RTK_SW_TEST_METHODS = [[
+RAMSTK_SW_TEST_METHODS = [[
     _(u"Code Reviews"),
     _(u"Code review is a systematic examination (often known as peer review) "
       u"of computer source code.")
@@ -110,20 +110,20 @@ RTK_SW_TEST_METHODS = [[
                                   _(u"")], [_(u"Branch Testing"),
                                             _(u"")]]
 
-RTK_LIFECYCLE = [[_(u"Design")], [_(u"Reliability Growth")],
+RAMSTK_LIFECYCLE = [[_(u"Design")], [_(u"Reliability Growth")],
                  [_(u"Reliability Qualification")], [_(u"Production")],
                  [_(u"Storage")], [_(u"Operation")], [_(u"Disposal")]]
-RTK_S_DIST = [["Constant Probability"], ["Exponential"], ["Gaussian"],
+RAMSTK_S_DIST = [["Constant Probability"], ["Exponential"], ["Gaussian"],
               ["LogNormal"], ["Uniform"], ["Weibull"]]
 
 
 class Configuration(object):
     r"""
-    RTK configuration class.
+    RAMSTK configuration class.
 
     Class attributes of the Configuration class are:
 
-    :cvar dict RTK_FORMAT_FILE: Dictionary containing the path to the format
+    :cvar dict RAMSTK_FORMAT_FILE: Dictionary containing the path to the format
                                 files to use for various widgets.  Keys for
                                 this dictionary are:
 
@@ -137,7 +137,7 @@ class Configuration(object):
                                 * stakeholder
                                 * ffmeca
 
-    :cvar dict RTK_COLORS: Dictionary containing the colors to use for various
+    :cvar dict RAMSTK_COLORS: Dictionary containing the colors to use for various
                            widgets.  Keys for this dictionary are:
 
                            * revisionbg - Revision Tree background
@@ -150,7 +150,7 @@ class Configuration(object):
                            * hardwarefg - Hardware Tree foreground
                            * validationbg - Validation Tree background
                            * validationfg - Validation Tree foreground
-    :cvar dict RTK_COM_INFO: Dictionary for the RTK common database connection
+    :cvar dict RAMSTK_COM_INFO: Dictionary for the RAMSTK common database connection
                              information.  The information contained is:
 
                              +----------+-------------------------------+
@@ -166,7 +166,7 @@ class Configuration(object):
                              +----------+-------------------------------+
                              | password | User password (MySQL only)    |
                              +----------+-------------------------------+
-    :cvar dict RTK_PROG_INFO: Dictionary for RTK Program database connection
+    :cvar dict RAMSTK_PROG_INFO: Dictionary for RAMSTK Program database connection
                               information.  The information contained is:
 
                               +----------+-------------------------------+
@@ -182,7 +182,7 @@ class Configuration(object):
                               +----------+-------------------------------+
                               | password | User password (MySQL only)    |
                               +----------+-------------------------------+
-    :cvar dict RTK_TABPOS: Dictionary containing the location of tabs in the
+    :cvar dict RAMSTK_TABPOS: Dictionary containing the location of tabs in the
                            three main gtk.Notebook() widgets.  Can be one of:
 
                            * Top
@@ -200,14 +200,14 @@ class Configuration(object):
                            |  workbook  | List Book     | *bottom* |
                            +------------+---------------+----------+
 
-    :cvar dict RTK_SEVERITY: Dictionary for failure severity categories.
-    :cvar dict RTK_HAZARDS: Dictionary for potential hazards.
-    :cvar dict RTK_REQUIREMENT_TYPES: Dictionary of requirement types.
-    :cvar dict RTK_RPN_SEVERITY: Dictionary for RPN Severity categories.
-    :cvar dict RTK_RPN_OCCURRENCE: Dictionary for RPN Occurrence categories.
-    :cvar dict RTK_RPN_DETECTION: Dictionary for RPN Detection categories.
+    :cvar dict RAMSTK_SEVERITY: Dictionary for failure severity categories.
+    :cvar dict RAMSTK_HAZARDS: Dictionary for potential hazards.
+    :cvar dict RAMSTK_REQUIREMENT_TYPES: Dictionary of requirement types.
+    :cvar dict RAMSTK_RPN_SEVERITY: Dictionary for RPN Severity categories.
+    :cvar dict RAMSTK_RPN_OCCURRENCE: Dictionary for RPN Occurrence categories.
+    :cvar dict RAMSTK_RPN_DETECTION: Dictionary for RPN Detection categories.
 
-    :cvar list RTK_MODULES: Dictionary of active modules in the open RTK
+    :cvar list RAMSTK_MODULES: Dictionary of active modules in the open RAMSTK
                             Program database.  Where 1 = active and
                             0 = inactive.  Keys are:
 
@@ -217,9 +217,9 @@ class Configuration(object):
                             * Revision
                             * Validation
 
-    :cvar list RTK_PAGE_NUMBER: List indicating which page each RTK module
+    :cvar list RAMSTK_PAGE_NUMBER: List indicating which page each RAMSTK module
                                 occupies in the ModuleBook.
-    :cvar list RTK_RISK_POINTS: List for risk level cutoffs.  Cutoffs are:
+    :cvar list RAMSTK_RISK_POINTS: List for risk level cutoffs.  Cutoffs are:
 
                                 +-------+---------------------------+
                                 | Index | Risk Level Cutoff Value   |
@@ -229,53 +229,53 @@ class Configuration(object):
                                 |   1   | Medium to high            |
                                 +-------+---------------------------+
 
-    :cvar float RTK_HR_MULTIPLIER: The failure rate multiplier.  All failure
+    :cvar float RAMSTK_HR_MULTIPLIER: The failure rate multiplier.  All failure
                                    rates will be multiplied by this value for
                                    display.  This allows failure rates to
                                    display without using scientific notation.
                                    Set to one to use scientific notation.
                                    Default value is *1000000.0*.
-    :cvar float RTK_MTIME: The default mission time for new RTK Programs.
-    :cvar int RTK_DEC_PLACES: Number of decimal places to show in numerical
+    :cvar float RAMSTK_MTIME: The default mission time for new RAMSTK Programs.
+    :cvar int RAMSTK_DEC_PLACES: Number of decimal places to show in numerical
                               results.  Default value is *6*.
-    :cvar int RTK_MODE_SOURCE: Indicator variable used to determine which
+    :cvar int RAMSTK_MODE_SOURCE: Indicator variable used to determine which
                                failure mode source to use.  Sources are:
 
                                1. FMD-97
                                2. MIL-STD-338
 
-    :cvar str RTK_CONF_DIR: Path to the directory containing configuration
-                            files used by RTK.  Default values are:
+    :cvar str RAMSTK_CONF_DIR: Path to the directory containing configuration
+                            files used by RAMSTK.  Default values are:
 
-                            - POSIX default: *$HOME/.config/RTK*
-                            - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RTK*
+                            - POSIX default: *$HOME/.config/RAMSTK*
+                            - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RAMSTK*
 
-    :cvar str RTK_DATA_DIR: Path to the directory containing data files used by
-                            RTK.  Default values are:
+    :cvar str RAMSTK_DATA_DIR: Path to the directory containing data files used by
+                            RAMSTK.  Default values are:
 
-                            - POSIX default: */usr/share/RTK*
+                            - POSIX default: */usr/share/RAMSTK*
                             - Windows default: *None*
 
-    :cvar str RTK_ICON_DIR: Path to the directory containing icon files used
-                            by RTK.  Default values are:
+    :cvar str RAMSTK_ICON_DIR: Path to the directory containing icon files used
+                            by RAMSTK.  Default values are:
 
-                            - POSIX default: */usr/share/pixmaps/RTK*
+                            - POSIX default: */usr/share/pixmaps/RAMSTK*
                             - Windows default: *None*
 
-    :cvar str RTK_LOG_DIR: Path to the directory containing log files used by
-                           RTK.  Default values are:
+    :cvar str RAMSTK_LOG_DIR: Path to the directory containing log files used by
+                           RAMSTK.  Default values are:
 
-                           - POSIX default: *$HOME/.config/RTK/logs*
-                           - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RTK\\\logs*
+                           - POSIX default: *$HOME/.config/RAMSTK/logs*
+                           - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RAMSTK\\\logs*
 
-    :cvar str RTK_PROG_DIR: Path to the base directory containing RTK Program
+    :cvar str RAMSTK_PROG_DIR: Path to the base directory containing RAMSTK Program
                             database files.  This is only used when the
                             backend is SQLite3.  Default values are:
 
                             - POSIX default: *$HOME/analyses/rtk*
                             - Windows default: *C:\\\Users\\\<USER NAME>\\\analyses\\\rtk*
 
-    :cvar str RTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options are:
+    :cvar str RAMSTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options are:
 
                               * basic - a single window embedded with the
                                         Module Book, Work Book, and List Book.
@@ -284,94 +284,94 @@ class Configuration(object):
                                            Book.
 
                               Default value is *basic*.
-    :cvar str RTK_COM_BACKEND: RTK common database backend to use.  Options
+    :cvar str RAMSTK_COM_BACKEND: RAMSTK common database backend to use.  Options
                                are:
 
                                * mysql
                                * sqlite
 
-    :cvar str RTK_BACKEND: RTK Program database backend to use.  Options are:
+    :cvar str RAMSTK_BACKEND: RAMSTK Program database backend to use.  Options are:
 
                            * mysql
                            * sqlite
 
-    :cvar str RTK_LOCALE: The language locale to use with RTK.  Default value
+    :cvar str RAMSTK_LOCALE: The language locale to use with RAMSTK.  Default value
                           is *en_US*.
-    :cvar str RTK_OS: The operating system RTK is currently running on.
+    :cvar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
 
     # Define public dictionary class attributes.
-    RTK_FORMAT_FILE = {}
-    RTK_COLORS = {}
-    RTK_COM_INFO = {}  # RTK Common database info.
-    RTK_PROG_INFO = {}  # RTK Program database info.
-    RTK_TABPOS = {
+    RAMSTK_FORMAT_FILE = {}
+    RAMSTK_COLORS = {}
+    RAMSTK_COM_INFO = {}  # RAMSTK Common database info.
+    RAMSTK_PROG_INFO = {}  # RAMSTK Program database info.
+    RAMSTK_TABPOS = {
         'listbook': 'top',
         'modulebook': 'bottom',
         'workbook': 'bottom'
     }
 
-    # The following global dicts are loaded from information in the RTK
+    # The following global dicts are loaded from information in the RAMSTK
     # Common database.
-    RTK_ACTION_CATEGORY = {}
-    RTK_ACTION_STATUS = {}
-    RTK_AFFINITY_GROUPS = {}  # User updateable
-    RTK_CATEGORIES = {}  # Static.
-    RTK_DAMAGE_MODELS = {}  # User updateable.
-    RTK_DETECTION_METHODS = {}
-    RTK_FAILURE_MODES = {}  # User updateable.
-    RTK_HAZARDS = {}  # User updateable.
-    RTK_INCIDENT_CATEGORY = {}
-    RTK_INCIDENT_STATUS = {}
-    RTK_INCIDENT_TYPE = {}
-    RTK_LOAD_HISTORY = {}  # User updateable.
-    RTK_MANUFACTURERS = {}
-    RTK_MEASURABLE_PARAMETERS = {}  # User updateable.
-    RTK_MEASUREMENT_UNITS = {}
-    RTK_MODULES = {}  # Static.
-    RTK_PAGE_NUMBER = {}
-    RTK_REQUIREMENT_TYPE = {}
-    RTK_RPN_DETECTION = {}  # User updateable.
-    RTK_RPN_OCCURRENCE = {}  # User updateable.
-    RTK_RPN_SEVERITY = {}  # User updateable.
-    RTK_SEVERITY = {}
-    RTK_STAKEHOLDERS = {}  # User updateable.
-    RTK_SUBCATEGORIES = {}  # Static.
-    RTK_USERS = {}  # Admin updateable.
-    RTK_VALIDATION_TYPE = {}
-    RTK_WORKGROUPS = {}  # Admin updateable.
+    RAMSTK_ACTION_CATEGORY = {}
+    RAMSTK_ACTION_STATUS = {}
+    RAMSTK_AFFINITY_GROUPS = {}  # User updateable
+    RAMSTK_CATEGORIES = {}  # Static.
+    RAMSTK_DAMAGE_MODELS = {}  # User updateable.
+    RAMSTK_DETECTION_METHODS = {}
+    RAMSTK_FAILURE_MODES = {}  # User updateable.
+    RAMSTK_HAZARDS = {}  # User updateable.
+    RAMSTK_INCIDENT_CATEGORY = {}
+    RAMSTK_INCIDENT_STATUS = {}
+    RAMSTK_INCIDENT_TYPE = {}
+    RAMSTK_LOAD_HISTORY = {}  # User updateable.
+    RAMSTK_MANUFACTURERS = {}
+    RAMSTK_MEASURABLE_PARAMETERS = {}  # User updateable.
+    RAMSTK_MEASUREMENT_UNITS = {}
+    RAMSTK_MODULES = {}  # Static.
+    RAMSTK_PAGE_NUMBER = {}
+    RAMSTK_REQUIREMENT_TYPE = {}
+    RAMSTK_RPN_DETECTION = {}  # User updateable.
+    RAMSTK_RPN_OCCURRENCE = {}  # User updateable.
+    RAMSTK_RPN_SEVERITY = {}  # User updateable.
+    RAMSTK_SEVERITY = {}
+    RAMSTK_STAKEHOLDERS = {}  # User updateable.
+    RAMSTK_SUBCATEGORIES = {}  # Static.
+    RAMSTK_USERS = {}  # Admin updateable.
+    RAMSTK_VALIDATION_TYPE = {}
+    RAMSTK_WORKGROUPS = {}  # Admin updateable.
 
     # Define global list class attributes.
-    RTK_RISK_POINTS = [4, 10]
+    RAMSTK_RISK_POINTS = [4, 10]
 
     # Define public scalar class attributes.
-    RTK_MODE = ''
-    RTK_SITE_CONF = ''
-    RTK_PROG_CONF = ''
-    RTK_HOME_DIR = ''
-    RTK_SITE_DIR = ''
-    RTK_ICON_DIR = ''
-    RTK_DATA_DIR = ''
-    RTK_CONF_DIR = ''
-    RTK_LOG_DIR = ''
-    RTK_PROG_DIR = ''
-    RTK_DEBUG_LOG = ''
-    RTK_IMPORT_LOG = ''
-    RTK_USER_LOG = ''
-    RTK_MODE_SOURCE = 1  # 1=FMD-97
-    RTK_COM_BACKEND = ''
-    RTK_BACKEND = ''
-    RTK_REPORT_SIZE = 'letter'
-    RTK_HR_MULTIPLIER = 1000000.0
-    RTK_DEC_PLACES = 6
-    RTK_MTIME = 100.0
-    RTK_GUI_LAYOUT = 'advanced'
-    RTK_METHOD = 'STANDARD'  # STANDARD or LRM
-    RTK_LOCALE = 'en_US'
-    RTK_OS = ''
+    RAMSTK_MODE = ''
+    RAMSTK_SITE_CONF = ''
+    RAMSTK_PROG_CONF = ''
+    RAMSTK_HOME_DIR = ''
+    RAMSTK_SITE_DIR = ''
+    RAMSTK_ICON_DIR = ''
+    RAMSTK_DATA_DIR = ''
+    RAMSTK_CONF_DIR = ''
+    RAMSTK_LOG_DIR = ''
+    RAMSTK_PROG_DIR = ''
+    RAMSTK_DEBUG_LOG = ''
+    RAMSTK_IMPORT_LOG = ''
+    RAMSTK_USER_LOG = ''
+    RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
+    RAMSTK_COM_BACKEND = ''
+    RAMSTK_BACKEND = ''
+    RAMSTK_REPORT_SIZE = 'letter'
+    RAMSTK_HR_MULTIPLIER = 1000000.0
+    RAMSTK_DEC_PLACES = 6
+    RAMSTK_MTIME = 100.0
+    RAMSTK_GUI_LAYOUT = 'advanced'
+    RAMSTK_METHOD = 'STANDARD'  # STANDARD or LRM
+    RAMSTK_LOCALE = 'en_US'
+    RAMSTK_OS = ''
 
     def __init__(self):
-        """Initialize the RTK configuration parser."""
+        """Initialize the RAMSTK configuration parser."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -395,21 +395,21 @@ class Configuration(object):
 
         # Initialize public scalar attributes.
         if sys.platform == 'linux2':
-            self.RTK_OS = 'Linux'
-            self.RTK_SITE_DIR = self._INSTALL_PREFIX + '/share/RTK'
-            self.RTK_HOME_DIR = environ['HOME']
-            self.RTK_LOG_DIR = '/var/log/RTK'
+            self.RAMSTK_OS = 'Linux'
+            self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + '/share/RAMSTK'
+            self.RAMSTK_HOME_DIR = environ['HOME']
+            self.RAMSTK_LOG_DIR = '/var/log/RAMSTK'
 
         elif sys.platform == 'win32':
-            self.RTK_OS = 'Windows'
-            self.RTK_SITE_DIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK'
-            self.RTK_HOME_DIR = environ['USERPROFILE']
-            self.RTK_LOG_DIR = self.RTK_SITE_DIR + '/logs'
+            self.RAMSTK_OS = 'Windows'
+            self.RAMSTK_SITE_DIR = environ['COMMONPROGRAMFILES(X86)'] + '/RAMSTK'
+            self.RAMSTK_HOME_DIR = environ['USERPROFILE']
+            self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + '/logs'
 
-        self.RTK_DATA_DIR = self.RTK_SITE_DIR + '/layouts'
-        self.RTK_ICON_DIR = self.RTK_SITE_DIR + '/icons'
-        self.RTK_PROG_DIR = self.RTK_HOME_DIR + '/analyses/rtk/'
-        self.RTK_CONF_DIR = self.RTK_SITE_DIR
+        self.RAMSTK_DATA_DIR = self.RAMSTK_SITE_DIR + '/layouts'
+        self.RAMSTK_ICON_DIR = self.RAMSTK_SITE_DIR + '/icons'
+        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + '/analyses/rtk/'
+        self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
     def get_site_configuration(self):
         """
@@ -423,16 +423,16 @@ class Configuration(object):
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-        if Utilities.file_exists(self.RTK_SITE_CONF):
+        if Utilities.file_exists(self.RAMSTK_SITE_CONF):
             _config = ConfigParser.ConfigParser()
-            _config.read(self.RTK_SITE_CONF)
+            _config.read(self.RAMSTK_SITE_CONF)
 
-            self.RTK_COM_BACKEND = _config.get('Backend', 'type')
-            self.RTK_COM_INFO['host'] = _config.get('Backend', 'host')
-            self.RTK_COM_INFO['socket'] = _config.get('Backend', 'socket')
-            self.RTK_COM_INFO['database'] = _config.get('Backend', 'database')
-            self.RTK_COM_INFO['user'] = _config.get('Backend', 'user')
-            self.RTK_COM_INFO['password'] = _config.get('Backend', 'password')
+            self.RAMSTK_COM_BACKEND = _config.get('Backend', 'type')
+            self.RAMSTK_COM_INFO['host'] = _config.get('Backend', 'host')
+            self.RAMSTK_COM_INFO['socket'] = _config.get('Backend', 'socket')
+            self.RAMSTK_COM_INFO['database'] = _config.get('Backend', 'database')
+            self.RAMSTK_COM_INFO['user'] = _config.get('Backend', 'user')
+            self.RAMSTK_COM_INFO['password'] = _config.get('Backend', 'password')
 
         return _return
 
@@ -454,10 +454,10 @@ class Configuration(object):
         _config.set('Backend', 'user', 'user')
         _config.set('Backend', 'password', 'password')
         _config.set('Backend', 'type', 'sqlite')
-        _config.set('Backend', 'path', self.RTK_SITE_DIR)
+        _config.set('Backend', 'path', self.RAMSTK_SITE_DIR)
 
         try:
-            _parser = open(self.RTK_SITE_CONF, 'w')
+            _parser = open(self.RAMSTK_SITE_CONF, 'w')
             _config.write(_parser)
             _parser.close()
         except EnvironmentError:
@@ -479,60 +479,60 @@ class Configuration(object):
 
         _config = ConfigParser.ConfigParser()
 
-        # Create the directories needed for the user.  Always prefer the RTK
+        # Create the directories needed for the user.  Always prefer the RAMSTK
         # directories in the user's $HOME over the system-wide directories.
         # Configuration directory.
-        self.RTK_CONF_DIR = self.RTK_HOME_DIR + '/.config/RTK'
+        self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK'
         try:
-            makedirs(self.RTK_CONF_DIR)
-            self.RTK_PROG_CONF = self.RTK_CONF_DIR + '/RTK.conf'
+            makedirs(self.RAMSTK_CONF_DIR)
+            self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + '/RAMSTK.conf'
         except OSError:
             pass
 
         # Data directory.
-        self.RTK_DATA_DIR = self.RTK_CONF_DIR + '/layouts'
-        if not Utilities.dir_exists(self.RTK_DATA_DIR):
+        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + '/layouts'
+        if not Utilities.dir_exists(self.RAMSTK_DATA_DIR):
             try:
-                makedirs(self.RTK_DATA_DIR)
+                makedirs(self.RAMSTK_DATA_DIR)
             except OSError:
                 pass
 
         # Icon directory.
-        self.RTK_ICON_DIR = self.RTK_CONF_DIR + '/icons'
-        if not Utilities.dir_exists(self.RTK_ICON_DIR):
+        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + '/icons'
+        if not Utilities.dir_exists(self.RAMSTK_ICON_DIR):
             try:
-                makedirs(self.RTK_ICON_DIR)
+                makedirs(self.RAMSTK_ICON_DIR)
             except OSError:
                 pass
 
         # Log directory.
-        self.RTK_LOG_DIR = self.RTK_CONF_DIR + '/logs'
-        if not Utilities.dir_exists(self.RTK_LOG_DIR):
+        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + '/logs'
+        if not Utilities.dir_exists(self.RAMSTK_LOG_DIR):
             try:
-                makedirs(self.RTK_LOG_DIR)
+                makedirs(self.RAMSTK_LOG_DIR)
             except OSError:
                 pass
 
         # Program directory.
-        if not Utilities.dir_exists(self.RTK_PROG_DIR):
+        if not Utilities.dir_exists(self.RAMSTK_PROG_DIR):
             try:
-                makedirs(self.RTK_PROG_DIR)
+                makedirs(self.RAMSTK_PROG_DIR)
             except OSError:
                 pass
 
-        # Copy format files from RTK_SITE_DIR (system) to the user's
-        # RTK_CONF_DIR.
-        for _file in glob.glob(self.RTK_SITE_DIR + '/layouts/*.xml'):
-            file_util.copy_file(_file, self.RTK_DATA_DIR)
+        # Copy format files from RAMSTK_SITE_DIR (system) to the user's
+        # RAMSTK_CONF_DIR.
+        for _file in glob.glob(self.RAMSTK_SITE_DIR + '/layouts/*.xml'):
+            file_util.copy_file(_file, self.RAMSTK_DATA_DIR)
 
-        # Copy the icons from RTK_SITE_DIR (system) to the user's RTK_ICON_DIR.
+        # Copy the icons from RAMSTK_SITE_DIR (system) to the user's RAMSTK_ICON_DIR.
         try:
-            dir_util.copy_tree(self.RTK_SITE_DIR + '/icons/',
-                               self.RTK_ICON_DIR)
+            dir_util.copy_tree(self.RAMSTK_SITE_DIR + '/icons/',
+                               self.RAMSTK_ICON_DIR)
         except IOError:
             _return = True
 
-        # Create the default RTK user configuration file.
+        # Create the default RAMSTK user configuration file.
         _config.add_section('General')
         _config.set('General', 'firstrun', True)
         _config.set('General', 'reportsize', 'letter')
@@ -555,10 +555,10 @@ class Configuration(object):
         _config.set('Backend', 'password', '')
 
         _config.add_section('Directories')
-        _config.set('Directories', 'datadir', self.RTK_DATA_DIR)
-        _config.set('Directories', 'icondir', self.RTK_ICON_DIR)
-        _config.set('Directories', 'logdir', self.RTK_LOG_DIR)
-        _config.set('Directories', 'progdir', self.RTK_PROG_DIR)
+        _config.set('Directories', 'datadir', self.RAMSTK_DATA_DIR)
+        _config.set('Directories', 'icondir', self.RAMSTK_ICON_DIR)
+        _config.set('Directories', 'logdir', self.RAMSTK_LOG_DIR)
+        _config.set('Directories', 'progdir', self.RAMSTK_PROG_DIR)
 
         _config.add_section('Files')
         _config.set('Files', 'allocation', 'Allocation.xml')
@@ -590,7 +590,7 @@ class Configuration(object):
         _config.set('Colors', 'validationfg', '#000000')
 
         try:
-            _parser = open(self.RTK_PROG_CONF, 'w')
+            _parser = open(self.RAMSTK_PROG_CONF, 'w')
             _config.write(_parser)
             _parser.close()
         except EnvironmentError:
@@ -600,7 +600,7 @@ class Configuration(object):
 
     def get_user_configuration(self):
         """
-        Read the RTK configuration file.
+        Read the RAMSTK configuration file.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -610,37 +610,37 @@ class Configuration(object):
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-        if Utilities.file_exists(self.RTK_PROG_CONF):
+        if Utilities.file_exists(self.RAMSTK_PROG_CONF):
             _config = ConfigParser.ConfigParser()
-            _config.read(self.RTK_PROG_CONF)
+            _config.read(self.RAMSTK_PROG_CONF)
 
             for _color in self._lst_colors:
-                self.RTK_COLORS[_color] = _config.get('Colors', _color)
+                self.RAMSTK_COLORS[_color] = _config.get('Colors', _color)
 
             for _file in self._lst_format_files:
-                self.RTK_FORMAT_FILE[_file] = _config.get('Files', _file)
+                self.RAMSTK_FORMAT_FILE[_file] = _config.get('Files', _file)
 
-            self.RTK_BACKEND = _config.get('Backend', 'type')
-            self.RTK_PROG_INFO['host'] = _config.get('Backend', 'host')
-            self.RTK_PROG_INFO['socket'] = _config.get('Backend', 'socket')
-            self.RTK_PROG_INFO['database'] = _config.get('Backend', 'database')
-            self.RTK_PROG_INFO['user'] = _config.get('Backend', 'user')
-            self.RTK_PROG_INFO['password'] = _config.get('Backend', 'password')
+            self.RAMSTK_BACKEND = _config.get('Backend', 'type')
+            self.RAMSTK_PROG_INFO['host'] = _config.get('Backend', 'host')
+            self.RAMSTK_PROG_INFO['socket'] = _config.get('Backend', 'socket')
+            self.RAMSTK_PROG_INFO['database'] = _config.get('Backend', 'database')
+            self.RAMSTK_PROG_INFO['user'] = _config.get('Backend', 'user')
+            self.RAMSTK_PROG_INFO['password'] = _config.get('Backend', 'password')
 
-            self.RTK_DATA_DIR = _config.get('Directories', 'datadir')
-            self.RTK_ICON_DIR = _config.get('Directories', 'icondir')
-            self.RTK_LOG_DIR = _config.get('Directories', 'logdir')
-            self.RTK_PROG_DIR = _config.get('Directories', 'progdir')
+            self.RAMSTK_DATA_DIR = _config.get('Directories', 'datadir')
+            self.RAMSTK_ICON_DIR = _config.get('Directories', 'icondir')
+            self.RAMSTK_LOG_DIR = _config.get('Directories', 'logdir')
+            self.RAMSTK_PROG_DIR = _config.get('Directories', 'progdir')
 
-            self.RTK_REPORT_SIZE = _config.get('General', 'reportsize')
-            self.RTK_HR_MULTIPLIER = _config.get('General', 'frmultiplier')
-            self.RTK_DEC_PLACES = _config.get('General', 'decimal')
-            self.RTK_MTIME = _config.get('General', 'calcreltime')
-            self.RTK_MODE_SOURCE = _config.get('General', 'modesource')
-            self.RTK_TABPOS['listbook'] = _config.get('General', 'listtabpos')
-            self.RTK_TABPOS['modulebook'] = _config.get(
+            self.RAMSTK_REPORT_SIZE = _config.get('General', 'reportsize')
+            self.RAMSTK_HR_MULTIPLIER = _config.get('General', 'frmultiplier')
+            self.RAMSTK_DEC_PLACES = _config.get('General', 'decimal')
+            self.RAMSTK_MTIME = _config.get('General', 'calcreltime')
+            self.RAMSTK_MODE_SOURCE = _config.get('General', 'modesource')
+            self.RAMSTK_TABPOS['listbook'] = _config.get('General', 'listtabpos')
+            self.RAMSTK_TABPOS['modulebook'] = _config.get(
                 'General', 'moduletabpos')
-            self.RTK_TABPOS['workbook'] = _config.get('General', 'worktabpos')
+            self.RAMSTK_TABPOS['workbook'] = _config.get('General', 'worktabpos')
         else:
             _return = True
 
@@ -655,23 +655,23 @@ class Configuration(object):
         """
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
-        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK'):
-            self.RTK_CONF_DIR = self.RTK_HOME_DIR + '/.config/RTK'
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK'):
+            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK'
         else:
-            self.RTK_CONF_DIR = self.RTK_SITE_DIR
+            self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
-        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/data'):
-            self.RTK_DATA_DIR = self.RTK_HOME_DIR + '/.config/RTK/data'
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK/data'):
+            self.RAMSTK_DATA_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK/data'
 
-        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/icons'):
-            self.RTK_ICON_DIR = self.RTK_HOME_DIR + '/.config/RTK/icons'
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK/icons'):
+            self.RAMSTK_ICON_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK/icons'
 
-        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/logs'):
-            self.RTK_LOG_DIR = self.RTK_HOME_DIR + '/.config/RTK/logs'
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK/logs'):
+            self.RAMSTK_LOG_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK/logs'
 
-        self.RTK_SITE_CONF = self.RTK_CONF_DIR + '/Site.conf'
+        self.RAMSTK_SITE_CONF = self.RAMSTK_CONF_DIR + '/Site.conf'
 
-        if not Utilities.file_exists(self.RTK_SITE_CONF):
+        if not Utilities.file_exists(self.RAMSTK_SITE_CONF):
             self._set_site_configuration()
 
         self.get_site_configuration()
@@ -687,47 +687,47 @@ class Configuration(object):
         """
         _return = False
 
-        if Utilities.file_exists(self.RTK_PROG_CONF):
+        if Utilities.file_exists(self.RAMSTK_PROG_CONF):
             _config = ConfigParser.ConfigParser()
             _config.add_section('General')
             #_config.set('General', 'firstrun', True)
-            _config.set('General', 'reportsize', self.RTK_REPORT_SIZE)
+            _config.set('General', 'reportsize', self.RAMSTK_REPORT_SIZE)
             _config.set('General', 'parallelcalcs', 'False')
-            _config.set('General', 'frmultiplier', self.RTK_HR_MULTIPLIER)
-            _config.set('General', 'calcreltime', self.RTK_MTIME)
+            _config.set('General', 'frmultiplier', self.RAMSTK_HR_MULTIPLIER)
+            _config.set('General', 'calcreltime', self.RAMSTK_MTIME)
             _config.set('General', 'autoaddlistitems', 'False')
-            _config.set('General', 'decimal', self.RTK_DEC_PLACES)
-            _config.set('General', 'modesource', self.RTK_MODE_SOURCE)
+            _config.set('General', 'decimal', self.RAMSTK_DEC_PLACES)
+            _config.set('General', 'modesource', self.RAMSTK_MODE_SOURCE)
             _config.set('General', 'moduletabpos',
-                        self.RTK_TABPOS['modulebook'])
-            _config.set('General', 'listtabpos', self.RTK_TABPOS['listbook'])
-            _config.set('General', 'worktabpos', self.RTK_TABPOS['workbook'])
+                        self.RAMSTK_TABPOS['modulebook'])
+            _config.set('General', 'listtabpos', self.RAMSTK_TABPOS['listbook'])
+            _config.set('General', 'worktabpos', self.RAMSTK_TABPOS['workbook'])
 
             _config.add_section('Backend')
-            _config.set('Backend', 'type', self.RTK_BACKEND)
-            _config.set('Backend', 'host', self.RTK_PROG_INFO['host'])
-            _config.set('Backend', 'socket', int(self.RTK_PROG_INFO['socket']))
-            _config.set('Backend', 'database', self.RTK_PROG_INFO['database'])
-            _config.set('Backend', 'user', self.RTK_PROG_INFO['user'])
-            _config.set('Backend', 'password', self.RTK_PROG_INFO['password'])
+            _config.set('Backend', 'type', self.RAMSTK_BACKEND)
+            _config.set('Backend', 'host', self.RAMSTK_PROG_INFO['host'])
+            _config.set('Backend', 'socket', int(self.RAMSTK_PROG_INFO['socket']))
+            _config.set('Backend', 'database', self.RAMSTK_PROG_INFO['database'])
+            _config.set('Backend', 'user', self.RAMSTK_PROG_INFO['user'])
+            _config.set('Backend', 'password', self.RAMSTK_PROG_INFO['password'])
 
             _config.add_section('Directories')
-            _config.set('Directories', 'datadir', self.RTK_DATA_DIR)
-            _config.set('Directories', 'icondir', self.RTK_ICON_DIR)
-            _config.set('Directories', 'logdir', self.RTK_LOG_DIR)
-            _config.set('Directories', 'progdir', self.RTK_PROG_DIR)
+            _config.set('Directories', 'datadir', self.RAMSTK_DATA_DIR)
+            _config.set('Directories', 'icondir', self.RAMSTK_ICON_DIR)
+            _config.set('Directories', 'logdir', self.RAMSTK_LOG_DIR)
+            _config.set('Directories', 'progdir', self.RAMSTK_PROG_DIR)
 
             _config.add_section('Files')
             for _file in self._lst_format_files:
                 _config.set('Files', _file,
-                            path.basename(self.RTK_FORMAT_FILE[_file]))
+                            path.basename(self.RAMSTK_FORMAT_FILE[_file]))
 
             _config.add_section('Colors')
             for _color in self._lst_colors:
-                _config.set('Colors', _color, self.RTK_COLORS[_color])
+                _config.set('Colors', _color, self.RAMSTK_COLORS[_color])
 
             try:
-                _parser = open(self.RTK_PROG_CONF, 'w')
+                _parser = open(self.RAMSTK_PROG_CONF, 'w')
                 _config.write(_parser)
                 _parser.close()
             except EnvironmentError:
@@ -746,12 +746,12 @@ class Configuration(object):
 
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
-        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK'):
-            self.RTK_CONF_DIR = self.RTK_HOME_DIR + '/.config/RTK'
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK'):
+            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK'
         else:
-            self.RTK_CONF_DIR = self.RTK_SITE_DIR
+            self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
             _return = first_run
 
-        self.RTK_PROG_CONF = self.RTK_CONF_DIR + '/RTK.conf'
+        self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + '/RAMSTK.conf'
 
         return _return

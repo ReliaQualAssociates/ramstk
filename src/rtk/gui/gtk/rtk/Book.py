@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.Book.py is part of The RTK Project
+#       rtk.gui.gtk.rtk.Book.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""The Base RTK Book."""
+"""The Base RAMSTK Book."""
 
 import sys
 
@@ -28,9 +28,9 @@ _ = gettext.gettext
 
 def destroy(__widget, __event=None):
     """
-    Quit the RTK application.
+    Quit the RAMSTK application.
 
-    This function quits the RTK application when the X in the upper right
+    This function quits the RAMSTK application when the X in the upper right
     corner is pressed or if this function is called as a callback.
 
     :param __widget: the gtk.Widget() that called this method.
@@ -45,22 +45,22 @@ def destroy(__widget, __event=None):
     return False
 
 
-class RTKBook(gtk.Window):  # pylint: disable=R0904
+class RAMSTKBook(gtk.Window):  # pylint: disable=R0904
     """
     The base view for the pyGTK multiple window interface Books.
 
     This is the base class for the List Book, Module Book, and Work Book.
-    Attributes of the RTKBook are:
+    Attributes of the RAMSTKBook are:
 
     :ivar list _lst_handler_id:
-    :ivar _mdcRTK: the RTK master data controller.
-    :type _mdcRTK: :py:class:`rtk.RTK.RTK`
-    :ivar notebook: the gtk.Notebook() widget used to hold each of the RTK
+    :ivar _mdcRAMSTK: the RAMSTK master data controller.
+    :type _mdcRAMSTK: :py:class:`rtk.RAMSTK.RAMSTK`
+    :ivar notebook: the gtk.Notebook() widget used to hold each of the RAMSTK
                     module WorkViews.
     :type notebook: :py:class:`gtk.Notebook`
-    :ivar menubar: the gtk.MenuBar() for the RTK ModuleBook menu.
+    :ivar menubar: the gtk.MenuBar() for the RAMSTK ModuleBook menu.
     :type menubar: :py:class:`gtk.MenuBar`
-    :ivar toolbar: the gtk.Toolbar() for the RTK ModuleBook tools.
+    :ivar toolbar: the gtk.Toolbar() for the RAMSTK ModuleBook tools.
     :type toolbar: :py:class:`gtk.Toolbar`
     :ivar statusbar: the gtk.Statusbar() for displaying messages.
     :type statusbar: :py:class:`gtk.Statusbar`
@@ -75,10 +75,10 @@ class RTKBook(gtk.Window):  # pylint: disable=R0904
 
     def __init__(self, controller):
         """
-        Initialize an instance of the RTK Book.
+        Initialize an instance of the RAMSTK Book.
 
-        :param controller: the RTK master data controller.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller.
+        :type controller: :py:class:`rtk.RAMSTK.RAMSTK`
         """
         gtk.Window.__init__(self)
 
@@ -88,7 +88,7 @@ class RTKBook(gtk.Window):  # pylint: disable=R0904
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
+        self._mdcRAMSTK = controller
         self._n_screens = gtk.gdk.screen_get_default().get_n_monitors()
         self._width = gtk.gdk.screen_width() / self._n_screens
         self._height = gtk.gdk.screen_height()
@@ -102,7 +102,7 @@ class RTKBook(gtk.Window):  # pylint: disable=R0904
 
         try:
             locale.setlocale(locale.LC_ALL,
-                             controller.RTK_CONFIGURATION.RTK_LOCALE)
+                             controller.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
@@ -115,7 +115,7 @@ class RTKBook(gtk.Window):  # pylint: disable=R0904
 
     def _on_module_change(self, module=''):  # pylint: disable=unused-argument
         """
-        Load the correct Views for the RTK module selected in the Module Book.
+        Load the correct Views for the RAMSTK module selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

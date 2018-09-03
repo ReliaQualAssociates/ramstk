@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.Entry.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.Entry.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,19 +8,19 @@
 Entry Module
 -------------------------------------------------------------------------------
 
-This module contains RTK entry and textview classes.  These classes are derived
-from the applicable pyGTK entry and textview, but are provided with RTK
+This module contains RAMSTK entry and textview classes.  These classes are derived
+from the applicable pyGTK entry and textview, but are provided with RAMSTK
 specific property values and methods.  This ensures a consistent look and feel
-to widgets in the RTK application.
+to widgets in the RAMSTK application.
 """
 
 # Import the rtk.Widget base class.
 from .Widget import gtk, pango  # pylint: disable=E0401
 
 
-class RTKEntry(gtk.Entry):
+class RAMSTKEntry(gtk.Entry):
     """
-    This is the RTK Entry class.
+    This is the RAMSTK Entry class.
     """
 
     # pylint: disable=R0913
@@ -30,10 +30,10 @@ class RTKEntry(gtk.Entry):
                  editable=True,
                  bold=False,
                  color='#BBDDFF',
-                 tooltip='RTK WARNING: Missing tooltip.  '
+                 tooltip='RAMSTK WARNING: Missing tooltip.  '
                  'Please register an Enhancement type bug.'):
         """
-        Method to create RTK Entry widgets.
+        Method to create RAMSTK Entry widgets.
 
         :keyword int width: width of the gtk.Entry() widget.  Default is 200.
         :keyword int height: height of the gtk.Entry() widget.  Default is 25.
@@ -71,22 +71,22 @@ class RTKEntry(gtk.Entry):
         self.show()
 
 
-class RTKTextView(gtk.TextView):
+class RAMSTKTextView(gtk.TextView):
     """
-    This is the RTK TextView class.
+    This is the RAMSTK TextView class.
     """
 
     def __init__(self, txvbuffer=None, width=200, height=100, tooltip=''):
         """
-        Method to create RTK TextView() widgets.  Returns a gtk.TextView()
+        Method to create RAMSTK TextView() widgets.  Returns a gtk.TextView()
         embedded in a gtk.ScrolledWindow().
 
         :keyword txvbuffer: the gtk.TextBuffer() to associate with the
-                            RTK TextView().  Default is None.
+                            RAMSTK TextView().  Default is None.
         :type txvbuffer: :py:class:`gtk.TextBuffer`
-        :keyword int width: width of the  RTK TextView() widget.
+        :keyword int width: width of the  RAMSTK TextView() widget.
                             Default is 200.
-        :keyword int height: height of the RTK TextView() widget.
+        :keyword int height: height of the RAMSTK TextView() widget.
                              Default is 100.
         :return: _scrollwindow
         :rtype: gtk.ScrolledWindow
@@ -109,7 +109,7 @@ class RTKTextView(gtk.TextView):
 
     def do_get_buffer(self):
         """
-        Method to return the gtk.TextBuffer() emedded in the RTK TextView.
+        Method to return the gtk.TextBuffer() emedded in the RAMSTK TextView.
 
         :return: buffer; the embedded gtk.TextBuffer()
         :rtype: :py:class:`gtk.TextBuffer`

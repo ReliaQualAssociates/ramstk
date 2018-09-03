@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.assistants.PoF.py is part of The RTK Project
+#       rtk.gui.gtk.assistants.PoF.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -24,7 +24,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 
 __author__ = 'Andrew Rowland'
@@ -35,7 +35,7 @@ __copyright__ = 'Copyright 2018 Andrew "weibullguy" Rowland'
 _ = gettext.gettext
 
 
-class AddStressMethod(rtk.RTKDialog):
+class AddStressMethod(rtk.RAMSTKDialog):
     """
     This is the assistant that walks the user through the process of adding
     a new operating stress or test method to the selected operating load.
@@ -47,9 +47,9 @@ class AddStressMethod(rtk.RTKDialog):
         Assistant.
         """
 
-        rtk.RTKDialog.__init__(
+        rtk.RAMSTKDialog.__init__(
             self,
-            _(u"RTK Physics of Failure Analysis Operating Stress and "
+            _(u"RAMSTK Physics of Failure Analysis Operating Stress and "
               u"Test Method Addition Assistant"))
 
         # Initialize private dictionary attributes.
@@ -63,8 +63,8 @@ class AddStressMethod(rtk.RTKDialog):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.rdoStress = rtk.RTKOptionButton(None, _(u"Add stress"))
-        self.rdoMethod = rtk.RTKOptionButton(self.rdoStress,
+        self.rdoStress = rtk.RAMSTKOptionButton(None, _(u"Add stress"))
+        self.rdoMethod = rtk.RAMSTKOptionButton(self.rdoStress,
                                              _(u"Add test method"))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -73,11 +73,11 @@ class AddStressMethod(rtk.RTKDialog):
         _fixed = gtk.Fixed()
         self.vbox.pack_start(_fixed)
 
-        _label = rtk.RTKLabel(
-            _(u"This is the RTK Operating Stress and Test Method "
+        _label = rtk.RAMSTKLabel(
+            _(u"This is the RAMSTK Operating Stress and Test Method "
               u"Addition Assistant.  Enter the information "
               u"requested below and then press 'OK' to add "
-              u"a new design control or action to the RTK "
+              u"a new design control or action to the RAMSTK "
               u"Program database."),
             width=600,
             height=-1,

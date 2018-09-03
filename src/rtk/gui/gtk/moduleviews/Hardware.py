@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.moduleviews.Hardware.py is part of the RTK Project
+#       rtk.gui.gtk.moduleviews.Hardware.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,18 +8,18 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .ModuleView import RTKModuleView
+from .ModuleView import RAMSTKModuleView
 
 
-class ModuleView(RTKModuleView):
+class ModuleView(RAMSTKModuleView):
     """
-    Display Hardware attribute data in the RTK Module Book.
+    Display Hardware attribute data in the RAMSTK Module Book.
 
     The Hardware Module Book view displays all the Hardwares associated with
-    the RTK Program in a flat list.  The attributes of the Hardware Module View
+    the RAMSTK Program in a flat list.  The attributes of the Hardware Module View
     are:
 
     :ivar int _hardware_id: the ID of the currently selected Hardware.
@@ -30,16 +30,16 @@ class ModuleView(RTKModuleView):
         """
         Initialize the Module View for the Hardware package.
 
-        :param controller: the RTK Master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK Master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKModuleView.__init__(self, controller, module='hardware')
+        RAMSTKModuleView.__init__(self, controller, module='hardware')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/hardware.png'
         self._dic_icons['insert_part'] = \
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/insert_part.png'
 
         # Initialize private list attributes.
@@ -64,7 +64,7 @@ class ModuleView(RTKModuleView):
             self.treeview.connect('button_press_event', self._on_button_press))
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Hardware"),
             width=-1,
             height=-1,
@@ -87,13 +87,13 @@ class ModuleView(RTKModuleView):
 
     def _do_change_row(self, treeview):
         """
-        Handle events for the Hardware package Module Book RTKTreeView().
+        Handle events for the Hardware package Module Book RAMSTKTreeView().
 
-        This method is called whenever a Module Book RTKTreeView() row is
+        This method is called whenever a Module Book RAMSTKTreeView() row is
         activated.
 
-        :param treeview: the Hardware Module View RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
+        :param treeview: the Hardware Module View RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -113,7 +113,7 @@ class ModuleView(RTKModuleView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the Hardware package Module View RTKTreeview().
+        Handle edits of the Hardware package Module View RAMSTKTreeview().
 
         :param __cell: the gtk.CellRenderer() that was edited.
         :type __cell: :class:`gtk.CellRenderer`
@@ -169,12 +169,12 @@ class ModuleView(RTKModuleView):
 
         if not self._dtc_data_controller.request_do_calculate_all(
                 node_id=self._hardware_id,
-                hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER):
+                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER):
             # Update Revision attributes with system-level attribute values.
             _sys_attributes = self._dtc_data_controller.request_get_attributes(
                 1)
             _revision_id = _sys_attributes['revision_id']
-            _dtc_revision = self._mdcRTK.dic_controllers['revision']
+            _dtc_revision = self._mdcRAMSTK.dic_controllers['revision']
             _rev_attributes = _dtc_revision.request_get_attributes(
                 _revision_id)
 
@@ -221,7 +221,7 @@ class ModuleView(RTKModuleView):
         _prompt = _(u"You are about to delete Hardware {0:d} and all data "
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._hardware_id)
-        _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['question'],
+        _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
                                        'question')
         _response = _dialog.do_run()
 
@@ -230,7 +230,7 @@ class ModuleView(RTKModuleView):
             if self._dtc_data_controller.request_do_delete(self._hardware_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Hardware {0:d}.").format(self._hardware_id)
-                _error_dialog = rtk.RTKMessageDialog(
+                _error_dialog = rtk.RAMSTKMessageDialog(
                     _prompt, self._dic_icons['error'], 'error')
                 if _error_dialog.do_run() == gtk.RESPONSE_OK:
                     _error_dialog.do_destroy()
@@ -265,7 +265,7 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert(self, **kwargs):
         """
-        Send request to insert a new Hardware into the RTK Program database.
+        Send request to insert a new Hardware into the RAMSTK Program database.
 
         :param bool sibling: indicates whether to insert a sibling (default)
                              Hardware item or a child Hardware item.
@@ -303,9 +303,9 @@ class ModuleView(RTKModuleView):
             _prompt = _(u"An error occurred while attempting to add a "
                         u"hardware item to Revision "
                         u"{0:d}.").format(self._revision_id)
-            _error_dialog = rtk.RTKMessageDialog(
+            _error_dialog = rtk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
-            self._mdcRTK.debug_log.error(_prompt)
+            self._mdcRAMSTK.debug_log.error(_prompt)
 
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
@@ -400,8 +400,8 @@ class ModuleView(RTKModuleView):
               u"children."),
             _(u"Calculate the entire system."),
             _(u"Save the currently selected Hardware item to the open "
-              u"RTK Program database."),
-            _(u"Saves all Hardware items to the open RTK Program "
+              u"RAMSTK Program database."),
+            _(u"Saves all Hardware items to the open RAMSTK Program "
               u"database."),
             _(u"Exports Hardware to an external file (CSV, Excel, and text "
               u"files are supported).")
@@ -418,7 +418,7 @@ class ModuleView(RTKModuleView):
             'remove', 'calculate_all', 'save', 'save-all', 'export'
         ]
 
-        _buttonbox = RTKModuleView._make_buttonbox(
+        _buttonbox = RAMSTKModuleView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -437,7 +437,7 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Set up the Hardware Module View RTKTreeView().
+        Set up the Hardware Module View RAMSTKTreeView().
 
         This method sets all cells as non-editable to make the Hardware Module
         View read-only.
@@ -457,10 +457,10 @@ class ModuleView(RTKModuleView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Hardware package Module View RTKTreeView().
+        Handle mouse clicks on the Hardware package Module View RAMSTKTreeView().
 
-        :param treeview: the Hardware Module View RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
+        :param treeview: the Hardware Module View RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -586,7 +586,7 @@ class ModuleView(RTKModuleView):
             Load the row associated with node_id.
 
             This is a helper function to allow iterative updating of the
-            RTKTreeView().
+            RAMSTKTreeView().
             """
             _node_id = model.get_value(row, self._lst_col_order[1])
             _attributes = self._dtc_data_controller.request_get_attributes(
@@ -620,7 +620,7 @@ class ModuleView(RTKModuleView):
 
     def _on_edit(self, position, new_text):
         """
-        Update the Module View RTKTreeView().
+        Update the Module View RAMSTKTreeView().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -641,9 +641,9 @@ class ModuleView(RTKModuleView):
 
     def _on_select_revision(self, module_id):
         """
-        Load the Hardware Module View RTKTreeView().
+        Load the Hardware Module View RAMSTKTreeView().
 
-        This method is called whenever an RTK Program database is opened.
+        This method is called whenever an RAMSTK Program database is opened.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -651,23 +651,23 @@ class ModuleView(RTKModuleView):
         self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
+        # It is defined in RAMSTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['hardware']
         _hardware = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
 
-        _return = RTKModuleView.on_select_revision(self, tree=_hardware)
+        _return = RAMSTKModuleView.on_select_revision(self, tree=_hardware)
         if _return:
             _prompt = _(u"An error occured while loading the Hardware for "
                         u"Revision ID {0:d} into the Module "
                         u"View.").format(self._revision_id)
-            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
+            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
         else:
             for _analysis in ['allocation', 'hazops', 'similaritem']:
-                _dtc_data_controller = self._mdcRTK.dic_controllers[_analysis]
+                _dtc_data_controller = self._mdcRAMSTK.dic_controllers[_analysis]
                 _dtc_data_controller.request_do_select_all(
                     revision_id=self._revision_id)
 

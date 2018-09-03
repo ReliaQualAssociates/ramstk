@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Capacitor.py is part of the RTK
+#       rtk.gui.gtk.workviews.components.Capacitor.py is part of the RAMSTK
 #       Project.
 #
 # All rights reserved.
@@ -9,7 +9,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -18,7 +18,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class CapacitorAssessmentInputs(AssessmentInputs):
     """
-    Display Capacitor assessment input attribute data in the RTK Work Book.
+    Display Capacitor assessment input attribute data in the RAMSTK Work Book.
 
     The Capacitor assessment input view displays all the assessment inputs for
     the selected capacitor.  This includes, currently, inputs for
@@ -243,25 +243,25 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         # Initialize public scalar attributes.
         self.fmt = None
 
-        self.cmbSpecification = rtk.RTKComboBox(
+        self.cmbSpecification = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The governing specification for the capacitor."))
-        self.cmbStyle = rtk.RTKComboBox(
+        self.cmbStyle = rtk.RAMSTKComboBox(
             index=0, simple=False, tooltip=_(u"The style of the capacitor."))
-        self.cmbConfiguration = rtk.RTKComboBox(
+        self.cmbConfiguration = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The configuration of the capacitor."))
-        self.cmbConstruction = rtk.RTKComboBox(
+        self.cmbConstruction = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The method of construction of the capacitor."))
 
-        self.txtCapacitance = rtk.RTKEntry(
+        self.txtCapacitance = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The capacitance rating (in farads) of the capacitor."))
-        self.txtESR = rtk.RTKEntry(
+        self.txtESR = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The equivalent series resistance of the capcaitor."))
 
@@ -291,7 +291,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         """
         Load the specification RKTComboBox().
 
-        This method is used to load the specification RTKComboBox() whenever
+        This method is used to load the specification RAMSTKComboBox() whenever
         the capacitor subcategory is changed.
 
         :return: False if successful or True if an error is encountered.
@@ -301,7 +301,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             _data = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_(u"Lower")]]
         else:
@@ -311,7 +311,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
                 _data = []
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the specification RTKComboBox().
+        # Load the specification RAMSTKComboBox().
         try:
             _data = self._dic_specifications[self._subcategory_id]
         except KeyError:
@@ -342,7 +342,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         _attributes = AssessmentInputs.do_load_page(self, **kwargs)
 
         # We don't block the callback signal otherwise the style
-        # RTKComboBox() will not be loaded and set.
+        # RAMSTKComboBox() will not be loaded and set.
         self.cmbSpecification.set_active(_attributes['specification_id'])
 
         if (_attributes['hazard_rate_method_id'] != 1
@@ -440,16 +440,16 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Capacitor attribute.
+        Retrieve RAMSTKCombo() changes and assign to Capacitor attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -472,7 +472,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             if index == 1:
                 _attributes['specification_id'] = int(combo.get_active())
 
-                # Load the capacitor style RTKComboBox().
+                # Load the capacitor style RAMSTKComboBox().
                 _index = _attributes['specification_id'] - 1
                 if self._subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
                     try:
@@ -502,16 +502,16 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -569,7 +569,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
 class CapacitorAssessmentResults(AssessmentResults):
     """
-    Display capacitor assessment results attribute data in the RTK Work Book.
+    Display capacitor assessment results attribute data in the RAMSTK Work Book.
 
     The capacitor assessment result view displays all the assessment results
     for the selected capacitor.  This includes, currently, results for
@@ -649,17 +649,17 @@ class CapacitorAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiCV = rtk.RTKEntry(
+        self.txtPiCV = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The capacitance factor for the capacitor."))
-        self.txtPiCF = rtk.RTKEntry(
+        self.txtPiCF = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The configuration factor for the capacitor."))
-        self.txtPiC = rtk.RTKEntry(
+        self.txtPiC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

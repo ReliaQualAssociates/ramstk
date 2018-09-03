@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#    tools/StaticChecks.py is part of the RTK Project
+#    tools/StaticChecks.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -335,7 +335,7 @@ def _do_yapf(yapf, files, options):
     """
     Execute yapf.
 
-    Uses setup.cfg in RTK's root directory.  Command line options override the
+    Uses setup.cfg in RAMSTK's root directory.  Command line options override the
     configuration settings in setup.cfg.
 
     Default commandline options from setup.cfg for yapf are:
@@ -374,7 +374,7 @@ def _do_isort(isort, files, options):
     """
     Execute isort.
 
-    Uses setup.cfg in RTK's root directory.  Command line options override the
+    Uses setup.cfg in RAMSTK's root directory.  Command line options override the
     configuration settings in setup.cfg.
 
     isort puts all import statements at the top of the file grouped as follows:
@@ -420,7 +420,7 @@ def _do_bandit(bandit, files, options):
     """
     Execute bandit.
 
-    Uses setup.cfg in RTK's root directory.  Command line options override the
+    Uses setup.cfg in RAMSTK's root directory.  Command line options override the
     configuration settings in setup.cfg.
 
     Default commandline options from setup.cfg for bandit are:
@@ -460,7 +460,7 @@ def _do_flake8(flake8, files, options):
     """
     Execute flake8.
 
-    Uses setup.cfg in RTK's root directory.  Command line options override the
+    Uses setup.cfg in RAMSTK's root directory.  Command line options override the
     configuration settings in setup.cfg.
 
     Default commandline options from setup.cfg for flake8 are:
@@ -506,7 +506,7 @@ def _do_pycodestyle(pycodestyle, files, options):
     """
     Execute pycodestyle.
 
-    Uses setup.cfg in RTK's root directory.  Command line options override the
+    Uses setup.cfg in RAMSTK's root directory.  Command line options override the
     configuration settings in setup.cfg.
 
     Default commandline options from setup.cfg for pycodestyle are:
@@ -548,7 +548,7 @@ def _do_pydocstyle(pydocstyle, files, options):
     """
     Execute pydocstyle.
 
-    Uses setup.cfg in RTK's root directory.  Command line options override the
+    Uses setup.cfg in RAMSTK's root directory.  Command line options override the
     configuration settings in setup.cfg.
 
     Exit codes for pydocstyle...
@@ -577,7 +577,7 @@ def _do_pylint(pylint, files, options):
     """
     Execute pylint.
 
-    Uses .pylintrc in RTK's root directory.  Command line options override the
+    Uses .pylintrc in RAMSTK's root directory.  Command line options override the
     configuration settings in .pyltintrc.
 
     Exit codes for pylint...

@@ -1,11 +1,11 @@
 # pylint: disable=C0111,W0611
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.matrixviews.__init__.py is part of the RTK Project
+#       rtk.gui.gtk.matrixviews.__init__.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-from .MatrixView import RTKMatrixView
+from .MatrixView import RAMSTKMatrixView
 
 from .FunctionHardware import MatrixView as FunctionHardware
 #from .FunctionSoftware import MatrixView as FunctionSoftware

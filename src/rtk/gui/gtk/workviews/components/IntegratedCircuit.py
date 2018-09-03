@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.workviews.components.IntegratedCircuit.py is part of the
-#       RTK Project
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -9,7 +9,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -18,7 +18,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class ICAssessmentInputs(AssessmentInputs):
     """
-    Display IC assessment input attribute data in the RTK Work Book.
+    Display IC assessment input attribute data in the RAMSTK Work Book.
 
     The Integrated Circuit assessment input view displays all the assessment
     inputs for the selected integrated circuit.  This includes, currently,
@@ -158,65 +158,65 @@ class ICAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbApplication = rtk.RTKComboBox(
+        self.cmbApplication = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The application of the integrated circuit."))
-        self.cmbConstruction = rtk.RTKComboBox(
+        self.cmbConstruction = rtk.RAMSTKComboBox(
             index=0,
             simple=False,
             tooltip=_(u"The integrated circuit method "
                       u"of construction."))
-        self.cmbECC = rtk.RTKComboBox(
+        self.cmbECC = rtk.RAMSTKComboBox(
             index=0,
             simple=False,
             tooltip=_(u"The error correction code used by the EEPROM."))
-        self.cmbManufacturing = rtk.RTKComboBox(
+        self.cmbManufacturing = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The manufacturing process for the VLSI device."))
-        self.cmbPackage = rtk.RTKComboBox(
+        self.cmbPackage = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The method of construction of the integrated "
                       u"circuit."))
-        self.cmbTechnology = rtk.RTKComboBox(
+        self.cmbTechnology = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The technology used to construct the integrated "
                       u"circuit."))
-        self.cmbType = rtk.RTKComboBox(
+        self.cmbType = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The type of GaAs or VLSI device."))
 
-        self.txtArea = rtk.RTKEntry(
+        self.txtArea = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The die area (in mil<sup>2</sup>) of the integrated "
                       u"circuit."))
-        self.txtFeatureSize = rtk.RTKEntry(
+        self.txtFeatureSize = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The feature size (in microns) of the VLSI device."))
-        self.txtNActivePins = rtk.RTKEntry(
+        self.txtNActivePins = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of active pins on the integrated circuit."))
-        self.txtNCycles = rtk.RTKEntry(
+        self.txtNCycles = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The total number of programming cycles over the "
                       u"EEPROM life."))
-        self.txtNElements = rtk.RTKEntry(
+        self.txtNElements = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of active elements in the integrated "
                       u"circuit."))
-        self.txtOperatingLife = rtk.RTKEntry(
+        self.txtOperatingLife = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"The system lifetime operating hours."))
-        self.txtThetaJC = rtk.RTKEntry(
+        self.txtThetaJC = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"The junction to case thermal resistance."))
-        self.txtVoltageESD = rtk.RTKEntry(
+        self.txtVoltageESD = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The ESD susceptibility threshold voltage of the VLSI "
                       u"device."))
-        self.txtYearsInProduction = rtk.RTKEntry(
+        self.txtYearsInProduction = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of years the generic device type has been "
                       u"in production."))
@@ -277,11 +277,11 @@ class ICAssessmentInputs(AssessmentInputs):
         _attributes = AssessmentInputs.do_load_comboboxes(
             self, subcategory_id=_subcategory_id)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         self.cmbQuality.do_load_combo([[_(u"Class S")], [_(u"Class B")],
                                        [_(u"Class B-1")]])
 
-        # Load the application RTKComboBox().
+        # Load the application RAMSTKComboBox().
         if _attributes['construction_id'] == 1:
             self.cmbApplication.do_load_combo(
                 [[_(u"Low Noise and Low Power (\u2264 100mW)")],
@@ -289,19 +289,19 @@ class ICAssessmentInputs(AssessmentInputs):
         else:
             self.cmbApplication.do_load_combo([[_(u"All digital devices")]])
 
-        # Load the Construction RTKComboBox().
+        # Load the Construction RAMSTKComboBox().
         self.cmbConstruction.do_load_combo([["FLOTOX"], [_(u"Textured Poly")]])
 
-        # Load the error correction code RTKComboBox().
+        # Load the error correction code RAMSTKComboBox().
         self.cmbECC.do_load_combo(
             [[_(u"No on-chip ECC")], [_(u"On-chip Hamming code")],
              [_(u"Two-Needs-One redundant cell approach")]])
 
-        # Load the manufacturing process RTKComboBox().
+        # Load the manufacturing process RAMSTKComboBox().
         self.cmbManufacturing.do_load_combo([["QML or QPL"],
                                              ["Non-QML or non-QPL"]])
 
-        # Load the package RTKComboBox().
+        # Load the package RAMSTKComboBox().
         self.cmbPackage.do_load_combo([[
             _(u"Hermetic DIP w/ Solder or Weld Seal")
         ], [_(u"Hermetic Pin Grid Array (PGA)")], [
@@ -311,7 +311,7 @@ class ICAssessmentInputs(AssessmentInputs):
         ], [_(u"Nonhermetic DIP")], [_(u"Nonhermetic Pin Grid Array (PGA)")],
                                        [_(u"Nonhermetic SMT")]])
 
-        # Load the technology RTKComboBox().
+        # Load the technology RAMSTKComboBox().
         try:
             if _attributes['hazard_rate_method_id'] == 1:
                 if _attributes['subcategory_id'] == 9:
@@ -324,7 +324,7 @@ class ICAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbTechnology.do_load_combo(_data)
 
-        # Load the device type RTKComboBox().
+        # Load the device type RAMSTKComboBox().
         try:
             _data = self._dic_types[_attributes['subcategory_id']]
         except KeyError:
@@ -558,16 +558,16 @@ class ICAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Integrated Circuit attribute.
+        Retrieve RAMSTKCombo() changes and assign to Integrated Circuit attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +-------+------------------+-------+------------------+
             | Index | Widget           | Index | Widget           |
@@ -615,16 +615,16 @@ class ICAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the integrated circuit class
                           gtk.TreeModel() associated with the data from the
                           calling gtk.Widget().  Indices are:
@@ -704,7 +704,7 @@ class ICAssessmentInputs(AssessmentInputs):
 
 class ICAssessmentResults(AssessmentResults):
     """
-    Display IC assessment results attribute data in the RTK Work Book.
+    Display IC assessment results attribute data in the RAMSTK Work Book.
 
     The Integrated Circuit assessment result view displays all the assessment
     results for the selected integrated circuit.  This includes, currently,
@@ -794,73 +794,73 @@ class ICAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtC1 = rtk.RTKEntry(
+        self.txtC1 = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The die complexity hazard rate of the integrated "
                       u"circuit."))
-        self.txtPiT = rtk.RTKEntry(
+        self.txtPiT = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The temperature factor for the integrated circuit."))
-        self.txtC2 = rtk.RTKEntry(
+        self.txtC2 = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The package hazard rate for the integrated circuit."))
-        self.txtPiC = rtk.RTKEntry(
+        self.txtPiC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The construction factor for the integrated circuit."))
-        self.txtPiL = rtk.RTKEntry(
+        self.txtPiL = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The learning factor for the integrated circuit."))
-        self.txtLambdaCYC = rtk.RTKEntry(
+        self.txtLambdaCYC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The read/write cycling induced hazard rate for the "
                       u"EEPROM."))
-        self.txtLambdaBD = rtk.RTKEntry(
+        self.txtLambdaBD = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The die base hazard rate for the VLSI device."))
-        self.txtPiMFG = rtk.RTKEntry(
+        self.txtPiMFG = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The manufacturing process correction factor for the "
                       u"VLSI device."))
-        self.txtPiCD = rtk.RTKEntry(
+        self.txtPiCD = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The die complexity correction factor for the VLSI "
                       u"device."))
-        self.txtLambdaBP = rtk.RTKEntry(
+        self.txtLambdaBP = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The package base hazard rate for the VLSI device."))
-        self.txtPiPT = rtk.RTKEntry(
+        self.txtPiPT = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The package type correction factor for the VLSI "
                       u"device."))
-        self.txtLambdaEOS = rtk.RTKEntry(
+        self.txtLambdaEOS = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The electrical overstress hazard rate for the VLSI "
                       u"device."))
-        self.txtPiA = rtk.RTKEntry(
+        self.txtPiA = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Connection.py is part of the RTK
+#       rtk.gui.gtk.workviews.components.Connection.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -9,7 +9,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -18,7 +18,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class ConnectionAssessmentInputs(AssessmentInputs):
     """
-    Display Connection assessment input attribute data in the RTK Work Book.
+    Display Connection assessment input attribute data in the RAMSTK Work Book.
 
     The Connection assessment input view displays all the assessment inputs for
     the selected connection.  This includes, currently, inputs for
@@ -194,36 +194,36 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbType = rtk.RTKComboBox(
+        self.cmbType = rtk.RAMSTKComboBox(
             index=0,
             simple=False,
             tooltip=_(u"The type of connector/connection."))
-        self.cmbSpecification = rtk.RTKComboBox(
+        self.cmbSpecification = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The governing specification for the connection."))
-        self.cmbInsert = rtk.RTKComboBox(
+        self.cmbInsert = rtk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The connector insert material."))
 
-        self.txtContactGauge = rtk.RTKEntry(
+        self.txtContactGauge = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The gauge of the contacts in the connector."))
-        self.txtActivePins = rtk.RTKEntry(
+        self.txtActivePins = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of active pins in the connector."))
-        self.txtAmpsContact = rtk.RTKEntry(
+        self.txtAmpsContact = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"The amperes per active contact."))
-        self.txtMating = rtk.RTKEntry(
+        self.txtMating = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of connector mate and unmate cycles per "
                       u"1000 hours of operation."))
-        self.txtNWave = rtk.RTKEntry(
+        self.txtNWave = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of wave soldered PTH connections."))
-        self.txtNHand = rtk.RTKEntry(
+        self.txtNHand = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of hand soldered PTH connections."))
-        self.txtNPlanes = rtk.RTKEntry(
+        self.txtNPlanes = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The number of circuit planes for wave soldered "
                       u"connections."))
@@ -266,7 +266,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
         if _attributes['hazard_rate_method_id'] == 1:
@@ -278,7 +278,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
                 _data = []
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the connector type RTKComboBox().
+        # Load the connector type RAMSTKComboBox().
         try:
             _data = self._dic_type[self._subcategory_id]
         except KeyError:
@@ -306,8 +306,8 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_page(self, **kwargs)
 
-        # Load the subcategory RTKComboBox.  We need to block the quality and
-        # connector type RTKComboBoxes otherwise loading them causes the
+        # Load the subcategory RAMSTKComboBox.  We need to block the quality and
+        # connector type RAMSTKComboBoxes otherwise loading them causes the
         # respective attributes to be set to -1.
         self.cmbQuality.handler_block(self._lst_handler_id[0])
         self.cmbType.handler_block(self._lst_handler_id[1])
@@ -316,12 +316,12 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         self.cmbType.handler_unblock(self._lst_handler_id[1])
 
         # We don't block the callback signal otherwise the specification
-        # RTKComboBox() will not be loaded and set.
+        # RAMSTKComboBox() will not be loaded and set.
         self.cmbType.set_active(_attributes['type_id'])
 
         if _attributes['hazard_rate_method_id'] == 2:
             # We don't block the callback signal otherwise the insert
-            # RTKComboBox() will not be loaded and set.
+            # RAMSTKComboBox() will not be loaded and set.
             self.cmbSpecification.set_active(_attributes['specification_id'])
 
             self.cmbInsert.handler_block(self._lst_handler_id[3])
@@ -454,16 +454,16 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Connection attribute.
+        Retrieve RAMSTKCombo() changes and assign to Connection attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -486,7 +486,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             if index == 1:
                 _attributes['type_id'] = int(combo.get_active())
 
-                # Load the specification RTKComboBox().
+                # Load the specification RAMSTKComboBox().
                 try:
                     _data = self._dic_specification[_attributes['type_id']]
                 except KeyError:
@@ -496,7 +496,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             elif index == 2:
                 _attributes['specification_id'] = int(combo.get_active())
 
-                # Load the connector insert material RTKComboBox().
+                # Load the connector insert material RAMSTKComboBox().
                 try:
                     _data = self._dic_insert[_attributes['type_id']][
                         _attributes['specification_id']]
@@ -516,16 +516,16 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -599,7 +599,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
 class ConnectionAssessmentResults(AssessmentResults):
     """
-    Display Connection assessment results attribute data in the RTK Work Book.
+    Display Connection assessment results attribute data in the RAMSTK Work Book.
 
     The connection assessment result view displays all the assessment results
     for the selected connection.  This includes, currently, results for
@@ -651,17 +651,17 @@ class ConnectionAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiK = rtk.RTKEntry(
+        self.txtPiK = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The mating/unmating factor for the connection."))
-        self.txtPiP = rtk.RTKEntry(
+        self.txtPiP = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The active pins factor for the connection."))
-        self.txtPiC = rtk.RTKEntry(
+        self.txtPiC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

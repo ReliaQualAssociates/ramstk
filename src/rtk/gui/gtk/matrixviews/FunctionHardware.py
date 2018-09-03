@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.matrixviews.FunctionHardware.py is part of the RTK Project
+#       rtk.gui.gtk.matrixviews.FunctionHardware.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,14 +8,14 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk import rtk
 
 
-class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
+class MatrixView(gtk.HBox, rtk.RAMSTKBaseMatrix):
     """
-    This is the Function:Hardware RTK Matrix View.
+    This is the Function:Hardware RAMSTK Matrix View.
 
     Attributes of the Function:Hardware Matrix View are:
     """
@@ -24,11 +24,11 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         """
         Initialize the Matrix View.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
         gtk.HBox.__init__(self)
-        rtk.RTKBaseMatrix.__init__(self, controller)
+        rtk.RAMSTKBaseMatrix.__init__(self, controller)
 
         # Initialize private dictionary attributes.
 
@@ -103,14 +103,14 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         :rtype: :py:class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Save the Function:Hardware Matrix to the open RTK "
+            _(u"Save the Function:Hardware Matrix to the open RAMSTK "
               u"Program database."),
             _(u'Create or refresh the Function:Hardware Matrix.')
         ]
         _callbacks = [self._do_request_update, self._do_request_create]
         _icons = ['save', 'view-refresh']
 
-        _buttonbox = rtk.RTKBaseMatrix._make_buttonbox(
+        _buttonbox = rtk.RAMSTKBaseMatrix._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -132,12 +132,12 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         """
         self._revision_id = module_id
 
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['function']
         (_matrix, _column_hdrs,
          _row_hdrs) = self._dtc_data_controller.request_do_select_all_matrix(
              self._revision_id, self._matrix_type)
         if _matrix is not None:
-            rtk.RTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
+            rtk.RAMSTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
                                              _row_hdrs, _(u"Function"))
 
         return None

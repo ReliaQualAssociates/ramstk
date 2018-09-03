@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_component.py is part of The RTK Project
+#       tests.analyses.prediction.test_component.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -105,7 +105,7 @@ def test_calculate_dormant_hazard_rate(category_id, subcategory_id,
     try:
         assert _msg == ''
     except AssertionError:
-        assert _msg == ("RTK ERROR: Unknown active and/or dormant environment "
+        assert _msg == ("RAMSTK ERROR: Unknown active and/or dormant environment "
                         "ID for hardware item.  Hardware ID: 6, active "
                         "environment ID: {0:d}, and dormant environment ID: "
                         "{1:d}.\n").format(environment_active_id,
@@ -128,7 +128,7 @@ def test_calculate_zero_mult_adj():
     _attributes, _msg = Component.calculate(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RTK WARNING: Multiplicative adjustment factor is 0.0 "
+    assert _msg == ("RAMSTK WARNING: Multiplicative adjustment factor is 0.0 "
                     "when calculating hardware item, hardware ID: 6.\n")
 
 
@@ -146,7 +146,7 @@ def test_calculate_zero_duty_cycle():
     _attributes, _msg = Component.calculate(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RTK WARNING: Duty cycle is 0.0 when calculating "
+    assert _msg == ("RAMSTK WARNING: Duty cycle is 0.0 when calculating "
                     "hardware item, hardware ID: 6.\n")
 
 
@@ -165,5 +165,5 @@ def test_calculate_zero_quantity():
     _attributes, _msg = Component.calculate(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RTK WARNING: Quantity is less than 1 when calculating "
+    assert _msg == ("RAMSTK WARNING: Quantity is less than 1 when calculating "
                     "hardware item, hardware ID: 6.\n")

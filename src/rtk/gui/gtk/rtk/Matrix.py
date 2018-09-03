@@ -1,65 +1,65 @@
 # -*- coding: utf-8 -*-
 #
-#       gui.gtk.rtk.Matrix.py is part of The RTK Project
+#       gui.gtk.rtk.Matrix.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""The RTKBaseMatrix Module."""
+"""The RAMSTKBaseMatrix Module."""
 
 # Import modules for localization support.
 import gettext
 import locale
 
-# Import other RTK modules.
-from rtk.gui.gtk.rtk import RTKLabel
+# Import other RAMSTK modules.
+from rtk.gui.gtk.rtk import RAMSTKLabel
 from .Widget import gobject, gtk, pango
 
 _ = gettext.gettext
 
 
-class RTKBaseMatrix(object):
+class RAMSTKBaseMatrix(object):
     """
-    The RTK base widget for displaying RTK Matrix views.
+    The RAMSTK base widget for displaying RAMSTK Matrix views.
 
-    The attributes of an RTKBaseMatrix are:
+    The attributes of an RAMSTKBaseMatrix are:
 
-    :ivar list _dic_icons: dictionary of icons to use in the various RTKMatrix
+    :ivar list _dic_icons: dictionary of icons to use in the various RAMSTKMatrix
                            views.
-    :ivar _rtk_matrix: the RTKDataMatrix to display in the Matrix View.
+    :ivar _rtk_matrix: the RAMSTKDataMatrix to display in the Matrix View.
     :ivar int _n_columns: the number of columns in the matrix.
     :ivar int _n_rows: the number rows in the matrix.
-    :ivar matrix: the gtk.TreeView() displaying the RTKDataMatrix.
+    :ivar matrix: the gtk.TreeView() displaying the RAMSTKDataMatrix.
     :type matrix: :class:`gtk.TreeView`
     """
 
     def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
-        Initialize an instance of the RTKMatrix widget class.
+        Initialize an instance of the RAMSTKMatrix widget class.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :py:class:`rtk.RAMSTK.RAMSTK`
         """
         # Initialize private dictionary attributes.
         self._dic_icons = {
             0:
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/none.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
             1:
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/partial.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/partial.png',
             2:
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/complete.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/complete.png',
             'save':
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
             'save-all':
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save-all.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save-all.png',
             'view-refresh':
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/view-refresh.png',
         }
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
+        self._mdcRAMSTK = controller
         self._rtk_matrix = None
         self._n_columns = 0
         self._n_rows = 0
@@ -74,16 +74,16 @@ class RTKBaseMatrix(object):
 
         try:
             locale.setlocale(locale.LC_ALL,
-                             controller.RTK_CONFIGURATION.RTK_LOCALE)
+                             controller.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
     def do_load_matrix(self, matrix, column_headings, row_headings, rows):
         """
-        Load the RTKMatrix view with the values from the RTKDataMatrix.
+        Load the RAMSTKMatrix view with the values from the RAMSTKDataMatrix.
 
-        :param matrix: the RTKDataMatrix to display in the RTKMatrix widget.
-        :type matrix: :class:`rtk.datamodels.RTKDataMatrix.RTKDataMatrix`
+        :param matrix: the RAMSTKDataMatrix to display in the RAMSTKMatrix widget.
+        :type matrix: :class:`rtk.datamodels.RAMSTKDataMatrix.RAMSTKDataMatrix`
         :param dict column_headings: the dicionary containing the headings to
                                      use for the matrix columns.  Keys are the
                                      column <MODULE> IDs; values are a noun
@@ -162,7 +162,7 @@ class RTKBaseMatrix(object):
 
         self.matrix.append_column(_column)
 
-        # Now we load the data into the RTK Matrix View.
+        # Now we load the data into the RAMSTK Matrix View.
         for i in list(self._rtk_matrix.index):
             _data = [i, "<span weight='bold'>" + row_headings[i] + "</span>"]
             for j in list(self._rtk_matrix.loc[i]):
@@ -183,14 +183,14 @@ class RTKBaseMatrix(object):
 
         :param cell: the gtk.CellRendererCombo() calling this method.
         :type cell: :class:`gtk.CellRendererCombo`
-        :param str path: the path of the selected row in the RTKMatrix.
+        :param str path: the path of the selected row in the RAMSTKMatrix.
         :param row: the gtk.TreeIter() for the gtk.CellRendererCombo() in the
-                    selected row in the RTKMatrix.
+                    selected row in the RAMSTKMatrix.
         :type row: :class:`gtk.TreeIter`
-        :param int position: the position of the cell in the RTKMatrix.
+        :param int position: the position of the cell in the RAMSTKMatrix.
         :param int col_index: the column_item_id of the Matrix cell to be
                               edited.
-        :param model: the gtk.TreeModel() associated with the RTKMatrix.
+        :param model: the gtk.TreeModel() associated with the RAMSTKMatrix.
         :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -240,10 +240,10 @@ class RTKBaseMatrix(object):
 
     def _make_buttonbox(self, **kwargs):
         """
-        Create the buttonbox for RTK Matrix Views.
+        Create the buttonbox for RAMSTK Matrix Views.
 
-        This method creates the base buttonbox used by all RTK Matrix Views.
-        Use a buttonbox for an RTK Matrix View if there are only buttons to be
+        This method creates the base buttonbox used by all RAMSTK Matrix Views.
+        Use a buttonbox for an RAMSTK Matrix View if there are only buttons to be
         added.
 
         :return: _buttonbox
@@ -330,7 +330,7 @@ class RTKBaseMatrix(object):
                 _column.pack_start(_cell, True)
                 _column.connect('notify::width', self._on_resize_wrap, _cell)
 
-        _label = RTKLabel(
+        _label = RAMSTKLabel(
             heading, width=-1, height=-1, justify=gtk.JUSTIFY_CENTER)
         _label.set_angle(90)
         _column.set_widget(_label)

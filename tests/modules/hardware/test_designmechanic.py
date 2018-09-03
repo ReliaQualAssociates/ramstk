@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.hardware.test_designmechanic.py is part of The RTK
+#       tests.modules.hardware.test_designmechanic.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -13,7 +13,7 @@ import pytest
 
 from rtk.modules.hardware import dtmDesignMechanic
 from rtk.dao import DAO
-from rtk.dao import RTKDesignMechanic
+from rtk.dao import RAMSTKDesignMechanic
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,24 +34,24 @@ def test_data_model_create(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKDesignMechanic instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKDesignMechanic instances on success. """
     DUT = dtmDesignMechanic(test_dao)
 
     _tree = DUT.do_select_all(hardware_id=2)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(2).data, RTKDesignMechanic)
+    assert isinstance(_tree.get_node(2).data, RAMSTKDesignMechanic)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKDesignMechanic data model on success. """
+    """ do_select() should return an instance of the RAMSTKDesignMechanic data model on success. """
     DUT = dtmDesignMechanic(test_dao)
     DUT.do_select_all(hardware_id=2)
 
     _design_mechanic = DUT.do_select(2)
 
-    assert isinstance(_design_mechanic, RTKDesignMechanic)
+    assert isinstance(_design_mechanic, RAMSTKDesignMechanic)
     assert _design_mechanic.hardware_id == 2
     assert _design_mechanic.lubrication_id == 0
 
@@ -75,7 +75,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(hardware_id=90)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
                     'database.')
 
 
@@ -88,7 +88,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
                     'database.')
 
 
@@ -101,7 +101,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RTK ERROR: Attempted to delete non-existent '
+    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
                     'DesignMechanic record ID 300.')
 
 
@@ -117,7 +117,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(3)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -129,7 +129,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RTK ERROR: Attempted to save non-existent DesignMechanic '
+    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent DesignMechanic '
                     'record ID 100.')
 
 
@@ -142,5 +142,5 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the mechanical "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the mechanical "
                     "design table.")

@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.fmea.Controller.py is part of The RTK Project
+#       rtk.analyses.fmea.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Controller."""
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.Utilities import OutOfRangeError
-from rtk.modules import RTKDataController
+from rtk.modules import RAMSTKDataController
 from . import dtmFMEA
 
 
-class FMEADataController(RTKDataController):
+class FMEADataController(RAMSTKDataController):
     """
-    Provide an interface between the FMEA data model and an RTK view model.
+    Provide an interface between the FMEA data model and an RAMSTK view model.
 
     A single FMEA controller can manage one or more FMEA data models.
     The attributes of a FMEA data controller are:
@@ -24,14 +24,14 @@ class FMEADataController(RTKDataController):
         """
         Initialize a FMEA data controller instance.
 
-        :param dao: the RTK Program DAO instance to pass to the FMEA Data
+        :param dao: the RAMSTK Program DAO instance to pass to the FMEA Data
                     Model.
         :type dao: :class:`rtk.dao.DAO`
         :param configuration: the Configuration instance associated with the
-                              current instance of the RTK application.
+                              current instance of the RAMSTK application.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmFMEA(dao),
@@ -77,13 +77,13 @@ class FMEADataController(RTKDataController):
             entity_id=_entity_id, parent_id=_parent_id, level=_level)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
         else:
-            _msg = _msg + '  Failed to add a new {0:s} to the RTK ' \
+            _msg = _msg + '  Failed to add a new {0:s} to the RAMSTK ' \
                 'Program database.'.format(_level)
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete(self, node_id):
@@ -97,12 +97,12 @@ class FMEADataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKFunction table record.
+        Request to update an RAMSTKFunction table record.
 
         :param int node_id: the PyPubSub Tree() ID of the Function to save.
         :return: False if successful or True if an error is encountered.
@@ -110,12 +110,12 @@ class FMEADataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_update_all(self, **kwargs):
         """
-        Request all (D)FME(C)A entities be saved to the RTK Program database.
+        Request all (D)FME(C)A entities be saved to the RAMSTK Program database.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -124,7 +124,7 @@ class FMEADataController(RTKDataController):
 
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
@@ -135,17 +135,17 @@ class FMEADataController(RTKDataController):
         :rtype: bool
         """
         _error_code = 0
-        _msg = 'RTK SUCCESS: Calculating (D)FME(C)A.'
+        _msg = 'RAMSTK SUCCESS: Calculating (D)FME(C)A.'
 
         try:
             _error_code, _msg = self._dtm_data_model.do_calculate(
                 node_id, **kwargs)
         except OutOfRangeError:
             _error_code = 50
-            _msg = ("RTK WARNING: OutOfRangeError raised when calculating "
+            _msg = ("RAMSTK WARNING: OutOfRangeError raised when calculating "
                     "(D)FME(C)A.")
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_item_criticality(self):

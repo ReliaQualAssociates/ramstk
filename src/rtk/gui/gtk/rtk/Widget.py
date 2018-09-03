@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.Widget.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.Widget.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""The RTK Widget Module."""
+"""The RAMSTK Widget Module."""
 
 import sys
 
@@ -40,8 +40,8 @@ def set_cursor(controller, cursor):
     """
     Set the cursor for the Module, List, and Work Book gtk.gdk.Window().
 
-    :param controller: the RTK master data controller.
-    :type controller: :class:`rtk.RTK.RTK`
+    :param controller: the RAMSTK master data controller.
+    :type controller: :class:`rtk.RAMSTK.RAMSTK`
     :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only handles
                                   one of the following:
                                   - gtk.gdk.X_CURSOR

@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.usage.test_environment.py is part of The RTK Project
+#       rtk.tests.modules.usage.test_environment.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -13,7 +13,7 @@ import pytest
 
 from rtk.modules.usage import dtmEnvironment
 from rtk.dao import DAO
-from rtk.dao import RTKEnvironment
+from rtk.dao import RAMSTKEnvironment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,13 +34,13 @@ def test_create_data_model(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all() should return a Tree() object populated with RTKEnvironment instances on success. """
+    """ do_select_all() should return a Tree() object populated with RAMSTKEnvironment instances on success. """
     DUT = dtmEnvironment(test_dao)
 
     _tree = DUT.do_select_all(phase_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RTKEnvironment)
+    assert isinstance(_tree.get_node(1).data, RAMSTKEnvironment)
 
 
 @pytest.mark.integration
@@ -56,13 +56,13 @@ def test_do_select_all_non_existent_id(test_dao):
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKEnvironment data model on success. """
+    """ do_select() should return an instance of the RAMSTKEnvironment data model on success. """
     DUT = dtmEnvironment(test_dao)
     DUT.do_select_all(phase_id=1)
 
     _environment = DUT.do_select(1)
 
-    assert isinstance(_environment, RTKEnvironment)
+    assert isinstance(_environment, RAMSTKEnvironment)
     assert _environment.environment_id == 1
     assert _environment.name == 'Condition Name'
 
@@ -85,7 +85,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(phase_id=1)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
                     'database.')
 
 
@@ -99,7 +99,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
                     'database.')
 
 
@@ -112,7 +112,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(100)
 
     assert _error_code == 2005
-    assert _msg == ('  RTK ERROR: Attempted to delete non-existent '
+    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
                     'Environment ID 100.')
 
 
@@ -128,7 +128,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -140,7 +140,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RTK ERROR: Attempted to save non-existent Environment ID '
+    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Environment ID '
                     '100.')
 
 
@@ -153,5 +153,5 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the usage profile "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the usage profile "
                     "environment table.")

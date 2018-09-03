@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.allocation.Model.py is part of The RTK Project
+#       rtk.modules.allocation.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,12 +8,12 @@
 
 from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
-# Import other RTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKAllocation
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKAllocation
 
 
-class AllocationDataModel(RTKDataModel):
+class AllocationDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a reliability allocation.
     """
@@ -24,11 +24,11 @@ class AllocationDataModel(RTKDataModel):
         """
         Initialize an Allocation data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -44,20 +44,20 @@ class AllocationDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Allocations from the RTK Program database.
+        Retrieve all the Allocations from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKAllocation table in
-        the connected RTK Program database.  It then adds each to the
+        This method retrieves all the records from the RAMSTKAllocation table in
+        the connected RAMSTK Program database.  It then adds each to the
         Allocation data model treelib.Tree().
 
-        :return: tree; the Tree() of RTKAllocation data models.
+        :return: tree; the Tree() of RAMSTKAllocation data models.
         :rtype: :class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        for _allocation in _session.query(RTKAllocation).filter(
-                RTKAllocation.revision_id == _revision_id).all():
+        for _allocation in _session.query(RAMSTKAllocation).filter(
+                RAMSTKAllocation.revision_id == _revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _allocation.get_attributes()
@@ -69,7 +69,7 @@ class AllocationDataModel(RTKDataModel):
                 data=_allocation)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _allocation.hardware_id)
 
         _session.close()
@@ -94,16 +94,16 @@ class AllocationDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKAllocation table.
+        Add a record to the RAMSTKAllocation table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _allocation = RTKAllocation()
+        _allocation = RAMSTKAllocation()
         _allocation.revision_id = kwargs['revision_id']
         _allocation.hardware_id = kwargs['hardware_id']
         _allocation.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _allocation,
             ])
@@ -118,7 +118,7 @@ class AllocationDataModel(RTKDataModel):
                 self.last_id = max(self.last_id, _allocation.hardware_id)
             except DuplicatedNodeIdError:
                 _error_code = 1
-                _msg = ('RTK ERROR: Node ID {0:s} already exists in the '
+                _msg = ('RAMSTK ERROR: Node ID {0:s} already exists in the '
                         'Allocation tree for Hardware ID {1:s}').format(
                             str(_allocation.hardware_id),
                             str(_allocation.parent_id))
@@ -127,20 +127,20 @@ class AllocationDataModel(RTKDataModel):
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKFailureDefinition table.
+        Remove a record from the RAMSTKFailureDefinition table.
 
         :param int node_id: the PyPubSub Tree() ID of the Allocation to be
                             removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 1
-            _msg = _msg + ('\n  RTK ERROR: Attempted to delete non-existent '
+            _msg = _msg + ('\n  RAMSTK ERROR: Attempted to delete non-existent '
                            'Allocation ID {0:d}.').format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -149,24 +149,24 @@ class AllocationDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record in the RTKAllocation table.
+        Update the record in the RAMSTKAllocation table.
 
         :param int node_id: the PyPubSub Tree() ID of the Allocation to save.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2207
-            _msg = 'RTK ERROR: Attempted to save non-existent Allocation ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Allocation ' \
                    'ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKAllocation records.
+        Update all RAMSTKAllocation records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -182,11 +182,11 @@ class AllocationDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more line items in the reliability "
+                _msg = ("RAMSTK ERROR: One or more line items in the reliability "
                         "allocation analysis worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all line items in the reliability "
+            _msg = ("RAMSTK SUCCESS: Updating all line items in the reliability "
                     "allocation analysis worksheet.")
 
         return _error_code, _msg

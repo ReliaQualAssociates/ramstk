@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.assistants.CreateProject.py is part of The RTK Project
+#       rtk.gui.gtk.assistants.CreateProject.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,7 +8,7 @@
 
 from os import remove
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 import rtk.Utilities as Utilities
 from rtk.gui.gtk.rtk.Widget import _, gtk, set_cursor
 from rtk.gui.gtk import rtk
@@ -20,7 +20,7 @@ __copyright__ = 'Copyright 2007 - 2018 Doyle "weibullguy" Rowland'
 
 
 class CreateProject(object):
-    """This is the class used to create a new RTK Project database."""
+    """This is the class used to create a new RAMSTK Project database."""
 
     def __init__(self, __button, controller):
         """
@@ -28,15 +28,15 @@ class CreateProject(object):
 
         :param __button: the gtk.ToolButton() that launched this class.
         :type __button: :class:`gtk.ToolButton`
-        :param controller: the RTK master data controller.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller.
+        :type controller: :py:class:`rtk.RAMSTK.RAMSTK`
         """
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
+        self._mdcRAMSTK = controller
 
         # Initialize public dictionary attributes.
 
@@ -44,33 +44,33 @@ class CreateProject(object):
 
         # Initialize public scalar attributes.
 
-        set_cursor(self._mdcRTK, gtk.gdk.WATCH)
+        set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
 
         self._request_create_sqlite3_project()
 
-        set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+        set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
 
     def _request_create_sqlite3_project(self):
-        """Create a RTK Project database using SQLite3."""
+        """Create a RAMSTK Project database using SQLite3."""
         _dialog = gtk.FileChooserDialog(
-            title=_(u"Create a RTK Program Database"),
+            title=_(u"Create a RAMSTK Program Database"),
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
             buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
                      gtk.RESPONSE_REJECT))
-        _dialog.set_current_folder(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_DIR)
+        _dialog.set_current_folder(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
             _new_program = _dialog.get_filename()
             _new_program = _new_program + '.rtk'
 
             if Utilities.file_exists(_new_program):
-                _dlgConfirm = rtk.RTKDialog(
-                    _(u"RTK - Confirm Overwrite"),
+                _dlgConfirm = rtk.RAMSTKDialog(
+                    _(u"RAMSTK - Confirm Overwrite"),
                     dlgbuttons=(gtk.STOCK_YES, gtk.RESPONSE_YES, gtk.STOCK_NO,
                                 gtk.RESPONSE_NO))
 
                 _label = rtk.RTLabel(
-                    _(u"RTK Program database already exists. "
+                    _(u"RAMSTK Program database already exists. "
                       u"\n\n{0:s}\n\nOverwrite?").format(_new_program),
                     width=-1,
                     height=-1,
@@ -87,12 +87,12 @@ class CreateProject(object):
                     _dialog.destroy()
                     return True
 
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database'] = \
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'] = \
                 _new_program
 
         _dialog.destroy()
 
-        self._mdcRTK.request_do_create_program()
+        self._mdcRAMSTK.request_do_create_program()
 
         return False
 

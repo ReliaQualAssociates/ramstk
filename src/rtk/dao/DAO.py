@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.DAO.py is part of The RTK Project
+#       rtk.dao.DAO.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -12,11 +12,11 @@ from sqlalchemy import create_engine, exc, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Import tables objects for the RTK Common database.
-from .RTKCommonDB import create_common_db
-from .RTKProgramDB import create_program_db
+# Import tables objects for the RAMSTK Common database.
+from .RAMSTKCommonDB import create_common_db
+from .RAMSTKProgramDB import create_program_db
 
-RTK_BASE = declarative_base()
+RAMSTK_BASE = declarative_base()
 
 # Add localization support.
 _ = gettext.gettext
@@ -30,7 +30,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 class DAO(object):
     """This is the data access controller class."""
 
-    RTK_SESSION = sessionmaker()
+    RAMSTK_SESSION = sessionmaker()
 
     # Define public class scalar attributes.
     engine = None
@@ -65,7 +65,7 @@ class DAO(object):
         self.engine = create_engine(self.database, echo=False)
         self.metadata = MetaData(self.engine)
 
-        self.session = self.RTK_SESSION(
+        self.session = self.RAMSTK_SESSION(
             bind=self.engine,
             autoflush=True,
             autocommit=False,
@@ -81,7 +81,7 @@ class DAO(object):
         :rtype: bool
         """
         self.session.close()
-        self.RTK_SESSION.close_all()
+        self.RAMSTK_SESSION.close_all()
         self.engine.dispose()
         self.session = None
         self.engine = None
@@ -109,7 +109,7 @@ class DAO(object):
     @staticmethod
     def db_create_common(database, **kwargs):
         """
-        Create a new RTK Common database.
+        Create a new RAMSTK Common database.
 
         :param str database: the RFC1738 URL path to the database to connect
                              with.
@@ -129,7 +129,7 @@ class DAO(object):
     @staticmethod
     def db_create_program(database):
         """
-        Create a new RTK Program database.
+        Create a new RAMSTK Program database.
 
         :param str database: the RFC1738 URL path to the database to connect
                              with.
@@ -148,18 +148,18 @@ class DAO(object):
     @staticmethod
     def db_add(item, session):
         """
-        Add a new item to the RTK Program database.
+        Add a new item to the RAMSTK Program database.
 
-        :param item: the object to add to the RTK Program database.
+        :param item: the object to add to the RAMSTK Program database.
         :param session: the SQLAlchemy scoped_session instance used to
-                        communicate with the RTK Program database.
+                        communicate with the RAMSTK Program database.
         :type session: :class:`sqlalchemy.orm.scoped_session`
         :return: (_error_code, _msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = "RTK SUCCESS: Adding one or more items to the RTK Program " \
+        _msg = "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program " \
                "database."
         # TODO: Determine if the add_many option can work with Foreign Keys.
         for _item in item:
@@ -186,7 +186,7 @@ class DAO(object):
                     print _error
                     _error_code = 1
                     _msg = (
-                        'RAMSTK ERROR: Adding one or more items to the RTK '
+                        'RAMSTK ERROR: Adding one or more items to the RAMSTK '
                         'Program database.')
             except ValueError as _error:
                 _error_code = 4
@@ -198,17 +198,17 @@ class DAO(object):
     @staticmethod
     def db_update(session):
         """
-        Update the RTK Program database with any pending changes.
+        Update the RAMSTK Program database with any pending changes.
 
         :param session: the SQLAlchemy scoped_session instance used to
-                        communicate with the RTK Program database.
+                        communicate with the RAMSTK Program database.
         :type session: :py:class:`sqlalchemy.orm.scoped_session`
         :return: (_error_code, _Msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = "RTK SUCCESS: Updating the RTK Program database."
+        _msg = "RAMSTK SUCCESS: Updating the RAMSTK Program database."
 
         try:
             session.commit()
@@ -216,26 +216,26 @@ class DAO(object):
             print error
             session.rollback()
             _error_code = 1
-            _msg = "RTK ERROR: Updating the RTK Program database."
+            _msg = "RAMSTK ERROR: Updating the RAMSTK Program database."
 
         return _error_code, _msg
 
     @staticmethod
     def db_delete(item, session):
         """
-        Delete a record from the RTK Program database.
+        Delete a record from the RAMSTK Program database.
 
-        :param item: the item to remove from the RTK Program database.
+        :param item: the item to remove from the RAMSTK Program database.
         :type item: Object()
         :param session: the SQLAlchemy scoped_session instance used to
-                        communicate with the RTK Program database.
+                        communicate with the RAMSTK Program database.
         :type session: :py:class:`sqlalchemy.orm.scoped_session`
         :return: (_error_code, _Msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = "RTK SUCCESS: Deleting an item from the RTK Program database."
+        _msg = "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program database."
 
         try:
             session.delete(item)
@@ -244,7 +244,7 @@ class DAO(object):
             print error
             session.rollback()
             _error_code = 1
-            _msg = "RTK ERROR: Deleting an item from the RTK Program database."
+            _msg = "RAMSTK ERROR: Deleting an item from the RAMSTK Program database."
 
         return _error_code, _msg
 
@@ -255,7 +255,7 @@ class DAO(object):
 
         :param str query: the SQL query string to execute
         :param session: the SQLAlchemy scoped_session instance used to
-                        communicate with the RTK Program database.
+                        communicate with the RAMSTK Program database.
         :type session: :class:`sqlalchemy.orm.scoped_session`
         :return:
         :rtype: str

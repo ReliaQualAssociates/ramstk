@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.Hardware.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.Hardware.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -13,15 +13,15 @@ from datetime import date
 from pubsub import pub
 from sortedcontainers import SortedDict
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.Configuration import (
-    RTK_ACTIVE_ENVIRONMENTS, RTK_DORMANT_ENVIRONMENTS, RTK_HR_TYPES,
-    RTK_HR_MODELS, RTK_HR_DISTRIBUTIONS, RTK_COST_TYPES)
+    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_DORMANT_ENVIRONMENTS, RAMSTK_HR_TYPES,
+    RAMSTK_HR_MODELS, RAMSTK_HR_DISTRIBUTIONS, RAMSTK_COST_TYPES)
 from rtk.Utilities import boolean_to_integer
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk.workviews.components import Component
-from .WorkView import RTKWorkView
+from .WorkView import RAMSTKWorkView
 from .components import (
     wvwCapacitorAI, wvwCapacitorAR, wvwConnectionAI, wvwConnectionAR,
     wvwInductorAI, wvwInductorAR, wvwIntegratedCircuitAI,
@@ -30,9 +30,9 @@ from .components import (
     wvwSemiconductorAI, wvwSemiconductorAR, wvwSwitchAI, wvwSwitchAR)
 
 
-class GeneralData(RTKWorkView):
+class GeneralData(RAMSTKWorkView):
     """
-    Display Hardware attribute data in the RTK Work Book.
+    Display Hardware attribute data in the RAMSTK Work Book.
 
     The Work View displays all the general data attributes for the selected
     Hardware. The attributes of a Hardware General Data Work View are:
@@ -162,14 +162,14 @@ class GeneralData(RTKWorkView):
         """
         Initialize the Work View for the Hardware package.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Hardware')
+        RAMSTKWorkView.__init__(self, controller, module='Hardware')
 
         # Initialize private dictionary attributes.
         self._dic_icons[
-            'comp_ref_des'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            'comp_ref_des'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/rollup.png'
 
         # Initialize private list attributes.
@@ -186,80 +186,80 @@ class GeneralData(RTKWorkView):
         # General data page widgets.
 
         # General Data page widgets.
-        self.chkRepairable = rtk.RTKCheckButton(
+        self.chkRepairable = rtk.RAMSTKCheckButton(
             label=_(u"Repairable"),
             tooltip=_(u"Indicates whether or not the selected hardware item "
                       u"is repairable."))
-        self.chkTagged = rtk.RTKCheckButton(label=_(u"Tagged Part"))
+        self.chkTagged = rtk.RAMSTKCheckButton(label=_(u"Tagged Part"))
 
-        self.cmbCategory = rtk.RTKComboBox()
-        self.cmbCostType = rtk.RTKComboBox()
-        self.cmbManufacturer = rtk.RTKComboBox(simple=False)
-        self.cmbSubcategory = rtk.RTKComboBox()
+        self.cmbCategory = rtk.RAMSTKComboBox()
+        self.cmbCostType = rtk.RAMSTKComboBox()
+        self.cmbManufacturer = rtk.RAMSTKComboBox(simple=False)
+        self.cmbSubcategory = rtk.RAMSTKComboBox()
 
-        self.txtAltPartNum = rtk.RTKEntry(
+        self.txtAltPartNum = rtk.RAMSTKEntry(
             tooltip=_(u"The alternate part "
                       u"number (if any) of the "
                       u"selected hardware item."))
-        self.txtAttachments = rtk.RTKTextView(
+        self.txtAttachments = rtk.RAMSTKTextView(
             gtk.TextBuffer(),
             width=600,
             tooltip=_(u"Hyperlinks to any documents associated with the "
                       u"selected hardware item."))
-        self.txtCAGECode = rtk.RTKEntry(
+        self.txtCAGECode = rtk.RAMSTKEntry(
             tooltip=_(u"The Commerical and "
                       u"Government Entity (CAGE) "
                       u"Code of the selected "
                       u"hardware item."))
-        self.txtCompRefDes = rtk.RTKEntry(
+        self.txtCompRefDes = rtk.RAMSTKEntry(
             tooltip=_(u"The composite reference "
                       u"designator of the "
                       u"selected hardware item."))
-        self.txtCost = rtk.RTKEntry(
+        self.txtCost = rtk.RAMSTKEntry(
             width=100,
             tooltip=_(u"The unit cost of the selected hardware item."))
-        self.txtDescription = rtk.RTKTextView(
+        self.txtDescription = rtk.RAMSTKTextView(
             gtk.TextBuffer(),
             width=600,
             tooltip=_(u"The description of the selected hardware item."))
-        self.txtFigureNumber = rtk.RTKEntry(
+        self.txtFigureNumber = rtk.RAMSTKEntry(
             tooltip=_(u"The figure number in "
                       u"the governing "
                       u"specification for the "
                       u"selected hardware "
                       u"item."))
-        self.txtLCN = rtk.RTKEntry(
+        self.txtLCN = rtk.RAMSTKEntry(
             tooltip=_(u"The Logistics Control Number "
                       u"(LCN) of the selected hardware "
                       u"item."))
-        self.txtName = rtk.RTKEntry(
+        self.txtName = rtk.RAMSTKEntry(
             width=600, tooltip=_(u"The name of the selected hardware item."))
-        self.txtNSN = rtk.RTKEntry(
+        self.txtNSN = rtk.RAMSTKEntry(
             tooltip=_(u"The National Stock Number (NSN) of the selected "
                       u"hardware item."))
-        self.txtPageNumber = rtk.RTKEntry(
+        self.txtPageNumber = rtk.RAMSTKEntry(
             tooltip=_(u"The page number in the "
                       u"governing specification "
                       u"for the selected "
                       u"hardware item."))
-        self.txtPartNumber = rtk.RTKEntry(
+        self.txtPartNumber = rtk.RAMSTKEntry(
             tooltip=_(u"The part number of the selected hardware item."))
-        self.txtQuantity = rtk.RTKEntry(
+        self.txtQuantity = rtk.RAMSTKEntry(
             width=50,
             tooltip=_(
                 u"The number of the selected hardware items in the design."))
-        self.txtRefDes = rtk.RTKEntry(
+        self.txtRefDes = rtk.RAMSTKEntry(
             tooltip=_(
                 u"The reference designator of the selected hardware item."))
-        self.txtRemarks = rtk.RTKTextView(
+        self.txtRemarks = rtk.RAMSTKTextView(
             gtk.TextBuffer(),
             width=600,
             tooltip=_(u"Enter any remarks associated with the selected "
                       u"hardware item."))
-        self.txtSpecification = rtk.RTKEntry(
+        self.txtSpecification = rtk.RAMSTKEntry(
             tooltip=_(u"The specification (if any) governing the selected "
                       u"hardware item."))
-        self.txtYearMade = rtk.RTKEntry(
+        self.txtYearMade = rtk.RAMSTKEntry(
             width=100,
             tooltip=_(
                 u"The year the the selected hardware item was manufactured."))
@@ -437,7 +437,7 @@ class GeneralData(RTKWorkView):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        # Disable the category RTKCombo() if the hardware item is not a part.
+        # Disable the category RAMSTKCombo() if the hardware item is not a part.
         if _attributes['part'] == 1:
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
             self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
@@ -453,7 +453,7 @@ class GeneralData(RTKWorkView):
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
             self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
 
-            # Clear the subcategory RTKComboBox() always so it is empty
+            # Clear the subcategory RAMSTKComboBox() always so it is empty
             # whenever an assembly is selected.
             _model = self.cmbSubcategory.get_model()
             _model.clear()
@@ -550,13 +550,13 @@ class GeneralData(RTKWorkView):
 
     def _do_load_subcategory(self, category_id):
         """
-        Load the component subcategory RTKCombo().
+        Load the component subcategory RAMSTKCombo().
 
-        This method loads the component subcategory RTKCombo() when the
-        component category RTKCombo() is changed.
+        This method loads the component subcategory RAMSTKCombo() when the
+        component category RAMSTKCombo() is changed.
 
         :param int category_id: the component category ID to load the
-                                subcategory RTKCombo() for.
+                                subcategory RAMSTKCombo() for.
         :return: False if successful or True if an error is encountered
         :rtype: bool
         """
@@ -567,7 +567,7 @@ class GeneralData(RTKWorkView):
 
         if category_id > 0:
             _subcategory = SortedDict(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_SUBCATEGORIES[category_id])
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SUBCATEGORIES[category_id])
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
@@ -647,8 +647,8 @@ class GeneralData(RTKWorkView):
             _(u"Creates the composite reference designator for the selected "
               u"hardware item."),
             _(u"Saves the currently selected Hardware to the open "
-              u"RTK Program database."),
-            _(u"Saves all Hardware to the open RTK Program database."),
+              u"RAMSTK Program database."),
+            _(u"Saves all Hardware to the open RAMSTK Program database."),
         ]
         _callbacks = [
             self._do_request_make_comp_ref_des, self._do_request_update,
@@ -656,7 +656,7 @@ class GeneralData(RTKWorkView):
         ]
         _icons = ['comp_ref_des', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -675,25 +675,25 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        self.cmbCostType.do_load_combo(RTK_COST_TYPES)
+        self.cmbCostType.do_load_combo(RAMSTK_COST_TYPES)
 
         _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_CATEGORIES:
-            _data.append([self._mdcRTK.RTK_CONFIGURATION.RTK_CATEGORIES[_key]])
+        for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CATEGORIES:
+            _data.append([self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CATEGORIES[_key]])
         self.cmbCategory.do_load_combo(_data)
 
         _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_MANUFACTURERS:
+        for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MANUFACTURERS:
             _data.append(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_MANUFACTURERS[_key])
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MANUFACTURERS[_key])
         self.cmbManufacturer.do_load_combo(_data, simple=False)
 
         # Build the General Data page starting with the left half.
         _hbox = gtk.HBox()
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Hardware Description"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"Hardware Description"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[0], _fixed, 5,
@@ -703,7 +703,7 @@ class GeneralData(RTKWorkView):
         _hbox.pack_start(_frame, expand=True, fill=True)
 
         # Move the labels after the description to account for the extra
-        # vertical space needed by the description RTKTextView().
+        # vertical space needed by the description RAMSTKTextView().
         for _index in xrange(4, 13):  # pylint: disable=undefined-variable
             _fixed.move(_fixed.get_children()[_index], 5,
                         _y_pos[_index - 1] + 100)
@@ -728,8 +728,8 @@ class GeneralData(RTKWorkView):
         _vpaned = gtk.VPaned()
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Purchasing Information"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"Purchasing Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[1], _fixed, 5,
@@ -749,8 +749,8 @@ class GeneralData(RTKWorkView):
         _vpaned.pack1(_frame, True, True)
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Miscellaneous Information"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"Miscellaneous Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[2], _fixed, 5,
@@ -771,7 +771,7 @@ class GeneralData(RTKWorkView):
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
         # Create the label for the gtk.Notebook() tab.
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"General\nData"),
             height=30,
             width=-1,
@@ -784,7 +784,7 @@ class GeneralData(RTKWorkView):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Hardware attribute.
+        Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
 
         This method is called by:
 
@@ -793,8 +793,8 @@ class GeneralData(RTKWorkView):
         This method emits the 'changedCategory' and 'changedSubcategory'
         messages.
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the Requirement class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Entry().
@@ -867,18 +867,18 @@ class GeneralData(RTKWorkView):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
         This method sends the 'wvwEditedHardware' message.
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -1016,19 +1016,19 @@ class GeneralData(RTKWorkView):
         self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'hardware']
 
         return self._do_load_page(**kwargs)
 
     def _on_toggled(self, togglebutton, index):
         """
-        Handle RTKCheckButton() 'toggle' signals.
+        Handle RAMSTKCheckButton() 'toggle' signals.
 
-        :param togglebutton: the RTKToggleButton() that called this method.
-        :type: :class:`rtk.gui.gtk.rtk.Button.RTKToggleButton`
+        :param togglebutton: the RAMSTKToggleButton() that called this method.
+        :type: :class:`rtk.gui.gtk.rtk.Button.RAMSTKToggleButton`
         :param int index: the index in the signal handler ID list.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1061,9 +1061,9 @@ class GeneralData(RTKWorkView):
         return _return
 
 
-class AssessmentInputs(RTKWorkView):
+class AssessmentInputs(RAMSTKWorkView):
     """
-    Display Hardware assessment input attribute data in the RTK Work Book.
+    Display Hardware assessment input attribute data in the RAMSTK Work Book.
 
     The Hardware assessment input view displays all the assessment inputs for
     the selected Hardware item.  This includes, currently, inputs for
@@ -1172,10 +1172,10 @@ class AssessmentInputs(RTKWorkView):
         """
         Initialize an instance of the Hardware assessment input view.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Hardware')
+        RAMSTKWorkView.__init__(self, controller, module='Hardware')
 
         # Initialize private dictionary attributes.
 
@@ -1189,70 +1189,70 @@ class AssessmentInputs(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbActiveEnviron = rtk.RTKComboBox(
+        self.cmbActiveEnviron = rtk.RAMSTKComboBox(
             tooltip=_(u"The operating environment for the hardware item."))
-        self.cmbDormantEnviron = rtk.RTKComboBox(
+        self.cmbDormantEnviron = rtk.RAMSTKComboBox(
             tooltip=_(u"The storage environment for the hardware item."))
-        self.cmbFailureDist = rtk.RTKComboBox(
+        self.cmbFailureDist = rtk.RAMSTKComboBox(
             tooltip=_(
                 u"The statistical failure distribution of the hardware item."))
-        self.cmbHRType = rtk.RTKComboBox(
+        self.cmbHRType = rtk.RAMSTKComboBox(
             tooltip=_(
                 u"The type of reliability assessment for the selected hardware "
                 u"item."))
-        self.cmbHRMethod = rtk.RTKComboBox(
+        self.cmbHRMethod = rtk.RAMSTKComboBox(
             tooltip=_(
                 u"The assessment method to use for the selected hardware item."
             ))
 
-        self.scwDesignRatings = rtk.RTKScrolledWindow(None)
-        self.scwOperatingStress = rtk.RTKScrolledWindow(None)
+        self.scwDesignRatings = rtk.RAMSTKScrolledWindow(None)
+        self.scwOperatingStress = rtk.RAMSTKScrolledWindow(None)
 
-        self.txtActiveTemp = rtk.RTKEntry(
+        self.txtActiveTemp = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"The ambient temperature in the operating environment."))
-        self.txtAddAdjFactor = rtk.RTKEntry(
+        self.txtAddAdjFactor = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"An adjustment factor to add to the assessed hazard rate or "
                 u"MTBF."))
-        self.txtDormantTemp = rtk.RTKEntry(
+        self.txtDormantTemp = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The ambient temperature in the storage environment."))
-        self.txtDutyCycle = rtk.RTKEntry(
+        self.txtDutyCycle = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The duty cycle of the selected hardware item."))
-        self.txtFailScale = rtk.RTKEntry(
+        self.txtFailScale = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"The scale parameter of the statistical failure distribution."
             ))
-        self.txtFailShape = rtk.RTKEntry(
+        self.txtFailShape = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"The shape parameter of the statistical failure distribution."
             ))
-        self.txtFailLocation = rtk.RTKEntry(
+        self.txtFailLocation = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The location parameter of the statistical failure "
                       u"distribution."))
-        self.txtMissionTime = rtk.RTKEntry(
+        self.txtMissionTime = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The mission time of the selected hardware item."))
-        self.txtMultAdjFactor = rtk.RTKEntry(
+        self.txtMultAdjFactor = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"An adjustment factor to multiply the assessed hazard rate "
                 u"or MTBF by."))
-        self.txtSpecifiedHt = rtk.RTKEntry(
+        self.txtSpecifiedHt = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"The stated hazard rate."))
-        self.txtSpecifiedHtVar = rtk.RTKEntry(
+        self.txtSpecifiedHtVar = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"The variance of the stated hazard rate."))
-        self.txtSpecifiedMTBF = rtk.RTKEntry(
+        self.txtSpecifiedMTBF = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The stated mean time between failure (MTBF)."))
-        self.txtSpecifiedMTBFVar = rtk.RTKEntry(
+        self.txtSpecifiedMTBFVar = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The variance of the stated mean time between failure "
                       u"(MTBF)."))
@@ -1598,16 +1598,16 @@ class AssessmentInputs(RTKWorkView):
 
         if self._dtc_data_controller.request_do_calculate(
                 self._hardware_id,
-                hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER
+                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER
         ):
             _error_code = 1
-            _msg = 'RTK ERROR: Calculating reliability attributes.'
+            _msg = 'RAMSTK ERROR: Calculating reliability attributes.'
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
                         u"Hardware {0:d}. \n\n\t" + _msg + "\n\n").format(
                             self._hardware_id)
-            _error_dialog = rtk.RTKMessageDialog(
+            _error_dialog = rtk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
@@ -1714,8 +1714,8 @@ class AssessmentInputs(RTKWorkView):
         _tooltips = [
             _(u"Calculate the currently selected Hardware item."),
             _(u"Saves the currently selected Hardware item to the open "
-              u"RTK Program database."),
-            _(u"Saves all Hardware items to the open RTK Program database."),
+              u"RAMSTK Program database."),
+            _(u"Saves all Hardware items to the open RAMSTK Program database."),
         ]
         _callbacks = [
             self._do_request_calculate, self._do_request_update,
@@ -1724,7 +1724,7 @@ class AssessmentInputs(RTKWorkView):
 
         _icons = ['calculate', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -1743,19 +1743,19 @@ class AssessmentInputs(RTKWorkView):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        self.cmbActiveEnviron.do_load_combo(RTK_ACTIVE_ENVIRONMENTS)
-        self.cmbDormantEnviron.do_load_combo(RTK_DORMANT_ENVIRONMENTS)
-        self.cmbHRType.do_load_combo(RTK_HR_TYPES)
-        self.cmbHRMethod.do_load_combo(RTK_HR_MODELS)
-        self.cmbFailureDist.do_load_combo(RTK_HR_DISTRIBUTIONS)
+        self.cmbActiveEnviron.do_load_combo(RAMSTK_ACTIVE_ENVIRONMENTS)
+        self.cmbDormantEnviron.do_load_combo(RAMSTK_DORMANT_ENVIRONMENTS)
+        self.cmbHRType.do_load_combo(RAMSTK_HR_TYPES)
+        self.cmbHRMethod.do_load_combo(RAMSTK_HR_MODELS)
+        self.cmbFailureDist.do_load_combo(RAMSTK_HR_DISTRIBUTIONS)
 
         # Build the assessment input page starting with the top left half.
         _hbox = gtk.HBox()
         _vpaned = gtk.VPaned()
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Assessment Inputs"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"Assessment Inputs"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[0], _fixed, 5,
@@ -1780,9 +1780,9 @@ class AssessmentInputs(RTKWorkView):
 
         _fixed.show_all()
 
-        # Now add the bottom left pane.  This is just an RTKFrame() and will be
+        # Now add the bottom left pane.  This is just an RAMSTKFrame() and will be
         # the container for component-specific design attributes.
-        _frame = rtk.RTKFrame(label=_(u"Design Ratings"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Design Ratings"))
         _frame.add(self.scwDesignRatings)
         _vpaned.pack2(_frame, True, True)
 
@@ -1790,8 +1790,8 @@ class AssessmentInputs(RTKWorkView):
         _vpaned = gtk.VPaned()
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Environmental Inputs"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"Environmental Inputs"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[1], _fixed, 5,
@@ -1809,16 +1809,16 @@ class AssessmentInputs(RTKWorkView):
 
         _vpaned.pack1(_frame, True, True)
 
-        # Finally, add the bottom right pane.  This is just an RTKFrame() and
+        # Finally, add the bottom right pane.  This is just an RAMSTKFrame() and
         # will be the container for component-specific design attributes.
-        _frame = rtk.RTKFrame(label=_(u"Operating Stresses"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Operating Stresses"))
         _frame.add(self.scwOperatingStress)
         _vpaned.pack2(_frame, True, True)
 
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
         # Create the label for the gtk.Notebook() tab.
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Assessment\nInputs"),
             height=30,
             width=-1,
@@ -1831,14 +1831,14 @@ class AssessmentInputs(RTKWorkView):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Hardware attribute.
+        Retrieve RAMSTKCombo() changes and assign to Hardware attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Entry().  Indices are:
@@ -1959,18 +1959,18 @@ class AssessmentInputs(RTKWorkView):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
         This method sends the 'wvwEditedHardware' message.
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -2070,17 +2070,17 @@ class AssessmentInputs(RTKWorkView):
         self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'hardware']
 
         return self._do_load_page(**kwargs)
 
 
-class AssessmentResults(RTKWorkView):
+class AssessmentResults(RAMSTKWorkView):
     """
-    Display Hardware assessment results attribute data in the RTK Work Book.
+    Display Hardware assessment results attribute data in the RAMSTK Work Book.
 
     The Hardware Assessment Results view displays all the assessment results
     for the selected Hardware.  The attributes of a Hardware Assessment Results
@@ -2169,10 +2169,10 @@ class AssessmentResults(RTKWorkView):
         """
         Initialize the Work View for the Hardware package.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='Hardware')
+        RAMSTKWorkView.__init__(self, controller, module='Hardware')
 
         # Initialize private dictionary attributes.
 
@@ -2186,183 +2186,183 @@ class AssessmentResults(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.scwReliability = rtk.RTKScrolledWindow(None)
-        self.scwStress = rtk.RTKScrolledWindow(None)
+        self.scwReliability = rtk.RAMSTKScrolledWindow(None)
+        self.scwStress = rtk.RAMSTKScrolledWindow(None)
 
-        self.txtActiveHt = rtk.RTKEntry(
+        self.txtActiveHt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the active failure intensity for the "
                       u"selected hardware item."))
-        self.txtActiveHtVar = rtk.RTKEntry(
+        self.txtActiveHtVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the active failure intensity "
                       u"for the selected hardware item."))
-        self.txtCostFailure = rtk.RTKEntry(
+        self.txtCostFailure = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             tooltip=_(u"Displays the cost per failure of the selected "
                       u"hardware item."))
-        self.txtCostHour = rtk.RTKEntry(
+        self.txtCostHour = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             tooltip=_(u"Displays the failure cost per operating hour for the "
                       u"selected hardware item."))
-        self.txtDormantHt = rtk.RTKEntry(
+        self.txtDormantHt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the dormant failure intensity for the "
                       u"selected hardware item."))
-        self.txtDormantHtVar = rtk.RTKEntry(
+        self.txtDormantHtVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(
                 u"Displays the variance on the dormant failure intensity "
                 u"for the selected hardware item."))
-        self.txtLogisticsAt = rtk.RTKEntry(
+        self.txtLogisticsAt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the logistics availability for the selected "
                       u"hardware item."))
-        self.txtLogisticsAtVar = rtk.RTKEntry(
+        self.txtLogisticsAtVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the logistics availability "
                       u"for the selected hardware item."))
-        self.txtLogisticsHt = rtk.RTKEntry(
+        self.txtLogisticsHt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the logistics failure intensity for the "
                       u"selected hardware item.  This is the sum of the "
                       u"active, dormant, and software hazard rates."))
-        self.txtLogisticsHtVar = rtk.RTKEntry(
+        self.txtLogisticsHtVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the logistics failure "
                       u"intensity for the selected hardware item."))
-        self.txtLogisticsMTBF = rtk.RTKEntry(
+        self.txtLogisticsMTBF = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the logistics mean time between failure "
                       u"(MTBF) for the selected hardware item."))
-        self.txtLogisticsMTBFVar = rtk.RTKEntry(
+        self.txtLogisticsMTBFVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the logistics MTBF for the "
                       u"selected hardware item."))
-        self.txtLogisticsRt = rtk.RTKEntry(
+        self.txtLogisticsRt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the logistics reliability for the selected "
                       u"hardware item."))
-        self.txtLogisticsRtVar = rtk.RTKEntry(
+        self.txtLogisticsRtVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the logistics reliability "
                       u"for the selected hardware item."))
-        self.txtMCMT = rtk.RTKEntry(
+        self.txtMCMT = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the mean corrective maintenance time (MCMT) "
                       u"for the selected hardware item."))
-        self.txtMissionAt = rtk.RTKEntry(
+        self.txtMissionAt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the mission availability for the selected "
                       u"hardware item."))
-        self.txtMissionAtVar = rtk.RTKEntry(
+        self.txtMissionAtVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the mission availability for "
                       u"the selected hardware item."))
-        self.txtMissionHt = rtk.RTKEntry(
+        self.txtMissionHt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the mission failure intensity for the "
                       u"selected hardware item."))
-        self.txtMissionHtVar = rtk.RTKEntry(
+        self.txtMissionHtVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the mission failure "
                       u"intensity for the selected hardware item."))
-        self.txtMissionMTBF = rtk.RTKEntry(
+        self.txtMissionMTBF = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the mission mean time between failure (MTBF) "
                       u"for the selected hardware item."))
-        self.txtMissionMTBFVar = rtk.RTKEntry(
+        self.txtMissionMTBFVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the mission MTBF for the "
                       u"selected hardware item."))
-        self.txtMissionRt = rtk.RTKEntry(
+        self.txtMissionRt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the mission reliability for the selected "
                       u"hardware item."))
-        self.txtMissionRtVar = rtk.RTKEntry(
+        self.txtMissionRtVar = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the variance on the mission reliability for "
                       u"the selected hardware item."))
-        self.txtMMT = rtk.RTKEntry(
+        self.txtMMT = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the mean maintenance time (MMT) for the "
                       u"selected hardware item.  This includes preventive and "
                       u"corrective maintenance."))
-        self.txtMPMT = rtk.RTKEntry(
+        self.txtMPMT = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the mean preventive maintenance time (MPMT) "
                       u"for the selected hardware item."))
-        self.txtMTTR = rtk.RTKEntry(
+        self.txtMTTR = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the mean time to repair (MTTR) for the "
                       u"selected hardware item."))
-        self.txtPartCount = rtk.RTKEntry(
+        self.txtPartCount = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             tooltip=_(u"Displays the total part count for the selected "
                       u"hardware item."))
-        self.txtPercentHt = rtk.RTKEntry(
+        self.txtPercentHt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             tooltip=_(u"Displays the percentage of the system failure "
                       u"intensity the selected hardware item represents."))
-        self.txtSoftwareHt = rtk.RTKEntry(
+        self.txtSoftwareHt = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"Displays the software failure intensity for the "
                       u"selected hardware item."))
-        self.txtTotalCost = rtk.RTKEntry(
+        self.txtTotalCost = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             tooltip=_(u"Displays the total cost of the selected hardware "
@@ -2593,16 +2593,16 @@ class AssessmentResults(RTKWorkView):
 
         if self._dtc_data_controller.request_do_calculate(
                 self._hardware_id,
-                hr_multiplier=self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MULTIPLIER
+                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER
         ):
             _error_code = 1
-            _msg[0] = 'RTK ERROR: Calculating reliability attributes.'
+            _msg[0] = 'RAMSTK ERROR: Calculating reliability attributes.'
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
                         u"Hardware {0:d}. \n\n\t" + _msg[0] + "\n\t" +
                         _msg[1] + "\n\n").format(self._hardware_id)
-            _error_dialog = rtk.RTKMessageDialog(
+            _error_dialog = rtk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
@@ -2653,8 +2653,8 @@ class AssessmentResults(RTKWorkView):
         _tooltips = [
             _(u"Calculate the currently selected Hardware item."),
             _(u"Saves the currently selected Hardware item to the open "
-              u"RTK Program database."),
-            _(u"Saves all Hardware items to the open RTK Program database."),
+              u"RAMSTK Program database."),
+            _(u"Saves all Hardware items to the open RAMSTK Program database."),
         ]
         _callbacks = [
             self._do_request_calculate, self._do_request_update,
@@ -2663,7 +2663,7 @@ class AssessmentResults(RTKWorkView):
 
         _icons = ['calculate', 'save', 'save-all']
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -2686,11 +2686,11 @@ class AssessmentResults(RTKWorkView):
         # Build the assessment results page starting with the top left half.
         _vpaned = gtk.VPaned()
 
-        _frame = rtk.RTKFrame(label=_(u"Reliability Results"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Reliability Results"))
         _vpaned.pack1(_frame, True, True)
 
         _fixed = gtk.Fixed()
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[0], _fixed, 5,
@@ -2718,9 +2718,9 @@ class AssessmentResults(RTKWorkView):
 
         _fixed.show_all()
 
-        # Now add the bottom left pane.  This is just an RTKScrolledwindow()
+        # Now add the bottom left pane.  This is just an RAMSTKScrolledwindow()
         # and will be the container for component-specific reliability results.
-        _frame = rtk.RTKFrame(label=_(u"Assessment Model Results"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Assessment Model Results"))
         _frame.add(self.scwReliability)
 
         _vpaned.pack2(_frame, True, True)
@@ -2731,8 +2731,8 @@ class AssessmentResults(RTKWorkView):
         _vpaned = gtk.VPaned()
         _fixed = gtk.Fixed()
 
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Availability Results"))
+        _scrollwindow = rtk.RAMSTKScrolledWindow(_fixed)
+        _frame = rtk.RAMSTKFrame(label=_(u"Availability Results"))
         _frame.add(_scrollwindow)
 
         _vpaned.pack1(_frame, True, True)
@@ -2750,15 +2750,15 @@ class AssessmentResults(RTKWorkView):
         _fixed.put(self.txtCostHour, _x_pos, _y_pos[4])
         _fixed.put(self.txtPartCount, _x_pos, _y_pos[5])
 
-        # Finally, add the bottom right pane.  This is just an RTKFrame() and
+        # Finally, add the bottom right pane.  This is just an RAMSTKFrame() and
         # will be the container for component-specific design attributes.
-        _frame = rtk.RTKFrame(label=_(u"Stress Results"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Stress Results"))
         _frame.add(self.scwStress)
         _vpaned.pack2(_frame, True, True)
 
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Assessment\nResults"),
             height=30,
             width=-1,
@@ -2782,9 +2782,9 @@ class AssessmentResults(RTKWorkView):
         self._hardware_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'hardware']
 
         return self._do_load_page(**kwargs)

@@ -7,7 +7,7 @@ Requirement Package Assistants Module
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.requirement.Assistants.py is part of The RTK Project
+#       rtk.requirement.Assistants.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -57,7 +57,7 @@ try:
 except ImportError:
     sys.exit(1)
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 try:
     import Configuration
     import Utilities
@@ -84,12 +84,12 @@ _ = gettext.gettext
 class AddRequirement(gtk.Assistant):
     """
     This is the assistant that walks the user through the process of adding
-    a new Requirement to the open RTK Project database.  The attributes of an
+    a new Requirement to the open RAMSTK Project database.  The attributes of an
     Add Requirement Assistant are:
 
     :ivar _modulebook: the :py:class:`rtk.requirement.ModuleBook` associated
                        with this assistant.
-    :ivar _controller: the :py:class:`rtk.RTK.RTK` master data controller to
+    :ivar _controller: the :py:class:`rtk.RAMSTK.RAMSTK` master data controller to
                        use with this assistant.
     :ivar str _level: the level of the requirement (top-level or derived).
     :ivar int _revision_id: the id of the
@@ -142,7 +142,7 @@ class AddRequirement(gtk.Assistant):
 
         # Define private scalar attributes.
         self._modulebook = modulebook
-        self._controller = modulebook.mdcRTK
+        self._controller = modulebook.mdcRAMSTK
         if level == 0:
             self._level = "top-level"
         else:
@@ -165,8 +165,8 @@ class AddRequirement(gtk.Assistant):
         self.txtPageNumber = Widgets.make_entry()
         self.txtFigureNumber = Widgets.make_entry()
 
-        self.set_title(_(u"RTK Add Requirement Assistant"))
-        self.set_transient_for(modulebook.mdcRTK.work_book)
+        self.set_title(_(u"RAMSTK Add Requirement Assistant"))
+        self.set_transient_for(modulebook.mdcRAMSTK.work_book)
         self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
 
         # Load the requirement type gtk.ComboBox().
@@ -174,7 +174,7 @@ class AddRequirement(gtk.Assistant):
         _model.clear()
         _model.append(None, ["", "", ""])
         # Each _type is [Description, Code, ID]
-        for __, _type in enumerate(Configuration.RTK_REQUIREMENT_TYPES):
+        for __, _type in enumerate(Configuration.RAMSTK_REQUIREMENT_TYPES):
             _model.append(None, [_type[0], _type[1], ""])
 
         # Load the owner gtk.ComboBox().
@@ -197,7 +197,7 @@ class AddRequirement(gtk.Assistant):
         # Create the introduction page.
         _fixed = gtk.Fixed()
 
-        _text = _(u"This is the RTK Requirement Addition Assistant.  It will "
+        _text = _(u"This is the RAMSTK Requirement Addition Assistant.  It will "
                   u"help you add a new top-level or derived requirement to "
                   u"the database.  Press 'Forward' to continue or 'Cancel' to "
                   u"quit the assistant.")
@@ -321,7 +321,7 @@ class AddRequirement(gtk.Assistant):
 
     def _add_requirement(self, __assistant):
         """
-        Method to add the new Requirement to the open RTK Project database.
+        Method to add the new Requirement to the open RAMSTK Project database.
 
         :param gtk.Assistant __assistant: the current instance of the
                                           assistant.
@@ -387,7 +387,7 @@ class AddRequirement(gtk.Assistant):
                        "Received error code {1:d} while adding requirement " \
                        "{0:d} of {3:d}.".format(_code[0], _code[1],
                                                 _n_requirements)
-            self._modulebook.mdcRTK.debug_log.error(_content)
+            self._modulebook.mdcRAMSTK.debug_log.error(_content)
 
         if len(_error_codes) > 0:
             _prompt = _(u"An error occurred while attempting to add one or "

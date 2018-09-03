@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.matrixviews.MatrixView.py is part of the RTK Project
+#       rtk.gui.gtk.matrixviews.MatrixView.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""The RTKMatrixView Meta-Class Module."""
+"""The RAMSTKMatrixView Meta-Class Module."""
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk.rtk.Widget import gtk
 from rtk.gui.gtk import rtk
 
 
-class RTKMatrixView(gtk.HBox, rtk.RTKBaseMatrix):
+class RAMSTKMatrixView(gtk.HBox, rtk.RAMSTKBaseMatrix):
     """
-    This is the meta class for all RTK Matrix View classes.
+    This is the meta class for all RAMSTK Matrix View classes.
 
-    Attributes of the RTKMatrixView are:
+    Attributes of the RAMSTKMatrixView are:
 
     :ivar hbx_tab_label: the gtk.HBox() containing the label for the List and
                          Matrix View page.
@@ -26,11 +26,11 @@ class RTKMatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         """
         Initialize the List View.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :py:class:`rtk.RAMSTK.RAMSTK`
         """
         gtk.HBox.__init__(self)
-        rtk.RTKBaseMatrix.__init__(self, controller, **kwargs)
+        rtk.RAMSTKBaseMatrix.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 

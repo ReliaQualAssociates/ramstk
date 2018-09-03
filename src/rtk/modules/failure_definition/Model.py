@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.failure_definition.Model.py is part of The RTK Project
+#       rtk.modules.failure_definition.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Failure Definition Package Data Model Module."""
 
-# Import other RTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKFailureDefinition
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKFailureDefinition
 
 
-class FailureDefinitionDataModel(RTKDataModel):
+class FailureDefinitionDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of Failure Definition.
 
@@ -26,11 +26,11 @@ class FailureDefinitionDataModel(RTKDataModel):
         """
         Initialize a Failure Definition data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -46,20 +46,20 @@ class FailureDefinitionDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Failure Definitions from the RTK Program database.
+        Retrieve all the Failure Definitions from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKFailureDefinition
-        table in the connected RTK Program database.  It then add each to the
+        This method retrieves all the records from the RAMSTKFailureDefinition
+        table in the connected RAMSTK Program database.  It then add each to the
         Failure Definition data model treelib.Tree().
 
-        :return: tree; the treelib Tree() of RTKFailureDefinition data models.
+        :return: tree; the treelib Tree() of RAMSTKFailureDefinition data models.
         :rtype: :py:class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        for _definition in _session.query(RTKFailureDefinition).filter(
-                RTKFailureDefinition.revision_id == _revision_id).all():
+        for _definition in _session.query(RAMSTKFailureDefinition).filter(
+                RAMSTKFailureDefinition.revision_id == _revision_id).all():
             self.tree.create_node(
                 _definition.definition,
                 _definition.definition_id,
@@ -67,7 +67,7 @@ class FailureDefinitionDataModel(RTKDataModel):
                 data=_definition)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _definition.definition_id)
 
         _session.close()
@@ -76,15 +76,15 @@ class FailureDefinitionDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):
         """
-        Add a record to the RTKFailureDefinition table.
+        Add a record to the RAMSTKFailureDefinition table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _revision_id = kwargs['revision_id']
-        _definition = RTKFailureDefinition()
+        _definition = RAMSTKFailureDefinition()
         _definition.revision_id = _revision_id
-        _error_code, _msg = RTKDataModel.do_insert(
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _definition,
             ])
@@ -101,20 +101,20 @@ class FailureDefinitionDataModel(RTKDataModel):
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKFailureDefinition table.
+        Remove a record from the RAMSTKFailureDefinition table.
 
         :param int node_id: the ID of the Failure Definition to be
                                   removed.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Failure Definition ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -123,25 +123,25 @@ class FailureDefinitionDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record in the RTKFailureDefinition table.
+        Update the record in the RAMSTKFailureDefinition table.
 
-        :param int node_id: the Failure Definition ID to save to the RTK
+        :param int node_id: the Failure Definition ID to save to the RAMSTK
                                   Program database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2207
-            _msg = 'RTK ERROR: Attempted to save non-existent Failure ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Failure ' \
                    'Definition ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Upsate all RTKFailureDefinition records.
+        Upsate all RAMSTKFailureDefinition records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -157,11 +157,11 @@ class FailureDefinitionDataModel(RTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more records in the failure "
+                _msg = ("RAMSTK ERROR: One or more records in the failure "
                         "definition table did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all records in the failure "
+            _msg = ("RAMSTK SUCCESS: Updating all records in the failure "
                     "definition table.")
 
         return _error_code, _msg

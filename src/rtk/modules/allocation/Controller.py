@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.allocation.Controller.py is part of The RTK Project
+#       rtk.modules.allocation.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,15 +8,15 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
 from rtk.modules.hardware import dtmHardwareBoM
 from . import dtmAllocation
 
 
-class AllocationDataController(RTKDataController):
+class AllocationDataController(RAMSTKDataController):
     """
-    Provide an interface between Allocation data models and RTK views.
+    Provide an interface between Allocation data models and RAMSTK views.
 
     A single Allocation data controller can manage one or more Allocation data
     models.
@@ -27,12 +27,12 @@ class AllocationDataController(RTKDataController):
         Initialize a Allocation data controller instance.
 
         :param dao: the data access object used to communicate with the
-                    connected RTK Program database.
+                    connected RAMSTK Program database.
         :type dao: :py:class:`rtk.dao.DAO.DAO`
-        :param configuration: the RTK configuration instance.
+        :param configuration: the RAMSTK configuration instance.
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmAllocation(dao),
@@ -85,7 +85,7 @@ class AllocationDataController(RTKDataController):
             node_id, hazard_rates=_lst_hazard_rates, **kwargs)
 
         if not _return:
-            _return = RTKDataController.do_handle_results(
+            _return = RAMSTKDataController.do_handle_results(
                 self, 0, '', 'calculatedAllocation')
 
         return _return
@@ -101,7 +101,7 @@ class AllocationDataController(RTKDataController):
 
     def request_do_delete(self, node_id):
         """
-        Request to delete an RTKAllocation table record.
+        Request to delete an RAMSTKAllocation table record.
 
         :param int node_id: the PyPubSub Tree() ID of the Allocation to be
                             deleted.
@@ -111,12 +111,12 @@ class AllocationDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedAllocation')
 
     def request_do_insert(self, **kwargs):
         """
-        Request to add an RTKAllocation table record.
+        Request to add an RAMSTKAllocation table record.
 
         :param int revision_id: the Revision ID this Allocation will be
                                 associated with.
@@ -132,23 +132,23 @@ class AllocationDataController(RTKDataController):
             parent_id=_parent_id)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             if not self._test:
                 pub.sendMessage('insertedAllocation')
         else:
-            _msg = _msg + ('  Failed to add a new Allocation to the RTK '
+            _msg = _msg + ('  Failed to add a new Allocation to the RAMSTK '
                            'Program database.')
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_select_all(self, **kwargs):
         """
         Retrieve the treelib Tree() from the Data Model.
 
-        :return: tree; the treelib Tree() of RTKAllocation models in the
+        :return: tree; the treelib Tree() of RAMSTKAllocation models in the
                  Allocation tree.
         :rtype: dict
         """
@@ -168,7 +168,7 @@ class AllocationDataController(RTKDataController):
             ]
 
         # Select and return the Allocation treelib Tree().
-        return RTKDataController.request_do_select_all(self, **kwargs)
+        return RAMSTKDataController.request_do_select_all(self, **kwargs)
 
     def request_do_select_children(self, node_id):
         """
@@ -183,7 +183,7 @@ class AllocationDataController(RTKDataController):
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKAllocation table record.
+        Request to update an RAMSTKAllocation table record.
 
         :param str node_id: the PyPubSub Tree() ID of the Allocation to update.
         :return: (_error_code, _msg); the error code and associated error
@@ -192,17 +192,17 @@ class AllocationDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedAllocation')
 
     def request_do_update_all(self, **kwargs):
         """
-        Request to update all records in the RTKAllocation table.
+        Request to update all records in the RAMSTKAllocation table.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

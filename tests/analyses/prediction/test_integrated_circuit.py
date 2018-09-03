@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_integrated_circuit.py is part of The RTK
+#       tests.analyses.prediction.test_integrated_circuit.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -355,7 +355,7 @@ def test_calculate_mil_hdbk_217f_part_count(technology_id, quality_id,
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when '
+        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
                         'calculating integrated circuit, hardware ID: 6')
     else:
         assert _msg == ''
@@ -378,7 +378,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
         **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'integrated circuit, hardware ID: 6')
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -399,7 +399,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_technology():
         **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'integrated circuit, hardware ID: 6')
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -420,7 +420,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
         **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'integrated circuit, hardware ID: 6')
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -441,7 +441,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
         **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piQ is 0.0 when calculating integrated '
+    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating integrated '
                     'circuit, hardware ID: 6')
     assert _attributes['lambda_b'] == 0.0095
     assert _attributes['piQ'] == 0.0

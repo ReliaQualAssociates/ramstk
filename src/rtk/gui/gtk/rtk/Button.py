@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.Button.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.Button.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,9 +8,9 @@
 Button Module
 -------------------------------------------------------------------------------
 
-This module contains RTK button classes.  These classes are derived from the
-applicable pyGTK buttons, but are provided with RTK specific property values
-and methods.  This ensures a consistent look and feel to widgets in the RTK
+This module contains RAMSTK button classes.  These classes are derived from the
+applicable pyGTK buttons, but are provided with RAMSTK specific property values
+and methods.  This ensures a consistent look and feel to widgets in the RAMSTK
 application.
 """
 
@@ -18,9 +18,9 @@ application.
 from .Widget import _, gtk  # pylint: disable=E0401
 
 
-class RTKButton(gtk.Button):
+class RAMSTKButton(gtk.Button):
     """
-    This is the RTK Button class.
+    This is the RAMSTK Button class.
     """
 
     def __init__(self, height=40, width=200, label="", icon=None):
@@ -54,15 +54,15 @@ class RTKButton(gtk.Button):
         self.show_all()
 
 
-class RTKCheckButton(gtk.CheckButton):
+class RAMSTKCheckButton(gtk.CheckButton):
     """
-    This is the RTK Check Button class.
+    This is the RAMSTK Check Button class.
     """
 
     def __init__(self,
                  label="",
                  width=-1,
-                 tooltip='RTK WARNING: Missing tooltip.  '
+                 tooltip='RAMSTK WARNING: Missing tooltip.  '
                  'Please register an Enhancement type bug.'):
         """
         Method to create CheckButton widgets.
@@ -86,9 +86,9 @@ class RTKCheckButton(gtk.CheckButton):
         self.get_child().props.width_request = width
 
 
-class RTKOptionButton(gtk.RadioButton):
+class RAMSTKOptionButton(gtk.RadioButton):
     """
-    This is the RTK Option Button class.
+    This is the RAMSTK Option Button class.
     """
 
     def __init__(self, btngroup=None, btnlabel=_(u"")):

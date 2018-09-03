@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_hazard_analysis.py is part of The RTK Project
+#       rtk.tests.modules.test_hazard_analysis.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -11,7 +11,7 @@ import pytest
 
 from treelib import Tree
 
-from rtk.dao import DAO, RTKHazardAnalysis
+from rtk.dao import DAO, RAMSTKHazardAnalysis
 from rtk.modules.hazops import dtmHazardAnalysis, dtcHazardAnalysis
 
 __author__ = 'Andrew Rowland'
@@ -37,18 +37,18 @@ def test_do_select_all(test_dao):
     _tree = DUT.do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node('2.2').data, RTKHazardAnalysis)
+    assert isinstance(_tree.get_node('2.2').data, RAMSTKHazardAnalysis)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKHazardAnalysis data model on success. """
+    """ do_select() should return an instance of the RAMSTKHazardAnalysis data model on success. """
     DUT = dtmHazardAnalysis(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hazard_analysis = DUT.do_select('2.2')
 
-    assert isinstance(_hazard_analysis, RTKHazardAnalysis)
+    assert isinstance(_hazard_analysis, RAMSTKHazardAnalysis)
     assert _hazard_analysis.hardware_id == 2
     assert _hazard_analysis.hazard_id == 2
     assert _hazard_analysis.assembly_severity == 'Major'
@@ -74,7 +74,7 @@ def test_do_select_children(test_dao):
     _nodes = DUT.do_select_children(2)
 
     assert isinstance(_nodes, Tree)
-    assert isinstance(_nodes['2.2'].data, RTKHazardAnalysis)
+    assert isinstance(_nodes['2.2'].data, RAMSTKHazardAnalysis)
     assert _nodes['2.2'].identifier == '2.2'
 
 
@@ -87,7 +87,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, hardware_id=2)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
                     "Program database.")
     assert DUT.last_id == 9
 
@@ -101,7 +101,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete('2.2')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                     "database.")
     assert DUT.last_id == '8.8'
 
@@ -115,7 +115,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RTK ERROR: Attempted to delete non-existent Hazard "
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Hazard "
                     "Analysis ID 300.")
 
 
@@ -131,7 +131,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update('3.3')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
 
 
 @pytest.mark.integration
@@ -144,7 +144,7 @@ def test_do_update_non_existent_id(test_dao):
 
     assert _error_code == 2207
     assert _msg == (
-        "RTK ERROR: Attempted to save non-existent Hazard Analysis "
+        "RAMSTK ERROR: Attempted to save non-existent Hazard Analysis "
         "ID 100.")
 
 
@@ -157,7 +157,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all(hardware_id=3)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the HazOps table "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the HazOps table "
                     "for Hardware ID 3.")
 
 
@@ -195,22 +195,22 @@ def test_create_hazard_analysis_data_controller(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_select_all(test_dao, test_configuration):
-    """ request_do_select_all() should return a Tree of RTKHazardAnalysis data models. """
+    """ request_do_select_all() should return a Tree of RAMSTKHazardAnalysis data models. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
 
     _tree = DUT.request_do_select_all(revision_id=1)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node('3.3').data, RTKHazardAnalysis)
+    assert isinstance(_tree.get_node('3.3').data, RAMSTKHazardAnalysis)
 
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
-    """ request_do_select() should return an RTKHazardAnalysis data model. """
+    """ request_do_select() should return an RAMSTKHazardAnalysis data model. """
     DUT = dtcHazardAnalysis(test_dao, test_configuration, test='True')
     DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(DUT.request_do_select('3.3'), RTKHazardAnalysis)
+    assert isinstance(DUT.request_do_select('3.3'), RAMSTKHazardAnalysis)
 
 
 @pytest.mark.integration

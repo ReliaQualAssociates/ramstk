@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.export.Controller.py is part of The RTK Project
+#       rtk.modules.export.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle "weibullguy" Rowland
 """Export Package Data Controller Module."""
 
-# Export other RTK modules.
-from rtk.modules import RTKDataController
+# Export other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
 from . import dtmExports
 
 
-class ExportDataController(RTKDataController):
+class ExportDataController(RAMSTKDataController):
     """
-    Provide an interface between Export data models and RTK views.
+    Provide an interface between Export data models and RAMSTK views.
 
     A single Export data controller can manage one or more Export
     data models.
@@ -24,12 +24,12 @@ class ExportDataController(RTKDataController):
         Initialize a Export data controller instance.
 
         :param dao: the data access object used to communicate with the
-                    connected RTK Program database.
+                    connected RAMSTK Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
-        :param configuration: the RTK configuration instance.
+        :param configuration: the RAMSTK configuration instance.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmExports(dao),

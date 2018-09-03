@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.Label.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.Label.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,10 +8,10 @@
 Label Module
 -------------------------------------------------------------------------------
 
-This module contains RTK label classes and function.  These classes are derived
-from the applicable pyGTK label, but are provided with RTK specific property
+This module contains RAMSTK label classes and function.  These classes are derived
+from the applicable pyGTK label, but are provided with RAMSTK specific property
 values and methods.  This ensures a consistent look and feel to widgets in the
-RTK application.
+RAMSTK application.
 """
 
 # Import the rtk.Widget base class.
@@ -50,7 +50,7 @@ def make_label_group(text, container, x_pos, y_pos, y_inc=25, wrap=True):
     _char_width = max([len(_label_text) for _label_text in text])
 
     for __, _label_text in enumerate(text):
-        _label = RTKLabel(
+        _label = RAMSTKLabel(
             _label_text,
             width=-1,
             height=-1,
@@ -65,9 +65,9 @@ def make_label_group(text, container, x_pos, y_pos, y_inc=25, wrap=True):
     return _max_x, _lst_y_pos
 
 
-class RTKLabel(gtk.Label):
+class RAMSTKLabel(gtk.Label):
     """
-    This is the RTK Label class.
+    This is the RAMSTK Label class.
     """
 
     # pylint: disable=R0913

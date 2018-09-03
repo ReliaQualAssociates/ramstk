@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.moduleviews.Requirement.py is part of the RTK Project
+#       rtk.gui.gtk.moduleviews.Requirement.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,18 +8,18 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .ModuleView import RTKModuleView
+from .ModuleView import RAMSTKModuleView
 
 
-class ModuleView(RTKModuleView):
+class ModuleView(RAMSTKModuleView):
     """
-    Display Requirement attribute data in the RTK Module Book.
+    Display Requirement attribute data in the RAMSTK Module Book.
 
     The Requirement Module Book view displays all the Requirements associated
-    with the RTK Program in a hierarchical list.  The attributes of the
+    with the RAMSTK Program in a hierarchical list.  The attributes of the
     Requriements Module View are:
 
     :ivar _requirement_id: the ID of the currently selected Requirement.
@@ -30,13 +30,13 @@ class ModuleView(RTKModuleView):
         """
         Initialize the Requirement Module View.
 
-        :param controller: the RTK Master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK Master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKModuleView.__init__(self, controller, module='requirement')
+        RAMSTKModuleView.__init__(self, controller, module='requirement')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/requirement.png'
 
         # Initialize private list attributes.
@@ -61,7 +61,7 @@ class ModuleView(RTKModuleView):
             self.treeview.connect('button_press_event', self._on_button_press))
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Requirements"),
             width=-1,
             height=-1,
@@ -123,13 +123,13 @@ class ModuleView(RTKModuleView):
 
     def _do_change_row(self, treeview):
         """
-        Handle events for the Requirement Module View RTKTreeView().
+        Handle events for the Requirement Module View RAMSTKTreeView().
 
-        This method is called whenever a Module View RTKTreeView() row is
+        This method is called whenever a Module View RAMSTKTreeView() row is
         activated or changed.
 
-        :param treeview: the Requirement class RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
+        :param treeview: the Requirement class RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -149,7 +149,7 @@ class ModuleView(RTKModuleView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the Requirement package Module View RTKTreeView().
+        Handle edits of the Requirement package Module View RAMSTKTreeView().
 
         :param __cell: the gtk.CellRenderer() that was edited.
         :type __cell: :class:`gtk.CellRenderer`
@@ -216,7 +216,7 @@ class ModuleView(RTKModuleView):
         _prompt = _(u"You are about to delete Requirement {0:d} and all data "
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._requirement_id)
-        _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['question'],
+        _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
                                        'question')
         _response = _dialog.do_run()
 
@@ -226,7 +226,7 @@ class ModuleView(RTKModuleView):
                     self._requirement_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Requirement {0:d}.").format(self._requirement_id)
-                _error_dialog = rtk.RTKMessageDialog(
+                _error_dialog = rtk.RAMSTKMessageDialog(
                     _prompt, self._dic_icons['error'], 'error')
                 if _error_dialog.do_run() == gtk.RESPONSE_OK:
                     _error_dialog.do_destroy()
@@ -261,7 +261,7 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert(self, **kwargs):
         """
-        Request to insert a new Requirement into the RTK Program database.
+        Request to insert a new Requirement into the RAMSTK Program database.
 
         :param bool sibling: indicates whether to insert a sibling (default)
                              Requirement or a child Requirement.
@@ -308,9 +308,9 @@ class ModuleView(RTKModuleView):
             _prompt = _(u"An error occurred while attempting to add a "
                         u"requirement to Revision "
                         u"{0:d}.").format(self._revision_id)
-            _error_dialog = rtk.RTKMessageDialog(
+            _error_dialog = rtk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
-            self._mdcRTK.debug_log.error(_prompt)
+            self._mdcRAMSTK.debug_log.error(_prompt)
 
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
@@ -386,9 +386,9 @@ class ModuleView(RTKModuleView):
             _(u"Adds a new Requirement one level subordinate to the selected "
               u"Requirement (i.e., a derived requirement)."),
             _(u"Remove the currently selected Requirement."),
-            _(u"Save the currently selected Requirement to the open RTK "
+            _(u"Save the currently selected Requirement to the open RAMSTK "
               u"Program database."),
-            _(u"Saves all Requirements to the open RTK Program database."),
+            _(u"Saves all Requirements to the open RAMSTK Program database."),
             _(u"Exports Requirementss to an external file (CSV, Excel, and "
               u"text files are supported).")
         ]
@@ -402,7 +402,7 @@ class ModuleView(RTKModuleView):
             'export'
         ]
 
-        _buttonbox = RTKModuleView._make_buttonbox(
+        _buttonbox = RAMSTKModuleView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -415,7 +415,7 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Set up the Requirement Module View RTKTreeView().
+        Set up the Requirement Module View RAMSTKTreeView().
 
         This method sets all cells as non-editable to make the Requirement
         Module View read-only.
@@ -435,10 +435,10 @@ class ModuleView(RTKModuleView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Requirement Module View RTKTreeView().
+        Handle mouse clicks on the Requirement Module View RAMSTKTreeView().
 
-        :param treeview: the Requirement class RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
+        :param treeview: the Requirement class RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -520,9 +520,9 @@ class ModuleView(RTKModuleView):
 
     def _on_edit(self, position, new_text):
         """
-        Update the Requirement Module View RTKTreeView.
+        Update the Requirement Module View RAMSTKTreeView.
 
-        This method updates the Module View RTKTreeView with changes to the
+        This method updates the Module View RAMSTKTreeView with changes to the
         Requirement data model attributes.  It is called when Requirement
         attributes are changed in other views.
 
@@ -542,7 +542,7 @@ class ModuleView(RTKModuleView):
         """
         Load the Requirement Module View gtk.TreeModel().
 
-        This method is called whenever an RTK Program database is opened or a
+        This method is called whenever an RAMSTK Program database is opened or a
         Revision is selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
@@ -551,19 +551,19 @@ class ModuleView(RTKModuleView):
         self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers[
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'requirement']
 
         _requirements = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
-        _return = RTKModuleView.on_select_revision(self, tree=_requirements)
+        _return = RAMSTKModuleView.on_select_revision(self, tree=_requirements)
         if _return:
             _prompt = _(u"An error occured while loading the Requirements for "
                         u"Revision ID {0:d} into the Module "
                         u"View.").format(self._revision_id)
-            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
+            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()

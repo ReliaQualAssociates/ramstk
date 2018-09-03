@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Semiconductor.py is part of the RTK
+#       rtk.gui.gtk.workviews.components.Semiconductor.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -9,7 +9,7 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _
 from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
@@ -18,7 +18,7 @@ from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
 
 class SemiconductorAssessmentInputs(AssessmentInputs):
     """
-    Display Semiconductor assessment input attribute data in the RTK Work Book.
+    Display Semiconductor assessment input attribute data in the RAMSTK Work Book.
 
     The Semiconductor assessment input view displays all the assessment inputs
     for the selected semiconductor.  This includes, currently, inputs for
@@ -197,33 +197,33 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbPackage = rtk.RTKComboBox(
+        self.cmbPackage = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The package type for the semiconductor."))
-        self.cmbType = rtk.RTKComboBox(
+        self.cmbType = rtk.RAMSTKComboBox(
             index=0, simple=False, tooltip=_(u"The type of semiconductor."))
-        self.cmbApplication = rtk.RTKComboBox(
+        self.cmbApplication = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The application of the semiconductor."))
-        self.cmbConstruction = rtk.RTKComboBox(
+        self.cmbConstruction = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The method of construction of the semiconductor."))
-        self.cmbMatching = rtk.RTKComboBox(
+        self.cmbMatching = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The matching network of the semiconductor."))
 
-        self.txtFrequencyOperating = rtk.RTKEntry(
+        self.txtFrequencyOperating = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The operating frequency of the semiconductor."))
-        self.txtNElements = rtk.RTKEntry(
+        self.txtNElements = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"The number of characters in the optoelectronic display."))
-        self.txtThetaJC = rtk.RTKEntry(
+        self.txtThetaJC = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"The junction-case thermal resistance of the semiconductor."))
@@ -255,7 +255,7 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         """
         Load the semiconductor RKTComboBox()s.
 
-        This method is used to load the specification RTKComboBox() whenever
+        This method is used to load the specification RAMSTKComboBox() whenever
         the semiconductor subcategory is changed.
 
         :param int subcategory_id: the newly selected semiconductor subcategory
@@ -267,7 +267,7 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
 
-        # Load the quality level RTKComboBox().
+        # Load the quality level RAMSTKComboBox().
         if _attributes['hazard_rate_method_id'] == 1:
             if self._subcategory_id == 13:
                 _data = [[_(u"Hermetic Package")],
@@ -283,29 +283,29 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
                 _data = []
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the application RTKComboBox().
+        # Load the application RAMSTKComboBox().
         try:
             _data = self._dic_applications[self._subcategory_id]
         except KeyError:
             _data = []
         self.cmbApplication.do_load_combo(_data)
 
-        # Load the construction RTKComboBox().
+        # Load the construction RAMSTKComboBox().
         self.cmbConstruction.do_load_combo(
             [[_(u"Metallurgically Bonded")],
              [_(u"Non-Metallurgically Bonded and Spring Loaded Contacts")]])
 
-        # Load the matching network RTKComboBox().
+        # Load the matching network RAMSTKComboBox().
         try:
             _data = self._dic_matchings[self._subcategory_id]
         except KeyError:
             _data = []
         self.cmbMatching.do_load_combo(_data)
 
-        # Load the package RTKComboBox().
+        # Load the package RAMSTKComboBox().
         self.cmbPackage.do_load_combo(self._lst_packages)
 
-        # Load the type RTKComboBox().
+        # Load the type RAMSTKComboBox().
         try:
             if (_attributes['hazard_rate_method_id'] == 1
                     and self._subcategory_id == 11):
@@ -437,16 +437,16 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Semiconductor attribute.
+        Retrieve RAMSTKCombo() changes and assign to Semiconductor attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +-------+------------------+-------+------------------+
             | Index | Widget           | Index | Widget           |
@@ -488,16 +488,16 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -637,42 +637,42 @@ class SemiconductorAssessmentResults(AssessmentResults):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiT = rtk.RTKEntry(
+        self.txtPiT = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The temperature factor for the semiconductor."))
-        self.txtPiA = rtk.RTKEntry(
+        self.txtPiA = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The application factor for the semiconductor."))
-        self.txtPiC = rtk.RTKEntry(
+        self.txtPiC = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The construction factor for the semiconductor."))
-        self.txtPiR = rtk.RTKEntry(
+        self.txtPiR = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The power rating factor for the semiconductor."))
-        self.txtPiM = rtk.RTKEntry(
+        self.txtPiM = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The matching network factor for the semiconductor."))
-        self.txtPiI = rtk.RTKEntry(
+        self.txtPiI = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The forward current factor for the semiconductor."))
-        self.txtPiP = rtk.RTKEntry(
+        self.txtPiP = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The power degradation factor for the semiconductor."))
-        self.txtPiS = rtk.RTKEntry(
+        self.txtPiS = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,

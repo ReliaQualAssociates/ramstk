@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.revision.Model.py is part of The RTK Project
+#       rtk.modules.revision.Model.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Revision Package Data Model."""
 
-# Import other RTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import RTKRevision
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import RAMSTKRevision
 
 
-class RevisionDataModel(RTKDataModel):
+class RevisionDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a Revision.
 
-    An RTK Project will consist of one or more Revisions.  The attributes of a
+    An RAMSTK Project will consist of one or more Revisions.  The attributes of a
     Revision are:
     """
 
@@ -25,11 +25,11 @@ class RevisionDataModel(RTKDataModel):
         """
         Initialize a Revision data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -45,18 +45,18 @@ class RevisionDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Retrieve all the Revisions from the RTK Program database.
+        Retrieve all the Revisions from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKRevision table in the
-        connected RTK Program database.  It then add each to the Revision data
+        This method retrieves all the records from the RAMSTKRevision table in the
+        connected RAMSTK Program database.  It then add each to the Revision data
         model treelib.Tree().
 
-        :return: tree; the Tree() of RTKRevision data models.
+        :return: tree; the Tree() of RAMSTKRevision data models.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.do_select_all(self)
+        _session = RAMSTKDataModel.do_select_all(self)
 
-        for _revision in _session.query(RTKRevision).all():
+        for _revision in _session.query(RAMSTKRevision).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _revision.get_attributes()
@@ -68,7 +68,7 @@ class RevisionDataModel(RTKDataModel):
                 data=_revision)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = max(self.last_id, _revision.revision_id)
 
         _session.close()
@@ -77,13 +77,13 @@ class RevisionDataModel(RTKDataModel):
 
     def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Add a record to the RTKRevision table.
+        Add a record to the RAMSTKRevision table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _revision = RTKRevision()
-        _error_code, _msg = RTKDataModel.do_insert(
+        _revision = RAMSTKRevision()
+        _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _revision,
             ])
@@ -96,27 +96,27 @@ class RevisionDataModel(RTKDataModel):
                 data=_revision)
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
+            # It is defined in RAMSTKDataModel.__init__
             self.last_id = _revision.revision_id
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RTKRevision table.
+        Remove a record from the RAMSTKRevision table.
 
-        :param int node_id entity: the ID of the RTKRevision record to be
-                                   removed from the RTK Program database.
+        :param int node_id entity: the ID of the RAMSTKRevision record to be
+                                   removed from the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_delete(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKDataModel.__init__
+        # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Revision ID {0:d}.'.format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
@@ -125,24 +125,24 @@ class RevisionDataModel(RTKDataModel):
 
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RTK Program database.
+        Update the record associated with Node ID to the RAMSTK Program database.
 
         :param int node_id: the Revision ID of the Revision to save.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.do_update(self, node_id)
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Revision ID ' \
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Revision ID ' \
                    '{0:d}.'.format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Update all RTKRevision table records in the RTK Program database.
+        Update all RAMSTKRevision table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -157,9 +157,9 @@ class RevisionDataModel(RTKDataModel):
                 _msg = _msg + _debug_msg + '\n'
             except AttributeError:
                 _error_code = 1
-                _msg = ("RTK ERROR: One or more Revisions did not update.")
+                _msg = ("RAMSTK ERROR: One or more Revisions did not update.")
 
         if _error_code == 0:
-            _msg = ("RTK SUCCESS: Updating all Revisions.")
+            _msg = ("RAMSTK SUCCESS: Updating all Revisions.")
 
         return _error_code, _msg

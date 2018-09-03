@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.PoF.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.PoF.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -9,14 +9,14 @@
 from sortedcontainers import SortedDict
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from rtk.gui.gtk.assistants import AddStressMethod
-from .WorkView import RTKWorkView
+from .WorkView import RAMSTKWorkView
 
 
-class PoF(RTKWorkView):
+class PoF(RAMSTKWorkView):
     """
     Display PoF attribute data in the Work Book.
 
@@ -42,22 +42,22 @@ class PoF(RTKWorkView):
         """
         Initialize the Work View for the PoF.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKWorkView.__init__(self, controller, module='PoF')
+        RAMSTKWorkView.__init__(self, controller, module='PoF')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['mode'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+        self._dic_icons['mode'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/mode.png'
         self._dic_icons['mechanism'] = \
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/mechanism.png'
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mechanism.png'
         self._dic_icons['opload'] = \
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/load.png'
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/load.png'
         self._dic_icons['opstress'] = \
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/stress.png'
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/stress.png'
         self._dic_icons['testmethod'] = \
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/method.png'
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/method.png'
 
         # Initialize private list attributes.
 
@@ -69,13 +69,13 @@ class PoF(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = (controller.RTK_CONFIGURATION.RTK_CONF_DIR + '/layouts/' +
-                     controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['pof'])
+        _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+                     controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['pof'])
         _fmt_path = "/root/tree[@name='PoF']/column"
         _tooltip = _(u"Displays the Physics of Failure (PoF) Analysis for the "
                      u"currently selected hardware item.")
 
-        self.treeview = rtk.RTKTreeView(
+        self.treeview = rtk.RAMSTKTreeView(
             _fmt_path,
             0,
             _fmt_file,
@@ -86,7 +86,7 @@ class PoF(RTKWorkView):
         self._lst_col_order = self.treeview.order
         self.treeview.set_tooltip_text(_tooltip)
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Damage\nModeling"),
             height=30,
             width=-1,
@@ -120,7 +120,7 @@ class PoF(RTKWorkView):
 
     def _do_load_page(self, **kwargs):
         """
-        Iterate through the tree and load the Physics of Failure RTKTreeView().
+        Iterate through the tree and load the Physics of Failure RAMSTKTreeView().
 
         :return: (_error_code, _user_msg, _debug_msg); the error code, message
                  to be displayed to the user, and the message to be written to
@@ -187,7 +187,7 @@ class PoF(RTKWorkView):
                 _user_msg = _(u"One or more PoF line items had the wrong data "
                               u"type in it's data package and is not "
                               u"displayed in the PoF form.")
-                _debug_msg = ("RTK ERROR: Data for PoF ID {0:s} for Hardware "
+                _debug_msg = ("RAMSTK ERROR: Data for PoF ID {0:s} for Hardware "
                               "ID {1:s} is the wrong type for one or more "
                               "columns.".format(
                                   str(_node.identifier),
@@ -199,7 +199,7 @@ class PoF(RTKWorkView):
                     u"One or more PoF line items was missing some of it's "
                     u"data and is not displayed in the PoF form.")
                 _debug_msg = (
-                    "RTK ERROR: Too few fields for PoF ID {0:s} for Hardware "
+                    "RAMSTK ERROR: Too few fields for PoF ID {0:s} for Hardware "
                     "ID {1:s}.".format(
                         str(_node.identifier), str(self._hardware_id)))
                 _new_row = None
@@ -211,7 +211,7 @@ class PoF(RTKWorkView):
                               u"data package and is not displayed in the PoF "
                               u"form.")
                 _debug_msg = (
-                    "RTK ERROR: There is no data package for PoF ID {0:s} "
+                    "RAMSTK ERROR: There is no data package for PoF ID {0:s} "
                     "for Hardware ID {1:s}.".format(
                         str(_node.identifier), str(self._hardware_id)))
             _new_row = None
@@ -232,12 +232,12 @@ class PoF(RTKWorkView):
 
     def _do_change_row(self, treeview):
         """
-        Handle 'cursor-changed' event for the (D)FME(C)A RTKTreeView().
+        Handle 'cursor-changed' event for the (D)FME(C)A RAMSTKTreeView().
 
         This method is called whenever a Tree View row is activated.
 
-        :param treeview: the FMEA RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeViewRTKTreeView`
+        :param treeview: the FMEA RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeViewRAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -320,7 +320,7 @@ class PoF(RTKWorkView):
 
         i = 0
         for _heading in _headings:
-            _label = rtk.RTKLabel(
+            _label = rtk.RAMSTKLabel(
                 _heading, height=-1, justify=gtk.JUSTIFY_CENTER, wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
@@ -337,10 +337,10 @@ class PoF(RTKWorkView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the PoF RTKTreeview().
+        Handle edits of the PoF RAMSTKTreeview().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RTKTreeView() path of the gtk.CellRenderer()
+        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
@@ -390,7 +390,7 @@ class PoF(RTKWorkView):
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 12)
 
-        # Delete the selected entity from the RTK Program database and then
+        # Delete the selected entity from the RAMSTK Program database and then
         # refresh the TreeView.
         if not self._dtc_data_controller.request_do_delete(_node_id):
             self._on_select(module_id=self._hardware_id)
@@ -444,12 +444,12 @@ class PoF(RTKWorkView):
             _entity_id = _model.get_value(_row, 0)
             _parent_id = _node_id
 
-        # Insert the new entity into the RTK Program database and then refresh
+        # Insert the new entity into the RAMSTK Program database and then refresh
         # the TreeView.
         if _undefined:
             _prompt = _(u"A Physics of Failure operating stress or test "
                         u"method cannot have a child entity.")
-            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
+            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
                                            'error')
 
             if _dialog.do_run() == gtk.RESPONSE_OK:
@@ -475,7 +475,7 @@ class PoF(RTKWorkView):
 
             _dialog.do_destroy()
 
-        # Insert the new entity into the RTK Program database and then refresh
+        # Insert the new entity into the RAMSTK Program database and then refresh
         # the TreeView.
         if (_undefined or _return
                 or self._dtc_data_controller.request_do_insert(
@@ -593,9 +593,9 @@ class PoF(RTKWorkView):
             _(u"Add a new PoF entity one level below the currently "
               u"selected entity."),
             _(u"Remove the selected entity from the PoF."),
-            _(u"Save the currently selected item in the PoF to the RTK "
+            _(u"Save the currently selected item in the PoF to the RAMSTK "
               u"Program database."),
-            _(u"Save the PoF to the open RTK Program database.")
+            _(u"Save the PoF to the open RAMSTK Program database.")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
@@ -606,7 +606,7 @@ class PoF(RTKWorkView):
             'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
         ]
 
-        _buttonbox = RTKWorkView._make_buttonbox(
+        _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -619,7 +619,7 @@ class PoF(RTKWorkView):
 
     def _make_page(self):
         """
-        Make the PoF RTKTreeview().
+        Make the PoF RAMSTKTreeview().
 
         :return: a gtk.Frame() containing the instance of gtk.Treeview().
         :rtype: :class:`gtk.Frame`
@@ -628,7 +628,7 @@ class PoF(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = rtk.RTKFrame(label=_(u"Physics of Failure (PoF) Analysis"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Physics of Failure (PoF) Analysis"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -650,24 +650,24 @@ class PoF(RTKWorkView):
         # Load the damage models into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[5])
         _model.append(('', ))
-        for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_DAMAGE_MODELS:
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS:
             _model.append(
-                (self._mdcRTK.RTK_CONFIGURATION.RTK_DAMAGE_MODELS[_item][0], ))
+                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS[_item][0], ))
 
         # Load the measureable parameter into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[6])
         _model.append(('', ))
-        for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_MEASURABLE_PARAMETERS:
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS:
             _model.append(
-                (self._mdcRTK.RTK_CONFIGURATION.RTK_MEASURABLE_PARAMETERS[
+                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS[
                     _item][1], ))
 
         # Load the load history into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[7])
         _model.append(('', ))
-        for _item in self._mdcRTK.RTK_CONFIGURATION.RTK_LOAD_HISTORY:
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY:
             _model.append(
-                (self._mdcRTK.RTK_CONFIGURATION.RTK_LOAD_HISTORY[_item][0], ))
+                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY[_item][0], ))
 
         # Set the priority gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
@@ -703,10 +703,10 @@ class PoF(RTKWorkView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the PoF Work View RTKTreeView().
+        Handle mouse clicks on the PoF Work View RAMSTKTreeView().
 
-        :param treeview: the PoF TreeView RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`.
+        :param treeview: the PoF TreeView RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -801,16 +801,16 @@ class PoF(RTKWorkView):
         _model.clear()
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers['pof']
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['pof']
 
         _pof = self._dtc_data_controller.request_do_select_all(
             parent_id=self._hardware_id, functional=False)
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
             tree=_pof, row=None)
 
-        RTKWorkView.on_select(
+        RAMSTKWorkView.on_select(
             self,
             title=_(u"Analyzing Physics of Failure for Hardware ID "
                     u"{0:d}").format(self._hardware_id),

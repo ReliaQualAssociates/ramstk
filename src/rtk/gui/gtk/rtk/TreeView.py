@@ -1,27 +1,27 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.TreeView.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.TreeView.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKTreeView Module."""
+"""RAMSTKTreeView Module."""
 
 import datetime
 
 from sortedcontainers import SortedDict
 import defusedxml.lxml as lxml
 
-# Import other RTK Widget classes.
+# Import other RAMSTK Widget classes.
 from .Widget import gobject, gtk, pango
-from .Label import RTKLabel
+from .Label import RAMSTKLabel
 
 
-class RTKTreeView(gtk.TreeView):
-    """The RTKTreeView class."""
+class RAMSTKTreeView(gtk.TreeView):
+    """The RAMSTKTreeView class."""
 
     # pylint: disable=R0913, R0914
     # Retain the arguments for backwards compatibility.  Once all current
-    # RTKTreeView() instances are updated to use the new API, the arguments
+    # RAMSTKTreeView() instances are updated to use the new API, the arguments
     # can be removed.
     def __init__(self,
                  fmt_path,
@@ -32,7 +32,7 @@ class RTKTreeView(gtk.TreeView):
                  pixbuf=False,
                  indexed=False):
         """
-        Initialize an RTKTreeView() instance.
+        Initialize an RAMSTKTreeView() instance.
         """
         gtk.TreeView.__init__(self)
 
@@ -59,7 +59,7 @@ class RTKTreeView(gtk.TreeView):
         self.index_col = None
 
         # This is required for backwards compatibility.  Once current
-        # RTKTreeView() instances are updated to use the new API, this if
+        # RAMSTKTreeView() instances are updated to use the new API, this if
         # block can be removed.
         if fmt_file is not None:
             self.do_parse_format(fmt_path, fmt_file, pixbuf, indexed)
@@ -67,7 +67,7 @@ class RTKTreeView(gtk.TreeView):
 
     def do_parse_format(self, fmt_path, fmt_file, pixbuf=False, indexed=False):
         """
-        Parse the format file for the RTKTreeView().
+        Parse the format file for the RAMSTKTreeView().
 
         :param str fmt_path: the base XML path in the format file to read.
         :param str fmt_file: the absolute path to the format file to read.
@@ -115,7 +115,7 @@ class RTKTreeView(gtk.TreeView):
             except IndexError:
                 pass
 
-        # Append entries to each list if this RTKTreeView is to display an
+        # Append entries to each list if this RAMSTKTreeView is to display an
         # icon at the beginning of the row (Usage Profile, Hardware, etc.)
         if pixbuf:
             self.datatypes.append('pixbuf')
@@ -140,7 +140,7 @@ class RTKTreeView(gtk.TreeView):
 
         # Sort each of the lists according to the desired sequence provided in
         # the _position list.  This is necessary to allow for user-specific
-        # ordering of columns in the RTKTreeView.
+        # ordering of columns in the RAMSTKTreeView.
         self.datatypes = [
             x for _, x in sorted(zip(self.order, self.datatypes))
         ]
@@ -154,7 +154,7 @@ class RTKTreeView(gtk.TreeView):
 
     def make_model(self, bg_color='#000000', fg_color='#FFFFFF'):
         """
-        Make the RTKTreeView() data model.
+        Make the RAMSTKTreeView() data model.
 
         :keyword str bg_col: the background color to use for each row.
                              Defaults to white.
@@ -243,7 +243,7 @@ class RTKTreeView(gtk.TreeView):
 
         _attributes = []
         if _entity is not None:
-            # For simple data models that return an RTK database table instance
+            # For simple data models that return an RAMSTK database table instance
             # for the data object, the first try statement will create the list
             # of attribute values.
             try:
@@ -254,7 +254,7 @@ class RTKTreeView(gtk.TreeView):
                     _attributes.append(_temp[_key])
             except AttributeError:
                 # For aggregate data models (Hardware, Software) that return a
-                # dictionary of attributes from ALL associated RTK database
+                # dictionary of attributes from ALL associated RAMSTK database
                 # tables, this try statement will create the list of attribute
                 # values.
                 try:
@@ -295,7 +295,7 @@ class RTKTreeView(gtk.TreeView):
                 _column.pack_start(_cell, True)
                 _column.connect('notify::width', self._resize_wrap, _cell)
 
-        _label = RTKLabel(
+        _label = RAMSTKLabel(
             heading, width=-1, height=-1, justify=gtk.JUSTIFY_CENTER)
         _column.set_widget(_label)
         _column.set_resizable(True)
@@ -613,5 +613,5 @@ class CellRendererML(gtk.CellRendererText):
 
 
 # Register the new widget types.
-gobject.type_register(RTKTreeView)
+gobject.type_register(RAMSTKTreeView)
 gobject.type_register(CellRendererML)

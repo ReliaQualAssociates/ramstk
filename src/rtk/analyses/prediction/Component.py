@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.Component.py is part of the RTK Project
+#       rtk.analyses.prediction.Component.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -37,17 +37,17 @@ def calculate(**attributes):
     attributes = do_check_overstress(**attributes)
 
     if attributes['mult_adj_factor'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
+        _msg = _msg + 'RAMSTK WARNING: Multiplicative adjustment factor is 0.0 ' \
             'when calculating hardware item, hardware ID: ' \
             '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['duty_cycle'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Duty cycle is 0.0 when calculating ' \
+        _msg = _msg + 'RAMSTK WARNING: Duty cycle is 0.0 when calculating ' \
             'hardware item, hardware ID: ' \
             '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['quantity'] < 1:
-        _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
+        _msg = _msg + 'RAMSTK WARNING: Quantity is less than 1 when ' \
             'calculating hardware item, hardware ID: ' \
             '{0:d}.\n'.format(attributes['hardware_id'])
 
@@ -548,7 +548,7 @@ def do_calculate_dormant_hazard_rate(**attributes):
                      attributes['hazard_rate_active'])
     except KeyError:
         attributes['hazard_rate_dormant'] = 0.0
-        _msg = 'RTK ERROR: Unknown active and/or dormant environment ID for ' \
+        _msg = 'RAMSTK ERROR: Unknown active and/or dormant environment ID for ' \
                'hardware item.  Hardware ID: {0:d}, active environment ID: ' \
                '{1:d}, and dormant environment ID: ' \
                '{2:d}.\n'.format(attributes['hardware_id'],

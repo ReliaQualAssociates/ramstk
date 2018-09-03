@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_semiconductor.py is part of The RTK
+#       tests.analyses.prediction.test_semiconductor.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -218,11 +218,11 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0 and piQ > 0.0:
         assert _msg == (
-            'RTK WARNING: Base hazard rate is 0.0 when '
+            'RAMSTK WARNING: Base hazard rate is 0.0 when '
             'calculating semiconductor, hardware ID: 6 and active '
             'environment ID: {0:d}.\n').format(environment_active_id)
     elif piQ == 0.0:
-        assert _msg == ('RTK WARNING: piQ is 0.0 when calculating '
+        assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating '
                         'semiconductor, hardware ID: 6 and quality '
                         'ID: {0:d}.').format(quality_id)
     else:
@@ -292,7 +292,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     _attributes, _msg = Semiconductor.calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piQ is 0.0 when calculating semiconductor, '
+    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating semiconductor, '
                     'hardware ID: 6 and quality ID: 22.\n')
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert _attributes['temperature_junction'] == 55.5
@@ -329,7 +329,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     _attributes, _msg = Semiconductor.calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piE is 0.0 when calculating semiconductor, '
+    assert _msg == ('RAMSTK WARNING: piE is 0.0 when calculating semiconductor, '
                     'hardware ID: 6 and active environment ID: 41.\n')
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert _attributes['temperature_junction'] == 55.5

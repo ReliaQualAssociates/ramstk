@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.hardware.test_designelectric.py is part of The RTK
+#       tests.modules.hardware.test_designelectric.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -13,7 +13,7 @@ import pytest
 
 from rtk.modules.hardware import dtmDesignElectric
 from rtk.dao import DAO
-from rtk.dao import RTKDesignElectric
+from rtk.dao import RAMSTKDesignElectric
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,24 +34,24 @@ def test_data_model_create(test_dao):
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
-    """ do_select_all(hardware_id=) should return a Tree() object populated with RTKDesignElectric instances on success. """
+    """ do_select_all(hardware_id=) should return a Tree() object populated with RAMSTKDesignElectric instances on success. """
     DUT = dtmDesignElectric(test_dao)
 
     _tree = DUT.do_select_all(hardware_id=2)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(2).data, RTKDesignElectric)
+    assert isinstance(_tree.get_node(2).data, RAMSTKDesignElectric)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
-    """ do_select() should return an instance of the RTKDesignElectric data model on success. """
+    """ do_select() should return an instance of the RAMSTKDesignElectric data model on success. """
     DUT = dtmDesignElectric(test_dao)
     DUT.do_select_all(hardware_id=2)
 
     _design_electric = DUT.do_select(2)
 
-    assert isinstance(_design_electric, RTKDesignElectric)
+    assert isinstance(_design_electric, RAMSTKDesignElectric)
     assert _design_electric.hardware_id == 2
     assert _design_electric.area == 0.0
 
@@ -75,7 +75,7 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(hardware_id=90)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Adding one or more items to the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
                     'database.')
 
 
@@ -88,7 +88,7 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Deleting an item from the RTK Program '
+    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
                     'database.')
 
 
@@ -101,7 +101,7 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RTK ERROR: Attempted to delete non-existent '
+    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
                     'DesignElectric record ID 300.')
 
 
@@ -117,7 +117,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(3)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating the RTK Program database.')
+    assert _msg == ('RAMSTK SUCCESS: Updating the RAMSTK Program database.')
 
 
 @pytest.mark.integration
@@ -129,7 +129,7 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RTK ERROR: Attempted to save non-existent DesignElectric '
+    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent DesignElectric '
                     'record ID 100.')
 
 
@@ -142,5 +142,5 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all records in the electrical "
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the electrical "
                     "design table.")

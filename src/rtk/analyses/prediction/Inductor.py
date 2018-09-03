@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.Inductor.py is part of the RTK Project
+#       rtk.analyses.prediction.Inductor.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -99,7 +99,7 @@ def calculate_217f_part_count(**attributes):
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
+        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating inductor, hardware ID: ' \
             '{0:d}, subcategory ID: {1:d}, family ID: {2:d}, and active ' \
             'environment ID: {3:d}.'.format(attributes['hardware_id'],
@@ -108,7 +108,7 @@ def calculate_217f_part_count(**attributes):
                                             attributes['environment_active_id'])
 
     if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'inductor, hardware ID: {0:d}, quality ID: ' \
             '{1:d}.'.format(attributes['hardware_id'],
                             attributes['quality_id'])
@@ -200,7 +200,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['lambda_b'] = 0.0
 
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
+        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating inductor, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
 
@@ -216,7 +216,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the environmental factor (piE).
@@ -227,7 +227,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
+        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
             'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Calculate the construction factor (piC).

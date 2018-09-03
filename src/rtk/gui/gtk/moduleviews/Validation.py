@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.moduleviews.Validation.py is part of The RTK Project
+#       rtk.gui.gtk.moduleviews.Validation.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -11,21 +11,21 @@ import gettext
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.Utilities import date_to_ordinal
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .ModuleView import RTKModuleView
+from .ModuleView import RAMSTKModuleView
 
 _ = gettext.gettext
 
 
-class ModuleView(RTKModuleView):
+class ModuleView(RAMSTKModuleView):
     """
-    Display Validation attribute data in the RTK Module Book.
+    Display Validation attribute data in the RAMSTK Module Book.
 
     The Validation Module View displays all the Validations associated with the
-    connected RTK Program in a flat list.  The attributes of a Validation Module
+    connected RAMSTK Program in a flat list.  The attributes of a Validation Module
     View are:
 
     :ivar int _validation_id: the ID of the currently selected Validation.
@@ -35,13 +35,13 @@ class ModuleView(RTKModuleView):
         """
         Initialize the Validation Module View.
 
-        :param controller: the RTK Master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK Master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKModuleView.__init__(self, controller, module='validation')
+        RAMSTKModuleView.__init__(self, controller, module='validation')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/validation.png'
 
         # Initialize private list attributes.
@@ -77,7 +77,7 @@ class ModuleView(RTKModuleView):
             i += 1
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Validation"),
             width=-1,
             height=-1,
@@ -99,9 +99,9 @@ class ModuleView(RTKModuleView):
 
     def _do_change_row(self, treeview):
         """
-        Handle events for the Validation package Module View RTKTreeView().
+        Handle events for the Validation package Module View RAMSTKTreeView().
 
-        This method is called whenever a Validation Module View RTKTreeView()
+        This method is called whenever a Validation Module View RAMSTKTreeView()
         row is activated/changed.
 
         :param treeview: the Validation class gtk.TreeView().
@@ -125,7 +125,7 @@ class ModuleView(RTKModuleView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the Validation package Module View RTKTreeview().
+        Handle edits of the Validation package Module View RAMSTKTreeview().
 
         :param __cell: the gtk.CellRenderer() that was edited.
         :type __cell: :class:`gtk.CellRenderer`
@@ -213,7 +213,7 @@ class ModuleView(RTKModuleView):
 
     def _do_request_delete(self, __button):
         """
-        Request to delete the selected record from the RTKValidation table.
+        Request to delete the selected record from the RAMSTKValidation table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
@@ -225,7 +225,7 @@ class ModuleView(RTKModuleView):
         _prompt = _(u"You are about to delete Validation {0:d} and all data "
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._validation_id)
-        _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['question'],
+        _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
                                        'question')
         _response = _dialog.do_run()
 
@@ -234,7 +234,7 @@ class ModuleView(RTKModuleView):
             if self._dtc_function.request_do_delete(self._function_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Validation {0:d}.").format(self._validation_id)
-                _error_dialog = rtk.RTKMessageDialog(
+                _error_dialog = rtk.RAMSTKMessageDialog(
                     _prompt, self._dic_icons['error'], 'error')
                 if _error_dialog.do_run() == gtk.RESPONSE_OK:
                     _error_dialog.do_destroy()
@@ -258,7 +258,7 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Send request to insert a new record to the RTKValidation table.
+        Send request to insert a new record to the RAMSTKValidation table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
@@ -275,9 +275,9 @@ class ModuleView(RTKModuleView):
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"Validation.")
-            _error_dialog = rtk.RTKMessageDialog(
+            _error_dialog = rtk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
-            self._mdcRTK.debug_log.error(_prompt)
+            self._mdcRAMSTK.debug_log.error(_prompt)
 
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
@@ -299,7 +299,7 @@ class ModuleView(RTKModuleView):
 
     def _do_request_update(self, __button):
         """
-        Send request to update the selected record to the RTKValidation table.
+        Send request to update the selected record to the RAMSTKValidation table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
@@ -315,7 +315,7 @@ class ModuleView(RTKModuleView):
 
     def _do_request_update_all(self, __button):
         """
-        Send request to save all the records to the RTKValidation table.
+        Send request to save all the records to the RAMSTKValidation table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
@@ -340,8 +340,8 @@ class ModuleView(RTKModuleView):
             _(u"Add a new Validation task."),
             _(u"Remove the currently selected Validation task1."),
             _(u"Save the currently selected Validation task to the open "
-              u"RTK Program database."),
-            _(u"Saves all Validation tasks to the open RTK Program "
+              u"RAMSTK Program database."),
+            _(u"Saves all Validation tasks to the open RAMSTK Program "
               u"database."),
             _(u"Exports Verification tasks to an external file (CSV, Excel, "
               u"and text files are supported).")
@@ -353,7 +353,7 @@ class ModuleView(RTKModuleView):
         ]
         _icons = ['add', 'remove', 'save', 'save-all', 'export']
 
-        _buttonbox = RTKModuleView._make_buttonbox(
+        _buttonbox = RAMSTKModuleView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -366,7 +366,7 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Set up the Validation Module View RTKTreeView().
+        Set up the Validation Module View RAMSTKTreeView().
 
         This method sets all cells as non-editable to make the Validation
         Module View read-only.
@@ -386,10 +386,10 @@ class ModuleView(RTKModuleView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Validation Module View RTKTreeView().
+        Handle mouse clicks on the Validation Module View RAMSTKTreeView().
 
         :param treeview: the Validation class gtk.TreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -472,7 +472,7 @@ class ModuleView(RTKModuleView):
             Load the row associated with the selected Validation task.
 
             This is a helper function to allow iterative updating of the
-            RTKTreeView().
+            RAMSTKTreeView().
             """
             _node_id = model.get_value(row, self._lst_col_order[1])
             _attributes = self._dtc_data_controller.request_get_attributes(
@@ -488,7 +488,7 @@ class ModuleView(RTKModuleView):
 
     def _on_edit(self, position, new_text):
         """
-        Update the Module View RTKTreeView() with Validation attribute changes.
+        Update the Module View RAMSTKTreeView() with Validation attribute changes.
 
         This method is called by other views when the Validation data model
         attributes are edited via their gtk.Widgets().
@@ -506,10 +506,10 @@ class ModuleView(RTKModuleView):
 
     def _on_select_revision(self, module_id):
         """
-        Load the Validation Module View RTKTreeView().
+        Load the Validation Module View RAMSTKTreeView().
 
-        This method loads the RTKTreeView() with Validation attribute data when
-        an RTK Program database is opened.
+        This method loads the RAMSTKTreeView() with Validation attribute data when
+        an RAMSTK Program database is opened.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -517,16 +517,16 @@ class ModuleView(RTKModuleView):
         self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['validation']
+        # It is defined in RAMSTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['validation']
         _validations = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
 
-        _return = RTKModuleView.on_select_revision(self, tree=_validations)
+        _return = RAMSTKModuleView.on_select_revision(self, tree=_validations)
         if _return:
             _prompt = _(u"An error occured while loading Validation Tasks "
                         u"into the Module View.")
-            _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
+            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()

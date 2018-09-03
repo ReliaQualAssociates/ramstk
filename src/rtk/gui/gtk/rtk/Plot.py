@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.Plot.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.Plot.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTK Plot Module."""
+"""RAMSTK Plot Module."""
 
 # pylint: disable=E0401
 try:
@@ -15,22 +15,22 @@ except RuntimeError:
     # This is necessary to have the tests pass on headless servers.
     pass
 
-# Import other RTK Widget classes.
+# Import other RAMSTK Widget classes.
 from .Widget import _, gtk  # pylint: disable=E0401
 
 
-class RTKPlot(object):
+class RAMSTKPlot(object):
     """
-    The RTKPlot class.
+    The RAMSTKPlot class.
 
-    This module contains RTK plot class.  This class is derived from the
-    applicable pyGTK widgets and matplotlib plots, but are provided with RTK
+    This module contains RAMSTK plot class.  This class is derived from the
+    applicable pyGTK widgets and matplotlib plots, but are provided with RAMSTK
     specific property values and methods.  This ensures a consistent look and
-    feel to widgets in the RTK application.
+    feel to widgets in the RAMSTK application.
     """
 
     def __init__(self):
-        """Initialize an instance of the RTKPlot."""
+        """Initialize an instance of the RAMSTKPlot."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -119,7 +119,7 @@ class RTKPlot(object):
                      plot_type='scatter',
                      marker='g-'):
         """
-        Load the RTKPlot.
+        Load the RAMSTKPlot.
 
         :param list x_values: list of the x-values to plot.
         :keyword list y_values: list of the y-values to plot or list of bin
@@ -167,7 +167,7 @@ class RTKPlot(object):
 
     def do_add_line(self, x_values, y_values=None, color='k', marker='^'):
         """
-        Load the RTKPlot.
+        Load the RAMSTKPlot.
 
         :param list x_values: list of the x-values to plot.
         :keyword list y_values: list of the y-values to plot or list of bin
@@ -229,7 +229,7 @@ class RTKPlot(object):
             _window.set_default_size(800, 400)
             _window.set_border_width(5)
             _window.set_position(gtk.WIN_POS_NONE)
-            _window.set_title(_(u"RTK Plot"))
+            _window.set_title(_(u"RAMSTK Plot"))
 
             _window.connect('delete_event', self.close_plot, _parent)
 
@@ -296,7 +296,7 @@ class RTKPlot(object):
                        title="",
                        lwd=0.5):
         """
-        Make a legend on the RTKPlot.
+        Make a legend on the RAMSTKPlot.
 
         :param tuple text: the text to display in the legend.
         :keyword str fontsize: the size of the font to use for the legend.

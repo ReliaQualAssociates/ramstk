@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.conftest.py is part of The RTK Project
+#       tests.conftest.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -20,7 +20,7 @@ import pytest
 import rtk.Utilities as Utilities
 from rtk.Configuration import Configuration
 from rtk.dao import DAO
-from rtk.dao.RTKProgramDB import do_create_test_database
+from rtk.dao.RAMSTKProgramDB import do_create_test_database
 
 _ = gettext.gettext
 
@@ -37,7 +37,7 @@ except KeyError:
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONF_DIR = VIRTUAL_ENV + '/share/RTK'
+CONF_DIR = VIRTUAL_ENV + '/share/RAMSTK'
 DATA_DIR = CONF_DIR + '/data'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
@@ -47,9 +47,9 @@ TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.rtk'
 TEST_PROGRAM_DB_URI = 'sqlite:///' + TEST_PROGRAM_DB_PATH
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
 
-DEBUG_LOG = LOG_DIR + '/RTK_debug.log'
-USER_LOG = LOG_DIR + '/RTK_user.log'
-IMPORT_LOG = LOG_DIR + '/RTK_import.log'
+DEBUG_LOG = LOG_DIR + '/RAMSTK_debug.log'
+USER_LOG = LOG_DIR + '/RAMSTK_user.log'
+IMPORT_LOG = LOG_DIR + '/RAMSTK_import.log'
 
 HEADERS = {
     'Function': [
@@ -112,7 +112,7 @@ ROW_DATA = [[
 
 @pytest.fixture(scope='session')
 def test_common_dao():
-    """Create a test DAO object for testing against an RTK Common DB."""
+    """Create a test DAO object for testing against an RAMSTK Common DB."""
     # Create the tmp directory if it doesn't exist.
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
@@ -121,7 +121,7 @@ def test_common_dao():
     if os.path.exists(TEST_COMMON_DB_PATH):
         os.remove(TEST_COMMON_DB_PATH)
 
-    # Create and populate an RTK Program test database.
+    # Create and populate an RAMSTK Program test database.
     dao = DAO()
     dao.db_connect(TEST_COMMON_DB_URI)
     dao.db_create_common(TEST_COMMON_DB_URI, test=True)
@@ -131,7 +131,7 @@ def test_common_dao():
 
 @pytest.fixture(scope='session')
 def test_dao():
-    """Create a test DAO object for testing against an RTK Program DB."""
+    """Create a test DAO object for testing against an RAMSTK Program DB."""
     # Create the tmp directory if it doesn't exist.
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
@@ -144,7 +144,7 @@ def test_dao():
     if os.path.exists('/tmp/_rtk_test_db.rtk'):
         os.remove('/tmp/_rtk_test_db.rtk')
 
-    # Create and populate an RTK Program test database.
+    # Create and populate an RAMSTK Program test database.
     dao = DAO()
     dao.db_connect(TEST_PROGRAM_DB_URI)
     do_create_test_database(TEST_PROGRAM_DB_URI)
@@ -165,41 +165,41 @@ def test_configuration():
 
     configuration = Configuration()
 
-    configuration.RTK_SITE_DIR = CONF_DIR
-    configuration.RTK_CONF_DIR = CONF_DIR
-    configuration.RTK_PROG_CONF = configuration.RTK_CONF_DIR + '/RTK.conf'
+    configuration.RAMSTK_SITE_DIR = CONF_DIR
+    configuration.RAMSTK_CONF_DIR = CONF_DIR
+    configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + '/RAMSTK.conf'
 
-    configuration.RTK_COM_BACKEND = 'sqlite'
-    configuration.RTK_COM_INFO['host'] = 'localhost'
-    configuration.RTK_COM_INFO['socket'] = 3306
-    configuration.RTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
-    configuration.RTK_COM_INFO['user'] = 'rtkcom'
-    configuration.RTK_COM_INFO['password'] = 'rtkcom'
+    configuration.RAMSTK_COM_BACKEND = 'sqlite'
+    configuration.RAMSTK_COM_INFO['host'] = 'localhost'
+    configuration.RAMSTK_COM_INFO['socket'] = 3306
+    configuration.RAMSTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
+    configuration.RAMSTK_COM_INFO['user'] = 'rtkcom'
+    configuration.RAMSTK_COM_INFO['password'] = 'rtkcom'
 
-    configuration.RTK_REPORT_SIZE = 'letter'
-    configuration.RTK_HR_MULTIPLIER = 1000000.0
-    configuration.RTK_MTIME = 100.0
-    configuration.RTK_DEC_PLACES = 6
-    configuration.RTK_MODE_SOURCE = 1
-    configuration.RTK_TABPOS = {
+    configuration.RAMSTK_REPORT_SIZE = 'letter'
+    configuration.RAMSTK_HR_MULTIPLIER = 1000000.0
+    configuration.RAMSTK_MTIME = 100.0
+    configuration.RAMSTK_DEC_PLACES = 6
+    configuration.RAMSTK_MODE_SOURCE = 1
+    configuration.RAMSTK_TABPOS = {
         'modulebook': 'top',
         'listbook': 'bottom',
         'workbook': 'bottom'
     }
 
-    configuration.RTK_BACKEND = 'sqlite'
-    configuration.RTK_PROG_INFO['host'] = 'localhost'
-    configuration.RTK_PROG_INFO['socket'] = 3306
-    configuration.RTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
-    configuration.RTK_PROG_INFO['user'] = 'johnny.tester'
-    configuration.RTK_PROG_INFO['password'] = 'clear.text.password'
+    configuration.RAMSTK_BACKEND = 'sqlite'
+    configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
+    configuration.RAMSTK_PROG_INFO['socket'] = 3306
+    configuration.RAMSTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
+    configuration.RAMSTK_PROG_INFO['user'] = 'johnny.tester'
+    configuration.RAMSTK_PROG_INFO['password'] = 'clear.text.password'
 
-    configuration.RTK_DATA_DIR = DATA_DIR
-    configuration.RTK_ICON_DIR = ICON_DIR
-    configuration.RTK_LOG_DIR = LOG_DIR
-    configuration.RTK_PROG_DIR = TMP_DIR
+    configuration.RAMSTK_DATA_DIR = DATA_DIR
+    configuration.RAMSTK_ICON_DIR = ICON_DIR
+    configuration.RAMSTK_LOG_DIR = LOG_DIR
+    configuration.RAMSTK_PROG_DIR = TMP_DIR
 
-    configuration.RTK_FORMAT_FILE = {
+    configuration.RAMSTK_FORMAT_FILE = {
         'allocation': 'Allocation.xml',
         'dfmeca': 'DFMECA.xml',
         'failure_definition': 'FailureDefinition.xml',
@@ -214,7 +214,7 @@ def test_configuration():
         'stakeholder': 'Stakeholder.xml',
         'validation': 'Validation.xml'
     }
-    configuration.RTK_COLORS = {
+    configuration.RAMSTK_COLORS = {
         'functionbg': '#FFFFFF',
         'functionfg': '#000000',
         'hardwarebg': '#FFFFFF',
@@ -231,12 +231,12 @@ def test_configuration():
 
     configuration.set_user_configuration()
 
-    configuration.RTK_DEBUG_LOG = \
-        Utilities.create_logger("RTK.debug", 'DEBUG', DEBUG_LOG)
-    configuration.RTK_USER_LOG = \
-        Utilities.create_logger("RTK.user", 'INFO', USER_LOG)
-    configuration.RTK_IMPORT_LOG = \
-        Utilities.create_logger("RTK.user", 'INFO', IMPORT_LOG)
+    configuration.RAMSTK_DEBUG_LOG = \
+        Utilities.create_logger("RAMSTK.debug", 'DEBUG', DEBUG_LOG)
+    configuration.RAMSTK_USER_LOG = \
+        Utilities.create_logger("RAMSTK.user", 'INFO', USER_LOG)
+    configuration.RAMSTK_IMPORT_LOG = \
+        Utilities.create_logger("RAMSTK.user", 'INFO', IMPORT_LOG)
 
     yield configuration
 

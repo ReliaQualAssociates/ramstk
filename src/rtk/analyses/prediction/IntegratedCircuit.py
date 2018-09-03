@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.IntegratedCircuit.py is part of the RTK Project
+#       rtk.analyses.prediction.IntegratedCircuit.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -409,7 +409,7 @@ def calculate_217f_part_count(**attributes):
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
+        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating integrated circuit, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
 
@@ -420,7 +420,7 @@ def calculate_217f_part_count(**attributes):
         attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'integrated circuit, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
 
@@ -560,7 +560,7 @@ def calculate_217f_part_stress(**attributes):
     attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
 
     if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'integrated circuit, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
 
@@ -568,7 +568,7 @@ def calculate_217f_part_stress(**attributes):
     attributes['piE'] = _lst_piE[attributes['environment_active_id'] - 1]
 
     if attributes['piE'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
+        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
             'integrated circuit, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
 

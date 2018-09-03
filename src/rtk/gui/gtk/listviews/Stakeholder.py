@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.listviews.Stakeholder.py is part of the RTK Project
+#       rtk.gui.gtk.listviews.Stakeholder.py is part of the RAMSTK Project
 #
 # All rights reserved.
 """Stakeholder List View."""
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
-from .ListView import RTKListView
+from .ListView import RAMSTKListView
 
 
-class ListView(RTKListView):
+class ListView(RAMSTKListView):
     """
     Display all the Stakeholder Inputs associated with the selected Stakeholder.
 
@@ -31,10 +31,10 @@ class ListView(RTKListView):
         """
         Initialize the List View for the Stakeholder package.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKListView.__init__(self, controller, module='stakeholder')
+        RAMSTKListView.__init__(self, controller, module='stakeholder')
 
         # Initialize private dictionary attributes.
 
@@ -90,13 +90,13 @@ class ListView(RTKListView):
 
     def _do_change_row(self, treeview):
         """
-        Handle events for the Stakeholder List View RTKTreeView().
+        Handle events for the Stakeholder List View RAMSTKTreeView().
 
-        This method is called whenever a Stakeholder List View RTKTreeView()
+        This method is called whenever a Stakeholder List View RAMSTKTreeView()
         row is activated.
 
-        :param treeview: the Stakeholder List View RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.TreeView.RTKTreeView`
+        :param treeview: the Stakeholder List View RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.TreeView.RAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -114,10 +114,10 @@ class ListView(RTKListView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the Stakeholder List View RTKTreeView().
+        Handle edits of the Stakeholder List View RAMSTKTreeView().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RTKTreeView() path of the gtk.CellRenderer()
+        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
@@ -143,11 +143,11 @@ class ListView(RTKListView):
                 _stakeholder.group = str(new_text)
                 # FIXME: See issue #60.
                 try:
-                    _key = max(self._mdcRTK.RTK_CONFIGURATION.
-                               RTK_AFFINITY_GROUPS.keys()) + 1
+                    _key = max(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                               RAMSTK_AFFINITY_GROUPS.keys()) + 1
                 except ValueError:
                     _key = 1
-                self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS[
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
                     _key] = _stakeholder.group
             elif position == self._lst_col_order[7]:
                 _stakeholder.planned_rank = int(float(new_text))
@@ -195,7 +195,7 @@ class ListView(RTKListView):
             _prompt = _(u"An error occurred attempting to delete failure "
                         u"stakeholder {0:d} to Stakeholder {1:d}.").\
                 format(_stakeholder_id, self._stakeholder_id)
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
 
@@ -219,7 +219,7 @@ class ListView(RTKListView):
             _prompt = _(u"An error occurred attempting to add a stakeholder "
                         u"input to Stakeholder {0:d}.").\
                 format(self._stakeholder_id)
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
 
@@ -270,7 +270,7 @@ class ListView(RTKListView):
             _prompt = _(u"An error occurred attempting to save the "
                         u"stakeholder inputs for Stakeholder {0:d}.").\
                 format(self._stakeholder_id)
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
             _return = True
 
         self.set_cursor(gtk.gdk.LEFT_PTR)
@@ -289,8 +289,8 @@ class ListView(RTKListView):
             _(u"Add a new Stakeholder."),
             _(u"Remove the currently selected Stakeholder."),
             _(u"Save the currently selected Stakeholder to "
-              u"the open RTK Program database."),
-            _(u"Save all of the Stakeholders to the open RTK "
+              u"the open RAMSTK Program database."),
+            _(u"Save all of the Stakeholders to the open RAMSTK "
               u"Program database."),
             _(u"Create the Stakeholder report.")
         ]
@@ -300,7 +300,7 @@ class ListView(RTKListView):
         ]
         _icons = ['add', 'remove', 'save', 'save-all', 'reports']
 
-        _buttonbox = RTKListView._make_buttonbox(
+        _buttonbox = RAMSTKListView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -313,7 +313,7 @@ class ListView(RTKListView):
 
     def _make_treeview(self):
         """
-        Set up the RTKTreeView() for Stakeholders.
+        Set up the RAMSTKTreeView() for Stakeholders.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -329,8 +329,8 @@ class ListView(RTKListView):
         _cellmodel.append([""])
         # Each _owner is (Description, Group Type).
         for _index, _key in enumerate(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS):
-            _group = self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS[_key]
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS):
+            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_key]
             _cellmodel.append([_group[0]])
 
         # Load the Stakeholder gtk.CellRendererCombo()
@@ -342,8 +342,8 @@ class ListView(RTKListView):
         _cellmodel.append([""])
         # Each _owner is (Description, Group Type).
         for _index, _key in enumerate(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_STAKEHOLDERS):
-            _group = self._mdcRTK.RTK_CONFIGURATION.RTK_STAKEHOLDERS[_key]
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS):
+            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS[_key]
             _cellmodel.append([_group[0]])
 
         # Set the CellRendererSpin() columns to [1, 5] step 1.
@@ -373,10 +373,10 @@ class ListView(RTKListView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Stakeholder List View RTKTreeView().
+        Handle mouse clicks on the Stakeholder List View RAMSTKTreeView().
 
-        :param treeview: the Stakeholder ListView RTKTreeView().
-        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`.
+        :param treeview: the Stakeholder ListView RAMSTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RAMSTKTreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -460,9 +460,9 @@ class ListView(RTKListView):
         self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         self._dtc_data_controller = \
-            self._mdcRTK.dic_controllers['stakeholder']
+            self._mdcRAMSTK.dic_controllers['stakeholder']
         _stakeholders = \
             self._dtc_data_controller.request_do_select_all(revision_id=self._revision_id)
 

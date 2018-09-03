@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_fuse.py is part of The RTK Project
+#       tests.analyses.prediction.test_fuse.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -64,7 +64,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     _attributes, _msg = Fuse.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
+    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
                     'fuse, hardware ID: 6, active environment ID: 100')
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -95,7 +95,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     _attributes, _msg = Fuse.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: piE is 0.0 when calculating fuse, hardware '
+    assert _msg == ('RAMSTK WARNING: piE is 0.0 when calculating fuse, hardware '
                     'ID: 6')
     assert _attributes['piE'] == 0.0
     assert pytest.approx(_attributes['hazard_rate_active'], 0.0)

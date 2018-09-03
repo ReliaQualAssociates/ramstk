@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Component.py is part of the RTK
+#       rtk.gui.gtk.workviews.components.Component.py is part of the RAMSTK
 #       Project.
 #
 # All rights reserved.
@@ -9,14 +9,14 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
 class AssessmentInputs(gtk.Fixed):
     """
-    Display Hardware assessment input attribute data in the RTK Work Book.
+    Display Hardware assessment input attribute data in the RAMSTK Work Book.
 
     The Hardware assessment input view displays all the assessment inputs for
     the selected Hardware item.  This includes, currently, inputs for
@@ -78,7 +78,7 @@ class AssessmentInputs(gtk.Fixed):
         # Initialize public scalar attributes.
         self.fmt = None
 
-        self.cmbQuality = rtk.RTKComboBox(
+        self.cmbQuality = rtk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The quality level of the hardware item."))
@@ -146,16 +146,16 @@ class AssessmentInputs(gtk.Fixed):
 
     def on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to hardware item attribute.
+        Retrieve RAMSTKCombo() changes and assign to hardware item attribute.
 
         This method is called by:
 
             * gtk.Combo() 'changed' signal
 
-        :param combo: the RTKCombo() that called this method.
-        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
-                          with the calling RTKComboBox().  Indices are:
+                          with the calling RAMSTKComboBox().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -193,7 +193,7 @@ class AssessmentInputs(gtk.Fixed):
 
 class StressInputs(gtk.Fixed):
     """
-    Display hardware item stress input attribute data in the RTK Work Book.
+    Display hardware item stress input attribute data in the RAMSTK Work Book.
 
     The hardware item stress input view displays all the assessment inputs for
     the selected hardware item.  This includes, currently, stress inputs for
@@ -299,40 +299,40 @@ class StressInputs(gtk.Fixed):
         # Initialize public scalar attributes.
         self.fmt = None
 
-        self.txtTemperatureRatedMin = rtk.RTKEntry(
+        self.txtTemperatureRatedMin = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The minimum rated temperature (in \u00B0C) of the "
                       u"hardware item."))
-        self.txtTemperatureKnee = rtk.RTKEntry(
+        self.txtTemperatureKnee = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"The break temperature (in \u00B0C) of the hardware item "
                 u"beyond which it must be derated."))
-        self.txtTemperatureRatedMax = rtk.RTKEntry(
+        self.txtTemperatureRatedMax = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(
                 u"The maximum rated temperature (in \u00B0C) of the hardware "
                 u"item."))
-        self.txtCurrentRated = rtk.RTKEntry(
+        self.txtCurrentRated = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The rated current (in A) of the hardware item."))
-        self.txtCurrentOperating = rtk.RTKEntry(
+        self.txtCurrentOperating = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The operating current (in A) of the hardware item."))
-        self.txtPowerRated = rtk.RTKEntry(
+        self.txtPowerRated = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The rated power (in W) of the hardware item."))
-        self.txtPowerOperating = rtk.RTKEntry(
+        self.txtPowerOperating = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The operating power (in W) of the hardware item."))
-        self.txtVoltageRated = rtk.RTKEntry(
+        self.txtVoltageRated = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The rated voltage (in V) of the hardware item."))
-        self.txtVoltageAC = rtk.RTKEntry(
+        self.txtVoltageAC = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The operating ac voltage (in V) of the hardware "
                       u"item."))
-        self.txtVoltageDC = rtk.RTKEntry(
+        self.txtVoltageDC = rtk.RAMSTKEntry(
             width=125,
             tooltip=_(u"The operating DC voltage (in V) of the hardware "
                       u"item."))
@@ -375,7 +375,7 @@ class StressInputs(gtk.Fixed):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        # We don't block the callback signal otherwise the style RTKComboBox()
+        # We don't block the callback signal otherwise the style RAMSTKComboBox()
         # will not be loaded and set.
         self.txtTemperatureRatedMin.handler_block(self._lst_handler_id[0])
         self.txtTemperatureRatedMin.set_text(
@@ -456,16 +456,16 @@ class StressInputs(gtk.Fixed):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets..
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RAMSTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -545,7 +545,7 @@ class StressInputs(gtk.Fixed):
 
 class AssessmentResults(gtk.Fixed):
     """
-    Display Hardware assessment results attribute data in the RTK Work Book.
+    Display Hardware assessment results attribute data in the RAMSTK Work Book.
 
     The Hardware assessment result view displays all the assessment results
     for the selected hardware item.  This includes, currently, results for
@@ -559,7 +559,7 @@ class AssessmentResults(gtk.Fixed):
                             displayed.
     :ivar int _subcategory_id: the ID of the subcategory for the hardware item
                                currently being displayed.
-    :ivar _lblModel: the :class:`rtk.gui.gtk.rtk.Label.RTKLabel` to display
+    :ivar _lblModel: the :class:`rtk.gui.gtk.rtk.Label.RAMSTKLabel` to display
                      the failure rate mathematical model used.
 
     :ivar txtLambdaB: displays the base hazard rate of the hardware item.
@@ -592,7 +592,7 @@ class AssessmentResults(gtk.Fixed):
         self._hardware_id = kwargs['hardware_id']
         self._subcategory_id = kwargs['subcategory_id']
 
-        self._lblModel = rtk.RTKLabel(
+        self._lblModel = rtk.RAMSTKLabel(
             '',
             tooltip=_(u"The assessment model used to calculate the hardware "
                       u"item failure rate."))
@@ -604,17 +604,17 @@ class AssessmentResults(gtk.Fixed):
         # Initialize public scalar attributes.
         self.fmt = None
 
-        self.txtLambdaB = rtk.RTKEntry(
+        self.txtLambdaB = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The base hazard rate of the hardware item."))
-        self.txtPiQ = rtk.RTKEntry(
+        self.txtPiQ = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The quality factor for the hardware item."))
-        self.txtPiE = rtk.RTKEntry(
+        self.txtPiE = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
@@ -686,7 +686,7 @@ class AssessmentResults(gtk.Fixed):
 
 class StressResults(gtk.HPaned):
     """
-    Display Hardware stress results attribute data in the RTK Work Book.
+    Display Hardware stress results attribute data in the RAMSTK Work Book.
 
     The Hardware stress result view displays all the stress results for the
     selected hardware item.  This includes, currently, results for
@@ -748,31 +748,31 @@ class StressResults(gtk.HPaned):
         # Initialize public scalar attributes.
         self.fmt = None
 
-        self.pltDerate = rtk.RTKPlot()
+        self.pltDerate = rtk.RAMSTKPlot()
 
-        self.chkOverstress = rtk.RTKCheckButton(
+        self.chkOverstress = rtk.RAMSTKCheckButton(
             label=_(u"Overstressed"),
             tooltip=_(u"Indicates whether or not the selected hardware item "
                       u"is overstressed."))
-        self.txtCurrentRatio = rtk.RTKEntry(
+        self.txtCurrentRatio = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The ratio of operating current to rated current for "
                       u"the hardware item."))
-        self.txtPowerRatio = rtk.RTKEntry(
+        self.txtPowerRatio = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The ratio of operating power to rated power for "
                       u"the hardware item."))
-        self.txtVoltageRatio = rtk.RTKEntry(
+        self.txtVoltageRatio = rtk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(u"The ratio of operating voltage to rated voltage for "
                       u"the hardware item."))
-        self.txtReason = rtk.RTKTextView(
+        self.txtReason = rtk.RAMSTKTextView(
             gtk.TextBuffer(),
             width=250,
             tooltip=_(u"The reason(s) the selected hardware item is "
@@ -902,7 +902,7 @@ class StressResults(gtk.HPaned):
         _fixed.show_all()
 
         # Create the derating plot.
-        _frame = rtk.RTKFrame(label=_(u"Derating Curve and Operating Point"))
+        _frame = rtk.RAMSTKFrame(label=_(u"Derating Curve and Operating Point"))
         _frame.add(self.pltDerate.plot)
         _frame.show_all()
 

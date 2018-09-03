@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.rtk.Dialog.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.Dialog.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,9 +8,9 @@
 Dialog Module
 -------------------------------------------------------------------------------
 
-This module contains RTK dialog classes.  These classes are derived from the
-applicable pyGTK dialogs, but are provided with RTK specific property values
-and methods.  This ensures a consistent look and feel to widgets in the RTK
+This module contains RAMSTK dialog classes.  These classes are derived from the
+applicable pyGTK dialogs, but are provided with RAMSTK specific property values
+and methods.  This ensures a consistent look and feel to widgets in the RAMSTK
 application.
 """
 
@@ -22,9 +22,9 @@ from datetime import datetime
 from .Widget import _, gtk  # pylint: disable=E0401
 
 
-class RTKDialog(gtk.Dialog):
+class RAMSTKDialog(gtk.Dialog):
     """
-    This is the RTK Dialog class.
+    This is the RAMSTK Dialog class.
     """
 
     def __init__(self,
@@ -34,7 +34,7 @@ class RTKDialog(gtk.Dialog):
                  dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_OK, gtk.STOCK_CANCEL,
                              gtk.RESPONSE_CANCEL)):
         """
-        Initialize a RTK Dialog widget.
+        Initialize a RAMSTK Dialog widget.
 
         :param str dlgtitle: the title text for the gtk.Dialog().
         :keyword gtk.Window dlgparent: the parent window to associate the
@@ -60,20 +60,20 @@ class RTKDialog(gtk.Dialog):
 
     def do_run(self):
         """
-        Run the RTK Message Dialog.
+        Run the RAMSTK Message Dialog.
         """
         return self.run()
 
     def do_destroy(self):
         """
-        Destroy the RTK Message Dialog.
+        Destroy the RAMSTK Message Dialog.
         """
         self.destroy()
 
 
-class RTKMessageDialog(gtk.MessageDialog):
+class RAMSTKMessageDialog(gtk.MessageDialog):
     """
-    This is the RTK Message Dialog class.  It used for RTK error, warning, and
+    This is the RAMSTK Message Dialog class.  It used for RAMSTK error, warning, and
     information messages.
     """
 
@@ -98,12 +98,12 @@ class RTKMessageDialog(gtk.MessageDialog):
         _image.set_from_file(icon)
 
         if criticality == 'error':
-            # Set the prompt to bold text with a hyperlink to the RTK bugs
+            # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
             # e-mail address.
-            _hyper = "<a href='mailto:bugs@reliaqual.com?subject=RTK BUG " \
+            _hyper = "<a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG " \
                      "REPORT: <ADD SHORT PROBLEM DESCRIPTION>&amp;" \
-                     "body=RTK MODULE:%0d%0a%0d%0a" \
-                     "RTK VERSION:%20%0d%0a%0d%0a" \
+                     "body=RAMSTK MODULE:%0d%0a%0d%0a" \
+                     "RAMSTK VERSION:%20%0d%0a%0d%0a" \
                      "YOUR HARDWARE:%20%0d%0a%0d%0a" \
                      "YOUR OS:%20%0d%0a%0d%0a" \
                      "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
@@ -139,22 +139,22 @@ class RTKMessageDialog(gtk.MessageDialog):
 
     def do_run(self):
         """
-        Run the RTK Message Dialog.
+        Run the RAMSTK Message Dialog.
         """
         return self.run()
 
     def do_destroy(self):
         """
-        Destroy the RTK Message Dialog.
+        Destroy the RAMSTK Message Dialog.
         """
         self.destroy()
 
 
-class RTKDateSelect(gtk.Dialog):
-    """The RTK Date Selection Dialog."""
+class RAMSTKDateSelect(gtk.Dialog):
+    """The RAMSTK Date Selection Dialog."""
 
     def __init__(self):
-        """Initialize an instance of the RTKDateSelect class."""
+        """Initialize an instance of the RAMSTKDateSelect class."""
         gtk.Dialog.__init__(
             self,
             _(u"Select Date"),
@@ -165,7 +165,7 @@ class RTKDateSelect(gtk.Dialog):
         self.vbox.show_all()  # pylint: disable=E1101
 
     def do_run(self):
-        """Run the RTKDateSelect dialog."""
+        """Run the RAMSTKDateSelect dialog."""
         if self.run() == gtk.RESPONSE_ACCEPT:
             _date = self._calendar.get_date()
             _date = datetime(_date[0], _date[1] + 1,
@@ -176,18 +176,18 @@ class RTKDateSelect(gtk.Dialog):
         return _date
 
     def do_destroy(self):
-        """Destroy the RTKDateSelect dialog."""
+        """Destroy the RAMSTKDateSelect dialog."""
         self.destroy()
 
 
-class RTKFileChooser(gtk.FileChooserDialog):
+class RAMSTKFileChooser(gtk.FileChooserDialog):
     """
-    This is the RTK File Chooser Dialog class.
+    This is the RAMSTK File Chooser Dialog class.
     """
 
     def __init__(self, title, cwd):
         """
-        Initialize an instance of the RTKFileChooser dialog.
+        Initialize an instance of the RAMSTKFileChooser dialog.
 
         :param str title: the title of the dialog.
         :param str cwd: the absolute path to the file to open.
@@ -219,7 +219,7 @@ class RTKFileChooser(gtk.FileChooserDialog):
 
     def do_run(self):
         """
-        Run the RTKFileChooser dialog.
+        Run the RAMSTKFileChooser dialog.
 
         :return: (_filename, _extension); the file name and file extension of
                  the selected file.
@@ -238,6 +238,6 @@ class RTKFileChooser(gtk.FileChooserDialog):
 
     def do_destroy(self):
         """
-        Destroy the RTKFileChooser dialog.
+        Destroy the RAMSTKFileChooser dialog.
         """
         self.destroy()

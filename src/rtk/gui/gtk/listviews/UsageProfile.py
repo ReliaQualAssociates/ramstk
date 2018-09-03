@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.listviews.UsageProfile.py is part of the RTK Project
+#       rtk.gui.gtk.listviews.UsageProfile.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -12,13 +12,13 @@ from sortedcontainers import SortedDict
 # Modules required for the GUI.
 import pango
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
-from .ListView import RTKListView
+from .ListView import RAMSTKListView
 
 
-class ListView(RTKListView):
+class ListView(RAMSTKListView):
     """
     Display all the Usage Profiles associated with the selected Revision.
 
@@ -32,18 +32,18 @@ class ListView(RTKListView):
         """
         Initialize the List View for the Usage Profile.
 
-        :param controller: the RTK master data controller instance.
-        :type controller: :class:`rtk.RTK.RTK`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
-        RTKListView.__init__(self, controller, module='usage_profile')
+        RAMSTKListView.__init__(self, controller, module='usage_profile')
 
         # Initialize private dictionary attributes.
         self._dic_icons['mission'] = \
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/mission.png'
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mission.png'
         self._dic_icons['phase'] = \
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/phase.png'
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/phase.png'
         self._dic_icons['environment'] = \
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/environment.png'
 
         # Initialize private list attributes.
@@ -101,10 +101,10 @@ class ListView(RTKListView):
         Handle row changes for the Usage Profile package List View.
 
         This method is called whenever a Usage Profile List View
-        RTKTreeView() row is activated or changed.
+        RAMSTKTreeView() row is activated or changed.
 
-        :param treeview: the Usage Profile List View class RTK.TreeView().
-        :type treeview: :class:`rtk.gui.gtk.TreeView.RTKTreeView`
+        :param treeview: the Usage Profile List View class RAMSTK.TreeView().
+        :type treeview: :class:`rtk.gui.gtk.TreeView.RAMSTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -176,7 +176,7 @@ class ListView(RTKListView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Handle edits of the Usage Profile List View RTKTreeView().
+        Handle edits of the Usage Profile List View RAMSTKTreeView().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
@@ -191,7 +191,7 @@ class ListView(RTKListView):
         """
         _return = False
 
-        if not RTKListView._do_edit_cell(__cell, path, new_text, position,
+        if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
                                          model):
 
             # Retrieve the Usage Profile data package.
@@ -291,7 +291,7 @@ class ListView(RTKListView):
                 _user_msg = _(u"One or more Usage Profile line items had the "
                               u"wrong data type in it's data package and is "
                               u"not displayed in the Usage Profile.")
-                _debug_msg = ("RTK ERROR: Data for Usage Profile ID {0:s} for "
+                _debug_msg = ("RAMSTK ERROR: Data for Usage Profile ID {0:s} for "
                               "Revision ID {1:s} is the wrong type for one or "
                               "more columns.".format(
                                   str(_node.identifier),
@@ -302,7 +302,7 @@ class ListView(RTKListView):
                 _user_msg = _(u"One or more Usage Profile line items was "
                               u"missing some of it's data and is not "
                               u"displayed in the Usage Profile.")
-                _debug_msg = ("RTK ERROR: Too few fields for Usage Profile ID "
+                _debug_msg = ("RAMSTK ERROR: Too few fields for Usage Profile ID "
                               "{0:s} for Revision ID {1:s}.".format(
                                   str(_node.identifier),
                                   str(self._revision_id)))
@@ -313,7 +313,7 @@ class ListView(RTKListView):
                 _user_msg = _(u"One or more Usage Profile line items was "
                               u"missing it's data package and is not "
                               u"displayed in the Usage Profile.")
-                _debug_msg = ("RTK ERROR: There is no data package for Usage "
+                _debug_msg = ("RAMSTK ERROR: There is no data package for Usage "
                               "Profile ID {0:s} for Revision ID {1:s}.".format(
                                   str(_node.identifier),
                                   str(self._revision_id)))
@@ -353,7 +353,7 @@ class ListView(RTKListView):
         else:
             _prompt = _(u"A problem occurred while attempting to delete {0:s} "
                         u"with ID {1:d}.").format(_level.title(), _node_id)
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
 
@@ -403,7 +403,7 @@ class ListView(RTKListView):
 
         elif _level == 'environment' and not _sibling:
             _prompt = _(u"An environmental condition cannot have a child.")
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
 
@@ -481,8 +481,8 @@ class ListView(RTKListView):
             _(u"Remove the curently selected entity from the Usage "
               u"Profile."),
             _(u"Save the currently selected Usage Profile line to the open "
-              u"RTK Program database."),
-            _(u"Save the Usage Profile to the open RTK Program "
+              u"RAMSTK Program database."),
+            _(u"Save the Usage Profile to the open RAMSTK Program "
               u"database."),
             _(u"Create the Mission and Usage Profile report.")
         ]
@@ -496,7 +496,7 @@ class ListView(RTKListView):
             'reports'
         ]
 
-        _buttonbox = RTKListView._make_buttonbox(
+        _buttonbox = RAMSTKListView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -540,7 +540,7 @@ class ListView(RTKListView):
 
     def _make_treeview(self):
         """
-        Set up the RTKTreeView() for the Usage Profile.
+        Set up the RAMSTKTreeView() for the Usage Profile.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -607,7 +607,7 @@ class ListView(RTKListView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Usage Profile List View RTKTreeView().
+        Handle mouse clicks on the Usage Profile List View RAMSTKTreeView().
 
         :param treeview: the Usage Profile ListView gtk.TreeView().
         :type treeview: :class:`gtk.TreeView`.
@@ -694,16 +694,16 @@ class ListView(RTKListView):
         _model.clear()
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RTKBaseView.__init__
+        # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRTK.dic_controllers['profile']
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['profile']
 
         _profile = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
             tree=_profile, row=None)
 
-        RTKListView.on_select(
+        RAMSTKListView.on_select(
             self,
             title=_(u"Usage Profile for Revision ID "
                     u"{0:d}").format(self._revision_id),

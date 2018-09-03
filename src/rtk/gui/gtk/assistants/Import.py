@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.assistants.Import.py is part of The RTK Project
+#       rtk.gui.gtk.assistants.Import.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007, 2018 Doyle "weibullguy" Rowland
 """Import Assistant Module."""
 
-# Import other RTK modules.
+# Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gobject, gtk, set_cursor
 
@@ -27,25 +27,25 @@ class RAMSTKImport(gtk.Assistant):
         :param __widget: the gtk.Widget() that called this class.
         :type __widget: :class:`gtk.Widget`
         :param controller: the RAMSTK master data controller.
-        :type controller: :class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RAMSTK.RAMSTK`
         """
         gtk.Assistant.__init__(self)
 
         # Initialize private dict variables.
         self._dic_icons = {
             'error':
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/error.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/error.png',
             'information':
-            controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/information.png',
         }
 
         # Initialize private list variables.
 
         # Initialize private scalar variables.
-        self._mdcRTK = controller
-        self._dtc_data_controller = self._mdcRTK.dic_controllers['imports']
-        self._cmb_select_module = rtk.RTKComboBox(
+        self._mdcRAMSTK = controller
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['imports']
+        self._cmb_select_module = rtk.RAMSTKComboBox(
             tooltip=_(u"Select the RAMSTK module to map."))
         self._module = None
 
@@ -136,12 +136,12 @@ class RAMSTKImport(gtk.Assistant):
         :return: None
         :rtype: None
         """
-        set_cursor(self._mdcRTK, gtk.gdk.WATCH)
+        set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
 
         (_count, _error_code,
          _msg) = self._dtc_data_controller.request_do_insert(self._module)
 
-        set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+        set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
 
         if _error_code == 2:
             _msg_type = 'error'
@@ -166,7 +166,7 @@ class RAMSTKImport(gtk.Assistant):
             _user_msg = _(u"Successfully imported {0:d} {1:s} "
                           u"records.").format(_count, self._module)
 
-        _dialog = rtk.RTKMessageDialog(_user_msg, self._dic_icons[_msg_type],
+        _dialog = rtk.RAMSTKMessageDialog(_user_msg, self._dic_icons[_msg_type],
                                        _msg_type)
         if _dialog.do_run() == gtk.RESPONSE_OK:
             _dialog.destroy()
@@ -229,7 +229,7 @@ class RAMSTKImport(gtk.Assistant):
         """
         _page = gtk.Fixed()
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"This is the RAMSTK Import Assistant.  It "
               u"will guide you through the process of "
               u"importing RAMSTK Program module data from "
@@ -259,7 +259,7 @@ class RAMSTKImport(gtk.Assistant):
         _page = gtk.HBox()
 
         _fixed = gtk.Fixed()
-        _label = rtk.RTKLabel(_(u"Select the RAMSTK module to import:"))
+        _label = rtk.RAMSTKLabel(_(u"Select the RAMSTK module to import:"))
         _fixed.put(_label, 5, 5)
         _fixed.put(self._cmb_select_module, 55, 5)
         _page.pack_start(_fixed, False, False)
@@ -301,7 +301,7 @@ class RAMSTKImport(gtk.Assistant):
         _model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING)
 
         _column = gtk.TreeViewColumn()
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"Import File Column"), justify=gtk.JUSTIFY_CENTER)
         _column.set_widget(_label)
 
@@ -314,7 +314,7 @@ class RAMSTKImport(gtk.Assistant):
         self._tvw_field_map.append_column(_column)
 
         _column = gtk.TreeViewColumn()
-        _label = rtk.RTKLabel(_(u"RAMSTK Field"), justify=gtk.JUSTIFY_CENTER)
+        _label = rtk.RAMSTKLabel(_(u"RAMSTK Field"), justify=gtk.JUSTIFY_CENTER)
         _column.set_widget(_label)
 
         _cell = gtk.CellRendererCombo()
@@ -345,7 +345,7 @@ class RAMSTKImport(gtk.Assistant):
         """
         _page = gtk.Fixed()
 
-        _label = rtk.RTKLabel(
+        _label = rtk.RAMSTKLabel(
             _(u"RAMSTK is all set and ready to import your "
               u"data.  Press 'Apply' to import or 'Cancel' "
               u"to abort the import."),

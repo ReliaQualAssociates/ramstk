@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.modules.usage.test_profile.py is part of The RTK Project
+#       tests.modules.usage.test_profile.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -11,7 +11,7 @@ from treelib import Tree
 
 import pytest
 
-from rtk.dao import (RTKMission, RTKMissionPhase, RTKEnvironment)
+from rtk.dao import (RAMSTKMission, RAMSTKMissionPhase, RAMSTKEnvironment)
 from rtk.modules.usage import (dtmEnvironment, dtmMission, dtmMissionPhase,
                                dtmUsageProfile, dtcUsageProfile)
 
@@ -51,9 +51,9 @@ def test_do_select_all(test_dao):
 
     assert isinstance(_tree, Tree)
     assert _tree.get_node(0).tag == 'Usage Profiles'
-    assert isinstance(_tree.get_node(1).data, RTKMission)
-    assert isinstance(_tree.get_node(11).data, RTKMissionPhase)
-    assert isinstance(_tree.get_node(111).data, RTKEnvironment)
+    assert isinstance(_tree.get_node(1).data, RAMSTKMission)
+    assert isinstance(_tree.get_node(11).data, RAMSTKMissionPhase)
+    assert isinstance(_tree.get_node(111).data, RAMSTKEnvironment)
 
 
 @pytest.mark.integration
@@ -75,7 +75,7 @@ def test_do_select(test_dao):
 
     _entity = DUT.do_select(1)
 
-    assert isinstance(_entity, RTKMission)
+    assert isinstance(_entity, RAMSTKMission)
     assert _entity.description == 'Test Mission'
 
 
@@ -89,9 +89,9 @@ def test_do_insert_mission(test_dao):
         entity_id=1, parent_id=0, level='mission')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
-    assert isinstance(DUT.do_select(2), RTKMission)
+    assert isinstance(DUT.do_select(2), RAMSTKMission)
 
 
 @pytest.mark.integration
@@ -103,9 +103,9 @@ def test_do_insert_phase(test_dao):
     _error_code, _msg = DUT.do_insert(entity_id=2, parent_id=1, level='phase')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
-    assert isinstance(DUT.do_select(12), RTKMissionPhase)
+    assert isinstance(DUT.do_select(12), RAMSTKMissionPhase)
 
 
 @pytest.mark.integration
@@ -118,9 +118,9 @@ def test_do_insert_environment(test_dao):
         entity_id=2, parent_id=11, level='environment')
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
                     "database.")
-    assert isinstance(DUT.tree.get_node(112).data, RTKEnvironment)
+    assert isinstance(DUT.tree.get_node(112).data, RAMSTKEnvironment)
 
 
 @pytest.mark.integration
@@ -133,7 +133,7 @@ def test_do_insert_non_existent_type(test_dao):
         entity_id=1, parent_id=0, level='scadamoosh')
 
     assert _error_code == 2105
-    assert _msg == ("RTK ERROR: Attempted to add an item to the Usage Profile "
+    assert _msg == ("RAMSTK ERROR: Attempted to add an item to the Usage Profile "
                     "with an undefined indenture level.  Level scadamoosh was "
                     "requested.  Must be one of mission, phase, or "
                     "environment.")
@@ -148,7 +148,7 @@ def test_do_delete_environment(test_dao):
     _error_code, _msg = DUT.do_delete(223)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
+    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                     "database.")
 
 
@@ -161,7 +161,7 @@ def test_do_delete_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_delete(4)
 
     assert _error_code == 2005
-    assert _msg == ("  RTK ERROR: Attempted to delete non-existent Usage "
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Usage "
                     "Profile entity with Node ID 4.")
 
 
@@ -174,7 +174,7 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
 
 
 @pytest.mark.integration
@@ -186,7 +186,7 @@ def test_do_update_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ("RTK ERROR: Attempted to save non-existent Usage Profile "
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Usage Profile "
                     "entity with Node ID 100.")
 
 
@@ -199,7 +199,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating all line items in the usage "
+    assert _msg == ("RAMSTK SUCCESS: Updating all line items in the usage "
                     "profile.")
 
 
@@ -268,12 +268,12 @@ def test_request_set_attributes(test_dao, test_configuration):
     _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ('RTK SUCCESS: Updating RTKMission 1 attributes.')
+    assert _msg == ('RAMSTK SUCCESS: Updating RAMSTKMission 1 attributes.')
 
 
 @pytest.mark.integration
 def test_request_last_mission_id(test_dao, test_configuration):
-    """ request_last_id() should return the last Mission ID used in the RTK Program database. """
+    """ request_last_id() should return the last Mission ID used in the RAMSTK Program database. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
@@ -284,7 +284,7 @@ def test_request_last_mission_id(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_last_mission_phase_id(test_dao, test_configuration):
-    """ request_last_id() should return the last Mission Phase ID used in the RTK Program database. """
+    """ request_last_id() should return the last Mission Phase ID used in the RAMSTK Program database. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
@@ -293,7 +293,7 @@ def test_request_last_mission_phase_id(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_last_environment_id(test_dao, test_configuration):
-    """ request_last_id() should return the last Environment ID used in the RTK Program database. """
+    """ request_last_id() should return the last Environment ID used in the RAMSTK Program database. """
     DUT = dtcUsageProfile(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 

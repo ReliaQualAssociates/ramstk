@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.requirement.Controller.py is part of The RTK Project
+#       rtk.requirement.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,16 +8,16 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
-from rtk.modules import RTKDataMatrix
-from rtk.dao import RTKRequirement, RTKHardware, RTKSoftware, RTKValidation
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
+from rtk.modules import RAMSTKDataMatrix
+from rtk.dao import RAMSTKRequirement, RAMSTKHardware, RAMSTKSoftware, RAMSTKValidation
 from . import dtmRequirement
 
 
-class RequirementDataController(RTKDataController):
+class RequirementDataController(RAMSTKDataController):
     """
-    Provide an interface between the Requirement data model and an RTK View.
+    Provide an interface between the Requirement data model and an RAMSTK View.
 
     A single Requirement controller can manage one or more Requirement data
     models.  The attributes of a Requirement data controller are:
@@ -27,14 +27,14 @@ class RequirementDataController(RTKDataController):
         """
         Initialize a Requirement data controller instance.
 
-        :param dao: the RTK Program DAO instance to pass to the Requirement
+        :param dao: the RAMSTK Program DAO instance to pass to the Requirement
                     Data Model.
         :type dao: :class:`rtk.dao.DAO`
         :param configuration: the Configuration instance associated with the
-                              current instance of the RTK application.
+                              current instance of the RAMSTK application.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmRequirement(dao),
@@ -46,12 +46,12 @@ class RequirementDataController(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_rqmt_hw_matrix = RTKDataMatrix(dao, RTKRequirement,
-                                                 RTKHardware)
-        self._dmx_rqmt_sw_matrix = RTKDataMatrix(dao, RTKRequirement,
-                                                 RTKSoftware)
-        self._dmx_rqmt_val_matrix = RTKDataMatrix(dao, RTKRequirement,
-                                                  RTKValidation)
+        self._dmx_rqmt_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKRequirement,
+                                                 RAMSTKHardware)
+        self._dmx_rqmt_sw_matrix = RAMSTKDataMatrix(dao, RAMSTKRequirement,
+                                                 RAMSTKSoftware)
+        self._dmx_rqmt_val_matrix = RAMSTKDataMatrix(dao, RAMSTKRequirement,
+                                                  RAMSTKValidation)
 
         # Initialize public dictionary attributes.
 
@@ -143,7 +143,7 @@ class RequirementDataController(RTKDataController):
 
     def request_do_insert(self, **kwargs):
         """
-        Request to add an RTKRequirement table record.
+        Request to add an RAMSTKRequirement table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -154,7 +154,7 @@ class RequirementDataController(RTKDataController):
             revision_id=_revision_id, parent_id=_parent_id)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             if not self._test:
                 pub.sendMessage(
@@ -162,10 +162,10 @@ class RequirementDataController(RTKDataController):
                     requirement_id=self._dtm_data_model.last_id,
                     parent_id=_parent_id)
         else:
-            _msg = _msg + '  Failed to add a new Requirement to the RTK ' \
+            _msg = _msg + '  Failed to add a new Requirement to the RAMSTK ' \
                 'Program database.'
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_insert_matrix(self, matrix_type, item_id, heading,
@@ -205,12 +205,12 @@ class RequirementDataController(RTKDataController):
                 item_id=item_id,
                 row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete(self, node_id):
         """
-        Request to delete an RTKRequirement table record.
+        Request to delete an RAMSTKRequirement table record.
 
         :param str node_id: the PyPubSub Tree() ID of the Requirement to
                             delete.
@@ -219,7 +219,7 @@ class RequirementDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedRequirement')
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
@@ -250,12 +250,12 @@ class RequirementDataController(RTKDataController):
             _error_code, _msg = self._dmx_rqmt_val_matrix.do_delete(
                 item_id, row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedMatrix')
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKRequirement table record.
+        Request to update an RAMSTKRequirement table record.
 
         :param str node_id: the PyPubSub Tree() ID of the Requirement to save.
         :return: False if successful or True if an error is encountered.
@@ -263,7 +263,7 @@ class RequirementDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedRequirement')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
@@ -293,20 +293,20 @@ class RequirementDataController(RTKDataController):
                 revision_id, matrix_type)
         else:
             _error_code = 6
-            _msg = 'RTK ERROR: Attempted to update non-existent matrix ' \
+            _msg = 'RAMSTK ERROR: Attempted to update non-existent matrix ' \
                    '{0:s}.'.format(matrix_type)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedMatrix')
 
     def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Request to update all records in the RTKRequirement table.
+        Request to update all records in the RAMSTKRequirement table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _error_code, _msg = self._dtm_data_model.do_update_all()
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

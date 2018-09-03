@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.modules.function.Controller.py is part of The RTK Project
+#       rtk.modules.function.Controller.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -8,16 +8,16 @@
 
 from pubsub import pub
 
-# Import other RTK modules.
-from rtk.modules import RTKDataController
-from rtk.modules import RTKDataMatrix
-from rtk.dao import RTKFunction, RTKHardware, RTKSoftware
+# Import other RAMSTK modules.
+from rtk.modules import RAMSTKDataController
+from rtk.modules import RAMSTKDataMatrix
+from rtk.dao import RAMSTKFunction, RAMSTKHardware, RAMSTKSoftware
 from . import dtmFunction
 
 
-class FunctionDataController(RTKDataController):
+class FunctionDataController(RAMSTKDataController):
     """
-    Provide an interface between the Function data model and an RTK view model.
+    Provide an interface between the Function data model and an RAMSTK view model.
 
     A single Function controller can manage one or more Function data models.
     The attributes of a Function data controller are:
@@ -27,14 +27,14 @@ class FunctionDataController(RTKDataController):
         """
         Initialize a Function data controller instance.
 
-        :param dao: the RTK Program DAO instance to pass to the Function Data
+        :param dao: the RAMSTK Program DAO instance to pass to the Function Data
                     Model.
         :type dao: :class:`rtk.dao.DAO`
         :param configuration: the Configuration instance associated with the
-                              current instance of the RTK application.
+                              current instance of the RAMSTK application.
         :type configuration: :class:`rtk.Configuration.Configuration`
         """
-        RTKDataController.__init__(
+        RAMSTKDataController.__init__(
             self,
             configuration,
             model=dtmFunction(dao),
@@ -46,8 +46,8 @@ class FunctionDataController(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_fctn_hw_matrix = RTKDataMatrix(dao, RTKFunction, RTKHardware)
-        self._dmx_fctn_sw_matrix = RTKDataMatrix(dao, RTKFunction, RTKSoftware)
+        self._dmx_fctn_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKFunction, RAMSTKHardware)
+        self._dmx_fctn_sw_matrix = RAMSTKDataMatrix(dao, RAMSTKFunction, RAMSTKSoftware)
 
         # Initialize public dictionary attributes.
 
@@ -109,7 +109,7 @@ class FunctionDataController(RTKDataController):
 
     def request_do_insert(self, **kwargs):
         """
-        Request to add an RTKFunction table record.
+        Request to add an RAMSTKFunction table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -120,17 +120,17 @@ class FunctionDataController(RTKDataController):
             revision_id=_revision_id, parent_id=_parent_id)
 
         if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             if not self._test:
                 pub.sendMessage(
                     'insertedFunction', function_id=self.dtm_function.last_id)
         else:
-            _msg = _msg + '  Failed to add a new Function to the RTK ' \
+            _msg = _msg + '  Failed to add a new Function to the RAMSTK ' \
                 'Program database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_insert_matrix(self, matrix_type, item_id, heading,
@@ -164,12 +164,12 @@ class FunctionDataController(RTKDataController):
                 item_id=item_id,
                 row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
     def request_do_delete(self, node_id):
         """
-        Request to delete an RTKFunction table record.
+        Request to delete an RAMSTKFunction table record.
 
         :param int node_id: the PyPubSub Tree() ID of the Function to delete.
         :return: False if successful or True if an error is encountered.
@@ -177,7 +177,7 @@ class FunctionDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedFunction')
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
@@ -202,12 +202,12 @@ class FunctionDataController(RTKDataController):
             _error_code, _msg = self._dmx_fctn_hw_matrix.do_delete(
                 item_id, row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedMatrix')
 
     def request_do_update(self, node_id):
         """
-        Request to update an RTKFunction table record.
+        Request to update an RAMSTKFunction table record.
 
         :param int node_id: the PyPubSub Tree() ID of the Function to save.
         :return: False if successful or True if an error is encountered.
@@ -215,7 +215,7 @@ class FunctionDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedFunction')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
@@ -233,20 +233,20 @@ class FunctionDataController(RTKDataController):
                 revision_id, matrix_type)
         else:
             _error_code = 6
-            _msg = 'RTK ERROR: Attempted to update non-existent matrix ' \
+            _msg = 'RAMSTK ERROR: Attempted to update non-existent matrix ' \
                    '{0:s}.'.format(matrix_type)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedMatrix')
 
     def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Request to update all records in the RTKFunction table.
+        Request to update all records in the RAMSTKFunction table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _error_code, _msg = self._dtm_data_model.do_update_all()
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg,
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

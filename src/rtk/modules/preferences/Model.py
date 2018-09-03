@@ -7,14 +7,14 @@
 """Preferences Data Model."""
 
 # Import other RAMSTK modules.
-from rtk.modules import RTKDataModel
-from rtk.dao import (RTKCategory, RTKCondition, RTKFailureMode, RTKGroup,
-                     RTKHazards, RTKLoadHistory, RTKManufacturer,
-                     RTKMeasurement, RTKMethod, RTKModel, RTKRPN,
-                     RTKStakeholders, RTKStatus, RTKType, RTKUser)
+from rtk.modules import RAMSTKDataModel
+from rtk.dao import (RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode, RAMSTKGroup,
+                     RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer,
+                     RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel, RAMSTKRPN,
+                     RAMSTKStakeholders, RAMSTKStatus, RAMSTKType, RAMSTKUser)
 
 
-class PreferencesDataModel(RTKDataModel):
+class PreferencesDataModel(RAMSTKDataModel):
     """Contains the attributes and methods of a user Preferences data model."""
 
     _tag = 'Preferences'
@@ -27,7 +27,7 @@ class PreferencesDataModel(RTKDataModel):
                     Program database.
         :type dao: :class:`ramstk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
@@ -87,7 +87,7 @@ class PreferencesDataModel(RTKDataModel):
         return _return
 
 
-class SitePreferencesDataModel(RTKDataModel):
+class SitePreferencesDataModel(RAMSTKDataModel):
     """Contain the attributes and methods for Site-wide preferences."""
 
     _tag = 'SitePrefs'
@@ -96,11 +96,11 @@ class SitePreferencesDataModel(RTKDataModel):
         """
         Initialize a Site Preferences data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
         self._site_preferences = {}
@@ -117,67 +117,67 @@ class SitePreferencesDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Site Preferences from the RTK Site database.
+        Retrieve all the Site Preferences from the RAMSTK Site database.
 
-        This method retrieves all the records from the RTKSiteInfo table in the
-        connected RTK Site database.  There should only be one record in the
-        RTKSiteInfo database.
+        This method retrieves all the records from the RAMSTKSiteInfo table in the
+        connected RAMSTK Site database.  There should only be one record in the
+        RAMSTKSiteInfo database.
 
         :return: None
         :rtype: None
         """
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         self._site_preferences['action_category'] = _session.query(
-            RTKCategory).filter(RTKCategory.cat_type == 'action').all()
+            RAMSTKCategory).filter(RAMSTKCategory.cat_type == 'action').all()
         self._site_preferences['incident_category'] = _session.query(
-            RTKCategory).filter(RTKCategory.cat_type == 'incident').all()
+            RAMSTKCategory).filter(RAMSTKCategory.cat_type == 'incident').all()
         self._site_preferences['damaging_conditions'] = _session.query(
-            RTKCondition).filter(RTKCondition.cond_type == 'operating').all()
+            RAMSTKCondition).filter(RAMSTKCondition.cond_type == 'operating').all()
         self._site_preferences['environment_conditions'] = _session.query(
-            RTKCondition).filter(
-                RTKCondition.cond_type == 'environment').all()
+            RAMSTKCondition).filter(
+                RAMSTKCondition.cond_type == 'environment').all()
         self._site_preferences['failure_modes'] = _session.query(
-            RTKFailureMode).all()
-        self._site_preferences['workgroups'] = _session.query(RTKGroup).filter(
-            RTKGroup.group_type == 'workgroup').all()
+            RAMSTKFailureMode).all()
+        self._site_preferences['workgroups'] = _session.query(RAMSTKGroup).filter(
+            RAMSTKGroup.group_type == 'workgroup').all()
         self._site_preferences['affinity_groups'] = _session.query(
-            RTKGroup).filter(RTKGroup.group_type == 'affinity').all()
-        self._site_preferences['hazards'] = _session.query(RTKHazards).all()
+            RAMSTKGroup).filter(RAMSTKGroup.group_type == 'affinity').all()
+        self._site_preferences['hazards'] = _session.query(RAMSTKHazards).all()
         self._site_preferences['load_history'] = _session.query(
-            RTKLoadHistory).all()
+            RAMSTKLoadHistory).all()
         self._site_preferences['manufacturers'] = _session.query(
-            RTKManufacturer).all()
+            RAMSTKManufacturer).all()
         self._site_preferences['measurement_units'] = _session.query(
-            RTKMeasurement).filter(
-                RTKMeasurement.measurement_type == 'unit').all()
+            RAMSTKMeasurement).filter(
+                RAMSTKMeasurement.measurement_type == 'unit').all()
         self._site_preferences['measureable_parameters'] = _session.query(
-            RTKMeasurement).filter(
-                RTKMeasurement.measurement_type == 'damage').all()
+            RAMSTKMeasurement).filter(
+                RAMSTKMeasurement.measurement_type == 'damage').all()
         self._site_preferences['detection_methods'] = _session.query(
-            RTKMethod).all()
+            RAMSTKMethod).all()
         self._site_preferences['damage_models'] = _session.query(
-            RTKModel).all()
+            RAMSTKModel).all()
         self._site_preferences['rpn_detection'] = _session.query(
-            RTKRPN).filter(RTKRPN.rpn_type == 'detection').all()
+            RAMSTKRPN).filter(RAMSTKRPN.rpn_type == 'detection').all()
         self._site_preferences['rpn_occurrence'] = _session.query(
-            RTKRPN).filter(RTKRPN.rpn_type == 'occurrence').all()
-        self._site_preferences['rpn_severity'] = _session.query(RTKRPN).filter(
-            RTKRPN.rpn_type == 'severity').all()
+            RAMSTKRPN).filter(RAMSTKRPN.rpn_type == 'occurrence').all()
+        self._site_preferences['rpn_severity'] = _session.query(RAMSTKRPN).filter(
+            RAMSTKRPN.rpn_type == 'severity').all()
         self._site_preferences['stakeholders'] = _session.query(
-            RTKStakeholders).all()
+            RAMSTKStakeholders).all()
         self._site_preferences['action_status'] = _session.query(
-            RTKStatus).filter(RTKStatus.status_type == 'action').all()
+            RAMSTKStatus).filter(RAMSTKStatus.status_type == 'action').all()
         self._site_preferences['incident_status'] = _session.query(
-            RTKStatus).filter(RTKStatus.status_type == 'incident').all()
+            RAMSTKStatus).filter(RAMSTKStatus.status_type == 'incident').all()
         self._site_preferences['incident_types'] = _session.query(
-            RTKType).filter(RTKType.type_type == 'incident').all()
+            RAMSTKType).filter(RAMSTKType.type_type == 'incident').all()
         self._site_preferences['requirement_types'] = _session.query(
-            RTKType).filter(RTKType.type_type == 'requirement').all()
+            RAMSTKType).filter(RAMSTKType.type_type == 'requirement').all()
         self._site_preferences['validation_types'] = _session.query(
-            RTKType).filter(RTKType.type_type == 'validation').all()
-        self._site_preferences['users'] = _session.query(RTKUser).all()
+            RAMSTKType).filter(RAMSTKType.type_type == 'validation').all()
+        self._site_preferences['users'] = _session.query(RAMSTKUser).all()
 
         _session.close()
 
@@ -193,7 +193,7 @@ class SitePreferencesDataModel(RTKDataModel):
         """
         _return = False
 
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
@@ -210,14 +210,14 @@ class SitePreferencesDataModel(RTKDataModel):
 
     def do_update(self, preferences):  # pylint: disable=arguments-differ
         """
-        Update the Site Preferences record to the RTK Site database.
+        Update the Site Preferences record to the RAMSTK Site database.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _session = self.dao.RTK_SESSION(
+        _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
@@ -236,7 +236,7 @@ class SitePreferencesDataModel(RTKDataModel):
         return _return
 
 
-class UserPreferencesDataModel(RTKDataModel):
+class UserPreferencesDataModel(RAMSTKDataModel):
     """Contains the attributes and methods for Program (user) preferences."""
 
     _tag = 'UserPrefs'
@@ -245,11 +245,11 @@ class UserPreferencesDataModel(RTKDataModel):
         """
         Initialize a User Preferences data model instance.
 
-        :param dao: the data access object for communicating with the RTK
+        :param dao: the data access object for communicating with the RAMSTK
                     Program database.
         :type dao: :class:`rtk.dao.DAO.DAO`
         """
-        RTKDataModel.__init__(self, dao)
+        RAMSTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
         self._user_preferences = {}
@@ -266,46 +266,46 @@ class UserPreferencesDataModel(RTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the Program preferences from the RTK Program database.
+        Retrieve all the Program preferences from the RAMSTK Program database.
 
-        This method retrieves all the records from the RTKProgramInfo table in
-        the connected RTK Program database.
+        This method retrieves all the records from the RAMSTKProgramInfo table in
+        the connected RAMSTK Program database.
 
         :return: None
         :rtype: None
         """
         if not self._configuration.get_site_configuration():
-            _temp = {'type': self._configuration.RTK_COM_BACKEND}
+            _temp = {'type': self._configuration.RAMSTK_COM_BACKEND}
             self._user_preferences['common_db_info'] = _temp.copy()
             self._user_preferences['common_db_info'].update(
-                self._configuration.RTK_COM_INFO)
+                self._configuration.RAMSTK_COM_INFO)
 
         if not self._configuration.get_user_configuration():
-            _temp = {'type': self._configuration.RTK_BACKEND}
+            _temp = {'type': self._configuration.RAMSTK_BACKEND}
             self._user_preferences['program_db_info'] = _temp.copy()
             self._user_preferences['program_db_info'].update(
-                self._configuration.RTK_PROG_INFO)
+                self._configuration.RAMSTK_PROG_INFO)
             self._user_preferences[
-                'report_size'] = self._configuration.RTK_REPORT_SIZE
+                'report_size'] = self._configuration.RAMSTK_REPORT_SIZE
             self._user_preferences[
-                'hr_multiplier'] = self._configuration.RTK_HR_MULTIPLIER
+                'hr_multiplier'] = self._configuration.RAMSTK_HR_MULTIPLIER
             self._user_preferences[
-                'decimal'] = self._configuration.RTK_DEC_PLACES
+                'decimal'] = self._configuration.RAMSTK_DEC_PLACES
             self._user_preferences[
-                'calcreltime'] = self._configuration.RTK_MTIME
-            self._user_preferences['tabpos'] = self._configuration.RTK_TABPOS
+                'calcreltime'] = self._configuration.RAMSTK_MTIME
+            self._user_preferences['tabpos'] = self._configuration.RAMSTK_TABPOS
             self._user_preferences[
-                'sitedir'] = self._configuration.RTK_SITE_DIR
+                'sitedir'] = self._configuration.RAMSTK_SITE_DIR
             self._user_preferences[
-                'datadir'] = self._configuration.RTK_DATA_DIR
+                'datadir'] = self._configuration.RAMSTK_DATA_DIR
             self._user_preferences[
-                'icondir'] = self._configuration.RTK_ICON_DIR
-            self._user_preferences['logdir'] = self._configuration.RTK_LOG_DIR
+                'icondir'] = self._configuration.RAMSTK_ICON_DIR
+            self._user_preferences['logdir'] = self._configuration.RAMSTK_LOG_DIR
             self._user_preferences[
-                'progdir'] = self._configuration.RTK_PROG_DIR
+                'progdir'] = self._configuration.RAMSTK_PROG_DIR
             self._user_preferences[
-                'format_files'] = self._configuration.RTK_FORMAT_FILE
-            self._user_preferences['colors'] = self._configuration.RTK_COLORS
+                'format_files'] = self._configuration.RAMSTK_FORMAT_FILE
+            self._user_preferences['colors'] = self._configuration.RAMSTK_COLORS
 
         return self._user_preferences
 
@@ -316,43 +316,43 @@ class UserPreferencesDataModel(RTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self._configuration.RTK_COM_BACKEND = preferences['common_db_info'][
+        self._configuration.RAMSTK_COM_BACKEND = preferences['common_db_info'][
             'type']
-        self._configuration.RTK_COM_INFO['host'] = preferences[
+        self._configuration.RAMSTK_COM_INFO['host'] = preferences[
             'common_db_info']['host']
-        self._configuration.RTK_COM_INFO['socket'] = preferences[
+        self._configuration.RAMSTK_COM_INFO['socket'] = preferences[
             'common_db_info']['socket']
-        self._configuration.RTK_COM_INFO['database'] = preferences[
+        self._configuration.RAMSTK_COM_INFO['database'] = preferences[
             'common_db_info']['database']
-        self._configuration.RTK_COM_INFO['user'] = preferences[
+        self._configuration.RAMSTK_COM_INFO['user'] = preferences[
             'common_db_info']['user']
-        self._configuration.RTK_COM_INFO['password'] = preferences[
+        self._configuration.RAMSTK_COM_INFO['password'] = preferences[
             'common_db_info']['password']
 
-        self._configuration.RTK_BACKEND = preferences['program_db_info'][
+        self._configuration.RAMSTK_BACKEND = preferences['program_db_info'][
             'type']
-        self._configuration.RTK_PROG_INFO['host'] = preferences[
+        self._configuration.RAMSTK_PROG_INFO['host'] = preferences[
             'program_db_info']['host']
-        self._configuration.RTK_PROG_INFO['socket'] = preferences[
+        self._configuration.RAMSTK_PROG_INFO['socket'] = preferences[
             'program_db_info']['socket']
-        self._configuration.RTK_PROG_INFO['database'] = preferences[
+        self._configuration.RAMSTK_PROG_INFO['database'] = preferences[
             'program_db_info']['database']
-        self._configuration.RTK_PROG_INFO['user'] = preferences[
+        self._configuration.RAMSTK_PROG_INFO['user'] = preferences[
             'program_db_info']['user']
-        self._configuration.RTK_PROG_INFO['password'] = preferences[
+        self._configuration.RAMSTK_PROG_INFO['password'] = preferences[
             'program_db_info']['password']
 
-        self._configuration.RTK_REPORT_SIZE = preferences['report_size']
-        self._configuration.RTK_HR_MULTIPLIER = preferences['hr_multiplier']
-        self._configuration.RTK_DEC_PLACES = preferences['decimal']
-        self._configuration.RTK_MTIME = preferences['calcreltime']
-        self._configuration.RTK_TABPOS = preferences['tabpos']
-        self._configuration.RTK_SITE_DIR = preferences['sitedir']
-        self._configuration.RTK_DATA_DIR = preferences['datadir']
-        self._configuration.RTK_ICON_DIR = preferences['icondir']
-        self._configuration.RTK_LOG_DIR = preferences['logdir']
-        self._configuration.RTK_PROG_DIR = preferences['progdir']
-        self._configuration.RTK_FORMAT_FILE = preferences['format_files']
-        self._configuration.RTK_COLORS = preferences['colors']
+        self._configuration.RAMSTK_REPORT_SIZE = preferences['report_size']
+        self._configuration.RAMSTK_HR_MULTIPLIER = preferences['hr_multiplier']
+        self._configuration.RAMSTK_DEC_PLACES = preferences['decimal']
+        self._configuration.RAMSTK_MTIME = preferences['calcreltime']
+        self._configuration.RAMSTK_TABPOS = preferences['tabpos']
+        self._configuration.RAMSTK_SITE_DIR = preferences['sitedir']
+        self._configuration.RAMSTK_DATA_DIR = preferences['datadir']
+        self._configuration.RAMSTK_ICON_DIR = preferences['icondir']
+        self._configuration.RAMSTK_LOG_DIR = preferences['logdir']
+        self._configuration.RAMSTK_PROG_DIR = preferences['progdir']
+        self._configuration.RAMSTK_FORMAT_FILE = preferences['format_files']
+        self._configuration.RAMSTK_COLORS = preferences['colors']
 
         return self._configuration.set_user_configuration()
