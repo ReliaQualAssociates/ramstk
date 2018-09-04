@@ -83,22 +83,24 @@ ignore_regexps = [
 ##
 section_regexps = [
     ('Bug Fixes', [
-        r'^[fF]ix\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
+        r'^[fF]ix\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
      ]),
     ('New and Improved', [
-        r'^[fF]eat\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
+        r'^[fF]eat\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
      ]),
     ('Out with the Old', [
-        r'^[rR]emove\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
+        r'^[rR]emove\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
      ]),
     ('Quality Assurance', [
-        r'^[pP]erf\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
-        r'^[rR]efactor\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
-        r'^[sS]tyle\s*:\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
+        r'^[pP]erf\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
+        r'^[rR]efactor\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
+        r'^[sS]tyle\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
+     ]),
+    ('Chores', [
+        r'^[cC]hore\s*((dev|use?r|pkg|test|doc)\s*:\s*)?([^\n]*)$',
      ]),
     ('Other', None ## Match all lines
      ),
-
 ]
 
 
