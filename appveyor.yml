@@ -5,7 +5,6 @@ branches:
   only:
   - master
   - develop
-skip_tags: true
 skip_branch_with_pr: true
 platform: x86
 shallow_clone: true
@@ -88,3 +87,8 @@ test_script:
     %VENV_TEST_DIR%\\Scripts\\deactivate.bat
 
     rmdir %VENV_TEST_DIR% /s /q
+artifacts:
+- path: dist\*
+  name: ramstk
+on_success:
+- cmd: python setup.py bdist_wininst
