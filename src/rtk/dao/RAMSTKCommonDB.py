@@ -6,9 +6,13 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RAMSTKCommonDB File."""
 
+import gettext
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
+
+_ = gettext.gettext
 
 RAMSTK_BASE = declarative_base()
 
@@ -675,10 +679,11 @@ def create_common_db(**kwargs):
     from datetime import date, timedelta
 
     from rtk.dao import (RAMSTKSiteInfo, RAMSTKCategory, RAMSTKCondition,
-                         RAMSTKFailureMode, RAMSTKGroup, RAMSTKHazards, RAMSTKLoadHistory,
-                         RAMSTKManufacturer, RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel,
-                         RAMSTKRPN, RAMSTKStakeholders, RAMSTKStatus, RAMSTKSubCategory,
-                         RAMSTKType, RAMSTKUser)
+                         RAMSTKFailureMode, RAMSTKGroup, RAMSTKHazards,
+                         RAMSTKLoadHistory, RAMSTKManufacturer,
+                         RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel,
+                         RAMSTKRPN, RAMSTKStakeholders, RAMSTKStatus,
+                         RAMSTKSubCategory, RAMSTKType, RAMSTKUser)
 
     __test = kwargs['test']
     uri = kwargs['database']
@@ -747,8 +752,10 @@ def create_common_db(**kwargs):
             _record.subcategory_id = _skey
             for _mkey in RAMSTK_FAILURE_MODES[_ckey][_skey]:
                 _record.mode_id = _mkey
-                _record.description = RAMSTK_FAILURE_MODES[_ckey][_skey][_mkey][0]
-                _record.mode_ratio = RAMSTK_FAILURE_MODES[_ckey][_skey][_mkey][1]
+                _record.description = RAMSTK_FAILURE_MODES[_ckey][_skey][
+                    _mkey][0]
+                _record.mode_ratio = RAMSTK_FAILURE_MODES[_ckey][_skey][_mkey][
+                    1]
                 _record.source = RAMSTK_FAILURE_MODES[_ckey][_skey][_mkey][2]
                 session.add(_record)
 
@@ -843,13 +850,15 @@ def create_common_db(**kwargs):
     _user = RAMSTKUser()
     if not __test:
         _yn = raw_input(
-            _(u"Would you like to add an RAMSTK Administrator? ([y]/n): ")) or 'y'
+            _(u"Would you like to add an RAMSTK Administrator? ([y]/n): ")
+        ) or 'y'
 
         if _yn.lower() == 'y':
             _user.user_lname = raw_input(
                 _(u"Enter the RAMSTK Administrator's last name (surname): "))
             _user.user_fname = raw_input(
-                _(u"Enter the RAMSTK Administrator's first name (given name): "))
+                _(u"Enter the RAMSTK Administrator's first name (given name): "
+                  ))
             _user.user_email = raw_input(
                 _(u"Enter the RAMSTK Administrator's e-mail address: "))
             _user.user_phone = raw_input(

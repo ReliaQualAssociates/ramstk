@@ -138,6 +138,6 @@ class MatrixView(gtk.HBox, rtk.RAMSTKBaseMatrix):
              self._revision_id, self._matrix_type)
         if _matrix is not None:
             rtk.RAMSTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
-                                             _row_hdrs, _(u"Function"))
+                                                _row_hdrs, _(u"Function"))
 
         return None

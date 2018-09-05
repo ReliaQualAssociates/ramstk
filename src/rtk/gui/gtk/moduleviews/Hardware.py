@@ -169,7 +169,8 @@ class ModuleView(RAMSTKModuleView):
 
         if not self._dtc_data_controller.request_do_calculate_all(
                 node_id=self._hardware_id,
-                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER):
+                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                RAMSTK_HR_MULTIPLIER):
             # Update Revision attributes with system-level attribute values.
             _sys_attributes = self._dtc_data_controller.request_get_attributes(
                 1)
@@ -222,7 +223,7 @@ class ModuleView(RAMSTKModuleView):
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._hardware_id)
         _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                       'question')
+                                          'question')
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
@@ -661,13 +662,14 @@ class ModuleView(RAMSTKModuleView):
             _prompt = _(u"An error occured while loading the Hardware for "
                         u"Revision ID {0:d} into the Module "
                         u"View.").format(self._revision_id)
-            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                           'error')
+            _dialog = rtk.RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
         else:
             for _analysis in ['allocation', 'hazops', 'similaritem']:
-                _dtc_data_controller = self._mdcRAMSTK.dic_controllers[_analysis]
+                _dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+                    _analysis]
                 _dtc_data_controller.request_do_select_all(
                     revision_id=self._revision_id)
 

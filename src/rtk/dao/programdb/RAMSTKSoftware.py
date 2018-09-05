@@ -123,7 +123,8 @@ class RAMSTKSoftware(RAMSTK_BASE):
     development = relationship(
         'RAMSTKSoftwareDevelopment', back_populates='software')
     review = relationship('RAMSTKSoftwareReview', back_populates='software')
-    software_test = relationship('RAMSTKSoftwareTest', back_populates='software')
+    software_test = relationship(
+        'RAMSTKSoftwareTest', back_populates='software')
 
     def get_attributes(self):
         """

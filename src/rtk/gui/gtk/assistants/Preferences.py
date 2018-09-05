@@ -10,8 +10,8 @@ from os.path import basename
 import defusedxml.lxml as lxml
 
 # Import other RAMSTK modules.
-from rtk.dao import (RAMSTKCondition, RAMSTKGroup, RAMSTKLoadHistory, RAMSTKMeasurement,
-                     RAMSTKRPN, RAMSTKUser)
+from rtk.dao import (RAMSTKCondition, RAMSTKGroup, RAMSTKLoadHistory,
+                     RAMSTKMeasurement, RAMSTKRPN, RAMSTKUser)
 from rtk.gui.gtk.rtk.Widget import _, gobject, gtk, pango
 from rtk.gui.gtk import rtk
 
@@ -53,7 +53,8 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['preferences']
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+            'preferences']
         self._fmt_file = None
 
         # Initialize public dictionary attributes.
@@ -203,7 +204,7 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
 
         self.add(_vbox)
 
-        #if self._mdcRAMSTK.loaded:
+        # if self._mdcRAMSTK.loaded:
         #    self._make_active_modules_page()
         self._make_general_preferences_page()
         self._make_look_and_feel_page()
@@ -253,8 +254,8 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         _module = _model.get_value(_row, 1)
 
         self._fmt_file = (
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
+            + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
         _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
 
         # Retrieve the default heading text from the format file.
@@ -432,14 +433,14 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         self._user_preferences = self._dtc_data_controller.request_get_preferences(
             site=False, user=True)
 
-        #if self._mdcRAMSTK.loaded:
-        #self.chkFunctions.set_active(_results[0][1])
-        #self.chkRequirements.set_active(_results[0][2])
-        #self.chkSoftware.set_active(_results[0][4])
-        #self.chkValidation.set_active(_results[0][5])
-        #self.chkRG.set_active(_results[0][6])
-        #self.chkIncidents.set_active(_results[0][8])
-        #self.chkSurvivalAnalysis.set_active(_results[0][10])
+        # if self._mdcRAMSTK.loaded:
+        # self.chkFunctions.set_active(_results[0][1])
+        # self.chkRequirements.set_active(_results[0][2])
+        # self.chkSoftware.set_active(_results[0][4])
+        # self.chkValidation.set_active(_results[0][5])
+        # self.chkRG.set_active(_results[0][6])
+        # self.chkIncidents.set_active(_results[0][8])
+        # self.chkSurvivalAnalysis.set_active(_results[0][10])
 
         self.cmbModuleBookTabPosition.set_active(
             _positions[self._user_preferences['tabpos']['modulebook'].lower()])
@@ -485,18 +486,18 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         _color = gtk.gdk.color_parse(
             self._user_preferences['colors']['hardwarefg'])
         self.btnHardwareFGColor.set_color(_color)
-        #self.btnSoftwareBGColor.set_color(_color)
-        #self.btnSoftwareFGColor.set_color(_color)
+        # self.btnSoftwareBGColor.set_color(_color)
+        # self.btnSoftwareFGColor.set_color(_color)
         _color = gtk.gdk.color_parse(
             self._user_preferences['colors']['validationbg'])
         self.btnValidationBGColor.set_color(_color)
         _color = gtk.gdk.color_parse(
             self._user_preferences['colors']['validationfg'])
         self.btnValidationFGColor.set_color(_color)
-        #self.btnIncidentBGColor.set_color(_color)
-        #self.btnIncidentFGColor.set_color(_color)
-        #self.btnTestingBGColor.set_color(_color)
-        #self.btnTestingFGColor.set_color(_color)
+        # self.btnIncidentBGColor.set_color(_color)
+        # self.btnIncidentFGColor.set_color(_color)
+        # self.btnTestingBGColor.set_color(_color)
+        # self.btnTestingFGColor.set_color(_color)
 
         return None
 
@@ -1070,7 +1071,8 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
 
         _hbox_outer = gtk.HBox()
         _hbox_inner = gtk.HBox()
-        _frame = rtk.RAMSTKFrame(label=_(u"Edit Module View Layout and Colors"))
+        _frame = rtk.RAMSTKFrame(
+            label=_(u"Edit Module View Layout and Colors"))
         _frame.add(_hbox_inner)
         _fixed = gtk.Fixed()
         _scrollwindow = gtk.ScrolledWindow()
@@ -1096,16 +1098,20 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         _label = rtk.RAMSTKLabel(_(u"Select format file to edit:"), width=350)
         _fixed.put(_label, 5, 5)
         _fixed.put(self.cmbFormatFiles, 310, 5)
-        _label = rtk.RAMSTKLabel(_(u"Revision Tree Background Color:"), width=350)
+        _label = rtk.RAMSTKLabel(
+            _(u"Revision Tree Background Color:"), width=350)
         _fixed.put(_label, 5, 95)
         _fixed.put(self.btnRevisionBGColor, 340, 95)
-        _label = rtk.RAMSTKLabel(_(u"Revision Tree Foreground Color:"), width=350)
+        _label = rtk.RAMSTKLabel(
+            _(u"Revision Tree Foreground Color:"), width=350)
         _fixed.put(_label, 5, 125)
         _fixed.put(self.btnRevisionFGColor, 340, 125)
-        _label = rtk.RAMSTKLabel(_(u"Function Tree Background Color:"), width=350)
+        _label = rtk.RAMSTKLabel(
+            _(u"Function Tree Background Color:"), width=350)
         _fixed.put(_label, 5, 155)
         _fixed.put(self.btnFunctionBGColor, 340, 155)
-        _label = rtk.RAMSTKLabel(_(u"Function Tree Foreground Color:"), width=350)
+        _label = rtk.RAMSTKLabel(
+            _(u"Function Tree Foreground Color:"), width=350)
         _fixed.put(_label, 5, 185)
         _fixed.put(self.btnFunctionFGColor, 340, 185)
         _label = rtk.RAMSTKLabel(
@@ -1116,18 +1122,20 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
             _(u"Requirements Tree Foreground Color:"), width=350)
         _fixed.put(_label, 5, 245)
         _fixed.put(self.btnRequirementsFGColor, 340, 245)
-        _label = rtk.RAMSTKLabel(_(u"Hardware Tree Background Color:"), width=350)
+        _label = rtk.RAMSTKLabel(
+            _(u"Hardware Tree Background Color:"), width=350)
         _fixed.put(_label, 5, 275)
         _fixed.put(self.btnHardwareBGColor, 340, 275)
-        _label = rtk.RAMSTKLabel(_(u"Hardware Tree Foreground Color:"), width=350)
+        _label = rtk.RAMSTKLabel(
+            _(u"Hardware Tree Foreground Color:"), width=350)
         _fixed.put(_label, 5, 305)
         _fixed.put(self.btnHardwareFGColor, 340, 305)
-        #_label = rtk.RAMSTKLabel(_(u"Software Tree Background Color:"), width=350)
-        #_fixed.put(_label, 5, 335)
-        #_fixed.put(self.btnSoftwareBGColor, 340, 335)
-        #_label = rtk.RAMSTKLabel(_(u"Software Tree Foreground Color:"), width=350)
-        #_fixed.put(_label, 5, 365)
-        #_fixed.put(self.btnSoftwareFGColor, 340, 365)
+        # _label = rtk.RAMSTKLabel(_(u"Software Tree Background Color:"), width=350)
+        # _fixed.put(_label, 5, 335)
+        # _fixed.put(self.btnSoftwareBGColor, 340, 335)
+        # _label = rtk.RAMSTKLabel(_(u"Software Tree Foreground Color:"), width=350)
+        # _fixed.put(_label, 5, 365)
+        # _fixed.put(self.btnSoftwareFGColor, 340, 365)
         _label = rtk.RAMSTKLabel(
             _(u"Validation  Tree Background Color:"), width=350)
         _fixed.put(_label, 5, 335)
@@ -1136,18 +1144,18 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
             _(u"Validation Tree Foreground Color:"), width=350)
         _fixed.put(_label, 5, 365)
         _fixed.put(self.btnValidationFGColor, 340, 365)
-        #_label = rtk.RAMSTKLabel(_(u"Incident Tree Background Color:"), width=350)
-        #_fixed.put(_label, 5, 455)
-        #_fixed.put(self.btnIncidentBGColor, 340, 455)
-        #_label = rtk.RAMSTKLabel(_(u"Incident Tree Foreground Color:"), width=350)
-        #_fixed.put(_label, 5, 485)
-        #_fixed.put(self.btnIncidentFGColor, 340, 485)
-        #_label = rtk.RAMSTKLabel(_(u"Testing Tree Background Color:"), width=350)
-        #_fixed.put(_label, 5, 515)
-        #_fixed.put(self.btnTestingBGColor, 340, 515)
-        #_label = rtk.RAMSTKLabel(_(u"Testing Tree Foreground Color:"), width=350)
-        #_fixed.put(_label, 5, 545)
-        #_fixed.put(self.btnTestingFGColor, 340, 545)
+        # _label = rtk.RAMSTKLabel(_(u"Incident Tree Background Color:"), width=350)
+        # _fixed.put(_label, 5, 455)
+        # _fixed.put(self.btnIncidentBGColor, 340, 455)
+        # _label = rtk.RAMSTKLabel(_(u"Incident Tree Foreground Color:"), width=350)
+        # _fixed.put(_label, 5, 485)
+        # _fixed.put(self.btnIncidentFGColor, 340, 485)
+        # _label = rtk.RAMSTKLabel(_(u"Testing Tree Background Color:"), width=350)
+        # _fixed.put(_label, 5, 515)
+        # _fixed.put(self.btnTestingBGColor, 340, 515)
+        # _label = rtk.RAMSTKLabel(_(u"Testing Tree Foreground Color:"), width=350)
+        # _fixed.put(_label, 5, 545)
+        # _fixed.put(self.btnTestingFGColor, 340, 545)
 
         _labels = [
             _(u"Default\nTitle"),

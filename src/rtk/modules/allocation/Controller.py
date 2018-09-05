@@ -112,7 +112,7 @@ class AllocationDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedAllocation')
+                                                      'deletedAllocation')
 
     def request_do_insert(self, **kwargs):
         """
@@ -142,7 +142,7 @@ class AllocationDataController(RAMSTKDataController):
             self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_select_all(self, **kwargs):
         """
@@ -152,8 +152,6 @@ class AllocationDataController(RAMSTKDataController):
                  Allocation tree.
         :rtype: dict
         """
-        _revision_id = kwargs['revision_id']
-
         # Select the Hardware BoM tree and retrieve the system hazard rate.
         _tree = self._dtm_hardware_bom.do_select_all(**kwargs)
         self.system_hazard_rate = _tree.children(
@@ -193,7 +191,7 @@ class AllocationDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedAllocation')
+                                                      'savedAllocation')
 
     def request_do_update_all(self, **kwargs):
         """
@@ -205,4 +203,4 @@ class AllocationDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)

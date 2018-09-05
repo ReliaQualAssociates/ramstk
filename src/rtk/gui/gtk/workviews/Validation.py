@@ -137,9 +137,8 @@ class GeneralData(RAMSTKWorkView):
               ))
 
         self.cmbTaskType = rtk.RAMSTKComboBox(
-            tooltip=
-            _(u"Selects and displays the type of task for the selected V&amp;V "
-              u"activity."))
+            tooltip=_(u"Selects and displays the type of task for the "
+                      u"selected V&amp;V activity."))
         self.cmbMeasurementUnit = rtk.RAMSTKComboBox(
             tooltip=_(
                 u"Selects and displays the measurement unit for the selected "
@@ -630,8 +629,10 @@ class GeneralData(RAMSTKWorkView):
 
         _data = []
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE:
-            _data.append(
-                [self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE[_key][1]])
+            _data.append([
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE[
+                    _key][1]
+            ])
         self.cmbTaskType.do_load_combo(_data)
 
         _model = self.cmbMeasurementUnit.get_model()
@@ -640,7 +641,8 @@ class GeneralData(RAMSTKWorkView):
         _data = []
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS:
             _data.append([
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS[_key][1]
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS[
+                    _key][1]
             ])
         self.cmbMeasurementUnit.do_load_combo(_data)
 
@@ -1181,7 +1183,6 @@ class BurndownCurve(RAMSTKWorkView):
                 y_values=_time_average,
                 plot_type='date',
                 marker='b-')
-            _x_pos = int((max(_y_average.keys()) - min(_y_average.keys())) / 2)
         if _y_minimum:
             self.burndown.do_load_plot(
                 x_values=_y_minimum.keys(),

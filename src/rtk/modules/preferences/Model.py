@@ -8,10 +8,11 @@
 
 # Import other RAMSTK modules.
 from rtk.modules import RAMSTKDataModel
-from rtk.dao import (RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode, RAMSTKGroup,
-                     RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer,
-                     RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel, RAMSTKRPN,
-                     RAMSTKStakeholders, RAMSTKStatus, RAMSTKType, RAMSTKUser)
+from rtk.dao import (RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode,
+                     RAMSTKGroup, RAMSTKHazards, RAMSTKLoadHistory,
+                     RAMSTKManufacturer, RAMSTKMeasurement, RAMSTKMethod,
+                     RAMSTKModel, RAMSTKRPN, RAMSTKStakeholders, RAMSTKStatus,
+                     RAMSTKType, RAMSTKUser)
 
 
 class PreferencesDataModel(RAMSTKDataModel):
@@ -63,7 +64,7 @@ class PreferencesDataModel(RAMSTKDataModel):
 
         return None
 
-    def do_delete(self, entity):    # pylint: disable=arguments-differ
+    def do_delete(self, entity):  # pylint: disable=arguments-differ
         """
         Delete the Site Preferences record from the RAMSTK Site database.
 
@@ -132,16 +133,18 @@ class SitePreferencesDataModel(RAMSTKDataModel):
         self._site_preferences['action_category'] = _session.query(
             RAMSTKCategory).filter(RAMSTKCategory.cat_type == 'action').all()
         self._site_preferences['incident_category'] = _session.query(
-            RAMSTKCategory).filter(RAMSTKCategory.cat_type == 'incident').all()
+            RAMSTKCategory).filter(
+                RAMSTKCategory.cat_type == 'incident').all()
         self._site_preferences['damaging_conditions'] = _session.query(
-            RAMSTKCondition).filter(RAMSTKCondition.cond_type == 'operating').all()
+            RAMSTKCondition).filter(
+                RAMSTKCondition.cond_type == 'operating').all()
         self._site_preferences['environment_conditions'] = _session.query(
             RAMSTKCondition).filter(
                 RAMSTKCondition.cond_type == 'environment').all()
         self._site_preferences['failure_modes'] = _session.query(
             RAMSTKFailureMode).all()
-        self._site_preferences['workgroups'] = _session.query(RAMSTKGroup).filter(
-            RAMSTKGroup.group_type == 'workgroup').all()
+        self._site_preferences['workgroups'] = _session.query(
+            RAMSTKGroup).filter(RAMSTKGroup.group_type == 'workgroup').all()
         self._site_preferences['affinity_groups'] = _session.query(
             RAMSTKGroup).filter(RAMSTKGroup.group_type == 'affinity').all()
         self._site_preferences['hazards'] = _session.query(RAMSTKHazards).all()
@@ -163,8 +166,8 @@ class SitePreferencesDataModel(RAMSTKDataModel):
             RAMSTKRPN).filter(RAMSTKRPN.rpn_type == 'detection').all()
         self._site_preferences['rpn_occurrence'] = _session.query(
             RAMSTKRPN).filter(RAMSTKRPN.rpn_type == 'occurrence').all()
-        self._site_preferences['rpn_severity'] = _session.query(RAMSTKRPN).filter(
-            RAMSTKRPN.rpn_type == 'severity').all()
+        self._site_preferences['rpn_severity'] = _session.query(
+            RAMSTKRPN).filter(RAMSTKRPN.rpn_type == 'severity').all()
         self._site_preferences['stakeholders'] = _session.query(
             RAMSTKStakeholders).all()
         self._site_preferences['action_status'] = _session.query(
@@ -183,7 +186,7 @@ class SitePreferencesDataModel(RAMSTKDataModel):
 
         return self._site_preferences
 
-    def do_delete(self, entity):    # pylint: disable=arguments-differ
+    def do_delete(self, entity):  # pylint: disable=arguments-differ
         """
         Delete the Site Preferences record from the RAMSTK Site database.
 
@@ -293,19 +296,22 @@ class UserPreferencesDataModel(RAMSTKDataModel):
                 'decimal'] = self._configuration.RAMSTK_DEC_PLACES
             self._user_preferences[
                 'calcreltime'] = self._configuration.RAMSTK_MTIME
-            self._user_preferences['tabpos'] = self._configuration.RAMSTK_TABPOS
+            self._user_preferences[
+                'tabpos'] = self._configuration.RAMSTK_TABPOS
             self._user_preferences[
                 'sitedir'] = self._configuration.RAMSTK_SITE_DIR
             self._user_preferences[
                 'datadir'] = self._configuration.RAMSTK_DATA_DIR
             self._user_preferences[
                 'icondir'] = self._configuration.RAMSTK_ICON_DIR
-            self._user_preferences['logdir'] = self._configuration.RAMSTK_LOG_DIR
+            self._user_preferences[
+                'logdir'] = self._configuration.RAMSTK_LOG_DIR
             self._user_preferences[
                 'progdir'] = self._configuration.RAMSTK_PROG_DIR
             self._user_preferences[
                 'format_files'] = self._configuration.RAMSTK_FORMAT_FILE
-            self._user_preferences['colors'] = self._configuration.RAMSTK_COLORS
+            self._user_preferences[
+                'colors'] = self._configuration.RAMSTK_COLORS
 
         return self._user_preferences
 

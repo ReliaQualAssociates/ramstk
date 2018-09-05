@@ -34,7 +34,8 @@ class RAMSTKImport(gtk.Assistant):
         # Initialize private dict variables.
         self._dic_icons = {
             'error':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/error.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/error.png',
             'information':
             controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/information.png',
@@ -166,8 +167,8 @@ class RAMSTKImport(gtk.Assistant):
             _user_msg = _(u"Successfully imported {0:d} {1:s} "
                           u"records.").format(_count, self._module)
 
-        _dialog = rtk.RAMSTKMessageDialog(_user_msg, self._dic_icons[_msg_type],
-                                       _msg_type)
+        _dialog = rtk.RAMSTKMessageDialog(
+            _user_msg, self._dic_icons[_msg_type], _msg_type)
         if _dialog.do_run() == gtk.RESPONSE_OK:
             _dialog.destroy()
 
@@ -314,7 +315,8 @@ class RAMSTKImport(gtk.Assistant):
         self._tvw_field_map.append_column(_column)
 
         _column = gtk.TreeViewColumn()
-        _label = rtk.RAMSTKLabel(_(u"RAMSTK Field"), justify=gtk.JUSTIFY_CENTER)
+        _label = rtk.RAMSTKLabel(
+            _(u"RAMSTK Field"), justify=gtk.JUSTIFY_CENTER)
         _column.set_widget(_label)
 
         _cell = gtk.CellRendererCombo()

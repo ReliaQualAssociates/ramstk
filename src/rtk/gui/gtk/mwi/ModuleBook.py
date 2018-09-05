@@ -6,13 +6,10 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Module Book Module."""
 
-import sys
-
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from rtk.gui.gtk.rtk import RAMSTKBook, destroy
-from rtk.gui.gtk.assistants import ExportModule
 from rtk.gui.gtk.moduleviews import mvwRevision
 from rtk.gui.gtk.moduleviews import mvwFunction
 from rtk.gui.gtk.moduleviews import mvwRequirement
@@ -265,7 +262,8 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         # Close button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Closes the open RAMSTK Program Database."))
+        _button.set_tooltip_text(
+            _(u"Closes the open RAMSTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/delete.png')
         _button.set_icon_widget(_image)
@@ -332,7 +330,8 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         self.statusbar.push(1, _message)
         self.set_title(
             _(u"RAMSTK - Analyzing {0:s}").format(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database']))
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO[
+                    'database']))
 
         return _return
 
@@ -365,7 +364,8 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         # Insert a page for each of the active RAMSTK Modules.
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER:
-            _mkey = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
+            _mkey = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[
+                _key]
             _module = self._dic_module_views[_mkey]
             self.notebook.insert_page(
                 _module, tab_label=_module.hbx_tab_label, position=_key)
@@ -400,7 +400,8 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         # Key errors occur when no RAMSTK Program database has been loaded.  In
         # that case, select the Revision page to load.
         try:
-            _module = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[page_num]
+            _module = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[
+                page_num]
         except KeyError:
             _module = 'revision'
 

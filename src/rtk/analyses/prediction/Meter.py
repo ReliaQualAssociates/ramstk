@@ -134,8 +134,9 @@ def calculate_217f_part_stress(**attributes):
         attributes['lambda_b'] = 0.0
 
     if attributes['lambda_b'] <= 0.0:
-        _msg = ("RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
-                "hardware ID: {0:d}.").format(attributes['hardware_id'])
+        _msg = (
+            "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
+            "hardware ID: {0:d}.").format(attributes['hardware_id'])
 
     # Determine the application factor (piA) and function factor (piF).
     if attributes['subcategory_id'] == 2:
@@ -161,9 +162,10 @@ def calculate_217f_part_stress(**attributes):
         attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
-        _msg = ("RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
-                "{0:d}, quality ID: {1:d}.").format(attributes['hardware_id'],
-                                                    attributes['quality_id'])
+        _msg = (
+            "RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
+            "{0:d}, quality ID: {1:d}.").format(attributes['hardware_id'],
+                                                attributes['quality_id'])
 
     # Determine the environmental factor (piE).
     try:
@@ -173,8 +175,9 @@ def calculate_217f_part_stress(**attributes):
         attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
-        _msg = ("RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
-                "{0:d}").format(attributes['hardware_id'])
+        _msg = (
+            "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
+            "{0:d}").format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (

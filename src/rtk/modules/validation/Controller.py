@@ -45,10 +45,10 @@ class ValidationDataController(RAMSTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_vldtn_rqrmnt_matrix = RAMSTKDataMatrix(dao, RAMSTKValidation,
-                                                      RAMSTKRequirement)
+        self._dmx_vldtn_rqrmnt_matrix = RAMSTKDataMatrix(
+            dao, RAMSTKValidation, RAMSTKRequirement)
         self._dmx_vldtn_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKValidation,
-                                                  RAMSTKHardware)
+                                                     RAMSTKHardware)
 
         # Initialize public dictionary attributes.
 
@@ -148,7 +148,7 @@ class ValidationDataController(RAMSTKDataController):
             self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_insert_matrix(self, matrix_type, item_id, heading,
                                  row=True):
@@ -183,7 +183,7 @@ class ValidationDataController(RAMSTKDataController):
                 row=row)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_delete(self, node_id):
         """
@@ -198,7 +198,7 @@ class ValidationDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedValidation')
+                                                      'deletedValidation')
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -224,7 +224,7 @@ class ValidationDataController(RAMSTKDataController):
                 item_id, row=row)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedMatrix')
+                                                      'deletedMatrix')
 
     def request_do_update(self, node_id):
         """
@@ -239,7 +239,7 @@ class ValidationDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedValidation')
+                                                      'savedValidation')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
@@ -267,7 +267,7 @@ class ValidationDataController(RAMSTKDataController):
                    '{0:s}.'.format(matrix_type)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedMatrix')
+                                                      'savedMatrix')
 
     def request_do_update_all(self, **kwargs):
         """
@@ -279,7 +279,7 @@ class ValidationDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_update_status(self):
         """
@@ -291,7 +291,7 @@ class ValidationDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update_status()
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
         """

@@ -47,10 +47,11 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         # Initialize private scalar attributes.
         self._dmx_hw_rqrmnt_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
-                                                   RAMSTKRequirement)
-        self._dmx_hw_tstng_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware, RAMSTKTest)
+                                                      RAMSTKRequirement)
+        self._dmx_hw_tstng_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
+                                                     RAMSTKTest)
         self._dmx_hw_vldtn_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
-                                                  RAMSTKValidation)
+                                                     RAMSTKValidation)
 
         # Initialize public dictionary attributes.
 
@@ -178,7 +179,7 @@ class HardwareBoMDataController(RAMSTKDataController):
             self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_insert_matrix(self, matrix_type, item_id, heading,
                                  row=True):
@@ -219,7 +220,7 @@ class HardwareBoMDataController(RAMSTKDataController):
                 row=row)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_delete(self, node_id):
         """
@@ -236,7 +237,7 @@ class HardwareBoMDataController(RAMSTKDataController):
             pub.sendMessage('deletedHardware', node_id=node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -268,7 +269,7 @@ class HardwareBoMDataController(RAMSTKDataController):
                 item_id, row=row)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedMatrix')
+                                                      'deletedMatrix')
 
     def request_do_update(self, node_id):
         """
@@ -282,7 +283,7 @@ class HardwareBoMDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedHardware')
+                                                      'savedHardware')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
@@ -316,7 +317,7 @@ class HardwareBoMDataController(RAMSTKDataController):
                    '{0:s}.'.format(matrix_type)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedMatrix')
+                                                      'savedMatrix')
 
     def request_do_update_all(self, **kwargs):
         """
@@ -328,7 +329,7 @@ class HardwareBoMDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_get_attributes(self, node_id):
         """
@@ -459,7 +460,7 @@ class HardwareBoMDataController(RAMSTKDataController):
         """
         _return = False
 
-        _results = self._dtm_data_model.do_calculate_all(**kwargs)
+        self._dtm_data_model.do_calculate_all(**kwargs)
 
         if not self._test:
             for _node_id in self._dtm_data_model.tree.nodes:

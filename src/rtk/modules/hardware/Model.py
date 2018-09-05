@@ -12,8 +12,9 @@ from treelib.exceptions import DuplicatedNodeIdError
 # Import other RAMSTK modules.
 from rtk.analyses.prediction import Component
 from rtk.modules import RAMSTKDataModel
-from rtk.dao import (RAMSTKHardware, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-                     RAMSTKMilHdbkF, RAMSTKNSWC, RAMSTKReliability)
+from rtk.dao import (RAMSTKHardware, RAMSTKDesignElectric,
+                     RAMSTKDesignMechanic, RAMSTKMilHdbkF, RAMSTKNSWC,
+                     RAMSTKReliability)
 
 
 class HardwareBoMDataModel(RAMSTKDataModel):
@@ -190,8 +191,9 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                     "child of a component/piece part.")
         elif _parent_is_part == 1 and _part == 1:
             _error_code = 3006
-            _msg = ("RAMSTK ERROR: You can not have a component/piece part as a "
-                    "child of another component/piece part.")
+            _msg = (
+                "RAMSTK ERROR: You can not have a component/piece part as a "
+                "child of another component/piece part.")
         else:
             _error_code, _error_msg = self.dtm_hardware.do_insert(
                 revision_id=_revision_id, parent_id=_parent_id, part=_part)
@@ -255,8 +257,9 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             self.last_id = max(self.last_id, _hardware_id)
 
             if _msg == '':
-                _msg = ("RAMSTK SUCCESS: Adding a new hardware item to the RAMSTK "
-                        "Program database.")
+                _msg = (
+                    "RAMSTK SUCCESS: Adding a new hardware item to the RAMSTK "
+                    "Program database.")
 
         return _error_code, _msg
 
@@ -372,8 +375,9 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                         "bill of materials did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the hardware bill "
-                    "of materials.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the hardware bill "
+                "of materials.")
 
         return _error_code, _msg
 
@@ -743,11 +747,13 @@ class HardwareDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the hardware table "
-                        "did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the hardware table "
+                    "did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the hardware table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the hardware table.")
 
         return _error_code, _msg
 
@@ -932,8 +938,9 @@ class DesignElectricDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more line items in the electrical "
-                        "design table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more line items in the electrical "
+                    "design table did not update.")
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all records in the electrical "
@@ -1094,8 +1101,9 @@ class DesignMechanicDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more line items in the mechanical "
-                        "design table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more line items in the mechanical "
+                    "design table did not update.")
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all records in the mechanical "
@@ -1256,8 +1264,9 @@ class MilHdbkFDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the MIL-HDBK-217 "
-                        "table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the MIL-HDBK-217 "
+                    "table did not update.")
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all records in the MIL-HDBK-217 "

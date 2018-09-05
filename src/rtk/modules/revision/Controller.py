@@ -72,7 +72,7 @@ class RevisionDataController(RAMSTKDataController):
             self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_delete(self, node_id):
         """
@@ -85,7 +85,7 @@ class RevisionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedRevision')
+                                                      'deletedRevision')
 
     def request_do_update(self, node_id):
         """
@@ -98,7 +98,7 @@ class RevisionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedRevision')
+                                                      'savedRevision')
 
     def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -110,4 +110,4 @@ class RevisionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update_all()
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)

@@ -16,16 +16,19 @@ RAMSTK_BASE = declarative_base()
 def create_program_db(**kwargs):
     """Create and populate a RAMSTK Program database."""
     from rtk.dao import (
-        RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl, RAMSTKDesignElectric,
-        RAMSTKDesignMechanic, RAMSTKEnvironment, RAMSTKFailureDefinition, RAMSTKFunction,
-        RAMSTKGrowthTest, RAMSTKHardware, RAMSTKHazardAnalysis, RAMSTKIncident,
-        RAMSTKIncidentAction, RAMSTKIncidentDetail, RAMSTKLoadHistory, RAMSTKMatrix,
-        RAMSTKMechanism, RAMSTKMilHdbkF, RAMSTKMission, RAMSTKMissionPhase, RAMSTKMode,
-        RAMSTKNSWC, RAMSTKOpLoad, RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus,
-        RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem,
-        RAMSTKSoftware, RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview,
-        RAMSTKSoftwareTest, RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest,
-        RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation)
+        RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl,
+        RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,
+        RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKGrowthTest,
+        RAMSTKHardware, RAMSTKHazardAnalysis, RAMSTKIncident,
+        RAMSTKIncidentAction, RAMSTKIncidentDetail, RAMSTKLoadHistory,
+        RAMSTKMatrix, RAMSTKMechanism, RAMSTKMilHdbkF, RAMSTKMission,
+        RAMSTKMissionPhase, RAMSTKMode, RAMSTKNSWC, RAMSTKOpLoad,
+        RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus,
+        RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision,
+        RAMSTKSimilarItem, RAMSTKSoftware, RAMSTKSoftwareDevelopment,
+        RAMSTKSoftwareReview, RAMSTKSoftwareTest, RAMSTKStakeholder,
+        RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest, RAMSTKTestMethod,
+        RAMSTKUnits, RAMSTKValidation)
 
     uri = kwargs['database']
 
@@ -150,16 +153,19 @@ def do_create_test_database(database):
     :rtype: bool
     """
     from rtk.dao import (
-        RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl, RAMSTKDesignElectric,
-        RAMSTKDesignMechanic, RAMSTKEnvironment, RAMSTKFailureDefinition, RAMSTKFunction,
-        RAMSTKGrowthTest, RAMSTKHardware, RAMSTKHazardAnalysis, RAMSTKIncident,
-        RAMSTKIncidentAction, RAMSTKIncidentDetail, RAMSTKLoadHistory, RAMSTKMatrix,
-        RAMSTKMechanism, RAMSTKMilHdbkF, RAMSTKMission, RAMSTKMissionPhase, RAMSTKMode,
-        RAMSTKNSWC, RAMSTKOpLoad, RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus,
-        RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem,
-        RAMSTKSoftware, RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview,
-        RAMSTKSoftwareTest, RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest,
-        RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation)
+        RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl,
+        RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,
+        RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKGrowthTest,
+        RAMSTKHardware, RAMSTKHazardAnalysis, RAMSTKIncident,
+        RAMSTKIncidentAction, RAMSTKIncidentDetail, RAMSTKLoadHistory,
+        RAMSTKMatrix, RAMSTKMechanism, RAMSTKMilHdbkF, RAMSTKMission,
+        RAMSTKMissionPhase, RAMSTKMode, RAMSTKNSWC, RAMSTKOpLoad,
+        RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus,
+        RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision,
+        RAMSTKSimilarItem, RAMSTKSoftware, RAMSTKSoftwareDevelopment,
+        RAMSTKSoftwareReview, RAMSTKSoftwareTest, RAMSTKStakeholder,
+        RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest, RAMSTKTestMethod,
+        RAMSTKUnits, RAMSTKValidation)
 
     # Create and populate the RAMSTK Program test database.
     engine = create_engine(database, echo=False)

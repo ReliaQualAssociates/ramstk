@@ -42,15 +42,20 @@ class RAMSTKBaseMatrix(object):
         # Initialize private dictionary attributes.
         self._dic_icons = {
             0:
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/none.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/none.png',
             1:
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/partial.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/partial.png',
             2:
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/complete.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/complete.png',
             'save':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/save.png',
             'save-all':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save-all.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/save-all.png',
             'view-refresh':
             controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/view-refresh.png',

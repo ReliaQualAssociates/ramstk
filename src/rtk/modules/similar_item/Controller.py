@@ -102,7 +102,7 @@ class SimilarItemDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedSimilarItem')
+                                                      'deletedSimilarItem')
 
     def request_do_insert(self, **kwargs):
         """
@@ -132,7 +132,7 @@ class SimilarItemDataController(RAMSTKDataController):
             self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_select_children(self, node_id):
         """
@@ -158,7 +158,7 @@ class SimilarItemDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedSimilarItem')
+                                                      'savedSimilarItem')
 
     def request_do_update_all(self, **kwargs):
         """
@@ -170,4 +170,4 @@ class SimilarItemDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)

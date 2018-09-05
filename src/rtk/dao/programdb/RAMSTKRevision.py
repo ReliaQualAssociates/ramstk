@@ -90,7 +90,8 @@ class RAMSTKRevision(RAMSTK_BASE):
     # Define the relationships to other tables in the RAMSTK Program database.
     mission = relationship(
         'RAMSTKMission', back_populates='revision', cascade='delete')
-    failures = relationship('RAMSTKFailureDefinition', back_populates='revision')
+    failures = relationship(
+        'RAMSTKFailureDefinition', back_populates='revision')
     function = relationship('RAMSTKFunction', back_populates='revision')
     requirement = relationship('RAMSTKRequirement', back_populates='revision')
     stakeholder = relationship('RAMSTKStakeholder', back_populates='revision')

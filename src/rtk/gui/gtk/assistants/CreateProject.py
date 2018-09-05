@@ -57,7 +57,8 @@ class CreateProject(object):
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
             buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
                      gtk.RESPONSE_REJECT))
-        _dialog.set_current_folder(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
+        _dialog.set_current_folder(
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
             _new_program = _dialog.get_filename()

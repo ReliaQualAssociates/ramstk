@@ -197,10 +197,11 @@ class AddRequirement(gtk.Assistant):
         # Create the introduction page.
         _fixed = gtk.Fixed()
 
-        _text = _(u"This is the RAMSTK Requirement Addition Assistant.  It will "
-                  u"help you add a new top-level or derived requirement to "
-                  u"the database.  Press 'Forward' to continue or 'Cancel' to "
-                  u"quit the assistant.")
+        _text = _(
+            u"This is the RAMSTK Requirement Addition Assistant.  It will "
+            u"help you add a new top-level or derived requirement to "
+            u"the database.  Press 'Forward' to continue or 'Cancel' to "
+            u"quit the assistant.")
         _label = Widgets.make_label(_text, width=500, height=-1, wrap=True)
         _fixed.put(_label, 5, 5)
 

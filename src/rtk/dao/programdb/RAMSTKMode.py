@@ -237,8 +237,9 @@ class RAMSTKMode(RAMSTK_BASE):
             raise OutOfRangeError(_msg)
         if not 0.0 <= self.mode_ratio <= 1.0:
             _error_code = 2010
-            _msg = _(u"RAMSTK ERROR: Failure mode ratio is outside the range of "
-                     u"[0.0, 1.0].")
+            _msg = _(
+                u"RAMSTK ERROR: Failure mode ratio is outside the range of "
+                u"[0.0, 1.0].")
             raise OutOfRangeError(_msg)
         if self.mode_op_time < 0.0:
             _error_code = 2010

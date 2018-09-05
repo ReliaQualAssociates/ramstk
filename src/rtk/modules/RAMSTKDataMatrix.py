@@ -347,7 +347,8 @@ class RAMSTKDataMatrix(object):
                     and_(RAMSTKMatrix.revision_id == revision_id,
                          RAMSTKMatrix.matrix_type == matrix_type,
                          RAMSTKMatrix.column_item_id == int(_column_item_id),
-                         RAMSTKMatrix.row_item_id == int(_row_item_id))).first()
+                         RAMSTKMatrix.row_item_id == int(
+                             _row_item_id))).first()
 
                 try:
                     # If there is no corresponding record in RAMSTKMatrix, then

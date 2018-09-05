@@ -7,7 +7,6 @@
 """The RAMSTKBaseView Module."""
 
 import locale
-from sortedcontainers import SortedDict
 
 # Import other RAMSTK Widget classes.
 from rtk.gui.gtk.rtk import RAMSTKTreeView
@@ -51,26 +50,34 @@ class RAMSTKBaseView(object):
         # Initialize private dictionary attributes.
         self._dic_icons = {
             'calculate':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/calculate.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/calculate.png',
             'calculate_all':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/calculate-all.png',
             'add':
             controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
             'remove':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/remove.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/remove.png',
             'reports':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/reports.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/reports.png',
             'save':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/save.png',
             'save-all':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save-all.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/save-all.png',
             'important':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/important.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/important.png',
             'error':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/error.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/error.png',
             'question':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/question.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/question.png',
             'insert_sibling':
             controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/insert_sibling.png',
@@ -95,7 +102,8 @@ class RAMSTKBaseView(object):
         # Initialize private scalar attributes.
         self._dtc_data_controller = None
         self._mdcRAMSTK = controller
-        self._mission_time = float(controller.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
+        self._mission_time = float(
+            controller.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
         self._notebook = gtk.Notebook()
 
         # Initialize public dictionary attributes.
@@ -107,17 +115,19 @@ class RAMSTKBaseView(object):
             self.treeview = None
         else:
             try:
-                _bg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[_module +
-                                                                    'bg']
-                _fg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[_module +
-                                                                    'fg']
+                _bg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
+                    _module + 'bg']
+                _fg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
+                    _module + 'fg']
                 _fmt_file = (
-                    controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-                    controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
+                    controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR +
+                    '/layouts/' +
+                    controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module]
+                )
                 _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
 
-                self.treeview = RAMSTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
-                                            _fg_color)
+                self.treeview = RAMSTKTreeView(_fmt_path, 0, _fmt_file,
+                                               _bg_color, _fg_color)
                 self._lst_col_order = self.treeview.order
             except KeyError:
                 self.treeview = gtk.TreeView()

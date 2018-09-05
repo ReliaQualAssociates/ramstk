@@ -429,8 +429,8 @@ class ListView(RAMSTKListView):
             _prompt = _(u"An error occured while loading the Failure "
                         u"Definitions for Revision ID {0:d} into the List "
                         u"View.").format(self._revision_id)
-            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                           'error')
+            _dialog = rtk.RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
 

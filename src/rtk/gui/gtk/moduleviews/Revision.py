@@ -6,17 +6,12 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Revision Module View."""
 
-# Import modules for localization support.
-import gettext
-
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from .ModuleView import RAMSTKModuleView
-
-_ = gettext.gettext
 
 
 class ModuleView(RAMSTKModuleView):
@@ -239,7 +234,7 @@ class ModuleView(RAMSTKModuleView):
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._revision_id)
         _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                       'question')
+                                          'question')
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
@@ -267,8 +262,7 @@ class ModuleView(RAMSTKModuleView):
         """
         _return = False
 
-        _revision = self._dtc_data_controller.request_do_select(
-            self._revision_id)
+        self._dtc_data_controller.request_do_select(self._revision_id)
 
         if not self._dtc_data_controller.request_do_insert():
             self._on_select_revision()
@@ -496,8 +490,8 @@ class ModuleView(RAMSTKModuleView):
         if _return:
             _prompt = _(u"An error occured while loading Revisions into the "
                         u"Module View.")
-            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                           'error')
+            _dialog = rtk.RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
 

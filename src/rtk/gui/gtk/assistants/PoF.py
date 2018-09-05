@@ -65,7 +65,7 @@ class AddStressMethod(rtk.RAMSTKDialog):
         # Initialize public scalar attributes.
         self.rdoStress = rtk.RAMSTKOptionButton(None, _(u"Add stress"))
         self.rdoMethod = rtk.RAMSTKOptionButton(self.rdoStress,
-                                             _(u"Add test method"))
+                                                _(u"Add test method"))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #

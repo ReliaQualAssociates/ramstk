@@ -408,12 +408,14 @@ class MissionDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the usage profile "
-                        "mission table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the usage profile "
+                    "mission table did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the usage profile "
-                    "mission table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the usage profile "
+                "mission table.")
 
         return _error_code, _msg
 
@@ -561,12 +563,14 @@ class MissionPhaseDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the usage profile "
-                        "mission phase table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the usage profile "
+                    "mission phase table did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the usage profile "
-                    "mission phase table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the usage profile "
+                "mission phase table.")
 
         return _error_code, _msg
 
@@ -719,11 +723,13 @@ class EnvironmentDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the usage profile "
-                        "environment table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the usage profile "
+                    "environment table did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the usage profile "
-                    "environment table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the usage profile "
+                "environment table.")
 
         return _error_code, _msg

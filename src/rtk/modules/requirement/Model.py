@@ -139,8 +139,9 @@ class RequirementDataModel(RAMSTKDataModel):
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = ('RAMSTK ERROR: Attempted to save non-existent Requirement ID '
-                    '{0:s}.'.format(str(node_id)))
+            _msg = (
+                'RAMSTK ERROR: Attempted to save non-existent Requirement ID '
+                '{0:s}.'.format(str(node_id)))
 
         return _error_code, _msg
 

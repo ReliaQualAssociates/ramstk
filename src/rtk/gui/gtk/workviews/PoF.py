@@ -69,8 +69,9 @@ class PoF(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-                     controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['pof'])
+        _fmt_file = (
+            controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+            controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['pof'])
         _fmt_path = "/root/tree[@name='PoF']/column"
         _tooltip = _(u"Displays the Physics of Failure (PoF) Analysis for the "
                      u"currently selected hardware item.")
@@ -187,11 +188,11 @@ class PoF(RAMSTKWorkView):
                 _user_msg = _(u"One or more PoF line items had the wrong data "
                               u"type in it's data package and is not "
                               u"displayed in the PoF form.")
-                _debug_msg = ("RAMSTK ERROR: Data for PoF ID {0:s} for Hardware "
-                              "ID {1:s} is the wrong type for one or more "
-                              "columns.".format(
-                                  str(_node.identifier),
-                                  str(self._hardware_id)))
+                _debug_msg = (
+                    "RAMSTK ERROR: Data for PoF ID {0:s} for Hardware "
+                    "ID {1:s} is the wrong type for one or more "
+                    "columns.".format(
+                        str(_node.identifier), str(self._hardware_id)))
                 _new_row = None
             except ValueError:
                 _error_code = 1
@@ -449,8 +450,8 @@ class PoF(RAMSTKWorkView):
         if _undefined:
             _prompt = _(u"A Physics of Failure operating stress or test "
                         u"method cannot have a child entity.")
-            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                           'error')
+            _dialog = rtk.RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
 
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _dialog.do_destroy()
@@ -459,7 +460,6 @@ class PoF(RAMSTKWorkView):
 
         if _choose:
             _dialog = AddStressMethod()
-            _response = _dialog.do_run()
 
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _opstress = _dialog.rdoStress.get_active()
@@ -477,8 +477,8 @@ class PoF(RAMSTKWorkView):
 
         # Insert the new entity into the RAMSTK Program database and then refresh
         # the TreeView.
-        if (_undefined or _return
-                or self._dtc_data_controller.request_do_insert(
+        if (_undefined or _return or
+                self._dtc_data_controller.request_do_insert(
                     entity_id=_entity_id, parent_id=_parent_id, level=_level)):
             _return = True
 
@@ -642,32 +642,28 @@ class PoF(RAMSTKWorkView):
                 _cell = _column.get_cell_renderers()[0]
             _cell.set_property('font', 'normal bold')
 
-        #for i in [1, 5, 6, 7, 8, 9, 10]:
-        #    _column = self.treeview.get_column(self._lst_col_order[i])
-        #    _cell = _column.get_cell_renderers()[0]
-        #    _column.set_attributes(_cell, text=i)
-
         # Load the damage models into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[5])
         _model.append(('', ))
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS:
             _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS[_item][0], ))
+                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS[
+                    _item][0], ))
 
         # Load the measureable parameter into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[6])
         _model.append(('', ))
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS:
-            _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS[
-                    _item][1], ))
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_MEASURABLE_PARAMETERS[_item][1], ))
 
         # Load the load history into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[7])
         _model.append(('', ))
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY:
             _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY[_item][0], ))
+                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY[
+                    _item][0], ))
 
         # Set the priority gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
@@ -675,8 +671,6 @@ class PoF(RAMSTKWorkView):
             self._lst_col_order[9]).get_cell_renderers()[0]
         _adjustment = _cell.get_property('adjustment')
         _adjustment.configure(5, 1, 5, -1, 0, 0)
-        _digits = _cell.get_property('digits')
-        _digits = 1
 
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))

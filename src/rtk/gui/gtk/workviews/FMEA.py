@@ -226,8 +226,8 @@ class FMEA(RAMSTKWorkView):
         if _undefined:
             _prompt = _(u"A FMEA control or an action cannot have a "
                         u"child entity.")
-            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                           'error')
+            _dialog = rtk.RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
 
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _dialog.do_destroy()
@@ -236,7 +236,6 @@ class FMEA(RAMSTKWorkView):
 
         if _choose:
             _dialog = AddControlAction()
-            _response = _dialog.do_run()
 
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _control = _dialog.rdoControl.get_active()
@@ -291,10 +290,6 @@ class FMEA(RAMSTKWorkView):
         :rtype: bool
         """
         _model, _row = self.treeview.get_selection().get_selected()
-        if self._functional:
-            _node_id = _model.get_value(_row, 18)
-        else:
-            _node_id = _model.get_value(_row, 43)
 
         self.set_cursor(gtk.gdk.WATCH)
         _return = self._dtc_data_controller.request_do_update(self._node_id)
@@ -490,8 +485,9 @@ class FFMEA(FMEA):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-                     controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['ffmea'])
+        _fmt_file = (
+            controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+            controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['ffmea'])
         _fmt_path = "/root/tree[@name='FFMEA']/column"
         _tooltip = _(u"Displays the Functional Failure Mode and Effects "
                      u"Analysis (FFMEA) for the currently selected "
@@ -734,11 +730,11 @@ class FFMEA(FMEA):
                 _user_msg = _(u"One or more Functional FMEA line items had "
                               u"the wrong data type in it's data package and "
                               u"is not displayed in the FMEA form.")
-                _debug_msg = ("RAMSTK ERROR: Data for FMEA ID {0:s} for Function "
-                              "ID {1:s} is the wrong type for one or more "
-                              "columns.".format(
-                                  str(_node.identifier),
-                                  str(self._function_id)))
+                _debug_msg = (
+                    "RAMSTK ERROR: Data for FMEA ID {0:s} for Function "
+                    "ID {1:s} is the wrong type for one or more "
+                    "columns.".format(
+                        str(_node.identifier), str(self._function_id)))
                 _new_row = None
             except ValueError:
                 _error_code = 1
@@ -875,7 +871,8 @@ class FFMEA(FMEA):
         # Load the severity classes into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[7])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
-            _severity = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[_item][1]
+            _severity = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[
+                _item][1]
             _model.append((_severity, ))
 
         # Load the users into the gtk.CellRendererCombo().
@@ -930,7 +927,8 @@ class FFMEA(FMEA):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['ffmea']
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+                'ffmea']
 
         _fmea = self._dtc_data_controller.request_do_select_all(
             parent_id=self._function_id, functional=True)
@@ -979,8 +977,9 @@ class DFMECA(FMEA):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-                     controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['dfmeca'])
+        _fmt_file = (
+            controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+            controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['dfmeca'])
         _fmt_path = "/root/tree[@name='DFMECA']/column"
         _tooltip = _(u"Displays the (Design) Failure Mode and Effects "
                      u"(and Criticality) Analysis [(D)FME(C)A] for the "
@@ -1304,8 +1303,8 @@ class DFMECA(FMEA):
         """
         _return = False
 
-        _tree = self._mdcRAMSTK.dic_controllers['profile'].request_do_select_all(
-            revision_id=module_id)
+        _tree = self._mdcRAMSTK.dic_controllers[
+            'profile'].request_do_select_all(revision_id=module_id)
 
         _missions = _tree.children(0)
         for _mission in _missions:
@@ -1457,11 +1456,11 @@ class DFMECA(FMEA):
                 _user_msg = _(u"One or more Hardware FMEA line items had "
                               u"the wrong data type in it's data package and "
                               u"is not displayed in the FMEA form.")
-                _debug_msg = ("RAMSTK ERROR: Data for FMEA ID {0:s} for Hardware "
-                              "ID {1:s} is the wrong type for one or more "
-                              "columns.".format(
-                                  str(_node.identifier),
-                                  str(self._hardware_id)))
+                _debug_msg = (
+                    "RAMSTK ERROR: Data for FMEA ID {0:s} for Hardware "
+                    "ID {1:s} is the wrong type for one or more "
+                    "columns.".format(
+                        str(_node.identifier), str(self._hardware_id)))
                 _new_row = None
             except ValueError:
                 _error_code = 1
@@ -1601,9 +1600,8 @@ class DFMECA(FMEA):
         if score:
             try:
                 _rpn_severity = [
-                    x[4] for x in
-                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY.values()
-                    if x[1] == severity
+                    x[4] for x in self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    RAMSTK_RPN_SEVERITY.values() if x[1] == severity
                 ][0]
             except IndexError:
                 _rpn_severity = 0
@@ -1634,9 +1632,8 @@ class DFMECA(FMEA):
         if score:
             try:
                 _rpn_occurrence = [
-                    x[4] for x in
-                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_OCCURRENCE.values()
-                    if x[1] == occurrence
+                    x[4] for x in self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    RAMSTK_RPN_OCCURRENCE.values() if x[1] == occurrence
                 ][0]
             except IndexError:
                 _rpn_occurrence = 0
@@ -1667,9 +1664,8 @@ class DFMECA(FMEA):
         if score:
             try:
                 _rpn_detection = [
-                    x[4] for x in
-                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION.values()
-                    if x[1] == detection
+                    x[4] for x in self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    RAMSTK_RPN_DETECTION.values() if x[1] == detection
                 ][0]
             except IndexError:
                 _rpn_detection = 0
@@ -1717,7 +1713,8 @@ class DFMECA(FMEA):
         _model = self._get_cell_model(self._lst_col_order[12])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
             _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[_item][1], ))
+                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[_item][
+                    1], ))
 
         # Load the RPN severity classes into the gtk.CellRendererCombo().
         for _position in [21, 34]:
@@ -1726,18 +1723,18 @@ class DFMECA(FMEA):
             for _item in sorted(
                     self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY):
                 _model.append(
-                    (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY[_item][1],
-                     ))
+                    (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY[
+                        _item][1], ))
 
         # Load the RPN occurrence classes into the gtk.CellRendererCombo().
         for _position in [22, 35]:
             _model = self._get_cell_model(self._lst_col_order[_position])
             _model.append(('', ))
             for _item in sorted(
-                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_OCCURRENCE):
-                _model.append(
-                    (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_OCCURRENCE[_item][
-                        1], ))
+                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_OCCURRENCE
+            ):
+                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                               RAMSTK_RPN_OCCURRENCE[_item][1], ))
 
         # Load the RPN detection classes into the gtk.CellRendererCombo().
         for _position in [23, 36]:
@@ -1746,8 +1743,8 @@ class DFMECA(FMEA):
             for _item in sorted(
                     self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION):
                 _model.append(
-                    (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION[_item][
-                        1], ))
+                    (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION[
+                        _item][1], ))
 
         # Load the failure probabilities into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[14])
@@ -1763,21 +1760,22 @@ class DFMECA(FMEA):
         _model = self._get_cell_model(self._lst_col_order[25])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_CATEGORY:
             _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_CATEGORY[_item][1],
-                 ))
+                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_CATEGORY[
+                    _item][1], ))
 
         # Load the users into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[26])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS:
             _user = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][0] + \
-                    ', ' + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][1]
+                ', ' + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][1]
             _model.append((_user, ))
 
         # Load the status values into the gtk.CellRendererCombo()
         _model = self._get_cell_model(self._lst_col_order[28])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS:
             _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS[_item][0], ))
+                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS[
+                    _item][0], ))
 
         for i in self._lst_col_order:
             _cell = self.treeview.get_column(
@@ -1817,7 +1815,8 @@ class DFMECA(FMEA):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['dfmeca']
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+                'dfmeca']
 
         _fmea = self._dtc_data_controller.request_do_select_all(
             parent_id=self._hardware_id, functional=False)

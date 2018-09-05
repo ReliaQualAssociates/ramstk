@@ -21,7 +21,6 @@ from Configuration import Configuration
 import Utilities
 from rtk.dao.DAO import DAO
 from rtk.dao.commondb.RAMSTKCategory import RAMSTKCategory
-from rtk.dao.commondb.RAMSTKCondition import RAMSTKCondition
 from rtk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
 from rtk.dao.commondb.RAMSTKGroup import RAMSTKGroup
 from rtk.dao.commondb.RAMSTKHazards import RAMSTKHazards
@@ -113,20 +112,20 @@ def _initialize_loggers(configuration):
         try:
             os.remove(__user_log)
         except WindowsError as _error:
-            print("Could not delete {0:s} because {1:s}.").format(__user_log,
-                                                                  _error)
+            print("Could not delete {0:s} because {1:s}.").format(
+                __user_log, _error)
     if Utilities.file_exists(__error_log):
         try:
             os.remove(__error_log)
         except WindowsError as _error:
-            print("Could not delete {0:s} because {1:s}.").format(__user_log,
-                                                                  _error)
+            print("Could not delete {0:s} because {1:s}.").format(
+                __user_log, _error)
     if Utilities.file_exists(__import_log):
         try:
             os.remove(__import_log)
         except WindowsError as _error:
-            print("Could not delete {0:s} because {1:s}.").format(__user_log,
-                                                                  _error)
+            print("Could not delete {0:s} because {1:s}.").format(
+                __user_log, _error)
 
     _debug_log = Utilities.create_logger("RAMSTK.debug", logging.DEBUG,
                                          __error_log)
@@ -232,8 +231,8 @@ class Model(object):
 
         else:
             _error_code = 1001
-            _msg = 'RAMSTK ERROR: Failed to open RAMSTK Program database {0:s}.'.\
-                format(database)
+            _msg = ('RAMSTK ERROR: Failed to open RAMSTK Program '
+                    'database {0:s}.').format(database)
 
         return _error_code, _msg
 
@@ -455,9 +454,10 @@ class Model(object):
         for _record in self.site_session.query(RAMSTKMeasurement).\
                 filter(RAMSTKMeasurement.measurement_type == 'damage').all():
             _attributes = _record.get_attributes()
-            configuration.RAMSTK_MEASURABLE_PARAMETERS[_record.measurement_id] = (
-                _attributes['code'], _attributes['description'],
-                _attributes['measurement_type'])
+            configuration.RAMSTK_MEASURABLE_PARAMETERS[
+                _record.measurement_id] = (_attributes['code'],
+                                           _attributes['description'],
+                                           _attributes['measurement_type'])
 
         for _record in self.site_session.query(RAMSTKStakeholders).all():
             _attributes = _record.get_attributes()
@@ -547,7 +547,6 @@ class RAMSTK(object):
     :ivar rtk_model: the instance of :class:`rtk.RAMSTK.Model` managed by this
                      data controller.
     """
-
     RAMSTK_CONFIGURATION = Configuration()
 
     def __init__(self, **kwargs):
@@ -562,7 +561,8 @@ class RAMSTK(object):
                 u"not to, you will recieve this prompt every time you "
                 u"execute RAMSTK.  Would you like to create and populate "
                 u"a user-specific configuration directory?").format(
-                    self.RAMSTK_CONFIGURATION.RAMSTK_HOME_DIR + "/.config/RAMSTK")
+                    self.RAMSTK_CONFIGURATION.RAMSTK_HOME_DIR +
+                    "/.config/RAMSTK")
             _dialog = rtk.RAMSTKMessageDialog(_prompt, '', 'question')
             _response = _dialog.do_run()
             _dialog.do_destroy()
@@ -626,8 +626,9 @@ class RAMSTK(object):
         # Connect to the RAMSTK Common database.
         _database = None
         if self.RAMSTK_CONFIGURATION.RAMSTK_COM_BACKEND == 'sqlite':
-            _database = self.RAMSTK_CONFIGURATION.RAMSTK_COM_BACKEND + ':///' + \
-                self.RAMSTK_CONFIGURATION.RAMSTK_COM_INFO['database']
+            _database = self.RAMSTK_CONFIGURATION.RAMSTK_COM_BACKEND + \
+                        ':///' + \
+                        self.RAMSTK_CONFIGURATION.RAMSTK_COM_INFO['database']
         _dao = DAO()
         _dao.db_connect(_database)
 
@@ -739,39 +740,63 @@ class RAMSTK(object):
         if _error_code == 0:
             pub.sendMessage('requestOpen')
             self.dic_controllers['revision'] = dtcRevision(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['function'] = dtcFunction(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['requirement'] = dtcRequirement(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['hardware'] = dtcHardwareBoM(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['validation'] = dtcValidation(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['profile'] = dtcUsageProfile(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['definition'] = dtcFailureDefinition(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['ffmea'] = dtcFMEA(
                 self.rtk_model.program_dao,
                 self.RAMSTK_CONFIGURATION,
                 test=False,
                 functional=True)
             self.dic_controllers['stakeholder'] = dtcStakeholder(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['allocation'] = dtcAllocation(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['hazops'] = dtcHazardAnalysis(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['similaritem'] = dtcSimilarItem(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['dfmeca'] = dtcFMEA(
                 self.rtk_model.program_dao,
                 self.RAMSTK_CONFIGURATION,
                 test=False,
                 functional=False)
             self.dic_controllers['pof'] = dtcPoF(
-                self.rtk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+                self.rtk_model.program_dao,
+                self.RAMSTK_CONFIGURATION,
+                test=False)
 
             # Find which modules are active for the program being opened.
             self.dic_controllers['options'].request_do_select_all(
@@ -791,7 +816,8 @@ class RAMSTK(object):
             _page = 1
             for _module in self._lst_modules:
                 if self.RAMSTK_CONFIGURATION.RAMSTK_MODULES[_module] == 1:
-                    self.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[_page] = _module
+                    self.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[
+                        _page] = _module
                     _page += 1
 
             # TODO: Where to put this code for the status icon?
@@ -887,8 +913,9 @@ class RAMSTK(object):
             rtk_warning(
                 _(u"Cannot find license file {0:s}.  If your "
                   u"license file is elsewhere, please place "
-                  u"it in {1:s}.").format(_license_file,
-                                          self.RAMSTK_CONFIGURATION.RAMSTK_DATA_DIR))
+                  u"it in {1:s}.").format(
+                      _license_file,
+                      self.RAMSTK_CONFIGURATION.RAMSTK_DATA_DIR))
             _return = True
 
         _license_key = _license_file.readline().rstrip('\n')

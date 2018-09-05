@@ -6,9 +6,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Validation Module View."""
 
-# Import modules for localization support.
-import gettext
-
 from pubsub import pub
 
 # Import other RAMSTK modules.
@@ -16,8 +13,6 @@ from rtk.Utilities import date_to_ordinal
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from .ModuleView import RAMSTKModuleView
-
-_ = gettext.gettext
 
 
 class ModuleView(RAMSTKModuleView):
@@ -226,7 +221,7 @@ class ModuleView(RAMSTKModuleView):
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._validation_id)
         _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                       'question')
+                                          'question')
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
@@ -267,8 +262,7 @@ class ModuleView(RAMSTKModuleView):
         """
         _return = False
 
-        _validation = self._dtc_data_controller.request_do_select(
-            self._validation_id)
+        self._dtc_data_controller.request_do_select(self._validation_id)
 
         if not self._dtc_data_controller.request_do_insert():
             self._on_select_validation()
@@ -475,11 +469,7 @@ class ModuleView(RAMSTKModuleView):
             RAMSTKTreeView().
             """
             _node_id = model.get_value(row, self._lst_col_order[1])
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                _node_id)
-
-            #model.set(row, self._lst_col_order[35],
-            #          _attributes['hazard_rate_active'])
+            self._dtc_data_controller.request_get_attributes(_node_id)
 
         _model = self.treeview.get_model()
         _model.foreach(_load_row, self)
@@ -518,7 +508,8 @@ class ModuleView(RAMSTKModuleView):
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['validation']
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+            'validation']
         _validations = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)
 
@@ -526,8 +517,8 @@ class ModuleView(RAMSTKModuleView):
         if _return:
             _prompt = _(u"An error occured while loading Validation Tasks "
                         u"into the Module View.")
-            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                           'error')
+            _dialog = rtk.RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
 

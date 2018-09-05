@@ -90,7 +90,9 @@ class RAMSTKHardware(RAMSTK_BASE):
     allocation = relationship(
         'RAMSTKAllocation', back_populates='hardware', cascade='all,delete')
     hazard = relationship(
-        'RAMSTKHazardAnalysis', back_populates='hardware', cascade='all,delete')
+        'RAMSTKHazardAnalysis',
+        back_populates='hardware',
+        cascade='all,delete')
     sia = relationship(
         'RAMSTKSimilarItem', back_populates='hardware', cascade='all,delete')
     mode = relationship(

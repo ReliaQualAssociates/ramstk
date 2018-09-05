@@ -191,12 +191,12 @@ class ValidationDataModel(RAMSTKDataModel):
 
         if _error_code != 0:
             _error_code = 2006
-            _msg = 'RAMSTK ERROR: Attempted to save non-existent Validation ID ' \
-                   '{0:d}.'.format(node_id)
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Validation ' \
+                   'ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RAMSTKValidation table records in the RAMSTK Program database.
 

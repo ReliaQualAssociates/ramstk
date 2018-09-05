@@ -136,20 +136,15 @@ class RAMSTKPlot(object):
         :rtype: bool
         """
         if y_values is not None:
-            _x_min = min(x_values)
-            _x_max = max(x_values)
-
             if plot_type == 'step':
-                _line = self._do_make_step_plot(x_values, y_values, marker)
+                self._do_make_step_plot(x_values, y_values, marker)
             elif plot_type == 'scatter':
-                _line = self._do_make_scatter_plot(x_values, y_values, marker)
+                self._do_make_scatter_plot(x_values, y_values, marker)
             elif plot_type == 'histogram':
                 _values, _edges = self._do_make_histogram(
                     x_values, y_values, marker)
-                _x_min = min(_edges)
-                _x_max = max(_edges)
             elif plot_type == 'date':
-                _line = self._do_make_date_plot(x_values, y_values, marker)
+                self._do_make_date_plot(x_values, y_values, marker)
 
         # Get the minimum and maximum y-values to set the axis bounds.  If the
         # maximum value is infinity, use the next largest value and so forth.

@@ -330,7 +330,8 @@ class ListView(RAMSTKListView):
         # Each _owner is (Description, Group Type).
         for _index, _key in enumerate(
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS):
-            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_key]
+            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
+                _key]
             _cellmodel.append([_group[0]])
 
         # Load the Stakeholder gtk.CellRendererCombo()
@@ -343,7 +344,8 @@ class ListView(RAMSTKListView):
         # Each _owner is (Description, Group Type).
         for _index, _key in enumerate(
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS):
-            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS[_key]
+            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS[
+                _key]
             _cellmodel.append([_group[0]])
 
         # Set the CellRendererSpin() columns to [1, 5] step 1.

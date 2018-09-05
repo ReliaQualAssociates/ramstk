@@ -108,9 +108,10 @@ class RAMSTKListView(gtk.HBox, rtk.RAMSTKBaseView):
             pass
 
         if _error_code != 0:
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_debug_msg)
-            _dialog = rtk.RAMSTKMessageDialog(_user_msg, self._dic_icons['error'],
-                                           'error')
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
+                _debug_msg)
+            _dialog = rtk.RAMSTKMessageDialog(
+                _user_msg, self._dic_icons['error'], 'error')
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _dialog.destroy()
 

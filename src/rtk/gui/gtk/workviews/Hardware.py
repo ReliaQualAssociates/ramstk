@@ -567,7 +567,8 @@ class GeneralData(RAMSTKWorkView):
 
         if category_id > 0:
             _subcategory = SortedDict(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SUBCATEGORIES[category_id])
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SUBCATEGORIES[
+                    category_id])
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
@@ -679,13 +680,15 @@ class GeneralData(RAMSTKWorkView):
 
         _data = []
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CATEGORIES:
-            _data.append([self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CATEGORIES[_key]])
+            _data.append(
+                [self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CATEGORIES[_key]])
         self.cmbCategory.do_load_combo(_data)
 
         _data = []
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MANUFACTURERS:
             _data.append(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MANUFACTURERS[_key])
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MANUFACTURERS[
+                    _key])
         self.cmbManufacturer.do_load_combo(_data, simple=False)
 
         # Build the General Data page starting with the left half.
@@ -1598,8 +1601,8 @@ class AssessmentInputs(RAMSTKWorkView):
 
         if self._dtc_data_controller.request_do_calculate(
                 self._hardware_id,
-                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER
-        ):
+                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                RAMSTK_HR_MULTIPLIER):
             _error_code = 1
             _msg = 'RAMSTK ERROR: Calculating reliability attributes.'
 
@@ -1715,7 +1718,8 @@ class AssessmentInputs(RAMSTKWorkView):
             _(u"Calculate the currently selected Hardware item."),
             _(u"Saves the currently selected Hardware item to the open "
               u"RAMSTK Program database."),
-            _(u"Saves all Hardware items to the open RAMSTK Program database."),
+            _(u"Saves all Hardware items to the open RAMSTK Program database."
+              ),
         ]
         _callbacks = [
             self._do_request_calculate, self._do_request_update,
@@ -2593,8 +2597,8 @@ class AssessmentResults(RAMSTKWorkView):
 
         if self._dtc_data_controller.request_do_calculate(
                 self._hardware_id,
-                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER
-        ):
+                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                RAMSTK_HR_MULTIPLIER):
             _error_code = 1
             _msg[0] = 'RAMSTK ERROR: Calculating reliability attributes.'
 
@@ -2654,7 +2658,8 @@ class AssessmentResults(RAMSTKWorkView):
             _(u"Calculate the currently selected Hardware item."),
             _(u"Saves the currently selected Hardware item to the open "
               u"RAMSTK Program database."),
-            _(u"Saves all Hardware items to the open RAMSTK Program database."),
+            _(u"Saves all Hardware items to the open RAMSTK Program database."
+              ),
         ]
         _callbacks = [
             self._do_request_calculate, self._do_request_update,

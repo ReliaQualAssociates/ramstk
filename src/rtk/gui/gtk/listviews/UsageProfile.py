@@ -192,7 +192,7 @@ class ListView(RAMSTKListView):
         _return = False
 
         if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
-                                         model):
+                                            model):
 
             # Retrieve the Usage Profile data package.
             _node_id = model[path][9]
@@ -291,21 +291,21 @@ class ListView(RAMSTKListView):
                 _user_msg = _(u"One or more Usage Profile line items had the "
                               u"wrong data type in it's data package and is "
                               u"not displayed in the Usage Profile.")
-                _debug_msg = ("RAMSTK ERROR: Data for Usage Profile ID {0:s} for "
-                              "Revision ID {1:s} is the wrong type for one or "
-                              "more columns.".format(
-                                  str(_node.identifier),
-                                  str(self._revision_id)))
+                _debug_msg = (
+                    "RAMSTK ERROR: Data for Usage Profile ID {0:s} for "
+                    "Revision ID {1:s} is the wrong type for one or "
+                    "more columns.".format(
+                        str(_node.identifier), str(self._revision_id)))
                 _new_row = None
             except ValueError:
                 _error_code = 1
                 _user_msg = _(u"One or more Usage Profile line items was "
                               u"missing some of it's data and is not "
                               u"displayed in the Usage Profile.")
-                _debug_msg = ("RAMSTK ERROR: Too few fields for Usage Profile ID "
-                              "{0:s} for Revision ID {1:s}.".format(
-                                  str(_node.identifier),
-                                  str(self._revision_id)))
+                _debug_msg = (
+                    "RAMSTK ERROR: Too few fields for Usage Profile ID "
+                    "{0:s} for Revision ID {1:s}.".format(
+                        str(_node.identifier), str(self._revision_id)))
                 _new_row = None
         except AttributeError:
             if _node.identifier != 0:
@@ -313,10 +313,10 @@ class ListView(RAMSTKListView):
                 _user_msg = _(u"One or more Usage Profile line items was "
                               u"missing it's data package and is not "
                               u"displayed in the Usage Profile.")
-                _debug_msg = ("RAMSTK ERROR: There is no data package for Usage "
-                              "Profile ID {0:s} for Revision ID {1:s}.".format(
-                                  str(_node.identifier),
-                                  str(self._revision_id)))
+                _debug_msg = (
+                    "RAMSTK ERROR: There is no data package for Usage "
+                    "Profile ID {0:s} for Revision ID {1:s}.".format(
+                        str(_node.identifier), str(self._revision_id)))
             _new_row = None
 
         for _n in _tree.children(_node.identifier):
@@ -696,7 +696,8 @@ class ListView(RAMSTKListView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RAMSTKBaseView.__init__
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['profile']
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+                'profile']
 
         _profile = self._dtc_data_controller.request_do_select_all(
             revision_id=self._revision_id)

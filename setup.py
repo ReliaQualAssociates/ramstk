@@ -18,15 +18,13 @@ __version__ = '1.0.0.dev1'
 __author__ = "Doyle 'weibullguy' Rowland"
 __email__ = "andrew.rowland@reliaqual.com"
 __trove__ = [
-    'Development Status :: 4 - Beta',
-    'Environment :: Win32 (MS Windows)',
+    'Development Status :: 4 - Beta', 'Environment :: Win32 (MS Windows)',
     'Environment :: X11 Applications :: GTK',
     'Intended Audience :: Other Audience',
     'License :: OSI Approved :: BSD License',
     'Programming Language :: Python :: 2.7',
     'Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)'
-    ]
-
+]
 
 if not sys.version_info[0] == 2:
     sys.exit("Sorry, Python 3 is not supported (yet)")
@@ -45,17 +43,17 @@ TEST_REQUIRES = [
 # Build lists of data files to install.
 LAYOUT_FILES = []
 for directory in glob.glob('data/layouts/'):
-    files = glob.glob(directory+'*')
+    files = glob.glob(directory + '*')
     LAYOUT_FILES.append(files)
 
 ICON16_FILES = []
 for directory in glob.glob('data/icons/16x16/'):
-    files = glob.glob(directory+'*')
+    files = glob.glob(directory + '*')
     ICON16_FILES.append(files)
 
 ICON32_FILES = []
 for directory in glob.glob('data/icons/32x32/'):
-    files = glob.glob(directory+'*')
+    files = glob.glob(directory + '*')
     ICON32_FILES.append(files)
 
 
@@ -143,14 +141,17 @@ if __name__ == '__main__':
         entry_points={
             'console_scripts': ['ramstk = rtk.RAMSTK:main'],
         },
-        data_files=[('share/applications', ['data/RAMSTK.desktop']),
-                    ('share/pixmaps', ['data/icons/RTK.png']),
-                    ('share/RAMSTK', ['data/RAMSTK.conf']),
-                    ('share/RAMSTK', ['data/Site.conf']),
-                    ('share/RAMSTK/layouts', LAYOUT_FILES[0]),
-                    ('share/RAMSTK/icons/16x16', ICON16_FILES[0]),
-                    ('share/RAMSTK/icons/32x32', ICON32_FILES[0])
-                   ],
+        data_files=[('share/applications',
+                     ['data/RAMSTK.desktop']), ('share/pixmaps',
+                                                ['data/icons/RTK.png']),
+                    ('share/RAMSTK', ['data/RAMSTK.conf']), ('share/RAMSTK', [
+                        'data/Site.conf'
+                    ]), ('share/RAMSTK',
+                         ['data/ramstk_common.rtk']), ('share/RAMSTK/layouts',
+                                                       LAYOUT_FILES[0]),
+                    ('share/RAMSTK/icons/16x16',
+                     ICON16_FILES[0]), ('share/RAMSTK/icons/32x32',
+                                        ICON32_FILES[0])],
         package_data={},
         dependency_links=[],
         zip_safe=True,

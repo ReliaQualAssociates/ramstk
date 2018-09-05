@@ -42,9 +42,11 @@ class Options(gtk.Window):
         # Initialize private dictionary attributes.
         self._dic_icons = {
             'save':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/save.png',
             'cancel':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/cancel.png'
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/cancel.png'
         }
 
         # Initialize private list attributes.
@@ -72,9 +74,8 @@ class Options(gtk.Window):
         )
         self.chkRequirements = rtk.RAMSTKCheckButton(
             label=_(u"Requirements Module Active"),
-            tooltip=
-            _(u"Activates/deactivates the Requirements module for this program."
-             ))
+            tooltip=_(u"Activates/deactivates the Requirements module for "
+                      u"this program."))
         self.chkHardware = rtk.RAMSTKCheckButton(
             label=_(u"Hardware Module Active"),
             tooltip=_(

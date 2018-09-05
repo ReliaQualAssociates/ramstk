@@ -80,9 +80,11 @@ class OptionsDataController(RAMSTKDataController):
         _msg = ''
 
         if _site:
-            (_error_code, _msg) = self._dtm_data_model.site_options.set_attributes(options)
+            (_error_code,
+             _msg) = self._dtm_data_model.site_options.set_attributes(options)
         elif _program:
-            (_error_code, _msg) = self._dtm_data_model.program_options.set_attributes(options)
+            (_error_code, _msg
+             ) = self._dtm_data_model.program_options.set_attributes(options)
 
         return (_error_code, _msg)
 

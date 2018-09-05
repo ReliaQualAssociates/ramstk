@@ -327,8 +327,9 @@ class MechanismDataModel(RAMSTKDataModel):
                         "mechanisms table did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the FMEA mechanisms "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the FMEA mechanisms "
+                "table.")
 
         return _error_code, _msg
 
@@ -645,12 +646,14 @@ class ControlDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the FMEA controls "
-                        "table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the FMEA controls "
+                    "table did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the FMEA controls "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the FMEA controls "
+                "table.")
 
         return _error_code, _msg
 
@@ -807,8 +810,9 @@ class ActionDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the FMEA actions "
-                        "table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the FMEA actions "
+                    "table did not update.")
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all records in the FMEA actions "

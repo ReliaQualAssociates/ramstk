@@ -14,9 +14,7 @@ from rtk.dao import RAMSTKAllocation
 
 
 class AllocationDataModel(RAMSTKDataModel):
-    """
-    Contain the attributes and methods of a reliability allocation.
-    """
+    """Contain the attributes and methods of a reliability allocation."""
 
     _tag = 'Allocations'
 
@@ -140,8 +138,9 @@ class AllocationDataModel(RAMSTKDataModel):
         # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 1
-            _msg = _msg + ('\n  RAMSTK ERROR: Attempted to delete non-existent '
-                           'Allocation ID {0:d}.').format(node_id)
+            _msg = _msg + (
+                '\n  RAMSTK ERROR: Attempted to delete non-existent '
+                'Allocation ID {0:d}.').format(node_id)
         else:
             self.last_id = max(self.tree.nodes.keys())
 
@@ -182,12 +181,14 @@ class AllocationDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more line items in the reliability "
-                        "allocation analysis worksheet did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more line items in the reliability "
+                    "allocation analysis worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all line items in the reliability "
-                    "allocation analysis worksheet.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all line items in the reliability "
+                "allocation analysis worksheet.")
 
         return _error_code, _msg
 

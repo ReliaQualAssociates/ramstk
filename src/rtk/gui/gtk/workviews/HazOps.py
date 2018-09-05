@@ -62,8 +62,9 @@ class HazOps(RAMSTKWorkView):
         # Initialize public scalar attributes.
         _bg_color = '#FFFFFF'
         _fg_color = '#000000'
-        _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-                     controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['hazops'])
+        _fmt_file = (
+            controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+            controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['hazops'])
         _fmt_path = "/root/tree[@name='HazOps']/column"
         _tooltip = _(u"Displays the HazOps Analysis for the currently "
                      u"selected Hardware item.")
@@ -85,7 +86,8 @@ class HazOps(RAMSTKWorkView):
         for i in [6, 10, 14, 18]:
             _model = self._get_cell_model(i)
             for _key in controller.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
-                _severity = controller.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[_key][1]
+                _severity = controller.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[
+                    _key][1]
                 _model.append((_severity, ))
 
         # Load the failure probabilities into the gtk.CellRendererCombo().
@@ -122,7 +124,6 @@ class HazOps(RAMSTKWorkView):
         self.pack_end(self._make_page(), True, True)
         self.show_all()
 
-        #pub.subscribe(self._do_refresh_view, 'calculatedHazOps')
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_clear_page, 'closedProgram')
 
@@ -275,7 +276,6 @@ class HazOps(RAMSTKWorkView):
             i = 1
             for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
                 _entity = _node.data
-                _node_id = _node.identifier
 
                 _data = [
                     _entity.revision_id, _entity.hardware_id,
@@ -300,7 +300,7 @@ class HazOps(RAMSTKWorkView):
                 ]
 
                 try:
-                    _row = _model.append(None, _data)
+                    _model.append(None, _data)
                 except TypeError:
                     _error_code = 1
                     _user_msg = _(u"One or more HazOp line items had the "
@@ -311,7 +311,6 @@ class HazOps(RAMSTKWorkView):
                                   "one or more columns.".format(
                                       str(_node.identifier),
                                       str(self._hardware_id)))
-                    _row = None
                 except ValueError:
                     _error_code = 1
                     _user_msg = _(u"One or more HazOp line items was missing "
@@ -432,7 +431,8 @@ class HazOps(RAMSTKWorkView):
             _(u"Add a hazard to the HazOps analysis."),
             _(u"Remove the selected hazard and all associated data from the "
               u"HazOps analysis."),
-            _(u"Save the selected Hazard to the open RAMSTK Program database."),
+            _(u"Save the selected Hazard to the open RAMSTK Program database."
+              ),
             _(u"Save all the Hazards for the selected Hardware item to the "
               u"open RAMSTK Program database.")
         ]
@@ -570,7 +570,8 @@ class HazOps(RAMSTKWorkView):
         self._hardware_id = module_id
 
         if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['hazops']
+            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+                'hazops']
             self._dtc_data_controller.request_do_select_all(
                 revision_id=self._revision_id)
 

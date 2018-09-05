@@ -46,8 +46,10 @@ class FunctionDataController(RAMSTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_fctn_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKFunction, RAMSTKHardware)
-        self._dmx_fctn_sw_matrix = RAMSTKDataMatrix(dao, RAMSTKFunction, RAMSTKSoftware)
+        self._dmx_fctn_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKFunction,
+                                                    RAMSTKHardware)
+        self._dmx_fctn_sw_matrix = RAMSTKDataMatrix(dao, RAMSTKFunction,
+                                                    RAMSTKSoftware)
 
         # Initialize public dictionary attributes.
 
@@ -131,7 +133,7 @@ class FunctionDataController(RAMSTKDataController):
             self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_insert_matrix(self, matrix_type, item_id, heading,
                                  row=True):
@@ -165,7 +167,7 @@ class FunctionDataController(RAMSTKDataController):
                 row=row)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_delete(self, node_id):
         """
@@ -178,7 +180,7 @@ class FunctionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedFunction')
+                                                      'deletedFunction')
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -203,7 +205,7 @@ class FunctionDataController(RAMSTKDataController):
                 item_id, row=row)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedMatrix')
+                                                      'deletedMatrix')
 
     def request_do_update(self, node_id):
         """
@@ -216,7 +218,7 @@ class FunctionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedFunction')
+                                                      'savedFunction')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
@@ -237,7 +239,7 @@ class FunctionDataController(RAMSTKDataController):
                    '{0:s}.'.format(matrix_type)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedMatrix')
+                                                      'savedMatrix')
 
     def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -249,4 +251,4 @@ class FunctionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update_all()
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)

@@ -436,8 +436,7 @@ class Configuration(object):
             self.RAMSTK_COM_INFO['user'] = _config.get('Backend', 'user')
             self.RAMSTK_COM_INFO['password'] = _config.get(
                 'Backend', 'password')
-            self.RAMSTK_COM_INFO['path'] = _config.get(
-                'Backend', 'password')
+            self.RAMSTK_COM_INFO['path'] = _config.get('Backend', 'password')
 
         return _return
 
@@ -707,7 +706,6 @@ class Configuration(object):
         if Utilities.file_exists(self.RAMSTK_PROG_CONF):
             _config = ConfigParser.ConfigParser()
             _config.add_section('General')
-            #_config.set('General', 'firstrun', True)
             _config.set('General', 'reportsize', self.RAMSTK_REPORT_SIZE)
             _config.set('General', 'parallelcalcs', 'False')
             _config.set('General', 'frmultiplier', self.RAMSTK_HR_MULTIPLIER)

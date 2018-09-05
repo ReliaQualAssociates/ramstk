@@ -186,9 +186,10 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
                 _msg = _msg + _debug_msg + '\n'
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the HazOps table "
-                        "for Hardware ID {0:d} did not "
-                        "update.").format(_hardware_id)
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the HazOps table "
+                    "for Hardware ID {0:d} did not "
+                    "update.").format(_hardware_id)
             except NodeIDAbsentError:
                 pass
 

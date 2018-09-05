@@ -70,7 +70,7 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     if log_level == 'DEBUG':
         log_level = logging.ERROR
     elif log_level == 'INFO':
-        _log_level = logging.INFO
+        log_level = logging.INFO
 
     if not to_tty:
         _fh = logging.FileHandler(log_file)
@@ -339,7 +339,6 @@ def name(pop=[], suffix=None):
     while len(pop) > 0:
         (_path, _tail) = os.path.split(_path)
         if pop.pop() != _tail:
-            #if DEBUG: print 'tail: %s' % tail
             raise ValueError('Element doesnʼt match path tail.')
 
     _path = os.path.basename(_path)

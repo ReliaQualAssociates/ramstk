@@ -47,8 +47,8 @@ def calculate_variance_covariance(n_failures, max_time, alpha, beta):
         _del_alpha = 1.0
 
     try:
-        _del_beta = -n_failures / beta**2.0 - \
-                    alpha * max_time**beta * log(max_time)**2.0
+        _del_beta = -n_failures / (
+            beta**2.0 - alpha * max_time**beta * log(max_time)**2.0)
     except ZeroDivisionError:
         _del_beta = 1.0
 
@@ -83,18 +83,18 @@ def calculate_nhpp_mean_variance(n_failures, max_time, alpha, beta, metric=1):
                                                beta)
 
     if metric == 1:
-        _del_mean_beta = -(1.0 / alpha) * max_time**(1.0 - beta) * \
-                         log(max_time)
+        _del_mean_beta = (-(1.0 / alpha) * max_time**(1.0 - beta) *
+                          log(max_time))
         _del_mean_alpha = -(1.0 / alpha**2.0) * max_time**(1.0 - beta)
     elif metric == 2:
-        _del_mean_beta = -(1.0 / (alpha * beta**2.0)) * \
-                           max_time**(1.0 - beta) - (1.0 / (alpha * beta)) * \
-                           max_time**(1.0 - beta) * log(max_time)
+        _del_mean_beta = (-(1.0 / (alpha * beta**2.0)) *
+                          max_time**(1.0 - beta) - (1.0 / (alpha * beta)) *
+                          max_time**(1.0 - beta) * log(max_time))
         _del_mean_alpha = -(1.0 / (alpha**2.0 * beta)) * max_time**(1.0 - beta)
 
-    _variance = _del_mean_beta**2.0 * _var_covar[1][1] + \
-                _del_mean_alpha**2.0 * _var_covar[0][0] + \
-                2.0 * _del_mean_beta * _del_mean_alpha * _var_covar[0][1]
+    _variance = (_del_mean_beta**2.0 * _var_covar[1][1] +
+                 _del_mean_alpha**2.0 * _var_covar[0][0] +
+                 2.0 * _del_mean_beta * _del_mean_alpha * _var_covar[0][1])
 
     return _variance
 

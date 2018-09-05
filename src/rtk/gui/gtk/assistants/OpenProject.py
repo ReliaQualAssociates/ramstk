@@ -6,12 +6,7 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Open Project Assistant Module."""
 
-import gettext
-import locale
-import sys
-
 # Import other RAMSTK modules.
-import rtk.Utilities as Utilities
 from rtk.gui.gtk.rtk.Widget import _, gtk, set_cursor
 from rtk.gui.gtk import rtk
 

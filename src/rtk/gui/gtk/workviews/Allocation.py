@@ -248,7 +248,6 @@ class Allocation(RAMSTKWorkView):
                  the debug log.
         :rtype: (int, str, str)
         """
-        _tree = None
         _error_code = 0
         _user_msg = ""
         _debug_msg = ""
@@ -300,7 +299,7 @@ class Allocation(RAMSTKWorkView):
                     ]
 
                     try:
-                        _row = _model.append(None, _data)
+                        _model.append(None, _data)
                     except TypeError:
                         _error_code = 1
                         _user_msg = _(u"One or more Allocation line items had "
@@ -595,11 +594,9 @@ class Allocation(RAMSTKWorkView):
         :param int index: the index in the handler ID list oc the callback
                           signal associated with the gtk.ComboBox() that
                           called this method.
-        :return: False if successful or True is an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         combo.handler_block(self._lst_handler_id[index])
 
         _parent = self._dtc_data_controller.request_do_select(self._parent_id)
@@ -634,12 +631,11 @@ class Allocation(RAMSTKWorkView):
                     _hidden = [0, 1, 4, 5, 6, 7, 20, 21]
                     _editable = [3, 8, 9, 10, 11]
 
-                _return = self._do_set_visible(
-                    visible=_visible, hidden=_hidden, editable=_editable)
+                self._do_set_visible(visible=_visible, hidden=_hidden,
+                                     editable=_editable)
 
             elif index == 3:
                 _parent.goal_measure_id = combo.get_active()
-                #_parent.calculate_goals()
                 if combo.get_active() == 0:  # Nothing selected.
                     self.txtReliabilityGoal.props.editable = 0
                     self.txtReliabilityGoal.set_sensitive(0)
@@ -689,7 +685,7 @@ class Allocation(RAMSTKWorkView):
 
         combo.handler_unblock(self._lst_handler_id[index])
 
-        return False
+        return None
 
     def _on_focus_out(self, entry, index):
         """

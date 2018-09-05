@@ -165,7 +165,7 @@ class ModuleView(RAMSTKModuleView):
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._function_id)
         _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                       'question')
+                                          'question')
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
@@ -487,8 +487,8 @@ class ModuleView(RAMSTKModuleView):
             _prompt = _(u"An error occured while loading the Functions for "
                         u"Revision ID {0:d} into the Module "
                         u"View.").format(self._revision_id)
-            _dialog = rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                           'error')
+            _dialog = rtk.RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
 

@@ -158,12 +158,14 @@ class OpLoadDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more operating loads in the damage "
-                        "modeling worksheet did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more operating loads in the damage "
+                    "modeling worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all operating loads in the damage "
-                    "modeling worksheet.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all operating loads in the damage "
+                "modeling worksheet.")
 
         return _error_code, _msg
 
@@ -582,8 +584,6 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
         _mechanisms = self.dtm_mechanism.do_select_all(
             parent_id=mode_id, pof=True).nodes
         for _key in _mechanisms:

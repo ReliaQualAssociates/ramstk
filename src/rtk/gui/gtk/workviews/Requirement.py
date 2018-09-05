@@ -106,7 +106,8 @@ class GeneralData(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.btnValidateDate = rtk.RAMSTKButton(height=25, width=25, label="...")
+        self.btnValidateDate = rtk.RAMSTKButton(
+            height=25, width=25, label="...")
 
         self.chkDerived = rtk.RAMSTKCheckButton(
             label=_(u"Requirement is derived."),
@@ -391,7 +392,8 @@ class GeneralData(RAMSTKWorkView):
         for _index, _key in enumerate(
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE):
             _types.append(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[_key])
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[
+                    _key])
         self.cmbRequirementType.do_load_combo(
             list(_types), index=1, simple=False)
 
@@ -400,7 +402,8 @@ class GeneralData(RAMSTKWorkView):
         _owners = []
         for _index, _key in enumerate(
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS):
-            _owners.append(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS[_key])
+            _owners.append(
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS[_key])
         self.cmbOwner.do_load_combo(list(_owners))
 
         # Load the priority gtk.Combo().
@@ -473,7 +476,8 @@ class GeneralData(RAMSTKWorkView):
                 _prefix = _model.get_value(_row, 0)
                 _text = _model.get_value(_row, 1)
                 _requirement.requirement_type = str(_text)
-                _code = _requirement.create_code(_prefix)
+                _requirement.requirement_code = \
+                    _requirement.create_code(_prefix)
                 self.txtCode.set_text(str(_requirement.requirement_code))
             elif index == 7:
                 _index = 8
@@ -629,7 +633,8 @@ class GeneralData(RAMSTKWorkView):
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['requirement']
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+            'requirement']
         self._do_load_page()
 
         return _return
@@ -699,7 +704,7 @@ class RequirementAnalysis(RAMSTKWorkView):
                          Verifiability questions and answers.
     """
 
-    def __init__(self, controller, **kwargs):  #pylint: disable=unused-argument
+    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Requirement package.
 
@@ -866,7 +871,8 @@ class RequirementAnalysis(RAMSTKWorkView):
             _debug_msg = ("RAMSTK ERROR: No position {0:d} in Requirements "
                           "Analysis question list for index {1:d}.").format(
                               _position, index)
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_debug_msg)
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
+                _debug_msg)
 
         return _return
 
@@ -1197,6 +1203,7 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['requirement']
+        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
+            'requirement']
 
         return self._do_load_page(**kwargs)

@@ -68,7 +68,8 @@ class AddControlAction(rtk.RAMSTKDialog):
 
         # Initialize public scalar attributes.
         self.rdoControl = rtk.RAMSTKOptionButton(None, _(u"Add control"))
-        self.rdoAction = rtk.RAMSTKOptionButton(self.rdoControl, _(u"Add action"))
+        self.rdoAction = rtk.RAMSTKOptionButton(self.rdoControl,
+                                                _(u"Add action"))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #

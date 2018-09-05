@@ -185,8 +185,9 @@ class SimilarItemDataModel(RAMSTKDataModel):
                         "item analysis worksheet did not update.")
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all line items in the similar item "
-                    "analysis worksheet.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all line items in the similar item "
+                "analysis worksheet.")
 
         return _error_code, _msg
 

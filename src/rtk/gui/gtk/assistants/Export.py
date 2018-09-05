@@ -12,7 +12,7 @@ import os
 # Export other RAMSTK modules.
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk import RAMSTKMessageDialog
-from rtk.gui.gtk.rtk.Widget import _, gobject, gtk, set_cursor
+from rtk.gui.gtk.rtk.Widget import _, gtk, set_cursor
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -33,8 +33,9 @@ class RAMSTKExport(rtk.RAMSTKFileChooser):
         :type controller: :class:`rtk.RAMSTK.RAMSTK`
         :param str module: the RAMSTK module to export.
         """
-        rtk.RAMSTKFileChooser.__init__(self, _(u"RAMSTK Export"),
-                                    controller.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
+        rtk.RAMSTKFileChooser.__init__(
+            self, _(u"RAMSTK Export"),
+            controller.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 
         # Initialize private dict variables.
 
@@ -107,7 +108,7 @@ class RAMSTKExport(rtk.RAMSTKFileChooser):
             elif _extension in ['.xls', '.xlsm', '.xlsx']:
                 _filetype = 'excel'
 
-            if os.path.exists(_filename) == True:
+            if os.path.exists(_filename):
                 _prompt = _(u"File {0:s} already exists.  "
                             u"Overwrite?").format(_filename)
                 _icon = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \

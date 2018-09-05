@@ -72,7 +72,6 @@ def do_calculate_217f_part_count(**attributes):
     """
     _msg = ''
 
-    #attributes, __ = {1: IntegratedCircuit.calculate_217f_part_count(**attributes)}
     if attributes['category_id'] == 1:
         attributes, __ = IntegratedCircuit.calculate_217f_part_count(
             **attributes)

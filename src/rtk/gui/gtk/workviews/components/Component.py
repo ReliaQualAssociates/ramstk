@@ -902,7 +902,8 @@ class StressResults(gtk.HPaned):
         _fixed.show_all()
 
         # Create the derating plot.
-        _frame = rtk.RAMSTKFrame(label=_(u"Derating Curve and Operating Point"))
+        _frame = rtk.RAMSTKFrame(
+            label=_(u"Derating Curve and Operating Point"))
         _frame.add(self.pltDerate.plot)
         _frame.show_all()
 

@@ -13,9 +13,10 @@ import numpy as np
 import pandas as pd
 
 # Import other RAMSTK modules.
-from rtk.dao import (RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKFunction,
-                     RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKNSWC, RAMSTKReliability,
-                     RAMSTKRequirement, RAMSTKValidation)
+from rtk.dao import (RAMSTKDesignElectric, RAMSTKDesignMechanic,
+                     RAMSTKFunction, RAMSTKHardware, RAMSTKMilHdbkF,
+                     RAMSTKNSWC, RAMSTKReliability, RAMSTKRequirement,
+                     RAMSTKValidation)
 from rtk.modules import RAMSTKDataModel
 
 
@@ -262,7 +263,6 @@ class ImportDataModel(RAMSTKDataModel):
         :rtype: (int, int, str)
         """
         _module = kwargs['module']
-        _return = False
 
         _entities = []
         for _idx, _row in self._input_data.iterrows():

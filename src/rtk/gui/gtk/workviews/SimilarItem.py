@@ -47,7 +47,8 @@ class SimilarItem(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons['edit'] = (
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/edit.png')
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/edit.png')
         self._dic_quality = {
             'Space': 1,
             'Full Military': 2,
@@ -128,8 +129,6 @@ class SimilarItem(RAMSTKWorkView):
         self.pack_end(_hbox, True, True)
         self.show_all()
 
-        #pub.subscribe(self._do_refresh_view, 'calculatedSimilarItem')
-        #pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_clear_page, 'closedProgram')
 
@@ -330,7 +329,6 @@ class SimilarItem(RAMSTKWorkView):
                  the debug log.
         :rtype: (int, str, str)
         """
-        _tree = None
         _error_code = 0
         _user_msg = ""
         _debug_msg = ""
@@ -416,7 +414,7 @@ class SimilarItem(RAMSTKWorkView):
                     ]
 
                     try:
-                        _row = _model.append(None, _data)
+                        _model.append(None, _data)
                     except TypeError:
                         _error_code = 1
                         _user_msg = _(u"One or more Similar Item line items "
@@ -429,7 +427,6 @@ class SimilarItem(RAMSTKWorkView):
                                       "columns.".format(
                                           str(_node_id),
                                           str(self._hardware_id)))
-                        _row = None
                     except ValueError:
                         _error_code = 1
                         _user_msg = _(u"One or more Similar Item line items "
@@ -876,10 +873,9 @@ class SimilarItem(RAMSTKWorkView):
         :param int index: the index in the handler ID list oc the callback
                           signal associated with the gtk.ComboBox() that
                           called this method.
-        :return: False if successful or True is an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
         _visible = []
         _editable = []
 
@@ -915,12 +911,11 @@ class SimilarItem(RAMSTKWorkView):
                     if _value == 1:
                         _editable.append(_index)
 
-            _return = self._do_set_visible(
-                visible=_visible, editable=_editable)
+            self._do_set_visible(visible=_visible, editable=_editable)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
-        return False
+        return None
 
     def _on_select(self, module_id, **kwargs):
         """
@@ -939,7 +934,8 @@ class SimilarItem(RAMSTKWorkView):
                 'similaritem']
 
         if self._dtc_hw_controller is None:
-            self._dtc_hw_controller = self._mdcRAMSTK.dic_controllers['hardware']
+            self._dtc_hw_controller = self._mdcRAMSTK.dic_controllers[
+                'hardware']
 
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(**kwargs)
 

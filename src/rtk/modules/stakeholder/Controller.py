@@ -80,7 +80,7 @@ class StakeholderDataController(RAMSTKDataController):
                 'Program database.'
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_delete(self, node_id):
         """
@@ -93,7 +93,7 @@ class StakeholderDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedStakeholder')
+                                                      'deletedStakeholder')
 
     def request_do_update(self, node_id):
         """
@@ -106,7 +106,7 @@ class StakeholderDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedStakeholder')
+                                                      'savedStakeholder')
 
     def request_do_update_all(self):
         """
@@ -118,7 +118,7 @@ class StakeholderDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update_all()
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+                                                      None)
 
     def request_do_calculate(self, node_id, **kwargs):
         """
