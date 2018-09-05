@@ -1,7 +1,7 @@
 pytest
 pytest-cov
 codacy-coverage
-python-coveralls
+coveralls
 bandit
 check-manifest
 isort
