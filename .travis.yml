@@ -13,6 +13,7 @@ install:
     - sudo apt-get install -yqq python-gtk2 python-gtk2-dev
     - pip install -U pip
     - pip install -U setuptools>12.0
+    - pip install -U urllib3
     - pip install --only-binary=numpy numpy==1.14.3
     - pip install --only-binary=scipy scipy==1.0.0
     - pip install -r requirements_run.txt
