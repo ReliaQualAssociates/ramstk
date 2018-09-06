@@ -275,7 +275,10 @@ class ModuleView(RAMSTKModuleView):
             self._requirement_id)
 
         if _sibling:
-            _parent_id = _requirement.parent_id
+            try:
+                _parent_id = _requirement.parent_id
+            except AttributeError:
+                _parent_id = 0
         else:
             _parent_id = _requirement.requirement_id
 
@@ -289,21 +292,7 @@ class ModuleView(RAMSTKModuleView):
                 sibling=_sibling):
             # TODO: Add code to the Matrix Class to respond to the 'insertedRequirement' pubsub message and insert a record into each of the Requirement-X matrices.
 
-            _last_id = self._dtc_data_controller.request_last_id()
-            _requirement = self._dtc_data_controller.request_do_select(
-                _last_id)
-            _data = _requirement.get_attributes()
-
-            _model, _row = self.treeview.get_selection().get_selected()
-            _prow = _model.iter_parent(_row)
-            if _parent_id == 0:
-                _model.append(None, _data)
-            elif _parent_id != 0 and _sibling:
-                _model.append(_prow, _data)
-            else:  # Inserting a child.
-                _model.append(_row, _data)
-                _path = _model.get_path(_row)
-                self.treeview.expand_row(_path, True)
+            self._on_select_revision(self._revision_id)
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"requirement to Revision "
