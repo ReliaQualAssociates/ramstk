@@ -699,7 +699,7 @@ class RAMSTK(object):
 
         _error_code, _msg = self.rtk_model.do_create_program(_database)
         if _error_code == 0:
-            self.request_open_program()
+            self.request_do_open_program()
             self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
 
             if not self.__test:
