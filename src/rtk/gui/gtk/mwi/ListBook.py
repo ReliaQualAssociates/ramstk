@@ -24,14 +24,14 @@ class ListBook(RAMSTKBook):
     This is the List Book class for the pyGTK multiple window interface.
 
     The List Book provides the container for any List Views and Matrix Views
-    associated with the RAMSTK module selected in the RAMSTK Module View.  Attributes
-    of the List Book are:
+    associated with the RAMSTK module selected in the RAMSTK Module View.
+    Attributes of the List Book are:
 
     :ivar dict dic_list_view: dictionary containing the List Views and/or
-                              Matrix Views to load into the RAMSTK List Book for
-                              each RAMSTK module.  Key is the RAMSTK module name;
-                              value is a list of Views associated with that
-                              RAMSTK module.
+                              Matrix Views to load into the RAMSTK List Book
+                              for each RAMSTK module.  Key is the RAMSTK module
+                              name; value is a list of Views associated with
+                              that RAMSTK module.
     """
 
     def __init__(self, controller):

@@ -139,6 +139,8 @@ class MatrixView(gtk.HBox, rtk.RAMSTKBaseMatrix):
          _row_hdrs) = self._dtc_data_controller.request_do_select_all_matrix(
              self._revision_id, self._matrix_type)
         if _matrix is not None:
+            for _column in self.matrix.get_columns():
+                self.matrix.remove_column(_column)
             rtk.RAMSTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
                                                 _row_hdrs, _(u"Validation"))
 
