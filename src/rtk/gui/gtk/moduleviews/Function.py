@@ -222,12 +222,15 @@ class ModuleView(RAMSTKModuleView):
             self._function_id)
 
         if _sibling:
-            _parent_id = _function.parent_id
+            try:
+                _parent_id = _function.parent_id
+            except AttributeError:
+                _parent_id = 0
         else:
             _parent_id = _function.function_id
 
         if not self._dtc_data_controller.request_do_insert(
-                self._revision_id, _parent_id):
+                revision_id=self._revision_id, parent_id=_parent_id):
             # TODO: Add code to the FMEA Class to respond to the 'insertedFunction' pubsub message and insert a set of functional failure modes.
             # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
             self._on_select_revision(self._revision_id)

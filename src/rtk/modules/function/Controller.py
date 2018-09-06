@@ -126,7 +126,7 @@ class FunctionDataController(RAMSTKDataController):
 
             if not self._test:
                 pub.sendMessage(
-                    'insertedFunction', function_id=self.dtm_function.last_id)
+                    'insertedFunction', function_id=self._dtm_data_model.last_id)
         else:
             _msg = _msg + '  Failed to add a new Function to the RAMSTK ' \
                 'Program database.'
