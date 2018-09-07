@@ -203,8 +203,8 @@ class Model(object):
 
         if self.program_dao.db_create_program(database):
             _error_code = 1
-            _msg = 'RAMSTK ERROR: Failed to create RAMSTK Program database {0:s}.'.\
-                format(database)
+            _msg = 'RAMSTK ERROR: Failed to create RAMSTK Program database ' \
+                   '{0:s}.'.format(database)
 
         return _error_code, _msg
 

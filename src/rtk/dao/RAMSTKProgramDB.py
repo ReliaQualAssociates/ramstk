@@ -96,44 +96,6 @@ def create_program_db(**kwargs):
     session.add(_mission)
     session.commit()
 
-    _phase = RAMSTKMissionPhase()
-    _phase.mission_id = _mission.mission_id
-    session.add(_phase)
-    session.commit()
-
-    _record = RAMSTKEnvironment()
-    _record.phase_id = _phase.phase_id
-    session.add(_record)
-
-    _system = RAMSTKHardware()
-    _system.revision_id = _revision.revision_id
-    _system.description = "Test System"
-    _system.ref_des = "S1"
-    _system.comp_ref_des = "S1"
-    session.add(_system)
-    session.commit()
-
-    _record = RAMSTKReliability()
-    _record.hardware_id = _system.hardware_id
-    session.add(_record)
-    _record = RAMSTKMilHdbkF()
-    _record.hardware_id = _system.hardware_id
-    session.add(_record)
-    _record = RAMSTKNSWC()
-    _record.hardware_id = _system.hardware_id
-    session.add(_record)
-    _record = RAMSTKDesignElectric()
-    _record.hardware_id = _system.hardware_id
-    session.add(_record)
-    _record = RAMSTKDesignMechanic()
-    _record.hardware_id = _system.hardware_id
-    session.add(_record)
-    _record = RAMSTKAllocation()
-    _record.revision_id = _revision.revision_id
-    _record.hardware_id = _system.hardware_id
-    _record.parent_id = 0
-    session.add(_record)
-
     _record = RAMSTKProgramStatus()
     _record.revision_id = _revision.revision_id
     session.add(_record)
