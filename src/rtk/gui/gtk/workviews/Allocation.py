@@ -705,6 +705,7 @@ class Allocation(RAMSTKWorkView):
         _parent = self._dtc_data_controller.request_do_select(self._parent_id)
         if _parent is not None:
             if index == 4:  # Reliability goal
+                print entry.get_text()
                 _parent.reliability_goal = float(entry.get_text())
                 _parent.calculate_goals()
 

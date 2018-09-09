@@ -15,7 +15,8 @@ import pandas as pd
 # Import other RAMSTK modules.
 from rtk.dao import (RAMSTKDesignElectric, RAMSTKDesignMechanic,
                      RAMSTKFunction, RAMSTKHardware, RAMSTKMilHdbkF,
-                     RAMSTKNSWC, RAMSTKReliability, RAMSTKRequirement,
+                     RAMSTKNSWC, RAMSTKReliability, RAMSTKAllocation,
+                     RAMSTKSimilarItem, RAMSTKRequirement,
                      RAMSTKValidation)
 from rtk.modules import RAMSTKDataModel
 
@@ -257,23 +258,32 @@ class ImportDataModel(RAMSTKDataModel):
         Insert a new entity to the RAMSTK db with values from external file.
 
         :param str module: the name of the RAMSTK module to import.
-        :return: (_count, _error_code, _msg; the total number of entities
-                 added, the error code and associated message from the
-                 RAMSTK Program DAO.
-        :rtype: (int, int, str)
+        :return: (_revision_id, _count, _error_code, _msg; the Revision ID the
+                 import is associated with, the total number of entities added,
+                 the error code and associated message from the RAMSTK Program
+                 DAO.
+        :rtype: (int, int, int, str)
         """
         _module = kwargs['module']
+        _revision_id = 1
 
         _entities = []
         for _idx, _row in self._input_data.iterrows():
             if _module == 'Function':
                 _entity = self._do_insert_function(_row)
                 _entities.append(_entity)
+                _revision_id = _entity.revision_id
             elif _module == 'Requirement':
                 _entity = self._do_insert_requirement(_row)
                 _entities.append(_entity)
+                _revision_id = _entity.revision_id
             elif _module == 'Hardware':
                 _entity = self._do_insert_hardware(_row)
+                _entities.append(_entity)
+                _revision_id = _entity.revision_id
+                _entity = self._do_insert_allocation(_row)
+                _entities.append(_entity)
+                _entity = self._do_insert_similar_item(_row)
                 _entities.append(_entity)
                 _entity = self._do_insert_design_electric(_row)
                 _entities.append(_entity)
@@ -288,6 +298,7 @@ class ImportDataModel(RAMSTKDataModel):
             elif _module == 'Validation':
                 _entity = self._do_insert_validation(_row)
                 _entities.append(_entity)
+                _revision_id = _entity.revision_id
 
         _error_code, _msg = RAMSTKDataModel.do_insert(self, entities=_entities)
 
@@ -296,7 +307,7 @@ class ImportDataModel(RAMSTKDataModel):
         else:
             _count = 0
 
-        return _count, _error_code, _msg
+        return _revision_id, _count, _error_code, _msg
 
     def _do_insert_function(self, row):
         """
@@ -555,7 +566,6 @@ class ImportDataModel(RAMSTKDataModel):
 
         return _design_electric
 
-    # TODO: Implement NSWC.
     def _do_insert_design_mechanic(self, row):
         """
         Insert a new Design Mechanic entity to the RAMSTK db.
@@ -565,6 +575,7 @@ class ImportDataModel(RAMSTKDataModel):
         :return: _entity
         :rtype: :class:`rtk.dao.programdb.RAMSTKHardware.RAMSTKHardware`
         """
+        # TODO: Implement NSWC predictions.  See issue #141.
         _design_mechanic = RAMSTKDesignMechanic()
 
         _map = self._dic_field_map['Hardware']
@@ -760,6 +771,48 @@ class ImportDataModel(RAMSTKDataModel):
             _map, row, 'Survival Analysis ID', 0)
 
         return _reliability
+
+    def _do_insert_allocation(self, row):
+        """
+        Insert a new Allocation record to the RAMSTK db.
+
+        :param hardware: the Hardware item that was just inserted.
+        :return: _allocation; an instance of the RAMSTKAllocation database
+                 table record.
+        :rtype: :class:`rtk.dao.programdb.RAMSTKAllocation`
+        """
+        _allocation = RAMSTKAllocation()
+        _map = self._dic_field_map['Hardware']
+
+        _allocation.revision_id = self._get_input_value(_map, row,
+                                                        'Revision ID', 1)
+        _allocation.hardware_id = self._get_input_value(_map, row,
+                                                        'Hardware ID', 1)
+        _allocation.parent_id = self._get_input_value(_map, row,
+                                                      'Parent Assembly', 1)
+
+        return _allocation
+
+    def _do_insert_similar_item(self, row):
+        """
+        Insert a new Similar Item record to the RAMSTK db.
+
+        :param hardware: the Hardware item that was just inserted.
+        :return: _similar_item; an instance of the RAMSTKSimilarItem database
+                 table record.
+        :rtype: :class:`rtk.dao.programdb.RAMSTKSimilarItem`
+        """
+        _similar_item = RAMSTKSimilarItem()
+        _map = self._dic_field_map['Hardware']
+
+        _similar_item.revision_id = self._get_input_value(_map, row,
+                                                          'Revision ID', 1)
+        _similar_item.hardware_id = self._get_input_value(_map, row,
+                                                          'Hardware ID', 1)
+        _similar_item.parent_id = self._get_input_value(_map, row,
+                                                        'Parent Assembly', 1)
+
+        return _similar_item
 
     def _do_insert_validation(self, row):
         """

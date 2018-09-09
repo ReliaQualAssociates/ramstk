@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Import Package Data Controller Module."""
 
+from pubsub import pub
+
 # Import other RAMSTK modules.
 from rtk.modules import RAMSTKDataController
 from . import dtmImports
@@ -112,10 +114,12 @@ class ImportDataController(RAMSTKDataController):
                  the error code and error message returned from the DAO object.
         :rtype: (int, int, str)
         """
-        (_count, _error_code,
+        (_revision_id, _count, _error_code,
          _msg) = self._dtm_data_model.do_insert(module=module)
 
         if _error_code != 0:
             self._configuration.RAMSTK_IMPORT_LOG.error(_msg)
+        else:
+            pub.sendMessage('selectedRevision', module_id=_revision_id)
 
         return _count, _error_code, _msg

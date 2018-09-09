@@ -61,9 +61,11 @@ The **Steps to Reproduce the Problem** section only needs to be completed for an
 To gather the information required for the **Operating Environment** section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the [requirements_run.txt](https://github.com/weibullguy/rtk/requirements_run.txt) file in the repository.
 
 ```
-for file in $(cat requirements_run.txt | cut -d '=' -f1);
-    do version=$(pip show $file | grep Version: | cut -d ':' -f2-);
-    echo $file
+for file in $(cat requirements_run.txt | cut -d '=' -f1 | cut -d '>' -f1);
+do
+    version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]');
+    echo "  * "$file==$version;
+done
 ```
 
 #### Issue Prioritization

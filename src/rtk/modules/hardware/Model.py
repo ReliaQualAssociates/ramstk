@@ -7,7 +7,7 @@
 """Hardware Package Data Model."""
 
 from math import exp
-from treelib.exceptions import DuplicatedNodeIdError
+from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
 # Import other RAMSTK modules.
 from rtk.analyses.prediction import Component
@@ -654,7 +654,7 @@ class HardwareDataModel(RAMSTKDataModel):
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _hardware.hardware_id)
-            except DuplicatedNodeIdError:
+            except(DuplicatedNodeIdError, NodeIDAbsentError):
                 pass
 
         _session.close()

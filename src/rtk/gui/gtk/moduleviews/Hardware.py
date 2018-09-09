@@ -280,10 +280,14 @@ class ModuleView(RAMSTKModuleView):
         _return = False
 
         _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+                self._hardware_id)
+        _attributes['revision_id'] = self._revision_id
 
         _model, _row = self.treeview.get_selection().get_selected()
-        _path = _model.get_path(_row)
+        try:
+            _path = _model.get_path(_row)
+        except TypeError:
+            _path = '0'
 
         if _sibling:
             _parent_id = _attributes['parent_id']
@@ -331,7 +335,7 @@ class ModuleView(RAMSTKModuleView):
 
         return self._do_request_insert(sibling=False, part=_part)
 
-    def _do_request_insert_sibling(self, button, assembly, **kwargs):  # pylint: disable=unused-argument
+    def _do_request_insert_sibling(self, button, **kwargs):  # pylint: disable=unused-argument
         """
         Send request to insert a new sibling Hardware assembly.
 
@@ -340,12 +344,12 @@ class ModuleView(RAMSTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if button.get_property('name') == 'assembly' or assembly:
+        if button.get_property('name') == 'assembly':
             _part = 0
         else:
             _part = 1
 
-        return self._do_request_insert(sibling=False, part=_part)
+        return self._do_request_insert(sibling=True, part=_part)
 
     def _do_request_update(self, __button):
         """

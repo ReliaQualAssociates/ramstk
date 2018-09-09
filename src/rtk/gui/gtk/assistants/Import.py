@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+    #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.assistants.Import.py is part of The RAMSTK Project
@@ -8,6 +8,7 @@
 """Import Assistant Module."""
 
 # Import other RAMSTK modules.
+from rtk import Utilities
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gobject, gtk, set_cursor
 
@@ -190,13 +191,11 @@ class RAMSTKImport(gtk.Assistant):
             _file_type = 'csv'
         elif _file_type == 'Excel Files':
             _file_type = 'excel'
-        _file = filechooser.get_filenames()
-
-        try:
+        _file = filechooser.get_filename()
+        print _file
+        if _file is not None:
             self._dtc_data_controller.request_do_read_input(
-                _file_type, _file[0])
-        except IndexError:
-            pass
+                _file_type, _file)
 
         # Load the field map treeview.
         self._module = self._cmb_select_module.get_active_text()
