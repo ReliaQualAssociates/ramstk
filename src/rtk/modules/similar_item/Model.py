@@ -156,7 +156,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
-        if _error_code != 0:
+        if _error_code != 0 and node_id is not None:
             _error_code = 2207
             _msg = 'RAMSTK ERROR: Attempted to save non-existent SimilarItem ' \
                    'ID {0:d}.'.format(node_id)

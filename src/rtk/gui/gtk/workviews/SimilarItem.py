@@ -480,9 +480,8 @@ class SimilarItem(RAMSTKWorkView):
             _row = _model.iter_next(_row)
 
         if not _return:
-            _nodes = self._dtc_data_controller.request_do_select_children(
-                self._parent_id)
-            self._do_load_tree(_nodes)
+            self._do_load_page()
+
         rtk.Widget.set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
 
         return _return
