@@ -125,6 +125,7 @@ class HazOps(RAMSTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
+        pub.subscribe(self._on_select, 'insertedHazardAnalysis')
         pub.subscribe(self._do_clear_page, 'closedProgram')
 
     def _do_clear_page(self):
@@ -348,9 +349,7 @@ class HazOps(RAMSTKWorkView):
             _row = _model.iter_next(_row)
 
         if not _return:
-            _tree = self._dtc_data_controller.request_do_select_children(
-                self._hardware_id)
-            self._do_load_tree(_tree)
+            self._do_load_page()
 
         return _return
 

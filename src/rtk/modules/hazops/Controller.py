@@ -66,7 +66,8 @@ class HazardAnalysisDataController(RAMSTKDataController):
             self._configuration.RAMSTK_USER_LOG.info(_msg)
 
             if not self._test:
-                pub.sendMessage('insertedHazardAnalysis')
+                pub.sendMessage(
+                    'insertedHazardAnalysis', module_id=_hardware_id)
         else:
             _msg = _msg + '  Failed to add a new Hazard Analysis to the ' \
                           'RAMSTK Program database.'

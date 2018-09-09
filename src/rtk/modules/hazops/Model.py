@@ -76,7 +76,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _hazard_analysis.potential_hazard,
                 _id,
-                _hazard_analysis.hardware_id,
+                parent=_hazard_analysis.hardware_id,
                 data=_hazard_analysis)
 
             # pylint: disable=attribute-defined-outside-init
@@ -120,11 +120,23 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
 
         _id = '{0:d}.{1:d}'.format(_hazard_analysis.hardware_id,
                                    _hazard_analysis.hazard_id)
-        self.tree.create_node(
-            _hazard_analysis.potential_hazard,
-            _id,
-            parent=_hazard_analysis.hardware_id,
-            data=_hazard_analysis)
+        try:
+            self.tree.create_node(
+                _hazard_analysis.potential_hazard,
+                _id,
+                parent=_hazard_analysis.hardware_id,
+                data=_hazard_analysis)
+        except tree.NodeIDAbsentError:
+            self.tree.create_node(
+                _hazard_analysis.potential_hazard,
+                _hazard_analysis.hardware_id,
+                parent=0,
+                data=None)
+            self.tree.create_node(
+                _hazard_analysis.potential_hazard,
+                _id,
+                parent=_hazard_analysis.hardware_id,
+                data=_hazard_analysis)
 
         self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
 
