@@ -106,11 +106,11 @@ class Allocation(RAMSTKWorkView):
             self.cmbAllocationGoal.connect('changed', self._on_combo_changed,
                                            3))
         self._lst_handler_id.append(
-            self.txtReliabilityGoal.connect('changed', self._on_focus_out, 4))
+            self.txtReliabilityGoal.connect('focus_out_event', self._on_focus_out, 4))
         self._lst_handler_id.append(
-            self.txtHazardRateGoal.connect('changed', self._on_focus_out, 5))
+            self.txtHazardRateGoal.connect('focus_out_event', self._on_focus_out, 5))
         self._lst_handler_id.append(
-            self.txtMTBFGoal.connect('changed', self._on_focus_out, 6))
+            self.txtMTBFGoal.connect('focus_out_event', self._on_focus_out, 6))
 
         for i in [
                 self._lst_col_order[3], self._lst_col_order[5],
@@ -687,7 +687,7 @@ class Allocation(RAMSTKWorkView):
 
         return None
 
-    def _on_focus_out(self, entry, index):
+    def _on_focus_out(self, entry, __event, index):
         """
         Respond to gtk.Entry() 'changed' signals.
 
