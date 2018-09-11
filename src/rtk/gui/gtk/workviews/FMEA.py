@@ -513,7 +513,11 @@ class FFMEA(FMEA):
                       u"Analysis (FFMEA) for the selected function."))
         self.hbx_tab_label.pack_start(_label)
 
-        self.pack_start(self._make_buttonbox(), False, True)
+        _buttonbox = self._make_buttonbox()
+        # Disable the calculate button for the Functional FMEA.
+        _buttonbox.get_children()[3].set_sensitive(False)
+
+        self.pack_start(_buttonbox, False, True)
         self.pack_end(self._make_page(), True, True)
         self.show_all()
 
@@ -644,6 +648,8 @@ class FFMEA(FMEA):
                 _entity.operator_actions = model[path][self._lst_col_order[6]]
                 _entity.severity_class = model[path][self._lst_col_order[7]]
                 _entity.remarks = model[path][self._lst_col_order[16]]
+            elif _entity.is_cause:
+                _entity.description = model[path][self._lst_col_order[1]]
             elif _entity.is_control:
                 _entity.description = model[path][self._lst_col_order[1]]
             elif _entity.is_action:
@@ -797,7 +803,7 @@ class FFMEA(FMEA):
             _node_id = _model.get_value(_row, 18)
             _prow = _model.iter_parent(_row)
         except TypeError:
-            _node_id = 0
+            _node_id = '0'
             _prow = None
 
         # The _entity_id is the RAMSTK Program database Function ID, or Mode ID,
@@ -850,7 +856,7 @@ class FFMEA(FMEA):
         """
         _level = None
 
-        if node_id.count('.') == 1:
+        if node_id.count('.') <= 1:
             _level = 'mode'
         elif node_id.count('.') == 2:
             _level = 'cause'
