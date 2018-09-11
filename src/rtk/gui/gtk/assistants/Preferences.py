@@ -256,7 +256,18 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         self._fmt_file = (
             self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
             + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
-        _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
+        if _module == 'dfmeca':
+            _fmt_path = "/root/tree[@name='DFMECA']/column"
+        elif _module == 'ffmea':
+            _fmt_path = "/root/tree[@name='FFMEA']/column"
+        elif _module == 'hazops':
+            _fmt_path = "/root/tree[@name='HazOps']/column"
+        elif _module == 'pof':
+            _fmt_path = "/root/tree[@name='PoF']/column"
+        elif _module == 'similaritem':
+            _fmt_path = "/root/tree[@name='SimilarItem']/column"
+        else:
+            _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
 
         # Retrieve the default heading text from the format file.
         _path = _fmt_path + '/defaulttitle'
