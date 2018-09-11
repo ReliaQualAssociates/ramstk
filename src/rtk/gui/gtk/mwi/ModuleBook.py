@@ -158,8 +158,12 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.connect('activate', OpenProject, self._mdcRAMSTK)
         _menu.append(_menu_item)
 
-        _menu_item = gtk.MenuItem(
-            label=_(u"_Import Project"), use_underline=True)
+        _menu_item = gtk.ImageMenuItem()
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/16x16/import.png')
+        _menu_item.set_label(_(u"_Import Project"))
+        _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', ImportProject, self._mdcRAMSTK)
         _menu.append(_menu_item)
 
@@ -265,7 +269,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _button.set_tooltip_text(
             _(u"Closes the open RAMSTK Program Database."))
         _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/delete.png')
+        _image.set_from_file(_icon_dir + '/32x32/close.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._do_request_close_project)
         _toolbar.insert(_button, _position)
