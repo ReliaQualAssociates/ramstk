@@ -339,7 +339,10 @@ class RAMSTKDataMatrix(object):
         except AttributeError:
             _matrix_id = _session.query(
                 func.max(RAMSTKMatrix.matrix_id).label("last_id")).one()
-            _matrix_id = int(_matrix_id.last_id) + 1
+            try:
+                _matrix_id = int(_matrix_id.last_id) + 1
+            except TypeError:
+                _matrix_id = 1
 
         for _column_item_id in list(self.dtf_matrix.columns):
             for _row_item_id in list(self.dtf_matrix.index):
