@@ -354,7 +354,7 @@ class SimilarItem(RAMSTKWorkView):
                     _node_id = _child.identifier
 
                     _assembly = self._dtc_hw_controller.request_get_attributes(
-                        _node_id)['description']
+                        _node_id)['name']
                     _hazard_rate = self._dtc_hw_controller.request_do_select(
                         _node_id, table='reliability').hazard_rate_logistics
 
