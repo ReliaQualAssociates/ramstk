@@ -67,10 +67,10 @@ class GeneralData(RAMSTKWorkView):
         self.txtCode = rtk.RAMSTKEntry(
             width=125, tooltip=_(u"A unique code for the selected revision."))
         self.txtName = rtk.RAMSTKEntry(
-            width=600, tooltip=_(u"The name of the selected revision."))
+            width=800, tooltip=_(u"The name of the selected revision."))
         self.txtRemarks = rtk.RAMSTKTextView(
             gtk.TextBuffer(),
-            width=600,
+            width=800,
             tooltip=_(u"Enter any remarks associated with the "
                       u"selected revision."))
 

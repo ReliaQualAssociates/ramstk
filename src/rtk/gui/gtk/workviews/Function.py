@@ -86,7 +86,7 @@ class GeneralData(RAMSTKWorkView):
             width=800, tooltip=_(u"The name of the selected function."))
         self.txtRemarks = rtk.RAMSTKTextView(
             gtk.TextBuffer(),
-            width=400,
+            width=800,
             tooltip=_(u"Enter any remarks associated with the "
                       u"selected function."))
 
