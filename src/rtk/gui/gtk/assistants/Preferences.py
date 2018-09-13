@@ -138,7 +138,7 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         _width = gtk.gdk.screen_width() / _n_screens
         _height = gtk.gdk.screen_height()
 
-        self.set_default_size((_width / 2) - 10, (2 * _height / 7))
+        self.set_default_size(_width - 450, (2 * _height / 7))
         self.set_resizable(True)
         self.set_border_width(5)
         self.set_position(gtk.WIN_POS_CENTER)
@@ -149,22 +149,38 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         self.btnLogDir.connect('file-set', self._do_select_path, 3)
         self.btnProgramDir.connect('file-set', self._do_select_path, 4)
 
-        self.btnRevisionBGColor.connect('color-set', self._do_set_color, 0)
-        self.btnRevisionFGColor.connect('color-set', self._do_set_color, 1)
-        self.btnFunctionBGColor.connect('color-set', self._do_set_color, 2)
-        self.btnFunctionFGColor.connect('color-set', self._do_set_color, 3)
-        self.btnRequirementsBGColor.connect('color-set', self._do_set_color, 4)
-        self.btnRequirementsFGColor.connect('color-set', self._do_set_color, 5)
-        self.btnHardwareBGColor.connect('color-set', self._do_set_color, 6)
-        self.btnHardwareFGColor.connect('color-set', self._do_set_color, 7)
-        self.btnSoftwareBGColor.connect('color-set', self._do_set_color, 21)
-        self.btnSoftwareFGColor.connect('color-set', self._do_set_color, 22)
-        self.btnValidationBGColor.connect('color-set', self._do_set_color, 10)
-        self.btnValidationFGColor.connect('color-set', self._do_set_color, 11)
-        self.btnIncidentBGColor.connect('color-set', self._do_set_color, 12)
-        self.btnIncidentFGColor.connect('color-set', self._do_set_color, 13)
-        self.btnTestingBGColor.connect('color-set', self._do_set_color, 14)
-        self.btnTestingFGColor.connect('color-set', self._do_set_color, 15)
+        self.btnRevisionBGColor.connect('color-set', self._do_set_color,
+                                        'revisionbg')
+        self.btnRevisionFGColor.connect('color-set', self._do_set_color,
+                                        'revisionfg')
+        self.btnFunctionBGColor.connect('color-set', self._do_set_color,
+                                        'functionbg')
+        self.btnFunctionFGColor.connect('color-set', self._do_set_color,
+                                        'functionfg')
+        self.btnRequirementsBGColor.connect('color-set', self._do_set_color,
+                                            'requirementbg')
+        self.btnRequirementsFGColor.connect('color-set', self._do_set_color,
+                                            'requirementfg')
+        self.btnHardwareBGColor.connect('color-set', self._do_set_color,
+                                        'hardwarebg')
+        self.btnHardwareFGColor.connect('color-set', self._do_set_color,
+                                        'hardwarefg')
+        self.btnSoftwareBGColor.connect('color-set', self._do_set_color,
+                                        'softwarebg')
+        self.btnSoftwareFGColor.connect('color-set', self._do_set_color,
+                                        'softwarefg')
+        self.btnValidationBGColor.connect('color-set', self._do_set_color,
+                                          'validationbg')
+        self.btnValidationFGColor.connect('color-set', self._do_set_color,
+                                          'validationfg')
+        self.btnIncidentBGColor.connect('color-set', self._do_set_color,
+                                        'incidentbg')
+        self.btnIncidentFGColor.connect('color-set', self._do_set_color,
+                                        'incidentfg')
+        self.btnTestingBGColor.connect('color-set', self._do_set_color,
+                                       'testingbg')
+        self.btnTestingFGColor.connect('color-set', self._do_set_color,
+                                       'testingfg')
 
         self._lst_handler_id.append(
             self.cmbFormatFiles.connect('changed', self._on_combo_changed, 0))
@@ -297,15 +313,23 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         _path = _fmt_path + '/widget'
         _widget = lxml.parse(self._fmt_file).xpath(_path)
 
+        # Retrieve attribute keys from the format file.
+        _path = _fmt_path + '/key'
+        _keys = lxml.parse(self._fmt_file).xpath(_path)
+
         _model = self.tvwFormatFile.get_model()
         _model.clear()
         for _index, __ in enumerate(_default):
+            try:
+                _key = _keys[_index]
+            except IndexError:
+                _key = ''
             _data = [
                 _default[_index].text, _user[_index].text,
                 int(_position[_index].text),
                 int(_editable[_index].text),
                 int(_visible[_index].text), _datatype[_index].text,
-                _widget[_index].text
+                _widget[_index].text, _key
             ]
             _model.append(_data)
 
@@ -686,31 +710,32 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         _file.write("their experience. -->\n\n")
 
         _file.write("<root>\n")
-        _file.write('\t<tree name="{0:s}">\n'.format(_name))
+        _file.write('<tree name="{0:s}">\n'.format(_name))
 
         _model = self.tvwFormatFile.get_model()
         _row = _model.get_iter_first()
         while _row is not None:
-            _file.write("\t\t<column>\n")
-            _file.write("\t\t\t<defaulttitle>{0:s}</defaulttitle>\n".format(
+            _file.write("<column>\n")
+            _file.write("<defaulttitle>{0:s}</defaulttitle>\n".format(
                 _model.get_value(_row, 0)))
-            _file.write("\t\t\t<usertitle>{0:s}</usertitle>\n".format(
+            _file.write("<usertitle>{0:s}</usertitle>\n".format(
                 _model.get_value(_row, 1)))
-            _file.write("\t\t\t<datatype>{0:s}</datatype>\n".format(
+            _file.write("<datatype>{0:s}</datatype>\n".format(
                 _model.get_value(_row, 5)))
-            _file.write('\t\t\t<position>{0:d}</position>\n'.format(
+            _file.write("<position>{0:d}</position>\n".format(
                 _model.get_value(_row, 2)))
-            _file.write("\t\t\t<widget>{0:s}</widget>\n".format(
+            _file.write("<widget>{0:s}</widget>\n".format(
                 _model.get_value(_row, 6)))
-            _file.write("\t\t\t<editable>{0:d}</editable>\n".format(
+            _file.write("<editable>{0:d}</editable>\n".format(
                 _model.get_value(_row, 3)))
-            _file.write("\t\t\t<visible>{0:d}</visible>\n".format(
+            _file.write("<visible>{0:d}</visible>\n".format(
                 _model.get_value(_row, 4)))
-            _file.write("\t\t</column>\n")
+            _file.write("<key>{0:s}</key>\n".format(_model.get_value(_row, 7)))
+            _file.write("</column>\n")
 
             _row = _model.iter_next(_row)
 
-        _file.write("\t</tree>\n")
+        _file.write("</tree>\n")
         _file.write("</root>")
         _file.close()
 
@@ -1180,7 +1205,7 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         _model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
                                gobject.TYPE_INT, gobject.TYPE_INT,
                                gobject.TYPE_INT, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING)
+                               gobject.TYPE_STRING, gobject.TYPE_STRING)
         self.tvwFormatFile.set_model(_model)
 
         for i in range(5):
