@@ -396,14 +396,19 @@ class ListView(RAMSTKListView):
             _parent_id = _model.get_value(_row, 9)
 
         if _level == 'mission' and not _sibling:
-            _level = 1
+            _level = 'phase'
 
         elif _level == 'phase' and not _sibling:
-            _level = 2
+            _level = 'environment'
 
         elif _level == 'environment' and not _sibling:
             _prompt = _(u"An environmental condition cannot have a child.")
-            rtk.RAMSTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            _dialog = rtk.RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
+            if _dialog.do_run() == gtk.RESPONSE_OK:
+                _dialog.do_destroy()
+            else:
+                _dialog.do_destroy()
 
             _return = True
 
