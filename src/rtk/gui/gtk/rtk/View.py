@@ -271,9 +271,9 @@ class RAMSTKBaseView(object):
 
                 _attributes = []
                 if _entity is not None:
-                    # For simple data models that return an RAMSTK database table instance
-                    # for the data object, the first try statement will create the list
-                    # of attribute values.
+                    # For simple data models that return an RAMSTK database
+                    # table instance for the data object, the first try
+                    # statement will create the list of attribute values.
                     _temp = _entity.get_attributes()
 
                     for _key in _temp:

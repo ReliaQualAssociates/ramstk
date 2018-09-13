@@ -160,8 +160,8 @@ class RAMSTKTreeView(gtk.TreeView):
                              Defaults to white.
         :keyword str fg_col: the foreground (text) color to use for each row.
                              Defaults to black.
-        :return:
-        :rtype:
+        :return: None
+        :rtype: None
         """
         _types = []
 
@@ -221,7 +221,7 @@ class RAMSTKTreeView(gtk.TreeView):
 
             self.append_column(_column)
 
-        return
+        return None
 
     def do_load_tree(self, tree, row=None):
         """
@@ -243,9 +243,9 @@ class RAMSTKTreeView(gtk.TreeView):
 
         _attributes = []
         if _entity is not None:
-            # For simple data models that return an RAMSTK database table instance
-            # for the data object, the first try statement will create the list
-            # of attribute values.
+            # For simple data models that return an RAMSTK database table
+            # instance for the data object, the first try statement will create
+            # the list of attribute values.
             try:
                 _temp = _entity.get_attributes()
                 for _key in self.korder:
