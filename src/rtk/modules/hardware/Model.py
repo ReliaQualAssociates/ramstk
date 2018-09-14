@@ -460,6 +460,13 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         :return: attributes; the attributes dict with updated cost metrics.
         :rtype: dict
         """
+        if attributes['hazard_rate_type_id'] == 2:
+            attributes['hazard_rate_active'] = \
+                attributes['hazard_rate_specified']
+        elif attributes['hazard_rate_type_id'] == 3:
+            attributes['hazard_rate_active'] = (1.0 /
+                                                attributes['mtbf_specified'])
+
         attributes['hazard_rate_logistics'] = (
             attributes['hazard_rate_active'] +
             attributes['hazard_rate_dormant'] +

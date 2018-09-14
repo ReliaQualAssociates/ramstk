@@ -1674,16 +1674,6 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
         elif _type_id == 2:
-            self.cmbFailureDist.set_sensitive(True)
-            self.cmbHRMethod.set_sensitive(False)
-            self.txtFailLocation.set_sensitive(True)
-            self.txtFailScale.set_sensitive(True)
-            self.txtFailShape.set_sensitive(True)
-            self.txtSpecifiedHt.set_sensitive(False)
-            self.txtSpecifiedHtVar.set_sensitive(False)
-            self.txtSpecifiedMTBF.set_sensitive(False)
-            self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif _type_id == 3:
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(False)
@@ -1693,7 +1683,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(True)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif _type_id == 4:
+        elif _type_id == 3:
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(False)
@@ -1703,6 +1693,16 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(False)
             self.txtSpecifiedMTBF.set_sensitive(True)
             self.txtSpecifiedMTBFVar.set_sensitive(True)
+        elif _type_id == 4:
+            self.cmbFailureDist.set_sensitive(True)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(True)
+            self.txtFailScale.set_sensitive(True)
+            self.txtFailShape.set_sensitive(True)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
 
         return _return
 
