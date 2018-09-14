@@ -321,7 +321,7 @@ class Preferences(gtk.Window, rtk.RAMSTKBaseView):
         _model.clear()
         for _index, __ in enumerate(_default):
             try:
-                _key = _keys[_index]
+                _key = _keys[_index].text
             except IndexError:
                 _key = ''
             _data = [
