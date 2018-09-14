@@ -32,6 +32,64 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             - MIL-HDBK-217FN2 Model Parameters
             - NSWC-11 Model Parameters
             - Reliability Parameters
+
+    Attribute keys for the aggregate model are:
+
+    ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Cac', 'Calt', 'Cb', 'Cbl', 'Cbt',
+     'Cbv', 'Cc', 'Ccf', 'Ccp', 'Ccs', 'Ccv', 'Ccw', 'Cd', 'Cdc', 'Cdl', 'Cdp',
+     'Cds', 'Cdt', 'Cdw', 'Cdy', 'Ce', 'Cf', 'Cg', 'Cga', 'Cgl', 'Cgp', 'Cgs',
+     'Cgt', 'Cgv', 'Ch', 'Ci', 'Ck', 'Cl', 'Clc', 'Cm', 'Cmu', 'Cn', 'Cnp',
+     'Cnw', 'Cp', 'Cpd', 'Cpf', 'Cpv', 'Cq', 'Cr', 'Crd', 'Cs', 'Csc', 'Csf',
+     'Cst', 'Csv', 'Csw', 'Csz', 'Ct', 'Cv', 'Cw', 'Cy', 'add_adj_factor',
+     'alt_part_num', 'altitude_operating', 'application_id', 'area',
+     'attachments', 'avail_log_variance', 'avail_mis_variance',
+     'availability_logistics', 'availability_mission', 'balance_id',
+     'cage_code', 'capacitance', 'casing_id', 'category_id', 'clearance',
+     'comp_ref_des', 'configuration_id', 'construction_id', 'contact_form_id',
+     'contact_gauge', 'contact_pressure', 'contact_rating_id', 'cost',
+     'cost_failure', 'cost_hour', 'cost_type_id', 'current_operating',
+     'current_rated', 'current_ratio', 'deflection', 'description',
+     'diameter_coil', 'diameter_inner', 'diameter_outer', 'diameter_wire',
+     'duty_cycle', 'environment_active_id', 'environment_dormant_id',
+     'failure_distribution_id', 'family_id', 'feature_size', 'figure_number',
+     'filter_size', 'flow_design', 'flow_operating', 'frequency_operating',
+     'friction', 'hardware_id', 'hazard_rate_active', 'hazard_rate_dormant',
+     'hazard_rate_logistics', 'hazard_rate_method_id', 'hazard_rate_mission',
+     'hazard_rate_model', 'hazard_rate_percent', 'hazard_rate_software',
+     'hazard_rate_specified', 'hazard_rate_type_id', 'hr_active_variance',
+     'hr_dormant_variance', 'hr_logistics_variance', 'hr_mission_variance',
+     'hr_specified_variance', 'impact_id', 'insert_id', 'insulation_id',
+     'lambdaBD', 'lambdaBP', 'lambdaCYC', 'lambdaEOS', 'lambda_b', 'lcn',
+     'leakage_allowable', 'length', 'length_compressed', 'length_relaxed',
+     'level', 'load_design', 'load_id', 'load_operating', 'location_parameter',
+     'lubrication_id', 'manufacturer_id', 'manufacturing_id', 'matching_id',
+     'material_id', 'meyer_hardness', 'misalignment_angle', 'mission_time',
+     'mtbf_log_variance', 'mtbf_logistics', 'mtbf_miss_variance',
+     'mtbf_mission', 'mtbf_spec_variance', 'mtbf_specified', 'mult_adj_factor',
+     'n_active_pins', 'n_circuit_planes', 'n_cycles', 'n_elements',
+     'n_hand_soldered', 'n_ten', 'n_wave_soldered', 'name', 'nsn', 'offset',
+     'operating_life', 'overstress', 'package_id', 'page_number', 'parent_id',
+     'part', 'part_number', 'particle_size', 'piA', 'piC', 'piCD', 'piCF',
+     'piCR', 'piCV', 'piCYC', 'piE', 'piF', 'piI', 'piK', 'piL', 'piM',
+     'piMFG', 'piN', 'piNR', 'piP', 'piPT', 'piQ', 'piR', 'piS', 'piT',
+     'piTAPS', 'piU', 'piV', 'power_operating', 'power_rated', 'power_ratio',
+     'pressure_contact', 'pressure_delta', 'pressure_downstream',
+     'pressure_rated', 'pressure_upstream', 'quality_id', 'quantity', 'reason',
+     'ref_des', 'reliability_goal', 'reliability_goal_measure_id',
+     'reliability_log_variance', 'reliability_logistics',
+     'reliability_miss_variance', 'reliability_mission', 'remarks',
+     'repairable', 'resistance', 'revision_id', 'rpm_design', 'rpm_operating',
+     'scale_parameter', 'service_id', 'shape_parameter', 'specification_id',
+     'specification_number', 'spring_index', 'subcategory_id',
+     'surface_finish', 'survival_analysis_id', 'tagged_part', 'technology_id',
+     'temperature_active', 'temperature_case', 'temperature_dormant',
+     'temperature_hot_spot', 'temperature_junction', 'temperature_knee',
+     'temperature_rated_max', 'temperature_rated_min', 'temperature_rise',
+     'theta_jc', 'thickness', 'torque_id', 'total_cost', 'total_part_count',
+     'total_power_dissipation', 'type_id', 'viscosity_design',
+     'viscosity_dynamic', 'voltage_ac_operating', 'voltage_dc_operating',
+     'voltage_esd', 'voltage_rated', 'voltage_ratio', 'water_per_cent',
+     'weight', 'width_minimum', 'year_of_manufacture', 'years_in_production']
     """
 
     _tag = 'HardwareBoM'
@@ -457,15 +515,20 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
         :param dict attributes: the attributes of the hardware item being
                                 calculated.
-        :return: attributes; the attributes dict with updated cost metrics.
+        :return: attributes; the attributes dict with updated reliability
+                 metrics.
         :rtype: dict
         """
         if attributes['hazard_rate_type_id'] == 2:
             attributes['hazard_rate_active'] = \
                 attributes['hazard_rate_specified']
         elif attributes['hazard_rate_type_id'] == 3:
-            attributes['hazard_rate_active'] = (1.0 /
-                                                attributes['mtbf_specified'])
+            attributes['hazard_rate_active'] = (
+                1.0 / attributes['mtbf_specified'])
+
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] +
+            attributes['add_adj_factor']) * attributes['mult_adj_factor']
 
         attributes['hazard_rate_logistics'] = (
             attributes['hazard_rate_active'] +
@@ -661,7 +724,7 @@ class HardwareDataModel(RAMSTKDataModel):
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
                 self.last_id = max(self.last_id, _hardware.hardware_id)
-            except(DuplicatedNodeIdError, NodeIDAbsentError):
+            except (DuplicatedNodeIdError, NodeIDAbsentError):
                 pass
 
         _session.close()
