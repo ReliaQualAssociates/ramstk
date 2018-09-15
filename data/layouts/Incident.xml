@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      incident_format.xml is part of the RTK Project
+      incident_format.xml is part of the RAMSTK Project
 
-      Copyright 2007-2015 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright 2007-2015 Doyle "weibullguy" Rowland <doyle.rowland@reliaqual.com>
 
       All rights reserved.
 -->
 
-<!-- This file contains information used by the RTK application to draw
+<!-- This file contains information used by the RAMSTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

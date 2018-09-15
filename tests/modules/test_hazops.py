@@ -1,23 +1,23 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_hazard_analysis.py is part of The RAMSTK Project
+#       ramstk.tests.modules.test_hazard_analysis.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the HazardAnalysis class. """
 
 import pytest
 
 from treelib import Tree
 
-from rtk.dao import DAO, RAMSTKHazardAnalysis
-from rtk.modules.hazops import dtmHazardAnalysis, dtcHazardAnalysis
+from ramstk.dao import DAO, RAMSTKHazardAnalysis
+from ramstk.modules.hazops import dtmHazardAnalysis, dtcHazardAnalysis
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

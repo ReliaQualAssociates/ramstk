@@ -7,6 +7,7 @@ include *.md
 include *.py
 include *.rc
 include *.txt
+include *.yml
 include .coveragerc
 include .pylintrc
 include pytest.ini
@@ -23,6 +24,6 @@ recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include docs *.tex
 recursive-include locale *.pot
-recursive-include src/rtk *.py
+recursive-include src/ramstk *.py
 
 recursive-exclude tests *

@@ -8,7 +8,7 @@ This is the test class for testing Growth Testing module algorithms and models.
 #       tests.testing.TestGrowth.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
+    dirname(dirname(dirname(__file__))) + "/ramstk",
 )
 
 import unittest
@@ -49,10 +49,10 @@ import numpy as np
 
 from testing.growth.Growth import Model, Growth
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2015 Doyle "weibullguy" Rowland'
 
 
 class TestGrowthModel(unittest.TestCase):

@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      revision_format.xml is part of The RTK Project
+      revision_format.xml is part of The RAMSTK Project
 
-      Copyright (C) 2007-2014 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright (C) 2007-2014 Doyle "weibullguy" Rowland <doyle.rowland@reliaqual.com>
 
 All rights reserved.
 -->
 
-<!-- This file contains information used by the RTK application to draw
+<!-- This file contains information used by the RAMSTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

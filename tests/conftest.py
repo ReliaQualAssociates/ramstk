@@ -3,7 +3,7 @@
 #       tests.conftest.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK test suite configuration module."""
 
 import os
@@ -17,10 +17,10 @@ import xlwt
 
 import pytest
 
-import rtk.Utilities as Utilities
-from rtk.Configuration import Configuration
-from rtk.dao import DAO
-from rtk.dao.RAMSTKProgramDB import do_create_test_database
+import ramstk.Utilities as Utilities
+from ramstk.Configuration import Configuration
+from ramstk.dao import DAO
+from ramstk.dao.RAMSTKProgramDB import do_create_test_database
 
 _ = gettext.gettext
 
@@ -42,8 +42,8 @@ DATA_DIR = CONF_DIR + '/data'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
-TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.rtk'
-TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.rtk'
+TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.ramstk'
+TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
 TEST_PROGRAM_DB_URI = 'sqlite:///' + TEST_PROGRAM_DB_PATH
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
 
@@ -139,10 +139,10 @@ def test_dao():
     # If there are existing test databases, delete them.
     if os.path.exists(TEST_PROGRAM_DB_PATH):
         os.remove(TEST_PROGRAM_DB_PATH)
-    if os.path.exists('/tmp/_rtk_program_db.rtk'):
-        os.remove('/tmp/_rtk_program_db.rtk')
-    if os.path.exists('/tmp/_rtk_test_db.rtk'):
-        os.remove('/tmp/_rtk_test_db.rtk')
+    if os.path.exists('/tmp/_ramstk_program_db.ramstk'):
+        os.remove('/tmp/_ramstk_program_db.ramstk')
+    if os.path.exists('/tmp/_ramstk_test_db.ramstk'):
+        os.remove('/tmp/_ramstk_test_db.ramstk')
 
     # Create and populate an RAMSTK Program test database.
     dao = DAO()
@@ -173,8 +173,8 @@ def test_configuration():
     configuration.RAMSTK_COM_INFO['host'] = 'localhost'
     configuration.RAMSTK_COM_INFO['socket'] = 3306
     configuration.RAMSTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
-    configuration.RAMSTK_COM_INFO['user'] = 'rtkcom'
-    configuration.RAMSTK_COM_INFO['password'] = 'rtkcom'
+    configuration.RAMSTK_COM_INFO['user'] = 'ramstkcom'
+    configuration.RAMSTK_COM_INFO['password'] = 'ramstkcom'
 
     configuration.RAMSTK_REPORT_SIZE = 'letter'
     configuration.RAMSTK_HR_MULTIPLIER = 1000000.0

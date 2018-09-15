@@ -4,7 +4,7 @@
 #       tests.modules.hardware.test_hardwarebom.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hardware BoM module algorithms and models. """
 
 from datetime import date
@@ -13,15 +13,15 @@ from treelib import Tree
 
 import pytest
 
-from rtk.modules.hardware import (
+from ramstk.modules.hardware import (
     dtmHardware, dtmDesignElectric, dtmDesignMechanic, dtmMilHdbkF, dtmNSWC,
     dtmReliability, dtmHardwareBoM, dtcHardwareBoM)
-from rtk.dao import DAO, RAMSTKHardware
+from ramstk.dao import DAO, RAMSTKHardware
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'revision_id': 1,

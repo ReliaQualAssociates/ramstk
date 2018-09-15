@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_rtkstakeholders.py is part of The RAMSTK Project
+#       tests.dao.commondb.test_ramstkstakeholders.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKStakeholders module algorithms and models."""
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKStakeholders import RAMSTKStakeholders
+from ramstk.dao.commondb.RAMSTKStakeholders import RAMSTKStakeholders
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {'stakeholders_id': 1, 'stakeholder': 'Customer'}
 
 
 @pytest.mark.integration
-def test_rtkstakeholders_create(test_common_dao):
+def test_ramstkstakeholders_create(test_common_dao):
     """ __init__() should create an RAMSTKStakeholders model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -27,7 +27,7 @@ def test_rtkstakeholders_create(test_common_dao):
     assert isinstance(DUT, RAMSTKStakeholders)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_stakeholders'
+    assert DUT.__tablename__ == 'ramstk_stakeholders'
     assert DUT.stakeholders_id == 1
     assert DUT.stakeholder == 'Customer'
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_rtkhazards.py is part of The RAMSTK Project
+#       tests.dao.commondb.test_ramstkhazards.py is part of The RAMSTK Project
 
 #
 # All rights reserved.
@@ -8,12 +8,12 @@
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKHazards import RAMSTKHazards
+from ramstk.dao.commondb.RAMSTKHazards import RAMSTKHazards
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'category': u'Acceleration/Gravity',
@@ -23,7 +23,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkhazards_create(test_common_dao):
+def test_ramstkhazards_create(test_common_dao):
     """ __init__() should create an RAMSTKHazard model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -32,7 +32,7 @@ def test_rtkhazards_create(test_common_dao):
     assert isinstance(DUT, RAMSTKHazards)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_hazards'
+    assert DUT.__tablename__ == 'ramstk_hazards'
     assert DUT.hazard_id == 1
     assert DUT.category == 'Acceleration/Gravity'
     assert DUT.subcategory == 'Falls'

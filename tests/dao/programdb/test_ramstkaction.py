@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_rtkaction.py is part of The RAMSTK Project
+#       tests.dao.programdb.test_ramstkaction.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKAction module algorithms and models."""
@@ -9,12 +9,12 @@ from datetime import date, timedelta
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKAction import RAMSTKAction
+from ramstk.dao.programdb.RAMSTKAction import RAMSTKAction
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'action_due_date': date.today() + timedelta(days=30),
@@ -33,7 +33,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkaction_create(test_dao):
+def test_ramstkaction_create(test_dao):
     """
     __init__() should create an RAMSTKAction model.
     """
@@ -44,7 +44,7 @@ def test_rtkaction_create(test_dao):
     assert isinstance(DUT, RAMSTKAction)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_action'
+    assert DUT.__tablename__ == 'ramstk_action'
     assert DUT.cause_id == 1
     assert DUT.action_id == 1
     assert DUT.action_recommended == (

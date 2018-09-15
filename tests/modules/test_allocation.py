@@ -1,23 +1,23 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_allocation.py is part of The RAMSTK Project
+#       ramstk.tests.modules.test_allocation.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Allocation class. """
 
 import pytest
 
 from treelib import Tree
 
-from rtk.dao import DAO, RAMSTKAllocation
-from rtk.modules.allocation import dtmAllocation, dtcAllocation
+from ramstk.dao import DAO, RAMSTKAllocation
+from ramstk.modules.allocation import dtmAllocation, dtcAllocation
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

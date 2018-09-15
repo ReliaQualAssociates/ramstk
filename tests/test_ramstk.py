@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.test_rtk.py is part of The RAMSTK Project
+#       ramstk.tests.test_ramstk.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """This is the test class for testing the RAMSTK module algorithms and models."""
 
 import os
@@ -14,19 +14,19 @@ from treelib import Tree
 
 import pytest
 
-from rtk.Configuration import Configuration
-from rtk.RAMSTK import Model, RAMSTK, _initialize_loggers
-from rtk.dao.DAO import DAO
-from rtk.gui.gtk.mwi.ListBook import ListBook
-from rtk.gui.gtk.mwi.ModuleBook import ModuleBook
-from rtk.gui.gtk.mwi.WorkBook import WorkBook
+from ramstk.Configuration import Configuration
+from ramstk.RAMSTK import Model, RAMSTK, _initialize_loggers
+from ramstk.dao.DAO import DAO
+from ramstk.gui.gtk.mwi.ListBook import ListBook
+from ramstk.gui.gtk.mwi.ModuleBook import ModuleBook
+from ramstk.gui.gtk.mwi.WorkBook import WorkBook
 
 TEMPDIR = tempfile.gettempdir()
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2018 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2018 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration
@@ -64,7 +64,7 @@ def test_do_create_new_program(test_common_dao, test_dao, test_configuration):
 
     _configuration = test_configuration
     _database = (
-        _configuration.RAMSTK_BACKEND + ':///' + TEMPDIR + '/_rtk_test_db.rtk')
+        _configuration.RAMSTK_BACKEND + ':///' + TEMPDIR + '/_ramstk_test_db.ramstk')
     _error_code, _msg = DUT.do_create_program(_database)
 
     assert _error_code == 0
@@ -77,12 +77,12 @@ def test_do_create_new_program_failed(test_common_dao, test_dao):
     """ do_create_program() should return a non-zero error code on failure. """
     DUT = Model(test_common_dao, test_dao)
 
-    _database = 'sqlite:/' + TEMPDIR + '/BigAssTestDB.rtk'
+    _database = 'sqlite:/' + TEMPDIR + '/BigAssTestDB.ramstk'
     _error_code, _msg = DUT.do_create_program(_database)
 
     assert _error_code == 1
     assert _msg == ('RAMSTK ERROR: Failed to create RAMSTK Program database '
-                    'sqlite:/' + TEMPDIR + '/BigAssTestDB.rtk.')
+                    'sqlite:/' + TEMPDIR + '/BigAssTestDB.ramstk.')
 
 
 @pytest.mark.integration
@@ -806,11 +806,11 @@ def test_do_validate_license_wrong_key(test_common_dao, test_dao):
 
 @pytest.mark.broken_test
 def test_initialize_controller():
-    """ __init__() should create an instance of the rtk.RAMSTK object. """
+    """ __init__() should create an instance of the ramstk.RAMSTK object. """
     DUT = RAMSTK(test=True)
 
     assert isinstance(DUT, RAMSTK)
-    assert isinstance(DUT.rtk_model, Model)
+    assert isinstance(DUT.ramstk_model, Model)
     assert isinstance(DUT.dic_books['listbook'], ListBook)
     assert isinstance(DUT.dic_books['modulebook'], ModuleBook)
     assert isinstance(DUT.dic_books['workbook'], WorkBook)
@@ -853,7 +853,7 @@ def test_request_do_load_globals(test_configuration):
 
     _database = _configuration.RAMSTK_COM_BACKEND + ':///' + \
                 _configuration.RAMSTK_COM_INFO['database']
-    DUT.rtk_model.program_dao.db_connect(_database)
+    DUT.ramstk_model.program_dao.db_connect(_database)
 
     assert not DUT.request_do_load_globals()
 
@@ -910,7 +910,7 @@ def test_request_do_save_program():
     DUT.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO = {
         'host': 'localhost',
         'socket': 3306,
-        'database': TEMPDIR + '/TestDB.rtk',
+        'database': TEMPDIR + '/TestDB.ramstk',
         'user': '',
         'password': ''
     }
@@ -927,7 +927,7 @@ def test_request_do_close_program():
     DUT.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO = {
         'host': 'localhost',
         'socket': 3306,
-        'database': TEMPDIR + '/TestDB.rtk',
+        'database': TEMPDIR + '/TestDB.ramstk',
         'user': '',
         'password': ''
     }

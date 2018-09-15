@@ -47,6 +47,7 @@
 * Open "staging" branch to hold modules still requiring update to new API.
 * Update to use pytest instead of nose.
 * Cleanup and reorganize package directory/file structure.
+* Rename files and update references from rtk to ramstk.
 
 ## v0.4.0 (2017-12-11)
 ### Other

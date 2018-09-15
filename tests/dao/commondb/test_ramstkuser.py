@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_rtkuser.py is part of The RAMSTK Project
+#       tests.dao.commondb.test_ramstkuser.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKUser module algorithms and models."""
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKUser import RAMSTKUser
+from ramstk.dao.commondb.RAMSTKUser import RAMSTKUser
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'user_id': 1,
@@ -25,7 +25,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkuser_create(test_common_dao):
+def test_ramstkuser_create(test_common_dao):
     """ __init__() should create an RAMSTKUser model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -34,7 +34,7 @@ def test_rtkuser_create(test_common_dao):
     assert isinstance(DUT, RAMSTKUser)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_user'
+    assert DUT.__tablename__ == 'ramstk_user'
     assert DUT.user_id == 1
     assert DUT.user_lname == 'Tester'
     assert DUT.user_fname == 'Johnny'

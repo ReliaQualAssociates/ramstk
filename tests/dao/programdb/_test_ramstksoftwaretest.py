@@ -16,7 +16,7 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+    dirname(dirname(dirname(dirname(__file__)))) + "/ramstk",
 )
 
 from sqlalchemy import create_engine
@@ -27,10 +27,10 @@ from nose.plugins.attrib import attr
 
 from dao.RAMSTKSoftwareTest import RAMSTKSoftwareTest
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
 class TestRAMSTKSoftwareTest(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestRAMSTKSoftwareTest(unittest.TestCase):
         Sets up the test fixture for the RAMSTKSoftwareTest class.
         """
 
-        engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
+        engine = create_engine('sqlite:////tmp/TestDB.ramstk', echo=False)
         session = scoped_session(sessionmaker())
 
         session.remove()
@@ -56,7 +56,7 @@ class TestRAMSTKSoftwareTest(unittest.TestCase):
         session.commit()
 
     @attr(all=True, unit=True)
-    def test00_rtksoftware_create(self):
+    def test00_ramstksoftware_create(self):
         """
         (TestRAMSTKSoftwareTest) __init__ should create an RAMSTKSoftwareTest model.
         """
@@ -64,7 +64,7 @@ class TestRAMSTKSoftwareTest(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, RAMSTKSoftwareTest))
 
         # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'rtk_software_test')
+        self.assertEqual(self.DUT.__tablename__, 'ramstk_software_test')
         self.assertEqual(self.DUT.software_id, 1)
         self.assertEqual(self.DUT.technique_id, 1)
         self.assertEqual(self.DUT.recommended, 0)

@@ -4,20 +4,20 @@
 #       tests.statistics.TestBounds.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing statistical bound algorithms and models."""
 
 import unittest
 from nose.plugins.attrib import attr
 import numpy as np
 
-import rtk.dao.DAO as _dao
-from rtk.statistics.Bounds import *
+import ramstk.dao.DAO as _dao
+from ramstk.statistics.Bounds import *
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2015 Doyle "weibullguy" Rowland'
 
 
 class TestStatisticalBounds(unittest.TestCase):

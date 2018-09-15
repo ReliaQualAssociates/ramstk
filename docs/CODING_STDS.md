@@ -1,8 +1,8 @@
 # Coding Conventions
 
 This document describes the coding standards to be adhered to by developers on
-the [RTK Project](https://github.com/weibullguy/rtk).  It is a working document
-and suggested changes shall be submitted as issues in the RTK GitHub issue
+the [RAMSTK Project](https://github.com/weibullguy/ramstk).  It is a working document
+and suggested changes shall be submitted as issues in the RAMSTK GitHub issue
 tracker with an Enhancement label attached.
 
 [Naming Conventions](#naming-conventions)
@@ -29,14 +29,14 @@ included in each section.
 
 ### Constants and Variables
 
-  1. All RTK global constants shall be defined in the configuration module.
+  1. All RAMSTK global constants shall be defined in the configuration module.
   2. Constants shall be:
       - All UPPERCASE with spaces replaced by underscores (_).
-      - Prefaced by RTK_ to identify it as an RTK constant.
-      - A minimum of nine characters (RTK_ is 4) and a maximum of 30 characters.
+      - Prefaced by RAMSTK_ to identify it as an RAMSTK constant.
+      - A minimum of twelve characters (RAMSTK_ is 7) and a maximum of 30 characters.
 
       ```
-      pylintrc: const-rgx=RTK_[A-Z_]{9,30}$
+      pylintrc: const-rgx=RAMSTK_[A-Z_]{12,30}$
       ```
 
   3. Variables shall be:
@@ -57,13 +57,13 @@ included in each section.
   2. Class names shall be:
       - In the CapWords format.
       - Alpha characters only.
-      - Prefaced by RTK.
-      - A minimum of eight characters (RTK is 3) and a maximum of 30 characters.
+      - Prefaced by RAMSTK.
+      - A minimum of eight characters (RAMSTK is 3) and a maximum of 30 characters.
       - Suffixed by 'Error' when defining an exception class.
 
       ```
       pylintrc: module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
-      pylintrc: class-rgx=RTK[A-Z][a-z]{8,30}$
+      pylintrc: class-rgx=RAMSTK[A-Z][a-z]{8,30}$
       ```
 
 ### Attributes
@@ -131,15 +131,15 @@ included in each section.
       - FIXME to indicate non-working code that needs to be re-worked before
         check-in.
       - TODO to indicate missing code/functionality that needs to be added.
-      - ISSUE to point to the RTK GitHub project issue tracking the condition.
+      - ISSUE to point to the RAMSTK GitHub project issue tracking the condition.
 
   2. FIXME tags shall:
-      - **NOT** be included in any code checked in to the RTK git repository.
+      - **NOT** be included in any code checked in to the RAMSTK git repository.
       - Be converted to an ISSUE tag when an issue is created to track the
         condition.
 
   3. TODO tags shall:
-      - **NOT** be included in any code checked in to the RTK git repository.
+      - **NOT** be included in any code checked in to the RAMSTK git repository.
       - Be converted to an ISSUE tag when an issue is created to track the
         condition.
 
@@ -187,7 +187,7 @@ included in each section.
       _do_calculate_reliability_metrics(attributes)
       ```
 
-  4. For data model functions or methods unique to a particular RTK module,
+  4. For data model functions or methods unique to a particular RAMSTK module,
 naming shall adhere to the following conventions:
       - If the function or method responds to a user request, it shall begin
         with do_ (public) or _do_ (private).  For example:
@@ -251,7 +251,7 @@ naming shall adhere to the following conventions:
       request_do_select_children(self, node_id)
       ```
 
-  4. For data controller functions or methods unique to a particular RTK
+  4. For data controller functions or methods unique to a particular RAMSTK
 module, naming shall adhere to the following conventions:
       - All methods should be named the same as the data model method and
         prefaced with request_.  For example:
@@ -317,7 +317,7 @@ functions and methods and would not be part of the public API.  See paragraph 2.
       _on_select_revision(self, module_id)
       ```
 
-  3. For List View functions or methods unique to a particular RTK module,
+  3. For List View functions or methods unique to a particular RAMSTK module,
 naming shall adhere to the following conventions:
       - Conform with requirements 2.3.1 through 2.3.4.  For example:
 
@@ -342,7 +342,7 @@ naming shall adhere to the following conventions:
       _on_select_revision(self, module_id)
       ```
 
-  3. For Matrix View functions or methods unique to a particular RTK module,
+  3. For Matrix View functions or methods unique to a particular RAMSTK module,
 naming shall adhere to the following conventions:
       - Conform with requirements 2.3.1 through 2.3.4.  For example:
 
@@ -384,7 +384,7 @@ naming shall adhere to the following conventions:
       _on_calculate(self)
       ```
 
-  4. Module View functions or methods unique to a particular RTK module, naming
+  4. Module View functions or methods unique to a particular RAMSTK module, naming
 shall adhere to the following conventions:
       - Conform with requirements 2.3.1 through 2.3.4.  For example:
 
@@ -427,7 +427,7 @@ View that meets this criterion:
       _on_select(self, module_id, **kwargs)
       ```
 
-  4. Work Views containing or consisting of a RTKTreeView shall have the
+  4. Work Views containing or consisting of a RAMSTKTreeView shall have the
 following private methods:
 
       ```
@@ -462,7 +462,7 @@ needed:
       _on_value_changed(self, spinbutton, index)
       ```
 
-  6. For Work View functions or methods unique to a particular RTK module,
+  6. For Work View functions or methods unique to a particular RAMSTK module,
 naming shall adhere to the following conventions:
       - Conform with requirements 2.3.1 through 2.3.4.  For example:
 

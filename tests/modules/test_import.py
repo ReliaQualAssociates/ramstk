@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_imports.py is part of The RAMSTK Project
+#       ramstk.tests.modules.test_imports.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2018 Doyle "weibullguy" Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2018 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Imports class."""
 #pylint: disable=protected-access
 
@@ -12,13 +12,13 @@ import pandas as pd
 
 import pytest
 
-from rtk.dao import DAO
-from rtk.modules.imports import dtmImports, dtcImports
+from ramstk.dao import DAO
+from ramstk.modules.imports import dtmImports, dtcImports
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

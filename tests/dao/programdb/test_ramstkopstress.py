@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests._dao.programdb.test_rtkopstress.py is part of The RAMSTK Project
+#       tests._dao.programdb.test_ramstkopstress.py is part of The RAMSTK Project
 
 #
 # All rights reserved.
@@ -9,12 +9,12 @@
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKOpStress import RAMSTKOpStress
+from ramstk.dao.programdb.RAMSTKOpStress import RAMSTKOpStress
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'description': u'Test Operating Stress',
@@ -27,7 +27,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkopstress_create(test_dao):
+def test_ramstkopstress_create(test_dao):
     """ __init__() should create an RAMSTKOpStress model."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -36,7 +36,7 @@ def test_rtkopstress_create(test_dao):
     assert isinstance(DUT, RAMSTKOpStress)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_op_stress'
+    assert DUT.__tablename__ == 'ramstk_op_stress'
     assert DUT.load_id == 1
     assert DUT.stress_id == 1
     assert DUT.description == 'Test Operating Stress'

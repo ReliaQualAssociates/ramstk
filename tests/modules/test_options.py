@@ -1,25 +1,25 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_options.py is part of The RAMSTK Project
+#       ramstk.tests.modules.test_options.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Options class. """
 
 from datetime import date, timedelta
 
 import pytest
 
-from rtk.dao import DAO
-from rtk.modules.options import dtmOptions, dtcOptions
-from rtk.modules.options.Model import (SiteOptionsDataModel,
+from ramstk.dao import DAO
+from ramstk.modules.options import dtmOptions, dtcOptions
+from ramstk.modules.options.Model import (SiteOptionsDataModel,
                                        ProgramOptionsDataModel)
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

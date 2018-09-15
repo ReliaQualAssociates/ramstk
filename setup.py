@@ -29,7 +29,7 @@ __trove__ = [
 if not sys.version_info[0] == 2:
     sys.exit("Sorry, Python 3 is not supported (yet)")
 
-# Lists of required packages for RTK.
+# Lists of required packages for RAMSTK.
 INSTALL_REQUIRES = [
     'defusedxml', 'lifelines', 'matplotlib==1.4.3', 'numpy', 'pandas',
     'PyPubSub==3.3.0', 'scipy', 'sortedcontainers==1.5.9', 'SQLAlchemy',
@@ -125,7 +125,7 @@ if __name__ == '__main__':
         author=__author__,
         author_email=__email__,
         license='BSD-3',
-        url='https://github.com/weibullguy/rtk',
+        url='https://github.com/weibullguy/ramstk',
         python_requires='>=2.7, <4',
         install_requires=INSTALL_REQUIRES,
         setup_requires=['pytest_runner', 'Babel'],
@@ -135,14 +135,16 @@ if __name__ == '__main__':
         scripts=[],
         packages=find_packages('src', exclude=['tests']),
         package_dir={'': 'src'},
-        py_modules=['rtk.Configuration', 'rtk.RAMSTK', 'rtk.Utilities'],
+        py_modules=[
+            'ramstk.Configuration', 'ramstk.RAMSTK', 'ramstk.Utilities'
+        ],
         classifiers=__trove__,
         entry_points={
-            'console_scripts': ['ramstk = rtk.RAMSTK:main'],
+            'console_scripts': ['ramstk = ramstk.RAMSTK:main'],
         },
         data_files=[('share/applications',
                      ['data/RAMSTK.desktop']), ('share/pixmaps',
-                                                ['data/icons/RTK.png']),
+                                                ['data/icons/RAMSTK.png']),
                     ('share/RAMSTK', ['data/RAMSTK.conf']), ('share/RAMSTK', [
                         'data/Site.conf'
                     ]), ('share/RAMSTK',

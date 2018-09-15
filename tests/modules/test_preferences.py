@@ -1,10 +1,10 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_preferences.py is part of The RAMSTK Project
+#       ramstk.tests.modules.test_preferences.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Preferences class. """
 
 import os
@@ -14,15 +14,15 @@ import glob
 
 import pytest
 
-from rtk.dao import DAO, RAMSTKUser
-from rtk.modules.preferences import dtmPreferences, dtcPreferences
-from rtk.modules.preferences.Model import (SitePreferencesDataModel,
+from ramstk.dao import DAO, RAMSTKUser
+from ramstk.modules.preferences import dtmPreferences, dtcPreferences
+from ramstk.modules.preferences.Model import (SitePreferencesDataModel,
                                            UserPreferencesDataModel)
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
 try:
     VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
@@ -41,8 +41,8 @@ DATA_DIR = CONF_DIR + '/data'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
-TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.rtk'
-TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.rtk'
+TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
+TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.ramstk'
 
 
 @pytest.mark.integration
@@ -106,8 +106,8 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
         'host': 'localhost',
         'socket': 3306,
         'database': TEST_COMMON_DB_PATH,
-        'user': 'rtkcom',
-        'password': 'rtkcom'
+        'user': 'ramstkcom',
+        'password': 'ramstkcom'
     }
     assert DUT.user_preferences['program_db_info'] == {
         'type': 'sqlite',
@@ -264,8 +264,8 @@ def test_request_do_update(test_dao, test_common_dao, test_configuration):
 
     _new_user = RAMSTKUser()
     _new_user.user_lname = 'Rowland'
-    _new_user.user_fname = 'Andrew'
-    _new_user.user_email = 'andrew.rowland@reliaqual.com'
+    _new_user.user_fname = 'Doyle'
+    _new_user.user_email = 'doyle.rowland@reliaqual.com'
     _new_user.user_phone = '269.491.4765'
     _new_user.user_group_id = 1
     DUT._dtm_data_model.site_preferences['users'].append(_new_user)

@@ -4,7 +4,7 @@
 #       tests.modules.test_requirement.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Requirement module algorithms and models. """
 
 from datetime import date
@@ -14,15 +14,15 @@ import pandas as pd
 
 import pytest
 
-from rtk.modules import RAMSTKDataMatrix
-from rtk.modules.requirement import dtmRequirement, dtcRequirement
-from rtk.dao import DAO
-from rtk.dao import RAMSTKRequirement
+from ramstk.modules import RAMSTKDataMatrix
+from ramstk.modules.requirement import dtmRequirement, dtcRequirement
+from ramstk.dao import DAO
+from ramstk.dao import RAMSTKRequirement
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'owner': u'',

@@ -15,7 +15,7 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+    dirname(dirname(dirname(dirname(__file__)))) + "/ramstk",
 )
 
 from sqlalchemy import create_engine
@@ -26,10 +26,10 @@ from nose.plugins.attrib import attr
 
 from dao.RAMSTKUnit import RAMSTKUnit
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
 class TestRAMSTKUnit(unittest.TestCase):
@@ -44,7 +44,7 @@ class TestRAMSTKUnit(unittest.TestCase):
         Sets up the test fixture for the RAMSTKUnit class.
         """
 
-        engine = create_engine('sqlite:////tmp/TestCommonDB.rtk', echo=False)
+        engine = create_engine('sqlite:////tmp/TestCommonDB.ramstk', echo=False)
         session = scoped_session(sessionmaker())
 
         session.remove()
@@ -66,7 +66,7 @@ class TestRAMSTKUnit(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, RAMSTKUnit))
 
         # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'rtk_unit')
+        self.assertEqual(self.DUT.__tablename__, 'ramstk_unit')
         self.assertEqual(self.DUT.unit_id, 1)
         self.assertEqual(self.DUT.description, 'Pounds Force')
         self.assertEqual(self.DUT.code, 'lbf')

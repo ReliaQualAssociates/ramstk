@@ -3,7 +3,7 @@
 #       tests.modules.test_function.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test Class for Function data model and data controller."""
 
 import pytest
@@ -11,14 +11,14 @@ import pytest
 from treelib import Tree
 import pandas as pd
 
-from rtk.dao import DAO, RAMSTKFunction
-from rtk.modules.function import dtcFunction, dtmFunction
-from rtk.modules import RAMSTKDataMatrix
+from ramstk.dao import DAO, RAMSTKFunction
+from ramstk.modules.function import dtcFunction, dtmFunction
+from ramstk.modules import RAMSTKDataMatrix
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'type_id': 0,

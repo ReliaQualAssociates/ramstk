@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_rtkfailuredefinition.py is part of The RAMSTK
+#       tests.dao.programdb.test_ramstkfailuredefinition.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -9,12 +9,12 @@
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKFailureDefinition import RAMSTKFailureDefinition
+from ramstk.dao.programdb.RAMSTKFailureDefinition import RAMSTKFailureDefinition
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'revision_id': 1,
@@ -24,7 +24,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkfailuredefinition_create(test_dao):
+def test_ramstkfailuredefinition_create(test_dao):
     """ __init__() should create an RAMSTKFailureDefinition model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -33,7 +33,7 @@ def test_rtkfailuredefinition_create(test_dao):
     assert isinstance(DUT, RAMSTKFailureDefinition)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_failure_definition'
+    assert DUT.__tablename__ == 'ramstk_failure_definition'
     assert DUT.revision_id == 1
     assert DUT.definition_id == 1
     assert DUT.definition == 'Failure Definition'

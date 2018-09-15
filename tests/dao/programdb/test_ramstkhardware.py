@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programmdb.test_rtkhardware.py is part of The RAMSTK Project
+#       tests.dao.programmdb.test_ramstkhardware.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKHardware module algorithms and models. """
@@ -9,12 +9,12 @@ from datetime import date
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKHardware import RAMSTKHardware
+from ramstk.dao.programdb.RAMSTKHardware import RAMSTKHardware
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'revision_id': 1,
@@ -56,7 +56,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkhardware_create(test_dao):
+def test_ramstkhardware_create(test_dao):
     """ __init__() should create an RAMSTKHardware model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -65,7 +65,7 @@ def test_rtkhardware_create(test_dao):
     assert isinstance(DUT, RAMSTKHardware)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_hardware'
+    assert DUT.__tablename__ == 'ramstk_hardware'
     assert DUT.revision_id == 1
     assert DUT.hardware_id == 1
     assert DUT.alt_part_number == ''

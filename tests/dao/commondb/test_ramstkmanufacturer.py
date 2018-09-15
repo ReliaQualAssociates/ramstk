@@ -9,12 +9,12 @@
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKManufacturer import RAMSTKManufacturer
+from ramstk.dao.commondb.RAMSTKManufacturer import RAMSTKManufacturer
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'manufacturer_id': 1,
@@ -25,7 +25,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkmanufacturer_create(test_common_dao):
+def test_ramstkmanufacturer_create(test_common_dao):
     """ __init__() should create an RAMSTKManufacturer model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -34,7 +34,7 @@ def test_rtkmanufacturer_create(test_common_dao):
     assert isinstance(DUT, RAMSTKManufacturer)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_manufacturer'
+    assert DUT.__tablename__ == 'ramstk_manufacturer'
     assert DUT.manufacturer_id == 1
     assert DUT.description == 'Sprague'
     assert DUT.location == 'New Hampshire'

@@ -34,4 +34,4 @@ show_missing = True
 
 [html]
 directory = .reports/coverage/html
-title = "RTK Test Coverage Report"
+title = "RAMSTK Test Coverage Report"

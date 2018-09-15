@@ -1,7 +1,7 @@
 # The RAMS ToolKit (RAMSTK)
 > A toolkit for **R**eliability, **A**vailability, **M**aintainability, and **S**afety (RAMS) analyses.
 
-[![Github](https://img.shields.io/github/release/weibullguy/rtk/all.svg)](https://github.com/weibullguy/rtk/releases)
+[![Github](https://img.shields.io/github/release/weibullguy/ramstk/all.svg)](https://github.com/weibullguy/ramstk/releases)
 [![PyPI](https://img.shields.io/pypi/v/RAMSTK.svg)](https://pypi.python.org/pypi/RAMSTK/)
 
 ***Please note the development branch is currently the default branch until version 1.0.0 is released.***
@@ -11,7 +11,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/project/weibullguy/ramstk/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/ramstk&amp;utm_campaign=Badge_Grade_Dashboard)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/app/weibullguy/ramstk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/ramstk&amp;utm_campaign=Badge_Coverage)
 [![Coverage Status](https://coveralls.io/repos/github/weibullguy/ramstk/badge.svg?branch=develop)](https://coveralls.io/github/weibullguy/ramstk?branch=develop)
-[![Documentation Status](https://readthedocs.org/projects/rtk/badge/?version=develop)](http://rtk.readthedocs.io/en/develop/?badge=develop)
+[![Documentation Status](https://readthedocs.org/projects/ramstk/badge/?version=latest)](https://ramstk.readthedocs.io/en/latest/?badge=latest)
 
 ## 🚩 Table of Contents
 - [Features](#-features)
@@ -68,7 +68,7 @@ These instructions will get RAMSTK up and running on your local machine.
 
 ### Prerequisites
 
-RAMSTK requires PyGTK to be installed.  If you plan to install RAMSTK in a virtual environment (not a terrible idea if you're just giving RAMSTK a spin), please see [DEVELOPMENT_ENV.md](https://github.com/weibullguy/rtk/tree/develop/docs/DEVELOPMENT_ENV.md) for instructions on installing RAMSTK dependencies.  Otherwise, simply use your package manager to install PyGTK and one of the options below to install the remaining dependencies.
+RAMSTK requires PyGTK to be installed.  If you plan to install RAMSTK in a virtual environment (not a terrible idea if you're just giving RAMSTK a spin), please see [DEVELOPMENT_ENV.md](https://github.com/weibullguy/ramstk/tree/develop/docs/DEVELOPMENT_ENV.md) for instructions on installing RAMSTK dependencies.  Otherwise, simply use your package manager to install PyGTK and one of the options below to install the remaining dependencies.
 
 ### Using pip
 
@@ -127,9 +127,9 @@ RAMSTK installs a *.desktop file and can be found where ever applications in the
 
 ## 💬 Contributing
 
-Please read [CONTRIBUTING.md](https://github.com/weibullguy/rtk/tree/develop/docs/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [CONTRIBUTING.md](https://github.com/weibullguy/ramstk/tree/develop/docs/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
-Also read [DEVELOPMENT_ENV.md](https://github.com/weibullguy/rtk/tree/develop/docs/DEVELOPMENT_ENV.md) for instructions on setting up a development environment to work on and test RAMSTK.
+Also read [DEVELOPMENT_ENV.md](https://github.com/weibullguy/ramstk/tree/develop/docs/DEVELOPMENT_ENV.md) for instructions on setting up a development environment to work on and test RAMSTK.
 
 ## 🍞 Authors
 
@@ -137,7 +137,7 @@ Also read [DEVELOPMENT_ENV.md](https://github.com/weibullguy/rtk/tree/develop/do
 
 ## 📜 License
 
-This project is licensed under the BSD-3-Clause License - see the [LICENSE](https://github.com/weibullguy/rtk/blob/develop/LICENSE) file for details.
+This project is licensed under the BSD-3-Clause License - see the [LICENSE](https://github.com/weibullguy/ramstk/blob/develop/LICENSE) file for details.
 
 RAMSTK is also registered with the United States Copyright Office under registration number TXu 1-896-035.
 

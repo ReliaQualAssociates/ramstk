@@ -1,10 +1,10 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.unit.TestConfiguration.py is part of The RAMSTK Project
+#       ramstk.tests.unit.TestConfiguration.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -43,7 +43,7 @@ from os.path import dirname, isfile
 
 sys.path.insert(
     0,
-    dirname(dirname(__file__)) + "/rtk",
+    dirname(dirname(__file__)) + "/ramstk",
 )
 
 import unittest
@@ -51,10 +51,10 @@ from nose.plugins.attrib import attr
 
 from Configuration import Configuration
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2016 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2016 Doyle "weibullguy" Rowland'
 
 
 class TestConfiguration(unittest.TestCase):
@@ -175,7 +175,7 @@ class TestConfiguration(unittest.TestCase):
             self.assertEqual(self.DUT.RAMSTK_ICON_DIR, '/usr/share/pixmaps/RAMSTK')
             self.assertEqual(self.DUT.RAMSTK_LOG_DIR, '/var/log/RAMSTK')
             self.assertEqual(self.DUT.RAMSTK_PROG_DIR,
-                             self.DUT.RAMSTK_HOME_DIR + '/analyses/rtk')
+                             self.DUT.RAMSTK_HOME_DIR + '/analyses/ramstk')
             self.assertEqual(self.DUT.RAMSTK_CONF_DIR, '')
 
     @attr(all=True, unit=True)
@@ -198,7 +198,7 @@ class TestConfiguration(unittest.TestCase):
             self.assertEqual(self.DUT.RAMSTK_LOG_DIR,
                              self.DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK/logs')
             self.assertEqual(self.DUT.RAMSTK_PROG_DIR,
-                             self.DUT.RAMSTK_HOME_DIR + '/analyses/rtk')
+                             self.DUT.RAMSTK_HOME_DIR + '/analyses/ramstk')
             self.assertEqual(self.DUT.RAMSTK_SITE_CONF,
                              self.DUT.RAMSTK_CONF_DIR + '/site.conf')
 
@@ -360,7 +360,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.DUT.RAMSTK_DATA_DIR, '/tmp/RAMSTK/.config/RAMSTK/data')
         self.assertEqual(self.DUT.RAMSTK_ICON_DIR, '/tmp/RAMSTK/.config/RAMSTK/icons')
         self.assertEqual(self.DUT.RAMSTK_LOG_DIR, '/tmp/RAMSTK/.config/RAMSTK/logs')
-        self.assertEqual(self.DUT.RAMSTK_PROG_DIR, '/home/arowland/analyses/rtk')
+        self.assertEqual(self.DUT.RAMSTK_PROG_DIR, '/home/arowland/analyses/ramstk')
 
         self.assertEqual(self.DUT.RAMSTK_PROG_INFO['host'], 'localhost')
         self.assertEqual(self.DUT.RAMSTK_PROG_INFO['socket'], '3306')
@@ -412,7 +412,7 @@ class TestConfiguration(unittest.TestCase):
         self.DUT.RAMSTK_TABPOS['modulebook'] = 'top'
         self.DUT.RAMSTK_TABPOS['workbook'] = 'top'
         self.DUT.RAMSTK_BACKEND = 'mysql'
-        self.DUT.RAMSTK_PROG_INFO['database'] = '/tmp/TestDB.rtk'
+        self.DUT.RAMSTK_PROG_INFO['database'] = '/tmp/TestDB.ramstk'
         self.DUT.RAMSTK_PROG_INFO['user'] = 'arowland'
 
         # Write them to the RAMSTK_PROG_CONF file and then re-read the file.
@@ -420,7 +420,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertFalse(self.DUT.read_configuration())
 
         # Verify that the constants were written/read properly.
-        self.assertEqual(self.DUT.RAMSTK_PROG_INFO['database'], '/tmp/TestDB.rtk')
+        self.assertEqual(self.DUT.RAMSTK_PROG_INFO['database'], '/tmp/TestDB.ramstk')
         self.assertEqual(self.DUT.RAMSTK_PROG_INFO['user'], 'arowland')
         self.assertEqual(self.DUT.RAMSTK_BACKEND, 'mysql')
         self.assertEqual(float(self.DUT.RAMSTK_HR_MULTIPLIER), 1000.0)

@@ -4,7 +4,7 @@
 #       tests.unit.TestMatrix.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The test class for testing the Matrix class."""
 
 import unittest
@@ -15,16 +15,16 @@ from nose.plugins.attrib import attr
 
 from sqlalchemy.orm import scoped_session
 
-import rtk.Utilities as Utilities
-from rtk.Configuration import Configuration
-from rtk.modules import RAMSTKDataMatrix
-from rtk.dao import DAO
-from rtk.dao import RAMSTKFunction, RAMSTKHardware
+import ramstk.Utilities as Utilities
+from ramstk.Configuration import Configuration
+from ramstk.modules import RAMSTKDataMatrix
+from ramstk.dao import DAO
+from ramstk.dao import RAMSTKFunction, RAMSTKHardware
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 
 class Test00MatrixModel(unittest.TestCase):
@@ -38,7 +38,7 @@ class Test00MatrixModel(unittest.TestCase):
         self.Configuration.RAMSTK_PROG_INFO = {
             'host': 'localhost',
             'socket': 3306,
-            'database': '/tmp/TestDB.rtk',
+            'database': '/tmp/TestDB.ramstk',
             'user': '',
             'password': ''
         }

@@ -15,7 +15,7 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+    dirname(dirname(dirname(dirname(__file__)))) + "/ramstk",
 )
 
 from datetime import date, timedelta
@@ -28,10 +28,10 @@ from nose.plugins.attrib import attr
 
 from dao.RAMSTKIncident import RAMSTKIncident
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
 class TestRAMSTKIncident(unittest.TestCase):
@@ -52,7 +52,7 @@ class TestRAMSTKIncident(unittest.TestCase):
         Sets up the test fixture for the RAMSTKIncident class.
         """
 
-        engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
+        engine = create_engine('sqlite:////tmp/TestDB.ramstk', echo=False)
         session = scoped_session(sessionmaker())
 
         session.remove()
@@ -64,7 +64,7 @@ class TestRAMSTKIncident(unittest.TestCase):
         session.commit()
 
     @attr(all=True, unit=True)
-    def test00_rtkincident_create(self):
+    def test00_ramstkincident_create(self):
         """
         (TestRAMSTKIncident) __init__ should create an RAMSTKIncident model.
         """
@@ -72,7 +72,7 @@ class TestRAMSTKIncident(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, RAMSTKIncident))
 
         # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'rtk_incident')
+        self.assertEqual(self.DUT.__tablename__, 'ramstk_incident')
         self.assertEqual(self.DUT.revision_id, 1)
         self.assertEqual(self.DUT.incident_id, 1)
         self.assertEqual(self.DUT.accepted, 0)

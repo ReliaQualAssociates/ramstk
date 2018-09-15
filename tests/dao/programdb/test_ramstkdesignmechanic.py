@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_rtkdesignmechanic.py is part of The RAMSTK
+#       tests.dao.programdb.test_ramstkdesignmechanic.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -9,12 +9,12 @@
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKDesignMechanic import RAMSTKDesignMechanic
+from ramstk.dao.programdb.RAMSTKDesignMechanic import RAMSTKDesignMechanic
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'pressure_upstream': 0.0,
@@ -74,7 +74,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkdesignmechanic_create(test_dao):
+def test_ramstkdesignmechanic_create(test_dao):
     """ __init__() should create an RAMSTKDesignMechanic model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -83,7 +83,7 @@ def test_rtkdesignmechanic_create(test_dao):
     assert isinstance(DUT, RAMSTKDesignMechanic)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_design_mechanic'
+    assert DUT.__tablename__ == 'ramstk_design_mechanic'
     assert DUT.hardware_id == 1
     assert DUT.altitude_operating == 0.0
     assert DUT.application_id == 0

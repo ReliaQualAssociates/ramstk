@@ -3,20 +3,20 @@
 #       tests.modules.fmea.TestControl.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Control class."""
 
 from treelib import Tree
 
 import pytest
 
-from rtk.modules.fmea import dtmControl
-from rtk.dao import RAMSTKControl
+from ramstk.modules.fmea import dtmControl
+from ramstk.dao import RAMSTKControl
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2017 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

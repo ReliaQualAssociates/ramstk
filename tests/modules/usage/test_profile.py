@@ -4,21 +4,21 @@
 #       tests.modules.usage.test_profile.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for Usage Profile algorithms and models."""
 
 from treelib import Tree
 
 import pytest
 
-from rtk.dao import (RAMSTKMission, RAMSTKMissionPhase, RAMSTKEnvironment)
-from rtk.modules.usage import (dtmEnvironment, dtmMission, dtmMissionPhase,
+from ramstk.dao import (RAMSTKMission, RAMSTKMissionPhase, RAMSTKEnvironment)
+from ramstk.modules.usage import (dtmEnvironment, dtmMission, dtmMissionPhase,
                                dtmUsageProfile, dtcUsageProfile)
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2017 Doyle "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'mission_id': 1,
