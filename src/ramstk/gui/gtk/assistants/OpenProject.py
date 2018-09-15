@@ -28,7 +28,7 @@ class OpenProject(object):
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that launched this
                                         class.
-        :param controller: the :py:class:`ramstk.RAMSTK.RAMSTK` master data controller.
+        :param controller: the :class:`ramstk.RAMSTK.RAMSTK` master data controller.
         """
 
         # Initialize private dictionary attributes.
@@ -79,7 +79,7 @@ class OpenProject(object):
             # Set some filters to select all files or only some text files.
             _filter = gtk.FileFilter()
             _filter.set_name(_(u"RAMSTK Program Databases"))
-            _filter.add_pattern("*.ramstk")
+            _filter.add_pattern("*.rtk")
             _dialog.add_filter(_filter)
 
             _filter = gtk.FileFilter()

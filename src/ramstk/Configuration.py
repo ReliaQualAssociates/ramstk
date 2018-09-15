@@ -449,7 +449,7 @@ class Configuration(object):
         """
         _return = False
 
-        _common_db = self.RAMSTK_SITE_DIR + '/ramstk_common.ramstk'
+        _common_db = self.RAMSTK_SITE_DIR + '/ramstk_common.rtk'
 
         _config = ConfigParser.ConfigParser()
 
