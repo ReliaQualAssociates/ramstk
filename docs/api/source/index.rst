@@ -1,16 +1,16 @@
 .. RAMSTK documentation master file, created by
-   sphinx-quickstart on Sun Nov  5 21:46:52 2017.
+   sphinx-quickstart on Sat Sep 15 11:01:10 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the RAMS ToolKit's (RAMSTK) Documentation!
-=========================================================
+Welcome to RAMSTK's documentation!
+==================================
 
 .. toctree::
-   :maxdepth: 6
-   :caption: :
+   :maxdepth: 2
+   :caption: Contents:
 
-   ramstk.rst
+
 
 Indices and tables
 ==================
