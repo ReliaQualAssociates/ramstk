@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.prediction.Semiconductor.py is part of the RAMSTK Project
+#       ramstk.analyses.prediction.Semiconductor.py is part of the RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -12,6 +13,54 @@ import gettext
 from math import exp, log, sqrt
 
 _ = gettext.gettext
+
+# Constants used to calculate the application factor (piA)
+_dic_piA = {
+    2: [0.5, 2.5, 1.0],
+    3: [1.5, 0.7],
+    4: [1.5, 0.7, 2.0, 4.0, 8.0, 10.0],
+    8: [1.0, 4.0]
+}
+
+# Constants used to calculate the temperature factor (piT)
+_dic_piT = {
+    1: [3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 1925.0, 1925.0],
+    2: [5260.0, 2100.0, 2100.0, 2100.0, 2100.0, 2100.0],
+    3: 2114.0,
+    4: 1925.0,
+    5: 2483.0,
+    6: 2114.0,
+    7: {
+        1: [2903.0, 0.1, 2.0],
+        2: [5794.0, 0.38, 7.55]
+    },
+    8: 4485.0,
+    9: 1925.0,
+    10: 3082.0,
+    11: 2790.0,
+    12: 2790.0,
+    13: 4635.0
+}
+
+# Constants used to calculate the junction temperature.
+_lst_temp_case = [
+    35.0, 45.0, 50.0, 45.0, 50.0, 60.0, 60.0, 75.0, 75.0, 60.0, 35.0, 50.0,
+    60.0, 45.0
+]
+_lst_theta_jc = [
+    70.0, 10.0, 70.0, 70.0, 70.0, 70.0, 70.0, 5.0, 70.0, 70.0, 10.0, 70.0,
+    70.0, 70.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 10.0, 70.0, 70.0, 5.0, 22.0,
+    70.0, 5.0, 70.0, 5.0, 5.0, 1.0, 10.0, 70.0, 70.0, 5.0, 5.0, 5.0, 10.0, 5.0,
+    5.0, 10.0, 5.0, 10.0, 10.0, 10.0, 5.0, 70.0, 5.0, 70.0, 70.0, 70.0, 70.0,
+    70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0,
+    70.0
+]
+
+# Constants used to calculate the construction factor (piC).
+_lst_piC = [1.0, 2.0]
+
+# Constants used to calculate the matching factor (piM).
+_lst_piM = [1.0, 2.0, 4.0]
 
 
 def calculate_217f_part_count(**attributes):
@@ -27,6 +76,405 @@ def calculate_217f_part_count(**attributes):
     """
     _msg = ''
 
+    # Select the base hazard rate.
+    attributes = _select_base_part_count_hazard_rate(attributes)
+    if attributes['lambda_b'] <= 0.0:
+        _msg = 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+               'calculating semiconductor, hardware ID: {0:d} and active ' \
+               'environment ID: {1:d}.\n'.format(
+                attributes['hardware_id'], attributes['environment_active_id'])
+
+    # Select the piQ.
+    attributes = _select_part_count_quality_factor(attributes)
+    if attributes['piQ'] <= 0.0:
+        _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+               'semiconductor, hardware ID: {0:d} and quality ID: ' \
+               '{1:d}.'.format(attributes['hardware_id'],
+                               attributes['quality_id'])
+
+    # Calculate the hazard rate.
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b'] * attributes['piQ'])
+
+    return attributes, _msg
+
+
+def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
+    """
+    Calculate the part stress hazard rate for a semiconductor.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
+             dictionary with updated values and the error message, if any.
+    :rtype: (dict, str)
+    """
+    _msg = ''
+
+    # Calculate the base hazard rate.
+    attributes = _calculate_base_part_stress_hazard_rate(attributes)
+    if attributes['lambda_b'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating semiconductor, hardware ID: ' \
+            '{0:d}'.format(attributes['hardware_id'])
+
+    # Calculate junction temperature.
+    attributes = _calculate_junction_temperature(attributes)
+
+    # Calculate the temperature factor (piT).
+    attributes = _calculate_temperature_factor(attributes)
+
+    # Calculate the application factor (piA).
+    attributes = _calculate_application_factor(attributes)
+
+    # Calculate the power rating factor (piR).
+    attributes = _calculate_power_rating_factor(attributes)
+
+    # Calculate the electrical stress factor (piS).
+    attributes = _calculate_electrical_stress_factor(attributes)
+
+    # Calculate the matching network factor (piM).
+    if attributes['subcategory_id'] in [7, 8]:
+        attributes['piM'] = _lst_piM[attributes['matching_id'] - 1]
+
+    # Retrieve the construction factor (piC).
+    if attributes['subcategory_id'] == 1:
+        attributes['piC'] = _lst_piC[attributes['construction_id'] - 1]
+
+    # Calculate forward current factor (piI).
+    if attributes['subcategory_id'] == 13:
+        attributes['piI'] = attributes['current_operating']**0.68
+
+    # Calculate the power degradation factor (piP).
+    if attributes['subcategory_id'] == 13:
+        attributes['piP'] = 1.0 / (2.0 * (1.0 - attributes['power_ratio']))
+
+    # Retrieve the quality factor (piQ).
+    attributes = _select_part_stress_quality_factor(attributes)
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+            'semiconductor, hardware ID: {0:d} and quality ID: ' \
+            '{1:d}.\n'.format(attributes['hardware_id'],
+                            attributes['quality_id'])
+
+    # Retrieve the environmental factor (piE).
+    attributes = _select_environmental_factor(attributes)
+    if attributes['piE'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
+            'semiconductor, hardware ID: {0:d} and active environment ID: ' \
+            '{1:d}.\n'.format(attributes['hardware_id'],
+                           attributes['environment_active_id'])
+
+    # Calculate the active hazard rate.
+    attributes = _calculate_active_hazard_rate(attributes)
+
+    return attributes, _msg
+
+
+def overstressed(**attributes):
+    """
+    Determine whether the semiconductor is overstressed.
+
+    This determination is based on it's rated values and operating environment.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    _reason_num = 1
+    _reason = ''
+
+    _harsh = True
+
+    attributes['overstress'] = False
+
+    # If the active environment is Benign Ground, Fixed Ground,
+    # Sheltered Naval, or Space Flight it is NOT harsh.
+    if attributes['environment_active_id'] in [1, 2, 4, 11]:
+        _harsh = False
+
+    if _harsh:
+        if attributes['power_ratio'] > 0.70:
+            attributes['overstress'] = True
+            _reason = _reason + str(_reason_num) + \
+                _(u". Operating power > 70% rated power in harsh "
+                  u"environment.\n")
+            _reason_num += 1
+        if attributes['temperature_junction'] > 125.0:
+            attributes['overstress'] = True
+            _reason = _reason + str(_reason_num) + \
+                _(u". Junction temperature > 125.0C in harsh environment.\n")
+            _reason_num += 1
+    else:
+        if attributes['power_ratio'] > 0.90:
+            attributes['overstress'] = True
+            _reason = _reason + str(_reason_num) + \
+                _(u". Operating power > 90% rated power in mild "
+                  u"environment.\n")
+            _reason_num += 1
+
+    attributes['reason'] = _reason
+
+    return attributes
+
+
+def _calculate_active_hazard_rate(attributes):
+    """
+    Calculate the active hazard rate for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b'] * attributes['piT'] * attributes['piQ'] *
+        attributes['piE'])
+    if attributes['subcategory_id'] == 1:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piS'] *
+            attributes['piC'])
+    elif attributes['subcategory_id'] == 2:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piA'] *
+            attributes['piR'])
+    elif attributes['subcategory_id'] == 3:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piA'] *
+            attributes['piR'] * attributes['piS'])
+    elif attributes['subcategory_id'] == 4:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piA'])
+    elif attributes['subcategory_id'] in [6, 10]:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piR'] *
+            attributes['piS'])
+    elif attributes['subcategory_id'] in [7, 8]:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piA'] *
+            attributes['piM'])
+    elif attributes['subcategory_id'] == 13:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piI'] *
+            attributes['piA'] * attributes['piP'])
+
+    return attributes
+
+
+def _calculate_application_factor(attributes):
+    """
+    Calculate the temperature factor for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] in [2, 3, 4, 8]:
+        try:
+            attributes['piA'] = _dic_piA[attributes['subcategory_id']][
+                attributes['application_id'] - 1]
+        except KeyError:
+            attributes['piA'] = 0.0
+    elif attributes['subcategory_id'] == 7:
+        if attributes['application_id'] == 1:
+            attributes['piA'] = 7.6
+        else:
+            attributes['piA'] = 0.06 * (attributes['duty_cycle'] / 100.0) + 0.4
+    elif attributes['subcategory_id'] == 13:
+        if attributes['application_id'] == 1:
+            attributes['piA'] = 4.4
+        else:
+            attributes['piA'] = sqrt(attributes['duty_cycle'] / 100.0)
+
+    return attributes
+
+
+def _calculate_base_part_stress_hazard_rate(attributes):
+    """
+    Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    _dic_lambdab = {
+        1: [0.0038, 0.0010, 0.069, 0.003, 0.005, 0.0013, 0.0034, 0.002],
+        2: [0.22, 0.18, 0.0023, 0.0081, 0.027, 0.0025, 0.0025],
+        3:
+        0.00074,
+        4: [0.012, 0.0045],
+        5:
+        0.0083,
+        6:
+        0.18,
+        9: [0.06, 0.023],
+        10:
+        0.0022,
+        11: [
+            0.0055, 0.004, 0.0025, 0.013, 0.013, 0.0064, 0.0033, 0.017, 0.017,
+            0.0086, 0.0013, 0.00023
+        ],
+        13: [3.23, 5.65]
+    }
+
+    try:
+        if attributes['subcategory_id'] in [3, 5, 6, 10]:
+            attributes['lambda_b'] = _dic_lambdab[attributes['subcategory_id']]
+        elif attributes['subcategory_id'] == 7:
+            attributes['lambda_b'] = 0.032 * exp(
+                0.354 * attributes['frequency_operating'] +
+                0.00558 * attributes['power_operating'])
+        elif attributes['subcategory_id'] == 8:
+            if (attributes['frequency_operating'] >= 1.0
+                    and attributes['frequency_operating'] <= 10.0
+                    and attributes['power_operating'] < 0.1):
+                attributes['lambda_b'] = 0.052
+            else:
+                attributes['lambda_b'] = 0.0093 * exp(
+                    0.429 * attributes['frequency_operating'] +
+                    0.486 * attributes['power_operating'])
+        elif attributes['subcategory_id'] == 12:
+            if attributes['application_id'] in [1, 3]:
+                attributes[
+                    'lambda_b'] = 0.00043 * attributes['n_elements'] + 0.000043
+            else:
+                attributes['lambda_b'] = 0.00043 * attributes['n_elements']
+        else:
+            attributes['lambda_b'] = _dic_lambdab[attributes[
+                'subcategory_id']][attributes['type_id'] - 1]
+    except KeyError:
+        attributes['lambda_b'] = 0.0
+
+    return attributes
+
+
+def _calculate_electrical_stress_factor(attributes):
+    """
+    Calculate the electrical stress factor for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] == 1:
+        if attributes['type_id'] > 5:
+            attributes['piS'] = 1.0
+        elif attributes['voltage_ratio'] <= 0.3:
+            attributes['piS'] = 0.054
+        else:
+            attributes['piS'] = attributes['voltage_ratio']**2.43
+    elif attributes['subcategory_id'] in [3, 6]:
+        attributes['piS'] = 0.045 * exp(3.1 * attributes['voltage_ratio'])
+    elif attributes['subcategory_id'] == 10:
+        if attributes['voltage_ratio'] <= 0.3:
+            attributes['piS'] = 0.1
+        else:
+            attributes['piS'] = attributes['voltage_ratio']**1.9
+
+    return attributes
+
+
+def _calculate_junction_temperature(attributes):
+    """
+    Calculate the junction temperature of the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    if attributes['temperature_case'] <= 0.0:
+        attributes['temperature_case'] = _lst_temp_case[
+            attributes['environment_active_id'] - 1]
+    if attributes['theta_jc'] <= 0.0:
+        attributes['theta_jc'] = _lst_theta_jc[attributes['package_id'] - 1]
+    attributes['temperature_junction'] = (
+        attributes['temperature_case'] +
+        attributes['theta_jc'] * attributes['power_operating'])
+
+    return attributes
+
+
+def _calculate_power_rating_factor(attributes):
+    """
+    Calculate the power rating factor for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] == 2:
+        if attributes['type_id'] == 4:
+            try:
+                attributes[
+                    'piR'] = 0.326 * log(attributes['power_rated']) - 0.25
+            except ValueError:
+                attributes['piR'] = 0.0
+        else:
+            attributes['piR'] = 1.0
+    elif attributes['subcategory_id'] in [3, 6]:
+        if attributes['power_rated'] < 0.1:
+            attributes['piR'] = 0.43
+        else:
+            try:
+                attributes['piR'] = attributes['power_rated']**0.37
+            except ValueError:
+                attributes['piR'] = 0.0
+    elif attributes['subcategory_id'] == 10:
+        attributes['piR'] = attributes['current_rated']**0.4
+
+    return attributes
+
+
+def _calculate_temperature_factor(attributes):
+    """
+    Calculate the temperature factor for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    try:
+        if attributes['subcategory_id'] in [1, 2]:
+            _factors = _dic_piT[attributes['subcategory_id']][
+                attributes['type_id'] - 1]
+        elif attributes['subcategory_id'] == 7:
+            _factors = _dic_piT[attributes['subcategory_id']][attributes[
+                'type_id']]
+        else:
+            _factors = _dic_piT[attributes['subcategory_id']]
+
+        if attributes['subcategory_id'] == 7:
+            _f0 = _factors[0]
+            _f1 = _factors[1]
+            _f2 = _factors[2]
+            if attributes['voltage_ratio'] <= 0.4:
+                attributes['piT'] = _f1 * exp(
+                    -_f0 * (1.0 / (attributes['temperature_junction'] + 273.0)
+                            - 1.0 / 298.0))
+            else:
+                attributes[
+                    'piT'] = _f2 * (attributes['voltage_ratio'] - 0.35) * exp(
+                        -_f0 * (1.0 /
+                                (attributes['temperature_junction'] + 273.0) -
+                                1.0 / 298.0))
+        else:
+            attributes['piT'] = exp(
+                -_factors * (1.0 / (attributes['temperature_junction'] + 273.0)
+                             - 1.0 / 298.0))
+    except (KeyError, IndexError):
+        attributes['piT'] = 0.0
+
+    return attributes
+
+
+def _select_base_part_count_hazard_rate(attributes):
+    """
+    Select the MIL-HDBK-217F base hazard rate for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
     # Dictionary containing MIL-HDBK-217FN2 parts count base hazard rates.
     # First key is the subcategory_id, second key is the type id.  Current
     # subcategory IDs are:
@@ -177,26 +625,7 @@ def calculate_217f_part_count(**attributes):
             ]
         }
     }
-    # Dictionary containing piQ values for parts count method.  The key is the
-    # subcategory_id.  The quality_id attribute is used to select the proper
-    # value of piQ from the returned list.
-    _dic_piQ = {
-        1: [0.7, 1.0, 2.4, 5.5, 8.0],
-        2: [[0.5, 1.0, 5.0, 25, 50], [0.5, 1.0, 1.8, 2.5]],
-        3: [0.7, 1.0, 2.4, 5.5, 8.0],
-        4: [0.7, 1.0, 2.4, 5.5, 8.0],
-        5: [0.7, 1.0, 2.4, 5.5, 8.0],
-        6: [0.7, 1.0, 2.4, 5.5, 8.0],
-        7: [0.7, 1.0, 2.4, 5.5, 8.0],
-        8: [0.7, 1.0, 2.4, 5.5, 8.0],
-        9: [0.7, 1.0, 2.4, 5.5, 8.0],
-        10: [0.7, 1.0, 2.4, 5.5, 8.0],
-        11: [0.7, 1.0, 2.4, 5.5, 8.0],
-        12: [0.7, 1.0, 2.4, 5.5, 8.0],
-        13: [1.0, 1.0, 3.3],
-    }
 
-    # Select the base hazard rate.
     try:
         if attributes['subcategory_id'] in [1, 2, 3, 8, 11, 13]:
             _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
@@ -212,111 +641,17 @@ def calculate_217f_part_count(**attributes):
     except IndexError:
         attributes['lambda_b'] = 0.0
 
-    # Select the piQ.
-    try:
-        if attributes['subcategory_id'] == 2:
-            if attributes['type_id'] == 5:
-                attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][1][
-                    attributes['quality_id'] - 1]
-            else:
-                attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][0][
-                    attributes['quality_id'] - 1]
-        else:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['quality_id'] - 1]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
-
-    # Confirm all inputs are within range.  If not, set the message.  The
-    # hazard rate will be calculated anyway, but will be zero.
-    if attributes['lambda_b'] <= 0.0:
-        _msg = 'RAMSTK WARNING: Base hazard rate is 0.0 when calculating ' \
-               'semiconductor, hardware ID: {0:d} and active environment ' \
-               'ID: {1:d}.\n'.format(
-                attributes['hardware_id'], attributes['environment_active_id'])
-
-    if attributes['piQ'] <= 0.0:
-        _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating semiconductor, ' \
-               'hardware ID: {0:d} and quality ID: {1:d}.'.format(
-                    attributes['hardware_id'], attributes['quality_id'])
-
-    # Calculate the hazard rate.
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ'])
-
-    return attributes, _msg
+    return attributes
 
 
-def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
+def _select_environmental_factor(attributes):
     """
-    Calculate the part stress hazard rate for a semiconductor.
+    Select the MIL-HDBK-217F environmental factor for the semiconductor device.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
     """
-    _dic_lambdab = {
-        1: [0.0038, 0.0010, 0.069, 0.003, 0.005, 0.0013, 0.0034, 0.002],
-        2: [0.22, 0.18, 0.0023, 0.0081, 0.027, 0.0025, 0.0025],
-        3:
-        0.00074,
-        4: [0.012, 0.0045],
-        5:
-        0.0083,
-        6:
-        0.18,
-        9: [0.06, 0.023],
-        10:
-        0.0022,
-        11: [
-            0.0055, 0.004, 0.0025, 0.013, 0.013, 0.0064, 0.0033, 0.017, 0.017,
-            0.0086, 0.0013, 0.00023
-        ],
-        13: [3.23, 5.65]
-    }
-    _dic_factors = {
-        1: [3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 1925.0, 1925.0],
-        2: [5260.0, 2100.0, 2100.0, 2100.0, 2100.0, 2100.0],
-        3: 2114.0,
-        4: 1925.0,
-        5: 2483.0,
-        6: 2114.0,
-        7: {
-            1: [2903.0, 0.1, 2.0],
-            2: [5794.0, 0.38, 7.55]
-        },
-        8: 4485.0,
-        9: 1925.0,
-        10: 3082.0,
-        11: 2790.0,
-        12: 2790.0,
-        13: 4635.0
-    }
-    _dic_piQ = {
-        1: [0.7, 1.0, 2.4, 5.5, 8.0],
-        2: {
-            1: [0.5, 1.0, 5.0, 25.0, 50.0],
-            2: [0.5, 1.0, 5.0, 25.0, 50.0],
-            3: [0.5, 1.0, 5.0, 25.0, 50.0],
-            4: [0.5, 1.0, 5.0, 25.0, 50.0],
-            5: [0.5, 1.0, 1.8, 2.5],
-            6: [0.5, 1.0, 5.0, 25.0, 50.0]
-        },
-        3: [0.7, 1.0, 2.4, 5.5, 8.0],
-        4: [0.7, 1.0, 2.4, 5.5, 8.0],
-        5: [0.7, 1.0, 2.4, 5.5, 8.0],
-        6: [0.5, 1.0, 2.0, 5.0],
-        7: [0.5, 1.0, 2.0, 5.0],
-        8: [0.5, 1.0, 2.0, 5.0],
-        9: [0.5, 1.0, 2.0, 5.0],
-        10: [0.7, 1.0, 2.4, 5.5, 8.0],
-        11: [0.7, 1.0, 2.4, 5.5, 8.0],
-        12: [0.7, 1.0, 2.4, 5.5, 8.0],
-        13: [1.0, 1.0, 3.3]
-    }
     _dic_piE = {
         1: [
             1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
@@ -371,181 +706,91 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             450.0
         ]
     }
-    _dic_piA = {
-        2: [0.5, 2.5, 1.0],
-        3: [1.5, 0.7],
-        4: [1.5, 0.7, 2.0, 4.0, 8.0, 10.0],
-        8: [1.0, 4.0]
-    }
-    _lst_piC = [1.0, 2.0]
-    _lst_piM = [1.0, 2.0, 4.0]
-    _lst_temp_case = [
-        35.0, 45.0, 50.0, 45.0, 50.0, 60.0, 60.0, 75.0, 75.0, 60.0, 35.0, 50.0,
-        60.0, 45.0
-    ]
-    _lst_theta_jc = [
-        70.0, 10.0, 70.0, 70.0, 70.0, 70.0, 70.0, 5.0, 70.0, 70.0, 10.0, 70.0,
-        70.0, 70.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 10.0, 70.0, 70.0, 5.0, 22.0,
-        70.0, 5.0, 70.0, 5.0, 5.0, 1.0, 10.0, 70.0, 70.0, 5.0, 5.0, 5.0, 10.0,
-        5.0, 5.0, 10.0, 5.0, 10.0, 10.0, 10.0, 5.0, 70.0, 5.0, 70.0, 70.0,
-        70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0, 70.0,
-        70.0, 70.0, 70.0
-    ]
 
-    _msg = ''
-
-    # Retrieve the base hazard rate.
     try:
-        if attributes['subcategory_id'] in [3, 5, 6, 10]:
-            attributes['lambda_b'] = _dic_lambdab[attributes['subcategory_id']]
-        elif attributes['subcategory_id'] == 7:
-            attributes['lambda_b'] = 0.032 * exp(
-                0.354 * attributes['frequency_operating'] +
-                0.00558 * attributes['power_operating'])
-        elif attributes['subcategory_id'] == 8:
-            if (attributes['frequency_operating'] >= 1.0
-                    and attributes['frequency_operating'] <= 10.0
-                    and attributes['power_operating'] < 0.1):
-                attributes['lambda_b'] = 0.052
-            else:
-                attributes['lambda_b'] = 0.0093 * exp(
-                    0.429 * attributes['frequency_operating'] +
-                    0.486 * attributes['power_operating'])
-        elif attributes['subcategory_id'] == 12:
-            if attributes['application_id'] in [1, 3]:
-                attributes[
-                    'lambda_b'] = 0.00043 * attributes['n_elements'] + 0.000043
-            else:
-                attributes['lambda_b'] = 0.00043 * attributes['n_elements']
-        else:
-            attributes['lambda_b'] = _dic_lambdab[attributes[
-                'subcategory_id']][attributes['type_id'] - 1]
-    except KeyError:
-        attributes['lambda_b'] = 0.0
-
-    if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating semiconductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    # Calculate junction temperature.
-    if attributes['temperature_case'] <= 0.0:
-        attributes['temperature_case'] = _lst_temp_case[
+        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
             attributes['environment_active_id'] - 1]
-    if attributes['theta_jc'] <= 0.0:
-        attributes['theta_jc'] = _lst_theta_jc[attributes['package_id'] - 1]
-    attributes['temperature_junction'] = (
-        attributes['temperature_case'] +
-        attributes['theta_jc'] * attributes['power_operating'])
-
-    # Calculate the temperature factor (piT).
-    try:
-        if attributes['subcategory_id'] in [1, 2]:
-            _factors = _dic_factors[attributes['subcategory_id']][
-                attributes['type_id'] - 1]
-        elif attributes['subcategory_id'] == 7:
-            _factors = _dic_factors[attributes['subcategory_id']][attributes[
-                'type_id']]
-        else:
-            _factors = _dic_factors[attributes['subcategory_id']]
-
-        if attributes['subcategory_id'] == 7:
-            _f0 = _factors[0]
-            _f1 = _factors[1]
-            _f2 = _factors[2]
-            if attributes['voltage_ratio'] <= 0.4:
-                attributes['piT'] = _f1 * exp(
-                    -_f0 * (1.0 / (attributes['temperature_junction'] + 273.0)
-                            - 1.0 / 298.0))
-            else:
-                attributes[
-                    'piT'] = _f2 * (attributes['voltage_ratio'] - 0.35) * exp(
-                        -_f0 * (1.0 /
-                                (attributes['temperature_junction'] + 273.0) -
-                                1.0 / 298.0))
-        else:
-            attributes['piT'] = exp(
-                -_factors * (1.0 / (attributes['temperature_junction'] + 273.0)
-                             - 1.0 / 298.0))
     except (KeyError, IndexError):
-        attributes['piT'] = 0.0
+        attributes['piE'] = 0.0
 
-    # Retrieve the application factor (piA).
-    if attributes['subcategory_id'] in [2, 3, 4, 8]:
-        try:
-            attributes['piA'] = _dic_piA[attributes['subcategory_id']][
-                attributes['application_id'] - 1]
-        except KeyError:
-            attributes['piA'] = 0.0
-    elif attributes['subcategory_id'] == 7:
-        if attributes['application_id'] == 1:
-            attributes['piA'] = 7.6
+    return attributes
+
+
+def _select_part_count_quality_factor(attributes):
+    """
+    Select the MIL-HDBK-217F quality factor for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    # Dictionary containing piQ values for parts count method.  The key is the
+    # subcategory_id.  The quality_id attribute is used to select the proper
+    # value of piQ from the returned list.
+    _dic_piQ = {
+        1: [0.7, 1.0, 2.4, 5.5, 8.0],
+        2: [[0.5, 1.0, 5.0, 25, 50], [0.5, 1.0, 1.8, 2.5]],
+        3: [0.7, 1.0, 2.4, 5.5, 8.0],
+        4: [0.7, 1.0, 2.4, 5.5, 8.0],
+        5: [0.7, 1.0, 2.4, 5.5, 8.0],
+        6: [0.7, 1.0, 2.4, 5.5, 8.0],
+        7: [0.7, 1.0, 2.4, 5.5, 8.0],
+        8: [0.7, 1.0, 2.4, 5.5, 8.0],
+        9: [0.7, 1.0, 2.4, 5.5, 8.0],
+        10: [0.7, 1.0, 2.4, 5.5, 8.0],
+        11: [0.7, 1.0, 2.4, 5.5, 8.0],
+        12: [0.7, 1.0, 2.4, 5.5, 8.0],
+        13: [1.0, 1.0, 3.3],
+    }
+
+    try:
+        if attributes['subcategory_id'] == 2:
+            if attributes['type_id'] == 5:
+                attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][1][
+                    attributes['quality_id'] - 1]
+            else:
+                attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][0][
+                    attributes['quality_id'] - 1]
         else:
-            attributes['piA'] = 0.06 * (attributes['duty_cycle'] / 100.0) + 0.4
-    elif attributes['subcategory_id'] == 13:
-        if attributes['application_id'] == 1:
-            attributes['piA'] = 4.4
-        else:
-            attributes['piA'] = sqrt(attributes['duty_cycle'] / 100.0)
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['quality_id'] - 1]
+    except (KeyError, IndexError):
+        attributes['piQ'] = 0.0
 
-    # Retrieve the matching network factor (piM).
-    if attributes['subcategory_id'] in [7, 8]:
-        attributes['piM'] = _lst_piM[attributes['matching_id'] - 1]
+    return attributes
 
-    # Calculate the power rating factor (piR).
-    if attributes['subcategory_id'] == 2:
-        if attributes['type_id'] == 4:
-            try:
-                attributes[
-                    'piR'] = 0.326 * log(attributes['power_rated']) - 0.25
-            except ValueError:
-                attributes['piR'] = 0.0
-        else:
-            attributes['piR'] = 1.0
-    elif attributes['subcategory_id'] in [3, 6]:
-        if attributes['power_rated'] < 0.1:
-            attributes['piR'] = 0.43
-        else:
-            try:
-                attributes['piR'] = attributes['power_rated']**0.37
-            except ValueError:
-                attributes['piR'] = 0.0
-    elif attributes['subcategory_id'] == 10:
-        attributes['piR'] = attributes['current_rated']**0.4
-        if attributes['voltage_ratio'] <= 0.3:
-            attributes['piS'] = 0.1
-        else:
-            attributes['piS'] = attributes['voltage_ratio']**1.9
 
-    # Calculate the electrical stress factor (piS).
-    if attributes['subcategory_id'] == 1:
-        if attributes['type_id'] > 5:
-            attributes['piS'] = 1.0
-        elif attributes['voltage_ratio'] <= 0.3:
-            attributes['piS'] = 0.054
-        else:
-            attributes['piS'] = attributes['voltage_ratio']**2.43
-    elif attributes['subcategory_id'] in [3, 6]:
-        attributes['piS'] = 0.045 * exp(3.1 * attributes['voltage_ratio'])
-    elif attributes['subcategory_id'] == 10:
-        if attributes['voltage_ratio'] <= 0.3:
-            attributes['piS'] = 0.1
-        else:
-            attributes['piS'] = attributes['voltage_ratio']**1.9
+def _select_part_stress_quality_factor(attributes):
+    """
+    Select the MIL-HDBK-217F quality factor for the semiconductor device.
 
-    # Retrieve the construction factor (piC).
-    if attributes['subcategory_id'] == 1:
-        attributes['piC'] = _lst_piC[attributes['construction_id'] - 1]
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    _dic_piQ = {
+        1: [0.7, 1.0, 2.4, 5.5, 8.0],
+        2: {
+            1: [0.5, 1.0, 5.0, 25.0, 50.0],
+            2: [0.5, 1.0, 5.0, 25.0, 50.0],
+            3: [0.5, 1.0, 5.0, 25.0, 50.0],
+            4: [0.5, 1.0, 5.0, 25.0, 50.0],
+            5: [0.5, 1.0, 1.8, 2.5],
+            6: [0.5, 1.0, 5.0, 25.0, 50.0]
+        },
+        3: [0.7, 1.0, 2.4, 5.5, 8.0],
+        4: [0.7, 1.0, 2.4, 5.5, 8.0],
+        5: [0.7, 1.0, 2.4, 5.5, 8.0],
+        6: [0.5, 1.0, 2.0, 5.0],
+        7: [0.5, 1.0, 2.0, 5.0],
+        8: [0.5, 1.0, 2.0, 5.0],
+        9: [0.5, 1.0, 2.0, 5.0],
+        10: [0.7, 1.0, 2.4, 5.5, 8.0],
+        11: [0.7, 1.0, 2.4, 5.5, 8.0],
+        12: [0.7, 1.0, 2.4, 5.5, 8.0],
+        13: [1.0, 1.0, 3.3]
+    }
 
-    # Calculate forward current factor (piI).
-    if attributes['subcategory_id'] == 13:
-        attributes['piI'] = attributes['current_operating']**0.68
-
-    # Calculate the power degradation factor (piP).
-    if attributes['subcategory_id'] == 13:
-        attributes['piP'] = 1.0 / (2.0 * (1.0 - attributes['power_ratio']))
-
-    # Retrieve the quality factor (piQ).
     try:
         if attributes['subcategory_id'] == 2:
             attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
@@ -555,97 +800,5 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
                 attributes['quality_id'] - 1]
     except (KeyError, IndexError):
         attributes['piQ'] = 0.0
-
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'semiconductor, hardware ID: {0:d} and quality ID: ' \
-            '{1:d}.\n'.format(attributes['hardware_id'],
-                            attributes['quality_id'])
-
-    # Retrieve the environmental factor (piE).
-    try:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1]
-    except (KeyError, IndexError):
-        attributes['piE'] = 0.0
-
-    if attributes['piE'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'semiconductor, hardware ID: {0:d} and active environment ID: ' \
-            '{1:d}.\n'.format(attributes['hardware_id'],
-                           attributes['environment_active_id'])
-
-    # Calculate the active hazard rate.
-    if attributes['subcategory_id'] == 1:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piS'] * attributes['piC'] * attributes['piQ'] * attributes['piE']
-    elif attributes['subcategory_id'] == 2:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piA'] * attributes['piR'] * attributes['piQ'] * attributes['piE']
-    elif attributes['subcategory_id'] == 3:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piA'] * attributes['piR'] * attributes['piS'] * attributes['piQ'] * attributes['piE']
-    elif attributes['subcategory_id'] == 4:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piA'] * attributes['piQ'] * attributes['piE']
-    elif attributes['subcategory_id'] in [5, 9, 11, 12]:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piQ'] * attributes['piE']
-    elif attributes['subcategory_id'] in [6, 10]:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piR'] * attributes['piS'] * attributes['piQ'] * attributes['piE']
-    elif attributes['subcategory_id'] in [7, 8]:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piA'] * attributes['piM'] * attributes['piQ'] * attributes['piE']
-    elif attributes['subcategory_id'] == 13:
-        attributes[
-            'hazard_rate_active'] = attributes['lambda_b'] * attributes['piT'] * attributes['piI'] * attributes['piA'] * attributes['piP'] * attributes['piQ'] * attributes['piE']
-
-    return attributes, _msg
-
-
-def overstressed(**attributes):
-    """
-    Determine whether the semiconductor is overstressed.
-
-    This determination is based on it's rated values and operating environment.
-
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-             with updated values
-    :rtype: dict
-    """
-    _reason_num = 1
-    _reason = ''
-
-    _harsh = True
-
-    attributes['overstress'] = False
-
-    # If the active environment is Benign Ground, Fixed Ground,
-    # Sheltered Naval, or Space Flight it is NOT harsh.
-    if attributes['environment_active_id'] in [1, 2, 4, 11]:
-        _harsh = False
-
-    if _harsh:
-        if attributes['power_ratio'] > 0.70:
-            attributes['overstress'] = True
-            _reason = _reason + str(_reason_num) + \
-                _(u". Operating power > 70% rated power in harsh "
-                  u"environment.\n")
-            _reason_num += 1
-        if attributes['temperature_junction'] > 125.0:
-            attributes['overstress'] = True
-            _reason = _reason + str(_reason_num) + \
-                _(u". Junction temperature > 125.0C in harsh environment.\n")
-            _reason_num += 1
-    else:
-        if attributes['power_ratio'] > 0.90:
-            attributes['overstress'] = True
-            _reason = _reason + str(_reason_num) + \
-                _(u". Operating power > 90% rated power in mild "
-                  u"environment.\n")
-            _reason_num += 1
-
-    attributes['reason'] = _reason
 
     return attributes
