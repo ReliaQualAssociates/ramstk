@@ -93,6 +93,9 @@ class RAMSTKBaseView(object):
             'warning':
             controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/warning.png',
+            'rollup':
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/rollup.png',
         }
 
         # Initialize private list attributes.

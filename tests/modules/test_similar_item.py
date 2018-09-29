@@ -158,8 +158,9 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all line items in the similar item "
-                    "analysis worksheet.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all line items in the similar item "
+        "analysis worksheet.")
 
 
 @pytest.mark.integration
@@ -200,6 +201,27 @@ def test_do_calculate_user_defined(test_dao):
 
     assert not DUT.do_calculate(1, hazard_rate=2.5003126e-06)
     assert _node.result_1 == pytest.approx(2.2446556e-06)
+
+
+@pytest.mark.integration
+def test_do_roll_up(test_dao):
+    """ do_roll_up() should return False on success. """
+    DUT = dtmSimilarItem(test_dao)
+    DUT.do_select_all(revision_id=1)
+
+    for _node in DUT.do_select_children(1):
+        _attributes = _node.data.get_attributes()
+        _attributes['change_description_1'] = ('This is change description 1 '
+                                               'for Node ID: {0:d}').format(
+                                                   _attributes['hardware_id'])
+        _node.data.set_attributes(_attributes)
+    DUT.do_update_all()
+
+    assert not DUT.do_roll_up(1)
+    assert DUT.do_select(1).get_attributes()['change_description_1'] == (
+        'This is change description 1 for Node ID: 2\n\nThis is change '
+        'description 1 for Node ID: 3\n\nThis is change description 1 for '
+        'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n')
 
 
 @pytest.mark.integration
@@ -319,3 +341,25 @@ def test_request_do_calculate_all(test_dao, test_configuration):
     DUT.request_do_select_all(revision_id=1)
 
     assert not DUT.request_do_calculate_all(hazard_rate=24.5003126e-06)
+
+
+@pytest.mark.integration
+def test_request_do_roll_up(test_dao, test_configuration):
+    """ request_do_roll_up() should return False on success. """
+    DUT = dtcSimilarItem(test_dao, test_configuration, test='True')
+    DUT.request_do_select_all(revision_id=1)
+
+    for _node in DUT.request_do_select_children(1):
+        _attributes = _node.data.get_attributes()
+        _attributes['change_description_1'] = ('This is change description 1 '
+                                               'for Node ID: {0:d}').format(
+                                                   _attributes['hardware_id'])
+        _node.data.set_attributes(_attributes)
+    DUT.request_do_update_all()
+
+    assert not DUT.request_do_roll_up(1)
+    assert DUT.request_do_select(1).get_attributes()[
+        'change_description_1'] == (
+            'This is change description 1 for Node ID: 2\n\nThis is change '
+            'description 1 for Node ID: 3\n\nThis is change description 1 for '
+            'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n')

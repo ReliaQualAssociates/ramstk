@@ -324,8 +324,8 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
 
         _hbox.pack_start(_frame)
 
-        _x_pos_l, _y_pos_l = ramstk.make_label_group(self._lst_assess_labels[0],
-                                                  _fxd_left, 5, 5)
+        _x_pos_l, _y_pos_l = ramstk.make_label_group(
+            self._lst_assess_labels[0], _fxd_left, 5, 5)
         _x_pos_l += 50
 
         _fxd_left.put(self.txtActiveHt, _x_pos_l, _y_pos_l[0])
@@ -352,8 +352,8 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
 
         _hbox.pack_end(_frame)
 
-        _x_pos_r, _y_pos_r = ramstk.make_label_group(self._lst_assess_labels[1],
-                                                  _fxd_right, 5, 5)
+        _x_pos_r, _y_pos_r = ramstk.make_label_group(
+            self._lst_assess_labels[1], _fxd_right, 5, 5)
         _x_pos_r += 55
 
         _fxd_right.put(self.txtMPMT, _x_pos_r, _y_pos_r[0])

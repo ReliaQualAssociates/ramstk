@@ -134,6 +134,17 @@ class SimilarItemDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
 
+    def request_do_roll_up(self, node_id):
+        """
+        Request to roll-up change descriptions of child nodes.
+
+        :param int node_id: the Node ID of the parent to roll-up descriptions
+                            to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtm_data_model.do_roll_up(node_id)
+
     def request_do_select_children(self, node_id):
         """
         Request the child nodes of the selected Hardware ID.

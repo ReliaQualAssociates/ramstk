@@ -174,6 +174,11 @@ class SimilarItem(RAMSTKWorkView):
         except TypeError:
             self._revision_id = None
             self._hardware_id = None
+        if not self._dtc_data_controller.request_do_select_children(
+                self._hardware_id):
+            self._btn_rollup.set_sensitive(False)
+        else:
+            self._btn_rollup.set_sensitive(True)
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
@@ -616,6 +621,34 @@ class SimilarItem(RAMSTKWorkView):
 
         return False
 
+    def _do_request_rollup(self, __button):
+        """
+        Request to roll-up the Similar Item change descriptions.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :return: False if sucessful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _model = self.treeview.get_model()
+        _row = _model.get_iter_first()
+
+        # Iterate through the hazards and calculate the Similar Item hazard
+        # intensities.
+        ramstk.Widget.set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
+
+        _node_id = _model.get_value(_row, 1)
+        _return = (_return
+                   or self._dtc_data_controller.request_do_roll_up(_node_id))
+
+        if not _return:
+            self._do_load_page()
+
+        ramstk.Widget.set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
+
+        return _return
+
     def _do_request_update(self, __button):
         """
         Request to save the selected Similar Item record.
@@ -707,6 +740,7 @@ class SimilarItem(RAMSTKWorkView):
         """
         _tooltips = [
             _(u"Edit the Similar Item analysis functions."),
+            _(u"Roll up descriptions to next higher level assembly."),
             _(u"Calculate the Similar Item analysis."),
             _(u"Save the selected Similar Item analysis to the open RAMSTK "
               u"Program database."),
@@ -714,10 +748,11 @@ class SimilarItem(RAMSTKWorkView):
               u"item to the open RAMSTK Program database.")
         ]
         _callbacks = [
-            self._do_request_edit_function, self._do_request_calculate,
-            self._do_request_update, self._do_request_update_all
+            self._do_request_edit_function, self._do_request_rollup,
+            self._do_request_calculate, self._do_request_update,
+            self._do_request_update_all
         ]
-        _icons = ['edit', 'calculate', 'save', 'save-all']
+        _icons = ['edit', 'rollup', 'calculate', 'save', 'save-all']
 
         _buttonbox = RAMSTKWorkView._make_buttonbox(
             self,
@@ -727,6 +762,8 @@ class SimilarItem(RAMSTKWorkView):
             orientation='vertical',
             height=-1,
             width=-1)
+
+        self._btn_rollup = _buttonbox.get_children()[1]
 
         return _buttonbox
 

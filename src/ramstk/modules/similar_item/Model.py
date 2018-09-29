@@ -229,3 +229,59 @@ class SimilarItemDataModel(RAMSTKDataModel):
                 self.do_calculate(_node.identifier, **kwargs)
 
         return _return
+
+    def do_roll_up(self, node_id):
+        """
+        Concatenate the descriptions for lower indenture level items.
+
+        :param int node_id: the Node ID to roll the child descriptions up to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+        _description = ['', '', '', '', '', '', '', '', '', '']
+
+        # Retrieve the change descriptions from all the child elements and
+        # concatenate them together to form the parent descriptions.
+        for _child in self.do_select_children(node_id):
+            _attributes = _child.data.get_attributes()
+
+            _description[0] = _description[0] + \
+                              _attributes['change_description_1'] + '\n\n'
+            _description[1] = _description[1] + \
+                              _attributes['change_description_2'] + '\n\n'
+            _description[2] = _description[2] + \
+                              _attributes['change_description_3'] + '\n\n'
+            _description[3] = _description[3] + \
+                              _attributes['change_description_4'] + '\n\n'
+            _description[4] = _description[4] + \
+                              _attributes['change_description_5'] + '\n\n'
+            _description[5] = _description[5] + \
+                              _attributes['change_description_6'] + '\n\n'
+            _description[6] = _description[6] + \
+                              _attributes['change_description_7'] + '\n\n'
+            _description[7] = _description[7] + \
+                              _attributes['change_description_8'] + '\n\n'
+            _description[8] = _description[8] + \
+                              _attributes['change_description_9'] + '\n\n'
+            _description[9] = _description[9] + \
+                              _attributes['change_description_10'] + '\n\n'
+
+        # Now set the parent change descriptions to the concatenated versions
+        # created above.
+        _entity = self.do_select(node_id)
+        _attributes = _entity.get_attributes()
+        _attributes['change_description_1'] = _description[0]
+        _attributes['change_description_2'] = _description[1]
+        _attributes['change_description_3'] = _description[2]
+        _attributes['change_description_4'] = _description[3]
+        _attributes['change_description_5'] = _description[4]
+        _attributes['change_description_6'] = _description[5]
+        _attributes['change_description_7'] = _description[6]
+        _attributes['change_description_8'] = _description[7]
+        _attributes['change_description_9'] = _description[8]
+        _attributes['change_description_10'] = _description[9]
+        _entity.set_attributes(_attributes)
+        self.do_update(node_id)
+
+        return _return
