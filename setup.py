@@ -14,7 +14,7 @@ with open(os.path.join(HERE, 'README.md')) as f:
     __long_description__ = f.read()
 
 __appname__ = 'RAMSTK'
-__version__ = '1.0.0.dev1'
+__version__ = '1.0.0'
 __author__ = "Doyle 'weibullguy' Rowland"
 __email__ = "andrew.rowland@reliaqual.com"
 __trove__ = [
@@ -27,7 +27,7 @@ __trove__ = [
 ]
 
 if not sys.version_info[0] == 2:
-    sys.exit("Sorry, Python 3 is not supported (yet)")
+    sys.exit("Sorry, Python 3 is not supported yet.")
 
 # Lists of required packages for RAMSTK.
 INSTALL_REQUIRES = [

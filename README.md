@@ -3,9 +3,6 @@
 
 [![Github](https://img.shields.io/github/release/weibullguy/ramstk/all.svg)](https://github.com/weibullguy/ramstk/releases)
 [![PyPI](https://img.shields.io/pypi/v/RAMSTK.svg)](https://pypi.python.org/pypi/RAMSTK/)
-
-***Please note the development branch is currently the default branch until version 1.0.0 is released.***
-
 [![Build Status](https://travis-ci.org/weibullguy/ramstk.svg?branch=develop)](https://travis-ci.org/weibullguy/ramstk)
 [![Build status](https://ci.appveyor.com/api/projects/status/b5vr2fix7birpon9/branch/develop?svg=true)](https://ci.appveyor.com/project/weibullguy/ramstk/branch/develop)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/project/weibullguy/ramstk/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/ramstk&amp;utm_campaign=Badge_Grade_Dashboard)
