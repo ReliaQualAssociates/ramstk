@@ -1,0 +1,6523 @@
+# Translations template for PROJECT.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2018-09-15 10:04-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.5.3\n"
+
+#: src/ramstk/Configuration.py:27
+msgid "Ground, Benign"
+msgstr ""
+
+#: src/ramstk/Configuration.py:27
+msgid "Ground, Fixed"
+msgstr ""
+
+#: src/ramstk/Configuration.py:28
+msgid "Ground, Mobile"
+msgstr ""
+
+#: src/ramstk/Configuration.py:29
+msgid "Naval, Sheltered"
+msgstr ""
+
+#: src/ramstk/Configuration.py:29
+msgid "Naval, Unsheltered"
+msgstr ""
+
+#: src/ramstk/Configuration.py:30
+msgid "Airborne, Inhabited, Cargo"
+msgstr ""
+
+#: src/ramstk/Configuration.py:31
+msgid "Airborne, Inhabited, Fighter"
+msgstr ""
+
+#: src/ramstk/Configuration.py:31
+msgid "Airborne, Uninhabited, Cargo"
+msgstr ""
+
+#: src/ramstk/Configuration.py:32
+msgid "Airborne, Uninhabited, Fighter"
+msgstr ""
+
+#: src/ramstk/Configuration.py:33
+msgid "Airborne, Rotary Wing"
+msgstr ""
+
+#: src/ramstk/Configuration.py:34
+msgid "Space, Flight"
+msgstr ""
+
+#: src/ramstk/Configuration.py:35
+msgid "Missile, Flight"
+msgstr ""
+
+#: src/ramstk/Configuration.py:35
+msgid "Missile, Launch"
+msgstr ""
+
+#: src/ramstk/Configuration.py:36 src/ramstk/Configuration.py:97
+msgid "Airborne"
+msgstr ""
+
+#: src/ramstk/Configuration.py:36
+msgid "Ground"
+msgstr ""
+
+#: src/ramstk/Configuration.py:36
+msgid "Naval"
+msgstr ""
+
+#: src/ramstk/Configuration.py:37
+msgid "Space"
+msgstr ""
+
+#: src/ramstk/Configuration.py:44
+msgid "Assessed"
+msgstr ""
+
+#: src/ramstk/Configuration.py:44
+msgid "Defined, Hazard Rate"
+msgstr ""
+
+#: src/ramstk/Configuration.py:45
+msgid "Defined, MTBF"
+msgstr ""
+
+#: src/ramstk/Configuration.py:45
+msgid "Defined, Distribution"
+msgstr ""
+
+#: src/ramstk/Configuration.py:46
+msgid "MIL-HDBK-217F Parts Count"
+msgstr ""
+
+#: src/ramstk/Configuration.py:47
+msgid "MIL-HDBK-217F Parts Stress"
+msgstr ""
+
+#: src/ramstk/Configuration.py:47
+msgid "NSWC-11"
+msgstr ""
+
+#: src/ramstk/Configuration.py:48
+msgid "1P Exponential"
+msgstr ""
+
+#: src/ramstk/Configuration.py:48
+msgid "2P Exponential"
+msgstr ""
+
+#: src/ramstk/Configuration.py:49
+msgid "Gaussian"
+msgstr ""
+
+#: src/ramstk/Configuration.py:49
+msgid "Lognormal"
+msgstr ""
+
+#: src/ramstk/Configuration.py:50
+msgid "2P Weibull"
+msgstr ""
+
+#: src/ramstk/Configuration.py:50
+msgid "3P Weibull"
+msgstr ""
+
+#: src/ramstk/Configuration.py:52 src/ramstk/gui/gtk/workviews/FMEA.py:43
+msgid "Prevention"
+msgstr ""
+
+#: src/ramstk/Configuration.py:52 src/ramstk/gui/gtk/workviews/FMEA.py:43
+msgid "Detection"
+msgstr ""
+
+#: src/ramstk/Configuration.py:53 src/ramstk/Configuration.py:54
+msgid "Defined"
+msgstr ""
+
+#: src/ramstk/Configuration.py:53 src/ramstk/Configuration.py:54
+msgid "Calculated"
+msgstr ""
+
+#: src/ramstk/Configuration.py:57
+msgid "Catastrophic"
+msgstr ""
+
+#: src/ramstk/Configuration.py:58
+msgid ""
+"Could result in death, permanent total disability, loss exceeding $1M, or"
+" irreversible severe environmental damage that violates law or "
+"regulation."
+msgstr ""
+
+#: src/ramstk/Configuration.py:62
+msgid "Critical"
+msgstr ""
+
+#: src/ramstk/Configuration.py:63
+msgid ""
+"Could result in permanent partial disability, injuries or occupational "
+"illness that may result in hospitalization of at least three personnel, "
+"loss exceeding $200K but less than $1M, or reversible environmental "
+"damage causing a violation of law or regulation."
+msgstr ""
+
+#: src/ramstk/Configuration.py:69
+msgid "Marginal"
+msgstr ""
+
+#: src/ramstk/Configuration.py:70
+msgid ""
+"Could result in injury or occupational illness resulting in one or more "
+"lost work days(s), loss exceeding $10K but less than $200K, or "
+"mitigatible environmental damage without violation of law or regulation "
+"where restoration activities can be accomplished."
+msgstr ""
+
+#: src/ramstk/Configuration.py:76
+msgid "Negligble"
+msgstr ""
+
+#: src/ramstk/Configuration.py:77
+msgid ""
+"Could result in injury or illness not resulting in a lost work day, loss "
+"exceeding $2K but less than $10K, or minimal environmental damage not "
+"violating law or regulation."
+msgstr ""
+
+#: src/ramstk/Configuration.py:81
+msgid "Level E - Extremely Unlikely"
+msgstr ""
+
+#: src/ramstk/Configuration.py:82
+msgid "Level D - Remote"
+msgstr ""
+
+#: src/ramstk/Configuration.py:83
+msgid "Level C - Occasional"
+msgstr ""
+
+#: src/ramstk/Configuration.py:84
+msgid "Level B - Reasonably Probable"
+msgstr ""
+
+#: src/ramstk/Configuration.py:85
+msgid "Level A - Frequent"
+msgstr ""
+
+#: src/ramstk/Configuration.py:87
+msgid "Organic"
+msgstr ""
+
+#: src/ramstk/Configuration.py:88
+msgid "Semi-Detached"
+msgstr ""
+
+#: src/ramstk/Configuration.py:89
+msgid "Embedded"
+msgstr ""
+
+#: src/ramstk/Configuration.py:90
+msgid "Concept/Planning (PCP)"
+msgstr ""
+
+#: src/ramstk/Configuration.py:91
+msgid "Requirements Analysis (SRA)"
+msgstr ""
+
+#: src/ramstk/Configuration.py:92
+msgid "Preliminary Design Review (PDR)"
+msgstr ""
+
+#: src/ramstk/Configuration.py:93
+msgid "Critical Design Review (CDR)"
+msgstr ""
+
+#: src/ramstk/Configuration.py:94
+msgid "Test Readiness Review (TRR)"
+msgstr ""
+
+#: src/ramstk/Configuration.py:94
+msgid "Released"
+msgstr ""
+
+#: src/ramstk/Configuration.py:95
+msgid "Software System"
+msgstr ""
+
+#: src/ramstk/Configuration.py:95
+msgid "Software Module"
+msgstr ""
+
+#: src/ramstk/Configuration.py:96
+msgid "Software Unit"
+msgstr ""
+
+#: src/ramstk/Configuration.py:98
+msgid "Strategic"
+msgstr ""
+
+#: src/ramstk/Configuration.py:99
+msgid "Tactical"
+msgstr ""
+
+#: src/ramstk/Configuration.py:100
+msgid "Process Control"
+msgstr ""
+
+#: src/ramstk/Configuration.py:101
+msgid "Production Center"
+msgstr ""
+
+#: src/ramstk/Configuration.py:102
+msgid "Developmental"
+msgstr ""
+
+#: src/ramstk/Configuration.py:104
+msgid "Code Reviews"
+msgstr ""
+
+#: src/ramstk/Configuration.py:105
+msgid ""
+"Code review is a systematic examination (often known as peer review) of "
+"computer source code."
+msgstr ""
+
+#: src/ramstk/Configuration.py:107
+msgid "Error/Anomaly Detection"
+msgstr ""
+
+#: src/ramstk/Configuration.py:107
+msgid "Structure Analysis"
+msgstr ""
+
+#: src/ramstk/Configuration.py:109
+msgid "Random Testing"
+msgstr ""
+
+#: src/ramstk/Configuration.py:110
+msgid "Functional Testing"
+msgstr ""
+
+#: src/ramstk/Configuration.py:111
+msgid "Branch Testing"
+msgstr ""
+
+#: src/ramstk/Configuration.py:114
+msgid "Design"
+msgstr ""
+
+#: src/ramstk/Configuration.py:114
+msgid "Reliability Growth"
+msgstr ""
+
+#: src/ramstk/Configuration.py:115
+msgid "Reliability Qualification"
+msgstr ""
+
+#: src/ramstk/Configuration.py:115
+msgid "Production"
+msgstr ""
+
+#: src/ramstk/Configuration.py:116
+msgid "Storage"
+msgstr ""
+
+#: src/ramstk/Configuration.py:116
+msgid "Operation"
+msgstr ""
+
+#: src/ramstk/Configuration.py:116
+msgid "Disposal"
+msgstr ""
+
+#: src/ramstk/RAMSTK.py:557
+msgid ""
+"A user-specific configuration directory could not be found at {0:s}.  You"
+" will be given the option to create and populate this directory.  If you "
+"choose not to, you will recieve this prompt every time you execute "
+"RAMSTK.  Would you like to create and populate a user-specific "
+"configuration directory?"
+msgstr ""
+
+#: src/ramstk/RAMSTK.py:683 src/ramstk/RAMSTK.py:857
+msgid "RAMSTK is not currently connected to a project database."
+msgstr ""
+
+#: src/ramstk/RAMSTK.py:830
+msgid "RAMSTK is connected to program database {0:s}."
+msgstr ""
+
+#: src/ramstk/RAMSTK.py:878
+msgid "Saving Program Database {0:s}"
+msgstr ""
+
+#: src/ramstk/RAMSTK.py:914
+msgid ""
+"Cannot find license file {0:s}.  If your license file is elsewhere, "
+"please place it in {1:s}."
+msgstr ""
+
+#: src/ramstk/RAMSTK.py:928
+msgid ""
+"Invalid license (Invalid key).  Your license key is incorrect.  Closing "
+"the RAMSTK application."
+msgstr ""
+
+#: src/ramstk/RAMSTK.py:935
+msgid ""
+"Invalid license (Expired).  Your license expired on {0:s}.  Closing the "
+"RAMSTK application."
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Capacitor.py:443
+#, python-format
+msgid ". Operating voltage > 60% rated voltage in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Capacitor.py:450
+msgid ". Operating temperature within 10.0C of maximum rated temperature.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Capacitor.py:457
+#: src/ramstk/analyses/prediction/Connection.py:423
+#: src/ramstk/analyses/prediction/Inductor.py:297
+#, python-format
+msgid ". Operating voltage > 90% rated voltage in mild environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Connection.py:403
+#, python-format
+msgid ". Operating voltage > 70% rated voltage in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Connection.py:409
+#, python-format
+msgid ". Operating current > 70% rated current in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Connection.py:416
+msgid ". Operating temperature within 25.0C of maximum rated temperature.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Connection.py:429
+#: src/ramstk/analyses/prediction/Inductor.py:303
+#: src/ramstk/analyses/prediction/Relay.py:301
+#: src/ramstk/analyses/prediction/Switch.py:312
+#, python-format
+msgid ". Operating current > 90% rated current in mild environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Inductor.py:277
+#, python-format
+msgid ". Operating voltage > 50% rated voltage in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Inductor.py:283
+#, python-format
+msgid ". Operating current > 60% rated current in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Inductor.py:290
+msgid ". Operating temperature within 15.0C of maximum rated temperature.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/IntegratedCircuit.py:662
+#, python-format
+msgid ". Operating voltage > 105% rated voltage.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/IntegratedCircuit.py:667
+#, python-format
+msgid ". Operating voltage < 95% rated voltage.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/IntegratedCircuit.py:674
+#, python-format
+msgid ". Operating current > 80% rated current.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/IntegratedCircuit.py:679
+msgid ". Junction temperature > {0:f}C.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/IntegratedCircuit.py:686
+#, python-format
+msgid ". Operating current > 90% rated current.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Relay.py:294
+#: src/ramstk/analyses/prediction/Switch.py:305
+#, python-format
+msgid ". Operating current > 75% rated current in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Resistor.py:576
+#, python-format
+msgid ". Operating power > 50% rated power in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Resistor.py:583
+#: src/ramstk/analyses/prediction/Semiconductor.py:645
+#, python-format
+msgid ". Operating power > 90% rated power in mild environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Semiconductor.py:633
+#, python-format
+msgid ". Operating power > 70% rated power in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/analyses/prediction/Semiconductor.py:639
+msgid ". Junction temperature > 125.0C in harsh environment.\n"
+msgstr ""
+
+#: src/ramstk/dao/RAMSTKCommonDB.py:853
+msgid "Would you like to add an RAMSTK Administrator? ([y]/n): "
+msgstr ""
+
+#: src/ramstk/dao/RAMSTKCommonDB.py:858
+msgid "Enter the RAMSTK Administrator's last name (surname): "
+msgstr ""
+
+#: src/ramstk/dao/RAMSTKCommonDB.py:860
+msgid "Enter the RAMSTK Administrator's first name (given name): "
+msgstr ""
+
+#: src/ramstk/dao/RAMSTKCommonDB.py:863
+msgid "Enter the RAMSTK Administrator's e-mail address: "
+msgstr ""
+
+#: src/ramstk/dao/RAMSTKCommonDB.py:865
+msgid "Enter the RAMSTK Administrator's phone number: "
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKCause.py:147
+msgid "RPN severity is outside the range [1, 10] for Cause ID: {0:d}."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKCause.py:152
+msgid "RPN occurrence is outside the range [1, 10] for Cause ID: {0:d}."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKCause.py:157
+msgid "RPN detection is outside the range [1, 10] for Cause ID: {0:d}."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKCause.py:162
+msgid "RPN new severity is outside the range [1, 10] for Cause ID: {0:d}."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKCause.py:167
+msgid "RPN new occurrence is outside the range [1, 10] for Cause ID: {0:d}."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKCause.py:172
+msgid "RPN new detection is outside the range [1, 10] for Cause ID: {0:d}."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKCause.py:187
+msgid "Failure cause RPN has a value less than 1 for Cause ID: {0:d}."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKCause.py:194
+msgid "Failure cause RPN has a value greater than 1000 for Cause ID: {0:d}."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMechanism.py:152
+msgid "RPN severity is outside the range [1, 10]."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMechanism.py:156
+msgid "RPN occurrence is outside the range [1, 10]."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMechanism.py:160
+msgid "RPN detection is outside the range [1, 10]."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMechanism.py:164
+msgid "RPN new severity is outside the range [1, 10]."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMechanism.py:168
+msgid "RPN new occurrence is outside the range [1, 10]."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMechanism.py:172
+msgid "RPN new detection is outside the range [1, 10]."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMechanism.py:186
+msgid "Failure mechanism RPN has a value less than 1."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMechanism.py:192
+msgid "Failure mechanism RPN has a value greater than 1000."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMode.py:236
+msgid "RAMSTK ERROR: Item hazard rate has a negative value."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMode.py:240
+msgid "RAMSTK ERROR: Failure mode ratio is outside the range of [0.0, 1.0]."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMode.py:246
+msgid "Failure mode operating time has a negative value."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMode.py:250
+msgid "Failure effect probability is outside the range [0.0, 1.0]."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMode.py:260
+msgid "Failure mode hazard rate has a negative value."
+msgstr ""
+
+#: src/ramstk/dao/programdb/RAMSTKMode.py:264
+msgid "Failure mode criticality has a negative value."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/CreateProject.py:56
+msgid "Create a RAMSTK Program Database"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/CreateProject.py:69
+msgid "RAMSTK - Confirm Overwrite"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/CreateProject.py:74
+msgid ""
+"RAMSTK Program database already exists. \n"
+"\n"
+"{0:s}\n"
+"\n"
+"Overwrite?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Export.py:37
+msgid "RAMSTK Export"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Export.py:112
+msgid "File {0:s} already exists.  Overwrite?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/FMEA.py:56
+msgid "RAMSTK FMEA/FMECA Design Control and Action Addition Assistant"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/FMEA.py:70
+msgid "Add control"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/FMEA.py:72
+msgid "Add action"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/FMEA.py:81
+msgid ""
+"This is the RAMSTK Design Control and Action Addition Assistant.  Enter "
+"the information requested below and then press 'OK' to add a new design "
+"control or action to the RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/FMEA.py:93
+msgid "Select to add a design control to the selected failure cause."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/FMEA.py:96
+msgid "Select to add an Action to the selected failure cause."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:51
+msgid "Select the RAMSTK module to map."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:65
+#: src/ramstk/gui/gtk/assistants/Import.py:81
+msgid "RAMSTK Import Assistant"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:70
+msgid "Select Input File"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:75
+msgid "Map Input File Fields to RAMSTK Database Fields"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:150
+msgid ""
+"A RAMSTK Program database must be connected to import the data into from "
+"an external file.  Please create or open a RAMSTK Program database and "
+"try again."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:156
+msgid ""
+"One or more import records violated PRIMARY KEY constraints.  Check your "
+"import file data and try again."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:161
+msgid ""
+"One or more import records contains a field with a value that is "
+"incompatible with the required data type for the RAMSTK Program database "
+"field it was mapped to."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:168
+msgid "Successfully imported {0:d} {1:s} records."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:233
+msgid ""
+"This is the RAMSTK Import Assistant.  It will guide you through the "
+"process of importing RAMSTK Program module data from an external file.  "
+"Press 'Forward' to continue or 'Cancel' to quit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:256
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1123
+#: src/ramstk/gui/gtk/matrixviews/FunctionHardware.py:143
+msgid "Function"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:256
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1127
+#: src/ramstk/gui/gtk/matrixviews/RequirementHardware.py:145
+#: src/ramstk/gui/gtk/matrixviews/RequirementSoftware.py:145
+#: src/ramstk/gui/gtk/matrixviews/RequirementValidation.py:145
+msgid "Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:256
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1124
+#: src/ramstk/gui/gtk/matrixviews/HardwareRequirement.py:144
+#: src/ramstk/gui/gtk/matrixviews/HardwareValidation.py:144
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:68
+msgid "Hardware"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:257
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1131
+#: src/ramstk/gui/gtk/matrixviews/ValidationHardware.py:145
+#: src/ramstk/gui/gtk/matrixviews/ValidationRequirement.py:145
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:76
+msgid "Validation"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:262
+msgid "Select the RAMSTK module to import:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:274
+#: src/ramstk/gui/gtk/ramstk/Dialog.py:211
+msgid "Delimited Text Files"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:279
+#: src/ramstk/gui/gtk/ramstk/Dialog.py:205
+msgid "Excel Files"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:305
+msgid "Import File Column"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:318
+msgid "RAMSTK Field"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Import.py:350
+msgid ""
+"RAMSTK is all set and ready to import your data.  Press 'Apply' to import"
+" or 'Cancel' to abort the import."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/OpenProject.py:61
+msgid ""
+"A database is already open.  Only one database can be open at a time in "
+"RAMSTK.  You must close the currently open RAMSTK database before a new "
+"database can be opened."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/OpenProject.py:73
+msgid "RAMSTK - Open Program"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/OpenProject.py:81
+msgid "RAMSTK Program Databases"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/OpenProject.py:86
+msgid "All files"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:71
+#: src/ramstk/gui/gtk/assistants/Preferences.py:69
+msgid "Function Module Active"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:72
+msgid "Activates/deactivates the Function module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:76
+#: src/ramstk/gui/gtk/assistants/Preferences.py:73
+msgid "Requirements Module Active"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:77
+msgid "Activates/deactivates the Requirements module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:80
+#: src/ramstk/gui/gtk/assistants/Preferences.py:77
+msgid "Hardware Module Active"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:81
+msgid "Activates/deactivates the Hardware module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:85
+#: src/ramstk/gui/gtk/assistants/Preferences.py:81
+msgid "Validation Module Active"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:86
+msgid "Activates/deactivates the Validation module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:90
+#: src/ramstk/gui/gtk/assistants/Preferences.py:85
+msgid "(D)FME(C)A Module Active"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:91
+msgid "Activates/deactivates the (D)FME(C)A module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:196
+#: src/ramstk/gui/gtk/assistants/Preferences.py:856
+msgid "Active RAMSTK Modules"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Options.py:197
+#: src/ramstk/gui/gtk/assistants/Preferences.py:857
+msgid "Select active RAMSTK modules."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/PoF.py:52
+msgid ""
+"RAMSTK Physics of Failure Analysis Operating Stress and Test Method "
+"Addition Assistant"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/PoF.py:66
+msgid "Add stress"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/PoF.py:68
+msgid "Add test method"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/PoF.py:77
+msgid ""
+"This is the RAMSTK Operating Stress and Test Method Addition Assistant.  "
+"Enter the information requested below and then press 'OK' to add a new "
+"design control or action to the RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/PoF.py:89
+msgid "Select to add an operating stress to the selected operating load."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/PoF.py:92
+msgid "Select to add a test method to the selected operating load."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:70
+msgid "Enables/disables the Function module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:74
+msgid "Enables/disables the Requirements module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:78
+msgid "Enables/disables the Hardware module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:82
+msgid "Enables/disables the Validation module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:86
+msgid "Enables/disables the (D)FME(C)A module for this program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:91
+msgid "RAMSTK Configuration File Directory"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:92
+msgid "RAMSTK Data Directory"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:93
+msgid "RAMSTK Icon Directory"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:94
+msgid "RAMSTK Log Directory"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:96
+msgid "RAMSTK Program Directory"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:110
+msgid "Select the Module View layout to edit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:134
+msgid "Select global RAMSTK list to edit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:207
+msgid "Quit the RAMSTK preferences dialog without saving."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:348
+msgid "Condition Description"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:355
+msgid "History Description"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:362
+msgid "Parameter Code"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:363
+msgid "Parameter Description"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:369
+#: src/ramstk/gui/gtk/assistants/Preferences.py:376
+#: src/ramstk/gui/gtk/assistants/Preferences.py:383
+msgid "Name"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:370
+#: src/ramstk/gui/gtk/assistants/Preferences.py:377
+#: src/ramstk/gui/gtk/assistants/Preferences.py:384
+#: src/ramstk/gui/gtk/assistants/Preferences.py:390
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:127
+msgid "Description"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:371
+#: src/ramstk/gui/gtk/assistants/Preferences.py:378
+#: src/ramstk/gui/gtk/assistants/Preferences.py:385
+msgid "Value"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:397
+msgid "First Name"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:398
+msgid "Last Name"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:399
+msgid "User E-Mail"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:400
+msgid "User Phone"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:631
+msgid "There was an error removing an item from the {0:s} RAMSTK global list."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:672
+msgid "There was an error saving user and program preferences."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:824
+msgid "Save the active modules used in this RAMSTK program."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:870
+msgid "Save the user's general preferences."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:903
+msgid "Module Book tab position:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:904
+msgid "Set the position of the RAMSTK Module Book tabs."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:909
+msgid "Work Book tab position:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:910
+msgid "Set the position of the RAMSTK Work Book tabs."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:915
+msgid "List Book tab position:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:916
+msgid "Set the position of the RAMSTK List Book tabs."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:921
+msgid "Report size:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:922
+msgid "Set the default paper size of RAMSK reports."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:927
+msgid "Failure rate multiplier:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:928
+msgid "Set the failure rate multiplier."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:933
+msgid "Decimal places:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:934
+msgid "Set the default number of decimal places displayed in RAMSTK."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:940
+msgid "Reliability estimation time:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:941
+msgid "Set the time at which reliabilities are calculated."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:946
+msgid "Path to RAMSTK configuration files:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:947
+msgid "Set the path to the directory where RAMSTK looks for configuration files."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:953
+msgid "Path to RAMSTK data files:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:954
+msgid ""
+"Set the path to the directory where RAMSTK looks for data files (e.g., "
+"layout formats, icons, etc.)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:960
+msgid "Path to RAMSTK log files:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:961
+msgid "Set the path to the directory where RAMSTK writes log files."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:967
+msgid "Path to RAMSTK analyses:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:968
+msgid "Set the path to the directory where RAMSTK stores analyses databases."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:981
+msgid ""
+"General\n"
+"Preferences"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:983
+msgid "Allows setting general user preferences for RAMSTK."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:996
+msgid "Add an entry to the currently selected global list."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:997
+msgid "Remove the currently selected item from the global list."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:998
+msgid "Save the RAMSTK global lists."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1022
+msgid "Edit RAMSTK Lists"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1031
+msgid "Select RAMSTK list to load:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1057
+msgid "Damaging Operating Conditions"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1058
+msgid "Means for Classifying Load Histories"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1059
+msgid "Measureable Parameters"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1060
+msgid "RPN Detection"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1061
+msgid "RPN Occurrence"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1062
+msgid "RPN Severity"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1063
+msgid "RAMSTK Work Groups"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1064
+msgid "RAMSTK Users"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1068
+msgid "Global RAMSTK Lists"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1070
+msgid "Edit global RAMSTK lists; lists available to all RAMSTK Programs."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1084
+msgid "Save the layout format."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1085
+msgid "Save the look &amp; feel preferences."
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1111
+msgid "Edit Module View Layout and Colors"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1120
+#: src/ramstk/gui/gtk/workviews/Allocation.py:131
+msgid "Allocation"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1121
+msgid "(D)FME(C)A"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1122
+msgid "Functional FMEA"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1125
+#: src/ramstk/gui/gtk/workviews/HazOps.py:115
+msgid "HazOps"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1126
+msgid "Physics of Failure Analysis"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1128
+msgid "Revision"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1129
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:782
+msgid "Similar Item Analysis"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1130
+msgid "Stakeholder Input"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1134
+msgid "Select format file to edit:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1138
+msgid "Revision Tree Background Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1142
+msgid "Revision Tree Foreground Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1146
+msgid "Function Tree Background Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1150
+msgid "Function Tree Foreground Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1154
+msgid "Requirements Tree Background Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1158
+msgid "Requirements Tree Foreground Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1162
+msgid "Hardware Tree Background Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1166
+msgid "Hardware Tree Foreground Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1176
+msgid "Validation  Tree Background Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1180
+msgid "Validation Tree Foreground Color:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1197
+msgid ""
+"Default\n"
+"Title"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1198
+msgid ""
+"User\n"
+"Title"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1199
+msgid ""
+"Column\n"
+"Position"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1200
+msgid ""
+"Can\n"
+"Edit?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1201
+msgid ""
+"Is\n"
+"Visible?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1260
+msgid "Look &amp; Feel"
+msgstr ""
+
+#: src/ramstk/gui/gtk/assistants/Preferences.py:1262
+msgid "Allows setting user interface preferences for RAMSTK."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:57
+msgid "Displays the list of failure definitions for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:65
+msgid ""
+"Failure\n"
+"Definitions"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:71
+msgid "Displays failure definitions for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:153
+msgid ""
+"An error occurred attempting to delete failure definition {0:d} to "
+"Revision {1:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:177
+msgid ""
+"An error occurred attempting to add a failure definition to Revision "
+"{0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:228
+msgid ""
+"An error occurred attempting to save the failure definitions for Revision"
+" {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:248
+msgid "Add a new Failure Definition."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:249
+msgid "Remove the currently selected Failure Definition."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:250
+msgid ""
+"Save the currently selected Failure Definition to the open RAMSTK Program"
+" database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:252
+msgid "Save all of the Failure Definitions to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:254
+msgid "Create the Failure Definition report."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:361
+msgid "Add New Definition"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:371
+msgid "Remove Selected Definition"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:381
+msgid "Save Selected Definition"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:391
+msgid "Save All Definitions"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/FailureDefinition.py:429
+msgid ""
+"An error occured while loading the Failure Definitions for Revision ID "
+"{0:d} into the List View."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:55
+msgid "Displays the list of stakeholder inputs for the selected stakeholder."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:68
+msgid ""
+"Stakeholder\n"
+"Inputs"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:74
+msgid "Displays stakeholder inputs for the selected stakeholder."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:195
+msgid ""
+"An error occurred attempting to delete failure stakeholder {0:d} to "
+"Stakeholder {1:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:219
+msgid ""
+"An error occurred attempting to add a stakeholder input to Stakeholder "
+"{0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:270
+msgid ""
+"An error occurred attempting to save the stakeholder inputs for "
+"Stakeholder {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:289
+msgid "Add a new Stakeholder."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:290
+msgid "Remove the currently selected Stakeholder."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:291
+msgid ""
+"Save the currently selected Stakeholder to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:293
+msgid "Save all of the Stakeholders to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:295
+msgid "Create the Stakeholder report."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:410
+msgid "Add New Stakeholder Input"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:420
+msgid "Remove Selected Stakeholder Input"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:430
+msgid "Save Selected Stakeholder Input"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/Stakeholder.py:440
+msgid "Save All Stakeholder Inputs"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:63
+msgid "Displays the list of usage profiles for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:76
+msgid ""
+"Usage\n"
+"Profiles"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:82
+msgid "Displays usage profiles for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:126
+msgid "Mission ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:128
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:139
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:150
+msgid "Units"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:129
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:140
+msgid "Start Time"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:130
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:141
+msgid "End Time"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:137
+msgid "Phase ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:138
+msgid "  Code\t\tDescription"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:148
+msgid "Environment ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:149
+msgid "Condition"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:151
+msgid "Minimum Value"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:152
+msgid "Maximum Value"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:153
+msgid "Mean Value"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:154
+msgid "Variance"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:291
+msgid ""
+"One or more Usage Profile line items had the wrong data type in it's data"
+" package and is not displayed in the Usage Profile."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:302
+msgid ""
+"One or more Usage Profile line items was missing some of it's data and is"
+" not displayed in the Usage Profile."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:313
+msgid ""
+"One or more Usage Profile line items was missing it's data package and is"
+" not displayed in the Usage Profile."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:354
+msgid "A problem occurred while attempting to delete {0:s} with ID {1:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:405
+msgid "An environmental condition cannot have a child."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:482
+msgid ""
+"Add a new Usage Profile entity at the same level as the currently "
+"selected entity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:484
+msgid ""
+"Add a new Usage Profile entity one level below the currently selected "
+"entity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:486
+msgid "Remove the curently selected entity from the Usage Profile."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:488
+msgid ""
+"Save the currently selected Usage Profile line to the open RAMSTK Program"
+" database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:490
+msgid "Save the Usage Profile to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:492
+msgid "Create the Mission and Usage Profile report."
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:647
+msgid "Add Sibling Entity"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:657
+msgid "Add Child Entity"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:667
+msgid "Remove Selected Entity"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:677
+msgid "Save Usage Profile"
+msgstr ""
+
+#: src/ramstk/gui/gtk/listviews/UsageProfile.py:714
+msgid "Usage Profile for Revision ID {0:d}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/FunctionHardware.py:50
+msgid ""
+"Function\n"
+"Hardware"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/FunctionHardware.py:56
+msgid "Displays function/hardware matrix for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/FunctionHardware.py:106
+msgid "Save the Function:Hardware Matrix to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/FunctionHardware.py:108
+msgid "Create or refresh the Function:Hardware Matrix."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/HardwareRequirement.py:52
+msgid ""
+"Hardware\n"
+"Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/HardwareRequirement.py:57
+msgid "Displays hardware/requirement matrix for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/HardwareRequirement.py:107
+msgid "Save the Hardware:Requirement Matrix to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/HardwareRequirement.py:109
+msgid "Create or refresh the Hardware:Requirement Matrix."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/HardwareValidation.py:51
+msgid ""
+"Hardware\n"
+"Validation"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/HardwareValidation.py:57
+msgid "Displays hardware/validation matrix for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/HardwareValidation.py:107
+msgid "Save the Hardware:Validation Matrix to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/HardwareValidation.py:109
+msgid "Create or refresh the Hardware:Validation Matrix."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementHardware.py:52
+msgid ""
+"Requirement\n"
+"Hardware"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementHardware.py:57
+msgid "Displays requirement/hardware matrix for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementHardware.py:107
+msgid "Save the Requirement:Hardware Matrix to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementHardware.py:109
+msgid "Create or refresh the Requirement:Hardware Matrix."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementSoftware.py:52
+msgid ""
+"Requirement\n"
+"Software"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementSoftware.py:57
+msgid "Displays requirement/software matrix for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementSoftware.py:107
+msgid "Save the Requirement:Software Matrix to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementSoftware.py:109
+msgid "Create or refresh the Requirement:Software Matrix."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementValidation.py:52
+msgid ""
+"Requirement\n"
+"Validation"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementValidation.py:57
+msgid "Displays requirement/validation matrix for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementValidation.py:107
+msgid ""
+"Save the Requirement:Validation Matrix to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/RequirementValidation.py:109
+msgid "Create or refresh the Requirement:Validation Matrix."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/ValidationHardware.py:51
+msgid ""
+"Validation\n"
+"Hardware"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/ValidationHardware.py:57
+msgid "Displays validation/hardware matrix for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/ValidationHardware.py:107
+msgid "Save the Validation:Hardware Matrix to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/ValidationHardware.py:109
+msgid "Create or refresh the Validation:Hardware Matrix"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/ValidationRequirement.py:52
+msgid ""
+"Validation\n"
+"Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/ValidationRequirement.py:57
+msgid "Displays validation/requirement matrix for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/ValidationRequirement.py:107
+msgid ""
+"Save the Validation:Requirement Matrix to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/matrixviews/ValidationRequirement.py:109
+msgid "Create or refresh the Validation:Requirement Matrix."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:55
+msgid "Displays the list of functions."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:63
+msgid "Functions"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:66
+msgid "Displays the program functions."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:164
+msgid ""
+"You are about to delete Function {0:d} and all data associated with it.  "
+"Is this really what you want to do?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:174
+msgid "An error occurred when attempting to delete Function {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:238
+msgid "An error occurred while attempting to add a function to Revision {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:314
+msgid ""
+"Adds a new Function at the same hierarchy level as the selected Function "
+"(i.e., a sibling Function)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:316
+msgid ""
+"Adds a new Function one level subordinate to the selected Function (i.e.,"
+" a child function)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:318
+msgid "Remove the currently selected Function."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:319
+msgid "Save the currently selected Function to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:321
+#: src/ramstk/gui/gtk/workviews/Function.py:208
+msgid "Saves all Functions to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:323
+msgid ""
+"Exports Functions to an external file (CSV, Excel, and text files are "
+"supported)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:404
+msgid "Add Sibling Function"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:414
+msgid "Add Child Function"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:424
+msgid "Remove Selected Function"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:434
+msgid "Save Selected Function"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:444
+msgid "Save All Functions"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Function.py:490
+msgid ""
+"An error occured while loading the Functions for Revision ID {0:d} into "
+"the Module View."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:59
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:71
+msgid "Displays the hierarchical list of hardware items."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:222
+msgid ""
+"You are about to delete Hardware {0:d} and all data associated with it.  "
+"Is this really what you want to do?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:232
+msgid "An error occurred when attempting to delete Hardware {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:308
+msgid ""
+"An error occurred while attempting to add a hardware item to Revision "
+"{0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:394
+msgid ""
+"Adds a new Hardware assembly at the same hierarchy level as the selected "
+"Hardware (i.e., a sibling Hardware)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:396
+msgid ""
+"Adds a new Hardware assembly one level subordinate to the selected "
+"Hardware (i.e., a child hardware)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:398
+msgid ""
+"Adds a new Hardware component/piece-part at the same hierarchy level as "
+"the selected Hardware component/piece-part (i.e., a sibling component"
+"/piece-part)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:401
+msgid ""
+"Adds a new Hardware component/piece-part one level subordinate to "
+"selected Hardware component/piece-part (i.e., a child component/piece-"
+"part)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:404
+msgid "Remove the currently selected Hardware item and any children."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:406
+msgid "Calculate the entire system."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:407
+msgid ""
+"Save the currently selected Hardware item to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:409
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1721
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2661
+msgid "Saves all Hardware items to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:411
+msgid ""
+"Exports Hardware to an external file (CSV, Excel, and text files are "
+"supported)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:497
+msgid "Add Sibling Assembly"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:508
+msgid "Add Child Assembly"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:518
+msgid "Add Sibling Piece Part"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:529
+msgid "Add Child Piece Part"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:540
+msgid "Calculate the System"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:550
+msgid "Remove Selected Hardware"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:560
+msgid "Save Selected Hardware"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:570
+msgid "Save All Hardwares"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Hardware.py:666
+msgid ""
+"An error occured while loading the Hardware for Revision ID {0:d} into "
+"the Module View."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:56
+msgid "Displays the hierarchical list of requirements."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:65
+msgid "Requirements"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:68
+msgid "Displays the program requirements."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:216
+msgid ""
+"You are about to delete Requirement {0:d} and all data associated with "
+"it.  Is this really what you want to do?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:227
+msgid "An error occurred when attempting to delete Requirement {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:297
+msgid "An error occurred while attempting to add a requirement to Revision {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:373
+msgid ""
+"Adds a new Requirement at the same hierarchy level as the selected "
+"Requirement (i.e., a sibling Requirement)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:375
+msgid ""
+"Adds a new Requirement one level subordinate to the selected Requirement "
+"(i.e., a derived requirement)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:377
+msgid "Remove the currently selected Requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:378
+#: src/ramstk/gui/gtk/workviews/Requirement.py:953
+msgid ""
+"Save the currently selected Requirement to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:380
+msgid "Saves all Requirements to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:381
+msgid ""
+"Exports Requirementss to an external file (CSV, Excel, and text files are"
+" supported)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:459
+msgid "Add Sibling Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:469
+msgid "Add Child Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:479
+msgid "Remove Selected Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:489
+msgid "Save Selected Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:499
+msgid "Save All Requirements"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Requirement.py:552
+msgid ""
+"An error occured while loading the Requirements for Revision ID {0:d} "
+"into the Module View."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:53
+msgid "Displays the list of revisions."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:61
+msgid "Revisions"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:64
+msgid "Displays the program revisions."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:233
+msgid ""
+"You are about to delete Revision {0:d} and all data associated with it.  "
+"Is this really what you want to do?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:243
+msgid "An error occurred when attempting to delete Revision {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:270
+msgid "An error occurred while attempting to add a Revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:334
+msgid "Add a new Revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:335
+msgid "Remove the currently selected Revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:336
+msgid "Save the currently selected Revision to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:338
+msgid "Saves all Revisions to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:412
+msgid "Add New Revision"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:422
+msgid "Remove Selected Revision"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:432
+msgid "Save Selected Revision"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:442
+msgid "Save All Revisions"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Revision.py:491
+msgid "An error occured while loading Revisions into the Module View."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:56
+msgid "Displays the list of validation tasks."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:79
+msgid "Displays the program validation tasks."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:220
+msgid ""
+"You are about to delete Validation {0:d} and all data associated with it."
+"  Is this really what you want to do?"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:230
+msgid "An error occurred when attempting to delete Validation {0:d}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:270
+msgid "An error occurred while attempting to add a Validation."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:334
+msgid "Add a new Validation task."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:335
+msgid "Remove the currently selected Validation task1."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:336
+msgid ""
+"Save the currently selected Validation task to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:338
+msgid "Saves all Validation tasks to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:340
+msgid ""
+"Exports Verification tasks to an external file (CSV, Excel, and text "
+"files are supported)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:415
+msgid "Add New Validation"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:425
+msgid "Remove Selected Validation"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:435
+msgid "Save Selected Validation"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:445
+msgid "Save All Validations"
+msgstr ""
+
+#: src/ramstk/gui/gtk/moduleviews/Validation.py:518
+msgid "An error occured while loading Validation Tasks into the Module View."
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ListBook.py:79
+msgid "RAMSTK Lists and Matrices"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:76
+msgid "RAMSTK Module Book"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:126
+msgid "Ready"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:146
+msgid "New _Program"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:155
+msgid "_Open"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:164
+msgid "_Import Project"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:173
+msgid "_Save"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:179
+msgid "_Close"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:186
+msgid "E_xit"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:192
+msgid "_File"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:201
+msgid "_Preferences"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:207
+msgid "_Edit"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:215
+msgid "_Options"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:221
+msgid "_Tools"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:248
+msgid "Create a new RAMSTK Program Database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:259
+msgid "Connect to an existing RAMSTK Program Database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:270
+msgid "Closes the open RAMSTK Program Database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:284
+msgid "Save the currently open RAMSTK Project Database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:299
+msgid "Save the currently open RAMSTK Program Database then quits."
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:311
+msgid "Quits without saving the currently open RAMSTK Program Database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:332
+msgid "Opening Program Database {0:s}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/ModuleBook.py:336
+msgid "RAMSTK - Analyzing {0:s}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/mwi/WorkBook.py:77
+msgid "RAMSTK Work Book"
+msgstr ""
+
+#: src/ramstk/gui/gtk/ramstk/Dialog.py:112
+msgid ""
+"  Check the error log for additional information (if any).  Please e-mail"
+" <span foreground='blue' underline='single'>"
+msgstr ""
+
+#: src/ramstk/gui/gtk/ramstk/Dialog.py:116
+msgid ""
+"bugs@reliaqual.com</a></span> with a detailed description of the problem,"
+" the workflow you are using and the error log attached if the problem "
+"persists.</b>"
+msgstr ""
+
+#: src/ramstk/gui/gtk/ramstk/Dialog.py:160
+msgid "Select Date"
+msgstr ""
+
+#: src/ramstk/gui/gtk/ramstk/Matrix.py:311
+msgid "Partial"
+msgstr ""
+
+#: src/ramstk/gui/gtk/ramstk/Matrix.py:312
+msgid "Complete"
+msgstr ""
+
+#: src/ramstk/gui/gtk/ramstk/Plot.py:227
+msgid "RAMSTK Plot"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:67
+msgid "Displays the Allocation Analysis for the currently selected Hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:76
+msgid "Selects the goal measure for the selected hardware assembly."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:80
+msgid ""
+"Selects the method for allocating the reliability goal for the selected "
+"hardware assembly."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:90
+msgid "Displays the MTBF goal for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:94
+msgid "Displays the reliability goal for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:135
+msgid "Displays the Allocation analysis for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:305
+msgid ""
+"One or more Allocation line items had the wrong data type in it's data "
+"package and is not displayed in the Allocation."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:316
+msgid ""
+"One or more Allocation line items was missing some of it's data and is "
+"not displayed in the Allocation."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:326
+msgid ""
+"One or more Allocation line items was missing it's data package and is "
+"not displayed in the Allocation."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:437
+msgid "Calculate the currently selected child hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:438
+msgid ""
+"Save the currently selected line in the Allocation to the open RAMSTK "
+"Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:440
+msgid "Save the Allocation to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:471
+msgid "Reliability"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:471
+msgid "Hazard Rate"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:471
+msgid "MTBF"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:473
+msgid "Equal Apportionment"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:473
+msgid "AGREE Apportionment"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:474
+msgid "ARINC Apportionment"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:475
+msgid "Feasibility of Objectives"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:479
+msgid "Select Allocation Method"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:481
+msgid "Select Goal Metric"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:483
+msgid "R(t) Goal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:485
+msgid "h(t) Goal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:487
+msgid "MTBF Goal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:490
+msgid "Allocation Goals and Method"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:514
+msgid "Allocation Analysis"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:558
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:836
+msgid "Calculate"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:568
+#: src/ramstk/gui/gtk/workviews/PoF.py:764
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:846
+msgid "Save Selected"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:578
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:856
+msgid "Save Allocation"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Allocation.py:773
+msgid "Allocating Reliability Requirement for Hardware ID {0:d}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:82
+msgid "Calculate Criticality"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:83
+msgid ""
+"Select this option to calculate the (D)FME(C)A MIL-STD-1629, Task 102 "
+"criticality analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:87
+msgid "Calculate RPNs"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:88
+msgid ""
+"Select this option to calculate the (D)FME(C)A risk priority numbers "
+"(RPN)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:94
+msgid ""
+"Displays the MIL-SD-1629, Taks 102 item criticality for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:176
+msgid "{0:s}: {1:g}\n"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:227
+msgid "A FMEA control or an action cannot have a child entity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:323
+msgid "Add a new FMEA entity at the same level as the currently selected entity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:325
+msgid "Add a new FMEA entity one level below the currently selected entity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:327
+msgid "Remove the selected entity from the FMEA."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:328
+msgid "Calculate the FMEA."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:329
+msgid "Save the FMEA to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:363
+msgid "Failure Mode and Effects Analysis (FMEA)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:407
+#: src/ramstk/gui/gtk/workviews/PoF.py:734
+msgid "Add Sibling"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:417
+#: src/ramstk/gui/gtk/workviews/PoF.py:744
+msgid "Add Child"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:427
+#: src/ramstk/gui/gtk/workviews/PoF.py:754
+msgid "Remove Selected"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:437
+msgid "Calculate FMEA"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:447
+msgid "Save"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:492
+msgid ""
+"Displays the Functional Failure Mode and Effects Analysis (FFMEA) for the"
+" currently selected Function."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:508
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1011
+msgid "FMEA"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:512
+msgid ""
+"Displays the Functional Failure Mode and Effects Analysis (FFMEA) for the"
+" selected function."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:551
+msgid "Mode ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:562
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1100
+msgid "Cause ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:563
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1101
+msgid ""
+"Failure\n"
+"Cause"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:568
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1113
+msgid "Control ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:569
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1114
+msgid ""
+"Existing\n"
+"Control"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:574
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1122
+msgid "Action ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:575
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1123
+msgid ""
+"Recommended\n"
+"Action"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:736
+msgid ""
+"One or more Functional FMEA line items had the wrong data type in it's "
+"data package and is not displayed in the FMEA form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:747
+msgid ""
+"One or more Functional FMEA line items was missing some of it's data and "
+"is not displayed in the FMEA form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:759
+msgid ""
+"One or more Functional FMEA line items was missing it's data package and "
+"is not displayed in the FMEA form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:946
+msgid "Analyzing Failure Modes for Function ID {0:d}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:990
+msgid ""
+"Displays the (Design) Failure Mode and Effects (and Criticality) Analysis"
+" [(D)FME(C)A] for the currently selected Hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1015
+msgid ""
+"Displays the Design Failure Mode, Effects, (and Criticality) Analysis "
+"[(D)FME(C)A] for the selected Hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1086
+#: src/ramstk/gui/gtk/workviews/PoF.py:278
+msgid "Mechanism ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1087
+#: src/ramstk/gui/gtk/workviews/PoF.py:279
+msgid ""
+"Failure\n"
+"Mechanism"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1462
+msgid ""
+"One or more Hardware FMEA line items had the wrong data type in it's data"
+" package and is not displayed in the FMEA form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1473
+msgid ""
+"One or more Hardware FMEA line items was missing some of it's data and is"
+" not displayed in the FMEA form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1485
+msgid ""
+"One or more Hardware FMEA line items was missing it's data package and is"
+" not displayed in the FMEA form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/FMEA.py:1834
+msgid "Analyzing Failure Modes for Hardware ID {0:d}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:63
+msgid "Function Code:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:64
+msgid "Function Description:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:65
+#: src/ramstk/gui/gtk/workviews/Hardware.py:159
+#: src/ramstk/gui/gtk/workviews/Revision.py:56
+#: src/ramstk/gui/gtk/workviews/WorkView.py:96
+msgid "Remarks:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:79
+msgid "Function is safety critical."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:80
+msgid "Indicates whether or not the selected function is safety critical."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:84
+msgid "A unique code for the selected function."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:86
+msgid "The name of the selected function."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:90
+msgid "Enter any remarks associated with the selected function."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:206
+msgid "Saves the currently selected Function to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:234
+#: src/ramstk/gui/gtk/workviews/Requirement.py:417
+#: src/ramstk/gui/gtk/workviews/Revision.py:206
+msgid "General Information"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:249
+#: src/ramstk/gui/gtk/workviews/Hardware.py:778
+#: src/ramstk/gui/gtk/workviews/Requirement.py:441
+#: src/ramstk/gui/gtk/workviews/Revision.py:220
+#: src/ramstk/gui/gtk/workviews/Validation.py:751
+msgid ""
+"General\n"
+"Data"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:253
+msgid "Displays general information for he selected function."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:408
+msgid "Total Mode Count:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Function.py:423
+msgid ""
+"Displays the total number of failure modes associated with the selected "
+"Function."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:139
+msgid "Part Number:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:140
+msgid "Alternate Part Number:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:141
+msgid "Name:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:142
+msgid "Description:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:143
+msgid "Reference Designator:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:144
+msgid "Composite Ref. Des."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:145
+msgid "Category:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:146
+msgid "Subcategory:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:147
+#: src/ramstk/gui/gtk/workviews/Requirement.py:93
+#: src/ramstk/gui/gtk/workviews/Validation.py:96
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:231
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:180
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:99
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:142
+msgid "Specification:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:148
+#: src/ramstk/gui/gtk/workviews/Requirement.py:94
+msgid "Page Number:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:149
+#: src/ramstk/gui/gtk/workviews/Requirement.py:95
+msgid "Figure Number:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:150
+msgid "LCN:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:152
+msgid "Manufacturer:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:153
+msgid "CAGE Code:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:154
+msgid "NSN:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:155
+msgid "Year Made:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:156
+msgid "Quantity:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:157
+msgid "Unit Cost:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:158
+msgid "Cost Method:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:159
+msgid "Attachments:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:190
+msgid "Repairable"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:191
+msgid "Indicates whether or not the selected hardware item is repairable."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:193
+msgid "Tagged Part"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:201
+msgid "The alternate part number (if any) of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:207
+msgid "Hyperlinks to any documents associated with the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:210
+msgid ""
+"The Commerical and Government Entity (CAGE) Code of the selected hardware"
+" item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:215
+msgid "The composite reference designator of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:220
+msgid "The unit cost of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:224
+msgid "The description of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:226
+msgid ""
+"The figure number in the governing specification for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:232
+msgid "The Logistics Control Number (LCN) of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:236
+msgid "The name of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:238
+msgid "The National Stock Number (NSN) of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:241
+msgid ""
+"The page number in the governing specification for the selected hardware "
+"item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:246
+msgid "The part number of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:249
+msgid "The number of the selected hardware items in the design."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:252
+msgid "The reference designator of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:257
+msgid "Enter any remarks associated with the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:260
+msgid "The specification (if any) governing the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:264
+msgid "The year the the selected hardware item was manufactured."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:648
+msgid "Creates the composite reference designator for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:650
+msgid "Saves the currently selected Hardware to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:652
+msgid "Saves all Hardware to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:699
+msgid "Hardware Description"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:735
+msgid "Purchasing Information"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:756
+msgid "Miscellaneous Information"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:782
+msgid "Displays general information for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1153
+msgid "Assessment Type:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1154
+msgid "Assessment Method:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1155
+msgid "Failure Distribution:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1156
+msgid "Scale Parameter:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1157
+msgid "Shape Parameter:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1158
+msgid "Location Parameter:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1159
+msgid "Stated Hazard Rate [h(t)]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1160
+msgid "Stated h(t) Variance:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1161
+msgid "Stated MTBF:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1162
+msgid "Stated MTBF Variance:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1163
+msgid "Additive Adjustment Factor:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1164
+msgid "Multiplicative Adjustment Factor:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1166
+msgid "Active Environment:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1167
+msgid "Dormant Environment:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1168
+msgid "Active Temperature (°C):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1169
+msgid "Dormant Temperature (°C):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1170
+msgid "Mission Time:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1171
+msgid "Duty Cycle:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1196
+msgid "The operating environment for the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1198
+msgid "The storage environment for the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1200
+msgid "The statistical failure distribution of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1203
+msgid "The type of reliability assessment for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1207
+msgid "The assessment method to use for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1216
+msgid "The ambient temperature in the operating environment."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1220
+msgid "An adjustment factor to add to the assessed hazard rate or MTBF."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1225
+msgid "The ambient temperature in the storage environment."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1228
+msgid "The duty cycle of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1231
+msgid "The scale parameter of the statistical failure distribution."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1236
+msgid "The shape parameter of the statistical failure distribution."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1241
+msgid "The location parameter of the statistical failure distribution."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1245
+msgid "The mission time of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1248
+msgid "An adjustment factor to multiply the assessed hazard rate or MTBF by."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1252
+msgid "The stated hazard rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1254
+msgid "The variance of the stated hazard rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1257
+msgid "The stated mean time between failure (MTBF)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1260
+msgid "The variance of the stated mean time between failure (MTBF)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1610
+msgid ""
+"An error occurred when attempting to calculate Hardware {0:d}. \n"
+"\n"
+"\t\n"
+"\n"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1718
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2658
+msgid "Calculate the currently selected Hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1719
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2659
+msgid ""
+"Saves the currently selected Hardware item to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1762
+msgid "Assessment Inputs"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1789
+msgid "Design Ratings"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1798
+msgid "Environmental Inputs"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1818
+msgid "Operating Stresses"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1826
+msgid ""
+"Assessment\n"
+"Inputs"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:1830
+msgid "Displays reliability assessment inputs for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2153
+msgid "Active Failure Intensity [λ(t)]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2154
+msgid "Dormant λ(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2155
+msgid "Software λ(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2156
+msgid "Logistics λ(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2157
+msgid "Mission λ(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2158
+msgid "Percent λ(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2159
+msgid "Logistics MTBF:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2160
+#: src/ramstk/gui/gtk/workviews/WorkView.py:118
+msgid "Mission MTBF:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2161
+msgid "Logistics Reliability [R(t)]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2162
+#: src/ramstk/gui/gtk/workviews/WorkView.py:120
+msgid "Mission R(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2164
+msgid "Logistics Availability [A(t)]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2165
+#: src/ramstk/gui/gtk/workviews/WorkView.py:128
+msgid "Mission A(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2166
+#: src/ramstk/gui/gtk/workviews/WorkView.py:129
+msgid "Total Cost:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2167
+#: src/ramstk/gui/gtk/workviews/WorkView.py:130
+msgid "Cost/Failure:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2168
+#: src/ramstk/gui/gtk/workviews/WorkView.py:131
+msgid "Cost/Hour:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2169
+msgid "Total # of Parts:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2200
+msgid "Displays the active failure intensity for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2206
+msgid ""
+"Displays the variance on the active failure intensity for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2211
+msgid "Displays the cost per failure of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2216
+msgid ""
+"Displays the failure cost per operating hour for the selected hardware "
+"item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2222
+msgid "Displays the dormant failure intensity for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2228
+msgid ""
+"Displays the variance on the dormant failure intensity for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2235
+msgid "Displays the logistics availability for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2241
+msgid ""
+"Displays the variance on the logistics availability for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2247
+msgid ""
+"Displays the logistics failure intensity for the selected hardware item."
+"  This is the sum of the active, dormant, and software hazard rates."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2254
+msgid ""
+"Displays the variance on the logistics failure intensity for the selected"
+" hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2260
+msgid ""
+"Displays the logistics mean time between failure (MTBF) for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2266
+msgid ""
+"Displays the variance on the logistics MTBF for the selected hardware "
+"item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2272
+msgid "Displays the logistics reliability for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2278
+msgid ""
+"Displays the variance on the logistics reliability for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2284
+msgid ""
+"Displays the mean corrective maintenance time (MCMT) for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2290
+msgid "Displays the mission availability for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2296
+msgid ""
+"Displays the variance on the mission availability for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2302
+msgid "Displays the mission failure intensity for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2308
+msgid ""
+"Displays the variance on the mission failure intensity for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2314
+msgid ""
+"Displays the mission mean time between failure (MTBF) for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2320
+msgid "Displays the variance on the mission MTBF for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2326
+msgid "Displays the mission reliability for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2332
+msgid ""
+"Displays the variance on the mission reliability for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2338
+msgid ""
+"Displays the mean maintenance time (MMT) for the selected hardware item."
+"  This includes preventive and corrective maintenance."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2345
+msgid ""
+"Displays the mean preventive maintenance time (MPMT) for the selected "
+"hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2351
+msgid "Displays the mean time to repair (MTTR) for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2356
+msgid "Displays the total part count for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2361
+msgid ""
+"Displays the percentage of the system failure intensity the selected "
+"hardware item represents."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2367
+msgid "Displays the software failure intensity for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2372
+msgid "Displays the total cost of the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2606
+msgid ""
+"An error occurred when attempting to calculate Hardware {0:d}. \n"
+"\n"
+"\t\n"
+"\t\n"
+"\n"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2694
+#: src/ramstk/gui/gtk/workviews/WorkView.py:322
+msgid "Reliability Results"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2728
+msgid "Assessment Model Results"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2740
+msgid "Availability Results"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2760
+msgid "Stress Results"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2767
+#: src/ramstk/gui/gtk/workviews/WorkView.py:372
+msgid ""
+"Assessment\n"
+"Results"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Hardware.py:2771
+#: src/ramstk/gui/gtk/workviews/WorkView.py:376
+msgid ""
+"Displays reliability, maintainability, and availability assessment "
+"results for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:69
+msgid "Displays the HazOps Analysis for the currently selected Hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:119
+msgid "Displays the HazOps analysis for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:307
+msgid ""
+"One or more HazOp line items had the wrong data type in it's data package"
+" and is not displayed in the HazOp analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:317
+msgid ""
+"One or more HazOp line items was missing some of it's data and is not "
+"displayed in the HazOp analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:429
+msgid "Calculate the HazOps analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:430
+msgid "Add a hazard to the HazOps analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:431
+msgid ""
+"Remove the selected hazard and all associated data from the HazOps "
+"analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:433
+msgid "Save the selected Hazard to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:435
+msgid ""
+"Save all the Hazards for the selected Hardware item to the open RAMSTK "
+"Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:467
+msgid "HazOps Analysis"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:511
+msgid "Add Hazard"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:521
+msgid "Remove Selected Hazard"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:531
+msgid "Calculate HazOp"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:541
+msgid "Save Selected Hazard"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:551
+msgid "Save All Hazards"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/HazOps.py:581
+msgid "Analyzing Hazards for Hardware ID {0:d}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:76
+msgid ""
+"Displays the Physics of Failure (PoF) Analysis for the currently selected"
+" hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:91
+msgid ""
+"Damage\n"
+"Modeling"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:95
+msgid ""
+"Displays the Physics of Failure (PoF) Analysis for the selected hardware "
+"item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:188
+msgid ""
+"One or more PoF line items had the wrong data type in it's data package "
+"and is not displayed in the PoF form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:199
+msgid ""
+"One or more PoF line items was missing some of it's data and is not "
+"displayed in the PoF form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:211
+msgid ""
+"One or more PoF line items was missing it's data package and is not "
+"displayed in the PoF form."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:285
+msgid ""
+"Operating\n"
+"Load ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:286
+msgid ""
+"Damaging\n"
+"Condition"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:296
+msgid "Stress ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:297
+msgid ""
+"Operating\n"
+"Stress"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:307
+msgid "Test ID"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:308
+msgid ""
+"Existing or\n"
+"Proposed Test"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:451
+msgid ""
+"A Physics of Failure operating stress or test method cannot have a child "
+"entity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:591
+msgid "Add a new PoF entity at the same level as the currently selected entity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:593
+msgid "Add a new PoF entity one level below the currently selected entity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:595
+msgid "Remove the selected entity from the PoF."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:596
+msgid ""
+"Save the currently selected item in the PoF to the RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:598
+msgid "Save the PoF to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:631
+msgid "Physics of Failure (PoF) Analysis"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:774
+msgid "Save All"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/PoF.py:809
+msgid "Analyzing Physics of Failure for Hardware ID {0:d}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:90
+msgid "Requirement Code:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:91
+msgid "Requirement Description:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:92
+msgid "Requirement Type:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:96
+msgid "Priority:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:97
+msgid "Owner:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:98
+msgid "Validated Date:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:113
+msgid "Requirement is derived."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:114
+msgid "Indicates whether or not the selected requirement is derived."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:117
+msgid "Requirement is validated."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:118
+msgid "Indicates whether or not the selected requirement is validated."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:127
+msgid "A unique code for the selected requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:131
+msgid "The description of the selected requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:365
+#: src/ramstk/gui/gtk/workviews/Requirement.py:955
+msgid "Save all Requirement to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:445
+msgid "Displays general information for the selected requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:980
+msgid "1. The requirement clearly states what is needed or desired."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:982
+msgid "2. The requirement is unambiguous and not open to interpretation."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:984
+msgid ""
+"3. All terms that can have more than one meaning are qualified so that "
+"the desired meaning is readily apparent."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:987
+msgid ""
+"4. Diagrams, drawings, etc. are used to increase understanding of the "
+"requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:989
+msgid "5. The requirement is free from spelling and grammatical errors."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:991
+msgid ""
+"6. The requirement is written in non-technical language using the "
+"vocabulary of the stakeholder."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:993
+msgid "7. Stakeholders understand the requirement as written."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:994
+msgid ""
+"8. The requirement is clear enough to be turned over to an independent "
+"group and still be understood."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:996
+msgid ""
+"9. The requirement avoids stating how the problem is to be solved or what"
+" techniques are to be used."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1000
+msgid ""
+"1. Performance objectives are properly documented from the user's point "
+"of view."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1002
+msgid "2. No necessary information is missing from the requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1004
+msgid "3. The requirement has been assigned a priority."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1005
+msgid ""
+"4. The requirement is realistic given the technology that will used to "
+"implement the system."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1007
+msgid ""
+"5. The requirement is feasible to implement given the defined project "
+"time frame, scope, structure and budget."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1010
+msgid ""
+"6. If the requirement describes something as a 'standard' the specific "
+"source is cited."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1012
+msgid "7. The requirement is relevant to the problem and its solution."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1014
+msgid "8. The requirement contains no implied design details."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1015
+msgid "9. The requirement contains no implied implementation constraints."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1017
+msgid "10. The requirement contains no implied project management constraints."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1021
+msgid ""
+"1. The requirement describes a single need or want; it could not be "
+"broken into several different requirements."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1024
+msgid ""
+"2. The requirement requires non-standard hardware or must use software to"
+" implement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1026
+msgid "3. The requirement can be implemented within known constraints."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1028
+msgid "4. The requirement provides an adequate basis for design and testing."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1030
+msgid "5. The requirement adequately supports the business goal of the project."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1032
+msgid ""
+"6. The requirement does not conflict with some constraint, policy or "
+"regulation."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1034
+msgid "7. The requirement does not conflict with another requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1036
+msgid "8. The requirement is not a duplicate of another requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1038
+msgid "9. The requirement is in scope for the project."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1041
+msgid ""
+"1. The requirement is verifiable by testing, demonstration, review, or "
+"analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1043
+msgid ""
+"2. The requirement lacks 'weasel words' (e.g. various, mostly, suitable, "
+"integrate, maybe, consistent, robust, modular, user-friendly, superb, "
+"good)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1047
+msgid "3. Any performance criteria are quantified such that they are testable."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1049
+msgid ""
+"4. Independent testing would be able to determine whether the requirement"
+" has been satisfied."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1051
+msgid ""
+"5. The task(s) that will validate and verify the final design satisfies "
+"the requirement have been identified."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1054
+msgid ""
+"6. The identified V&amp;V task(s) have been added to the validation plan "
+"(e.g., DVP)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1072
+msgid "Clarity of Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1084
+msgid "Completeness of Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1099
+msgid "Consistency of Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1111
+msgid "Verifiability of Requirement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1185
+msgid "Analysis"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Requirement.py:1188
+msgid "Analyzes the selected requirement."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:54
+msgid "Revision Code:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:55
+msgid "Revision Name:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:68
+msgid "A unique code for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:70
+msgid "The name of the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:74
+msgid "Enter any remarks associated with the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:177
+msgid "Saves the currently selected Revision to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:179
+msgid "Save all Revisions to the open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:224
+msgid "Displays general information for the selected revision."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Revision.py:403
+msgid "RAMSTK Work Book: Revision (Analyzing {0:s})"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:87
+msgid ""
+"Displays the Similar Item Analysis for the currently selected Hardware "
+"item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:96
+msgid "Select the similar item analysis method."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:117
+msgid "SimilarItem"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:121
+msgid "Displays the Similar Item analysis for the selected hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:420
+msgid ""
+"One or more Similar Item line items had the wrong data type in it's data "
+"package and is not displayed in the Similar Item analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:432
+msgid ""
+"One or more Similar Item line items was missing some of it's data and is "
+"not displayed in the Similar Item analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:444
+msgid ""
+"One or more Similar Item line items was missing it's data package and is "
+"not displayed in the Similar Item analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:500
+msgid "RAMSTK - Edit Similar Item Analysis Functions"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:502
+msgid ""
+"You can define up to five functions.  You can use the system failure "
+"rate, selected assembly failure rate, the change factor, the user float, "
+"the user integer values, and results of other functions.\n"
+"\n"
+"         System hazard rate is hr_sys\n"
+"         Assembly hazard rate is hr\n"
+"         Change factor is pi[1-8]\n"
+"         User float is uf[1-3]\n"
+"         User integer is ui[1-3]\n"
+"         Function result is res[1-5]"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:518
+msgid ""
+"For example, pi1*pi2+pi3, multiplies the first two change factors and "
+"adds the value to the third change factor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:537
+msgid "User function 1:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:545
+msgid "User function 2:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:552
+msgid "User function 3:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:559
+msgid "User function 4:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:566
+msgid "User function 5:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:573
+msgid "Apply to all assemblies."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:709
+msgid "Edit the Similar Item analysis functions."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:710
+msgid "Calculate the Similar Item analysis."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:711
+msgid ""
+"Save the selected Similar Item analysis to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:713
+msgid ""
+"Save all the Similar Item analyses for the selected Hardware item to the "
+"open RAMSTK Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:742
+msgid "Topic 633"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:743
+msgid "User-Defined"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:747
+msgid "Select Method"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:750
+msgid "Similar Item Method"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:826
+msgid "Edit Function"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/SimilarItem.py:943
+msgid "Similar Item Analysis for Hardware ID {0:d}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:93
+msgid "Task ID:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:94
+msgid "Task Description:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:95
+msgid "Task Type:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:97
+msgid "Measurement Unit:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:98
+msgid "Minimum Acceptable:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:99
+msgid "Maximum Acceptable:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:100
+msgid "Mean Acceptable:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:101
+msgid "Variance:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:103
+msgid "Start Date:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:104
+msgid "End Date:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:105
+msgid "% Complete:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:106
+msgid "Minimum Task Time:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:107
+msgid "Most Likely Task Time:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:108
+msgid "Maximum Task Time:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:109
+msgid "Task Time (95% Confidence):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:110
+msgid "Minimum Task Cost:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:111
+msgid "Most Likely Task Cost:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:112
+msgid "Maximum Task Cost:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:113
+msgid "Task Cost (95% Confidence):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:115
+msgid "Project Time (95% Confidence):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:116
+msgid "Project Cost (95% Confidence):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:133
+msgid "Launches the calendar to select the date the task was completed."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:136
+msgid "Launches the calendar to select the date the task was started."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:140
+msgid "Selects and displays the type of task for the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:143
+msgid ""
+"Selects and displays the measurement unit for the selected V&amp;V "
+"activity acceptance parameter."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:149
+#, python-format
+msgid "Displays % complete of the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:154
+msgid "Displays the ID of the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:157
+msgid "Displays the maximum acceptable value for the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:162
+msgid "Displays the mean acceptable value for the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:167
+msgid "Displays the minimum acceptable value for the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:172
+msgid "Displays the acceptable variance for the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:175
+msgid ""
+"Displays the internal or industry specification or procedure governing "
+"the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:181
+msgid "Displays the description of the selected V&amp;V activity."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:185
+msgid "Displays the date the selected V&amp;V activity is scheduled to end."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:189
+msgid "Displays the date the selected V&amp;V activity is scheduled to start."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:193
+msgid "Minimum person-time needed to complete the selected task."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:197
+msgid "Most likely person-time needed to complete the selected task."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:202
+msgid "Maximum person-time needed to complete the selected task."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:205
+msgid "Minimim cost of the selected task."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:207
+msgid "Most likely cost of the selected task."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:209
+msgid "Maximum cost of the selected task."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:506
+msgid ""
+"An error occurred when attempting to calculate Validation {0:d}. \n"
+"\n"
+"\t\n"
+"\n"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:655
+msgid "Task Description"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:690
+msgid "Task Effort"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:730
+msgid "Project Effort"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:755
+msgid "Displays general information for the selected validation."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:770
+msgid ""
+"Calculate the cost and time of the currently selected Validation task "
+"only."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:772
+#: src/ramstk/gui/gtk/workviews/Validation.py:1344
+msgid "Calculate the cost and time of the program (i.e., all Validation tasks)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:774
+msgid ""
+"Saves the currently selected Validation to the open RAMSTK Program "
+"database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:776
+#: src/ramstk/gui/gtk/workviews/Validation.py:1347
+msgid ""
+"Saves all the Validation tasks and Program results to the open RAMSTK "
+"Program database."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1240
+msgid ""
+"Actual program status information is not available.  You must calculate "
+"the program to make this information available for plotting."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1283
+msgid "Total Validation Effort"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1285
+msgid "Total Time [hours]"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1286
+msgid "Maximum Expected Time"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1286
+msgid "Mean Expected Time"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1287
+msgid "Minimum Expected Time"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1287
+msgid "Actual Remaining Time"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1316
+msgid "Program Validation Effort"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1323
+msgid ""
+"Program\n"
+"Validation\n"
+"Progress"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1329
+msgid ""
+"Shows a plot of the total expected time to complete all V&amp;V tasks and"
+" the current progress."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/Validation.py:1346
+msgid "Load the planned and actual burndown curves."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:94
+msgid "{0:s} Code:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:95
+msgid "{0:s} Name:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:112
+msgid "Active Failure Intensity [Λ(t)]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:113
+msgid "Dormant Λ(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:114
+msgid "Software Λ(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:115
+msgid "Predicted h(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:116
+msgid "Mission h(t):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:117
+msgid "MTBF:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:119
+msgid "Reliability [R(t)]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:121
+msgid "Total Parts:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:123
+msgid "Mean Preventive Maintenance Time [MPMT]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:124
+msgid "Mean Corrective Maintenance Time [MCMT]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:125
+msgid "Mean Time to Repair [MTTR]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:126
+msgid "Mean Maintenance Time [MMT]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:127
+msgid "Availability [A(t)]:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:153
+msgid "A unique code for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:157
+msgid "The name of the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:162
+msgid "Enter any remarks associated with the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:170
+msgid "Displays the active failure intensity for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:177
+msgid "Displays the dormant failure intensity for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:184
+msgid "Displays the software failure intensity for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:191
+msgid ""
+"Displays the logistics failure intensity for the selected {0:s}.  This is"
+" the sum of the active, dormant, and software hazard rates."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:202
+msgid "Displays the mission failure intensity for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:209
+msgid ""
+"Displays the logistics mean time between failure (MTBF) for the selected "
+"{0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:216
+msgid ""
+"Displays the mission mean time between failure (MTBF) for the selected "
+"{0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:224
+msgid "Displays the logistics reliability for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:231
+msgid "Displays the mission reliability for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:239
+msgid ""
+"Displays the mean preventive maintenance time (MPMT) for the selected "
+"{0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:246
+msgid ""
+"Displays the mean corrective maintenance time (MCMT) for the selected "
+"{0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:253
+msgid "Displays the mean time to repair (MTTR) for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:260
+msgid ""
+"Displays the mean maintenance time (MMT) for the selected {0:s}.  This "
+"includes preventive and corrective maintenance."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:269
+msgid "Displays the logistics availability for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:277
+msgid "Displays the mission availability for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:283
+msgid "Displays the total part count for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:289
+msgid "Displays the total cost of the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:295
+msgid "Displays the cost per failure of the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:301
+msgid "Displays the failure cost per operating hour for the selected {0:s}."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/WorkView.py:350
+msgid "Maintainability Results"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:67
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:68
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:71
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:75
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:77
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:78
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:82
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:84
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:87
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:91
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:95
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:97
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:100
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:104
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:106
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:107
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:108
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:109
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:110
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:306
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:91
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:92
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:93
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:273
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:66
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:67
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:171
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:59
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:60
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:128
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:120
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:69
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:70
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:228
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:65
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:67
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:68
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:69
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:70
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:71
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:72
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:73
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:74
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:75
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:76
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:77
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:78
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:79
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:80
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:208
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:83
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:84
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:85
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:86
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:87
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:88
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:89
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:90
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:91
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:92
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:93
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:94
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:277
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:160
+msgid "Lower"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:68
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:94
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:103
+msgid "Non-Established Reliability"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:71
+msgid "MIL-C-19978 Non-Established Reliability"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:75
+msgid "MIL-C-18312 Non-Established Reliability"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:81
+msgid "MIL-C-5 Non-Established Reliability, Dipped"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:82
+msgid "MIL-C-5 Non-Established Reliability, Molded"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:87
+msgid "MIL-C-11272 Non-Established Reliability"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:91
+msgid "MIL-C-11015 Non-Established Reliability"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:100
+msgid "MIL-C-3965 Non-Established Reliability"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:141
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:144
+msgid "Characteristic E"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:141
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:146
+msgid "Characteristic K"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:142
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:148
+msgid "Characteristic P"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:142
+msgid "Characteristic W"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:144
+msgid "Characteristic F"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:145
+msgid "Characteristic G"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:146
+msgid "Characteristic L"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:147
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:155
+msgid "Characteristic M"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:148
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:156
+msgid "Characteristic Q"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:149
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:157
+msgid "Characteristic S"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:149
+msgid "Characteristic T"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:150
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:155
+msgid "Characteristic N"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:150
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:156
+msgid "Characteristic R"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:151
+msgid "Characteristic 1"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:151
+msgid "Characteristic 9"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:152
+msgid "Characteristic 10"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:152
+msgid "Characteristic 12"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:153
+msgid "Characteristic 19"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:153
+msgid "Characteristic 29"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:154
+msgid "Characteristic 49"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:154
+msgid "Characteristic 59"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:159
+msgid "Temperature Range M"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:159
+msgid "Temperature Range N"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:160
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:161
+msgid "Temperature Range O"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:160
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:161
+msgid "Temperature Range P"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:162
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:138
+msgid "Other"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:163
+msgid "Temperature Range C"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:163
+msgid "Temperature Range D"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:164
+msgid "All"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:165
+msgid "Type A Rated Temperature"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:166
+msgid "Type B Rated Temperature"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:167
+msgid "Type C Rated Temperature"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:202
+msgid "Style 16"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:202
+msgid "Style 17"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:202
+msgid "Style 71"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:203
+msgid "All Others"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:207
+msgid "Style G"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:207
+msgid "Style H"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:207
+msgid "Style J"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:208
+msgid "Style L"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:208
+msgid "Style Q"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:208
+msgid "Style T"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:230
+msgid "Capacitance (F):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:232
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:144
+msgid "Style:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:233
+msgid "Configuration:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:234
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:104
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:157
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:145
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:187
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:99
+msgid "Construction:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:235
+msgid "Equivalent Series Resistance (Ω):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:249
+msgid "The governing specification for the capacitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:251
+msgid "The style of the capacitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:255
+msgid "The configuration of the capacitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:259
+msgid "The method of construction of the capacitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:263
+msgid "The capacitance rating (in farads) of the capacitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:266
+msgid "The equivalent series resistance of the capcaitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:321
+msgid "Slug, All Tantalum"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:322
+msgid "Foil, Hermetic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:323
+msgid "Slug, Hermetic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:323
+msgid "Foil, Non-Hermetic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:324
+msgid "Slug, Non-Hermetic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:326
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:210
+msgid "Fixed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:326
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:210
+msgid "Variable"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:644
+msgid "The assessment model used to calculate the capacitor failure rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:656
+msgid "The capacitance factor for the capacitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:661
+msgid "The configuration factor for the capacitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Capacitor.py:666
+msgid "The construction factor for the capacitor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:66
+msgid "Quality Level:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:84
+msgid "The quality level of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:261
+msgid "Minimum Rated Temperature (°C):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:262
+msgid "Knee Temperature (°C):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:263
+msgid "Maximum Rated Temperature (°C):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:264
+msgid "Rated Current (A):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:265
+msgid "Operating Current (A):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:266
+msgid "Rated Power (W):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:267
+msgid "Operating Power (W):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:268
+msgid "Rated Voltage (V):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:269
+msgid "Operating ac Voltage (V):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:270
+msgid "Operating DC Voltage (V):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:304
+msgid "The minimum rated temperature (in °C) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:308
+msgid ""
+"The break temperature (in °C) of the hardware item beyond which it must "
+"be derated."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:313
+msgid "The maximum rated temperature (in °C) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:318
+msgid "The rated current (in A) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:321
+msgid "The operating current (in A) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:324
+msgid "The rated power (in W) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:327
+msgid "The operating power (in W) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:330
+msgid "The rated voltage (in V) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:333
+msgid "The operating ac voltage (in V) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:337
+msgid "The operating DC voltage (in V) of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:597
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:386
+msgid "The assessment model used to calculate the hardware item failure rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:611
+msgid "The base hazard rate of the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:616
+msgid "The quality factor for the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:621
+msgid "The environment factor for the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:673
+msgid "Missing Model"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:716
+msgid "Current Ratio:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:717
+msgid "Power Ratio:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:718
+msgid "Voltage Ratio:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:719
+msgid "Overstress Reason:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:754
+msgid "Overstressed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:755
+msgid "Indicates whether or not the selected hardware item is overstressed."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:761
+msgid "The ratio of operating current to rated current for the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:767
+msgid "The ratio of operating power to rated power for the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:773
+msgid "The ratio of operating voltage to rated voltage for the hardware item."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:778
+msgid "The reason(s) the selected hardware item is overstressed."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:836
+msgid "Voltage Derating Curve for {0:s} at {1:s}"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:840
+msgid "Harsh Environment"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:841
+msgid "Mild Environment"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:842
+msgid "Voltage Operating Point"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:846
+msgid "Temperature (⁰C)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:848
+msgid "Voltage Ratio"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Component.py:906
+msgid "Derating Curve and Operating Point"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:93
+msgid "MIL-SPEC or comparable IPC standards"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:94
+msgid "Automated"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:94
+msgid "Manual, Upper"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:94
+msgid "Manual, Standard"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:95
+msgid "Manual, Lower"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:99
+msgid "Rack and Panel"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:99
+msgid "Circular"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:99
+msgid "Power"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:100
+msgid "Coaxial"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:100
+msgid "Triaxial"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:101
+msgid "PWA/PCB with PTHs"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:102
+msgid "Discrete Wiring with Electroless Deposited PTH (<3 Levels of Circuitry)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:105
+msgid "Hand Solder w/o Wrapping"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:105
+msgid "Hand Solder w/ Wrapping"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:106
+msgid "Crimp"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:106
+msgid "Weld"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:106
+msgid "Solderless Wrap"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:107
+msgid "Clip Termination"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:107
+msgid "Reflow Solder"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:111
+msgid "MIL-C-24308"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:111
+msgid "MIL-C-28748"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:111
+msgid "MIL-C-28804"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:112
+msgid "MIL-C-83513"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:112
+msgid "MIL-C-83733"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:113
+msgid "MIL-C-5015"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:113
+msgid "MIL-C-26482"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:113
+msgid "MIL-C-28840"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:114
+msgid "MIL-C-38999"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:114
+msgid "MIL-C-81511"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:114
+msgid "MIL-C-83723"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:115
+msgid "MIL-C-3767"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:115
+msgid "MIL-C-22992"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:116
+msgid "MIL-C-3607"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:116
+msgid "MIL-C-3643"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:116
+msgid "MIL-C-3650"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:117
+msgid "MIL-C-3655"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:117
+msgid "MIL-C-25516"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:117
+msgid "MIL-C-39012"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:118
+msgid "MIL-C-55235"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:118
+msgid "MIL-C-55339"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:119
+msgid "MIL-C-49142"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:121
+msgid "Vitreous Glass"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:121
+msgid "Alumina Ceramic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:122
+msgid "Polyimide"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:123
+msgid "Diallylphtalate"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:123
+msgid "Melamine"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:124
+msgid "Flourosilicone"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:124
+msgid "Silicone Rubber"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:125
+msgid "Polysulfone"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:125
+msgid "Epoxy Resin"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:126
+msgid "Polytetraflourethylene (Teflon)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:127
+msgid "Chlorotriflourethylene (Kel-f)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:128
+msgid "Polyamide (Nylon)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:129
+msgid "Polychloroprene (Neoprene)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:129
+msgid "Polyethylene"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:179
+msgid "Connector Type:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:181
+msgid "Insert Material:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:182
+msgid "Contact Gauge:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:183
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:141
+msgid "Active Pins:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:184
+msgid "Amperes/Contact:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:185
+msgid "Mating/Unmating Cycles (per 1000 hours):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:186
+msgid "Number of Wave Soldered PTH:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:187
+msgid "Number of Hand Soldered PTH:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:188
+msgid "Number of Circuit Planes:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:200
+msgid "The type of connector/connection."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:204
+msgid "The governing specification for the connection."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:206
+msgid "The connector insert material."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:210
+msgid "The gauge of the contacts in the connector."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:213
+msgid "The number of active pins in the connector."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:215
+msgid "The amperes per active contact."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:218
+msgid ""
+"The number of connector mate and unmate cycles per 1000 hours of "
+"operation."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:222
+msgid "The number of wave soldered PTH connections."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:225
+msgid "The number of hand soldered PTH connections."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:228
+msgid "The number of circuit planes for wave soldered connections."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:646
+msgid "The assessment model used to calculate the connection failure rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:658
+msgid "The mating/unmating factor for the connection."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:663
+msgid "The active pins factor for the connection."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Connection.py:668
+msgid "The complexity factor for the connection."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:76
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:82
+msgid "Insulation Class A"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:76
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:82
+msgid "Insulation Class B"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:77
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:83
+msgid "Insulation Class C"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:78
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:84
+msgid "Insulation Class O"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:78
+msgid "Insulation Class Q"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:79
+msgid "Insulation Class R"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:80
+msgid "Insulation Class S"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:80
+msgid "Insulation Class T"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:81
+msgid "Insulation Class U"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:81
+msgid "Insulation Class V"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:83
+msgid "Insulation Class F"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:100
+msgid "Insulation Class:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:101
+msgid "Area:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:102
+msgid "Weight:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:103
+msgid "Family:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:116
+msgid "The insulation class of the inductive device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:120
+msgid "The governing specification for the inductive device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:125
+msgid "The application family of the transformer."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:129
+msgid "The method of construction of the coil."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:133
+msgid "The case radiating surface (in square inches) of the inductive device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:136
+msgid "The transformer weight (in lbf)."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:170
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:227
+msgid "Established Reliability"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:196
+msgid "Low Power Pulse Transformer"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:197
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:204
+msgid "Audio Transformer"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:198
+msgid "High Power Pulse and Power Transformer, Filter"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:199
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:206
+msgid "RF Transformer"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:201
+msgid "RF Coils, Fixed or Molded"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:202
+msgid "RF Coils, Variable"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:204
+msgid "Pulse Transformer"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:205
+msgid "Power Transformer or Filter"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:464
+msgid ""
+"The assessment model used to calculate the inductive device's failure "
+"rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Inductor.py:476
+msgid "The construction factor for the coil."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:107
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:111
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:112
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:113
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:114
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:115
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:116
+msgid "Bipolar"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:117
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:121
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:318
+msgid "Digital"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:122
+msgid "Logic and Custom"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:122
+msgid "Gate Array"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:137
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:184
+msgid "Package:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:138
+msgid "Die Area:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:139
+msgid "N Elements:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:140
+msgid "Θ<sub>JC</sub>:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:142
+msgid "Technology:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:143
+msgid "Years in Production:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:144
+msgid "Construction"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:145
+msgid "Programming Cycles:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:146
+msgid "Operating Life:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:147
+msgid "Error Correction Code:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:148
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:65
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:156
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:186
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:98
+msgid "Application:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:149
+msgid "Device Type:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:150
+msgid "Feature Size:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:151
+msgid "Manufacturing Process:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:152
+msgid "ESD Threshold Voltage:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:164
+msgid "The application of the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:168
+msgid "The integrated circuit method of construction."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:173
+msgid "The error correction code used by the EEPROM."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:177
+msgid "The manufacturing process for the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:181
+msgid "The method of construction of the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:186
+msgid "The technology used to construct the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:191
+msgid "The type of GaAs or VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:195
+msgid "The die area (in mil<sup>2</sup>) of the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:199
+msgid "The feature size (in microns) of the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:202
+msgid "The number of active pins on the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:205
+msgid "The total number of programming cycles over the EEPROM life."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:209
+msgid "The number of active elements in the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:212
+msgid "The system lifetime operating hours."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:214
+msgid "The junction to case thermal resistance."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:217
+msgid "The ESD susceptibility threshold voltage of the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:221
+msgid "The number of years the generic device type has been in production."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:281
+msgid "Class S"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:281
+msgid "Class B"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:282
+msgid "Class B-1"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:287
+msgid "Low Noise and Low Power (≤ 100mW)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:288
+msgid "Driver and High Power (> 100mW)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:288
+msgid "Unknown"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:290
+msgid "All digital devices"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:293
+msgid "Textured Poly"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:297
+msgid "No on-chip ECC"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:297
+msgid "On-chip Hamming code"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:298
+msgid "Two-Needs-One redundant cell approach"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:306
+msgid "Hermetic DIP w/ Solder or Weld Seal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:307
+msgid "Hermetic Pin Grid Array (PGA)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:308
+msgid "Hermetic SMT (Leaded and Nonleaded)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:309
+msgid "DIP w/ Glass Seal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:309
+msgid "Flatpacks w/ Axial Leads"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:311
+msgid "Nonhermetic DIP"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:311
+msgid "Nonhermetic Pin Grid Array (PGA)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:312
+msgid "Nonhermetic SMT"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:789
+msgid ""
+"The assessment model used to calculate the integrated circuit failure "
+"rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:801
+msgid "The die complexity hazard rate of the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:807
+msgid "The temperature factor for the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:812
+msgid "The package hazard rate for the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:817
+msgid "The construction factor for the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:822
+msgid "The learning factor for the integrated circuit."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:827
+msgid "The read/write cycling induced hazard rate for the EEPROM."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:833
+msgid "The die base hazard rate for the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:838
+msgid "The manufacturing process correction factor for the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:844
+msgid "The die complexity correction factor for the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:850
+msgid "The package base hazard rate for the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:855
+msgid "The package type correction factor for the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:861
+msgid "The electrical overstress hazard rate for the VLSI device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/IntegratedCircuit.py:867
+msgid "The application correction factor for the GaAs device."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:64
+msgid "AC"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:64
+msgid "Inverter Driver"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:64
+msgid "Commutator DC"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:65
+msgid "Direct Current"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:65
+msgid "Alternating Current"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:82
+msgid "Meter Type:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:83
+msgid "Meter Function:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:95
+msgid "The appliction of the panel meter."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:97
+msgid "The type of meter."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:137
+msgid "Ammeter"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:137
+msgid "Voltmeter"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:307
+msgid "The assessment model used to calculate the meter failure rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:319
+msgid "The application factor for the meter."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:324
+msgid "The function factor for the meter."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Meter.py:329
+msgid "The temperature stress factor for the meter."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:66
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:152
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:143
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:185
+msgid "Type:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:67
+msgid "Operating Frequency:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:68
+msgid "Utilization:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:78
+msgid "The application of the lamp."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:80
+msgid "The type of electronic filter."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:83
+msgid "The operating frequency of the crystal."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:86
+msgid ""
+"The utilization factor (illuminate hours / equipment operate hours) of "
+"the lamp."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:123
+msgid "Incandescent, AC"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:124
+msgid "Incandescent, DC"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:129
+msgid "Ceramic-Ferrite"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:129
+msgid "Discrete LC Components"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:130
+msgid "Discrete LC and Crystal Components"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:133
+msgid "MIL-F-15733 Ceramic-Ferrite"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:134
+msgid "MIL-F-15733 Discrete LC Components"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:135
+msgid "MIL-F-18327 Discrete LC Components"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:136
+msgid "MIL-F-18327 Discrete LC and Crystal Components"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:398
+msgid "The utilization factor for the lamp."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Miscellaneous.py:403
+msgid "The application factor for the lamp."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:74
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:88
+msgid "General Purpose"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:74
+msgid "Contactor, High Current"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:75
+msgid "Latching"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:75
+msgid "Reed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:75
+msgid "Thermal, Bi-Metal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:76
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:108
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:110
+msgid "Meter Movement"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:77
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:82
+msgid "Solid State"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:77
+msgid "Hybrid and Solid State Time Delay"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:81
+msgid "85C Rated"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:81
+msgid "125C Rated"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:82
+msgid "Solid State Time Delay"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:83
+msgid "Hybrid"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:87
+msgid "Dry Circuit"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:88
+msgid "Sensitve (0 - 100mW)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:89
+msgid "Polarized"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:89
+msgid "Vibrating Reed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:89
+msgid "High Speed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:90
+msgid "Thermal Time Delay"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:91
+msgid "Electronic Time Delay, Non-Thermal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:92
+msgid "Latching, Magnetic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:93
+msgid "High Voltage"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:93
+msgid "Medium Power"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:94
+msgid "Contactors, High Current"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:100
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:105
+msgid "Armature (Long)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:100
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:111
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:112
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:114
+msgid "Dry Reed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:101
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:107
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:111
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:114
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:119
+msgid "Mercury Wetted"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:101
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:108
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:120
+msgid "Magnetic Latching"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:102
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:105
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:109
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:115
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:121
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:125
+msgid "Balanced Armature"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:102
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:106
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:121
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:125
+msgid "Solenoid"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:107
+msgid "Armature (LOng and Short)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:110
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:124
+msgid "Armature (Short)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:112
+msgid "Armature (Balanced and Short)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:113
+msgid "Bimetal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:118
+msgid "Vacuum (Glass)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:118
+msgid "Vacuum (Ceramic)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:119
+msgid "Armature (Long and Short)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:120
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:124
+msgid "Mechanical Latching"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:131
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:64
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:65
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:66
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:67
+msgid "Resistive"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:131
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:64
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:65
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:66
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:67
+msgid "Inductive"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:131
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:64
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:65
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:66
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:67
+msgid "Lamp"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:136
+msgid "Signal Current (low mV and mA)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:137
+msgid "0 - 5 Amp"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:137
+msgid "5 - 20 Amp"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:138
+msgid "20 - 600 Amp"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:153
+msgid "Load Type"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:154
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:100
+msgid "Contact Form:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:155
+msgid "Contact Rating:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:158
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:101
+msgid "Number of Cycles/Hour:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:168
+msgid "The relay type."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:172
+msgid "The type of load the relay is switching."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:174
+msgid "The contact form of the relay."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:178
+msgid "The rating of the relay contacts."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:180
+msgid "The type of relay appliction."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:184
+msgid "The method of construction of the relay."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:187
+msgid "The number of relay on/off cycles per hour."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:539
+msgid "The assessment model used to calculate the relay's failure rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:551
+msgid "The contact form factor for the relay."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:556
+msgid "The cycling factor for the relay."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:561
+msgid "The application and construction factor for the relay."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Relay.py:567
+msgid "The load stress factor for the relay."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:126
+msgid "Enclosed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:126
+msgid "Unenclosed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:141
+msgid "Resistance (Ω):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:146
+msgid "Number of Elements:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:158
+msgid "The governing specification for the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:160
+msgid "The type of thermistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:162
+msgid "The style of resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:166
+msgid "The method of construction of the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:169
+msgid "The resistance (in Ω) of the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:172
+msgid ""
+"The number of active resistors in a resistor network or the number of "
+"potentiometer taps."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:230
+msgid "Bead"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:230
+msgid "Disk"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:230
+msgid "Rod"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:542
+msgid "The assessment model used to calculate the resistor failure rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:554
+msgid "The resistance factor for the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:559
+msgid "The temperature factor for the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:564
+msgid "The number of resistors factor for the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:569
+msgid "The potentiometer taps factor for the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:574
+msgid "The voltage factor for the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Resistor.py:579
+msgid "The construction class factor for the resistor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:83
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:84
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:85
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:86
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:87
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:92
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:93
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:94
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:278
+msgid "Plastic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:95
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:273
+msgid "Hermetic Package"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:95
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:274
+msgid "Nonhermetic with Facet Coating"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:96
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:275
+msgid "Nonhermetic without Facet Coating"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:100
+msgid "General Purpose Analog"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:100
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:136
+msgid "Switching"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:101
+msgid "Power Rectifier, Fast Recovery"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:102
+msgid "Power Rectifier/Schottky Power Diode"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:103
+msgid "Power Rectifier with High Voltage Stacks"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:104
+msgid "Transient Suppressor/Varistor"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:104
+msgid "Current Regulator"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:105
+msgid "Voltage Regulator and Voltage Reference (Avalanche and Zener)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:108
+msgid "Si IMPATT (<35 GHz)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:108
+msgid "Gunn/Bulk Effect"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:109
+msgid "Tunnel and Back (Including Mixers, Detectors)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:109
+msgid "PIN"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:110
+msgid ""
+"Schottky Barrier (Including Detectors) and Point Contact (200 MHz < "
+"Frequency < 35MHz)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:112
+msgid "Varactor and Step Recovery"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:113
+msgid "Power NPN/PNP (f < 200 MHz)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:115
+msgid "Gold Metallization"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:115
+msgid "Aluminum Metallization"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:118
+msgid "Photo-Transistor"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:118
+msgid "Photo-Diode"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:119
+msgid "Photodiode Output, Single Device"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:120
+msgid "Phototransistor Output, Single Device"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:121
+msgid "Photodarlington Output, Single Device"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:122
+msgid "Light Sensitive Resistor, Single Device"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:123
+msgid "Photodiode Output, Dual Device"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:124
+msgid "Phototransistor Output, Dual Device"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:125
+msgid "Photodarlington Output, Dual Device"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:126
+msgid "Light Sensitive Resistor, Dual Device"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:127
+msgid "Infrared Light Emitting Diode (IRLED)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:128
+msgid "Light Emitting Diode"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:129
+msgid "Segment Display"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:129
+msgid "Diode Array Display"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:134
+msgid "Varactor, Voltage Control"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:134
+msgid "Varactor, Multiplier"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:135
+msgid "All Other Diodes"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:136
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:138
+msgid "Linear Amplification"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:138
+msgid "Small Signal Switching"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:139
+msgid "Non-Linear (2W < Pr < 5W)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:139
+msgid "Non-Linear (5W < Pr < 50W)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:140
+msgid "Non-Linear (50W < Pr < 250W)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:140
+msgid "Non-Linear (Pr > 250W)"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:141
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:143
+msgid "Pulsed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:142
+msgid "All Lower Power and Pulsed"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:147
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:148
+msgid "Input and Output"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:147
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:148
+msgid "Input Only"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:147
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:148
+msgid "None"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:188
+msgid "Matching Network:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:189
+msgid "Operating Frequency (GHz):"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:190
+msgid "Number of Characters:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:203
+msgid "The package type for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:205
+msgid "The type of semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:209
+msgid "The application of the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:213
+msgid "The method of construction of the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:217
+msgid "The matching network of the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:221
+msgid "The operating frequency of the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:224
+msgid "The number of characters in the optoelectronic display."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:228
+msgid "The junction-case thermal resistance of the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:295
+msgid "Metallurgically Bonded"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:296
+msgid "Non-Metallurgically Bonded and Spring Loaded Contacts"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:312
+msgid "Photodetector"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:312
+msgid "Opto-Isolator"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:313
+msgid "Emitter"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:632
+msgid "The assessment model used to calculate the semiconductor failure rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:644
+msgid "The temperature factor for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:649
+msgid "The application factor for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:654
+msgid "The construction factor for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:659
+msgid "The power rating factor for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:664
+msgid "The matching network factor for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:669
+msgid "The forward current factor for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:674
+msgid "The power degradation factor for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Semiconductor.py:679
+msgid "The electrical stress factor for the semiconductor."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:68
+msgid "Not Used as a Power On/Off Switch"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:69
+msgid "Also Used as a Power On/Off Switch"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:73
+msgid "Snap Action"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:73
+msgid "Non-Snap Action"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:74
+msgid "Actuation Differential > 0.002 inches"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:75
+msgid "Actuation Differential < 0.002 inches"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:76
+msgid "Ceramic RF Wafers"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:76
+msgid "Medium Power Wafers"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:77
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:172
+msgid "Magnetic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:77
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:172
+msgid "Thermal"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:77
+msgid "Thermal-Magnetic"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:102
+msgid "Number of Active Contacts:"
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:112
+msgid "The application of the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:116
+msgid "The construction method for the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:121
+msgid "The contact form and quantity of the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:124
+msgid "The number of cycles per hour of the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:127
+msgid "The number of active contacts in the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:443
+msgid "The assessment model used to calculate the switch failure rate."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:455
+msgid "The cycling factor for the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:460
+msgid "The load stress factor for the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:465
+msgid "The contact form and quantity factor for the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:470
+msgid "The number of active contacts factor for the switch."
+msgstr ""
+
+#: src/ramstk/gui/gtk/workviews/components/Switch.py:475
+msgid "The use factor for the breaker."
+msgstr ""
+

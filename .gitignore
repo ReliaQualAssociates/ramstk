@@ -1,5 +1,6 @@
 # Generic files to ignore
 *~
+*.fuse*
 *.lock
 *.DS_Store
 *.out
@@ -10,42 +11,45 @@
 *.goutputstream*
 *.geanyprj
 *.tox
+*.e5s
+*.geany
 
 # Python specific directories and files to ignore
+build/
+dist/
+.pytest_cache/
 target/
-*.egg-info
+*.egg*
 *.pyc
 *.pyo
 
-# RTK specific directories and files to ignore
+# Sphinx and LaTeX intermediatei, working, and output directories and files to ignore.
+*.aux
+*.dot
+*.log
+*.pdf
+*.synctex.gz
+_build/
+_static/
+_templates/
+
+# RAMSTK specific directories and files to ignore
+.gtm/
 *.csv
 *.glade
+*.html
 *.log
 *.txt
 *.xls*
-.coverage*
-*html
-docs/_temp/
-docs/build/
-docs/generated/
-docs/specs/
-docs/source/_static/
-docs/source/_templates/
-tests/_test_results/
-CodeCounts.sql
-FailureModes.sql
+.coverage
+_temp/
 Makefile
-Notes
-RTKModuleTemplate.py
-RTKUML.xmi
-code.counts
-geany_run_script.sh
 pylintout
-/.eric6project/RTK.e4q
-/.eric6project/RTK.e6t
-/RTK.e4p
-/rtk/hardware/BoM.coverage
-/rtk/hardware/BoM.profile
-/rtk/hardware/BoM.timings
-!license.txt
-!requirements.txt
+coverage.xml
+
+# Override settings for some specific files.
+!/license.txt
+!/requirements_dev.txt
+!/requirements_doc.txt
+!/requirements_run.txt
+/.gtm/

@@ -1,0 +1,172 @@
+<!--
+-*- coding: utf-8 -*-
+
+      FFMEA.xml is part of the RAMSTK Project
+
+      Copyright 2010-2013 Doyle "weibullguy" Rowland
+                          <doyle.rowland@reliaqual.com>
+
+All rights reserved.
+-->
+
+<!-- This file contains information used by the RAMSTK application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="FFMEA">
+        <column>
+            <defaulttitle>Entity ID</defaulttitle>
+            <usertitle>Entity ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Description</defaulttitle>
+            <usertitle>Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>1</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Local Effect</defaulttitle>
+            <usertitle>Local Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Next Effect</defaulttitle>
+            <usertitle>Next Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>End Effect</defaulttitle>
+            <usertitle>End Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>4</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Design Provisions</defaulttitle>
+            <usertitle>Design Provisions</usertitle>
+            <datatype>gchararray</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Operator Actions</defaulttitle>
+            <usertitle>Operator Actions</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity Class</defaulttitle>
+            <usertitle>Severity Class</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Owner</defaulttitle>
+            <usertitle>Action Owner</usertitle>
+            <datatype>gchararray</datatype>
+            <position>8</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Due Date</defaulttitle>
+            <usertitle>Action  Due Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>9</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Status</defaulttitle>
+            <usertitle>Action Status</usertitle>
+            <datatype>gchararray</datatype>
+            <position>10</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Taken</defaulttitle>
+            <usertitle>Action  Taken</usertitle>
+            <datatype>gchararray</datatype>
+            <position>11</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Approved</defaulttitle>
+            <usertitle>Approved</usertitle>
+            <datatype>gint</datatype>
+            <position>12</position>
+            <widget>toggle</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Approval Date</defaulttitle>
+            <usertitle>Approval  Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>13</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Closed</defaulttitle>
+            <usertitle>Closed</usertitle>
+            <datatype>gint</datatype>
+            <position>14</position>
+            <widget>toggle</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Closure Date</defaulttitle>
+            <usertitle>Closure  Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>15</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Remarks</defaulttitle>
+            <usertitle>Remarks</usertitle>
+            <datatype>gchararray</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+    </tree>
+</root>

@@ -1,0 +1,306 @@
+<!--
+-*- coding: utf-8 -*-
+
+      incident_format.xml is part of the RAMSTK Project
+
+      Copyright 2007-2015 Doyle "weibullguy" Rowland <doyle.rowland@reliaqual.com>
+
+      All rights reserved.
+-->
+
+<!-- This file contains information used by the RAMSTK application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="Incidents">
+        <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Incident ID</defaulttitle>
+            <usertitle>Incident ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Incident Category</defaulttitle>
+            <usertitle>Incident Category</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Incident Type</defaulttitle>
+            <usertitle>Incident Type</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Short Description</defaulttitle>
+            <usertitle>Short Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>4</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Long Description</defaulttitle>
+            <usertitle>Long Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Criticality</defaulttitle>
+            <usertitle>Criticality</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Detection Method</defaulttitle>
+            <usertitle>Detection Method</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Remarks</defaulttitle>
+            <usertitle>Remarks</usertitle>
+            <datatype>gchararray</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Status</defaulttitle>
+            <usertitle>Status</usertitle>
+            <datatype>gchararray</datatype>
+            <position>9</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Found During Test</defaulttitle>
+            <usertitle>Found During Test</usertitle>
+            <datatype>gchararray</datatype>
+            <position>10</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Found During Test Case</defaulttitle>
+            <usertitle>Found During Test Case</usertitle>
+            <datatype>gchararray</datatype>
+            <position>11</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Execution Time</defaulttitle>
+            <usertitle>Execution Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>12</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Affected Unit</defaulttitle>
+            <usertitle>Affected Unit</usertitle>
+            <datatype>gchararray</datatype>
+            <position>13</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cost of Incident</defaulttitle>
+            <usertitle>Cost of Incident</usertitle>
+            <datatype>gfloat</datatype>
+            <position>14</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Incident Age</defaulttitle>
+            <usertitle>Incident Age</usertitle>
+            <datatype>gint</datatype>
+            <position>15</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Hardware ID</defaulttitle>
+            <usertitle>Hardware ID</usertitle>
+            <datatype>gint</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Software ID</defaulttitle>
+            <usertitle>Software ID</usertitle>
+            <datatype>gint</datatype>
+            <position>17</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Requested By</defaulttitle>
+            <usertitle>Requested By</usertitle>
+            <datatype>gchararray</datatype>
+            <position>18</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Request Date</defaulttitle>
+            <usertitle>Request Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>19</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reviewed</defaulttitle>
+            <usertitle>Reviewed</usertitle>
+            <datatype>gint</datatype>
+            <position>20</position>
+            <widget>toggle</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reviewed By</defaulttitle>
+            <usertitle>Reviewed By</usertitle>
+            <datatype>gchararray</datatype>
+            <position>21</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Date Reviewed</defaulttitle>
+            <usertitle>Date Reviewed</usertitle>
+            <datatype>gchararray</datatype>
+            <position>22</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Approved</defaulttitle>
+            <usertitle>Approved</usertitle>
+            <datatype>gint</datatype>
+            <position>23</position>
+            <widget>toggle</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Approved By</defaulttitle>
+            <usertitle>Approved By</usertitle>
+            <datatype>gchararray</datatype>
+            <position>24</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Date Approved</defaulttitle>
+            <usertitle>Date Approved</usertitle>
+            <datatype>gchararray</datatype>
+            <position>25</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Closed</defaulttitle>
+            <usertitle>Closed</usertitle>
+            <datatype>gint</datatype>
+            <position>26</position>
+            <widget>toggle</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Closed By</defaulttitle>
+            <usertitle>Closed By</usertitle>
+            <datatype>gchararray</datatype>
+            <position>27</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Date Closed</defaulttitle>
+            <usertitle>Date Closed</usertitle>
+            <datatype>gchararray</datatype>
+            <position>28</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Life Cycle</defaulttitle>
+            <usertitle>Life Cycle</usertitle>
+            <datatype>gchararray</datatype>
+            <position>29</position>
+            <widget>combo</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Analysis</defaulttitle>
+            <usertitle>Analysis</usertitle>
+            <datatype>gchararray</datatype>
+            <position>30</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Accepted</defaulttitle>
+            <usertitle>Accepted</usertitle>
+            <datatype>gint</datatype>
+            <position>31</position>
+            <widget>toggle</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>

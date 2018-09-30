@@ -1,4 +1,0 @@
-*.png filter=fat -crlf
-*.svg filter=fat -crlf
-*.gz filter=fat -crlf
-*.bz2 filter=fat -crlf

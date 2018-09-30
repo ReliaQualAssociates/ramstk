@@ -1,0 +1,92 @@
+version: 1.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+  - develop
+skip_branch_with_pr: true
+platform: x86
+shallow_clone: true
+environment:
+  PYTHON: C:\Python27
+  PYTHON_VERSION: 2.7
+  VENV_BUILD_DIR: venv_build
+  VENV_TEST_DIR: venv_test
+install:
+- cmd: >-
+    set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+
+    cinst gtk-runtime
+
+    appveyor DownloadFile "http://ftp.gnome.org/pub/GNOME/binaries/win32/pygtk/2.24/pygtk-all-in-one-2.24.2.win32-py2.7.msi"
+
+    msiexec /i pygtk-all-in-one-2.24.2.win32-py2.7.msi /qn /norestart /log pygtk-install.log TARGETDIR=C:\Python27 ALLUSERS=1
+
+    %PYTHON%\python.exe -m pip install -U pip
+
+    %PYTHON%\python.exe -m pip install -U virtualenv
+
+    virtualenv --version
+cache:
+- pygtk-all-in-one-2.24.2.win32-py2.7.msi
+build_script:
+- cmd: >-
+    virtualenv --system-site-packages --clear %VENV_BUILD_DIR%
+
+    %VENV_BUILD_DIR%\\Scripts\\activate.bat
+
+    python -m pip install -U pip setuptools>12.0 wheel
+
+    python -m pip install --only-binary=numpy numpy==1.14.3
+
+    python -m pip install --only-binary=scipy scipy==1.0.0
+
+    python -m pip install coverage==4.0.3
+
+    python -m pip install -r requirements_run.txt
+
+    python -m pip install -r requirements_dev.txt
+
+    python -m pip install matplotlib==1.4.3
+
+    python setup.py bdist_wheel
+
+    python setup.py bdist_wininst
+
+    python setup.py bdist_msi
+
+    dir dist
+
+    %VENV_BUILD_DIR%\\Scripts\\deactivate.bat
+
+    rmdir %VENV_BUILD_DIR% /s /q
+test_script:
+- cmd: >-
+    virtualenv --system-site-packages --clear %VENV_TEST_DIR%
+
+    %VENV_TEST_DIR%\\Scripts\\activate.bat
+
+    python -m pip install -U pip setuptools>12.0 wheel
+
+    python -m pip install --only-binary=numpy numpy==1.14.3
+
+    python -m pip install --only-binary=scipy scipy==1.0.0
+
+    python -m pip install coverage==4.0.3
+
+    python -m pip install -r requirements_run.txt
+
+    python -m pip install -r requirements_dev.txt
+
+    python -m pip install matplotlib==1.4.3
+
+    pip install --pre --no-index --find-links dist/ RAMSTK
+
+    python setup.py test
+
+    %VENV_TEST_DIR%\\Scripts\\deactivate.bat
+
+    rmdir %VENV_TEST_DIR% /s /q
+artifacts:
+- path: dist\*

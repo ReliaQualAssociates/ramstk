@@ -1,11 +1,37 @@
+dist: trusty
+sudo: required
 language: python
+
 python:
-    - "2.6"
     - "2.7"
-# Command to install dependencies.
-install: 
-    - "pip install ."
-    - "pip install -r devtools/requirements.txt"
+# Gotta use site packages so pygtk is available.
+virtualenv:
+  system_site_packages: true
+
+install:
+    - sudo apt-get update
+    - sudo apt-get install -yqq python-gtk2 python-gtk2-dev
+    - pip install -U pip
+    - pip install -U setuptools>12.0
+    - pip install -U urllib3
+    - pip install --only-binary=numpy numpy==1.14.3
+    - pip install --only-binary=scipy scipy==1.0.0
+    - pip install -r requirements_run.txt
+    - pip install -r requirements_dev.txt
+    - pip install matplotlib==1.4.3
+    - python setup.py install
 
 # Command to run tests.
-# script: devtools/py.test
+script:
+    - python setup.py test
+
+# After the build was successful what to do?
+after_success:
+    - coveralls
+    - python-codacy-coverage -r coverage.xml
+
+# What's the environment look like if the build fails silently.
+after_failure:
+    - pip freeze
+    - ls ~/virtualenv/python$TRAVIS_PYTHON_VERSION/lib/python2.7/site-packages
+    - dpkg -L python-gtk2

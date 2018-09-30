@@ -1,1 +1,0 @@
-from tabular import *

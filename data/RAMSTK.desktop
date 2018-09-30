@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=RAMSTK
+Type=Application
+Comment=A RAMS analyses solution.
+Exec=ramstk
+TryExec=ramstk
+Icon=RAMSTK
+Categories=Math;Science;

@@ -1,0 +1,12 @@
+pytest
+pytest-cov
+codacy-coverage
+coveralls
+bandit
+check-manifest
+isort
+pycodestyle
+pydocstyle
+pylint
+yapf
+

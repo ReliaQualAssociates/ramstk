@@ -1,0 +1,397 @@
+<!--
+-*- coding: utf-8 -*-
+
+      DFMECA.xml is part of the RAMSTK Project
+
+      Copyright 2010-2014 Doyle "weibullguy" Rowland
+                          <doyle.rowland@reliaqual.com>
+
+All rights reserved.
+-->
+
+<!-- This file contains information used by the RAMSTK application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="DFMECA">
+        <column>
+            <defaulttitle>Mode ID</defaulttitle>
+            <usertitle>Mode ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Mode</defaulttitle>
+            <usertitle>Failure Mode</usertitle>
+            <datatype>gchararray</datatype>
+            <position>1</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mission</defaulttitle>
+            <usertitle>Mission</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mission Phase</defaulttitle>
+            <usertitle>Mission Phase</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Local Effect</defaulttitle>
+            <usertitle>Local Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>4</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Next Effect</defaulttitle>
+            <usertitle>Next Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>End Effect</defaulttitle>
+            <usertitle>End Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Detection Method</defaulttitle>
+            <usertitle>Detection Method</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Other Indications</defaulttitle>
+            <usertitle>Other Indications</usertitle>
+            <datatype>gchararray</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Isolation Method</defaulttitle>
+            <usertitle>Isolation Method</usertitle>
+            <datatype>gchararray</datatype>
+            <position>9</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Design Provisions</defaulttitle>
+            <usertitle>Design Provisions</usertitle>
+            <datatype>gchararray</datatype>
+            <position>10</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Operator Actions</defaulttitle>
+            <usertitle>Operator Actions</usertitle>
+            <datatype>gchararray</datatype>
+            <position>11</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity Class</defaulttitle>
+            <usertitle>Severity Class</usertitle>
+            <datatype>gchararray</datatype>
+            <position>12</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Hazard Rate Data Source</defaulttitle>
+            <usertitle>Hazard Rate Data Source</usertitle>
+            <datatype>gchararray</datatype>
+            <position>13</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Probability</defaulttitle>
+            <usertitle>Failure Probability</usertitle>
+            <datatype>gchararray</datatype>
+            <position>14</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Effect Probability</defaulttitle>
+            <usertitle>Effect Probability</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <widget>spin</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mode Ratio</defaulttitle>
+            <usertitle>Mode Ratio</usertitle>
+            <datatype>gfloat</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mode Failure Rate</defaulttitle>
+            <usertitle>Mode Failure Rate</usertitle>
+            <datatype>gfloat</datatype>
+            <position>17</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mode Operating Time</defaulttitle>
+            <usertitle>Mode Operating Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>18</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mode Criticality</defaulttitle>
+            <usertitle>Mode Criticality</usertitle>
+            <datatype>gfloat</datatype>
+            <position>19</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Control Type</defaulttitle>
+            <usertitle>Control Type</usertitle>
+            <datatype>gchararray</datatype>
+            <position>20</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity (RPN)</defaulttitle>
+            <usertitle>Severity (RPN)</usertitle>
+            <datatype>gchararray</datatype>
+            <position>21</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Occurrence (RPN)</defaulttitle>
+            <usertitle>Occurrence (RPN)</usertitle>
+            <datatype>gchararray</datatype>
+            <position>22</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Detection (RPN)</defaulttitle>
+            <usertitle>Detection (RPN)</usertitle>
+            <datatype>gchararray</datatype>
+            <position>23</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>RPN</defaulttitle>
+            <usertitle>RPN</usertitle>
+            <datatype>gint</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Category</defaulttitle>
+            <usertitle>Action Category</usertitle>
+            <datatype>gchararray</datatype>
+            <position>25</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Owner</defaulttitle>
+            <usertitle>Action Owner</usertitle>
+            <datatype>gchararray</datatype>
+            <position>26</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Due Date</defaulttitle>
+            <usertitle>Action Due Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>27</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Status</defaulttitle>
+            <usertitle>Action Status</usertitle>
+            <datatype>gchararray</datatype>
+            <position>28</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Taken</defaulttitle>
+            <usertitle>Action Taken</usertitle>
+            <datatype>gchararray</datatype>
+            <position>29</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Approved</defaulttitle>
+            <usertitle>Action Approved</usertitle>
+            <datatype>gint</datatype>
+            <position>30</position>
+            <widget>toggle</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action  Approval  Date</defaulttitle>
+            <usertitle>Action  Approval  Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>31</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action Closed</defaulttitle>
+            <usertitle>Action Closed</usertitle>
+            <datatype>gint</datatype>
+            <position>32</position>
+            <widget>toggle</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Action  Closure  Date</defaulttitle>
+            <usertitle>Action  Closure  Date</usertitle>
+            <datatype>gchararray</datatype>
+            <position>33</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity  New (RPN)</defaulttitle>
+            <usertitle>Severity  New (RPN)</usertitle>
+            <datatype>gchararray</datatype>
+            <position>34</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle> Occurrence  New (RPN)</defaulttitle>
+            <usertitle>Occurrence  New (RPN)</usertitle>
+            <datatype>gchararray</datatype>
+            <position>35</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Detection  New (RPN)</defaulttitle>
+            <usertitle>Detection  New (RPN)</usertitle>
+            <datatype>gchararray</datatype>
+            <position>36</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>RPN New</defaulttitle>
+            <usertitle>RPN New</usertitle>
+            <datatype>gint</datatype>
+            <position>37</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Critical Item</defaulttitle>
+            <usertitle>Critical Item</usertitle>
+            <datatype>gint</datatype>
+            <position>38</position>
+            <widget>toggle</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Single Point of Failure</defaulttitle>
+            <usertitle>Single Point of Failure</usertitle>
+            <datatype>gint</datatype>
+            <position>39</position>
+            <widget>toggle</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+		    </column>
+        <column>
+            <defaulttitle>Include in PoF</defaulttitle>
+            <usertitle>Include in PoF</usertitle>
+            <datatype>gint</datatype>
+            <position>40</position>
+            <widget>toggle</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Remarks</defaulttitle>
+            <usertitle>Remarks</usertitle>
+            <datatype>gchararray</datatype>
+            <position>41</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+    </tree>
+</root>

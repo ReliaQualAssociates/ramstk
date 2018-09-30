@@ -1,0 +1,698 @@
+<!--
+-*- coding: utf-8 -*-
+
+      software_format.xml is part of The RAMSTK Project
+
+      Copyright (C) 2009 - 2014 Doyle "weibullguy" Rowland
+                                <doyle.rowland@reliaqual.com>
+
+All rights reserved. -->
+
+<root>
+    <tree name="Software">
+        <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Software ID</defaulttitle>
+            <usertitle>Spftware ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Level ID</defaulttitle>
+            <usertitle>Level ID</usertitle>
+            <datatype>gint</datatype>
+            <position>2</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Software Description</defaulttitle>
+            <usertitle>Software Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Application ID</defaulttitle>
+            <usertitle>Application ID</usertitle>
+            <datatype>gint</datatype>
+            <position>4</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Development ID</defaulttitle>
+            <usertitle>Development ID</usertitle>
+            <datatype>gint</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Application Factor (A)</defaulttitle>
+            <usertitle>Application Factor (A)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>6</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Do</defaulttitle>
+            <usertitle>Do</usertitle>
+            <datatype>gfloat</datatype>
+            <position>7</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Dd</defaulttitle>
+            <usertitle>Dd</usertitle>
+            <datatype>gint</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Dc</defaulttitle>
+            <usertitle>Dc</usertitle>
+            <datatype>gfloat</datatype>
+            <position>9</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Development Factor (D)</defaulttitle>
+            <usertitle>Development Factor (D)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>10</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>AM</defaulttitle>
+            <usertitle>AM</usertitle>
+            <datatype>gfloat</datatype>
+            <position>11</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>SA</defaulttitle>
+            <usertitle>SA</usertitle>
+            <datatype>gfloat</datatype>
+            <position>12</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>ST</defaulttitle>
+            <usertitle>ST</usertitle>
+            <datatype>gfloat</datatype>
+            <position>13</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>DR</defaulttitle>
+            <usertitle>DR</usertitle>
+            <datatype>gfloat</datatype>
+            <position>14</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>SQ</defaulttitle>
+            <usertitle>SQ</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>S1</defaulttitle>
+            <usertitle>S1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Higher-Order Language Lines of Code (HLOC)</defaulttitle>
+            <usertitle>Higher-Order Language Lines of Code (HLOC)</usertitle>
+            <datatype>gint</datatype>
+            <position>17</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly Language Lines of Code (ALOC)</defaulttitle>
+            <usertitle>Assembly Language Lines of Code (ALOC)</usertitle>
+            <datatype>gint</datatype>
+            <position>18</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Lines of Code (MLOC)</defaulttitle>
+            <usertitle>Total Lines of Code (MLOC)</usertitle>
+            <datatype>gint</datatype>
+            <position>19</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>SL</defaulttitle>
+            <usertitle>SL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>20</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>AX</defaulttitle>
+            <usertitle>AX</usertitle>
+            <datatype>gint</datatype>
+            <position>21</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>BX</defaulttitle>
+            <usertitle>BX</usertitle>
+            <datatype>gint</datatype>
+            <position>22</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>CX</defaulttitle>
+            <usertitle>CX</usertitle>
+            <datatype>gint</datatype>
+            <position>23</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Number of Modules (NM)</defaulttitle>
+            <usertitle>Number of Modules (NM)</usertitle>
+            <datatype>gint</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>SX</defaulttitle>
+            <usertitle>SX</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>UM</defaulttitle>
+            <usertitle>UM</usertitle>
+            <datatype>gint</datatype>
+            <position>26</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>WM</defaulttitle>
+            <usertitle>WM</usertitle>
+            <datatype>gint</datatype>
+            <position>27</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>XM</defaulttitle>
+            <usertitle>XM</usertitle>
+            <datatype>gint</datatype>
+            <position>28</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>SM</defaulttitle>
+            <usertitle>SM</usertitle>
+            <datatype>gfloat</datatype>
+            <position>29</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>DF</defaulttitle>
+            <usertitle>DF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>30</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>SR</defaulttitle>
+            <usertitle>SR</usertitle>
+            <datatype>gfloat</datatype>
+            <position>31</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>S2</defaulttitle>
+            <usertitle>S2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>32</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>RPFOM</defaulttitle>
+            <usertitle>RPFOM</usertitle>
+            <datatype>gfloat</datatype>
+            <position>33</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Parent Module</defaulttitle>
+            <usertitle>Parent Module</usertitle>
+            <datatype>gchararray</datatype>
+            <position>34</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Development Assessment Type</defaulttitle>
+            <usertitle>Development Assessment Type</usertitle>
+            <datatype>gint</datatype>
+            <position>35</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Development Phase ID</defaulttitle>
+            <usertitle>Development Phase ID</usertitle>
+            <datatype>gint</datatype>
+            <position>36</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Confidence Level</defaulttitle>
+            <usertitle>Test Confidence Level</usertitle>
+            <datatype>gint</datatype>
+            <position>37</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Path</defaulttitle>
+            <usertitle>Test Path</usertitle>
+            <datatype>gint</datatype>
+            <position>38</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Software Category</defaulttitle>
+            <usertitle>Software Category</usertitle>
+            <datatype>gint</datatype>
+            <position>39</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Effort</defaulttitle>
+            <usertitle>Test Effort</usertitle>
+            <datatype>gint</datatype>
+            <position>40</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Approach</defaulttitle>
+            <usertitle>Test Approach</usertitle>
+            <datatype>gint</datatype>
+            <position>41</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Labor Hours, Test</defaulttitle>
+            <usertitle>Labor Hours, Test</usertitle>
+            <datatype>gfloat</datatype>
+            <position>42</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Labor Hours, Development</defaulttitle>
+            <usertitle>Labor Hours, Development</usertitle>
+            <datatype>gfloat</datatype>
+            <position>43</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Budget, Test</defaulttitle>
+            <usertitle>Budget, Test</usertitle>
+            <datatype>gfloat</datatype>
+            <position>44</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Budget, Development</defaulttitle>
+            <usertitle>Budget, Development</usertitle>
+            <datatype>gfloat</datatype>
+            <position>45</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Schedule, Test</defaulttitle>
+            <usertitle>Schedule, Test</usertitle>
+            <datatype>gfloat</datatype>
+            <position>46</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Schedule, Development</defaulttitle>
+            <usertitle>Schedule, Development</usertitle>
+            <datatype>gfloat</datatype>
+            <position>47</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Branches</defaulttitle>
+            <usertitle>Total Branches</usertitle>
+            <datatype>gint</datatype>
+            <position>48</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Branches Tested</defaulttitle>
+            <usertitle>Branches Tested</usertitle>
+            <datatype>gint</datatype>
+            <position>49</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Inputs</defaulttitle>
+            <usertitle>Total Inputs</usertitle>
+            <datatype>gint</datatype>
+            <position>50</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Inputs Tested</defaulttitle>
+            <usertitle>Inputs Tested</usertitle>
+            <datatype>gint</datatype>
+            <position>51</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Units Tested</defaulttitle>
+            <usertitle>Units Tested</usertitle>
+            <datatype>gint</datatype>
+            <position>52</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Interfaces</defaulttitle>
+            <usertitle>Total Interfaces</usertitle>
+            <datatype>gint</datatype>
+            <position>53</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Interfaces Tested</defaulttitle>
+            <usertitle>Interfaces Tested</usertitle>
+            <datatype>gint</datatype>
+            <position>54</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>TE</defaulttitle>
+            <usertitle>TE</usertitle>
+            <datatype>gfloat</datatype>
+            <position>55</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>TC</defaulttitle>
+            <usertitle>TC</usertitle>
+            <datatype>gfloat</datatype>
+            <position>56</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>TM</defaulttitle>
+            <usertitle>TM</usertitle>
+            <datatype>gfloat</datatype>
+            <position>57</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>T</defaulttitle>
+            <usertitle>T</usertitle>
+            <datatype>gfloat</datatype>
+            <position>58</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Average Failure Rate During Test</defaulttitle>
+            <usertitle>Average Failure Rate During Test</usertitle>
+            <datatype>gfloat</datatype>
+            <position>59</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Average Failure Rate at EOT</defaulttitle>
+            <usertitle>Average Failure Rate at EOT</usertitle>
+            <datatype>gfloat</datatype>
+            <position>60</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability Estimation Number During Test</defaulttitle>
+            <usertitle>Reliability Estimation Number During Test</usertitle>
+            <datatype>gfloat</datatype>
+            <position>61</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability Estimation Number EOT</defaulttitle>
+            <usertitle>Reliability Estimation Number EOT</usertitle>
+            <datatype>gfloat</datatype>
+            <position>62</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Number of Exceptions</defaulttitle>
+            <usertitle>Number of Exceptions</usertitle>
+            <datatype>gfloat</datatype>
+            <position>63</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Variability of Input</defaulttitle>
+            <usertitle>Variability of Input</usertitle>
+            <datatype>gfloat</datatype>
+            <position>64</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Execution Time</defaulttitle>
+            <usertitle>Total Execution Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>65</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>OS Overhead Time</defaulttitle>
+            <usertitle>OS Overhead Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>66</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Workload</defaulttitle>
+            <usertitle>Workload</usertitle>
+            <datatype>gfloat</datatype>
+            <position>67</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>E</defaulttitle>
+            <usertitle>E</usertitle>
+            <datatype>gfloat</datatype>
+            <position>68</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Estimated Failure Rate</defaulttitle>
+            <usertitle>Estimated Failure Rate</usertitle>
+            <datatype>gfloat</datatype>
+            <position>69</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Conditional Branches</defaulttitle>
+            <usertitle>Conditional Branches</usertitle>
+            <datatype>gint</datatype>
+            <position>70</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Non-Conditional Branches</defaulttitle>
+            <usertitle>Non-Conditional Branches</usertitle>
+            <datatype>gint</datatype>
+            <position>71</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Number of Discrepancy Reports During Test</defaulttitle>
+            <usertitle>Total Number of Discrepancy Reports During Test</usertitle>
+            <datatype>gint</datatype>
+            <position>72</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Test Time</defaulttitle>
+            <usertitle>Total Test Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>73</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Number of Discrepancy Reports During Last Three Test Periods</defaulttitle>
+            <usertitle>Total Number of Discrepancy Reports During Last Three Test Periods</usertitle>
+            <datatype>gint</datatype>
+            <position>74</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Test Time During Last Three Test Periods</defaulttitle>
+            <usertitle>Total Test Time During Last Three Test Periods</usertitle>
+            <datatype>gfloat</datatype>
+            <position>75</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>

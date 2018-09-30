@@ -1,0 +1,441 @@
+<!--
+-*- coding: utf-8 -*-
+
+      config.testing_format.xml is part of the RAMSTK Project
+
+      Copyright 2013 - 2015 Doyle "weibullguy" Rowland <doyle.rowland@reliaqual.com>
+
+# All rights reserved.
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+#
+# Redistribution and use in source and binary forms, with or without 
+# modification, are permitted provided that the following conditions are met:
+# 
+# 1. Redistributions of source code must retain the above copyright notice, 
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice, 
+#    this list of conditions and the following disclaimer in the documentation 
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors 
+#    may be used to endorse or promote products derived from this software 
+#    without specific prior written permission.
+#
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<!-- This file contains information used by the RAMSTK application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="Testing">
+        <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly ID</defaulttitle>
+            <usertitle>Assembly ID</usertitle>
+            <datatype>gint</datatype>
+            <position>1</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test ID</defaulttitle>
+            <usertitle>Test ID</usertitle>
+            <datatype>gint</datatype>
+            <position>2</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Name</defaulttitle>
+            <usertitle>Test Name</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Description</defaulttitle>
+            <usertitle>Test Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>4</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Test Type</defaulttitle>
+            <usertitle>Test Type</usertitle>
+            <datatype>gint</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Attachment</defaulttitle>
+            <usertitle>Attachment</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cum. Time</defaulttitle>
+            <usertitle>Cum. Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>7</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cum. Failures</defaulttitle>
+            <usertitle>Cum. Failures</usertitle>
+            <datatype>gint</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Confidence</defaulttitle>
+            <usertitle>Confidence</usertitle>
+            <datatype>gfloat</datatype>
+            <position>9</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Consumer Risk</defaulttitle>
+            <usertitle>Consumer Risk</usertitle>
+            <datatype>gfloat</datatype>
+            <position>10</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Producer Risk</defaulttitle>
+            <usertitle>Producer Risk</usertitle>
+            <datatype>gfloat</datatype>
+            <position>11</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Growth Plan Model</defaulttitle>
+            <usertitle>Growth Plan Model</usertitle>
+            <datatype>gint</datatype>
+            <position>12</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Growth Assessment Model</defaulttitle>
+            <usertitle>Growth Plan Model</usertitle>
+            <datatype>gint</datatype>
+            <position>13</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Required Program MTBF</defaulttitle>
+            <usertitle>Required Program MTBF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>14</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Program Goal MTBF</defaulttitle>
+            <usertitle>Program Goal MTBF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Growth Potential MTBF</defaulttitle>
+            <usertitle>Growth Potential MTBF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Number of Growth Phases</defaulttitle>
+            <usertitle>Number of Growth Phases</usertitle>
+            <datatype>gint</datatype>
+            <position>17</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Test Time</defaulttitle>
+            <usertitle>Total Test Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>18</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Average Growth Rate</defaulttitle>
+            <usertitle>Average Growth Rate</usertitle>
+            <datatype>gfloat</datatype>
+            <position>19</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Average MS</defaulttitle>
+            <usertitle>Average MS</usertitle>
+            <datatype>gfloat</datatype>
+            <position>20</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Average FEF</defaulttitle>
+            <usertitle>Average FEF</usertitle>
+            <datatype>gfloat</datatype>
+            <position>21</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Probability of Seeing Failure</defaulttitle>
+            <usertitle>Probability of Seeing Failure</usertitle>
+            <datatype>gfloat</datatype>
+            <position>22</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Time to First Fix</defaulttitle>
+            <usertitle>Time to First Fix</usertitle>
+            <datatype>gfloat</datatype>
+            <position>23</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Grouped</defaulttitle>
+            <usertitle>Grouped</usertitle>
+            <datatype>gint</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Group Interval</defaulttitle>
+            <usertitle>Group Interval</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>se Scale Parameter</defaulttitle>
+            <usertitle>se Scale Parameter</usertitle>
+            <datatype>gfloat</datatype>
+            <position>26</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>se Shape Parameter</defaulttitle>
+            <usertitle>se Shape Parameter</usertitle>
+            <datatype>gfloat</datatype>
+            <position>27</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>se Cum. Mean</defaulttitle>
+            <usertitle>se Cum. Mean</usertitle>
+            <datatype>gfloat</datatype>
+            <position>28</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>se Inst. Mean</defaulttitle>
+            <usertitle>se Inst. Mean</usertitle>
+            <datatype>gfloat</datatype>
+            <position>29</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cramer-von Mises Statistic</defaulttitle>
+            <usertitle>Cramer-von Mises Statistic</usertitle>
+            <datatype>gfloat</datatype>
+            <position>30</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Chi-Square Statistic</defaulttitle>
+            <usertitle>Chi-Square Statistic</usertitle>
+            <datatype>gfloat</datatype>
+            <position>31</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale Parameter Lower Bound</defaulttitle>
+            <usertitle>Scale Parameter Lower Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>32</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale Parameter</defaulttitle>
+            <usertitle>Scale Parameter</usertitle>
+            <datatype>gfloat</datatype>
+            <position>33</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Scale Parameter Upper Bound</defaulttitle>
+            <usertitle>Scale Parameter Upper Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>34</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Shape Parameter Lower Bound</defaulttitle>
+            <usertitle>Shape Parameter Lower Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>35</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Shape Parameter</defaulttitle>
+            <usertitle>Shape Parameter</usertitle>
+            <datatype>gfloat</datatype>
+            <position>36</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Shape Parameter Upper Bound</defaulttitle>
+            <usertitle>Shape Parameter Upper Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>37</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cum. Mean Lower Bound</defaulttitle>
+            <usertitle>Cum. Mean Lower Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>38</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cum. Mean</defaulttitle>
+            <usertitle>Cum. Mean</usertitle>
+            <datatype>gfloat</datatype>
+            <position>39</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cum. Mean Upper Bound</defaulttitle>
+            <usertitle>Cum. Mean Upper Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>40</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Inst. Mean Lower Bound</defaulttitle>
+            <usertitle>Inst. Mean Lower Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>41</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Inst. Mean</defaulttitle>
+            <usertitle>Inst. Mean</usertitle>
+            <datatype>gfloat</datatype>
+            <position>42</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Inst. Mean Upper Bound</defaulttitle>
+            <usertitle>Inst. Mean Upper Bound</usertitle>
+            <datatype>gfloat</datatype>
+            <position>43</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>
