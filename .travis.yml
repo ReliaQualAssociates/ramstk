@@ -8,6 +8,9 @@ python:
 virtualenv:
   system_site_packages: true
 
+before_install:
+    python2 -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
+
 install:
     - sudo apt-get update
     - sudo apt-get install -yqq python-gtk2 python-gtk2-dev

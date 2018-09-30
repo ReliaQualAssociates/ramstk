@@ -16,7 +16,7 @@ with open(os.path.join(HERE, 'README.md')) as f:
 __appname__ = 'RAMSTK'
 __version__ = '1.0.0'
 __author__ = "Doyle 'weibullguy' Rowland"
-__email__ = "andrew.rowland@reliaqual.com"
+__email__ = "doyle.rowland@reliaqual.com"
 __trove__ = [
     'Development Status :: 4 - Beta', 'Environment :: Win32 (MS Windows)',
     'Environment :: X11 Applications :: GTK',
