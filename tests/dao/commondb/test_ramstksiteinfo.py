@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_rtksiteinfo.py is part of the RAMSTK Project
+#       tests.dao.commondb.test_ramstksiteinfo.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the RAMSTKSiteInfo module algorithms and models."""
 
 from datetime import date, timedelta
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKSiteInfo import RAMSTKSiteInfo
+from ramstk.dao.commondb.RAMSTKSiteInfo import RAMSTKSiteInfo
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'site_id': 1,
@@ -30,7 +30,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtksiteinfo_create(test_common_dao):
+def test_ramstksiteinfo_create(test_common_dao):
     """ __init__() should create an RAMSTKSiteInfo model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -39,7 +39,7 @@ def test_rtksiteinfo_create(test_common_dao):
     assert isinstance(DUT, RAMSTKSiteInfo)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_site_info'
+    assert DUT.__tablename__ == 'ramstk_site_info'
     assert DUT.site_id == 1
     assert DUT.product_key == '0000'
     assert DUT.expire_on == date.today() + timedelta(30)

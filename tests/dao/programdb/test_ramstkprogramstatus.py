@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.progrmdb.test_rtkprogramstatus.py is part of The RAMSTK Project
+#       tests.dao.progrmdb.test_ramstkprogramstatus.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKProgramStatus module algorithms and models."""
@@ -9,12 +9,12 @@ from datetime import date
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKProgramStatus import RAMSTKProgramStatus
+from ramstk.dao.programdb.RAMSTKProgramStatus import RAMSTKProgramStatus
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'cost_remaining': 0.0,
@@ -26,7 +26,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkprogramstatus_create(test_dao):
+def test_ramstkprogramstatus_create(test_dao):
     """ __init__() should create an RAMSTKProgramStatus model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -35,7 +35,7 @@ def test_rtkprogramstatus_create(test_dao):
     assert isinstance(DUT, RAMSTKProgramStatus)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_program_status'
+    assert DUT.__tablename__ == 'ramstk_program_status'
     assert DUT.revision_id == 1
     assert DUT.status_id == 1
     assert DUT.cost_remaining == 0.0

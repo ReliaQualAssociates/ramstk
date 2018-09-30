@@ -1,15 +1,15 @@
 <!--
 -*- coding: utf-8 -*-
 
-      PoF.xml is part of the RTK Project
+      PoF.xml is part of the RAMSTK Project
 
-      Copyright 2011-2013 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+      Copyright 2011-2013 Doyle "weibullguy" Rowland <doyle.rowland@reliaqual.com>
 
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 -->
 
-<!-- This file contains information used by the RTK application to draw
+<!-- This file contains information used by the RAMSTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_imports.py is part of The RAMSTK Project
+#       ramstk.tests.modules.test_imports.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2018 Doyle "weibullguy" Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2018 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Imports class."""
 #pylint: disable=protected-access
 
@@ -12,13 +12,13 @@ import pandas as pd
 
 import pytest
 
-from rtk.dao import DAO
-from rtk.modules.imports import dtmImports, dtcImports
+from ramstk.dao import DAO
+from ramstk.modules.imports import dtmImports, dtcImports
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration
@@ -351,8 +351,9 @@ def test_do_insert_function(test_dao, test_csv_file_function):
     for _idx, _key in enumerate(DUT._dic_field_map['Function']):
         DUT.do_map_to_field('Function', list(DUT._input_data)[_idx], _key)
 
-    _count, _error_code, _msg = DUT.do_insert(module='Function')
+    _revision_id, _count, _error_code, _msg = DUT.do_insert(module='Function')
 
+    assert _revision_id == 1
     assert _count == 2
     assert _error_code == 0
     assert _msg == 'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.'
@@ -372,8 +373,9 @@ def test_do_insert_requirement(test_dao, test_csv_file_requirement):
     for _idx, _key in enumerate(DUT._dic_field_map['Requirement']):
         DUT.do_map_to_field('Requirement', list(DUT._input_data)[_idx], _key)
 
-    _count, _error_code, _msg = DUT.do_insert(module='Requirement')
+    _revision_id, _count, _error_code, _msg = DUT.do_insert(module='Requirement')
 
+    assert _revision_id == 1
     assert _count == 0
     assert _error_code == 0
     assert _msg == 'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.'
@@ -407,8 +409,9 @@ def test_do_insert_hardware(test_dao, test_csv_file_hardware):
             DUT.do_map_to_field('Reliability',
                                 list(DUT._input_data)[_idx + 82], _key)
 
-    _count, _error_code, _msg = DUT.do_insert(module='Hardware')
+    _revision_id, _count, _error_code, _msg = DUT.do_insert(module='Hardware')
 
+    assert _revision_id == 1
     assert _count == 0
     assert _error_code == 0
     assert _msg == 'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.'
@@ -428,8 +431,9 @@ def test_do_insert_validation(test_dao, test_csv_file_validation):
     for _idx, _key in enumerate(DUT._dic_field_map['Validation']):
         DUT.do_map_to_field('Validation', list(DUT._input_data)[_idx], _key)
 
-    _count, _error_code, _msg = DUT.do_insert(module='Validation')
+    _revision_id, _count, _error_code, _msg = DUT.do_insert(module='Validation')
 
+    assert _revision_id == 1
     assert _count == 0
     assert _error_code == 0
     assert _msg == 'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program database.'

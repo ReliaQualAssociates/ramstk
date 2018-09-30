@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_rtkstatus.py is part of The RAMSTK Project
+#       tests.dao.commondb.test_ramstkstatus.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKStatus module algorithms and models."""
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKStatus import RAMSTKStatus
+from ramstk.dao.commondb.RAMSTKStatus import RAMSTKStatus
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'description': u'Incident has been initiated.',
@@ -23,7 +23,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkstatus_create(test_common_dao):
+def test_ramstkstatus_create(test_common_dao):
     """ __init__() should create an RAMSTKStatus model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -32,7 +32,7 @@ def test_rtkstatus_create(test_common_dao):
     assert isinstance(DUT, RAMSTKStatus)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_status'
+    assert DUT.__tablename__ == 'ramstk_status'
     assert DUT.status_id == 1
     assert DUT.name == 'Initiated'
     assert DUT.description == 'Incident has been initiated.'

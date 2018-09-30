@@ -4,21 +4,21 @@
 #       tests.modules.test_validation.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Validation module algorithms and models. """
 
 from treelib import Tree
 
 import pytest
 
-from rtk.dao import DAO
-from rtk.dao import RAMSTKValidation
-from rtk.modules.validation import dtmValidation, dtcValidation
+from ramstk.dao import DAO
+from ramstk.dao import RAMSTKValidation
+from ramstk.modules.validation import dtmValidation, dtcValidation
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2015 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

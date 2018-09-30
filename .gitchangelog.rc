@@ -34,7 +34,7 @@
 ## Example:
 ##
 ##   feat(user): support of bazaar implemented
-##   style(dev): re-indentend some lines
+##   style(dev): re-indented some lines
 ##   feat(dev): updated code to be compatible with last version of killer lib.
 ##   fix(pkg): updated year of licence coverage.  Closes #1
 ##   feat(test): added a bunch of test around user usability of feature X.

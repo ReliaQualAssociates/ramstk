@@ -3,21 +3,21 @@
 #       tests.modules.pof.test_opstress.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the PoF OpStress class. """
 
 from treelib import Tree
 
 import pytest
 
-from rtk.modules.pof import dtmOpStress
-from rtk.dao import DAO
-from rtk.dao import RAMSTKOpStress
+from ramstk.modules.pof import dtmOpStress
+from ramstk.dao import DAO
+from ramstk.dao import RAMSTKOpStress
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2017 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2017 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

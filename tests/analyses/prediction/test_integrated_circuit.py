@@ -5,18 +5,18 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the integrated circuit module."""
 
 import pytest
 
-from rtk.analyses.data import HARDWARE_ATTRIBUTES
-from rtk.analyses.prediction import IntegratedCircuit, Component
+from ramstk.analyses.data import HARDWARE_ATTRIBUTES
+from ramstk.analyses.prediction import IntegratedCircuit, Component
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 

@@ -3,7 +3,7 @@
 #       tests.test_utilities.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Utilities module algorithms and models."""
 
 import os
@@ -14,17 +14,17 @@ import logging
 
 import pytest
 
-from rtk.Utilities import (create_logger, split_string, none_to_string,
+from ramstk.Utilities import (create_logger, split_string, none_to_string,
                            string_to_boolean, date_to_ordinal, ordinal_to_date,
                            dir_exists, file_exists, none_to_default,
                            error_handler)
 
 TEMPDIR = tempfile.gettempdir()
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 
 def test_create_logger():

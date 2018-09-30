@@ -15,7 +15,7 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+    dirname(dirname(dirname(dirname(__file__)))) + "/ramstk",
 )
 
 from datetime import date
@@ -28,10 +28,10 @@ from nose.plugins.attrib import attr
 
 from dao.RAMSTKGrowthTest import RAMSTKGrowthTest
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
 class TestRAMSTKGrowthTest(unittest.TestCase):
@@ -49,7 +49,7 @@ class TestRAMSTKGrowthTest(unittest.TestCase):
         Sets up the test fixture for the RAMSTKGrowthTest class.
         """
 
-        engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
+        engine = create_engine('sqlite:////tmp/TestDB.ramstk', echo=False)
         session = scoped_session(sessionmaker())
 
         session.remove()
@@ -61,7 +61,7 @@ class TestRAMSTKGrowthTest(unittest.TestCase):
         session.commit()
 
     @attr(all=True, unit=True)
-    def test00_rtkgrowthtest_create(self):
+    def test00_ramstkgrowthtest_create(self):
         """
         ($f) DUT should create an RAMSTKGrowthTest model.
         """
@@ -69,7 +69,7 @@ class TestRAMSTKGrowthTest(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, RAMSTKGrowthTest))
 
         # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'rtk_growth_test')
+        self.assertEqual(self.DUT.__tablename__, 'ramstk_growth_test')
         self.assertEqual(self.DUT.test_id, 1)
         self.assertEqual(self.DUT.phase_id, 1)
         self.assertEqual(self.DUT.i_mi, 0.0)

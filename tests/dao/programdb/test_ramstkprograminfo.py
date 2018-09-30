@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.Test_rtkprograminfo.py is part of the RAMSTK Project
+#       tests.dao.programdb.Test_ramstkprograminfo.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the RAMSTKProgramInfo module algorithms and models."""
 
 from datetime import date
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKProgramInfo import RAMSTKProgramInfo
+from ramstk.dao.programdb.RAMSTKProgramInfo import RAMSTKProgramInfo
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'vandv_active': 1,
@@ -40,7 +40,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkprograminfo_create(test_dao):
+def test_ramstkprograminfo_create(test_dao):
     """ __init__() should create an RAMSTKProgramInfo model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -49,7 +49,7 @@ def test_rtkprograminfo_create(test_dao):
     assert isinstance(DUT, RAMSTKProgramInfo)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_program_info'
+    assert DUT.__tablename__ == 'ramstk_program_info'
     assert DUT.revision_id == 1
     assert DUT.function_active == 1
     assert DUT.requirement_active == 1

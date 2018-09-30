@@ -1,15 +1,15 @@
 <!--
 -*- coding: utf-8 -*-
 
-      DFMECA.xml is part of the RTK Project
+      DFMECA.xml is part of the RAMSTK Project
 
-      Copyright 2010-2014 Andrew "Weibullguy" Rowland
-                          <andrew.rowland@reliaqual.com>
+      Copyright 2010-2014 Doyle "weibullguy" Rowland
+                          <doyle.rowland@reliaqual.com>
 
 All rights reserved.
 -->
 
-<!-- This file contains information used by the RTK application to draw
+<!-- This file contains information used by the RAMSTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

@@ -1,15 +1,15 @@
 <!--
 -*- coding: utf-8 -*-
 
-      stakeholder_format.xml is part of the RTK Project
+      stakeholder_format.xml is part of the RAMSTK Project
 
-      Copyright 2013-2015 Andrew "Weibullguy" Rowland <andrew.rowland@reliaqual.com>
+      Copyright 2013-2015 Doyle "weibullguy" Rowland <doyle.rowland@reliaqual.com>
 
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 -->
 
-<!-- This file contains information used by the RTK application to draw
+<!-- This file contains information used by the RAMSTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

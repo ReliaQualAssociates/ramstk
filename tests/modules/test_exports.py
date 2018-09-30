@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.modules.test_exports.py is part of The RAMSTK Project
+#       ramstk.tests.modules.test_exports.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Doyle "weibullguy" Rowland
@@ -12,17 +12,17 @@ import pandas as pd
 
 import pytest
 
-from rtk.dao import DAO
-from rtk.modules.exports import dtmExports, dtcExports
-from rtk.modules.function import dtmFunction
-from rtk.modules.requirement import dtmRequirement
-from rtk.modules.hardware import dtmHardwareBoM, dtmDesignElectric, dtmReliability
-from rtk.modules.validation import dtmValidation
+from ramstk.dao import DAO
+from ramstk.modules.exports import dtmExports, dtcExports
+from ramstk.modules.function import dtmFunction
+from ramstk.modules.requirement import dtmRequirement
+from ramstk.modules.hardware import dtmHardwareBoM, dtmDesignElectric, dtmReliability
+from ramstk.modules.validation import dtmValidation
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

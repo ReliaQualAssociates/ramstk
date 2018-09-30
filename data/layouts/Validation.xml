@@ -1,13 +1,13 @@
 <!--
 -*- coding: utf-8 -*-
 
-      validation_format.xml is part of the RTK Project
+      validation_format.xml is part of the RAMSTK Project
 
-      Copyright (C) 2007-2015 Andrew "Weibullguy" Rowland
-                              <andrew.rowland@reliaqual.com>
+      Copyright (C) 2007-2015 Doyle "weibullguy" Rowland
+                              <doyle.rowland@reliaqual.com>
 -->
 
-<!-- This file contains information used by the RTK application to draw
+<!-- This file contains information used by the RAMSTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

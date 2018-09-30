@@ -4,18 +4,18 @@
 #       tests.analyses.prediction.test_connection.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the connection module."""
 
 import pytest
 
-from rtk.analyses.data import HARDWARE_ATTRIBUTES
-from rtk.analyses.prediction import Component, Connection
+from ramstk.analyses.data import HARDWARE_ATTRIBUTES
+from ramstk.analyses.prediction import Component, Connection
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014, 2018 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014, 2018 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 

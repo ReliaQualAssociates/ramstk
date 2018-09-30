@@ -1,14 +1,14 @@
 <!--
 -*- coding: utf-8 -*-
 
-      FailureDefinition.xml is part of the RTK Project
+      FailureDefinition.xml is part of the RAMSTK Project
 
 
 # All rights reserved.
-# Copyright 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 -->
 
-<!-- This file contains information used by the RTK application to draw
+<!-- This file contains information used by the RAMSTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

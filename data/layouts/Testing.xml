@@ -1,12 +1,12 @@
 <!--
 -*- coding: utf-8 -*-
 
-      config.testing_format.xml is part of the RTK Project
+      config.testing_format.xml is part of the RAMSTK Project
 
-      Copyright 2013 - 2015 Andrew "weibullguy" Rowland <andrew.rowland@reliaqual.com>
+      Copyright 2013 - 2015 Doyle "weibullguy" Rowland <doyle.rowland@reliaqual.com>
 
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 #
 # Redistribution and use in source and binary forms, with or without 
 # modification, are permitted provided that the following conditions are met:
@@ -35,7 +35,7 @@
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<!-- This file contains information used by the RTK application to draw
+<!-- This file contains information used by the RAMSTK application to draw
 various widgets.  These values can be changed by the user to personalize their
 experience. -->
 

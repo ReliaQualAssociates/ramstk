@@ -1,19 +1,19 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests._dao.programdb.test_rtktestmethod.py is part of The RAMSTK Project
+#       tests._dao.programdb.test_ramstktestmethod.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKTestMethod module algorithms and models."""
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKTestMethod import RAMSTKTestMethod
+from ramstk.dao.programdb.RAMSTKTestMethod import RAMSTKTestMethod
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'remarks': '',
@@ -25,7 +25,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkopstress_create(test_dao):
+def test_ramstkopstress_create(test_dao):
     """ __init__() should create an RAMSTKTestMethod model."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -34,7 +34,7 @@ def test_rtkopstress_create(test_dao):
     assert isinstance(DUT, RAMSTKTestMethod)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_test_method'
+    assert DUT.__tablename__ == 'ramstk_test_method'
     assert DUT.load_id == 1
     assert DUT.test_id == 1
     assert DUT.description == 'Test Test Method'

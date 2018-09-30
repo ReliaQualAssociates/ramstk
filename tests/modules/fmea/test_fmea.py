@@ -4,25 +4,25 @@
 #       tests.modules.fmea.test_fmea.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the FMEA class."""
 
 from treelib import Tree
 
 import pytest
 
-from rtk.dao import RAMSTKMode
-from rtk.dao import RAMSTKMechanism
-from rtk.dao import RAMSTKCause
-from rtk.dao import RAMSTKControl
-from rtk.dao import RAMSTKAction
-from rtk.modules.fmea import (dtcFMEA, dtmFMEA, dtmAction, dtmControl, dtmMode,
+from ramstk.dao import RAMSTKMode
+from ramstk.dao import RAMSTKMechanism
+from ramstk.dao import RAMSTKCause
+from ramstk.dao import RAMSTKControl
+from ramstk.dao import RAMSTKAction
+from ramstk.modules.fmea import (dtcFMEA, dtmFMEA, dtmAction, dtmControl, dtmMode,
                               dtmMechanism, dtmCause)
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

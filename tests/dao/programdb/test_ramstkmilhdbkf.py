@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_rtkmilhdbkf.py is part of The RAMSTK Project
+#       tests.dao.programdb.test_ramstkmilhdbkf.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKMilHdbkF module algorithms and models. """
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKMilHdbkF import RAMSTKMilHdbkF
+from ramstk.dao.programdb.RAMSTKMilHdbkF import RAMSTKMilHdbkF
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'piP': 0.0,
@@ -55,7 +55,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkmilhdbkf_create(test_dao):
+def test_ramstkmilhdbkf_create(test_dao):
     """ __init__() should create an RAMSTKMilHdbkF model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -64,7 +64,7 @@ def test_rtkmilhdbkf_create(test_dao):
     assert isinstance(DUT, RAMSTKMilHdbkF)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_mil_hdbk_f'
+    assert DUT.__tablename__ == 'ramstk_mil_hdbk_f'
     assert DUT.hardware_id == 1
     assert DUT.A1 == 0.0
     assert DUT.A2 == 0.0

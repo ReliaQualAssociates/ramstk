@@ -1,19 +1,19 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_rtkopload.py is part of The RAMSTK Project
+#       tests.dao.programdb.test_ramstkopload.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKOpLoad module algorithms and models."""
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKOpLoad import RAMSTKOpLoad
+from ramstk.dao.programdb.RAMSTKOpLoad import RAMSTKOpLoad
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'priority_id': 0,
@@ -25,7 +25,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkopload_create(test_dao):
+def test_ramstkopload_create(test_dao):
     """ __init__() should create an RAMSTKOpLoad model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -34,7 +34,7 @@ def test_rtkopload_create(test_dao):
     assert isinstance(DUT, RAMSTKOpLoad)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_op_load'
+    assert DUT.__tablename__ == 'ramstk_op_load'
     assert DUT.mechanism_id == 1
     assert DUT.load_id == 1
     assert DUT.description == 'Test Operating Load'

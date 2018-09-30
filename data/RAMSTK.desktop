@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=RTK
+Name=RAMSTK
 Type=Application
 Comment=A RAMS analyses solution.
-Exec=rtk
-TryExec=rtk
-Icon=RTK
+Exec=ramstk
+TryExec=ramstk
+Icon=RAMSTK
 Categories=Math;Science;

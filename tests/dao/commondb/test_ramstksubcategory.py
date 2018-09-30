@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_rtksubcategory.py is part of The RAMSTK Project
+#       tests.dao.commondb.test_ramstksubcategory.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKSubCategory module algorithms and models."""
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKSubCategory import RAMSTKSubCategory
+from ramstk.dao.commondb.RAMSTKSubCategory import RAMSTKSubCategory
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {'category_id': 1, 'subcategory_id': 1, 'description': 'Linear'}
 
 
 @pytest.mark.integration
-def test_rtksubcategory_create(test_common_dao):
+def test_ramstksubcategory_create(test_common_dao):
     """ __init__() should create an RAMSTKSubCategory model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -27,7 +27,7 @@ def test_rtksubcategory_create(test_common_dao):
     assert isinstance(DUT, RAMSTKSubCategory)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_subcategory'
+    assert DUT.__tablename__ == 'ramstk_subcategory'
     assert DUT.category_id == 1
     assert DUT.subcategory_id == 1
     assert DUT.description == 'Linear'

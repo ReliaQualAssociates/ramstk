@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.test_rtkcategory.py is part of The RAMSTK Project
+#       tests.dao.commondb.test_ramstkcategory.py is part of The RAMSTK Project
 
 #
 # All rights reserved.
@@ -8,12 +8,12 @@
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKCategory import RAMSTKCategory
+from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'category_type': u'hardware',
@@ -25,7 +25,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkcategory_create(test_common_dao):
+def test_ramstkcategory_create(test_common_dao):
     """ __init__() should create an RAMSTKCategory model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -34,7 +34,7 @@ def test_rtkcategory_create(test_common_dao):
     assert isinstance(DUT, RAMSTKCategory)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_category'
+    assert DUT.__tablename__ == 'ramstk_category'
     assert DUT.category_id == 1
     assert DUT.name == 'IC'
     assert DUT.description == 'Integrated Circuit'

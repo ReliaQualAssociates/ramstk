@@ -7,12 +7,12 @@
 
 import pytest
 
-from rtk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
+from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'mode_id': 3,
@@ -25,7 +25,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkfailuremode_create(test_common_dao):
+def test_ramstkfailuremode_create(test_common_dao):
     """ __init__() should create an RAMSTKFailureMode model. """
     _session = test_common_dao.RAMSTK_SESSION(
         bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
@@ -34,7 +34,7 @@ def test_rtkfailuremode_create(test_common_dao):
     assert isinstance(DUT, RAMSTKFailureMode)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_failure_mode'
+    assert DUT.__tablename__ == 'ramstk_failure_mode'
     assert DUT.category_id == 3
     assert DUT.subcategory_id == 24
     assert DUT.mode_id == 3

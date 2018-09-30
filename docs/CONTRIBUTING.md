@@ -2,7 +2,7 @@
 
 Thank you for taking the time to contribute!
 
-The following is a set of guidelines for contributing to RAMSTK, which is hosted in the [RAMSTK repository](https://github.com/weibullguy/rtk) on GitHub.  Feel free to propose changes to this document in a pull request.
+The following is a set of guidelines for contributing to RAMSTK, which is hosted in the [RAMSTK repository](https://github.com/weibullguy/ramstk) on GitHub.  Feel free to propose changes to this document in a pull request.
 
 [How Can I Contribute?](#how-can-i-contribute)
   * [For Everyone](#for-everyone)
@@ -31,9 +31,9 @@ The purpose of an issue (or bug, condition, corrective action, FRACA) tracking s
 
 #### How to Submit a Useful Issue Report
 
-issues are tracked as [GitHub issues](https://github.com/weibullguy/rtk/issues/).
+issues are tracked as [GitHub issues](https://github.com/weibullguy/ramstk/issues/).
 
-**Use a clear and descriptive title** for the issue to identify the problem.  When you create a new issue, you will be presented with an [issue template](https://github.com/weibullguy/rtk/docs/ISSUE_TEMPLATE.md).  Please use the template to report your issue.  If you choose not to, you may be asked to provide the information requested or your issue may simply be closed with no action taken.
+**Use a clear and descriptive title** for the issue to identify the problem.  When you create a new issue, you will be presented with an [issue template](https://github.com/weibullguy/ramstk/docs/ISSUE_TEMPLATE.md).  Please use the template to report your issue.  If you choose not to, you may be asked to provide the information requested or your issue may simply be closed with no action taken.
 
 There are four sections in an issue report:
 
@@ -58,34 +58,15 @@ The **Steps to Reproduce the Problem** section only needs to be completed for an
 * **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples.  If you're providing snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
 * **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem.  You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
 
-To gather the information required for the **Operating Environment** section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the [requirements_run.txt](https://github.com/weibullguy/rtk/requirements_run.txt) file in the repository.
+To gather the information required for the **Operating Environment** section, execute something such as the following to get the required run-time package versions for the list.  You will need a copy of the [requirements_run.txt](https://github.com/weibullguy/ramstk/requirements_run.txt) file in the repository.
 
 ```
-for file in $(cat requirements_run.txt | cut -d '=' -f1);
-    do version=$(pip show $file | grep Version: | cut -d ':' -f2-);
-    echo $file
+for file in $(cat requirements_run.txt | cut -d '=' -f1 | cut -d '>' -f1);
+do
+    version=$(pip show $file | grep Version: | cut -d ':' -f2 | tr -d '[:space:]');
+    echo "  * "$file==$version;
+done
 ```
-
-#### Issue Prioritization
-
-Issues in the RAMSTK issue tracking system are provided with various tags.  Three of these tags are *severity*, *status*, and *type*.  The table below sumarizes the options for each category of tag and the numerical score each option is given.
-
-| Severity | Score    |     Status     | Score  |     Type    | Score |
-| -------- | :------: | -------------- | :----: | ----------- | :---: |
-| Blocker  | 4        | New Issue      | 5      | Bug         | 3     |
-| Major    | 3        | Global Backlog | 4      | Quality     | 2     |
-| Normal   | 2        | Sprint Backlog | 3      | Enhancement | 1     |
-| Minor    | 1        | In Progress    | 2      | Question    | 0     |
-|          |          | In Review      | 1      |             |       |
-|          |          | Closed         | 0      |             |       |
-
-The product of these scores results in an Issue Priority Number (IPN).  An issue priority is set based on the IPN with the following rules:
-
-* All issues with a status of **New Issue** are assigned a priority of *triage* to indicate they need to be dispositioned within 24 hours.
-* All issues with an IPN greater than or equal to 48 are assigned a priority of *immediate*.
-* All issues with an IPN less than 48 but greater than or equal to 32 are assigned a priority of *high*.
-* All issues with an IPN less than 32 but greater than or equal to 16 are assigned a priority of *medium*.
-* All issues with an IPN less than 16 are assigned a priority of *low*.
 
 ## For Developers' Eyes Only
 
@@ -93,7 +74,7 @@ As a RAMSTK developer, if you are working on something outside the RAMSTK issue 
 
 ### Style Guidelines
 
-Please refer to the RAMSTK [coding conventions](https://github.com/weibullguy/rtk/blob/develop/docs/CODING_STDS.md).
+Please refer to the RAMSTK [coding conventions](https://github.com/weibullguy/ramstk/blob/develop/docs/CODING_STDS.md).
 
 #### Pull Requests
 

@@ -4,7 +4,7 @@
 #    tools/StaticChecks.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 #
 """
 Helper script for executing static checks on source code.

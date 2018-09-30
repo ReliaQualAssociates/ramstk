@@ -1,20 +1,20 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_rtkmechanism.py is part of The RAMSTK Project
+#       tests.dao.programdb.test_ramstkmechanism.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKMechanism module algorithms and models."""
 
 import pytest
 
-from rtk.Utilities import OutOfRangeError
-from rtk.dao.programdb.RAMSTKMechanism import RAMSTKMechanism
+from ramstk.Utilities import OutOfRangeError
+from ramstk.dao.programdb.RAMSTKMechanism import RAMSTKMechanism
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'rpn_new': 0,
@@ -31,7 +31,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkmechanism_create(test_dao):
+def test_ramstkmechanism_create(test_dao):
     """ __init__() should create an RAMSTKMechanism model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -40,7 +40,7 @@ def test_rtkmechanism_create(test_dao):
     assert isinstance(DUT, RAMSTKMechanism)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_mechanism'
+    assert DUT.__tablename__ == 'ramstk_mechanism'
     assert DUT.mode_id == 4
     assert DUT.mechanism_id == 1
     assert DUT.description == 'Test Failure Mechanism #1 for Mode ID 4'

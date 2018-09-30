@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_rtkvalidation.py is part of The RAMSTK Project
+#       tests.dao.programdb.test_ramstkvalidation.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKValidation module algorithms and models."""
@@ -10,12 +10,12 @@ from datetime import date, timedelta
 
 import pytest
 
-from rtk.dao.programdb.RAMSTKValidation import RAMSTKValidation
+from ramstk.dao.programdb.RAMSTKValidation import RAMSTKValidation
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'cost_minimum': 0.0,
@@ -51,7 +51,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_rtkvalidation_create(test_dao):
+def test_ramstkvalidation_create(test_dao):
     """ __init__() should create an RAMSTKValidation model. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -60,7 +60,7 @@ def test_rtkvalidation_create(test_dao):
     assert isinstance(DUT, RAMSTKValidation)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'rtk_validation'
+    assert DUT.__tablename__ == 'ramstk_validation'
     assert DUT.revision_id == 1
     assert DUT.validation_id == 1
     assert DUT.acceptable_maximum == 0.0

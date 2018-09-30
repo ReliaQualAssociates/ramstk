@@ -4,21 +4,21 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing DesignMechanic module algorithms and models. """
 
 from treelib import Tree
 
 import pytest
 
-from rtk.modules.hardware import dtmDesignMechanic
-from rtk.dao import DAO
-from rtk.dao import RAMSTKDesignMechanic
+from ramstk.modules.hardware import dtmDesignMechanic
+from ramstk.dao import DAO
+from ramstk.dao import RAMSTKDesignMechanic
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
+__author__ = 'Doyle Rowland'
+__email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration
