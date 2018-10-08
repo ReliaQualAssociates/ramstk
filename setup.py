@@ -14,7 +14,7 @@ with open(os.path.join(HERE, 'README.md')) as f:
     __long_description__ = f.read()
 
 __appname__ = 'RAMSTK'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 __author__ = "Doyle 'weibullguy' Rowland"
 __email__ = "doyle.rowland@reliaqual.com"
 __trove__ = [
@@ -62,21 +62,6 @@ class Install(_install):
     @staticmethod
     def pre_install_script():
         """Execute before install."""
-        import shutil
-
-        _builddir = os.path.abspath('.') + '/build'
-        if os.path.isdir(_builddir):
-            print("Cleaning build directory: {0:s}...").format(_builddir)
-            for _file in os.listdir(_builddir):
-                _file_path = os.path.join(_builddir, _file)
-                try:
-                    if os.path.isfile(_file_path):
-                        os.unlink(_file_path)
-                    elif os.path.isdir(_file_path):
-                        shutil.rmtree(_file_path)
-                except Exception as _error:
-                    print(_error)
-
         _eggfile = os.path.abspath('.') + '/src/RAMSTK.egg-info'
         print("Removing old egg...")
         try:
