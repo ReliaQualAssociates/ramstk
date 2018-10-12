@@ -403,7 +403,7 @@ class Configuration(object):
 
         elif sys.platform == 'win32':
             self.RAMSTK_OS = 'Windows'
-            self.RAMSTK_SITE_DIR = environ['COMMONPROGRAMFILES(X86)'] + '/RAMSTK'
+            self.RAMSTK_SITE_DIR = environ['PYTHONPATH'] + '/RAMSTK'
             self.RAMSTK_HOME_DIR = environ['USERPROFILE']
             self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + '/logs'
 
