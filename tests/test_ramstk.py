@@ -61,7 +61,7 @@ def test_initialize_model(test_common_dao, test_dao):
 def test_do_create_new_program(test_common_dao, test_dao, test_configuration):
     """ do_create_program() should return a zero error code on success. """
     DUT = Model(test_common_dao, test_dao)
-
+    print(TEMPDIR)
     _configuration = test_configuration
     _database = (
         _configuration.RAMSTK_BACKEND + ':///' + TEMPDIR + '/_ramstk_test_db.ramstk')

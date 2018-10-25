@@ -103,6 +103,7 @@ class ModuleView(RAMSTKModuleView):
         treeview.handler_unblock(self._lst_handler_id[0])
 
         pub.sendMessage('selectedRevision', module_id=self._revision_id)
+        pub.sendMessage('selected_revision', revision_id=self._revision_id)
 
         return _return
 

@@ -25,12 +25,14 @@ class GeneralData(RAMSTKWorkView):
     Function. The attributes of a Function General Data Work View are:
 
     :ivar int _function_id: the ID of the Function currently being displayed.
-    :ivar chkSafetyCritical: the :class:`ramstk.gui.gtk.ramstk.RAMSTKCheckButton` to
-                             display/edit the Function's safety criticality.
-    :ivar txtTotalCost: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                        Function cost.
-    :ivar txtModeCount: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                        number of failure modes the function is susceptible to.
+    :ivar chkSafetyCritical: the
+                             :class:`ramstk.gui.gtk.ramstk.RAMSTKCheckButton`
+                             to display/edit the Function's safety criticality.
+    :ivar txtTotalCost: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                        display the Function cost.
+    :ivar txtModeCount: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                        display the number of failure modes the function is
+                        susceptible to.
 
     Callbacks signals in _lst_handler_id:
 
@@ -100,14 +102,13 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
-        # FIXME: The general data page should be the page shown after launching.
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
         self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
-        pub.subscribe(self._on_select, 'selectedFunction')
-        pub.subscribe(self._on_edit, 'mvwEditedFunction')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_page, 'selected_function')
+        pub.subscribe(self._do_clear_page, 'closed_program')
 
     def _do_clear_page(self):
         """
@@ -119,49 +120,51 @@ class GeneralData(RAMSTKWorkView):
         self.txtCode.handler_block(self._lst_handler_id[0])
         self.txtCode.set_text('')
         self.txtCode.handler_unblock(self._lst_handler_id[0])
+
         self.txtName.handler_block(self._lst_handler_id[1])
         self.txtName.set_text('')
         self.txtName.handler_unblock(self._lst_handler_id[1])
+
         _buffer = self.txtRemarks.do_get_buffer()
         _buffer.handler_block(self._lst_handler_id[2])
         _buffer.set_text('')
         _buffer.handler_block(self._lst_handler_id[2])
+
         self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
         self.chkSafetyCritical.set_active(False)
         self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
 
         return None
 
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+    def _do_load_page(self, attributes):
         """
         Load the Function General Data page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param tuple attributes: a dict of attribute key:value pairs for
+                                 the selected Function.
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _function = self._dtc_data_controller.request_do_select(
-            self._function_id)
+        self._function_id = attributes['function_id']
 
         self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(_function.function_code))
+        self.txtCode.set_text(str(attributes['function_code']))
         self.txtCode.handler_unblock(self._lst_handler_id[0])
 
         self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(_function.name)
+        self.txtName.set_text(str(attributes['name']))
         self.txtName.handler_unblock(self._lst_handler_id[1])
 
         _textbuffer = self.txtRemarks.do_get_buffer()
         _textbuffer.handler_block(self._lst_handler_id[2])
-        _textbuffer.set_text(_function.remarks)
+        _textbuffer.set_text(str(attributes['remarks']))
         _textbuffer.handler_unblock(self._lst_handler_id[2])
 
         self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
-        self.chkSafetyCritical.set_active(_function.safety_critical)
+        self.chkSafetyCritical.set_active(int(attributes['safety_critical']))
         self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
 
-        return _return
+        return None
 
     def _do_request_update(self, __button):
         """
@@ -169,15 +172,14 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update(
-            self._function_id)
+        pub.sendMessage('request_update_function', node_id=self._function_id)
         self.set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _do_request_update_all(self, __button):
         """
@@ -185,14 +187,14 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all()
+        pub.sendMessage('request_update_all_functions')
         self.set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -234,8 +236,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels, _fixed,
-                                              5, 5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
+                                                 _fixed, 5, 5)
         _x_pos += 50
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])
@@ -250,42 +252,11 @@ class GeneralData(RAMSTKWorkView):
             height=30,
             width=-1,
             justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays general information for he selected "
+            tooltip=_(u"Displays general information for the selected "
                       u"function."))
         self.hbx_tab_label.pack_start(_label)
 
         return _frame
-
-    def _on_edit(self, index, new_text):
-        """
-        Update the Work View gtk.Widgets() when Function attributes change.
-
-        This method is called whenever an attribute is edited in a different
-        view.
-
-        :param int index: the index in the Function attributes list of the
-                          attribute that was edited.
-        :param str new_text: the new text to update the gtk.Widget() with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        if index == 5:
-            self.txtCode.handler_block(self._lst_handler_id[0])
-            self.txtCode.set_text(str(new_text))
-            self.txtCode.handler_unblock(self._lst_handler_id[0])
-        elif index == 15:
-            self.txtName.handler_block(self._lst_handler_id[1])
-            self.txtName.set_text(new_text)
-            self.txtName.handler_unblock(self._lst_handler_id[1])
-        elif index == 17:
-            _textbuffer = self.txtRemarks.do_get_buffer()
-            _textbuffer.handler_block(self._lst_handler_id[2])
-            _textbuffer.set_text(new_text)
-            _textbuffer.handler_unblock(self._lst_handler_id[2])
-
-        return _return
 
     def _on_focus_out(self, entry, index):
         """
@@ -302,59 +273,33 @@ class GeneralData(RAMSTKWorkView):
         :param int index: the position in the Function class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _index = -1
-        _return = False
+        _key = ''
         _text = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_data_controller is not None:
-            _function = self._dtc_data_controller.request_do_select(
-                self._function_id)
+        if index == 0:
+            _key = 'function_code'
+            _text = str(entry.get_text())
+        elif index == 1:
+            _key = 'name'
+            _text = str(entry.get_text())
+        elif index == 2:
+            _key = 'remarks'
+            _text = self.txtRemarks.do_get_text()
 
-            if index == 0:
-                _index = 5
-                _text = str(entry.get_text())
-                _function.function_code = _text
-            elif index == 1:
-                _index = 15
-                _text = str(entry.get_text())
-                _function.name = _text
-            elif index == 2:
-                _index = 17
-                _text = self.txtRemarks.do_get_text()
-                _function.remarks = _text
-
-            pub.sendMessage(
-                'wvwEditedFunction', position=_index, new_text=_text)
+        pub.sendMessage(
+            'editing_function',
+            module_id=self._function_id,
+            key=_key,
+            value=_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-        return _return
-
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
-        """
-        Load the Function Work View class gtk.Notebook() widgets.
-
-        :param int module_id: the Function ID of the selected/edited Function.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._function_id = module_id
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-                'function']
-        self._do_load_page()
-
-        return _return
+        return None
 
     def _on_toggled(self, togglebutton, index):
         """
@@ -363,23 +308,23 @@ class GeneralData(RAMSTKWorkView):
         :param togglebutton: the RAMSTKToggleButton() that called this method.
         :type: :class:`ramstk.gui.gtk.ramstk.Button.RAMSTKToggleButton`
         :param int index: the index in the signal handler ID list.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         togglebutton.handler_block(self._lst_handler_id[index])
 
-        _function = self._dtc_data_controller.request_do_select(
-            self._function_id)
-        _function.safety_critical = boolean_to_integer(
-            self.chkSafetyCritical.get_active())
+        _key = 'safety_critical'
+        _text = boolean_to_integer(self.chkSafetyCritical.get_active())
 
         togglebutton.handler_unblock(self._lst_handler_id[index])
 
-        pub.sendMessage('wvwEditedFunction', position=index, new_text='')
+        pub.sendMessage(
+            'editing_function',
+            module_id=self._function_id,
+            key=_key,
+            value=_text)
 
-        return _return
+        return None
 
 
 class AssessmentResults(RAMSTKWorkView):

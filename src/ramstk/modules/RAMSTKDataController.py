@@ -111,10 +111,11 @@ class RAMSTKDataController(object):
 
     def request_get_attributes(self, node_id):
         """
-        Request the attributes from the record associated with the Node ID.
+        Request attributes from the record associated with the Node ID.
 
-        :param int node_id: the ID of the record in the RAMSTK Program database
-                            whose attributes are being requested.
+        :param int node_id: the ID of the record in the RAMSTK Program
+                            database whose attributes are being
+                            requested.
         :return: _attributes
         :rtype: dict
         """

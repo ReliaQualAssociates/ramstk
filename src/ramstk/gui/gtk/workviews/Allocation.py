@@ -18,12 +18,12 @@ class Allocation(RAMSTKWorkView):
     """
     Display Allocation attribute data in the Work Book.
 
-    The WorkView displays all the attributes for the Failure Mode and Effects
-    Analysis (Allocation). The attributes of a Allocation Work View are:
+    The WorkView displays all the attributes for the Allocation. The
+    attributes of a Allocation Work View are:
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
-                           Functional Allocation attribute.
+    :ivar _lst_handler_id: list containing the ID's of the callback
+                           signals for each gtk.Widget() associated with
+                           an editable Allocation attribute.
 
     +-------+-------------------------------------------+
     | Index | Widget - Signal                           |
@@ -64,8 +64,8 @@ class Allocation(RAMSTKWorkView):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['allocation'])
         _fmt_path = "/root/tree[@name='Allocation']/column"
-        _tooltip = _(u"Displays the Allocation Analysis for the currently "
-                     u"selected Hardware item.")
+        _tooltip = _(u"Displays the Allocation Analysis for the "
+                     u"currently selected Hardware item.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)

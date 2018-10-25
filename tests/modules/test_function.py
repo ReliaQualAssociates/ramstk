@@ -48,7 +48,7 @@ ATTRIBUTES = {
 @pytest.mark.integration
 def test_create_data_model(test_dao):
     """ __init__() should return a Function model. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
 
     assert isinstance(DUT, dtmFunction)
     assert isinstance(DUT.tree, Tree)
@@ -58,17 +58,17 @@ def test_create_data_model(test_dao):
 @pytest.mark.integration
 def test_do_select_all(test_dao):
     """ do_select_all() should return a Tree() object populated with RAMSTKFunction instances on success. """
-    DUT = dtmFunction(test_dao)
-    _tree = DUT.do_select_all(revision_id=1)
+    DUT = dtmFunction(test_dao, test=True)
 
-    assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RAMSTKFunction)
+    assert DUT.do_select_all(revision_id=1) is None
+    assert isinstance(DUT.tree, Tree)
+    assert isinstance(DUT.tree.get_node(1).data, RAMSTKFunction)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
     """ do_select() should return an instance of the RAMSTKFunction data model on success. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
     _function = DUT.do_select(1)
 
@@ -80,7 +80,7 @@ def test_do_select(test_dao):
 @pytest.mark.integration
 def test_do_select_non_existent_id(test_dao):
     """ do_select() should return None when a non-existent Function ID is requested. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     _function = DUT.do_select(100)
 
     assert _function is None
@@ -89,14 +89,15 @@ def test_do_select_non_existent_id(test_dao):
 @pytest.mark.integration
 def test_do_insert_sibling(test_dao):
     """ do_insert() should return False on success when inserting a sibling Function. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=0)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     assert DUT.last_id == 4
 
     DUT.do_delete(DUT.last_id)
@@ -105,14 +106,15 @@ def test_do_insert_sibling(test_dao):
 @pytest.mark.integration
 def test_do_insert_child(test_dao):
     """ do_insert() should return False on success when inserting a child Function. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     assert DUT.last_id == 4
 
     DUT.do_delete(DUT.last_id)
@@ -121,7 +123,7 @@ def test_do_insert_child(test_dao):
 @pytest.mark.integration
 def test_do_delete(test_dao):
     """ do_delete() should return a zero error code on success. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
     DUT.do_insert(revision_id=1, parent_id=1)
 
@@ -135,20 +137,20 @@ def test_do_delete(test_dao):
 @pytest.mark.integration
 def test_do_delete_non_existent_id(test_dao):
     """ do_delete() should return a non-zero error code when passed a Function ID that doesn't exist. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Function "
-                    "ID 300.")
+    assert _msg == ("RAMSTK ERROR: Attempted to delete non-existent "
+                    "Function ID 300.")
 
 
 @pytest.mark.integration
 def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _function = DUT.tree.get_node(1).data
@@ -157,33 +159,33 @@ def test_do_update(test_dao):
     _error_code, _msg = DUT.do_update(1)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program database.")
+    assert _msg == ("RAMSTK SUCCESS: Updating the RAMSTK Program " "database.")
 
 
 @pytest.mark.integration
 def test_do_update_non_existent_id(test_dao):
     """ do_update() should return a non-zero error code when passed a Function ID that doesn't exist. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update(100)
 
-    assert _error_code == 2006
-    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Function ID "
-                    "100.")
+    assert _error_code == 2005
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent "
+                    "Function ID 100.")
 
 
 @pytest.mark.integration
 def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
-    DUT = dtmFunction(test_dao)
+    DUT = dtmFunction(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the function "
-                    "table.")
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the "
+                    "function table.")
 
 
 @pytest.mark.integration
@@ -200,9 +202,10 @@ def test_create_controller(test_dao, test_configuration):
 def test_request_do_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RAMSTKFunction models. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    _tree = DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(_tree.get_node(1).data, RAMSTKFunction)
+    assert DUT.request_do_select_all(revision_id=1) is None
+    assert isinstance(
+        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKFunction)
 
 
 @pytest.mark.integration
@@ -407,7 +410,8 @@ def test_request_set_attributes(test_dao, test_configuration):
     DUT = dtcFunction(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(revision_id=1)
 
-    _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
+    (_error_code, _msg) = DUT.request_set_attributes(1, 'availability_mission',
+                                                     0.9978)
 
     assert _error_code == 0
     assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKFunction 1 attributes.")

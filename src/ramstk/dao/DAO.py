@@ -138,8 +138,17 @@ class DAO(object):
         """
         try:
             return create_program_db(database=database)
-        except (IOError, exc.SQLAlchemyError, exc.DBAPIError,
-                exc.OperationalError):
+        except IOError:
+            print "IOError"
+            return True
+        except exc.SQLAlchemyError:
+            print "SQLAlchemyError"
+            return True
+        except exc.DBAPIError:
+            print "DBAPIError"
+            return True
+        except exc.OperationalError:
+            print "OperationalError"
             return True
         except ArgumentError:  # pylint: disable=undefined-variable  # noqa
             print "Bad program database URI: {0:s}".format(database)

@@ -31,9 +31,7 @@ class RAMSTKTreeView(gtk.TreeView):
                  fg_col,
                  pixbuf=False,
                  indexed=False):
-        """
-        Initialize an RAMSTKTreeView() instance.
-        """
+        """Initialize a RAMSTKTreeView() instance."""
         gtk.TreeView.__init__(self)
 
         # Initialize private dictionary instance attributes:
@@ -243,9 +241,9 @@ class RAMSTKTreeView(gtk.TreeView):
 
         _attributes = []
         if _entity is not None:
-            # For simple data models that return an RAMSTK database table
-            # instance for the data object, the first try statement will create
-            # the list of attribute values.
+            # For simple data models that return an RAMSTK database
+            # table instance for the data object, the first try
+            # statement will create the list of attribute values.
             try:
                 _temp = _entity.get_attributes()
                 for _key in self.korder:
@@ -253,10 +251,10 @@ class RAMSTKTreeView(gtk.TreeView):
                         _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
                     _attributes.append(_temp[_key])
             except AttributeError:
-                # For aggregate data models (Hardware, Software) that return a
-                # dictionary of attributes from ALL associated RAMSTK database
-                # tables, this try statement will create the list of attribute
-                # values.
+                # For aggregate data models (Hardware, Software) that
+                # return a dictionary of attributes from ALL associated
+                # RAMSTK database tables, this try statement will create
+                # the list of attribute values.
                 try:
                     for _key in self.korder:
                         _attributes.append(_entity[_key])
