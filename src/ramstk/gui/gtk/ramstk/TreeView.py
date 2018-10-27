@@ -23,15 +23,23 @@ class RAMSTKTreeView(gtk.TreeView):
     # Retain the arguments for backwards compatibility.  Once all current
     # RAMSTKTreeView() instances are updated to use the new API, the arguments
     # can be removed.
-    def __init__(self,
-                 fmt_path,
-                 fmt_idx,
-                 fmt_file,
-                 bg_col,
-                 fg_col,
-                 pixbuf=False,
-                 indexed=False):
-        """Initialize a RAMSTKTreeView() instance."""
+    def __init__(self, fmt_path, fmt_idx, fmt_file, bg_col, fg_col, **kwargs):
+        r"""
+        Initialize a RAMSTKTreeView() instance.
+
+        :param str fmt_path: the absolute path to the format file.
+        :param int fmt_idx: the index of the format file (deprecated).
+        :param str fmt_file: the name of the format file.
+        :param str bg_col: the hex string for the cell background color.
+        :param str fg_col: the hex string for the cell foreground color.
+        :param \**kwargs: See below
+
+        :Keyword Arguments:
+            * *pixbuf* (bool) -- indicates whether there is a pixbuf at the
+                                 beginning of each row.
+            * *indexed* (bool) -- indicates whether the data to load into the
+                                  tree will be indexed.
+        """
         gtk.TreeView.__init__(self)
 
         # Initialize private dictionary instance attributes:
@@ -39,6 +47,14 @@ class RAMSTKTreeView(gtk.TreeView):
         # Initialize private list instance attributes:
 
         # Initialize private scalar instance attributes.
+        try:
+            _pixbuf = kwargs['pixbuf']
+        except KeyError:
+            _pixbuf = False
+        try:
+            _indexed = kwargs['indexed']
+        except KeyError:
+            _indexed = False
 
         # Initialize public dictionary instance attributes.
 
@@ -60,7 +76,8 @@ class RAMSTKTreeView(gtk.TreeView):
         # RAMSTKTreeView() instances are updated to use the new API, this if
         # block can be removed.
         if fmt_file is not None:
-            self.do_parse_format(fmt_path, fmt_file, pixbuf, indexed)
+            self.do_parse_format(
+                fmt_path, fmt_file, pixbuf=_pixbuf, indexed=_indexed)
             self.make_model(bg_col, fg_col)
 
     def do_parse_format(self, fmt_path, fmt_file, pixbuf=False, indexed=False):
