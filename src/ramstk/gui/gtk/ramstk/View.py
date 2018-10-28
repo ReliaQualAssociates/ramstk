@@ -145,6 +145,31 @@ class RAMSTKBaseView(object):
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
+    def do_raise_dialog(self, **kwargs):
+        """
+        Raise a dialog in response to information, warnings, and errors.
+
+        This method will display an message dialog of the appropriate severity
+        information, warning, or error containing a message to the user.  It
+        will also write a message to the RAMSTK debug_log to (hopefully) assist
+        in troubleshooting.
+
+        :return: None
+        :rtype: None
+        """
+        _error_code = kwargs['error_code']
+        _user_msg = kwargs['user_msg']
+        _debug_msg = kwargs['debug_msg']
+
+        if _error_code != 0:
+            self._mdcRTK.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_debug_msg)
+            _dialog = rtk.RTKMessageDialog(_user_msg, self._dic_icons['warning'],
+                                           'warning')
+            if _dialog.do_run() == gtk.RESPONSE_OK:
+                _dialog.destroy()
+
+        return None
+
     def _make_toolbar(self,
                       icons,
                       orientation='horizontal',

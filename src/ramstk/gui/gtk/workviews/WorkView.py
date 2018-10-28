@@ -394,9 +394,6 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         :rtype: None
         """
         _title = kwargs['title']
-        _error_code = kwargs['error_code']
-        _user_msg = kwargs['user_msg']
-        _debug_msg = kwargs['debug_msg']
 
         try:
             _workbook = self.get_parent().get_parent()
@@ -404,15 +401,7 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         except AttributeError:
             pass
 
-        if _error_code != 0:
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
-                _debug_msg)
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _user_msg, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == gtk.RESPONSE_OK:
-                _dialog.destroy()
-
-        return None
+        return self.do_raise_dialog(**kwargs)
 
     def _on_select_revision(self, **kwargs):
         """
