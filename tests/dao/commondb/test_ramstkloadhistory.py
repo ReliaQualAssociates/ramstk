@@ -8,7 +8,7 @@
 
 import pytest
 
-from ramstk.dao.programdb.RAMSTKLoadHistory import RAMSTKLoadHistory
+from ramstk.dao.commondb.RAMSTKLoadHistory import RAMSTKLoadHistory
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
