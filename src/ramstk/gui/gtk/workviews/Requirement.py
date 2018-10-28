@@ -359,14 +359,9 @@ class GeneralData(RAMSTKWorkView):
         :return: _buttonbox; the gtk.ButtonBox() for the Requirement Work View.
         :rtype: :class:`gtk.ButtonBox`
         """
-        _tooltips = [
-            (u"Save the currently selected Requirement to the open RAMSTK "
-             u"Program database."),
-            _(u"Save all Requirement to the open RAMSTK Program database.")
-        ]
-        _callbacks = [self._do_request_update, self._do_request_update_all]
-
-        _icons = ['save', 'save-all']
+        _tooltips = []
+        _callbacks = []
+        _icons = []
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
@@ -391,9 +386,8 @@ class GeneralData(RAMSTKWorkView):
         _types = []
         for _index, _key in enumerate(
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE):
-            _types.append(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[
-                    _key])
+            _types.append(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                          RAMSTK_REQUIREMENT_TYPE[_key])
         self.cmbRequirementType.do_load_combo(
             list(_types), index=1, simple=False)
 
@@ -417,8 +411,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels, _fixed,
-                                              5, 5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
+                                                 _fixed, 5, 5)
         _x_pos += 50
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])
@@ -949,14 +943,9 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: _buttonbox; the gtk.ButtonBox() for the Requirement Work View.
         :rtype: :class:`gtk.ButtonBox`
         """
-        _tooltips = [
-            _(u"Save the currently selected Requirement to the open RAMSTK "
-              u"Program database."),
-            _(u"Save all Requirement to the open RAMSTK Program database.")
-        ]
-        _callbacks = [self._do_request_update, self._do_request_update_all]
-
-        _icons = ['save', 'save-all']
+        _tooltips = []
+        _callbacks = []
+        _icons = []
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

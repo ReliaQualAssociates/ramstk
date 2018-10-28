@@ -485,20 +485,14 @@ class ListView(RAMSTKListView):
               u"currently selected entity."),
             _(u"Remove the curently selected entity from the Usage "
               u"Profile."),
-            _(u"Save the currently selected Usage Profile line to the open "
-              u"RAMSTK Program database."),
-            _(u"Save the Usage Profile to the open RAMSTK Program "
-              u"database."),
             _(u"Create the Mission and Usage Profile report.")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_delete
         ]
         _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all',
-            'reports'
+            'insert_sibling', 'insert_child', 'remove', 'reports'
         ]
 
         _buttonbox = ramstk.do_make_buttonbox(

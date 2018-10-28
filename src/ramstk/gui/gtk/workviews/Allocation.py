@@ -428,7 +428,7 @@ class Allocation(RAMSTKWorkView):
 
         return _return
 
-    def _make_buttonbox(self, **kwargs):  # pylin: disable=unused-argument
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Allocation class Work View.
 
@@ -436,18 +436,12 @@ class Allocation(RAMSTKWorkView):
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Calculate the currently selected child hardware item."),
-            _(u"Save the currently selected line in the Allocation to the "
-              u"open RAMSTK Program database."),
-            _(u"Save the Allocation to the open RAMSTK Program database.")
+            _(u"Calculate the currently selected child hardware item.")
         ]
 
-        _callbacks = [
-            self._do_request_calculate, self._do_request_update,
-            self._do_request_update_all
-        ]
+        _callbacks = [self._do_request_calculate]
 
-        _icons = ['calculate', 'save', 'save-all']
+        _icons = ['calculate']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

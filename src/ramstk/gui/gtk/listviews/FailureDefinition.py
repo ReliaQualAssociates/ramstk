@@ -247,17 +247,12 @@ class ListView(RAMSTKListView):
         _tooltips = [
             _(u"Add a new Failure Definition."),
             _(u"Remove the currently selected Failure Definition."),
-            _(u"Save the currently selected Failure Definition to "
-              u"the open RAMSTK Program database."),
-            _(u"Save all of the Failure Definitions to the open RAMSTK "
-              u"Program database."),
             _(u"Create the Failure Definition report.")
         ]
         _callbacks = [
-            self._do_request_insert_sibling, self._do_request_delete,
-            self._do_request_update, self._do_request_update_all
+            self._do_request_insert_sibling, self._do_request_delete
         ]
-        _icons = ['add', 'remove', 'save', 'save-all', 'reports']
+        _icons = ['add', 'remove', 'reports']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

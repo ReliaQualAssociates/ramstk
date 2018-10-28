@@ -592,19 +592,13 @@ class PoF(RAMSTKWorkView):
               u"currently selected entity."),
             _(u"Add a new PoF entity one level below the currently "
               u"selected entity."),
-            _(u"Remove the selected entity from the PoF."),
-            _(u"Save the currently selected item in the PoF to the RAMSTK "
-              u"Program database."),
-            _(u"Save the PoF to the open RAMSTK Program database.")
+            _(u"Remove the selected entity from the PoF.")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_delete
         ]
-        _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
-        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

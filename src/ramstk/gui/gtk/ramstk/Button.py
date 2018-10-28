@@ -28,6 +28,18 @@ def do_make_buttonbox(self, **kwargs):
     _height = kwargs['height']
     _width = kwargs['width']
 
+    # Append the default save and save-all buttons found on all toolbars to
+    # List Views, Module Views, and Work Views.
+    try:
+        _icons.extend(['save', 'save-all'])
+        _tooltips.extend(
+            [_(u"Save the currently selected item."),
+             _(u"Save all items.")])
+        _callbacks.extend(
+            [self._do_request_update, self._do_request_update_all])
+    except AttributeError:
+        pass
+
     if _orientation == 'horizontal':
         _buttonbox = gtk.HButtonBox()
     else:
@@ -38,8 +50,8 @@ def do_make_buttonbox(self, **kwargs):
     i = 0
     for _icon in _icons:
         _image = gtk.Image()
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-            self._dic_icons[_icon], _height, _width)
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(self._dic_icons[_icon],
+                                                     _height, _width)
         _image.set_from_pixbuf(_icon)
 
         _button = gtk.Button()

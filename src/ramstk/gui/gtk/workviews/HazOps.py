@@ -429,18 +429,13 @@ class HazOps(RAMSTKWorkView):
             _(u"Calculate the HazOps analysis."),
             _(u"Add a hazard to the HazOps analysis."),
             _(u"Remove the selected hazard and all associated data from the "
-              u"HazOps analysis."),
-            _(u"Save the selected Hazard to the open RAMSTK Program "
-              u"database."),
-            _(u"Save all the Hazards for the selected Hardware item to the "
-              u"open RAMSTK Program database.")
+              u"HazOps analysis.")
         ]
         _callbacks = [
             self._do_request_calculate, self._do_request_insert_sibling,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_delete
         ]
-        _icons = ['calculate', 'add', 'remove', 'save', 'save-all']
+        _icons = ['calculate', 'add', 'remove']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

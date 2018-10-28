@@ -731,7 +731,7 @@ class SimilarItem(RAMSTKWorkView):
 
         return _model
 
-    def _make_buttonbox(self, **kwargs):  # pytest: disable=unused-argument
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Similar Item class Work View.
 
@@ -741,18 +741,13 @@ class SimilarItem(RAMSTKWorkView):
         _tooltips = [
             _(u"Edit the Similar Item analysis functions."),
             _(u"Roll up descriptions to next higher level assembly."),
-            _(u"Calculate the Similar Item analysis."),
-            _(u"Save the selected Similar Item analysis to the open RAMSTK "
-              u"Program database."),
-            _(u"Save all the Similar Item analyses for the selected Hardware "
-              u"item to the open RAMSTK Program database.")
+            _(u"Calculate the Similar Item analysis.")
         ]
         _callbacks = [
             self._do_request_edit_function, self._do_request_rollup,
-            self._do_request_calculate, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_calculate
         ]
-        _icons = ['edit', 'rollup', 'calculate', 'save', 'save-all']
+        _icons = ['edit', 'rollup', 'calculate']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

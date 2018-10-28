@@ -148,15 +148,17 @@ class GeneralData(RAMSTKWorkView):
         _(u"Page Number:"),
         _(u"Figure Number:"), "",
         _(u"LCN:")
-    ], [
-        _(u"Manufacturer:"),
-        _(u"CAGE Code:"),
-        _(u"NSN:"),
-        _(u"Year Made:"),
-        _(u"Quantity:"),
-        _(u"Unit Cost:"),
-        _(u"Cost Method:")
-    ], ["", _(u"Attachments:"), _(u"Remarks:")]]
+    ],
+                   [
+                       _(u"Manufacturer:"),
+                       _(u"CAGE Code:"),
+                       _(u"NSN:"),
+                       _(u"Year Made:"),
+                       _(u"Quantity:"),
+                       _(u"Unit Cost:"),
+                       _(u"Cost Method:")
+                   ], ["", _(u"Attachments:"),
+                       _(u"Remarks:")]]
 
     def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
@@ -281,8 +283,9 @@ class GeneralData(RAMSTKWorkView):
 
         self._lst_handler_id.append(
             self.txtAltPartNum.connect('changed', self._on_focus_out, 6))
-        self._lst_handler_id.append(self.txtAttachments.do_get_buffer()
-                                    .connect('changed', self._on_focus_out, 7))
+        self._lst_handler_id.append(
+            self.txtAttachments.do_get_buffer().connect(
+                'changed', self._on_focus_out, 7))
         self._lst_handler_id.append(
             self.txtCAGECode.connect('changed', self._on_focus_out, 8))
         self._lst_handler_id.append(
@@ -566,9 +569,8 @@ class GeneralData(RAMSTKWorkView):
         _model.clear()
 
         if category_id > 0:
-            _subcategory = SortedDict(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SUBCATEGORIES[
-                    category_id])
+            _subcategory = SortedDict(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                                      RAMSTK_SUBCATEGORIES[category_id])
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
@@ -646,16 +648,10 @@ class GeneralData(RAMSTKWorkView):
         """
         _tooltips = [
             _(u"Creates the composite reference designator for the selected "
-              u"hardware item."),
-            _(u"Saves the currently selected Hardware to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all Hardware to the open RAMSTK Program database."),
+              u"hardware item.")
         ]
-        _callbacks = [
-            self._do_request_make_comp_ref_des, self._do_request_update,
-            self._do_request_update_all
-        ]
-        _icons = ['comp_ref_des', 'save', 'save-all']
+        _callbacks = [self._do_request_make_comp_ref_des]
+        _icons = ['comp_ref_des']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
@@ -686,9 +682,8 @@ class GeneralData(RAMSTKWorkView):
 
         _data = []
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MANUFACTURERS:
-            _data.append(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MANUFACTURERS[
-                    _key])
+            _data.append(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                         RAMSTK_MANUFACTURERS[_key])
         self.cmbManufacturer.do_load_combo(_data, simple=False)
 
         # Build the General Data page starting with the left half.
@@ -699,8 +694,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"Hardware Description"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[0], _fixed, 5,
-                                              5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[0], _fixed,
+                                                 5, 5)
         _x_pos += 50
 
         _hbox.pack_start(_frame, expand=True, fill=True)
@@ -735,8 +730,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"Purchasing Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[1], _fixed, 5,
-                                              5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[1], _fixed,
+                                                 5, 5)
         _x_pos += 50
 
         _fixed.put(self.cmbManufacturer, _x_pos, _y_pos[0])
@@ -756,8 +751,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"Miscellaneous Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[2], _fixed, 5,
-                                              5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[2], _fixed,
+                                                 5, 5)
         _x_pos += 50
 
         # Move the Remarks label down to accomodate for the Attachments entry.
@@ -1162,14 +1157,15 @@ class AssessmentInputs(RAMSTKWorkView):
         _(u"Stated MTBF Variance:"),
         _(u"Additive Adjustment Factor:"),
         _(u"Multiplicative Adjustment Factor:")
-    ], [
-        _(u"Active Environment:"),
-        _(u"Dormant Environment:"),
-        _(u"Active Temperature (\u00B0C):"),
-        _(u"Dormant Temperature (\u00B0C):"),
-        _(u"Mission Time:"),
-        _(u"Duty Cycle:")
-    ]]
+    ],
+                   [
+                       _(u"Active Environment:"),
+                       _(u"Dormant Environment:"),
+                       _(u"Active Temperature (\u00B0C):"),
+                       _(u"Dormant Temperature (\u00B0C):"),
+                       _(u"Mission Time:"),
+                       _(u"Duty Cycle:")
+                   ]]
 
     def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
@@ -1714,19 +1710,10 @@ class AssessmentInputs(RAMSTKWorkView):
                  View.
         :rtype: :class:`gtk.ButtonBox`
         """
-        _tooltips = [
-            _(u"Calculate the currently selected Hardware item."),
-            _(u"Saves the currently selected Hardware item to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all Hardware items to the open RAMSTK Program database."
-              ),
-        ]
-        _callbacks = [
-            self._do_request_calculate, self._do_request_update,
-            self._do_request_update_all
-        ]
+        _tooltips = [_(u"Calculate the currently selected Hardware item.")]
+        _callbacks = [self._do_request_calculate]
 
-        _icons = ['calculate', 'save', 'save-all']
+        _icons = ['calculate']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
@@ -1762,8 +1749,8 @@ class AssessmentInputs(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"Assessment Inputs"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[0], _fixed, 5,
-                                              5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[0], _fixed,
+                                                 5, 5)
         _x_pos += 50
 
         _vpaned.pack1(_frame, True, True)
@@ -1798,8 +1785,8 @@ class AssessmentInputs(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"Environmental Inputs"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[1], _fixed, 5,
-                                              5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[1], _fixed,
+                                                 5, 5)
         _x_pos += 50
 
         _fixed.put(self.cmbActiveEnviron, _x_pos, _y_pos[0])
@@ -2160,14 +2147,15 @@ class AssessmentResults(RAMSTKWorkView):
         _(u"Mission MTBF:"),
         _(u"Logistics Reliability [R(t)]:"),
         _(u"Mission R(t):")
-    ], [
-        _(u"Logistics Availability [A(t)]:"),
-        _(u"Mission A(t):"),
-        _(u"Total Cost:"),
-        _(u"Cost/Failure:"),
-        _(u"Cost/Hour:"),
-        _(u"Total # of Parts:")
-    ]]
+    ],
+                   [
+                       _(u"Logistics Availability [A(t)]:"),
+                       _(u"Mission A(t):"),
+                       _(u"Total Cost:"),
+                       _(u"Cost/Failure:"),
+                       _(u"Cost/Hour:"),
+                       _(u"Total # of Parts:")
+                   ]]
 
     def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
@@ -2654,19 +2642,10 @@ class AssessmentResults(RAMSTKWorkView):
                  View.
         :rtype: :class:`gtk.ButtonBox`
         """
-        _tooltips = [
-            _(u"Calculate the currently selected Hardware item."),
-            _(u"Saves the currently selected Hardware item to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all Hardware items to the open RAMSTK Program database."
-              ),
-        ]
-        _callbacks = [
-            self._do_request_calculate, self._do_request_update,
-            self._do_request_update_all
-        ]
+        _tooltips = [_(u"Calculate the currently selected Hardware item.")]
+        _callbacks = [self._do_request_calculate]
 
-        _icons = ['calculate', 'save', 'save-all']
+        _icons = ['calculate']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
@@ -2698,8 +2677,8 @@ class AssessmentResults(RAMSTKWorkView):
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[0], _fixed, 5,
-                                              5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[0], _fixed,
+                                                 5, 5)
         _x_pos += 50
 
         _fixed.put(self.txtActiveHt, _x_pos, _y_pos[0])
@@ -2742,8 +2721,8 @@ class AssessmentResults(RAMSTKWorkView):
 
         _vpaned.pack1(_frame, True, True)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[1], _fixed, 5,
-                                              5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[1], _fixed,
+                                                 5, 5)
         _x_pos += 50
 
         _fixed.put(self.txtLogisticsAt, _x_pos, _y_pos[0])

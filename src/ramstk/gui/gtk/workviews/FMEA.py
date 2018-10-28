@@ -290,9 +290,13 @@ class FMEA(RAMSTKWorkView):
         :rtype: bool
         """
         _model, _row = self.treeview.get_selection().get_selected()
+        if self._functional:
+            _node_id = _model.get_value(_row, 18)
+        else:
+            _node_id = _model.get_value(_row, 43)
 
         self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update(self._node_id)
+        _return = self._dtc_data_controller.request_do_update(_node_id)
         self.set_cursor(gtk.gdk.LEFT_PTR)
 
         return _return
@@ -325,17 +329,13 @@ class FMEA(RAMSTKWorkView):
             _(u"Add a new FMEA entity one level below the currently "
               u"selected entity."),
             _(u"Remove the selected entity from the FMEA."),
-            _(u"Calculate the FMEA."),
-            _(u"Save the FMEA to the open RAMSTK Program database.")
+            _(u"Calculate the FMEA.")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_calculate,
-            self._do_request_update_all
+            self._do_request_delete, self._do_request_calculate
         ]
-        _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'calculate', 'save'
-        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'calculate']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

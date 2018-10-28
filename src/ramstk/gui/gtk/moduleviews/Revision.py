@@ -333,17 +333,10 @@ class ModuleView(RAMSTKModuleView):
         """
         _tooltips = [
             _(u"Add a new Revision."),
-            _(u"Remove the currently selected Revision."),
-            _(u"Save the currently selected Revision to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all Revisions to the open RAMSTK Program "
-              u"database.")
+            _(u"Remove the currently selected Revision.")
         ]
-        _callbacks = [
-            self._do_request_insert_sibling, self._do_request_delete,
-            self._do_request_update, self._do_request_update_all
-        ]
-        _icons = ['add', 'remove', 'save', 'save-all']
+        _callbacks = [self._do_request_insert_sibling, self._do_request_delete]
+        _icons = ['add', 'remove']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

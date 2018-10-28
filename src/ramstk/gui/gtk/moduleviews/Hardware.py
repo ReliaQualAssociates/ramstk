@@ -404,10 +404,6 @@ class ModuleView(RAMSTKModuleView):
             _(u"Remove the currently selected Hardware item and any "
               u"children."),
             _(u"Calculate the entire system."),
-            _(u"Save the currently selected Hardware item to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all Hardware items to the open RAMSTK Program "
-              u"database."),
             _(u"Exports Hardware to an external file (CSV, Excel, and text "
               u"files are supported).")
         ]
@@ -415,12 +411,11 @@ class ModuleView(RAMSTKModuleView):
             self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_delete, self._do_request_calculate_all,
-            self._do_request_update, self._do_request_update_all,
             self._do_request_export
         ]
         _icons = [
             'insert_sibling', 'insert_child', 'insert_part', 'insert_part',
-            'remove', 'calculate_all', 'save', 'save-all', 'export'
+            'remove', 'calculate_all', 'export'
         ]
 
         _buttonbox = ramstk.do_make_buttonbox(
@@ -506,6 +501,7 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+
         def _load_row(model, __path, row, self):
             """
             Load the row associated with node_id.

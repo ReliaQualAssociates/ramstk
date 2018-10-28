@@ -99,22 +99,24 @@ class GeneralData(RAMSTKWorkView):
             _(u"Maximum Acceptable:"),
             _(u"Mean Acceptable:"),
             _(u"Variance:")
-        ], [
-            _(u"Start Date:"),
-            _(u"End Date:"),
-            _(u"% Complete:"),
-            _(u"Minimum Task Time:"),
-            _(u"Most Likely Task Time:"),
-            _(u"Maximum Task Time:"),
-            _(u"Task Time (95% Confidence):"),
-            _(u"Minimum Task Cost:"),
-            _(u"Most Likely Task Cost:"),
-            _(u"Maximum Task Cost:"),
-            _(u"Task Cost (95% Confidence):")
-        ], [
-            _(u"Project Time (95% Confidence):"),
-            _(u"Project Cost (95% Confidence):")
-        ]]
+        ],
+                                    [
+                                        _(u"Start Date:"),
+                                        _(u"End Date:"),
+                                        _(u"% Complete:"),
+                                        _(u"Minimum Task Time:"),
+                                        _(u"Most Likely Task Time:"),
+                                        _(u"Maximum Task Time:"),
+                                        _(u"Task Time (95% Confidence):"),
+                                        _(u"Minimum Task Cost:"),
+                                        _(u"Most Likely Task Cost:"),
+                                        _(u"Maximum Task Cost:"),
+                                        _(u"Task Cost (95% Confidence):")
+                                    ],
+                                    [
+                                        _(u"Project Time (95% Confidence):"),
+                                        _(u"Project Cost (95% Confidence):")
+                                    ]]
 
         # Initialize private scalar attributes.
         self._revision_id = None
@@ -128,13 +130,14 @@ class GeneralData(RAMSTKWorkView):
 
         # General data page widgets.
         self.btnEndDate = ramstk.RAMSTKButton(height=25, width=25, label="...")
-        self.btnStartDate = ramstk.RAMSTKButton(height=25, width=25, label="...")
+        self.btnStartDate = ramstk.RAMSTKButton(
+            height=25, width=25, label="...")
         self.btnEndDate.set_tooltip_text(
             _(u"Launches the calendar to select the date the task was "
               u"completed."))
         self.btnStartDate.set_tooltip_text(
             _(u"Launches the calendar to select the date the task was started."
-              ))
+             ))
 
         self.cmbTaskType = ramstk.RAMSTKComboBox(
             tooltip=_(u"Selects and displays the type of task for the "
@@ -630,8 +633,8 @@ class GeneralData(RAMSTKWorkView):
         _data = []
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE:
             _data.append([
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE[
-                    _key][1]
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                RAMSTK_VALIDATION_TYPE[_key][1]
             ])
         self.cmbTaskType.do_load_combo(_data)
 
@@ -641,8 +644,8 @@ class GeneralData(RAMSTKWorkView):
         _data = []
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS:
             _data.append([
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS[
-                    _key][1]
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                RAMSTK_MEASUREMENT_UNITS[_key][1]
             ])
         self.cmbMeasurementUnit.do_load_combo(_data)
 
@@ -655,8 +658,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"Task Description"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[0][:2],
-                                              _fixed, 5, 5)
+        _x_pos, _y_pos = ramstk.make_label_group(
+            self._lst_gendata_labels[0][:2], _fixed, 5, 5)
         _x_pos += 50
 
         _hbox.pack_start(_frame, expand=True, fill=True)
@@ -691,7 +694,7 @@ class GeneralData(RAMSTKWorkView):
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[1],
-                                              _fixed, 5, 5)
+                                                 _fixed, 5, 5)
         _x_pos += 50
 
         _vpaned.pack1(_frame, True, True)
@@ -731,7 +734,7 @@ class GeneralData(RAMSTKWorkView):
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[2],
-                                              _fixed, 5, 5)
+                                                 _fixed, 5, 5)
         _x_pos += 50
 
         _vpaned.pack2(_frame, True, True)
@@ -770,17 +773,12 @@ class GeneralData(RAMSTKWorkView):
             _(u"Calculate the cost and time of the currently selected "
               u"Validation task only."),
             _(u"Calculate the cost and time of the program (i.e., all "
-              u"Validation tasks)."),
-            _(u"Saves the currently selected Validation to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all the Validation tasks and Program results to the "
-              u"open RAMSTK Program database.")
+              u"Validation tasks).")
         ]
         _callbacks = [
-            self._do_request_calculate, self._do_request_calculate_all,
-            self._do_request_update, self._do_request_update_all
+            self._do_request_calculate, self._do_request_calculate_all
         ]
-        _icons = ['calculate', 'calculate-all', 'save', 'save-all']
+        _icons = ['calculate', 'calculate-all']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
@@ -1160,8 +1158,9 @@ class BurndownCurve(RAMSTKWorkView):
         """
         _return = False
 
-        (_y_minimum, _y_average, _y_maximum
-         ) = self._dtc_data_controller.request_get_planned_burndown()
+        (_y_minimum,
+         _y_average,
+         _y_maximum) = self._dtc_data_controller.request_get_planned_burndown()
 
         self.burndown.axis.cla()
         self.burndown.axis.grid(True, which='both')
@@ -1344,14 +1343,9 @@ class BurndownCurve(RAMSTKWorkView):
             _(u"Calculate the cost and time of the program (i.e., all "
               u"Validation tasks)."),
             _(u"Load the planned and actual burndown curves."),
-            _(u"Saves all the Validation tasks and Program results to the "
-              u"open RAMSTK Program database.")
         ]
-        _callbacks = [
-            self._do_request_calculate_all, self._do_request_plot,
-            self._do_request_update_all
-        ]
-        _icons = ['calculate-all', 'plot', 'save-all']
+        _callbacks = [self._do_request_calculate_all, self._do_request_plot]
+        _icons = ['calculate-all', 'plot']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

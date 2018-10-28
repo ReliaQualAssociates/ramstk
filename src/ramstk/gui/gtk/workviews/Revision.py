@@ -171,16 +171,11 @@ class GeneralData(RAMSTKWorkView):
 
         :return: _buttonbox; the gtk.ButtonBox() for the Revision class Work
                  View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
-        _tooltips = [
-            _(u"Saves the currently selected Revision to the open "
-              u"RAMSTK Program database."),
-            _(u"Save all Revisions to the open RAMSTK Program database.")
-        ]
-        _callbacks = [self._do_request_update, self._do_request_update_all]
-
-        _icons = ['save', 'save-all']
+        _tooltips = []
+        _callbacks = []
+        _icons = []
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
@@ -206,8 +201,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels, _fixed,
-                                              5, 5)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
+                                                 _fixed, 5, 5)
         _x_pos += 50
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])

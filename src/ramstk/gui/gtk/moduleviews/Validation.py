@@ -345,19 +345,14 @@ class ModuleView(RAMSTKModuleView):
         _tooltips = [
             _(u"Add a new Validation task."),
             _(u"Remove the currently selected Validation task1."),
-            _(u"Save the currently selected Validation task to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all Validation tasks to the open RAMSTK Program "
-              u"database."),
             _(u"Exports Verification tasks to an external file (CSV, Excel, "
               u"and text files are supported).")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_delete,
-            self._do_request_update, self._do_request_update_all,
             self._do_request_export
         ]
-        _icons = ['add', 'remove', 'save', 'save-all', 'export']
+        _icons = ['add', 'remove', 'export']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

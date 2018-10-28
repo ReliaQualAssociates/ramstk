@@ -375,21 +375,14 @@ class ModuleView(RAMSTKModuleView):
             _(u"Adds a new Requirement one level subordinate to the selected "
               u"Requirement (i.e., a derived requirement)."),
             _(u"Remove the currently selected Requirement."),
-            _(u"Save the currently selected Requirement to the open RAMSTK "
-              u"Program database."),
-            _(u"Saves all Requirements to the open RAMSTK Program database."),
             _(u"Exports Requirementss to an external file (CSV, Excel, and "
               u"text files are supported).")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all, self._do_request_export
+            self._do_request_delete, self._do_request_export
         ]
-        _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all',
-            'export'
-        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,

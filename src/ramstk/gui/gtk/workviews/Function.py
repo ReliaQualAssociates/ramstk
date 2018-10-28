@@ -204,13 +204,9 @@ class GeneralData(RAMSTKWorkView):
                  View.
         :rtype: :class:`gtk.ButtonBox`
         """
-        _tooltips = [
-            _(u"Saves the currently selected Function to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all Functions to the open RAMSTK Program database."),
-        ]
-        _callbacks = [self._do_request_update, self._do_request_update_all]
-        _icons = ['save', 'save-all']
+        _tooltips = []
+        _callbacks = []
+        _icons = []
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
