@@ -63,17 +63,9 @@ class ModuleView(RAMSTKModuleView):
             height=-1,
             tooltip=_(u"Displays the program revisions."))
 
-        self.hbx_tab_label.pack_start(self._img_tab)
         self.hbx_tab_label.pack_end(_label)
-        self.hbx_tab_label.show_all()
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(self._make_buttonbox())
-        self.pack_start(_scrollwindow, expand=False, fill=False)
-
-        self.show_all()
-
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_refresh_view, 'calculatedAllHardware')
         pub.subscribe(self._on_select_revision, 'openedProgram')
         pub.subscribe(self._on_select_revision, 'insertedRevision')

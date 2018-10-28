@@ -40,6 +40,9 @@ class RAMSTKModuleView(gtk.HBox, ramstk.RAMSTKBaseView):
         ramstk.RAMSTKBaseView.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
+        self._dic_icons['insert_part'] = \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+            '/32x32/insert_part.png'
 
         # Initialize private list attributes.
 
@@ -53,9 +56,18 @@ class RAMSTKModuleView(gtk.HBox, ramstk.RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         _scrolledwindow = gtk.ScrolledWindow()
-        _scrolledwindow.add(self.treeview)
+        _scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        _scrolledwindow.add_with_viewport(self._make_buttonbox())
+        self.pack_start(_scrolledwindow, expand=False, fill=False)
 
+        _scrolledwindow = gtk.ScrolledWindow()
+        _scrolledwindow.add(self.treeview)
         self.pack_end(_scrolledwindow, expand=True, fill=True)
+
+        self.hbx_tab_label.pack_start(self._img_tab)
+        self.hbx_tab_label.show_all()
+
+        self.show_all()
 
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model):
