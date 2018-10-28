@@ -110,7 +110,7 @@ class MatrixView(gtk.HBox, ramstk.RAMSTKBaseMatrix):
         _callbacks = [self._do_request_update, self._do_request_create]
         _icons = ['save', 'view-refresh']
 
-        _buttonbox = ramstk.RAMSTKBaseMatrix._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,

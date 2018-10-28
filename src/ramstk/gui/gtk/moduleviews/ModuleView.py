@@ -101,3 +101,40 @@ class RAMSTKModuleView(gtk.HBox, ramstk.RAMSTKBaseView):
         ExportModule(self._mdcRAMSTK, module, _tree)
 
         return None
+
+    def make_treeview(self, **kwargs):
+        """
+        Set up the Module View RAMSTKTreeView().
+
+        :param list editable: list of editable column numbers.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _editable = kwargs['editable']
+        except KeyError:
+            _editable = []
+        _index = 0
+
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            if _index in _editable:
+                _color = gtk.gdk.color_parse('#FFFFFF')
+                try:
+                    _cell.set_property('editable', True)
+                    _cell.connect('edited', self._on_cell_edit, _index,
+                                  self.treeview.get_model())
+                except TypeError:
+                    _cell.set_property('activatable', True)
+                    _cell.connect('toggled', self._on_cell_edit, _index,
+                                  self.treeview.get_model())
+            else:
+                _color = gtk.gdk.color_parse('#EEEEEE')
+                try:
+                    _cell.set_property('editable', False)
+                except TypeError:
+                    _cell.set_property('activatable', False)
+            _cell.set_property('cell-background-gdk', _color)
+            _index += 1
+
+        return None

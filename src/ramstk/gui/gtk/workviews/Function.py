@@ -212,7 +212,7 @@ class GeneralData(RAMSTKWorkView):
         _callbacks = [self._do_request_update, self._do_request_update_all]
         _icons = ['save', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,

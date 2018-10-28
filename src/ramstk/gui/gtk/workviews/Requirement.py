@@ -368,7 +368,7 @@ class GeneralData(RAMSTKWorkView):
 
         _icons = ['save', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -958,7 +958,7 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         _icons = ['save', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,

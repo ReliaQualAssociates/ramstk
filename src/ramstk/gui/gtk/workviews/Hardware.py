@@ -657,7 +657,7 @@ class GeneralData(RAMSTKWorkView):
         ]
         _icons = ['comp_ref_des', 'save', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -1728,7 +1728,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         _icons = ['calculate', 'save', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -2668,7 +2668,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         _icons = ['calculate', 'save', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,

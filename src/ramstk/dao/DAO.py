@@ -176,7 +176,7 @@ class DAO(object):
                 session.add(_item)
                 session.commit()
             except (exc.SQLAlchemyError, exc.DBAPIError) as error:
-                _error = '{0:s}'.format(error)
+                _error = '{0:s}'.format(str(error))
                 session.rollback()
                 if 'Could not locate a bind' in _error:
                     _error_code = 2

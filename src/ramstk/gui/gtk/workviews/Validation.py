@@ -782,7 +782,7 @@ class GeneralData(RAMSTKWorkView):
         ]
         _icons = ['calculate', 'calculate-all', 'save', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -1353,7 +1353,7 @@ class BurndownCurve(RAMSTKWorkView):
         ]
         _icons = ['calculate-all', 'plot', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,

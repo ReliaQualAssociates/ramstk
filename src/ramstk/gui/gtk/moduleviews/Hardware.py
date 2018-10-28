@@ -54,7 +54,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self._make_treeview()
+        self.make_treeview()
         self.treeview.set_tooltip_text(
             _(u"Displays the hierarchical list of "
               u"hardware items."))
@@ -222,8 +222,8 @@ class ModuleView(RAMSTKModuleView):
         _prompt = _(u"You are about to delete Hardware {0:d} and all data "
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._hardware_id)
-        _dialog = ramstk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                          'question')
+        _dialog = ramstk.RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
@@ -280,7 +280,7 @@ class ModuleView(RAMSTKModuleView):
         _return = False
 
         _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
+            self._hardware_id)
         _attributes['revision_id'] = self._revision_id
 
         _model, _row = self.treeview.get_selection().get_selected()
@@ -423,7 +423,7 @@ class ModuleView(RAMSTKModuleView):
             'remove', 'calculate_all', 'save', 'save-all', 'export'
         ]
 
-        _buttonbox = RAMSTKModuleView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -439,26 +439,6 @@ class ModuleView(RAMSTKModuleView):
         _buttons[3].set_property('name', 'part')
 
         return _buttonbox
-
-    def _make_treeview(self):
-        """
-        Set up the Hardware Module View RAMSTKTreeView().
-
-        This method sets all cells as non-editable to make the Hardware Module
-        View read-only.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _color = gtk.gdk.color_parse('#EEEEEE')
-        for _column in self.treeview.get_columns():
-            _cell = _column.get_cell_renderers()[0]
-            _cell.set_property('editable', False)
-            _cell.set_property('cell-background-gdk', _color)
-
-        return _return
 
     def _on_button_press(self, treeview, event):
         """
@@ -488,91 +468,32 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Sibling Assembly"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_sibling,
-                               True)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_(u"Add Child Assembly"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_child, True)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_part'])
-            _menu_item.set_label(_(u"Add Sibling Piece Part"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_sibling,
-                               False)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_part'])
-            _menu_item.set_label(_(u"Add Child Piece Part"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_child,
-                               False)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['calculate_all'])
-            _menu_item.set_label(_(u"Calculate the System"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_calculate_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Hardware"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Hardware"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All Hardwares"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = [
+                'insert_sibling', 'insert_child', 'insert_part', 'insert_part',
+                'calculate_all', 'remove', 'save', 'save-all'
+            ]
+            _labels = [
+                _(u"Add Sibling Assembly"),
+                _(u"Add Child Assembly"),
+                _(u"Add Sibling Piece Part"),
+                _(u"Add Child Piece Part"),
+                _(u"Calculate the System"),
+                _(u"Remove the Selected Hardware"),
+                _(u"Save Selected Hardware"),
+                _(u"Save All Hardware")
+            ]
+            _callbacks = [
+                self._do_request_insert_sibling, self._do_request_insert_child,
+                self._do_request_insert_sibling, self._do_request_insert_child,
+                self._do_request_calculate_all, self._do_request_delete,
+                self._do_request_update, self._do_request_update_all
+            ]
+            RAMSTKModuleView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -585,7 +506,6 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-
         def _load_row(model, __path, row, self):
             """
             Load the row associated with node_id.

@@ -49,7 +49,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self._make_treeview()
+        self.make_treeview()
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))
@@ -234,8 +234,8 @@ class ModuleView(RAMSTKModuleView):
         _prompt = _(u"You are about to delete Revision {0:d} and all data "
                     u"associated with it.  Is this really what you want "
                     u"to do?").format(self._revision_id)
-        _dialog = ramstk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                          'question')
+        _dialog = ramstk.RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
@@ -345,7 +345,7 @@ class ModuleView(RAMSTKModuleView):
         ]
         _icons = ['add', 'remove', 'save', 'save-all']
 
-        _buttonbox = RAMSTKModuleView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -355,26 +355,6 @@ class ModuleView(RAMSTKModuleView):
             width=-1)
 
         return _buttonbox
-
-    def _make_treeview(self):
-        """
-        Set up the Revision Module View RAMSTKTreeView().
-
-        This method sets all cells as non-editable to make the Revision Module
-        View read-only.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _color = gtk.gdk.color_parse('#EEEEEE')
-        for _column in self.treeview.get_columns():
-            _cell = _column.get_cell_renderers()[0]
-            _cell.set_property('editable', False)
-            _cell.set_property('cell-background-gdk', _color)
-
-        return _return
 
     def _on_button_press(self, treeview, event):
         """
@@ -404,48 +384,23 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['add'])
-            _menu_item.set_label(_(u"Add New Revision"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_sibling)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Revision"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Revision"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All Revisions"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = ['add', 'remove', 'save', 'save-all']
+            _labels = [
+                _(u"Add Revision"),
+                _(u"Remove the Selected Revision"),
+                _(u"Save Selected Revision"),
+                _(u"Save All Revisions")
+            ]
+            _callbacks = [
+                self._do_request_insert_sibling, self._do_request_delete,
+                self._do_request_update, self._do_request_update_all
+            ]
+            RAMSTKModuleView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 

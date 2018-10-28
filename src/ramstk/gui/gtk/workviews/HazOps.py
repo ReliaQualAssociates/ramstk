@@ -203,14 +203,14 @@ class HazOps(RAMSTKWorkView):
             elif position == self._lst_col_order[6]:
                 _hazops.assembly_severity = model[path][self._lst_col_order[6]]
             elif position == self._lst_col_order[7]:
-                _hazops.assembly_probability = model[path][self._lst_col_order[
-                    7]]
+                _hazops.assembly_probability = model[path][self.
+                                                           _lst_col_order[7]]
             elif position == self._lst_col_order[9]:
-                _hazops.assembly_mitigation = model[path][self._lst_col_order[
-                    9]]
+                _hazops.assembly_mitigation = model[path][self.
+                                                          _lst_col_order[9]]
             elif position == self._lst_col_order[10]:
-                _hazops.assembly_severity_f = model[path][self._lst_col_order[
-                    10]]
+                _hazops.assembly_severity_f = model[path][self.
+                                                          _lst_col_order[10]]
             elif position == self._lst_col_order[11]:
                 _hazops.assembly_probability_f = model[path][
                     self._lst_col_order[11]]
@@ -219,17 +219,17 @@ class HazOps(RAMSTKWorkView):
             elif position == self._lst_col_order[14]:
                 _hazops.system_severity = model[path][self._lst_col_order[14]]
             elif position == self._lst_col_order[15]:
-                _hazops.system_probability = model[path][self._lst_col_order[
-                    15]]
+                _hazops.system_probability = model[path][self.
+                                                         _lst_col_order[15]]
             elif position == self._lst_col_order[17]:
-                _hazops.system_mitigation = model[path][self._lst_col_order[
-                    17]]
+                _hazops.system_mitigation = model[path][self.
+                                                        _lst_col_order[17]]
             elif position == self._lst_col_order[18]:
-                _hazops.system_severity_f = model[path][self._lst_col_order[
-                    18]]
+                _hazops.system_severity_f = model[path][self.
+                                                        _lst_col_order[18]]
             elif position == self._lst_col_order[19]:
-                _hazops.system_probability_f = model[path][self._lst_col_order[
-                    19]]
+                _hazops.system_probability_f = model[path][self.
+                                                           _lst_col_order[19]]
             elif position == self._lst_col_order[21]:
                 _hazops.remarks = model[path][self._lst_col_order[21]]
         else:
@@ -362,7 +362,7 @@ class HazOps(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_delete(self._hazard_id)
+        return self._dtc_data_controller.request_do_delete(self._hazops_id)
 
     def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -430,8 +430,8 @@ class HazOps(RAMSTKWorkView):
             _(u"Add a hazard to the HazOps analysis."),
             _(u"Remove the selected hazard and all associated data from the "
               u"HazOps analysis."),
-            _(u"Save the selected Hazard to the open RAMSTK Program database."
-              ),
+            _(u"Save the selected Hazard to the open RAMSTK Program "
+              u"database."),
             _(u"Save all the Hazards for the selected Hardware item to the "
               u"open RAMSTK Program database.")
         ]
@@ -442,7 +442,7 @@ class HazOps(RAMSTKWorkView):
         ]
         _icons = ['calculate', 'add', 'remove', 'save', 'save-all']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -502,58 +502,25 @@ class HazOps(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Hazard"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_sibling)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Hazard"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['calculate'])
-            _menu_item.set_label(_(u"Calculate HazOp"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_calculate)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Hazard"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-al'])
-            _menu_item.set_label(_(u"Save All Hazards"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = ['add', 'remove', 'calculate', 'save', 'save-all']
+            _labels = [
+                _(u"Add Hazard"),
+                _(u"Remove Selected Hazard"),
+                _(u"Calculate HazOp"),
+                _(u"Save Selected Hazard"),
+                _(u"Save All Hazards")
+            ]
+            _callbacks = [
+                self._do_request_insert_sibling, self._do_request_delete,
+                self._do_request_calculate, self._do_request_update,
+                self._do_request_update_all
+            ]
+            RAMSTKWorkView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 

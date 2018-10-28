@@ -501,7 +501,7 @@ class ListView(RAMSTKListView):
             'reports'
         ]
 
-        _buttonbox = RAMSTKListView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,

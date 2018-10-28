@@ -337,7 +337,7 @@ class FMEA(RAMSTKWorkView):
             'insert_sibling', 'insert_child', 'remove', 'calculate', 'save'
         ]
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -398,58 +398,27 @@ class FMEA(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Sibling"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_sibling)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_(u"Add Child"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_child)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['calculate'])
-            _menu_item.set_label(_(u"Calculate FMEA"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_calculate)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = [
+                'insert_sibling', 'insert_child', 'remove', 'calculate', 'save'
+            ]
+            _labels = [
+                _(u"Insert Sibling"),
+                _(u"Insert Child"),
+                _(u"Remove"),
+                _(u"Calculate"),
+                _(u"Save")
+            ]
+            _callbacks = [
+                self._do_request_insert_sibling, self._do_request_insert_child,
+                self._do_request_delete, self._do_request_calculate,
+                self._do_request_update_all
+            ]
+            RAMSTKWorkView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -653,8 +622,8 @@ class FFMEA(FMEA):
             elif _entity.is_control:
                 _entity.description = model[path][self._lst_col_order[1]]
             elif _entity.is_action:
-                _entity.action_recommended = model[path][self._lst_col_order[
-                    1]]
+                _entity.action_recommended = model[path][self.
+                                                         _lst_col_order[1]]
                 _entity.action_owner = model[path][self._lst_col_order[8]]
                 _entity.action_due_date = datetime.strptime(
                     model[path][self._lst_col_order[9]], '%Y-%m-%d')
@@ -1209,15 +1178,15 @@ class DFMECA(FMEA):
                 _entity.detection_method = model[path][self._lst_col_order[7]]
                 _entity.other_indications = model[path][self._lst_col_order[8]]
                 _entity.isolation_method = model[path][self._lst_col_order[9]]
-                _entity.design_provisions = model[path][self._lst_col_order[
-                    10]]
+                _entity.design_provisions = model[path][self.
+                                                        _lst_col_order[10]]
                 _entity.operator_actions = model[path][self._lst_col_order[11]]
                 _entity.severity_class = model[path][self._lst_col_order[12]]
-                _entity.hazard_rate_source = model[path][self._lst_col_order[
-                    13]]
+                _entity.hazard_rate_source = model[path][self.
+                                                         _lst_col_order[13]]
                 _entity.mode_probability = model[path][self._lst_col_order[14]]
-                _entity.effect_probability = model[path][self._lst_col_order[
-                    15]]
+                _entity.effect_probability = model[path][self.
+                                                         _lst_col_order[15]]
                 _entity.mode_ratio = model[path][self._lst_col_order[16]]
                 _entity.mode_hazard_rate = model[path][self._lst_col_order[17]]
                 _entity.mode_op_time = model[path][self._lst_col_order[18]]
@@ -1260,8 +1229,8 @@ class DFMECA(FMEA):
                 _entity.description = model[path][self._lst_col_order[1]]
                 _entity.type_id = model[path][self._lst_col_order[20]]
             elif _entity.is_action:
-                _entity.action_recommended = model[path][self._lst_col_order[
-                    1]]
+                _entity.action_recommended = model[path][self.
+                                                         _lst_col_order[1]]
                 _entity.action_category = model[path][self._lst_col_order[25]]
                 _entity.action_owner = model[path][self._lst_col_order[26]]
                 _entity.action_due_date = datetime.strptime(
@@ -1314,8 +1283,8 @@ class DFMECA(FMEA):
 
         _missions = _tree.children(0)
         for _mission in _missions:
-            self._dic_missions[
-                _mission.data.description] = _mission.data.mission_time
+            self._dic_missions[_mission.data.
+                               description] = _mission.data.mission_time
             _phases = []
             for _phase in _tree.children(_mission.identifier):
                 _phases.append(_phase.data.description)
@@ -1718,9 +1687,8 @@ class DFMECA(FMEA):
         # Load the severity classes into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[12])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
-            _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[_item][
-                    1], ))
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_SEVERITY[_item][1], ))
 
         # Load the RPN severity classes into the gtk.CellRendererCombo().
         for _position in [21, 34]:
@@ -1728,17 +1696,15 @@ class DFMECA(FMEA):
             _model.append(('', ))
             for _item in sorted(
                     self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY):
-                _model.append(
-                    (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY[
-                        _item][1], ))
+                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                               RAMSTK_RPN_SEVERITY[_item][1], ))
 
         # Load the RPN occurrence classes into the gtk.CellRendererCombo().
         for _position in [22, 35]:
             _model = self._get_cell_model(self._lst_col_order[_position])
             _model.append(('', ))
-            for _item in sorted(
-                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_OCCURRENCE
-            ):
+            for _item in sorted(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                                RAMSTK_RPN_OCCURRENCE):
                 _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                                RAMSTK_RPN_OCCURRENCE[_item][1], ))
 
@@ -1748,9 +1714,8 @@ class DFMECA(FMEA):
             _model.append(('', ))
             for _item in sorted(
                     self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION):
-                _model.append(
-                    (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION[
-                        _item][1], ))
+                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                               RAMSTK_RPN_DETECTION[_item][1], ))
 
         # Load the failure probabilities into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[14])
@@ -1765,9 +1730,8 @@ class DFMECA(FMEA):
         # Load the action category gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[25])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_CATEGORY:
-            _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_CATEGORY[
-                    _item][1], ))
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_ACTION_CATEGORY[_item][1], ))
 
         # Load the users into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[26])
@@ -1779,9 +1743,8 @@ class DFMECA(FMEA):
         # Load the status values into the gtk.CellRendererCombo()
         _model = self._get_cell_model(self._lst_col_order[28])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS:
-            _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS[
-                    _item][0], ))
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_ACTION_STATUS[_item][0], ))
 
         for i in self._lst_col_order:
             _cell = self.treeview.get_column(

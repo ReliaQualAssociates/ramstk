@@ -55,7 +55,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self._make_treeview()
+        self.make_treeview(editable=[5, 15, 17, 18])
         self.treeview.set_tooltip_text(_(u"Displays the list of functions."))
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._on_row_change))
@@ -270,7 +270,7 @@ class ModuleView(RAMSTKModuleView):
             'export'
         ]
 
-        _buttonbox = RAMSTKModuleView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -280,41 +280,6 @@ class ModuleView(RAMSTKModuleView):
             width=-1)
 
         return _buttonbox
-
-    def _make_treeview(self):
-        """
-        Set up the Function Module View RAMSTKTreeView().
-
-        This method sets all cells as non-editable to make the Function
-        Module View read-only.
-
-        :return: None
-        :rtype: None
-        """
-        _index = 0
-
-        for _column in self.treeview.get_columns():
-            _cell = _column.get_cell_renderers()[0]
-            if _index in [5, 15, 17, 18]:
-                _color = gtk.gdk.color_parse('#FFFFFF')
-                try:
-                    _cell.set_property('editable', True)
-                    _cell.connect('edited', self._on_cell_edit, _index,
-                                  self.treeview.get_model())
-                except TypeError:
-                    _cell.set_property('activatable', True)
-                    _cell.connect('toggled', self._on_cell_edit, _index,
-                                  self.treeview.get_model())
-            else:
-                _color = gtk.gdk.color_parse('#EEEEEE')
-                try:
-                    _cell.set_property('editable', False)
-                except TypeError:
-                    _cell.set_property('activatable', False)
-            _cell.set_property('cell-background-gdk', _color)
-            _index += 1
-
-        return None
 
     def _on_button_press(self, treeview, event):
         """
@@ -346,58 +311,27 @@ class ModuleView(RAMSTKModuleView):
         # selected row.  Thus, we don't need (or want) to respond to
         # left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Sibling Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_(u"Add Child Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All Functions"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = [
+                'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+            ]
+            _labels = [
+                _(u"Add Sibling Function"),
+                _(u"Add Child Function"),
+                _(u"Remove the Selected Function"),
+                _(u"Save Selected Function"),
+                _(u"Save All Functions")
+            ]
+            _callbacks = [
+                self._do_request_insert_sibling, self._do_request_insert_child,
+                self._do_request_delete, self._do_request_update,
+                self._do_request_update_all
+            ]
+            RAMSTKModuleView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 

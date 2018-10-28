@@ -145,59 +145,6 @@ class RAMSTKBaseView(object):
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
-    def _make_buttonbox(self, **kwargs):
-        """
-        Create the buttonbox for RAMSTK Views.
-
-        This method creates the base buttonbox used by all RAMSTK View.  Use a
-        buttonbox for an RAMSTK View if there are only buttons to be added.
-
-        :return: _buttonbox
-        :rtype: :py:class:`gtk.ButtonBox`
-        """
-        _icons = kwargs['icons']
-        _tooltips = kwargs['tooltips']
-        _callbacks = kwargs['callbacks']
-        _orientation = kwargs['orientation']
-        _height = kwargs['height']
-        _width = kwargs['width']
-
-        if _orientation == 'horizontal':
-            _buttonbox = gtk.HButtonBox()
-        else:
-            _buttonbox = gtk.VButtonBox()
-
-        _buttonbox.set_layout(gtk.BUTTONBOX_START)
-
-        i = 0
-        for _icon in _icons:
-            _image = gtk.Image()
-            _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                self._dic_icons[_icon], _height, _width)
-            _image.set_from_pixbuf(_icon)
-
-            _button = gtk.Button()
-            _button.set_image(_image)
-
-            _button.props.width_request = _width
-            _button.props.height_request = _height
-
-            try:
-                _button.set_tooltip_markup(_tooltips[i])
-            except IndexError:
-                _button.set_tooltip_markup("")
-
-            try:
-                _button.connect('clicked', _callbacks[i])
-            except IndexError:
-                _button.set_sensitive(False)
-
-            _buttonbox.pack_start(_button)
-
-            i += 1
-
-        return _buttonbox
-
     def _make_toolbar(self,
                       icons,
                       orientation='horizontal',
@@ -249,6 +196,47 @@ class RAMSTKBaseView(object):
         # item.  The _position variable can be used by derived classes to
         # add additional items to the gtk.ToolBar().
         return _toolbar, _position
+
+    def on_button_press(self, event, icons=None, labels=None, callbacks=None):
+        """
+        Handle mouse clicks on the View's RTKTreeView().
+
+        :param event: the gtk.gdk.Event() that called this method (the
+                      important attribute is which mouse button was clicked).
+
+                      * 1 = left
+                      * 2 = scrollwheel
+                      * 3 = right
+                      * 4 = forward
+                      * 5 = backwards
+                      * 8 =
+                      * 9 =
+
+        :type event: :class:`gtk.gdk.Event`.
+        :keyword list icons: the list of icon names to use in the pop-up menu.
+        :keyword list labels: the list of test lables to use in the pop-up
+                              menu.
+        :keyword list callbacks: the list of callback functions/methods to
+                                 attach to the pop-up menu items.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+        _menu = gtk.Menu()
+        _menu.popup(None, None, None, event.button, event.time)
+
+        for _idx, __ in enumerate(icons):
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons[icons[_idx]])
+            _menu_item.set_label(labels[_idx])
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', callbacks[_idx])
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+        return _return
 
     def on_select_revision(self, **kwargs):
         """
