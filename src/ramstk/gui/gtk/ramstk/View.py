@@ -9,6 +9,7 @@
 import locale
 
 # Import other RAMSTK Widget classes.
+from ramstk.Utilities import none_to_default
 from ramstk.gui.gtk.ramstk import RAMSTKTreeView
 from .Widget import gtk
 
@@ -122,12 +123,11 @@ class RAMSTKBaseView(object):
                     _module + 'bg']
                 _fg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
                     _module + 'fg']
-                _fmt_file = (
-                    controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR +
-                    '/layouts/' +
-                    controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module]
-                )
-                _fmt_path = "/root/tree[@name='" + _module.title() + "']/column"
+                _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR +
+                             '/layouts/' + controller.RAMSTK_CONFIGURATION.
+                             RAMSTK_FORMAT_FILE[_module])
+                _fmt_path = "/root/tree[@name='" + _module.title(
+                ) + "']/column"
 
                 self.treeview = RAMSTKTreeView(_fmt_path, 0, _fmt_file,
                                                _bg_color, _fg_color)
@@ -157,14 +157,28 @@ class RAMSTKBaseView(object):
         :return: None
         :rtype: None
         """
-        _error_code = kwargs['error_code']
-        _user_msg = kwargs['user_msg']
-        _debug_msg = kwargs['debug_msg']
+        try:
+            _error_code = kwargs['error_code']
+        except KeyError:
+            _error_code = 0
+        try:
+            _severity = kwargs['severity']
+        except KeyError:
+            _severity = ''
+        try:
+            _user_msg = kwargs['user_msg']
+        except KeyError:
+            _user_msg = ''
+        try:
+            _debug_msg = kwargs['debug_msg']
+        except KeyError:
+            _debug_msg = ''
 
         if _error_code != 0:
-            self._mdcRTK.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_debug_msg)
-            _dialog = rtk.RTKMessageDialog(_user_msg, self._dic_icons['warning'],
-                                           'warning')
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
+                _debug_msg)
+            _dialog = rtk.RAMSTKMessageDialog(
+                _user_msg, self._dic_icons[_severity], _severity)
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _dialog.destroy()
 
@@ -262,6 +276,78 @@ class RAMSTKBaseView(object):
             _menu.append(_menu_item)
 
         return _return
+
+    def on_focus_out(self, entry, index, **kwargs):
+        """
+        Retrieve changes made in RTKEntry() widgets..
+
+        This method is called by:
+
+            * RTKEntry() 'changed' signal
+            * RTKTextView() 'changed' signal
+
+        :param entry: the RTKEntry() or RTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param int index: the index in the signal handler list for the entry
+                          that called this method.
+        :return: (_error_code, _msg); a tuple containing the error code and
+                                      associated error message.
+        :rtype: (int, str)
+        """
+        _node_id = kwargs['node_id']
+        _default = kwargs['default']
+        _key = kwargs['key']
+        _value = ''
+        _error_code = 0
+        _msg = ''
+
+        entry.handler_block(self._lst_handler_id[index])
+
+        if self._dtc_data_controller is not None:
+            _attributes = self._dtc_data_controller.request_get_attributes(
+                _node_id)
+
+            try:
+                _value = float(entry.get_text())
+            except ValueError:
+                _value = none_to_default(None, _default)
+                _error_code = 1
+                _msg = ('RAMSTK ERROR: Failed to convert {0:s} to float '
+                        'value.').format(entry.get_text())
+
+            try:
+                _attributes[_key] = _value
+                self._dtc_data_controller.request_set_attributes(
+                    _node_id, _attributes)
+            except KeyError:
+                _error_code = 2
+                _msg = 'RAMSTK ERROR: No attribute {0:s} exists.'.format(_key)
+
+        entry.handler_unblock(self._lst_handler_id[index])
+
+        return (_error_code, _msg)
+
+    def on_select(self, **kwargs):
+        """
+        Respond to load the Work View gtk.Notebook() widgets.
+
+        This method handles the results of the an individual module's
+        _on_select() method.  It sets the title of the RAMSTK Work Book and
+        raises an error dialog if needed.
+
+        :return: None
+        :rtype: None
+        """
+        _title = kwargs['title']
+
+        try:
+            _workbook = self.get_parent().get_parent()
+            _workbook.set_title(_title)
+        except AttributeError:
+            pass
+
+        return self.do_raise_dialog(severity='warning', **kwargs)
 
     def on_select_revision(self, **kwargs):
         """

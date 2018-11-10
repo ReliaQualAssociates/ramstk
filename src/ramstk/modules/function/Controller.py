@@ -86,7 +86,7 @@ class FunctionDataController(RAMSTKDataController):
 
         return
 
-    def request_do_select_all(self, revision_id):
+    def request_do_select_all(self, attributes):
         """
         Retrieve the treelib Tree() from the Function Data Model.
 
@@ -94,7 +94,8 @@ class FunctionDataController(RAMSTKDataController):
                  Function tree.
         :rtype: :class:`treelib.Tree`
         """
-        return self._dtm_data_model.do_select_all(revision_id=revision_id)
+        return self._dtm_data_model.do_select_all(
+            revision_id=attributes['revision_id'])
 
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """

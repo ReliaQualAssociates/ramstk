@@ -375,28 +375,43 @@ class ModuleView(RAMSTKModuleView):
 
         _model, _row = treeview.get_selection().get_selected()
 
-        _attributes['revision_id'] = _model.get_value(_row, 0)
-        _attributes['function_id'] = _model.get_value(_row, 1)
-        _attributes['availability_logistics'] = _model.get_value(_row, 2)
-        _attributes['availability_mission'] = _model.get_value(_row, 3)
-        _attributes['cost'] = _model.get_value(_row, 4)
-        _attributes['function_code'] = _model.get_value(_row, 5)
-        _attributes['hazard_rate_logistics'] = _model.get_value(_row, 6)
-        _attributes['hazard_rate_mission'] = _model.get_value(_row, 7)
-        _attributes['level'] = _model.get_value(_row, 8)
-        _attributes['mmt'] = _model.get_value(_row, 9)
-        _attributes['mcmt'] = _model.get_value(_row, 10)
-        _attributes['mpmt'] = _model.get_value(_row, 11)
-        _attributes['mtbf_logistics'] = _model.get_value(_row, 12)
-        _attributes['mtbf_mission'] = _model.get_value(_row, 13)
-        _attributes['mttr'] = _model.get_value(_row, 14)
-        _attributes['name'] = _model.get_value(_row, 15)
-        _attributes['parent_id'] = _model.get_value(_row, 16)
-        _attributes['remarks'] = _model.get_value(_row, 17)
-        _attributes['safety_critical'] = _model.get_value(_row, 18)
-        _attributes['total_mode_count'] = _model.get_value(_row, 19)
-        _attributes['total_part_count'] = _model.get_value(_row, 20)
-        _attributes['type_id'] = _model.get_value(_row, 21)
+        _attributes['revision_id'] = _model.get_value(_row,
+                                                      self._lst_col_order[0])
+        _attributes['function_id'] = _model.get_value(_row,
+                                                      self._lst_col_order[1])
+        _attributes['availability_logistics'] = _model.get_value(
+            _row, self._lst_col_order[2])
+        _attributes['availability_mission'] = _model.get_value(
+            _row, self._lst_col_order[3])
+        _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
+        _attributes['function_code'] = _model.get_value(
+            _row, self._lst_col_order[5])
+        _attributes['hazard_rate_logistics'] = _model.get_value(
+            _row, self._lst_col_order[6])
+        _attributes['hazard_rate_mission'] = _model.get_value(
+            _row, self._lst_col_order[7])
+        _attributes['level'] = _model.get_value(_row, self._lst_col_order[8])
+        _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
+        _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[10])
+        _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[11])
+        _attributes['mtbf_logistics'] = _model.get_value(
+            _row, self._lst_col_order[12])
+        _attributes['mtbf_mission'] = _model.get_value(_row,
+                                                       self._lst_col_order[13])
+        _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
+        _attributes['name'] = _model.get_value(_row, self._lst_col_order[15])
+        _attributes['parent_id'] = _model.get_value(_row,
+                                                    self._lst_col_order[16])
+        _attributes['remarks'] = _model.get_value(_row,
+                                                  self._lst_col_order[17])
+        _attributes['safety_critical'] = _model.get_value(
+            _row, self._lst_col_order[18])
+        _attributes['total_mode_count'] = _model.get_value(
+            _row, self._lst_col_order[19])
+        _attributes['total_part_count'] = _model.get_value(
+            _row, self._lst_col_order[20])
+        _attributes['type_id'] = _model.get_value(_row,
+                                                  self._lst_col_order[21])
 
         self._function_id = _attributes['function_id']
 

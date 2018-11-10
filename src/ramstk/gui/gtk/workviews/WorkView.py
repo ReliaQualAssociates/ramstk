@@ -108,28 +108,31 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         widgets don't overlap the Remarks widget.
         """
 
-        self._lst_assess_labels = [[
-            _(u"Active Failure Intensity [\u039B(t)]:"),
-            _(u"Dormant \u039B(t):"),
-            _(u"Software \u039B(t):"),
-            _(u"Predicted h(t):"),
-            _(u"Mission h(t):"),
-            _(u"MTBF:"),
-            _(u"Mission MTBF:"),
-            _(u"Reliability [R(t)]:"),
-            _(u"Mission R(t):"),
-            _(u"Total Parts:")
-        ], [
-            _(u"Mean Preventive Maintenance Time [MPMT]:"),
-            _(u"Mean Corrective Maintenance Time [MCMT]:"),
-            _(u"Mean Time to Repair [MTTR]:"),
-            _(u"Mean Maintenance Time [MMT]:"),
-            _(u"Availability [A(t)]:"),
-            _(u"Mission A(t):"),
-            _(u"Total Cost:"),
-            _(u"Cost/Failure:"),
-            _(u"Cost/Hour:")
-        ]]
+        self._lst_assess_labels = [
+            [
+                _(u"Active Failure Intensity [\u039B(t)]:"),
+                _(u"Dormant \u039B(t):"),
+                _(u"Software \u039B(t):"),
+                _(u"Predicted h(t):"),
+                _(u"Mission h(t):"),
+                _(u"MTBF:"),
+                _(u"Mission MTBF:"),
+                _(u"Reliability [R(t)]:"),
+                _(u"Mission R(t):"),
+                _(u"Total Parts:")
+            ],
+            [
+                _(u"Mean Preventive Maintenance Time [MPMT]:"),
+                _(u"Mean Corrective Maintenance Time [MCMT]:"),
+                _(u"Mean Time to Repair [MTTR]:"),
+                _(u"Mean Maintenance Time [MMT]:"),
+                _(u"Availability [A(t)]:"),
+                _(u"Mission A(t):"),
+                _(u"Total Cost:"),
+                _(u"Cost/Failure:"),
+                _(u"Cost/Hour:")
+            ]
+        ]
         """
         There are 10 labels that will appear in the left half and nine labels
         that will appear in the right half of all Assessment Results pages.
@@ -382,26 +385,40 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
 
-    def on_select(self, **kwargs):
+    def make_general_data_page(self):
         """
-        Respond to load the Work View gtk.Notebook() widgets.
+        Create the gtk.Notebook() page for displaying general data.
 
-        This method handles the results of the an individual module's
-        _on_select() method.  It sets the title of the RAMSTK Work Book and
-        raises an error dialog if needed.
-
-        :return: None
-        :rtype: None
+        :return: (_frame, _fixed); the :class:`gtk.Frame` and
+                 :class:`gtk.Fixed` used to make the General Data page.
+        :rtype: tuple
         """
-        _title = kwargs['title']
+        _fixed = gtk.Fixed()
 
-        try:
-            _workbook = self.get_parent().get_parent()
-            _workbook.set_title(_title)
-        except AttributeError:
-            pass
+        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
+        _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
+        _frame.add(_scrollwindow)
 
-        return self.do_raise_dialog(**kwargs)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
+                                                 _fixed, 5, 5)
+        _x_pos += 50
+
+        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+        _fixed.put(self.txtName, _x_pos, _y_pos[1])
+        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
+
+        _fixed.show_all()
+
+        _label = ramstk.RAMSTKLabel(
+            _(u"General\nData"),
+            height=30,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER,
+            tooltip=_(u"Displays general information for the selected  "
+                      u"{0:s}.").format(self._module))
+        self.hbx_tab_label.pack_start(_label)
+
+        return (_frame, _fixed, _x_pos, _y_pos)
 
     def _on_select_revision(self, **kwargs):
         """

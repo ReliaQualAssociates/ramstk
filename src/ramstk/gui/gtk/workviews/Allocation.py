@@ -393,40 +393,12 @@ class Allocation(RAMSTKWorkView):
 
     def _do_set_visible(self, **kwargs):
         """
-        Set the Allocation treeview columns visible and hidden.
+        Set the Allocation treeview columns visible, hidden, and/or editable.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _visible = kwargs['visible']
-        _hidden = kwargs['hidden']
-        _editable = kwargs['editable']
-        _return = False
-
-        for _col in _hidden:
-            self.treeview.get_column(_col).set_visible(0)
-        for _col in _visible:
-            self.treeview.get_column(_col).set_visible(1)
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'light gray')
-                    _cell.set_property('editable', 0)
-                except TypeError:
-                    _cell.set_property('cell-background', 'light gray')
-
-        for _col in _editable:
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'white')
-                    _cell.set_property('editable', 1)
-                except TypeError:
-                    _cell.set_property('cell-background', 'white')
-
-        return _return
+        return self.treeview.do_set_visible_columns(**kwargs)
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """

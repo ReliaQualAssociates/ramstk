@@ -167,6 +167,52 @@ class RAMSTKTreeView(gtk.TreeView):
 
         return None
 
+    def do_set_visible_columns(self, **kwargs):
+        """
+        Set the treeview columns visible, hidden, and/or editable.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        try:
+            _visible = kwargs['visible']
+        except KeyError:
+            _visible = []
+        try:
+            _hidden = kwargs['hidden']
+        except KeyError:
+            _hidden = []
+        try:
+            _editable = kwargs['editable']
+        except KeyError:
+            _editable = []
+        _return = False
+
+        for _col in _hidden:
+            self.get_column(_col).set_visible(0)
+        for _col in _visible:
+            self.get_column(_col).set_visible(1)
+            _column = self.get_column(_col)
+            _cells = _column.get_cell_renderers()
+            for __, _cell in enumerate(_cells):
+                try:
+                    _cell.set_property('background', 'light gray')
+                    _cell.set_property('editable', 0)
+                except TypeError:
+                    _cell.set_property('cell-background', 'light gray')
+
+        for _col in _editable:
+            _column = self.get_column(_col)
+            _cells = _column.get_cell_renderers()
+            for __, _cell in enumerate(_cells):
+                try:
+                    _cell.set_property('background', 'white')
+                    _cell.set_property('editable', 1)
+                except TypeError:
+                    _cell.set_property('cell-background', 'white')
+
+        return _return
+
     def make_model(self, bg_color='#000000', fg_color='#FFFFFF'):
         """
         Make the RAMSTKTreeView() data model.

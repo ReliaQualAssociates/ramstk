@@ -85,7 +85,7 @@ class GeneralData(RAMSTKWorkView):
         self.pack_end(self._make_page(), expand=True, fill=True)
         self.show_all()
 
-        pub.subscribe(self._on_select, 'selectedRevision')
+        pub.subscribe(self._do_load_page, 'selected_revision')
         pub.subscribe(self._on_edit, 'mvwEditedRevision')
         pub.subscribe(self._do_clear_page, 'closedProgram')
 
@@ -109,30 +109,33 @@ class GeneralData(RAMSTKWorkView):
 
         return None
 
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+    def _do_load_page(self, attributes):
         """
         Load the Revision General Data page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _revision = self._dtc_data_controller.request_do_select(
-            self._revision_id)
+        self._revision_id = attributes['revision_id']
+        RAMSTKWorkView.on_select(
+            self,
+            title=_(u"Analyzing Revision {0:s} - {1:s}").format(
+            str(attributes['revision_code']), str(attributes['name'])))
 
         self.txtCode.handler_block(self._lst_handler_id[2])
-        self.txtCode.set_text(str(_revision.revision_code))
+        self.txtCode.set_text(str(attributes['revision_code']))
         self.txtCode.handler_unblock(self._lst_handler_id[2])
+
         self.txtName.handler_block(self._lst_handler_id[0])
-        self.txtName.set_text(_revision.name)
+        self.txtName.set_text(str(attributes['name']))
         self.txtName.handler_unblock(self._lst_handler_id[0])
+
         _buffer = self.txtRemarks.do_get_buffer()
         _buffer.handler_block(self._lst_handler_id[1])
-        _buffer.set_text(_revision.remarks)
+        _buffer.set_text(str(attributes['remarks']))
         _buffer.handler_unblock(self._lst_handler_id[1])
 
-        return _return
+        return None
 
     def _do_request_update(self, __button):
         """
@@ -192,33 +195,10 @@ class GeneralData(RAMSTKWorkView):
         """
         Create the Revision Work View general data page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: _frame; the gtk.Frame() to embed in the notebook page.
+        :rtype: :class:`gtk.Frame`
         """
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
-                                                 _fixed, 5, 5)
-        _x_pos += 50
-
-        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-        _fixed.put(self.txtName, _x_pos, _y_pos[1])
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
-
-        _fixed.show_all()
-
-        _label = ramstk.RAMSTKLabel(
-            _(u"General\nData"),
-            height=30,
-            width=-1,
-            justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays general information for the selected "
-                      u"revision."))
-        self.hbx_tab_label.pack_start(_label)
+        (_frame, __, __, __) = RAMSTKWorkView.make_general_data_page(self)
 
         return _frame
 
@@ -273,163 +253,40 @@ class GeneralData(RAMSTKWorkView):
         _return = False
         _text = ''
 
-        entry.handler_block(self._lst_handler_id[index])
+        if index == 0:
+            _index = 17
+            _key = 'name'
+            _default = ''
+        elif index == 1:
+            _index = 20
+            _key = 'remarks'
+            _default = ''
+        elif index == 2:
+            _index = 22
+            _key = 'code'
+            _default = ''
 
-        if self._dtc_data_controller is not None:
-            _revision = self._dtc_data_controller.request_do_select(
-                self._revision_id)
+        (_error_code, _debug_msg) = RAMSTKWorkView.on_focus_out(
+            self,
+            entry,
+            index,
+            node_id=self._revision_id,
+            key=_key,
+            default=_default)
 
-            if index == 0:
-                _index = 17
-                _text = entry.get_text()
-                _revision.name = _text
-            elif index == 1:
-                _index = 20
-                _text = self.txtRemarks.do_get_text()
-                _revision.remarks = _text
-            elif index == 2:
-                _index = 22
-                _text = entry.get_text()
-                _revision.revision_code = _text
-
+        if _error_code == 0:
             pub.sendMessage(
                 'wvwEditedRevision', position=_index, new_text=_text)
+        elif _error_code == 1:  # Value error
+            _user_msg = _(
+                u"Revision model has no such attribute {0:s}.").format(_key)
+        elif _error_code == 2:  # Key error
+            _user_msg = _(
+                u"Revision model has no such attribute {0:s}.").format(_key)
 
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return _return
-
-    def _on_select(self, module_id):
-        """
-        Load the Revision Work View General Data page gtk.Widget()s.
-
-        :param int revision_id: the ID of the newly selected Revision.
-        :param str title: the title to display on the Work Book titlebar.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._revision_id = module_id
-        _return = False
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['revision']
-        self._do_load_page()
-
-        return _return
-
-
-class AssessmentResults(RAMSTKWorkView):
-    """
-    Display assessment results Revision attribute data in the RAMSTK Work Book.
-
-    The Revision Assessment Results view displays all the assessment results
-    for the selected Revision.  The attributes of a Revision Assessment Results
-    View are:
-
-    :ivar int _revision_id: the ID of the Revision currently being displayed.
-    """
-
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
-        """
-        Initialize the Revision Work View assessment results page.
-
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :py:class:`ramstk.RAMSTK.RAMSTK`
-        """
-        RAMSTKWorkView.__init__(self, controller, module='Revision')
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-        self._revision_id = None
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
-        self.pack_end(self._make_page(), expand=True, fill=True)
-        self.show_all()
-
-        pub.subscribe(self._on_select, 'selectedRevision')
-
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Load the Revision Assessment Results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _revision = self._dtc_data_controller.request_do_select(
-            self._revision_id)
-
-        self.txtAvailability.set_text(
-            str(self.fmt.format(_revision.availability_logistics)))
-        self.txtMissionAt.set_text(
-            str(self.fmt.format(_revision.availability_mission)))
-        self.txtActiveHt.set_text(
-            str(self.fmt.format(_revision.hazard_rate_active)))
-        self.txtDormantHt.set_text(
-            str(self.fmt.format(_revision.hazard_rate_dormant)))
-        self.txtMissionHt.set_text(
-            str(self.fmt.format(_revision.hazard_rate_mission)))
-        self.txtPredictedHt.set_text(
-            str(self.fmt.format(_revision.hazard_rate_logistics)))
-        self.txtSoftwareHt.set_text(
-            str(self.fmt.format(_revision.hazard_rate_software)))
-        self.txtMMT.set_text(str(self.fmt.format(_revision.mmt)))
-        self.txtMCMT.set_text(str(self.fmt.format(_revision.mcmt)))
-        self.txtMPMT.set_text(str(self.fmt.format(_revision.mpmt)))
-        self.txtMissionMTBF.set_text(
-            str(self.fmt.format(_revision.mtbf_mission)))
-        self.txtMTBF.set_text(str(self.fmt.format(_revision.mtbf_logistics)))
-        self.txtMTTR.set_text(str(self.fmt.format(_revision.mttr)))
-        self.txtMissionRt.set_text(
-            str(self.fmt.format(_revision.reliability_mission)))
-        self.txtReliability.set_text(
-            str(self.fmt.format(_revision.reliability_logistics)))
-
-        _title = _(u"RAMSTK Work Book: Revision "
-                   u"(Analyzing {0:s})").format(_revision.name)
-        RAMSTKWorkView.on_select(
-            self, title=_title, error_code=0, user_msg='', debug_msg='')
-
-        return _return
-
-    def _make_page(self):
-        """
-        Create the Revision Work View assessment results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        (_hbx_page, __, __, __, __, __,
-         __) = RAMSTKWorkView._make_assessment_results_page(self)
-
-        return _hbx_page
-
-    def _on_select(self, **kwargs):
-        """
-        Load the Revision Work View assessment results page gtk.Widget()s.
-
-        :param int revision_id: the ID of the newly selected Revision.
-        :param str title: the title to display on the Work Book titlebar.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._revision_id = kwargs['module_id']
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['revision']
-        self._do_load_page()
-
-        return _return
+        return RAMSTKWorkView.do_raise_dialog(
+            self,
+            error_code=_error_code,
+            user_msg=_user_msg,
+            debug_msg=_debug_msg,
+            severity='error')

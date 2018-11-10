@@ -52,7 +52,7 @@ class ModuleView(RAMSTKModuleView):
         self.make_treeview()
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
         self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row))
+            self.treeview.connect('cursor_changed', self._on_row_change))
         self._lst_handler_id.append(
             self.treeview.connect('button_press_event', self._on_button_press))
 
@@ -71,33 +71,6 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self._on_select_revision, 'insertedRevision')
         pub.subscribe(self._on_select_revision, 'deletedRevision')
         pub.subscribe(self._on_edit, 'wvwEditedRevision')
-
-    def _do_change_row(self, treeview):
-        """
-        Handle events for the Revision package Module View RAMSTKTreeView().
-
-        This method is called whenever a Revision Module View RAMSTKTreeView() row
-        is activated/changed.
-
-        :param treeview: the Revision class gtk.TreeView().
-        :type treeview: :class:`gtk.TreeView`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        treeview.handler_block(self._lst_handler_id[0])
-
-        _model, _row = treeview.get_selection().get_selected()
-
-        self._revision_id = _model.get_value(_row, 0)
-
-        treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selectedRevision', module_id=self._revision_id)
-        pub.sendMessage('selected_revision', revision_id=self._revision_id)
-
-        return _return
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
@@ -409,6 +382,82 @@ class ModuleView(RAMSTKModuleView):
         _model.set(_row, self._lst_col_order[position], new_text)
 
         return False
+
+    def _on_row_change(self, treeview):
+        """
+        Handle events for the Revision package Module View RAMSTKTreeView().
+
+        This method is called whenever a Revision Module View RAMSTKTreeView()
+        row is activated/changed.
+
+        :param treeview: the Revision class gtk.TreeView().
+        :type treeview: :class:`gtk.TreeView`
+        :return: None
+        :rtype: None
+        """
+        _attributes = {}
+
+        treeview.handler_block(self._lst_handler_id[0])
+
+        _model, _row = treeview.get_selection().get_selected()
+
+        _attributes['revision_id'] = _model.get_value(_row,
+                                                      self._lst_col_order[0])
+        _attributes['availability_logistics'] = _model.get_value(
+            _row, self._lst_col_order[1])
+        _attributes['availability_mission'] = _model.get_value(
+            _row, self._lst_col_order[2])
+        _attributes['cost'] = _model.get_value(_row, self._lst_col_order[3])
+        _attributes['cost_per_failure'] = _model.get_value(
+            _row, self._lst_col_order[4])
+        _attributes['cost_per_hour'] = _model.get_value(
+            _row, self._lst_col_order[5])
+        _attributes['hazard_rate_active'] = _model.get_value(
+            _row, self._lst_col_order[6])
+        _attributes['hazard_rate_dormant'] = _model.get_value(
+            _row, self._lst_col_order[7])
+        _attributes['hazard_rate_logistics'] = _model.get_value(
+            _row, self._lst_col_order[8])
+        _attributes['hazard_rate_mission'] = _model.get_value(
+            _row, self._lst_col_order[9])
+        _attributes['hazard_rate_software'] = _model.get_value(
+            _row, self._lst_col_order[10])
+        _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[11])
+        _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[12])
+        _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[13])
+        _attributes['mtbf_logistics'] = _model.get_value(
+            _row, self._lst_col_order[14])
+        _attributes['mtbf_mission'] = _model.get_value(_row,
+                                                       self._lst_col_order[15])
+        _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[16])
+        _attributes['name'] = _model.get_value(_row, self._lst_col_order[17])
+        _attributes['reliability_logistics'] = _model.get_value(
+            _row, self._lst_col_order[18])
+        _attributes['reliability_mission'] = _model.get_value(
+            _row, self._lst_col_order[19])
+        _attributes['remarks'] = _model.get_value(_row,
+                                                  self._lst_col_order[20])
+        _attributes['n_parts'] = _model.get_value(_row,
+                                                  self._lst_col_order[21])
+        _attributes['revision_code'] = _model.get_value(
+            _row, self._lst_col_order[22])
+        _attributes['program_time'] = _model.get_value(_row,
+                                                       self._lst_col_order[23])
+        _attributes['program_time_sd'] = _model.get_value(
+            _row, self._lst_col_order[24])
+        _attributes['program_cost'] = _model.get_value(_row,
+                                                       self._lst_col_order[25])
+        _attributes['program_cost_sd'] = _model.get_value(
+            _row, self._lst_col_order[26])
+
+        self._revision_id = _attributes['revision_id']
+
+        treeview.handler_unblock(self._lst_handler_id[0])
+
+        pub.sendMessage('selectedRevision', module_id=self._revision_id)
+        pub.sendMessage('selected_revision', attributes=_attributes)
+
+        return None
 
     def _on_select_revision(self, **kwargs):  # pylint: disable=unused-argument
         """

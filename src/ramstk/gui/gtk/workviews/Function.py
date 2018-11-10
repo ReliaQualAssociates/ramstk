@@ -146,6 +146,10 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self._function_id = attributes['function_id']
+        RAMSTKWorkView.on_select(
+            self,
+            title=_(u"Analyzing Function {0:s} - {1:s}").format(
+                str(attributes['function_code']), str(attributes['name'])))
 
         self.txtCode.handler_block(self._lst_handler_id[0])
         self.txtCode.set_text(str(attributes['function_code']))
@@ -226,31 +230,10 @@ class GeneralData(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _fixed = gtk.Fixed()
+        (_frame, _fixed, __,
+         _y_pos) = RAMSTKWorkView.make_general_data_page(self)
 
-        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
-                                                 _fixed, 5, 5)
-        _x_pos += 50
-
-        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-        _fixed.put(self.txtName, _x_pos, _y_pos[1])
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
-
-        _fixed.show_all()
-
-        _label = ramstk.RAMSTKLabel(
-            _(u"General\nData"),
-            height=30,
-            width=-1,
-            justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays general information for the selected "
-                      u"function."))
-        self.hbx_tab_label.pack_start(_label)
 
         return _frame
 
@@ -321,133 +304,3 @@ class GeneralData(RAMSTKWorkView):
             value=_text)
 
         return None
-
-
-class AssessmentResults(RAMSTKWorkView):
-    """
-    Display Function attribute data in the RAMSTK Work Book.
-
-    The Function Assessment Results view displays all the assessment results
-    for the selected Function.  The attributes of a Function Assessment Results
-    View are:
-
-    :ivar int _function_id: the ID of the Function currently being displayed.
-    """
-
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
-        """
-        Initialize the Work View for the Function package.
-
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
-        """
-        RAMSTKWorkView.__init__(self, controller, module='Function')
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_assess_labels[1].append(_(u"Total Mode Count:"))
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self._function_id = None
-
-        self.txtModeCount = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"Displays the total "
-                      u"number of failure modes "
-                      u"associated with the "
-                      u"selected Function."))
-
-        self.pack_start(self._make_page(), expand=True, fill=True)
-        self.show_all()
-
-        pub.subscribe(self._on_select, 'selectedFunction')
-        pub.subscribe(self._on_select, 'calculatedFunction')
-
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Load the Function Assessment Results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _function = self._dtc_data_controller.request_do_select(
-            self._function_id)
-
-        self.txtAvailability.set_text(
-            str(self.fmt.format(_function.availability_logistics)))
-        self.txtMissionAt.set_text(
-            str(self.fmt.format(_function.availability_mission)))
-        self.txtMissionHt.set_text(
-            str(self.fmt.format(_function.hazard_rate_mission)))
-        self.txtPredictedHt.set_text(
-            str(self.fmt.format(_function.hazard_rate_logistics)))
-
-        self.txtMMT.set_text(str(self.fmt.format(_function.mmt)))
-        self.txtMCMT.set_text(str(self.fmt.format(_function.mcmt)))
-        self.txtMPMT.set_text(str(self.fmt.format(_function.mpmt)))
-
-        self.txtMissionMTBF.set_text(
-            str(self.fmt.format(_function.mtbf_mission)))
-        self.txtMTBF.set_text(str(self.fmt.format(_function.mtbf_logistics)))
-        self.txtMTTR.set_text(str(self.fmt.format(_function.mttr)))
-
-        self.txtTotalCost.set_text(str(locale.currency(_function.cost)))
-        self.txtModeCount.set_text(
-            str('{0:d}'.format(_function.total_mode_count)))
-        self.txtPartCount.set_text(
-            str('{0:d}'.format(_function.total_part_count)))
-
-        return _return
-
-    def _make_page(self):
-        """
-        Make the Function class gtk.Notebook() assessment results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        (_hbx_page, __, _fxd_right, ___, _x_pos_r, __,
-         _y_pos_r) = RAMSTKWorkView._make_assessment_results_page(self)
-
-        _fxd_right.put(self.txtModeCount, _x_pos_r, _y_pos_r[8] + 30)
-        _fxd_right.show_all()
-
-        self.txtActiveHt.set_sensitive(False)
-        self.txtDormantHt.set_sensitive(False)
-        self.txtSoftwareHt.set_sensitive(False)
-        self.txtReliability.set_sensitive(False)
-        self.txtMissionRt.set_sensitive(False)
-
-        return _hbx_page
-
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
-        """
-        Load the Function Work View class gtk.Notebook() widgets.
-
-        :param int module_id: the Function ID of the selected/edited Function.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._function_id = module_id
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-                'function']
-        self._do_load_page()
-
-        return _return

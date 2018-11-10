@@ -687,34 +687,7 @@ class SimilarItem(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _visible = kwargs['visible']
-        _editable = kwargs['editable']
-        _return = False
-
-        for _column in self.treeview.get_columns():
-            _column.set_visible(0)
-        for _col in _visible:
-            self.treeview.get_column(_col).set_visible(1)
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'light gray')
-                    _cell.set_property('editable', 0)
-                except TypeError:
-                    _cell.set_property('cell-background', 'light gray')
-
-        for _col in _editable:
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'white')
-                    _cell.set_property('editable', 1)
-                except TypeError:
-                    _cell.set_property('cell-background', 'white')
-
-        return _return
+        return self.treeview.do_set_visible_columns(**kwargs)
 
     def _get_cell_model(self, column):
         """
