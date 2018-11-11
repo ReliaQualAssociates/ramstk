@@ -41,7 +41,8 @@ ATTRIBUTES = {
     'mcmt': 0.0,
     'function_id': 1,
     'availability_logistics': 1.0,
-    'total_mode_count': 0
+    'total_mode_count': 0,
+    'revision_id': 1
 }
 
 
@@ -203,7 +204,7 @@ def test_request_do_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RAMSTKFunction models. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
 
-    assert DUT.request_do_select_all(revision_id=1) is None
+    assert DUT.request_do_select_all(ATTRIBUTES) is None
     assert isinstance(
         DUT._dtm_data_model.tree.get_node(1).data, RAMSTKFunction)
 
@@ -233,7 +234,7 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
 def test_request_do_select(test_dao, test_configuration):
     """ request_do_select() should return an RAMSTKFunction model. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _function = DUT.request_do_select(1)
 
@@ -253,7 +254,7 @@ def test_request_do_select_non_existent_id(test_dao, test_configuration):
 def test_request_do_insert(test_dao, test_configuration):
     """ request_do_insert() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(revision_id=1, parent_id=0)
 
@@ -297,7 +298,7 @@ def test_request_do_insert_matrix_column(test_dao, test_configuration):
 def test_request_do_delete(test_dao, test_configuration):
     """ request_do_delete() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
     DUT.request_do_insert(revision_id=1, parent_id=0)
 
     assert not DUT.request_do_delete(DUT.request_last_id())
@@ -307,7 +308,7 @@ def test_request_do_delete(test_dao, test_configuration):
 def test_request_do_delete_non_existent_id(test_dao, test_configuration):
     """ request_do_delete() should return True when attempting to delete a non-existent Function. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert DUT.request_do_delete(100)
 
@@ -349,7 +350,7 @@ def test_request_do_delete_matrix_column(test_dao, test_configuration):
 def test_request_do_update(test_dao, test_configuration):
     """ request_do_update() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_update(1)
 
@@ -358,7 +359,7 @@ def test_request_do_update(test_dao, test_configuration):
 def test_request_do_update_non_existent_id(test_dao, test_configuration):
     """ request_do_update() should return True when attempting to save a non-existent Function. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert DUT.request_do_update(100)
 
@@ -387,7 +388,7 @@ def test_request_do_update_non_existent_matrix(test_dao, test_configuration):
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_update_all()
 
@@ -396,7 +397,7 @@ def test_request_do_update_all(test_dao, test_configuration):
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _attributes = DUT.request_get_attributes(1)
 
@@ -408,7 +409,7 @@ def test_request_get_attributes(test_dao, test_configuration):
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     (_error_code, _msg) = DUT.request_set_attributes(1, 'availability_mission',
                                                      0.9978)
@@ -421,7 +422,7 @@ def test_request_set_attributes(test_dao, test_configuration):
 def test_request_last_id(test_dao, test_configuration):
     """ request_last_id() should return the last Function ID used in the RAMSTK Program database. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _last_id = DUT.request_last_id()
 
