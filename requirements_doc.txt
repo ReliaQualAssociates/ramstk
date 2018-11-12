@@ -1,4 +1,4 @@
-sphinx==1.8.1
+sphinx==1.8.2
 sphinxcontrib-issuetracker
 sphinxcontrib-spelling
 Babel
