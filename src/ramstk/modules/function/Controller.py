@@ -86,53 +86,45 @@ class FunctionDataController(RAMSTKDataController):
 
         return
 
-    def request_do_select_all(self, attributes):
+    def request_do_delete(self, node_id):
         """
-        Retrieve the treelib Tree() from the Function Data Model.
+        Request to delete an RAMSTKFunction table record.
 
-        :return: tree; the treelib Tree() of RAMSTKFunction models in the
-                 Function tree.
-        :rtype: :class:`treelib.Tree`
+        :param int node_id: the PyPubSub Tree() ID of the Function to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
-        return self._dtm_data_model.do_select_all(
-            revision_id=attributes['revision_id'])
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
-    def request_do_select_all_matrix(self, revision_id, matrix_type):
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
+
+    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
-        Retrieve all the Matrices associated with the Function.
+        Request to remove a row or column from the selected Data Matrix.
 
-        :param int revision_id: the Revision ID to select the matrices for.
-        :param int matrix_type: the type of the Matrix to retrieve.  Current
+        :param str matrix_type: the type of the Matrix to retrieve.  Current
                                 Function matrix types are:
 
                                 fnctn_hrdwr = Function:Hardware
                                 fnctn_sftwr = Function:Software
                                 fnctn_vldtn = Function:Validation
 
-        :return: (_matrix, _column_hdrs, _row_hdrs); the Pandas Dataframe,
-                 noun names to use for column headings, noun names to use for
-                 row headings.
-        :rtype: (:class:`pandas.DataFrame`, dict, dict)
+        :param int item_id: the ID of the row or column item to remove from the
+                            Matrix.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
-        _matrix = None
-        _column_hdrs = []
-        _row_hdrs = []
-
         if matrix_type == 'fnctn_hrdwr':
-            self._dmx_fctn_hw_matrix.do_select_all(
-                revision_id,
-                matrix_type,
-                rkey='function_id',
-                ckey='hardware_id',
-                rheader='function_code',
-                cheader='comp_ref_des')
-            _matrix = self._dmx_fctn_hw_matrix.dtf_matrix
-            _column_hdrs = self._dmx_fctn_hw_matrix.dic_column_hdrs
-            _row_hdrs = self._dmx_fctn_hw_matrix.dic_row_hdrs
+            _error_code, _msg = self._dmx_fctn_hw_matrix.do_delete(
+                item_id, row=row)
 
-        return (_matrix, _column_hdrs, _row_hdrs)
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      'deletedMatrix')
 
-    def request_do_insert(self, revision_id, parent_id, **kwargs):  # pylint: disable=unused-argument
+    def request_do_insert(self, revision_id, parent_id):
         """
         Request to add an RAMSTKFunction table record.
 
@@ -179,43 +171,40 @@ class FunctionDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
 
-    def request_do_delete(self, node_id):
+    def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
-        Request to delete an RAMSTKFunction table record.
+        Retrieve all the Matrices associated with the Function.
 
-        :param int node_id: the PyPubSub Tree() ID of the Function to delete.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
-        """
-        Request to remove a row or column from the selected Data Matrix.
-
-        :param str matrix_type: the type of the Matrix to retrieve.  Current
+        :param int revision_id: the Revision ID to select the matrices for.
+        :param int matrix_type: the type of the Matrix to retrieve.  Current
                                 Function matrix types are:
 
                                 fnctn_hrdwr = Function:Hardware
                                 fnctn_sftwr = Function:Software
                                 fnctn_vldtn = Function:Validation
 
-        :param int item_id: the ID of the row or column item to remove from the
-                            Matrix.
-        :keyword bool row: indicates whether to insert a row (default) or a
-                           column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_matrix, _column_hdrs, _row_hdrs); the Pandas Dataframe,
+                 noun names to use for column headings, noun names to use for
+                 row headings.
+        :rtype: (:class:`pandas.DataFrame`, dict, dict)
         """
-        if matrix_type == 'fnctn_hrdwr':
-            _error_code, _msg = self._dmx_fctn_hw_matrix.do_delete(
-                item_id, row=row)
+        _matrix = None
+        _column_hdrs = []
+        _row_hdrs = []
 
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'deletedMatrix')
+        if matrix_type == 'fnctn_hrdwr':
+            self._dmx_fctn_hw_matrix.do_select_all(
+                revision_id,
+                matrix_type,
+                rkey='function_id',
+                ckey='hardware_id',
+                rheader='function_code',
+                cheader='comp_ref_des')
+            _matrix = self._dmx_fctn_hw_matrix.dtf_matrix
+            _column_hdrs = self._dmx_fctn_hw_matrix.dic_column_hdrs
+            _row_hdrs = self._dmx_fctn_hw_matrix.dic_row_hdrs
+
+        return (_matrix, _column_hdrs, _row_hdrs)
 
     def request_do_update(self, node_id):
         """
@@ -258,26 +247,7 @@ class FunctionDataController(RAMSTKDataController):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.do_update_all()
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
-
-    def request_set_attributes(self, module_id, key, value):
-        """
-        Request to set a Function attribute.
-
-        :param int module_id: the ID of the entity who's attribute is to
-                              be set.
-        :param str key: the key of the attributes to set.
-        :param value: the value to set the attribute identified by the
-                      key.
-        :return:
-        :rtype:
-        """
-        _entity = self.request_do_select(module_id)
-        _attributes = _entity.get_attributes()
-
-        _attributes[key] = value
-
-        return _entity.set_attributes(_attributes)

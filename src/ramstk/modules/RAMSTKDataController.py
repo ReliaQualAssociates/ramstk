@@ -6,7 +6,8 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Datamodels Package RAMSTKDataController."""
 
-from pubsub import pub  # pylint: disable=E0401
+# Import third party modules.
+from pubsub import pub
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -99,15 +100,18 @@ class RAMSTKDataController(object):
         """
         return self._dtm_data_model.do_select(node_id, **kwargs)
 
-    def request_do_select_all(self, **kwargs):
+    def request_do_select_all(self, attributes):
         """
-        Retrieve the treelib Tree() from the Data Model.
+        Retrieve the treelib Tree() from the RAMSTK Data Model.
 
-        :return: tree; the treelib Tree() of RAMSTKRequirement models in the
-                 Requirement tree.
-        :rtype: dict
+        The RAMSTK Data Model method sends the 'retrieved_<module>' PyPubSub
+        message.
+
+        :return: None
+        :rtype: None
         """
-        return self._dtm_data_model.do_select_all(**kwargs)
+        return self._dtm_data_model.do_select_all(
+            revision_id=attributes['revision_id'])
 
     def request_get_attributes(self, node_id):
         """
@@ -123,19 +127,24 @@ class RAMSTKDataController(object):
 
         return _entity.get_attributes()
 
-    def request_set_attributes(self, node_id, attributes):
+    def request_set_attributes(self, module_id, key, value):
         """
-        Set the attributes of the record associated with the Node ID.
+        Request to set a RAMSTK record's attribute.
 
-        :param int node_id: the ID of the record in the RAMSTK Program database
-                            table whose attributes are to be set.
-        :param dict attributes: the dictionary of attributes and values.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
+        :param int module_id: the ID of the entity who's attribute is to
+                              be set.
+        :param str key: the key of the attributes to set.
+        :param value: the value to set the attribute identified by the
+                      key.
+        :return:
+        :rtype:
         """
-        _entity = self.request_do_select(node_id)
+        _entity = self.request_do_select(module_id)
+        _attributes = _entity.get_attributes()
 
-        return _entity.set_attributes(attributes)
+        _attributes[key] = value
+
+        return _entity.set_attributes(_attributes)
 
     def request_last_id(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -145,3 +154,12 @@ class RAMSTKDataController(object):
         :rtype: int
         """
         return self._dtm_data_model.last_id
+
+    def request_tree(self):
+        """
+        Request the Treelib tree from the Data Model.
+
+        :return: tree; the Treelib Tree() object containing the module's data.
+        :rtype: :class:`treelib.Tree`
+        """
+        return self._dtm_data_model.tree

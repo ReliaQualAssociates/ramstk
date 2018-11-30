@@ -6,8 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Work View."""
 
-import locale
-
+# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
@@ -145,6 +144,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self._revision_id = attributes['revision_id']
         self._function_id = attributes['function_id']
         RAMSTKWorkView.on_select(
             self,

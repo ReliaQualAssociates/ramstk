@@ -47,7 +47,6 @@ class ModuleView(RAMSTKModuleView):
         # Initialize private scalar attributes.
         self._function_id = None
         self._parent_id = None
-        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -72,52 +71,10 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_tree, 'retrieved_functions')
-        pub.subscribe(self._do_load_tree, 'deleted_function')
-        pub.subscribe(self._do_load_tree, 'inserted_function')
-        pub.subscribe(self._do_refresh_tree, 'editing_function')
-
-    def _do_load_tree(self, tree):
-        """
-        Load the Function Module View RAMSTKTreeView().
-
-        This method is called in response to the 'retrieved_functions'.
-
-        :param tree: the treelib Tree containing the Functions to load.
-        :type tree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        if self.treeview.do_load_tree(tree):
-            _prompt = _(u"An error occured while loading the Functions "
-                        u"for Revision ID {0:d} into the Module "
-                        u"View.").format(self._revision_id)
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == self._response_ok:
-                _dialog.do_destroy()
-
-        return None
-
-    def _do_refresh_tree(self, module_id, key, value):  # pylint: disable=unused-argument
-        """
-        Refresh the data in the Function Module View RAMSTKTreeView().
-
-        :return: None
-        :rtype: None
-        """
-        _column = [
-            _index for _index, _key in enumerate(self.treeview.korder)
-            if _key == key
-        ][0]
-
-        _model, _row = self.treeview.get_selection().get_selected()
-        _model.set_value(_row, _column, value)
-
-        return None
+        pub.subscribe(self.do_load_tree, 'retrieved_functions')
+        pub.subscribe(self.do_load_tree, 'deleted_function')
+        pub.subscribe(self.do_load_tree, 'inserted_function')
+        pub.subscribe(self.do_refresh_tree, 'editing_function')
 
     def _do_request_delete(self, __button):
         """
@@ -373,7 +330,7 @@ class ModuleView(RAMSTKModuleView):
 
         treeview.handler_block(self._lst_handler_id[0])
 
-        _model, _row = treeview.get_selection().get_selected()
+        (_model, _row) = treeview.get_selection().get_selected()
 
         _attributes['revision_id'] = _model.get_value(_row,
                                                       self._lst_col_order[0])
@@ -414,6 +371,8 @@ class ModuleView(RAMSTKModuleView):
                                                   self._lst_col_order[21])
 
         self._function_id = _attributes['function_id']
+        self._parent_id = _attributes['parent_id']
+        self._revision_id = _attributes['revision_id']
 
         treeview.handler_unblock(self._lst_handler_id[0])
 

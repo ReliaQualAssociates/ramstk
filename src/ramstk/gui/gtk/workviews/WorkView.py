@@ -6,6 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKWorkView Meta-Class Module."""
 
+# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
@@ -15,7 +16,7 @@ from ramstk.gui.gtk import ramstk
 
 class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
     """
-    class to display data in the RAMSTK Work Book.
+    Class to display data in the RAMSTK Work Book.
 
     This is the meta class for all RAMSTK Work View classes.  Attributes of the
     RAMSTKWorkView are:
@@ -24,50 +25,50 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
     :ivar list _lst_assess_labels: the labels to use on the Assessment Results
                                    page.
     :ivar str _module: the RAMSTK module the RAMSTKWorkView is associated with.
-    :ivar txtCode: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                   RAMSTK module code.
-    :ivar txtName: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the RAMSTK
-                   module name or description.
-    :ivar txtRemarks: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display any
-                      remarks associated with the RAMSTK module.
-    :ivar txtActiveHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                       active hazard rate.
-    :ivar txtDormantHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                        dormant hazard rate.
-    :ivar txtSoftwareHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
-                         the software hazard rate.
-    :ivar txtPredictedHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
-                          the predicted (logistics) hazard rate.
-    :ivar txtMissionHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                        mission hazard rate.
-    :ivar txtMTBF: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                   predicted (logistics) MTBF>
-    :ivar txtMissionMTBF: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
-                          the mission MTBF.
-    :ivar txtReliability: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
-                          the predicted (logistics) reliability.
-    :ivar txtMissionRt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                        mission reliability.
-    :ivar txtMPMT: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                   mean preventive maintenance time (MPMT).
-    :ivar txtMCMT: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                   mean corrective maintenance time (MCMT).
-    :ivar txtMTTR: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                   men time to repair (MTTR).
+    :ivar txtCode: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
+                   the RAMSTK module code.
+    :ivar txtName: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
+                   the RAMSTK module name or description.
+    :ivar txtRemarks: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
+                      any remarks associated with the RAMSTK module.
+    :ivar txtActiveHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                       display the active hazard rate.
+    :ivar txtDormantHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                        display the dormant hazard rate.
+    :ivar txtSoftwareHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                         display the software hazard rate.
+    :ivar txtPredictedHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                          display the predicted (logistics) hazard rate.
+    :ivar txtMissionHt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                        display the mission hazard rate.
+    :ivar txtMTBF: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
+                   the predicted (logistics) MTBF>
+    :ivar txtMissionMTBF: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                          display the mission MTBF.
+    :ivar txtReliability: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                          display the predicted (logistics) reliability.
+    :ivar txtMissionRt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                        display the mission reliability.
+    :ivar txtMPMT: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
+                   the mean preventive maintenance time (MPMT).
+    :ivar txtMCMT: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
+                   the mean corrective maintenance time (MCMT).
+    :ivar txtMTTR: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
+                   the men time to repair (MTTR).
     :ivar txtMMT: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
                   the mean maintenance time (MMT).
-    :ivar txtAvailability: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
-                           the predicted (logistics) availability.
-    :ivar txtMissionAt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                        mission availability.
-    :ivar txtPartCount: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                        total part count for the RAMSTK module.
-    :ivar txtTotalCost: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                        total cost of the RAMSTK module.
-    :ivar txtCostFailure: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display
-                          the cost/failure of the RAMSTK module.
-    :ivar txtCostHour: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to display the
-                       cost/operating hour for the RAMSTK module.
+    :ivar txtAvailability: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                           display the predicted (logistics) availability.
+    :ivar txtMissionAt: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                        display the mission availability.
+    :ivar txtPartCount: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                        display the total part count for the RAMSTK module.
+    :ivar txtTotalCost: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                        display the total cost of the RAMSTK module.
+    :ivar txtCostFailure: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                          display the cost/failure of the RAMSTK module.
+    :ivar txtCostHour: the :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` to
+                       display the cost/operating hour for the RAMSTK module.
     """
 
     def __init__(self, controller, **kwargs):
@@ -76,7 +77,6 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
 
         :param controller: the RAMSTK master data controller instance.
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
-        :keyword str module: the RAMSTK Module this RAMSTKWorkView is the bassis for.
         """
         _module = kwargs['module']
         gtk.HBox.__init__(self)
