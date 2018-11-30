@@ -54,7 +54,7 @@ ATTRIBUTES = {
 @pytest.mark.integration
 def test_create_data_model(test_dao):
     """ __init__() should return a Revision data model. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
 
     assert isinstance(DUT, dtmRevision)
     assert isinstance(DUT.tree, Tree)
@@ -64,17 +64,17 @@ def test_create_data_model(test_dao):
 @pytest.mark.integration
 def test_do_select_all(test_dao):
     """ do_select_all() should return a Tree() object populated with RAMSTKRevision instances on success. """
-    DUT = dtmRevision(test_dao)
-    _tree = DUT.do_select_all()
+    DUT = dtmRevision(test_dao, test=True)
+    DUT.do_select_all()
 
-    assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RAMSTKRevision)
+    assert isinstance(DUT.tree, Tree)
+    assert isinstance(DUT.tree.get_node(1).data, RAMSTKRevision)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
     """  do_select() should return an instance of the RAMSTKRevision data model on success. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
     DUT.do_select_all()
 
     _revision = DUT.do_select(1)
@@ -87,7 +87,7 @@ def test_do_select(test_dao):
 @pytest.mark.integration
 def test_do_select_non_existent_id(test_dao):
     """ do_select() should return None when a non-existent Revision ID is requested. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
     DUT.do_select_all()
 
     _revision = DUT.do_select(100)
@@ -98,7 +98,7 @@ def test_do_select_non_existent_id(test_dao):
 @pytest.mark.integration
 def test_do_insert(test_dao):
     """ do_insert() should return False on success. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
     DUT.do_select_all()
 
     _error_code, _msg = DUT.do_insert()
@@ -112,7 +112,7 @@ def test_do_insert(test_dao):
 @pytest.mark.integration
 def test_do_delete(test_dao):
     """ do_delete() should return a zero error code on success. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
     DUT.do_select_all()
     DUT.do_insert()
 
@@ -126,20 +126,20 @@ def test_do_delete(test_dao):
 @pytest.mark.integration
 def test_do_delete_non_existent_id(test_dao):
     """ do_delete() should return a non-zero error code when passed a Revision ID that doesn't exist. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
     DUT.do_select_all()
 
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Revision "
+    assert _msg == ("RAMSTK ERROR: Attempted to delete non-existent Revision "
                     "ID 300.")
 
 
 @pytest.mark.integration
 def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
     DUT.do_select_all()
 
     _revision = DUT.tree.get_node(1).data
@@ -154,12 +154,12 @@ def test_do_update(test_dao):
 @pytest.mark.integration
 def test_do_update_non_existent_id(test_dao):
     """ do_update() should return a non-zero error code when passed a Revision ID that doesn't exist. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
     DUT.do_select_all()
 
     _error_code, _msg = DUT.do_update(100)
 
-    assert _error_code == 2006
+    assert _error_code == 2005
     assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Revision ID "
                     "100.")
 
@@ -167,7 +167,7 @@ def test_do_update_non_existent_id(test_dao):
 @pytest.mark.integration
 def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
-    DUT = dtmRevision(test_dao)
+    DUT = dtmRevision(test_dao, test=True)
     DUT.do_select_all()
 
     _error_code, _msg = DUT.do_update_all()
@@ -189,16 +189,17 @@ def test_create_data_controller(test_dao, test_configuration):
 def test_request_do_select_all(test_dao, test_configuration):
     """ request_do_select_all() should return a Tree of RAMSTKRevision models. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    _tree = DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
-    assert isinstance(_tree.get_node(1).data, RAMSTKRevision)
+    assert isinstance(
+        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKRevision)
 
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
     """ request_do_select() should return an RAMSTKRevision model. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _revision = DUT.request_do_select(1)
 
@@ -218,7 +219,7 @@ def test_request_non_existent_id(test_dao, test_configuration):
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _attributes = DUT.request_get_attributes(1)
 
@@ -230,9 +231,10 @@ def test_request_get_attributes(test_dao, test_configuration):
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
-    _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
+    _error_code, _msg = DUT.request_set_attributes(
+        module_id=1, key='name', value='New Revision')
 
     assert _error_code == 0
     assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKRevision 1 attributes.")
@@ -242,7 +244,7 @@ def test_request_set_attributes(test_dao, test_configuration):
 def test_request_last_id(test_dao, test_configuration):
     """ request_last_id() should return the last Revision ID used in the RAMSTK Program database. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _last_id = DUT.request_last_id()
 
@@ -253,7 +255,7 @@ def test_request_last_id(test_dao, test_configuration):
 def test_request_do_insert(test_dao, test_configuration):
     """ request_do_insert() should return False on success."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert()
 
@@ -264,7 +266,7 @@ def test_request_do_insert(test_dao, test_configuration):
 def test_request_do_delete(test_dao, test_configuration):
     """ request_do_delete() should return False on success."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
     DUT.request_do_insert()
 
     assert not DUT.request_do_delete(DUT.request_last_id())
@@ -274,7 +276,7 @@ def test_request_do_delete(test_dao, test_configuration):
 def test_request_do_delete_non_existent_id(test_dao, test_configuration):
     """ request_do_delete() should return True when attempting to delete a non-existent Revision."""
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert DUT.request_do_delete(100)
 
@@ -283,7 +285,7 @@ def test_request_do_delete_non_existent_id(test_dao, test_configuration):
 def test_request_do_update(test_dao, test_configuration):
     """ request_do_update() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_update(DUT.request_last_id())
 
@@ -292,7 +294,7 @@ def test_request_do_update(test_dao, test_configuration):
 def test_request_do_update_non_existent_id(test_dao, test_configuration):
     """ request_do_update() should return True when attempting to save a non-existent Revision. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert DUT.request_do_update(100)
 
@@ -301,6 +303,6 @@ def test_request_do_update_non_existent_id(test_dao, test_configuration):
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcRevision(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_update_all()
