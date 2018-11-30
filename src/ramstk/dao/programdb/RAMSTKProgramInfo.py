@@ -130,6 +130,6 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
             _error_code = 1
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKProgramInfo.set_attributes().".format(_err)
+                   "RAMSTKProgramInfo.set_attributes().".format(str(_err))
 
         return _error_code, _msg
