@@ -6,6 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Defintion Package Data Controller Module."""
 
+# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
@@ -34,7 +35,7 @@ class FailureDefinitionDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmFailureDefinition(dao),
+            model=dtmFailureDefinition(dao, **kwargs),
             ramstk_module='failure_definition',
             **kwargs)
 
@@ -50,31 +51,13 @@ class FailureDefinitionDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_do_insert(self, **kwargs):
-        """
-        Request to add an RAMSTKFailureDefinition table record.
-
-        :param int revision_id: the Revision ID this Failure Definition will be
-                                associated with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _revision_id = kwargs['revision_id']
-        _error_code, _msg = self._dtm_data_model.do_insert(
-            revision_id=_revision_id)
-
-        if _error_code == 0:
-            self._configuration.RAMSTK_USER_LOG.info(_msg)
-
-            if not self._test:
-                pub.sendMessage('insertedDefinition')
-        else:
-            _msg = _msg + '  Failed to add a new Failure Definition to the ' \
-                          'RAMSTK Program database.'
-            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
+        pub.subscribe(self.request_do_select_all, 'selected_revision')
+        pub.subscribe(self.request_do_delete, 'request_delete_definition')
+        pub.subscribe(self.request_do_insert, 'request_insert_definition')
+        pub.subscribe(self.request_do_update, 'request_update_definition')
+        pub.subscribe(self.request_do_update_all,
+                      'request_update_all_definitions')
+        pub.subscribe(self.request_set_attributes, 'editing_definition')
 
     def request_do_delete(self, node_id):
         """
@@ -89,7 +72,22 @@ class FailureDefinitionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'deletedDefinition')
+                                                      None)
+
+    def request_do_insert(self, revision_id):
+        """
+        Request to add an RAMSTKFailureDefinition table record.
+
+        :param int revision_id: the Revision ID this Failure Definition will be
+                                associated with.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=revision_id)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
 
     def request_do_update(self, node_id):
         """
@@ -104,7 +102,7 @@ class FailureDefinitionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'savedDefinition')
+                                                      None)
 
     def request_do_update_all(self, **kwargs):
         """
