@@ -81,10 +81,10 @@ class ListView(RAMSTKListView):
 
         self.show_all()
 
-        pub.subscribe(self.do_load_tree, 'retrieved_stakeholders')
         pub.subscribe(self._do_load_requirements, 'retrieved_requirements')
         pub.subscribe(self.do_load_tree, 'deleted_stakeholder')
         pub.subscribe(self.do_load_tree, 'inserted_stakeholder')
+        pub.subscribe(self.do_load_tree, 'retrieved_stakeholders')
         pub.subscribe(self._do_refresh_tree, 'calculated_stakeholder')
 
     def _do_load_requirements(self, tree):
@@ -189,17 +189,6 @@ class ListView(RAMSTKListView):
 
         return None
 
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Send request to insert a new Stakeholder input.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        return self._do_request_insert(sibling=True)
-
     def _do_request_update(self, __button):
         """
         Save the currently selected Stakeholder Input.
@@ -209,10 +198,10 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage(
             'request_update_stakeholder', node_id=self._stakeholder_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -225,9 +214,9 @@ class ListView(RAMSTKListView):
         :return: none
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_all_stakeholders')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -454,7 +443,7 @@ class ListView(RAMSTKListView):
                 _key = 'user_float_5'
 
             pub.sendMessage(
-                'editing_stakeholder',
+                'lvw_editing_stakeholder',
                 module_id=self._stakeholder_id,
                 key=_key,
                 value=new_text)
