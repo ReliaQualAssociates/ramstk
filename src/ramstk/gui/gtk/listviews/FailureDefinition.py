@@ -85,9 +85,10 @@ class ListView(RAMSTKListView):
 
         self.show_all()
 
-        pub.subscribe(self._do_load_tree, 'retrieved_definitions')
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_tree, 'deleted_definition')
         pub.subscribe(self._do_load_tree, 'inserted_definition')
+        pub.subscribe(self._do_load_tree, 'retrieved_definitions')
 
     def _do_load_tree(self, tree):
         """
@@ -142,7 +143,8 @@ class ListView(RAMSTKListView):
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
-            pub.sendMessage('request_delete_definition', node_id=self._definition_id)
+            pub.sendMessage(
+                'request_delete_definition', node_id=self._definition_id)
 
         _dialog.do_destroy()
 
@@ -161,17 +163,6 @@ class ListView(RAMSTKListView):
             'request_insert_definition', revision_id=self._revision_id)
 
         return None
-
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Send request to insert a new Failure Definition.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=True)
 
     def _do_request_update(self, __button):
         """
@@ -216,7 +207,7 @@ class ListView(RAMSTKListView):
             _(u"Add a new Failure Definition."),
             _(u"Remove the currently selected Failure Definition."),
         ]
-        _callbacks = [self._do_request_insert_sibling, self._do_request_delete]
+        _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
         _icons = ['add', 'remove']
 
         _buttonbox = ramstk.do_make_buttonbox(
