@@ -53,30 +53,14 @@ class UsageProfileDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
-        pub.subscribe(self.request_do_select_all, 'selected_revision')
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self.request_do_delete, 'request_delete_profile')
         pub.subscribe(self.request_do_insert, 'request_insert_profile')
+        pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_update, 'request_update_profile')
         pub.subscribe(self.request_do_update_all,
                       'request_update_all_profiles')
         pub.subscribe(self.request_set_attributes, 'editing_profile')
-
-    def request_do_delete(self, node_id):
-        """
-        Request to delete a record.
-
-        This method deletes a RAMSTKMission, RAMSTKMissionPhase, or
-        RAMSTKEnvironment record.
-
-        :param int node_id: the Mission, Mission Phase, Environment ID to add
-                            the entity.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
 
     def request_do_insert(self, entity_id, parent_id, level, **kwargs):
         """
@@ -102,34 +86,6 @@ class UsageProfileDataController(RAMSTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_insert(
             entity_id=entity_id, parent_id=parent_id, level=level)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_update(self, node_id):
-        """
-        Request to update a record.
-
-        This method will update a RAMSTKMission, RAMSTKMissionPhase, or
-        RAMSTKEnvironment record.
-
-        :param int node_id: the ID of the entity to save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_update_all(self, **kwargs):
-        """
-        Request to update all records in the Usage Profile tables.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)

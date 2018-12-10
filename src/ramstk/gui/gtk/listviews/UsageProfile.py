@@ -94,10 +94,10 @@ class ListView(RAMSTKListView):
 
         self.show_all()
 
-        pub.subscribe(self._do_load_tree, 'retrieved_usage_profile')
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_tree, 'deleted_usage_profile')
         pub.subscribe(self._do_load_tree, 'inserted_usage_profile')
-        pub.subscribe(self.do_refresh_tree, 'editing_usage_profile')
+        pub.subscribe(self._do_load_tree, 'retrieved_usage_profile')
 
     def _do_load_tree(self, tree, row=None):
         """
@@ -282,28 +282,6 @@ class ListView(RAMSTKListView):
 
         return None
 
-    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Send request to insert a new chid USage Profile item.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=False)
-
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Send request to insert a new sibling Usage Profile item.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=True)
-
     def _do_request_update(self, __button):
         """
         Request to update the currently selected Usage Profile record.
@@ -314,10 +292,10 @@ class ListView(RAMSTKListView):
         :rtype: None
         """
         _model, _row = self.treeview.get_selection().get_selected()
+        _node_id = _model.get_value(_row, 9)
 
         self.set_cursor(gtk.gdk.WATCH)
-        pub.sendMessage(
-            'request_update_profile', node_id=_model.get_value(_row, 9))
+        pub.sendMessage('request_update_profile', node_id=_node_id)
         self.set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
@@ -332,7 +310,7 @@ class ListView(RAMSTKListView):
         :rtype: None
         """
         self.set_cursor(gtk.gdk.WATCH)
-        pub.sendMessage('request_update_all_functions')
+        pub.sendMessage('request_update_all_profiles')
         self.set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
@@ -354,8 +332,8 @@ class ListView(RAMSTKListView):
               u"Profile.")
         ]
         _callbacks = [
-            self._do_request_insert_sibling,
-            self._do_request_insert_child,
+            self.do_request_insert_sibling,
+            self.do_request_insert_child,
             self._do_request_delete,
         ]
         _icons = [
@@ -605,7 +583,7 @@ class ListView(RAMSTKListView):
                     _key = 'variance'
 
             pub.sendMessage(
-                'editing_profile',
+                'lvw_editing_profile',
                 module_id=_node_id,
                 key=_key,
                 value=new_text)
