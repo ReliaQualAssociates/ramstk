@@ -84,9 +84,10 @@ class GeneralData(RAMSTKWorkView):
         self.pack_end(self._make_page(), expand=True, fill=True)
         self.show_all()
 
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'selected_revision')
-        pub.subscribe(self._on_edit, 'mvwEditedRevision')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
+        pub.subscribe(self._on_edit, 'mvw_editing_revision')
 
     def _do_clear_page(self):
         """
@@ -119,7 +120,7 @@ class GeneralData(RAMSTKWorkView):
         RAMSTKWorkView.on_select(
             self,
             title=_(u"Analyzing Revision {0:s} - {1:s}").format(
-            str(attributes['revision_code']), str(attributes['name'])))
+                str(attributes['revision_code']), str(attributes['name'])))
 
         self.txtCode.handler_block(self._lst_handler_id[2])
         self.txtCode.set_text(str(attributes['revision_code']))
@@ -142,15 +143,14 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update(
-            self._revision_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.WATCH)
+        pub.sendMessage('request_update_revision', node_id=self._revision_id)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _do_request_update_all(self, __button):
         """
@@ -158,14 +158,14 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.WATCH)
+        pub.sendMessage('request_update_all_revisions')
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -201,7 +201,7 @@ class GeneralData(RAMSTKWorkView):
 
         return _frame
 
-    def _on_edit(self, index, new_text):
+    def _on_edit(self, key, value):
         """
         Update the Revision Work View gtk.Widgets().
 
@@ -209,29 +209,27 @@ class GeneralData(RAMSTKWorkView):
         to the Revision data model attributes.  This method is called whenever
         an attribute is edited in a different RAMSTK View.
 
-        :param int index: the index in the Revision attributes list of the
-                          attribute that was edited.
-        :param str new_text: the new text to update the gtk.Widget() with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param str key: the key in the Revision attributes list of the
+                        attribute that was edited.
+        :param str value: the new text to update the gtk.Widget() with.
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        if index == 17:
-            self.txtName.handler_block(self._lst_handler_id[0])
-            self.txtName.set_text(new_text)
-            self.txtName.handler_unblock(self._lst_handler_id[0])
-        elif index == 20:
+        if key == 'name':
+            self.txtName.handler_block(self._lst_handler_id[17])
+            self.txtName.set_text(str(value))
+            self.txtName.handler_unblock(self._lst_handler_id[17])
+        elif key == 'remarks':
             _textbuffer = self.txtRemarks.do_get_buffer()
-            _textbuffer.handler_block(self._lst_handler_id[1])
-            _textbuffer.set_text(new_text)
-            _textbuffer.handler_unblock(self._lst_handler_id[1])
-        elif index == 22:
-            self.txtCode.handler_block(self._lst_handler_id[2])
-            self.txtCode.set_text(str(new_text))
-            self.txtCode.handler_unblock(self._lst_handler_id[2])
+            _textbuffer.handler_block(self._lst_handler_id[20])
+            _textbuffer.set_text(str(value))
+            _textbuffer.handler_unblock(self._lst_handler_id[20])
+        elif key == 'revision_code':
+            self.txtCode.handler_block(self._lst_handler_id[22])
+            self.txtCode.set_text(str(value))
+            self.txtCode.handler_unblock(self._lst_handler_id[22])
 
-        return _return
+        return None
 
     def _on_focus_out(self, entry, index):
         """
@@ -245,47 +243,26 @@ class GeneralData(RAMSTKWorkView):
         :param int index: the position in the Revision class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Entry().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _index = -1
-        _return = False
+        _key = ''
         _text = ''
 
+        entry.handler_block(self._lst_handler_id[index])
+
         if index == 0:
-            _index = 17
             _key = 'name'
-            _default = ''
+            _new_text = str(entry.get_text())
         elif index == 1:
-            _index = 20
             _key = 'remarks'
-            _default = ''
+            _new_text = self.txtRemarks.do_get_text()
         elif index == 2:
-            _index = 22
             _key = 'code'
-            _default = ''
+            _new_text = str(entry.get_text())
 
-        (_error_code, _debug_msg) = RAMSTKWorkView.on_focus_out(
-            self,
-            entry,
-            index,
-            node_id=self._revision_id,
-            key=_key,
-            default=_default)
+        pub.sendMessage('wvw_editing_revision', key=_key, value=_new_text)
 
-        if _error_code == 0:
-            pub.sendMessage(
-                'wvwEditedRevision', position=_index, new_text=_text)
-        elif _error_code == 1:  # Value error
-            _user_msg = _(
-                u"Revision model has no such attribute {0:s}.").format(_key)
-        elif _error_code == 2:  # Key error
-            _user_msg = _(
-                u"Revision model has no such attribute {0:s}.").format(_key)
+        entry.handler_unblock(self._lst_handler_id[index])
 
-        return RAMSTKWorkView.do_raise_dialog(
-            self,
-            error_code=_error_code,
-            user_msg=_user_msg,
-            debug_msg=_debug_msg,
-            severity='error')
+        return None

@@ -65,10 +65,10 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_tree, 'retrieved_revisions')
         pub.subscribe(self.do_load_tree, 'deleted_revision')
         pub.subscribe(self.do_load_tree, 'inserted_revision')
-        pub.subscribe(self.do_refresh_tree, 'editing_revision')
+        pub.subscribe(self.do_load_tree, 'retrieved_revisions')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_revision')
 
     def _do_request_delete(self, __button):
         """
@@ -109,31 +109,20 @@ class ModuleView(RAMSTKModuleView):
 
         return None
 
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Send request to insert a new sibling Function.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=True)
-
     def _do_request_update(self, __button):
         """
         Send request to update the selected record to the RAMSTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_revision', node_id=self._revision_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _do_request_update_all(self, __button):
         """
@@ -141,14 +130,14 @@ class ModuleView(RAMSTKModuleView):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_all_revisions')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -162,7 +151,7 @@ class ModuleView(RAMSTKModuleView):
             _(u"Add a new Revision."),
             _(u"Remove the currently selected Revision.")
         ]
-        _callbacks = [self._do_request_insert_sibling, self._do_request_delete]
+        _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
         _icons = ['add', 'remove']
 
         _buttonbox = ramstk.do_make_buttonbox(
@@ -253,7 +242,7 @@ class ModuleView(RAMSTKModuleView):
                 _key = 'revision_code'
 
             pub.sendMessage(
-                'editing_revision',
+                'mvw_editing_revision',
                 module_id=self._revision_id,
                 key=_key,
                 value=new_text)
