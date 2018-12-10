@@ -220,7 +220,7 @@ class ListView(RAMSTKListView):
 
         return None
 
-    def _make_buttonbox(self, **kwargs):    # pylint: disable=unused-argument
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the buttonbox for the Stakeholder List View.
 

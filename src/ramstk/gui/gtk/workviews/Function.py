@@ -106,8 +106,9 @@ class GeneralData(RAMSTKWorkView):
         self.show_all()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_page, 'selected_function')
         pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._on_edit, 'mvw_editing_function')
+        pub.subscribe(self._do_load_page, 'selected_function')
 
     def _do_clear_page(self):
         """
@@ -179,9 +180,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_function', node_id=self._function_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -194,9 +195,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_all_functions')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -236,6 +237,40 @@ class GeneralData(RAMSTKWorkView):
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
 
         return _frame
+
+    def _on_edit(self, key, value):
+        """
+        Update the Function Work View gtk.Widgets().
+
+        This method updates the function Work View gtk.Widgets() with changes
+        to the Function data model attributes.  This method is called whenever
+        an attribute is edited in a different RAMSTK View.
+
+        :param str key: the key in the Function attributes list of the
+                        attribute that was edited.
+        :param str value: the new text to update the gtk.Widget() with.
+        :return: None
+        :rtype: None
+        """
+        if key == 'function_code':
+            self.txtCode.handler_block(self._lst_handler_id[0])
+            self.txtCode.set_text(str(value))
+            self.txtCode.handler_unblock(self._lst_handler_id[0])
+        elif key == 'name':
+            self.txtName.handler_block(self._lst_handler_id[1])
+            self.txtName.set_text(str(value))
+            self.txtName.handler_unblock(self._lst_handler_id[1])
+        elif key == 'remarks':
+            _textbuffer = self.txtRemarks.do_get_buffer()
+            _textbuffer.handler_block(self._lst_handler_id[2])
+            _textbuffer.set_text(str(value))
+            _textbuffer.handler_unblock(self._lst_handler_id[2])
+        elif key == 'safety_critical':
+            self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
+            self.chkSafetyCritical.set_active(int(value))
+            self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
+
+        return None
 
     def _on_focus_out(self, entry, index):
         """

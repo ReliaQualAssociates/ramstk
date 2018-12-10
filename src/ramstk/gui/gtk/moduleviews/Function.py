@@ -71,10 +71,10 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_tree, 'retrieved_functions')
         pub.subscribe(self.do_load_tree, 'deleted_function')
         pub.subscribe(self.do_load_tree, 'inserted_function')
-        pub.subscribe(self.do_refresh_tree, 'editing_function')
+        pub.subscribe(self.do_load_tree, 'retrieved_functions')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_function')
 
     def _do_request_delete(self, __button):
         """
@@ -135,28 +135,6 @@ class ModuleView(RAMSTKModuleView):
 
         return None
 
-    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to insert a new chid Function.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        return self._do_request_insert(sibling=False)
-
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to insert a new sibling Function.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        return self._do_request_insert(sibling=True)
-
     def _do_request_update(self, __button):
         """
         Request to save the currently selected Function.
@@ -166,9 +144,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_function', node_id=self._function_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -181,9 +159,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_all_functions')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -307,7 +285,7 @@ class ModuleView(RAMSTKModuleView):
                 _key = 'safety_critical'
 
             pub.sendMessage(
-                'editing_function',
+                'mvw_editing_function',
                 module_id=self._function_id,
                 key=_key,
                 value=new_text)

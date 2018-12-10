@@ -61,9 +61,9 @@ class FunctionDataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_delete, 'request_delete_function')
         pub.subscribe(self.request_do_insert, 'request_insert_function')
+        pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_update, 'request_update_function')
         pub.subscribe(self.request_do_update_all,
                       'request_update_all_functions')
@@ -85,19 +85,6 @@ class FunctionDataController(RAMSTKDataController):
                 ckey='hardware_id')
 
         return
-
-    def request_do_delete(self, node_id):
-        """
-        Request to delete an RAMSTKFunction table record.
-
-        :param int node_id: the PyPubSub Tree() ID of the Function to delete.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -123,19 +110,6 @@ class FunctionDataController(RAMSTKDataController):
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       'deletedMatrix')
-
-    def request_do_insert(self, revision_id, parent_id):
-        """
-        Request to add an RAMSTKFunction table record.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_insert(
-            revision_id=revision_id, parent_id=parent_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
 
     def request_do_insert_matrix(self, matrix_type, item_id, heading,
                                  row=True):
@@ -206,19 +180,6 @@ class FunctionDataController(RAMSTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_do_update(self, node_id):
-        """
-        Request to update an RAMSTKFunction table record.
-
-        :param int node_id: the PyPubSub Tree() ID of the Function to save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
         Request to update the selected Data Matrix.
@@ -239,15 +200,3 @@ class FunctionDataController(RAMSTKDataController):
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       'savedMatrix')
-
-    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to update all records in the RAMSTKFunction table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
