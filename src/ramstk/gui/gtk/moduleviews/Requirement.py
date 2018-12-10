@@ -74,12 +74,16 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_load_tree, 'retrieved_requirements')
         pub.subscribe(self.do_load_tree, 'deleted_requirement')
         pub.subscribe(self.do_load_tree, 'inserted_requirement')
-        pub.subscribe(self._do_refresh_tree, 'editing_requirement')
         pub.subscribe(self._do_load_code, 'created_requirement_code')
+        pub.subscribe(self._do_refresh_tree, 'wvw_editing_requirement')
 
     def _do_load_code(self, code):
         """
+        Refresh the Requirement Code gtk.Entry().
 
+        :param str code: the new Requirement code.
+        :return: None
+        :rtype: None
         """
         (_model, _row) = self.treeview.get_selection().get_selected()
         _path = _model.get_path(_row)
@@ -161,28 +165,6 @@ class ModuleView(RAMSTKModuleView):
 
         return None
 
-    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to insert a child Requirement of the selected Requirement.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=False)
-
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to insert a sibling Requirement of the selected Requirement.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=True)
-
     def _do_request_update(self, __button):
         """
         Request to save the currently selected Requirement.
@@ -232,7 +214,7 @@ class ModuleView(RAMSTKModuleView):
               u"text files are supported).")
         ]
         _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
+            self.do_request_insert_sibling, self.do_request_insert_child,
             self._do_request_delete, self._do_request_export
         ]
         _icons = ['insert_sibling', 'insert_child', 'remove', 'export']

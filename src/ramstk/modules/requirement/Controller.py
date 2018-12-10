@@ -61,9 +61,10 @@ class RequirementDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
-        pub.subscribe(self.request_do_select_all, 'selected_revision')
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self.request_do_delete, 'request_delete_requirement')
         pub.subscribe(self.request_do_insert, 'request_insert_requirement')
+        pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_update, 'request_update_requirement')
         pub.subscribe(self.request_do_update_all,
                       'request_update_all_requirements')
@@ -204,20 +205,6 @@ class RequirementDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
 
-    def request_do_delete(self, node_id):
-        """
-        Request to delete an RAMSTKRequirement table record.
-
-        :param str node_id: the PyPubSub Tree() ID of the Requirement to
-                            delete.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
         Request to remove a row or column from the selected Data Matrix.
@@ -248,19 +235,6 @@ class RequirementDataController(RAMSTKDataController):
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       'deletedMatrix')
-
-    def request_do_update(self, node_id):
-        """
-        Request to update an RAMSTKRequirement table record.
-
-        :param str node_id: the PyPubSub Tree() ID of the Requirement to save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'savedRequirement')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
@@ -294,18 +268,6 @@ class RequirementDataController(RAMSTKDataController):
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       'savedMatrix')
-
-    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to update all records in the RAMSTKRequirement table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = self._dtm_data_model.do_update_all()
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
 
     def _request_set_attributes(self, module_id, key, value):
         """

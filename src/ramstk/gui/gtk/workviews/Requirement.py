@@ -168,9 +168,10 @@ class GeneralData(RAMSTKWorkView):
         self.show_all()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'selected_requirement')
         pub.subscribe(self._do_load_code, 'created_requirement_code')
-        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._on_edit, 'mvw_editing_requirement')
 
     def _do_clear_page(self):
         """
@@ -491,12 +492,57 @@ class GeneralData(RAMSTKWorkView):
             _new_text = _model.get_value(_row, 0)
 
         pub.sendMessage(
-            'editing_requirement',
+            'wvw_editing_requirement',
             module_id=self._requirement_id,
             key=_key,
             value=_new_text)
 
         combo.handler_unblock(self._lst_handler_id[index])
+
+        return None
+
+    def _on_edit(self, key, value):
+        """
+        Update the Requirement Work View gtk.Widgets().
+
+        This method updates the Requirement Work View gtk.Widgets() with
+        changes to the Requirement data model attributes.  This method is
+        called whenever an attribute is edited in a different RAMSTK View.
+
+        :param str key: the key in the Requirement attributes list of the
+                        attribute that was edited.
+        :param str value: the new text to update the gtk.Widget() with.
+        :return: None
+        :rtype: None
+        """
+        if key == 'derived':
+            self.chkDerived.handler_block(self._lst_handler_id[2])
+            self.chkDerived.set_active(int(value))
+            self.chkDerived.handler_unblock(self._lst_handler_id[2])
+        elif key == 'description':
+            self.txtName.handler_block(self._lst_handler_id[3])
+            self.txtName.set_text(str(value))
+            self.txtName.handler_unblock(self._lst_handler_id[3])
+        elif key == 'figure_number':
+            self.txtFigNum.handler_block(self._lst_handler_id[4])
+            self.txtFigNum.set_text(str(value))
+            self.txtFigNum.handler_unblock(self._lst_handler_id[4])
+        elif key == 'page_number':
+            self.txtPageNum.handler_block(self._lst_handler_id[6])
+            self.txtPageNum.set_text(str(value))
+            self.txtPageNum.handler_unblock(self._lst_handler_id[6])
+        elif key == 'specification':
+            self.txtSpecification.handler_block(self._lst_handler_id[10])
+            self.txtSpecification.set_text(str(value))
+            self.txtSpecification.handler_unblock(self._lst_handler_id[10])
+        elif key == 'validated':
+            self.chkValidated.handler_block(self._lst_handler_id[12])
+            self.chkValidated.set_active(int(value))
+            self.chkValidated.handler_unblock(self._lst_handler_id[12])
+        elif key == 'validated_date':
+            self.txtValidatedDate.handler_block(self._lst_handler_id[13])
+            self.txtValidatedDate.set_text(str(value))
+            self.txtValidatedDate.handler_unblock(self._lst_handler_id[13])
 
         return None
 
@@ -573,16 +619,16 @@ class GeneralData(RAMSTKWorkView):
 
         if index == 3:
             _key = 'derived'
-            _text = int(togglebutton.get_active())
+            _new_text = int(togglebutton.get_active())
         elif index == 9:
             _key = 'validate'
-            _text = int(togglebutton.get_active())
+            _new_text = int(togglebutton.get_active())
 
         pub.sendMessage(
-            'editing_requirement',
+            'wvw_editing_requirement',
             module_id=self._requirement_id,
             key=_key,
-            value=_text)
+            value=_new_text)
 
         togglebutton.handler_unblock(self._lst_handler_id[index])
 
@@ -652,8 +698,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.show_all()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_page, 'selected_requirement')
         pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._do_load_page, 'selected_requirement')
 
     def _do_clear_page(self):
         """
@@ -1067,7 +1113,7 @@ class RequirementAnalysis(RAMSTKWorkView):
                 _debug_msg)
 
         pub.sendMessage(
-            'editing_requirement',
+            'wvw_editing_requirement',
             module_id=self._requirement_id,
             key=_key,
             value=new_text)

@@ -47,6 +47,66 @@ class RequirementDataModel(RAMSTKDataModel):
 
         # Initialize public scalar attributes.
 
+    def do_delete(self, node_id):
+        """
+        Remove a record from the RAMSTKRequirement table.
+
+        :param int node_id entity: the PyPubSub Tree() ID of the Requirement to
+                                   delete.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RAMSTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
+                          'Requirement ID {0:s}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
+
+            # If we're not running a test, let anyone who cares know a
+            # Requirement was deleted.
+            if not self._test:
+                pub.sendMessage('deleted_requirement', tree=self.tree)
+
+        return _error_code, _msg
+
+    def do_insert(self, **kwargs):
+        """
+        Add a record to the RAMSTKRequirement table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _requirement = RAMSTKRequirement()
+        _requirement.revision_id = kwargs['revision_id']
+        _requirement.parent_id = kwargs['parent_id']
+        _error_code, _msg = RAMSTKDataModel.do_insert(
+            self, entities=[
+                _requirement,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _requirement.requirement_code,
+                _requirement.requirement_id,
+                parent=_requirement.parent_id,
+                data=_requirement)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RAMSTKDataModel.__init__
+            self.last_id = _requirement.requirement_id
+
+            # If we're not running a test, let anyone who cares know a new
+            # Requirement was inserted.
+            if not self._test:
+                pub.sendMessage('inserted_requirement', tree=self.tree)
+
+        return _error_code, _msg
+
     def do_select_all(self, **kwargs):
         """
         Retrieve all the Requirements from the RAMSTK Program database.
@@ -85,66 +145,6 @@ class RequirementDataModel(RAMSTKDataModel):
             pub.sendMessage('retrieved_requirements', tree=self.tree)
 
         return None
-
-    def do_insert(self, **kwargs):
-        """
-        Add a record to the RAMSTKRequirement table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _requirement = RAMSTKRequirement()
-        _requirement.revision_id = kwargs['revision_id']
-        _requirement.parent_id = kwargs['parent_id']
-        _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
-                _requirement,
-            ])
-
-        if _error_code == 0:
-            self.tree.create_node(
-                _requirement.requirement_code,
-                _requirement.requirement_id,
-                parent=_requirement.parent_id,
-                data=_requirement)
-
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
-            self.last_id = _requirement.requirement_id
-
-            # If we're not running a test, let anyone who cares know a new
-            # Requirement was inserted.
-            if not self._test:
-                pub.sendMessage('inserted_requirement', tree=self.tree)
-
-        return _error_code, _msg
-
-    def do_delete(self, node_id):
-        """
-        Remove a record from the RAMSTKRequirement table.
-
-        :param int node_id entity: the PyPubSub Tree() ID of the Requirement to
-                                   delete.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
-            _error_code = 2005
-            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
-                          'Requirement ID {0:s}.'.format(node_id)
-        else:
-            self.last_id = max(self.tree.nodes.keys())
-
-            # If we're not running a test, let anyone who cares know a
-            # Requirement was deleted.
-            if not self._test:
-                pub.sendMessage('deleted_requirement', tree=self.tree)
-
-        return _error_code, _msg
 
     def do_update(self, node_id):
         """
