@@ -31,9 +31,9 @@ if not sys.version_info[0] == 2:
 
 # Lists of required packages for RAMSTK.
 INSTALL_REQUIRES = [
-    'defusedxml', 'lifelines', 'matplotlib==1.4.3', 'numpy', 'pandas',
-    'PyPubSub==3.3.0', 'scipy', 'sortedcontainers==1.5.9', 'SQLAlchemy',
-    'SQLAlchemy-Utils', 'statsmodels', 'treelib', 'xlrd', 'xlwt'
+    'defusedxml', 'lifelines>=0.13,<15.0', 'matplotlib==1.4.3', 'numpy',
+    'pandas', 'PyPubSub==3.3.0', 'scipy', 'sortedcontainers==1.5.9',
+    'SQLAlchemy', 'SQLAlchemy-Utils', 'statsmodels', 'treelib', 'xlrd', 'xlwt'
 ]
 TEST_REQUIRES = [
     'pytest', 'pytest-cov', 'coverage', 'coveralls', 'codacy-coverage'
@@ -127,17 +127,14 @@ if __name__ == '__main__':
         entry_points={
             'console_scripts': ['ramstk = ramstk.RAMSTK:main'],
         },
-        data_files=[('share/applications',
-                     ['data/RAMSTK.desktop']), ('share/pixmaps',
-                                                ['data/icons/RAMSTK.png']),
-                    ('share/RAMSTK', ['data/RAMSTK.conf']), ('share/RAMSTK', [
-                        'data/Site.conf'
-                    ]), ('share/RAMSTK',
-                         ['data/ramstk_common.rtk']), ('share/RAMSTK/layouts',
-                                                       LAYOUT_FILES[0]),
-                    ('share/RAMSTK/icons/16x16',
-                     ICON16_FILES[0]), ('share/RAMSTK/icons/32x32',
-                                        ICON32_FILES[0])],
+        data_files=[('share/applications', ['data/RAMSTK.desktop']),
+                    ('share/pixmaps', ['data/icons/RAMSTK.png']),
+                    ('share/RAMSTK', ['data/RAMSTK.conf']),
+                    ('share/RAMSTK', ['data/Site.conf']),
+                    ('share/RAMSTK', ['data/ramstk_common.rtk']),
+                    ('share/RAMSTK/layouts', LAYOUT_FILES[0]),
+                    ('share/RAMSTK/icons/16x16', ICON16_FILES[0]),
+                    ('share/RAMSTK/icons/32x32', ICON32_FILES[0])],
         package_data={},
         dependency_links=[],
         zip_safe=True,

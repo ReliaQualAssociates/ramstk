@@ -257,6 +257,32 @@ class RAMSTKBaseView(object):
 
         return None
 
+    def do_request_insert_child(self, __button, **kwargs):
+        """
+        Request to insert a new child entity of the selected entity.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=False, **kwargs)
+
+    def do_request_insert_sibling(self, __button, **kwargs):
+        """
+        Send request to insert a new sibling entity.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=True, **kwargs)
+
+    def do_set_cursor(self, cursor):
+        # TODO: Move set_cursor code here after everthing has been updated.
+        return self.set_cursor(cursor)
+
     def _make_toolbar(self,
                       icons,
                       orientation='horizontal',
@@ -507,41 +533,40 @@ class RAMSTKBaseView(object):
         """
         Set the cursor for the Module, List, and Work Book gtk.gdk.Window().
 
-        :param controller: the RAMSTK master data controller.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
-        :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only
-                                      handles one of the following:
-                                        - gtk.gdk.X_CURSOR
-                                        - gtk.gdk.ARROW
-                                        - gtk.gdk.CENTER_PTR
-                                        - gtk.gdk.CIRCLE
-                                        - gtk.gdk.CROSS
-                                        - gtk.gdk.CROSS_REVERSE
-                                        - gtk.gdk.CROSSHAIR
-                                        - gtk.gdk.DIAMOND_CROSS
-                                        - gtk.gdk.DOUBLE_ARROW
-                                        - gtk.gdk.DRAFT_LARGE
-                                        - gtk.gdk.DRAFT_SMALL
-                                        - gtk.gdk.EXCHANGE
-                                        - gtk.gdk.FLEUR
-                                        - gtk.gdk.GUMBY
-                                        - gtk.gdk.HAND1
-                                        - gtk.gdk.HAND2
-                                        - gtk.gdk.LEFT_PTR - non-busy cursor
-                                        - gtk.gdk.PENCIL
-                                        - gtk.gdk.PLUS
-                                        - gtk.gdk.QUESTION_ARROW
-                                        - gtk.gdk.RIGHT_PTR
-                                        - gtk.gdk.SB_DOWN_ARROW
-                                        - gtk.gdk.SB_H_DOUBLE_ARROW
-                                        - gtk.gdk.SB_LEFT_ARROW
-                                        - gtk.gdk.SB_RIGHT_ARROW
-                                        - gtk.gdk.SB_UP_ARROW
-                                        - gtk.gdk.SB_V_DOUBLE_ARROW
-                                        - gtk.gdk.TCROSS
-                                        - gtk.gdk.TOP_LEFT_ARROW
-                                        - gtk.gdk.WATCH - when application is busy
-                                        - gtk.gdk.XTERM - selection bar
+        :param cursor: the gtk.gdk.Cursor() to set.  Only handles one of the
+                       following:
+                       - gtk.gdk.X_CURSOR
+                       - gtk.gdk.ARROW
+                       - gtk.gdk.CENTER_PTR
+                       - gtk.gdk.CIRCLE
+                       - gtk.gdk.CROSS
+                       - gtk.gdk.CROSS_REVERSE
+                       - gtk.gdk.CROSSHAIR
+                       - gtk.gdk.DIAMOND_CROSS
+                       - gtk.gdk.DOUBLE_ARROW
+                       - gtk.gdk.DRAFT_LARGE
+                       - gtk.gdk.DRAFT_SMALL
+                       - gtk.gdk.EXCHANGE
+                       - gtk.gdk.FLEUR
+                       - gtk.gdk.GUMBY
+                       - gtk.gdk.HAND1
+                       - gtk.gdk.HAND2
+                       - gtk.gdk.LEFT_PTR - non-busy cursor
+                       - gtk.gdk.PENCIL
+                       - gtk.gdk.PLUS
+                       - gtk.gdk.QUESTION_ARROW
+                       - gtk.gdk.RIGHT_PTR
+                       - gtk.gdk.SB_DOWN_ARROW
+                       - gtk.gdk.SB_H_DOUBLE_ARROW
+                       - gtk.gdk.SB_LEFT_ARROW
+                       - gtk.gdk.SB_RIGHT_ARROW
+                       - gtk.gdk.SB_UP_ARROW
+                       - gtk.gdk.SB_V_DOUBLE_ARROW
+                       - gtk.gdk.TCROSS
+                       - gtk.gdk.TOP_LEFT_ARROW
+                       - gtk.gdk.WATCH - when application is busy
+                       - gtk.gdk.XTERM - selection bar
+        :type cursor: :class:`gtk.gdk.Cursor`
         :return: None
         :rtype: None
         """

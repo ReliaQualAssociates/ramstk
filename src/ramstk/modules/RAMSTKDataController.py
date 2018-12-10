@@ -91,6 +91,49 @@ class RAMSTKDataController(object):
 
         return _return
 
+    def request_do_calculate(self, node_id, **kwargs):
+        """
+        Request to calculate the record.
+
+        :param int node_id: the PyPubSub Tree() ID of the Stakeholder to
+                            calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtm_data_model.do_calculate(node_id, **kwargs)
+
+    def request_do_calculate_all(self, **kwargs):
+        """
+        Request to calculate all records for the module.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtm_data_model.do_calculate_all(**kwargs)
+
+    def request_do_delete(self, node_id):
+        """
+        Request to delete an RAMSTK Program database table record.
+
+        :param int node_id: the PyPubSub Tree() ID to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
+
+        return self.do_handle_results(_error_code, _msg, None)
+
+    def request_do_insert(self, **kwargs):
+        """
+        Request to add an RAMSTK Program database table record.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_insert(**kwargs)
+
+        return self.do_handle_results(_error_code, _msg, None)
+
     def request_do_select(self, node_id, **kwargs):
         """
         Request the RAMSTK Program database record associated with Node ID.
@@ -112,6 +155,29 @@ class RAMSTKDataController(object):
         """
         return self._dtm_data_model.do_select_all(
             revision_id=attributes['revision_id'])
+
+    def request_do_update(self, node_id):
+        """
+        Request to update an RAMSTK Program database table record.
+
+        :param int node_id: the PyPubSub Tree() ID of the Revision to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
+
+        return self.do_handle_results(_error_code, _msg, None)
+
+    def request_do_update_all(self, **kwargs):
+        """
+        Request to update all records in the RAMSTK Program database table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
+
+        return self.do_handle_results(_error_code, _msg, None)
 
     def request_get_attributes(self, node_id):
         """
