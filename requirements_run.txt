@@ -1,6 +1,6 @@
 defusedxml==0.5.0
 lifelines>=0.13
-lxml==4.2.5
+lxml==4.3.1
 openpyxl==2.5.9
 pandas==0.23.4
 pypubsub==3.3.0
