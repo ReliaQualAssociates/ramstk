@@ -191,7 +191,12 @@ class RAMSTKDataController(object):
         """
         _entity = self.request_do_select(node_id)
 
-        return _entity.get_attributes()
+        # Simple data models need to call the get_attributes() method,
+        # aggregate data models will return a dict directly.
+        try:
+            return _entity.get_attributes()
+        except AttributeError:
+            return _entity
 
     def request_set_attributes(self, module_id, key, value):
         """
@@ -206,11 +211,17 @@ class RAMSTKDataController(object):
         :rtype:
         """
         _entity = self.request_do_select(module_id)
-        _attributes = _entity.get_attributes()
+        try:
+            _attributes = _entity.get_attributes()
+        except AttributeError:
+            _attributes = _entity
 
         _attributes[key] = value
 
-        return _entity.set_attributes(_attributes)
+        try:
+            return _entity.set_attributes(_attributes)
+        except AttributeError:
+            return 0, ""
 
     def request_last_id(self, **kwargs):  # pylint: disable=unused-argument
         """
