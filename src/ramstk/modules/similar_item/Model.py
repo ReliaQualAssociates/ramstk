@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Similar Item Analysis Data Model."""
 
+# Import third party packages.
+from pubsub import pub
 from treelib.exceptions import NodeIDAbsentError
 
 # Import other RAMSTK modules.
@@ -23,7 +25,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
 
     _tag = 'SimilarItems'
 
-    def __init__(self, dao):
+    def __init__(self, dao, **kwargs):
         """
         Initialize a SimilarItem data model instance.
 
@@ -38,6 +40,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -49,8 +52,8 @@ class SimilarItemDataModel(RAMSTKDataModel):
         """
         Retrieve all the SimilarItems from the RAMSTK Program database.
 
-        This method retrieves all the records from the RAMSTKSimilarItem table in
-        the connected RAMSTK Program database.  It then adds each to the
+        This method retrieves all the records from the RAMSTKSimilarItem table
+        in the connected RAMSTK Program database.  It then adds each to the
         SimilarItem data model treelib.Tree().
 
         :param int revision_id: the Revision ID the SimilarItems are associated
@@ -79,7 +82,12 @@ class SimilarItemDataModel(RAMSTKDataModel):
 
         _session.close()
 
-        return self.tree
+        # If we're not running a test and there were requirements returned,
+        # let anyone who cares know the Requirements have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_similar_items', tree=self.tree)
+
+        return None
 
     def do_select_children(self, node_id):
         """
