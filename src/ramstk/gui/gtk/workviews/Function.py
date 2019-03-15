@@ -238,7 +238,7 @@ class GeneralData(RAMSTKWorkView):
 
         return _frame
 
-    def _on_edit(self, key, value):
+    def _on_edit(self, module_id, key, value):
         """
         Update the Function Work View gtk.Widgets().
 
@@ -246,6 +246,11 @@ class GeneralData(RAMSTKWorkView):
         to the Function data model attributes.  This method is called whenever
         an attribute is edited in a different RAMSTK View.
 
+        :param int module_id: the ID of the Function being edited.  This
+                              parameter is required to allow the PyPubSub
+                              signals to call this method and the
+                              request_set_attributes() method in the
+                              RAMSTKDataController.
         :param str key: the key in the Function attributes list of the
                         attribute that was edited.
         :param str value: the new text to update the gtk.Widget() with.
@@ -306,7 +311,7 @@ class GeneralData(RAMSTKWorkView):
             _text = self.txtRemarks.do_get_text()
 
         pub.sendMessage(
-            'editing_function',
+            'wvw_editing_function',
             module_id=self._function_id,
             key=_key,
             value=_text)
@@ -333,7 +338,7 @@ class GeneralData(RAMSTKWorkView):
         togglebutton.handler_unblock(self._lst_handler_id[index])
 
         pub.sendMessage(
-            'editing_function',
+            'wvw_editing_function',
             module_id=self._function_id,
             key=_key,
             value=_text)

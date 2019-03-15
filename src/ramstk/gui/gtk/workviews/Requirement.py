@@ -473,23 +473,29 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _key = ''
-        _text = ''
+        _dic_keys = {
+            2: 'requirement_type',
+            7: 'priority',
+            8: 'owner',
+        }
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         combo.handler_block(self._lst_handler_id[index])
 
         _model = combo.get_model()
         _row = combo.get_active_iter()
 
-        if index == 2:
-            _key = 'requirement_type'
+        if _key == 'requirement_type':
             _new_text = [_model.get_value(_row, 0), _model.get_value(_row, 1)]
-        elif index == 7:
-            _key = 'priority'
+        elif _key == 'priority':
             _new_text = int(_model.get_value(_row, 0))
-        elif index == 8:
-            _key = 'owner'
+        elif _key == 'owner':
             _new_text = _model.get_value(_row, 0)
+        else:
+            _new_text = ''
 
         pub.sendMessage(
             'wvw_editing_requirement',
@@ -501,7 +507,7 @@ class GeneralData(RAMSTKWorkView):
 
         return None
 
-    def _on_edit(self, key, value):
+    def _on_edit(self, module_id, key, value):
         """
         Update the Requirement Work View gtk.Widgets().
 
@@ -509,6 +515,11 @@ class GeneralData(RAMSTKWorkView):
         changes to the Requirement data model attributes.  This method is
         called whenever an attribute is edited in a different RAMSTK View.
 
+        :param int module_id: the ID of the Requirement being edited.  This
+                              parameter is required to allow the PyPubSub
+                              signals to call this method and the
+                              request_set_attributes() method in the
+                              RAMSTKDataController.
         :param str key: the key in the Requirement attributes list of the
                         attribute that was edited.
         :param str value: the new text to update the gtk.Widget() with.
