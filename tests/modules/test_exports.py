@@ -104,10 +104,10 @@ def test_do_load_output_requirement(test_dao):
     """do_load_output() should return None when loading Requirements for export."""
     DUT = dtmExports(test_dao)
 
-    _requirement = dtmRequirement(test_dao)
-    _tree = _requirement.do_select_all(revision_id=1)
+    _requirement = dtmRequirement(test_dao, test=True)
+    _requirement.do_select_all(revision_id=1)
 
-    assert DUT.do_load_output('Requirement', _tree) is None
+    assert DUT.do_load_output('Requirement', _requirement.tree) is None
 
 
 @pytest.mark.integration
@@ -115,10 +115,10 @@ def test_do_load_output_hardware(test_dao):
     """do_load_output() should return None when loading Hardware for export."""
     DUT = dtmExports(test_dao)
 
-    _hardware = dtmHardwareBoM(test_dao)
-    _tree = _hardware.do_select_all(revision_id=1)
+    _hardware = dtmHardwareBoM(test_dao, test=True)
+    _hardware.do_select_all(revision_id=1)
 
-    assert DUT.do_load_output('Hardware', _tree) is None
+    assert DUT.do_load_output('Hardware', _hardware.tree) is None
 
 
 @pytest.mark.integration
@@ -148,10 +148,10 @@ def test_do_load_output_validation(test_dao):
     """do_load_output() should return None when loading Validations for export."""
     DUT = dtmExports(test_dao)
 
-    _validation = dtmValidation(test_dao)
-    _tree = _validation.do_select_all(revision_id=1)
+    _validation = dtmValidation(test_dao, test=True)
+    _validation.do_select_all(revision_id=1)
 
-    assert DUT.do_load_output('Validation', _tree) is None
+    assert DUT.do_load_output('Validation', _validation.tree) is None
 
 
 @pytest.mark.integration
@@ -172,9 +172,9 @@ def test_do_export_to_xls(test_dao, test_export_file):
     """do_export() should return None when exporting to an Excel file."""
     DUT = dtmExports(test_dao)
 
-    _requirement = dtmRequirement(test_dao)
-    _tree = _requirement.do_select_all(revision_id=1)
-    DUT.do_load_output('Requirement', _tree)
+    _requirement = dtmRequirement(test_dao, test=True)
+    _requirement.do_select_all(revision_id=1)
+    DUT.do_load_output('Requirement', _requirement.tree)
 
     _test_excel = test_export_file + '_requirement.xls'
     assert DUT.do_export('excel', _test_excel) is None
@@ -185,9 +185,9 @@ def test_do_export_to_xlsx(test_dao, test_export_file):
     """do_export() should return None when exporting to an Excel file."""
     DUT = dtmExports(test_dao)
 
-    _requirement = dtmRequirement(test_dao)
-    _tree = _requirement.do_select_all(revision_id=1)
-    DUT.do_load_output('Requirement', _tree)
+    _requirement = dtmRequirement(test_dao, test=True)
+    _requirement.do_select_all(revision_id=1)
+    DUT.do_load_output('Requirement', _requirement.tree)
 
     _test_excel = test_export_file + '_requirement.xlsx'
     assert DUT.do_export('excel', _test_excel) is None
@@ -198,9 +198,9 @@ def test_do_export_to_xlsm(test_dao, test_export_file):
     """do_export() should return None when exporting to an Excel file."""
     DUT = dtmExports(test_dao)
 
-    _requirement = dtmRequirement(test_dao)
-    _tree = _requirement.do_select_all(revision_id=1)
-    DUT.do_load_output('Requirement', _tree)
+    _requirement = dtmRequirement(test_dao, test=True)
+    _requirement.do_select_all(revision_id=1)
+    DUT.do_load_output('Requirement', _requirement.tree)
 
     _test_excel = test_export_file + '_requirement.xlsm'
     assert DUT.do_export('excel', _test_excel) is None
