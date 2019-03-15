@@ -57,4 +57,5 @@ class RevisionDataController(RAMSTKDataController):
         pub.subscribe(self.request_do_update, 'request_update_revision')
         pub.subscribe(self.request_do_update_all,
                       'request_update_all_revisions')
-        pub.subscribe(self.request_set_attributes, 'editing_revision')
+        pub.subscribe(self.request_set_attributes, 'mvw_editing_revision')
+        pub.subscribe(self.request_set_attributes, 'wvw_editing_revision')

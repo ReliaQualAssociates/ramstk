@@ -67,7 +67,8 @@ class FunctionDataController(RAMSTKDataController):
         pub.subscribe(self.request_do_update, 'request_update_function')
         pub.subscribe(self.request_do_update_all,
                       'request_update_all_functions')
-        pub.subscribe(self.request_set_attributes, 'editing_function')
+        pub.subscribe(self.request_set_attributes, 'mvw_editing_function')
+        pub.subscribe(self.request_set_attributes, 'wvw_editing_function')
 
     def request_do_create(self, revision_id, matrix_type):
         """
