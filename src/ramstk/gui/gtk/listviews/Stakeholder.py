@@ -235,7 +235,7 @@ class ListView(RAMSTKListView):
             _(u"Calculate all Stakeholder intputs."),
         ]
         _callbacks = [
-            self._do_request_insert_sibling, self._do_request_delete,
+            self.do_request_insert_sibling, self._do_request_delete,
             self._do_request_calculate, self._do_request_calculate_all
         ]
         _icons = [

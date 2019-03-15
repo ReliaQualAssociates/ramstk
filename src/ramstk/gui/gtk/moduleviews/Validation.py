@@ -81,7 +81,7 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
+        pub.subscribe(self.do_load_tree, 'retrieved_validations')
         pub.subscribe(self._on_edit, 'wvwEditedValidation')
 
     def _do_change_row(self, treeview):
@@ -452,8 +452,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Load the Validation Module View RAMSTKTreeView().
 
-        This method loads the RAMSTKTreeView() with Validation attribute data when
-        an RAMSTK Program database is opened.
+        This method loads the RAMSTKTreeView() with Validation attribute data
+        when an RAMSTK Program database is opened.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

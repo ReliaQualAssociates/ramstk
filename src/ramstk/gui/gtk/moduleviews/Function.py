@@ -183,7 +183,7 @@ class ModuleView(RAMSTKModuleView):
               u"text files are supported).")
         ]
         _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
+            self.do_request_insert_sibling, self.do_request_insert_child,
             self._do_request_delete, self._do_request_export
         ]
         _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
