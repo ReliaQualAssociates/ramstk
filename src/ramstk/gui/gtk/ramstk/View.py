@@ -6,6 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKBaseView Module."""
 
+import ast
 import locale
 
 # Import third party modules.
@@ -49,56 +50,58 @@ class RAMSTKBaseView(object):
         :param controller: the RAMSTK master data controller instance.
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         """
+        self._mdcRAMSTK = controller
         _module = kwargs['module']
 
         # Initialize private dictionary attributes.
         self._dic_icons = {
             'calculate':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/calculate.png',
             'calculate_all':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/calculate-all.png',
             'add':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/add.png',
             'remove':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/remove.png',
             'reports':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/reports.png',
             'save':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/save.png',
             'save-all':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/save-all.png',
             'important':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/important.png',
             'error':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/error.png',
             'question':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/question.png',
             'insert_sibling':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/insert_sibling.png',
             'insert_child':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/insert_child.png',
             'cancel':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/cancel.png',
             'export':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/export.png',
             'warning':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/warning.png',
             'rollup':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/rollup.png',
         }
 
@@ -108,9 +111,8 @@ class RAMSTKBaseView(object):
 
         # Initialize private scalar attributes.
         self._dtc_data_controller = None
-        self._mdcRAMSTK = controller
         self._mission_time = float(
-            controller.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
         self._notebook = gtk.Notebook()
         self._revision_id = None
 
@@ -123,13 +125,14 @@ class RAMSTKBaseView(object):
             self.treeview = None
         else:
             try:
-                _bg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
+                _bg_color = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
                     _module + 'bg']
-                _fg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
+                _fg_color = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
                     _module + 'fg']
-                _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR +
-                             '/layouts/' + controller.RAMSTK_CONFIGURATION.
-                             RAMSTK_FORMAT_FILE[_module])
+                _fmt_file = (
+                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR +
+                    '/layouts/' + self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    RAMSTK_FORMAT_FILE[_module])
                 _fmt_path = "/root/tree[@name='" + _module.title(
                 ) + "']/column"
 
@@ -140,13 +143,14 @@ class RAMSTKBaseView(object):
                 self.treeview = gtk.TreeView()
 
         self.fmt = '{0:0.' + \
-                   str(controller.RAMSTK_CONFIGURATION.RAMSTK_DEC_PLACES) + \
+                   str(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEC_PLACES) + \
                    'G}'
         self.hbx_tab_label = gtk.HBox()
 
         try:
-            locale.setlocale(locale.LC_ALL,
-                             controller.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
+            locale.setlocale(
+                locale.LC_ALL,
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
@@ -174,6 +178,7 @@ class RAMSTKBaseView(object):
         _model.clear()
 
         _tag = tree.get_node(0).tag
+
         if self.treeview.do_load_tree(tree):
             _prompt = _(u"An error occured while loading the {1:s} "
                         u"records for Revision ID {0:d} into the "
@@ -239,21 +244,31 @@ class RAMSTKBaseView(object):
         :return: None
         :rtype: None
         """
-        _column = [
-            _index for _index, _key in enumerate(self.treeview.korder)
-            if _key == key
-        ][0]
-
         _model, _row = self.treeview.get_selection().get_selected()
         try:
-            _model.set_value(_row, _column, value)
-        except AttributeError:
-            _prompt = _(u"An error occurred while refreshing column {0:d} for "
-                        u"record {1:d}.").format(_column, module_id)
-            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                          'error')
-            if _dialog.do_run() == self._response_ok:
-                _dialog.do_destroy()
+            _column = [
+                _index for _index, _key in enumerate(self.treeview.korder)
+                if _key == key
+            ][0]
+
+            try:
+                _model.set_value(_row, _column, value)
+            except AttributeError:
+                _prompt = _(u"An error occurred while refreshing column {0:d} "
+                            u"for record {1:d}.").format(_column, module_id)
+                _dialog = RAMSTKMessageDialog(
+                    _prompt, self._dic_icons['error'], 'error')
+                if _dialog.do_run() == self._response_ok:
+                    _dialog.do_destroy()
+        except IndexError:
+            pass
+
+        # Update the attributes dict in the last column.
+        _attributes = ast.literal_eval(
+            _model.get_value(_row,
+                             _model.get_n_columns() - 1))
+        _attributes[key] = value
+        _model.set_value(_row, _model.get_n_columns() - 1, str(_attributes))
 
         return None
 
