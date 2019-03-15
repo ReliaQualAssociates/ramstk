@@ -245,7 +245,7 @@ class ModuleView(RAMSTKModuleView):
                 'mvw_editing_revision',
                 module_id=self._revision_id,
                 key=_key,
-                value=new_text)
+                value=_new_text)
 
         return None
 

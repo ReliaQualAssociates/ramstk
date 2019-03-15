@@ -54,7 +54,7 @@ class RAMSTKHardware(RAMSTK_BASE):
     cost = Column('fld_cost', Float, default=0.0)
     cost_failure = Column('fld_cost_failure', Float, default=0.0)
     cost_hour = Column('fld_cost_hour', Float, default=0.0)
-    cost_type_id = Column('fld_cost_Type_id', Integer, default=0)
+    cost_type_id = Column('fld_cost_type_id', Integer, default=0)
     description = Column('fld_description', String(512), default='')
     duty_cycle = Column('fld_duty_cycle', Float, default=100.0)
     figure_number = Column('fld_figure_number', String(256), default='')

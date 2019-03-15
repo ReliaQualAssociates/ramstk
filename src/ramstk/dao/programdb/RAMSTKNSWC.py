@@ -97,12 +97,11 @@ class RAMSTKNSWC(RAMSTK_BASE):
         """
         Retrieve the current values of the RAMSTKNSWC data model attributes.
 
-        :return: {hardware_id, availability_alloc, env_factor, goal_measure_id,
-                  hazard_rate_alloc, hazard_rate_goal, included, int_factor,
-                  method_id, mtbf_alloc, mtbf_goal, n_sub_systems,
-                  n_sub_elements, parent_id, percent_wt_factor,
-                  reliability_alloc, reliability_goal, op_time_factor,
-                  soa_factor, weight_factor} pairs.
+        :return: {hardware_id, Cac, Calt, Cb, Cbl, Cbt, Cbv, Cc, Ccf, Ccp, Ccs,
+                  Ccv, Ccw, Cd, Cdc, Cdl, Cdp, Cds, Cdw, Cdy, Ce, Cf, Cg, Cga,
+                  Cgl, Cgp, Cgs, Cgt, Cgv, Ch, Ci, Ck, Cl, Clc, Cm, Cmu, Cn,
+                  Cnp, Cnw, Cp, Cpd, Cpf, Cpv, Cq, Cr, Crd, Cs, Csc, Csf, Cst,
+                  Csv, Csw, Csz, Ct, Cv, Cw, Cy} pairs.
         :rtype: dict
         """
         _attributes = {
