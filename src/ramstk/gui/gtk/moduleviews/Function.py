@@ -273,16 +273,19 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        _dic_keys = {
+            5: 'function_code',
+            15: 'name',
+            17: 'remarks',
+            18: 'safety_critical'
+        }
+
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
-            if self._lst_col_order[position] == 5:
-                _key = 'function_code'
-            elif self._lst_col_order[position] == 15:
-                _key = 'name'
-            elif self._lst_col_order[position] == 17:
-                _key = 'remarks'
-            elif self._lst_col_order[position] == 18:
-                _key = 'safety_critical'
+            try:
+                _key = _dic_keys[self._lst_col_order[position]]
+            except KeyError:
+                _key = None
 
             pub.sendMessage(
                 'mvw_editing_function',

@@ -144,7 +144,6 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         """
 
         # Initialize private scalar attributes.
-        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
