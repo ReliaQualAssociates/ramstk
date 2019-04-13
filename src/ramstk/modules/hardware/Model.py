@@ -135,7 +135,11 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         :rtype: dict
         """
         _hr_multiplier = float(kwargs['hr_multiplier'])
-        _attributes = self.tree.get_node(node_id).data
+        try:
+            _attributes = self.tree.get_node(node_id).data
+        except AttributeError:
+            _attributes = None
+            print(node_id)
 
         if _attributes is not None:
             if _attributes['category_id'] > 0:

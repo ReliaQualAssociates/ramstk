@@ -19,10 +19,12 @@ class ModuleView(RAMSTKModuleView):
     Display Hardware attribute data in the RAMSTK Module Book.
 
     The Hardware Module Book view displays all the Hardwares associated with
-    the RAMSTK Program in a flat list.  The attributes of the Hardware Module View
-    are:
+    the RAMSTK Program in a flat list.  The attributes of the Hardware Module
+    View are:
 
     :ivar int _hardware_id: the ID of the currently selected Hardware.
+    :ivar int _parent_id: the ID if the parent Hardware item of the selected
+                          Hardware.
     :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
@@ -43,6 +45,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize private scalar attributes.
         self._hardware_id = None
+        self._parent_id = None
         self._revision_id = None
 
         # Initialize public dictionary attributes.
@@ -56,7 +59,7 @@ class ModuleView(RAMSTKModuleView):
             _(u"Displays the hierarchical list of "
               u"hardware items."))
         self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row))
+            self.treeview.connect('cursor_changed', self._on_row_change))
         self._lst_handler_id.append(
             self.treeview.connect('button_press_event', self._on_button_press))
 
@@ -70,177 +73,91 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
-        pub.subscribe(self._on_edit, 'wvwEditedHardware')
-        pub.subscribe(self._on_calculate, 'calculatedAllHardware')
+        pub.subscribe(self.do_load_tree, 'deleted_hardware')
+        pub.subscribe(self.do_load_tree, 'inserted_hardware')
+        pub.subscribe(self.do_load_tree, 'retrieved_hardware')
+        pub.subscribe(self._do_refresh_tree, 'calculated_hardware')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_hardware')
 
-    def _do_change_row(self, treeview):
+    def _do_refresh_tree(self, attributes):
         """
-        Handle events for the Hardware package Module Book RAMSTKTreeView().
+        Load the new attribute values for the entire tree after calculating.
 
-        This method is called whenever a Module Book RAMSTKTreeView() row is
-        activated.
-
-        :param treeview: the Hardware Module View RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        for _key in [
+                'hazard_rate_percent', 'lambdaBP', 'Cac',
+                'hazard_rate_logistics', 'lambdaBD', 'hazard_rate_software',
+                'total_power_dissipation', 'Cl', 'temperature_junction', 'piP',
+                'Cgs', 'reliability_miss_variance', 'piCYC', 'piU',
+                'cost_failure', 'B1', 'B2', 'piNR', 'hazard_rate_dormant',
+                'comp_ref_des', 'Csf', 'Csc', 'voltage_ratio', 'Cst', 'Csw',
+                'Csv', 'total_cost', 'piCV', 'piCR', 'temperature_case',
+                'hr_mission_variance', 'piCD', 'piCF', 'reliability_mission',
+                'hazard_rate_active', 'mtbf_log_variance', 'Ccw', 'Ccv', 'Cpd',
+                'Ccp', 'Cpf', 'piR', 'overstress', 'reason', 'Ccs', 'Ccf',
+                'Cpv', 'Cbl', 'availability_mission', 'piQ', 'Cf',
+                'temperature_hot_spot', 'Clc', 'hr_logistics_variance',
+                'cost_hour', 'lambda_b', 'lambdaCYC', 'Cd',
+                'reliability_logistics', 'C2', 'C1', 'Crd', 'Cmu',
+                'current_ratio', 'avail_mis_variance', 'Ck', 'Ci', 'Ch', 'Cn',
+                'Cm', 'Cc', 'Cb', 'Cg', 'Ce', 'mtbf_logistics', 'power_ratio',
+                'Cy', 'Cbv', 'Cbt', 'reliability_log_variance', 'Cs', 'piTAPS',
+                'Cq', 'Cp', 'Cw', 'Cv', 'Ct', 'Cnw', 'hr_specified_variance',
+                'Cnp', 'total_part_count', 'Csz', 'Calt', 'lambdaEOS',
+                'hazard_rate_mission', 'avail_log_variance', 'piK', 'piL',
+                'piM', 'piN', 'Cr', 'Cga', 'piA', 'piC', 'piE', 'piF', 'A1',
+                'A2', 'Cgp', 'piS', 'piT', 'Cgt', 'piV', 'Cgv', 'piPT',
+                'mtbf_miss_variance', 'hr_active_variance', 'mtbf_mission',
+                'piMFG', 'Cgl', 'piI', 'Cdc', 'Cdl', 'hr_dormant_variance',
+                'Cdt', 'Cdw', 'Cdp', 'Cds', 'availability_logistics', 'Cdy',
+                'temperature_rise'
+        ]:
+            self.do_refresh_tree(self._hardware_id, _key, attributes[_key])
 
-        treeview.handler_block(self._lst_handler_id[0])
-
-        _model, _row = treeview.get_selection().get_selected()
-
-        self._hardware_id = _model.get_value(_row, 1)
-
-        treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selectedHardware', module_id=self._hardware_id)
-
-        return _return
-
-    def _do_edit_cell(self, __cell, path, new_text, position, model):
-        """
-        Handle edits of the Hardware package Module View RAMSTKTreeview().
-
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :class:`gtk.CellRenderer`
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :class:`gtk.TreeModel`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
-
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            if self._lst_col_order[position] == 5:
-                _attributes['hardware_code'] = str(new_text)
-            elif self._lst_col_order[position] == 15:
-                _attributes['name'] = str(new_text)
-            elif self._lst_col_order[position] == 17:
-                _attributes['remarks'] = str(new_text)
-            elif self._lst_col_order[position] == 18:
-                _attributes['safety_critical'] = int(new_text)
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
-
-            pub.sendMessage(
-                'mvwEditedHardware',
-                index=self._lst_col_order[position],
-                new_text=new_text)
-        else:
-            _return = True
-
-        return _return
+        return None
 
     def _do_request_calculate_all(self, __button):
         """
-        Send request to calculate all hardware items.
+        Request to calculate all Hardware inputs.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        pub.sendMessage(
+            'request_calculate_all_hardware',
+            node_id=self._hardware_id,
+            hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+            RAMSTK_HR_MULTIPLIER)
 
-        if not self._dtc_data_controller.request_do_calculate_all(
-                node_id=self._hardware_id,
-                hr_multiplier=self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                RAMSTK_HR_MULTIPLIER):
-            # Update Revision attributes with system-level attribute values.
-            _sys_attributes = self._dtc_data_controller.request_get_attributes(
-                1)
-            _revision_id = _sys_attributes['revision_id']
-            _dtc_revision = self._mdcRAMSTK.dic_controllers['revision']
-            _rev_attributes = _dtc_revision.request_get_attributes(
-                _revision_id)
-
-            _rev_attributes['availability_logistics'] = _sys_attributes[
-                'availability_logistics']
-            _rev_attributes['availability_mission'] = _sys_attributes[
-                'availability_mission']
-            _rev_attributes['cost'] = _sys_attributes['total_cost']
-            _rev_attributes['cost_per_failure'] = _sys_attributes[
-                'cost_failure']
-            _rev_attributes['cost_per_hour'] = _sys_attributes['cost_hour']
-            _rev_attributes['hazard_rate_active'] = _sys_attributes[
-                'hazard_rate_active']
-            _rev_attributes['hazard_rate_dormant'] = _sys_attributes[
-                'hazard_rate_dormant']
-            _rev_attributes['hazard_rate_logistics'] = _sys_attributes[
-                'hazard_rate_logistics']
-            _rev_attributes['hazard_rate_mission'] = _sys_attributes[
-                'hazard_rate_mission']
-            _rev_attributes['mtbf_logistics'] = _sys_attributes[
-                'mtbf_logistics']
-            _rev_attributes['mtbf_mission'] = _sys_attributes['mtbf_mission']
-            _rev_attributes['n_parts'] = _sys_attributes['total_part_count']
-            _rev_attributes['reliability_logistics'] = _sys_attributes[
-                'reliability_logistics']
-            _rev_attributes['reliability_mission'] = _sys_attributes[
-                'reliability_mission']
-            _dtc_revision.request_set_attributes(_revision_id, _rev_attributes)
-            _dtc_revision.request_do_update(_revision_id)
-
-        return _return
+        return None
 
     def _do_request_delete(self, __button):
         """
-        Send request to delete the selected Hardware and it's children.
+        Request to delete the selected Hardware and it's children.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _prompt = _(u"You are about to delete Hardware {0:d} and all data "
-                    u"associated with it.  Is this really what you want "
-                    u"to do?").format(self._hardware_id)
+        _prompt = _(u"You are about to delete Hardware {0:d} and all "
+                    u"data associated with it.  Is this really what "
+                    u"you want to do?").format(self._hardware_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
-            _dialog.do_destroy()
-            if self._dtc_data_controller.request_do_delete(self._hardware_id):
-                _prompt = _(u"An error occurred when attempting to delete "
-                            u"Hardware {0:d}.").format(self._hardware_id)
-                _error_dialog = ramstk.RAMSTKMessageDialog(
-                    _prompt, self._dic_icons['error'], 'error')
-                if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                    _error_dialog.do_destroy()
+            pub.sendMessage(
+                'request_delete_hardware', node_id=self._hardware_id)
 
-                _return = True
-            else:
-                _model, _row = self.treeview.get_selection().get_selected()
-                _prow = _model.iter_parent(_row)
-                _model.remove(_row)
+        _dialog.do_destroy()
 
-                if _prow is not None:
-                    _path = _model.get_path(_prow)
-                    _column = self.treeview.get_column(0)
-                    self.treeview.set_cursor(_path, None, False)
-                    self.treeview.row_activated(_path, _column)
-
-        else:
-            _dialog.do_destroy()
-
-        return _return
+        return None
 
     def _do_request_export(self, __button):
         """
@@ -261,54 +178,28 @@ class ModuleView(RAMSTKModuleView):
                              Hardware item or a child Hardware item.
         :param int part: indicates whether the item to insert is an
                          assembly (default) or a component/part.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+
+        :return: None
+        :rtype: None
         """
         _sibling = kwargs['sibling']
         _part = kwargs['part']
         _return = False
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-        _attributes['revision_id'] = self._revision_id
-
-        _model, _row = self.treeview.get_selection().get_selected()
-        try:
-            _path = _model.get_path(_row)
-        except TypeError:
-            _path = '0'
-
         if _sibling:
-            _parent_id = _attributes['parent_id']
+            _parent_id = self._parent_id,
         else:
-            _parent_id = _attributes['hardware_id']
+            _parent_id = self._hardware_id,
 
-        if not self._dtc_data_controller.request_do_insert(
-                revision_id=self._revision_id, parent_id=_parent_id,
-                part=_part):
+        pub.sendMessage(
+            'request_insert_hardware',
+            revision_id=self._revision_id,
+            parent_id=_parent_id,
+            part=_part)
 
-            self._on_select_revision(self._revision_id)
-            if _part == 1:
-                print "TODO: Add code to the FMEA Class to respond to the 'insertedHardware' pubsub message and insert a set of hardware failure modes."
+        return None
 
-            self.treeview.set_cursor(_path)
-
-        else:
-            _prompt = _(u"An error occurred while attempting to add a "
-                        u"hardware item to Revision "
-                        u"{0:d}.").format(self._revision_id)
-            _error_dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            self._mdcRAMSTK.debug_log.error(_prompt)
-
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-
-        return _return
-
-    def _do_request_insert_child(self, button, assembly, **kwargs):  # pylint: disable=unused-argument
+    def _do_request_insert_child(self, button, **kwargs):
         """
         Send request to insert a new child Hardware assembly.
 
@@ -317,12 +208,12 @@ class ModuleView(RAMSTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if button.get_property('name') == 'assembly' or assembly:
+        if button.get_property('name') == 'assembly':
             _part = 0
         else:
             _part = 1
 
-        return self._do_request_insert(sibling=False, part=_part)
+        return self._do_request_insert(sibling=False, part=_part, **kwargs)
 
     def _do_request_insert_sibling(self, button, **kwargs):  # pylint: disable=unused-argument
         """
@@ -346,15 +237,14 @@ class ModuleView(RAMSTKModuleView):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update(
-            self._hardware_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.WATCH)
+        pub.sendMessage('request_update_hardware', node_id=self._hardware_id)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _do_request_update_all(self, __button):
         """
@@ -362,14 +252,14 @@ class ModuleView(RAMSTKModuleView):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.WATCH)
+        pub.sendMessage('request_update_all_hardware')
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -483,103 +373,101 @@ class ModuleView(RAMSTKModuleView):
 
         return False
 
-    def _on_calculate(self):
+    def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
-        Load the new attribute values for the entire tree after calculating.
+        Handle edits of the Hardware package Module View RAMSTKTreeview().
 
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: :class:`gtk.CellRenderer`
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: :class:`gtk.TreeModel`
         :return: None
         :rtype: None
         """
+        _dic_keys = {
+            2: 'alt_part_num',
+            3: 'cage_code',
+            4: 'comp_ref_des',
+            5: 'cost',
+            8: 'description',
+            9: 'duty_cycle',
+            10: 'figure_number',
+            11: 'lcn',
+            12: 'level',
+            14: 'mission_time',
+            15: 'name',
+            16: 'nsn',
+            17: 'page_number',
+            19: 'part',
+            20: 'part_number',
+            21: 'quantity',
+            22: 'ref_des',
+            23: 'remarks',
+            24: 'repairable',
+            25: 'specification_number',
+            26: 'tagged_part',
+            27: 'total_part_count',
+            28: 'total_power_dissipation',
+            29: 'year_of_manufacture',
+            30: 'add_adj_factor',
+            40: 'hazard_rate_software',
+            41: 'hazard_rate_specified',
+            46: 'hr_specified_variance',
+            47: 'location_parameter',
+            50: 'mtbf_specified',
+            53: 'mtbf_spec_variance',
+            54: 'mult_adj_factor',
+            55: 'reliability_goal',
+            60: 'scale_parameter',
+            61: 'shape_parameter'
+        }
 
-        def _load_row(model, __path, row, self):
-            """
-            Load the row associated with node_id.
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
+                                          model):
+            try:
+                _key = _dic_keys[self._lst_col_order[position]]
+            except KeyError:
+                _key = None
 
-            This is a helper function to allow iterative updating of the
-            RAMSTKTreeView().
-            """
-            _node_id = model.get_value(row, self._lst_col_order[1])
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                _node_id)
-
-            model.set(row, self._lst_col_order[35],
-                      _attributes['hazard_rate_active'])
-            model.set(row, self._lst_col_order[37],
-                      _attributes['hazard_rate_logistics'])
-            model.set(row, self._lst_col_order[42],
-                      _attributes['hr_active_variance'])
-            model.set(row, self._lst_col_order[44],
-                      _attributes['hr_logistics_variance'])
-            model.set(row, self._lst_col_order[48],
-                      _attributes['mtbf_logistics'])
-            model.set(row, self._lst_col_order[49],
-                      _attributes['mtbf_mission'])
-            model.set(row, self._lst_col_order[51],
-                      _attributes['mtbf_log_variance'])
-            model.set(row, self._lst_col_order[52],
-                      _attributes['mtbf_miss_variance'])
-            model.set(row, self._lst_col_order[56],
-                      _attributes['reliability_logistics'])
-            model.set(row, self._lst_col_order[57],
-                      _attributes['reliability_mission'])
-
-        _model = self.treeview.get_model()
-        _model.foreach(_load_row, self)
+            pub.sendMessage(
+                'mvw_editing_hardware',
+                module_id=self._hardware_id,
+                key=_key,
+                value=new_text)
 
         return None
 
-    def _on_edit(self, position, new_text):
+    def _on_row_change(self, treeview):
         """
-        Update the Module View RAMSTKTreeView().
+        Handle events for the Hardware package Module Book RAMSTKTreeView().
 
-        :ivar int position: the ordinal position in the Module Book
-                            gtk.TreeView() of the data being updated.
-        :ivar new_text: the new value of the attribute to be updated.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        This method is called whenever a Module Book RAMSTKTreeView() row is
+        activated.
+
+        :param treeview: the Hardware Module View RAMSTKTreeView().
+        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
+        :return: None
+        :rtype: None
         """
-        _return = False
+        _attributes = {}
 
-        if position is not None:
-            _model, _row = self.treeview.get_selection().get_selected()
-            try:
-                _model.set(_row, self._lst_col_order[position], new_text)
-            except TypeError:
-                _return = True
+        treeview.handler_block(self._lst_handler_id[0])
 
-        return _return
+        (_model, _row) = treeview.get_selection().get_selected()
 
-    def _on_select_revision(self, module_id):
-        """
-        Load the Hardware Module View RAMSTKTreeView().
+        _attributes = eval(_model.get_value(_row, _model.get_n_columns() - 1))
 
-        This method is called whenever an RAMSTK Program database is opened.
+        self._hardware_id = _attributes['hardware_id']
+        self._parent_id = _attributes['parent_id']
+        self._revision_id = _attributes['revision_id']
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._revision_id = module_id
+        treeview.handler_unblock(self._lst_handler_id[0])
 
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['hardware']
-        _hardware = self._dtc_data_controller.request_do_select_all(
-            revision_id=self._revision_id)
+        pub.sendMessage('selected_hardware', attributes=_attributes)
 
-        _return = RAMSTKModuleView.on_select_revision(self, tree=_hardware)
-        if _return:
-            _prompt = _(u"An error occured while loading the Hardware for "
-                        u"Revision ID {0:d} into the Module "
-                        u"View.").format(self._revision_id)
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == self._response_ok:
-                _dialog.do_destroy()
-        else:
-            for _analysis in ['allocation', 'hazops', 'similaritem']:
-                _dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-                    _analysis]
-                _dtc_data_controller.request_do_select_all(
-                    revision_id=self._revision_id)
-
-        return _return
+        return None
