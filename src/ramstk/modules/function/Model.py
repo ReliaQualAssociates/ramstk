@@ -47,6 +47,66 @@ class FunctionDataModel(RAMSTKDataModel):
 
         # Initialize public scalar attributes.
 
+    def do_delete(self, node_id):
+        """
+        Remove a record from the RAMSTKFunction table.
+
+        :param int node_id: the ID of the RAMSTKFunction record to be removed
+                            from the RAMSTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RAMSTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = ("RAMSTK ERROR: Attempted to delete non-existent Function "
+                    "ID {0:s}.").format(str(node_id))
+        else:
+            self.last_id = max(self.tree.nodes.keys())
+
+            # If we're not running a test, let anyone who cares know a Function
+            # was deleted.
+            if not self._test:
+                pub.sendMessage('deleted_function', tree=self.tree)
+
+        return _error_code, _msg
+
+    def do_insert(self, **kwargs):
+        """
+        Add a record to the RAMSTKFunction table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _function = RAMSTKFunction()
+        _function.revision_id = kwargs['revision_id']
+        _function.parent_id = kwargs['parent_id']
+        _error_code, _msg = RAMSTKDataModel.do_insert(
+            self, entities=[
+                _function,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _function.name,
+                _function.function_id,
+                parent=_function.parent_id,
+                data=_function)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RAMSTKDataModel.__init__
+            self.last_id = _function.function_id
+
+            # If we're not running a test, let anyone who cares know a new
+            # Function was inserted.
+            if not self._test:
+                pub.sendMessage('inserted_function', tree=self.tree)
+
+        return _error_code, _msg
+
     def do_select_all(self, **kwargs):
         """
         Retrieve all the Functions from the RAMSTK Program database.
@@ -86,66 +146,6 @@ class FunctionDataModel(RAMSTKDataModel):
             pub.sendMessage('retrieved_functions', tree=self.tree)
 
         return None
-
-    def do_insert(self, **kwargs):
-        """
-        Add a record to the RAMSTKFunction table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _function = RAMSTKFunction()
-        _function.revision_id = kwargs['revision_id']
-        _function.parent_id = kwargs['parent_id']
-        _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
-                _function,
-            ])
-
-        if _error_code == 0:
-            self.tree.create_node(
-                _function.name,
-                _function.function_id,
-                parent=_function.parent_id,
-                data=_function)
-
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
-            self.last_id = _function.function_id
-
-            # If we're not running a test, let anyone who cares know a new
-            # Function was inserted.
-            if not self._test:
-                pub.sendMessage('inserted_function', tree=self.tree)
-
-        return _error_code, _msg
-
-    def do_delete(self, node_id):
-        """
-        Remove a record from the RAMSTKFunction table.
-
-        :param int node_id: the ID of the RAMSTKFunction record to be removed
-                            from the RAMSTK Program database.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
-            _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to delete non-existent Function "
-                    "ID {0:s}.").format(str(node_id))
-        else:
-            self.last_id = max(self.tree.nodes.keys())
-
-            # If we're not running a test, let anyone who cares know a Function
-            # was deleted.
-            if not self._test:
-                pub.sendMessage('deleted_function', tree=self.tree)
-
-        return _error_code, _msg
 
     def do_update(self, node_id):
         """

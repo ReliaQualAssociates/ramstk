@@ -8,6 +8,7 @@
 
 from datetime import date
 
+# Import third party modules.
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -273,7 +274,7 @@ class RAMSTKRequirement(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKMechanism.set_attributes().".format(_err)
+                   "RAMSTKMechanism.set_attributes().".format(str(_err))
 
         return _error_code, _msg
 

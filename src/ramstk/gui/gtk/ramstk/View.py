@@ -6,12 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKBaseView Module."""
 
+import ast
 import locale
+
+# Import third party modules.
+from pubsub import pub
 
 # Import other RAMSTK Widget classes.
 from ramstk.Utilities import none_to_default
-from ramstk.gui.gtk.ramstk import RAMSTKTreeView
-from .Widget import gtk
+from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk import (RAMSTKMessageDialog, RAMSTKTreeView)
 
 
 class RAMSTKBaseView(object):
@@ -46,56 +50,58 @@ class RAMSTKBaseView(object):
         :param controller: the RAMSTK master data controller instance.
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         """
+        self._mdcRAMSTK = controller
         _module = kwargs['module']
 
         # Initialize private dictionary attributes.
         self._dic_icons = {
             'calculate':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/calculate.png',
             'calculate_all':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/calculate-all.png',
             'add':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            '/32x32/add.png',
             'remove':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/remove.png',
             'reports':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/reports.png',
             'save':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/save.png',
             'save-all':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/save-all.png',
             'important':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/important.png',
             'error':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/error.png',
             'question':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/question.png',
             'insert_sibling':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/insert_sibling.png',
             'insert_child':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/insert_child.png',
             'cancel':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/cancel.png',
             'export':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/export.png',
             'warning':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/warning.png',
             'rollup':
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/rollup.png',
         }
 
@@ -105,10 +111,10 @@ class RAMSTKBaseView(object):
 
         # Initialize private scalar attributes.
         self._dtc_data_controller = None
-        self._mdcRAMSTK = controller
         self._mission_time = float(
-            controller.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
         self._notebook = gtk.Notebook()
+        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -119,13 +125,14 @@ class RAMSTKBaseView(object):
             self.treeview = None
         else:
             try:
-                _bg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
+                _bg_color = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
                     _module + 'bg']
-                _fg_color = controller.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
+                _fg_color = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
                     _module + 'fg']
-                _fmt_file = (controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR +
-                             '/layouts/' + controller.RAMSTK_CONFIGURATION.
-                             RAMSTK_FORMAT_FILE[_module])
+                _fmt_file = (
+                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR +
+                    '/layouts/' + self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    RAMSTK_FORMAT_FILE[_module])
                 _fmt_path = "/root/tree[@name='" + _module.title(
                 ) + "']/column"
 
@@ -136,14 +143,60 @@ class RAMSTKBaseView(object):
                 self.treeview = gtk.TreeView()
 
         self.fmt = '{0:0.' + \
-                   str(controller.RAMSTK_CONFIGURATION.RAMSTK_DEC_PLACES) + 'G}'
+                   str(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEC_PLACES) + \
+                   'G}'
         self.hbx_tab_label = gtk.HBox()
 
         try:
-            locale.setlocale(locale.LC_ALL,
-                             controller.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
+            locale.setlocale(
+                locale.LC_ALL,
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
+
+        # Subscribe to PyPubSub messages.
+        # TODO: Change this to self.on_select_revision when everything is updated.
+        pub.subscribe(self.do_set_revision_id, 'selected_revision')
+
+    def do_set_revision_id(self, attributes):
+        self._revision_id = attributes['revision_id']
+
+        return None
+
+    def do_load_tree(self, tree):
+        """
+        Load the RAMSTK View RAMSTKTreeView().
+
+        This method is called in response to the 'retrieved_<module>'.
+
+        :param tree: the treelib Tree containing the module to load.
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _model.clear()
+
+        _tag = tree.get_node(0).tag
+
+        if self.treeview.do_load_tree(tree):
+            _prompt = _(u"An error occured while loading the {1:s} "
+                        u"records for Revision ID {0:d} into the "
+                        u"view.").format(self._revision_id, _tag)
+            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
+                                          'error')
+            if _dialog.do_run() == self._response_ok:
+                _dialog.do_destroy()
+
+        _row = _model.get_iter_root()
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
+
+        return None
 
     def do_raise_dialog(self, **kwargs):
         """
@@ -177,12 +230,73 @@ class RAMSTKBaseView(object):
         if _error_code != 0:
             self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
                 _debug_msg)
-            _dialog = rtk.RAMSTKMessageDialog(
+            _dialog = RAMSTKMessageDialog(
                 _user_msg, self._dic_icons[_severity], _severity)
             if _dialog.do_run() == gtk.RESPONSE_OK:
                 _dialog.destroy()
 
         return None
+
+    def do_refresh_tree(self, module_id, key, value):
+        """
+        Refresh the data in the RAMSTKTreeView().
+
+        :return: None
+        :rtype: None
+        """
+        _model, _row = self.treeview.get_selection().get_selected()
+        try:
+            _column = [
+                _index for _index, _key in enumerate(self.treeview.korder)
+                if _key == key
+            ][0]
+
+            try:
+                _model.set_value(_row, _column, value)
+            except AttributeError:
+                _prompt = _(u"An error occurred while refreshing column {0:d} "
+                            u"for record {1:d}.").format(_column, module_id)
+                _dialog = RAMSTKMessageDialog(
+                    _prompt, self._dic_icons['error'], 'error')
+                if _dialog.do_run() == self._response_ok:
+                    _dialog.do_destroy()
+        except IndexError:
+            pass
+
+        # Update the attributes dict in the last column.
+        _attributes = ast.literal_eval(
+            _model.get_value(_row,
+                             _model.get_n_columns() - 1))
+        _attributes[key] = value
+        _model.set_value(_row, _model.get_n_columns() - 1, str(_attributes))
+
+        return None
+
+    def do_request_insert_child(self, __button, **kwargs):
+        """
+        Request to insert a new child entity of the selected entity.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=False, **kwargs)
+
+    def do_request_insert_sibling(self, __button, **kwargs):
+        """
+        Send request to insert a new sibling entity.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(sibling=True, **kwargs)
+
+    def do_set_cursor(self, cursor):
+        # TODO: Move set_cursor code here after everthing has been updated.
+        return self.set_cursor(cursor)
 
     def _make_toolbar(self,
                       icons,
@@ -235,6 +349,42 @@ class RAMSTKBaseView(object):
         # item.  The _position variable can be used by derived classes to
         # add additional items to the gtk.ToolBar().
         return _toolbar, _position
+
+    def make_treeview(self, **kwargs):
+        """
+        Set up the Module View RAMSTKTreeView().
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _editable = kwargs['editable']
+        except KeyError:
+            _editable = []
+        _index = 0
+
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            if _index in _editable:
+                _color = gtk.gdk.color_parse('#FFFFFF')
+                try:
+                    _cell.set_property('editable', True)
+                    _cell.connect('edited', self._on_cell_edit, _index,
+                                  self.treeview.get_model())
+                except TypeError:
+                    _cell.set_property('activatable', True)
+                    _cell.connect('toggled', self._on_cell_edit, _index,
+                                  self.treeview.get_model())
+            else:
+                _color = gtk.gdk.color_parse('#EEEEEE')
+                try:
+                    _cell.set_property('editable', False)
+                except TypeError:
+                    _cell.set_property('activatable', False)
+            _cell.set_property('cell-background-gdk', _color)
+            _index += 1
+
+        return None
 
     def on_button_press(self, event, icons=None, labels=None, callbacks=None):
         """
@@ -398,41 +548,40 @@ class RAMSTKBaseView(object):
         """
         Set the cursor for the Module, List, and Work Book gtk.gdk.Window().
 
-        :param controller: the RAMSTK master data controller.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
-        :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only
-                                      handles one of the following:
-                                        - gtk.gdk.X_CURSOR
-                                        - gtk.gdk.ARROW
-                                        - gtk.gdk.CENTER_PTR
-                                        - gtk.gdk.CIRCLE
-                                        - gtk.gdk.CROSS
-                                        - gtk.gdk.CROSS_REVERSE
-                                        - gtk.gdk.CROSSHAIR
-                                        - gtk.gdk.DIAMOND_CROSS
-                                        - gtk.gdk.DOUBLE_ARROW
-                                        - gtk.gdk.DRAFT_LARGE
-                                        - gtk.gdk.DRAFT_SMALL
-                                        - gtk.gdk.EXCHANGE
-                                        - gtk.gdk.FLEUR
-                                        - gtk.gdk.GUMBY
-                                        - gtk.gdk.HAND1
-                                        - gtk.gdk.HAND2
-                                        - gtk.gdk.LEFT_PTR - non-busy cursor
-                                        - gtk.gdk.PENCIL
-                                        - gtk.gdk.PLUS
-                                        - gtk.gdk.QUESTION_ARROW
-                                        - gtk.gdk.RIGHT_PTR
-                                        - gtk.gdk.SB_DOWN_ARROW
-                                        - gtk.gdk.SB_H_DOUBLE_ARROW
-                                        - gtk.gdk.SB_LEFT_ARROW
-                                        - gtk.gdk.SB_RIGHT_ARROW
-                                        - gtk.gdk.SB_UP_ARROW
-                                        - gtk.gdk.SB_V_DOUBLE_ARROW
-                                        - gtk.gdk.TCROSS
-                                        - gtk.gdk.TOP_LEFT_ARROW
-                                        - gtk.gdk.WATCH - when application is busy
-                                        - gtk.gdk.XTERM - selection bar
+        :param cursor: the gtk.gdk.Cursor() to set.  Only handles one of the
+                       following:
+                       - gtk.gdk.X_CURSOR
+                       - gtk.gdk.ARROW
+                       - gtk.gdk.CENTER_PTR
+                       - gtk.gdk.CIRCLE
+                       - gtk.gdk.CROSS
+                       - gtk.gdk.CROSS_REVERSE
+                       - gtk.gdk.CROSSHAIR
+                       - gtk.gdk.DIAMOND_CROSS
+                       - gtk.gdk.DOUBLE_ARROW
+                       - gtk.gdk.DRAFT_LARGE
+                       - gtk.gdk.DRAFT_SMALL
+                       - gtk.gdk.EXCHANGE
+                       - gtk.gdk.FLEUR
+                       - gtk.gdk.GUMBY
+                       - gtk.gdk.HAND1
+                       - gtk.gdk.HAND2
+                       - gtk.gdk.LEFT_PTR - non-busy cursor
+                       - gtk.gdk.PENCIL
+                       - gtk.gdk.PLUS
+                       - gtk.gdk.QUESTION_ARROW
+                       - gtk.gdk.RIGHT_PTR
+                       - gtk.gdk.SB_DOWN_ARROW
+                       - gtk.gdk.SB_H_DOUBLE_ARROW
+                       - gtk.gdk.SB_LEFT_ARROW
+                       - gtk.gdk.SB_RIGHT_ARROW
+                       - gtk.gdk.SB_UP_ARROW
+                       - gtk.gdk.SB_V_DOUBLE_ARROW
+                       - gtk.gdk.TCROSS
+                       - gtk.gdk.TOP_LEFT_ARROW
+                       - gtk.gdk.WATCH - when application is busy
+                       - gtk.gdk.XTERM - selection bar
+        :type cursor: :class:`gtk.gdk.Cursor`
         :return: None
         :rtype: None
         """

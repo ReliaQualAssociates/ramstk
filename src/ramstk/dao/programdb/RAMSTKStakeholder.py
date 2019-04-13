@@ -45,11 +45,11 @@ class RAMSTKStakeholder(RAMSTK_BASE):
     priority = Column('fld_priority', Integer, default=1)
     requirement_id = Column('fld_requirement_id', Integer, default=0)
     stakeholder = Column('fld_stakeholder', String(128), default='')
-    user_float_1 = Column('fld_user_float_1', Float, default=0.0)
-    user_float_2 = Column('fld_user_float_2', Float, default=0.0)
-    user_float_3 = Column('fld_user_float_3', Float, default=0.0)
-    user_float_4 = Column('fld_user_float_4', Float, default=0.0)
-    user_float_5 = Column('fld_user_float_5', Float, default=0.0)
+    user_float_1 = Column('fld_user_float_1', Float, default=1.0)
+    user_float_2 = Column('fld_user_float_2', Float, default=1.0)
+    user_float_3 = Column('fld_user_float_3', Float, default=1.0)
+    user_float_4 = Column('fld_user_float_4', Float, default=1.0)
+    user_float_5 = Column('fld_user_float_5', Float, default=1.0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='stakeholder')
@@ -100,7 +100,7 @@ class RAMSTKStakeholder(RAMSTK_BASE):
 
         try:
             self.customer_rank = int(
-                none_to_default(attributes['customer_rank'], 1))
+                none_to_default(float(attributes['customer_rank']), 1))
             self.description = str(
                 none_to_default(attributes['description'], ''))
             self.group = str(none_to_default(attributes['group'], ''))
@@ -109,8 +109,9 @@ class RAMSTKStakeholder(RAMSTK_BASE):
             self.overall_weight = float(
                 none_to_default(attributes['overall_weight'], 0.0))
             self.planned_rank = int(
-                none_to_default(attributes['planned_rank'], 1))
-            self.priority = int(none_to_default(attributes['priority'], 1))
+                none_to_default(float(attributes['planned_rank']), 1))
+            self.priority = int(
+                none_to_default(float(attributes['priority']), 1))
             self.requirement_id = int(
                 none_to_default(attributes['requirement_id'], 0))
             self.stakeholder = str(
@@ -129,6 +130,6 @@ class RAMSTKStakeholder(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKStakeholder.set_attributes().".format(_err)
+                   "RAMSTKStakeholder.set_attributes().".format(str(_err))
 
         return _error_code, _msg

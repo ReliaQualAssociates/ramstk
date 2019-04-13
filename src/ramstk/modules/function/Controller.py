@@ -61,13 +61,14 @@ class FunctionDataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_delete, 'request_delete_function')
         pub.subscribe(self.request_do_insert, 'request_insert_function')
+        pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_update, 'request_update_function')
         pub.subscribe(self.request_do_update_all,
                       'request_update_all_functions')
-        pub.subscribe(self.request_set_attributes, 'editing_function')
+        pub.subscribe(self.request_set_attributes, 'mvw_editing_function')
+        pub.subscribe(self.request_set_attributes, 'wvw_editing_function')
 
     def request_do_create(self, revision_id, matrix_type):
         """
@@ -86,16 +87,64 @@ class FunctionDataController(RAMSTKDataController):
 
         return
 
-    def request_do_select_all(self, attributes):
+    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
-        Retrieve the treelib Tree() from the Function Data Model.
+        Request to remove a row or column from the selected Data Matrix.
 
-        :return: tree; the treelib Tree() of RAMSTKFunction models in the
-                 Function tree.
-        :rtype: :class:`treelib.Tree`
+        :param str matrix_type: the type of the Matrix to retrieve.  Current
+                                Function matrix types are:
+
+                                fnctn_hrdwr = Function:Hardware
+                                fnctn_sftwr = Function:Software
+                                fnctn_vldtn = Function:Validation
+
+        :param int item_id: the ID of the row or column item to remove from the
+                            Matrix.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
-        return self._dtm_data_model.do_select_all(
-            revision_id=attributes['revision_id'])
+        if matrix_type == 'fnctn_hrdwr':
+            _error_code, _msg = self._dmx_fctn_hw_matrix.do_delete(
+                item_id, row=row)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      'deletedMatrix')
+
+    def request_do_insert_matrix(self, matrix_type, item_id, heading,
+                                 row=True):
+        """
+        Request the to add a new row or column to the Data Matrix.
+
+        :param str matrix_type: the type of the Matrix to retrieve.  Current
+                                Function matrix types are:
+
+                                fnctn_hrdwr = Function:Hardware
+                                fnctn_sftwr = Function:Software
+                                fnctn_vldtn = Function:Validation
+
+        :param int item_id: the ID of the row or column item to insert into the
+                            Matrix.
+        :param str heading: the heading for the new row or column.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        if matrix_type == 'fnctn_hrdwr':
+            _error_code, _msg = self._dmx_fctn_hw_matrix.do_insert(
+                item_id, heading, row=row)
+
+        if _error_code == 0 and not self._test:
+            pub.sendMessage(
+                'insertedMatrix',
+                matrix_type=matrix_type,
+                item_id=item_id,
+                row=row)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
 
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
@@ -132,104 +181,6 @@ class FunctionDataController(RAMSTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_do_insert(self, revision_id, parent_id, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to add an RAMSTKFunction table record.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_insert(
-            revision_id=revision_id, parent_id=parent_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_insert_matrix(self, matrix_type, item_id, heading,
-                                 row=True):
-        """
-        Request the to add a new row or column to the Data Matrix.
-
-        :param str matrix_type: the type of the Matrix to retrieve.  Current
-                                Function matrix types are:
-
-                                fnctn_hrdwr = Function:Hardware
-                                fnctn_sftwr = Function:Software
-                                fnctn_vldtn = Function:Validation
-
-        :param int item_id: the ID of the row or column item to insert into the
-                            Matrix.
-        :param str heading: the heading for the new row or column.
-        :keyword bool row: indicates whether to insert a row (default) or a
-                           column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        if matrix_type == 'fnctn_hrdwr':
-            _error_code, _msg = self._dmx_fctn_hw_matrix.do_insert(
-                item_id, heading, row=row)
-
-        if _error_code == 0 and not self._test:
-            pub.sendMessage(
-                'insertedMatrix',
-                matrix_type=matrix_type,
-                item_id=item_id,
-                row=row)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_delete(self, node_id):
-        """
-        Request to delete an RAMSTKFunction table record.
-
-        :param int node_id: the PyPubSub Tree() ID of the Function to delete.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
-        """
-        Request to remove a row or column from the selected Data Matrix.
-
-        :param str matrix_type: the type of the Matrix to retrieve.  Current
-                                Function matrix types are:
-
-                                fnctn_hrdwr = Function:Hardware
-                                fnctn_sftwr = Function:Software
-                                fnctn_vldtn = Function:Validation
-
-        :param int item_id: the ID of the row or column item to remove from the
-                            Matrix.
-        :keyword bool row: indicates whether to insert a row (default) or a
-                           column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        if matrix_type == 'fnctn_hrdwr':
-            _error_code, _msg = self._dmx_fctn_hw_matrix.do_delete(
-                item_id, row=row)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'deletedMatrix')
-
-    def request_do_update(self, node_id):
-        """
-        Request to update an RAMSTKFunction table record.
-
-        :param int node_id: the PyPubSub Tree() ID of the Function to save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
         Request to update the selected Data Matrix.
@@ -250,34 +201,3 @@ class FunctionDataController(RAMSTKDataController):
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       'savedMatrix')
-
-    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to update all records in the RAMSTKFunction table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = self._dtm_data_model.do_update_all()
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_set_attributes(self, module_id, key, value):
-        """
-        Request to set a Function attribute.
-
-        :param int module_id: the ID of the entity who's attribute is to
-                              be set.
-        :param str key: the key of the attributes to set.
-        :param value: the value to set the attribute identified by the
-                      key.
-        :return:
-        :rtype:
-        """
-        _entity = self.request_do_select(module_id)
-        _attributes = _entity.get_attributes()
-
-        _attributes[key] = value
-
-        return _entity.set_attributes(_attributes)

@@ -1278,8 +1278,10 @@ class DFMECA(FMEA):
         """
         _return = False
 
-        _tree = self._mdcRAMSTK.dic_controllers[
-            'profile'].request_do_select_all(revision_id=module_id)
+        _attributes = {'revision_id': module_id}
+        self._mdcRAMSTK.dic_controllers['profile'].request_do_select_all(
+            _attributes)
+        _tree = self._mdcRAMSTK.dic_controllers['profile'].request_tree()
 
         _missions = _tree.children(0)
         for _mission in _missions:
@@ -1787,10 +1789,14 @@ class DFMECA(FMEA):
             self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'dfmeca']
 
-        _fmea = self._dtc_data_controller.request_do_select_all(
-            parent_id=self._hardware_id, functional=False)
+        self._dtc_data_controller.request_do_select_all({
+            'hardware_id':
+            self._hardware_id,
+            'functional':
+            False
+        })
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
-            tree=_fmea, row=None)
+            tree=self._dtc_data_controller.request_tree(), row=None)
 
         RAMSTKWorkView.on_select(
             self,

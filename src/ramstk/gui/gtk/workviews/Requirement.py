@@ -6,6 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Work View."""
 
+# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
@@ -166,10 +167,11 @@ class GeneralData(RAMSTKWorkView):
         self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
-        pub.subscribe(self._on_select, 'selectedRequirement')
-        pub.subscribe(self._on_edit, 'mvwEditedRequirement')
-        pub.subscribe(self._on_edit, 'calculatedRequirement')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._do_load_page, 'selected_requirement')
+        pub.subscribe(self._do_load_code, 'created_requirement_code')
+        pub.subscribe(self._on_edit, 'mvw_editing_requirement')
 
     def _do_clear_page(self):
         """
@@ -224,28 +226,45 @@ class GeneralData(RAMSTKWorkView):
 
         return None
 
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+    def _do_load_code(self, code):
+        """
+        Load the Requirement code RAMSTKEntry().
+
+        :param str code: the Requirement code to load.
+        :return: None
+        :rtype: None
+        """
+        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.set_text(str(code))
+        self.txtCode.handler_unblock(self._lst_handler_id[0])
+
+        return None
+
+    def _do_load_page(self, attributes):
         """
         Load the Requirements general data page.
 
-        :return: False if successful and True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _requirement = self._dtc_data_controller.request_do_select(
-            self._requirement_id)
+        self._revision_id = attributes['revision_id']
+        self._requirement_id = attributes['requirement_id']
+        RAMSTKWorkView.on_select(
+            self,
+            title=_(u"Analyzing Requirement {0:s} - {1:s}").format(
+                str(attributes['requirement_code']),
+                str(attributes['description'])))
 
         self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(_requirement.requirement_code))
+        self.txtCode.set_text(str(attributes['requirement_code']))
         self.txtCode.handler_unblock(self._lst_handler_id[0])
 
         self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(_requirement.description)
+        self.txtName.set_text(str(attributes['description']))
         self.txtName.handler_unblock(self._lst_handler_id[1])
 
         self.chkDerived.handler_block(self._lst_handler_id[3])
-        self.chkDerived.set_active(_requirement.derived)
+        self.chkDerived.set_active(attributes['derived'])
         self.chkDerived.handler_unblock(self._lst_handler_id[3])
 
         self.cmbRequirementType.handler_block(self._lst_handler_id[2])
@@ -253,64 +272,64 @@ class GeneralData(RAMSTKWorkView):
         self.cmbRequirementType.set_active(0)
         _idx = 1
         for _key, _type in _types.iteritems():
-            if _type[1] == _requirement.requirement_type:
+            if _type[1] == attributes['requirement_type']:
                 self.cmbRequirementType.set_active(_idx)
             else:
                 _idx += 1
         self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
 
         self.txtSpecification.handler_block(self._lst_handler_id[4])
-        self.txtSpecification.set_text(str(_requirement.specification))
+        self.txtSpecification.set_text(str(attributes['specification']))
         self.txtSpecification.handler_unblock(self._lst_handler_id[4])
 
         self.txtPageNum.handler_block(self._lst_handler_id[5])
-        self.txtPageNum.set_text(str(_requirement.page_number))
+        self.txtPageNum.set_text(str(attributes['page_number']))
         self.txtPageNum.handler_unblock(self._lst_handler_id[5])
 
         self.txtFigNum.handler_block(self._lst_handler_id[6])
-        self.txtFigNum.set_text(str(_requirement.figure_number))
+        self.txtFigNum.set_text(str(attributes['figure_number']))
         self.txtFigNum.handler_unblock(self._lst_handler_id[6])
 
         self.cmbPriority.handler_block(self._lst_handler_id[7])
-        self.cmbPriority.set_active(int(_requirement.priority))
+        self.cmbPriority.set_active(int(attributes['priority']))
         self.cmbPriority.handler_unblock(self._lst_handler_id[7])
 
         self.cmbOwner.handler_block(self._lst_handler_id[8])
         _groups = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS
         self.cmbOwner.set_active(0)
         for _key, _group in _groups.iteritems():
-            if _group[0] == _requirement.owner:
+            if _group[0] == attributes['owner']:
                 self.cmbOwner.set_property('active', int(_key))
         self.cmbOwner.handler_unblock(self._lst_handler_id[8])
 
         self.chkValidated.handler_block(self._lst_handler_id[9])
-        self.chkValidated.set_active(_requirement.validated)
+        self.chkValidated.set_active(int(attributes['validated']))
         self.chkValidated.handler_unblock(self._lst_handler_id[9])
 
         self.txtValidatedDate.handler_block(self._lst_handler_id[10])
-        if _requirement.validated:
-            self.txtValidatedDate.set_text(str(_requirement.validated_date))
+        if attributes['validated']:
+            self.txtValidatedDate.set_text(str(attributes['validated_date']))
         else:
             self.txtValidatedDate.set_text("")
         self.txtValidatedDate.handler_unblock(self._lst_handler_id[10])
 
-        return _return
+        return None
 
     def _do_request_update(self, __button):
         """
-        Request to save the currently selected Requirement.
+        Send request to save the currently selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update(
-            self._requirement_id)
+        pub.sendMessage(
+            'request_update_requirement', node_id=self._requirement_id)
         self.set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _do_request_update_all(self, __button):
         """
@@ -318,14 +337,14 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all()
+        pub.sendMessage('request_update_all_requirements')
         self.set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     @staticmethod
     def _do_select_date(__button, __event, entry):
@@ -451,104 +470,92 @@ class GeneralData(RAMSTKWorkView):
         :param int index: the position in the Requirement class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Entry().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        _dic_keys = {
+            2: 'requirement_type',
+            7: 'priority',
+            8: 'owner',
+        }
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         combo.handler_block(self._lst_handler_id[index])
 
         _model = combo.get_model()
         _row = combo.get_active_iter()
 
-        if self._dtc_data_controller is not None:
-            _requirement = self._dtc_data_controller.request_do_select(
-                self._requirement_id)
+        if _key == 'requirement_type':
+            _new_text = [_model.get_value(_row, 0), _model.get_value(_row, 1)]
+        elif _key == 'priority':
+            _new_text = int(_model.get_value(_row, 0))
+        elif _key == 'owner':
+            _new_text = _model.get_value(_row, 0)
+        else:
+            _new_text = ''
 
-            if index == 2:
-                _index = 11
-                _prefix = _model.get_value(_row, 0)
-                _text = _model.get_value(_row, 1)
-                _requirement.requirement_type = str(_text)
-                _requirement.requirement_code = \
-                    _requirement.create_code(_prefix)
-                self.txtCode.set_text(str(_requirement.requirement_code))
-            elif index == 7:
-                _index = 8
-                _text = int(_model.get_value(_row, 0))
-                _requirement.priority = _text
-            elif index == 8:
-                _index = 5
-                _text = _model.get_value(_row, 0)
-                _requirement.owner = _text
-
-            pub.sendMessage(
-                'wvwEditedRequirement', position=_index, new_text=_text)
+        pub.sendMessage(
+            'wvw_editing_requirement',
+            module_id=self._requirement_id,
+            key=_key,
+            value=_new_text)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
-        return _return
+        return None
 
-    def _on_edit(self, index, new_text):
+    def _on_edit(self, module_id, key, value):
         """
         Update the Requirement Work View gtk.Widgets().
 
-        This method updates Work View gtk.Widgets() with changes to the
-        Requirement data model attributes.  This method is called whenever an
-        attribute is edited in a different view.
+        This method updates the Requirement Work View gtk.Widgets() with
+        changes to the Requirement data model attributes.  This method is
+        called whenever an attribute is edited in a different RAMSTK View.
 
-        :param int index: the index in the Requirement attributes list of the
-                          attribute that was edited.
-        :param str new_text: the new text to update the gtk.Widget() with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param int module_id: the ID of the Requirement being edited.  This
+                              parameter is required to allow the PyPubSub
+                              signals to call this method and the
+                              request_set_attributes() method in the
+                              RAMSTKDataController.
+        :param str key: the key in the Requirement attributes list of the
+                        attribute that was edited.
+        :param str value: the new text to update the gtk.Widget() with.
+        :return: None
+        :rtype: None
         """
-        _return = False
+        if key == 'derived':
+            self.chkDerived.handler_block(self._lst_handler_id[2])
+            self.chkDerived.set_active(int(value))
+            self.chkDerived.handler_unblock(self._lst_handler_id[2])
+        elif key == 'description':
+            self.txtName.handler_block(self._lst_handler_id[3])
+            self.txtName.set_text(str(value))
+            self.txtName.handler_unblock(self._lst_handler_id[3])
+        elif key == 'figure_number':
+            self.txtFigNum.handler_block(self._lst_handler_id[4])
+            self.txtFigNum.set_text(str(value))
+            self.txtFigNum.handler_unblock(self._lst_handler_id[4])
+        elif key == 'page_number':
+            self.txtPageNum.handler_block(self._lst_handler_id[6])
+            self.txtPageNum.set_text(str(value))
+            self.txtPageNum.handler_unblock(self._lst_handler_id[6])
+        elif key == 'specification':
+            self.txtSpecification.handler_block(self._lst_handler_id[10])
+            self.txtSpecification.set_text(str(value))
+            self.txtSpecification.handler_unblock(self._lst_handler_id[10])
+        elif key == 'validated':
+            self.chkValidated.handler_block(self._lst_handler_id[12])
+            self.chkValidated.set_active(int(value))
+            self.chkValidated.handler_unblock(self._lst_handler_id[12])
+        elif key == 'validated_date':
+            self.txtValidatedDate.handler_block(self._lst_handler_id[13])
+            self.txtValidatedDate.set_text(str(value))
+            self.txtValidatedDate.handler_unblock(self._lst_handler_id[13])
 
-        if index == 3:
-            self.txtName.handler_block(self._lst_handler_id[1])
-            self.txtName.set_text(str(new_text))
-            self.txtName.handler_unblock(self._lst_handler_id[1])
-        elif index == 4:
-            self.txtFigNum.handler_block(self._lst_handler_id[6])
-            self.txtFigNum.set_text(str(new_text))
-            self.txtFigNum.handler_unblock(self._lst_handler_id[6])
-        elif index == 5:
-            self.cmbOwner.handler_block(self._lst_handler_id[8])
-            _groups = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS
-            for _key, _group in _groups.iteritems():
-                if _group[0] == new_text:
-                    self.cmbOwner.set_property('active', int(_key))
-            self.cmbOwner.handler_unblock(self._lst_handler_id[8])
-        elif index == 6:
-            self.txtPageNum.handler_block(self._lst_handler_id[5])
-            self.txtPageNum.set_text(str(new_text))
-            self.txtPageNum.handler_unblock(self._lst_handler_id[5])
-        elif index == 8:
-            self.cmbPriority.handler_block(self._lst_handler_id[7])
-            self.cmbPriority.set_property('active', int(new_text))
-            self.cmbPriority.handler_unblock(self._lst_handler_id[7])
-        elif index == 9:
-            self.txtCode.handler_block(self._lst_handler_id[0])
-            self.txtCode.set_text(str(new_text))
-            self.txtCode.handler_unblock(self._lst_handler_id[0])
-        elif index == 10:
-            self.txtSpecification.handler_block(self._lst_handler_id[4])
-            self.txtSpecification.set_text(str(new_text))
-            self.txtSpecification.handler_unblock(self._lst_handler_id[4])
-        elif index == 11:
-            self.cmbRequirementType.handler_block(self._lst_handler_id[2])
-            _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE
-            for _key, _type in _types.iteritems():
-                if _type[1] == new_text:
-                    self.cmbRequirementType.set_property('active', int(_key))
-            self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
-        elif index == 13:
-            self.txtValidatedDate.handler_block(self._lst_handler_id[10])
-            self.txtValidatedDate.set_text(str(new_text))
-            self.txtValidatedDate.handler_unblock(self._lst_handler_id[10])
-
-        return _return
+        return None
 
     def _on_focus_out(self, entry, index):
         """
@@ -567,71 +574,42 @@ class GeneralData(RAMSTKWorkView):
         :param int index: the position in the Requirement class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _index = -1
-        _return = False
+        _key = ''
         _text = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_data_controller is not None:
-            _requirement = self._dtc_data_controller.request_do_select(
-                self._requirement_id)
+        if index == 0:
+            _key = 'requirement_code'
+            _new_text = str(entry.get_text())
+        elif index == 1:
+            _key = 'description'
+            _new_text = str(entry.get_text())
+        elif index == 4:
+            _key = 'specification'
+            _new_text = str(entry.get_text())
+        elif index == 5:
+            _key = 'page_number'
+            _new_text = str(entry.get_text())
+        elif index == 6:
+            _key = 'figure_number'
+            _new_text = str(entry.get_text())
+        elif index == 10:
+            _key = 'validate_date'
+            _new_text = str(entry.get_text())
 
-            if index == 0:
-                _index = 9
-                _text = str(entry.get_text())
-                _requirement.requirement_code = _text
-            elif index == 1:
-                _index = 3
-                _text = str(entry.get_text())
-                _requirement.description = _text
-            elif index == 4:
-                _index = 10
-                _text = str(entry.get_text())
-                _requirement.specification = _text
-            elif index == 5:
-                _index = 6
-                _text = str(entry.get_text())
-                _requirement.page_number = _text
-            elif index == 6:
-                _index = 4
-                _text = str(entry.get_text())
-                _requirement.figure_number = _text
-            elif index == 10:
-                _index = 13
-                _text = str(entry.get_text())
-                _requirement.validated_date = _text
-
-            pub.sendMessage(
-                'wvwEditedRequirement', position=_index, new_text=_text)
+        pub.sendMessage(
+            'editing_requirement',
+            module_id=self._requirement_id,
+            key=_key,
+            value=_new_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-        return _return
-
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
-        """
-        Load the Requirement Work View gtk.Notebook() widgets.
-
-        :param int module_id: the Requirement ID of the selected/edited
-                              Requirement.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._requirement_id = module_id
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-            'requirement']
-        self._do_load_page()
-
-        return _return
+        return None
 
     def _on_toggled(self, togglebutton, index):
         """
@@ -642,32 +620,30 @@ class GeneralData(RAMSTKWorkView):
         :param int index: the position in the Requirement class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Entry().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        _key = ''
+        _text = ''
 
         togglebutton.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_data_controller is not None:
-            _requirement = self._dtc_data_controller.request_do_select(
-                self._requirement_id)
+        if index == 3:
+            _key = 'derived'
+            _new_text = int(togglebutton.get_active())
+        elif index == 9:
+            _key = 'validate'
+            _new_text = int(togglebutton.get_active())
 
-            if index == 3:
-                _index = 2
-                _requirement.derived = int(togglebutton.get_active())
-            elif index == 9:
-                _index = 12
-                _requirement.validated = int(togglebutton.get_active())
-
-            pub.sendMessage(
-                'wvwEditedRequirement',
-                position=_index,
-                new_text=int(togglebutton.get_active()))
+        pub.sendMessage(
+            'wvw_editing_requirement',
+            module_id=self._requirement_id,
+            key=_key,
+            value=_new_text)
 
         togglebutton.handler_unblock(self._lst_handler_id[index])
 
-        return _return
+        return None
 
 
 class RequirementAnalysis(RAMSTKWorkView):
@@ -732,8 +708,9 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.pack_start(self._make_page(), expand=True, fill=True)
         self.show_all()
 
-        pub.subscribe(self._on_select, 'selectedRequirement')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._do_load_page, 'selected_requirement')
 
     def _do_clear_page(self):
         """
@@ -755,141 +732,29 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         return None
 
-    def _do_request_update(self, __button):
-        """
-        Save the currently selected Requirement.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update(
-            self._requirement_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
-
-        return _return
-
-    def _do_request_update_all(self, __button):
-        """
-        Request to save all the Requirements.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
-
-        return _return
-
-    def _do_edit_cell(self, cell, path, new_text, position, model, index):  # pylint: disable=unused-argument
-        """
-        Handle edits of the Requirement Analysis RAMSTKTreeview().
-
-        :param cell: the gtk.CellRendererToggle() that was toggled.
-        :type cell: :class:`gtk.CellRendererToggle`
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
-                         that was edited.
-        :param model: the gtk.TreeModel() for the gtk.Treeview() that is being
-                      edited.
-        :type model: :class:`gtk.TreeModel`
-        :param int index: the index of the Requirement analysis gtk.Treeview()
-                          questions being answered.  Indices are:
-
-                             * 0 = clarity
-                             * 1 = completeness
-                             * 2 = consistency
-                             * 3 = verifiability
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _requirement = self._dtc_data_controller.request_do_select(
-            self._requirement_id)
-
-        _answer = boolean_to_integer(not cell.get_active())
-        model[path][2] = _answer
-
-        _position = model[path][0]
-
-        try:
-            if index == 0:
-                self._lst_clear_a[_position] = _answer
-                _requirement.q_clarity_0 = self._lst_clear_a[0]
-                _requirement.q_clarity_1 = self._lst_clear_a[1]
-                _requirement.q_clarity_2 = self._lst_clear_a[2]
-                _requirement.q_clarity_3 = self._lst_clear_a[3]
-                _requirement.q_clarity_4 = self._lst_clear_a[4]
-                _requirement.q_clarity_5 = self._lst_clear_a[5]
-                _requirement.q_clarity_6 = self._lst_clear_a[6]
-                _requirement.q_clarity_7 = self._lst_clear_a[7]
-                _requirement.q_clarity_8 = self._lst_clear_a[8]
-            elif index == 1:
-                self._lst_complete_a[_position] = _answer
-                _requirement.q_complete_0 = self._lst_complete_a[0]
-                _requirement.q_complete_1 = self._lst_complete_a[1]
-                _requirement.q_complete_2 = self._lst_complete_a[2]
-                _requirement.q_complete_3 = self._lst_complete_a[3]
-                _requirement.q_complete_4 = self._lst_complete_a[4]
-                _requirement.q_complete_5 = self._lst_complete_a[5]
-                _requirement.q_complete_6 = self._lst_complete_a[6]
-                _requirement.q_complete_7 = self._lst_complete_a[7]
-                _requirement.q_complete_8 = self._lst_complete_a[8]
-                _requirement.q_complete_9 = self._lst_complete_a[9]
-            elif index == 2:
-                self._lst_consistent_a[_position] = _answer
-                _requirement.q_consistent_0 = self._lst_consistent_a[0]
-                _requirement.q_consistent_1 = self._lst_consistent_a[1]
-                _requirement.q_consistent_2 = self._lst_consistent_a[2]
-                _requirement.q_consistent_3 = self._lst_consistent_a[3]
-                _requirement.q_consistent_4 = self._lst_consistent_a[4]
-                _requirement.q_consistent_5 = self._lst_consistent_a[5]
-                _requirement.q_consistent_6 = self._lst_consistent_a[6]
-                _requirement.q_consistent_7 = self._lst_consistent_a[7]
-                _requirement.q_consistent_8 = self._lst_consistent_a[8]
-            elif index == 3:
-                self._lst_verifiable_a[_position] = _answer
-                _requirement.q_verifiable_0 = self._lst_verifiable_a[0]
-                _requirement.q_verifiable_1 = self._lst_verifiable_a[1]
-                _requirement.q_verifiable_2 = self._lst_verifiable_a[2]
-                _requirement.q_verifiable_3 = self._lst_verifiable_a[3]
-                _requirement.q_verifiable_4 = self._lst_verifiable_a[4]
-                _requirement.q_verifiable_5 = self._lst_verifiable_a[5]
-        except IndexError:
-            _debug_msg = ("RAMSTK ERROR: No position {0:d} in Requirements "
-                          "Analysis question list for index {1:d}.").format(
-                              _position, index)
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
-                _debug_msg)
-
-        return _return
-
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+    def _do_load_page(self, attributes):
         """
         Load the Requirements analysis page.
 
-        :return: False if successful and True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _requirement = self._dtc_data_controller.request_do_select(
-            self._requirement_id)
+        self._revision_id = attributes['revision_id']
+        self._requirement_id = attributes['requirement_id']
+        RAMSTKWorkView.on_select(
+            self,
+            title=_(u"Analyzing Requirement {0:s} - {1:s}").format(
+                str(attributes['requirement_code']),
+                str(attributes['description'])))
 
         # Load the Requirement analyses answers.  It's easiest to pack the
         # answers into a list and iterate for each tree.
         self._lst_clear_a = [
-            _requirement.q_clarity_0, _requirement.q_clarity_1,
-            _requirement.q_clarity_2, _requirement.q_clarity_3,
-            _requirement.q_clarity_4, _requirement.q_clarity_5,
-            _requirement.q_clarity_6, _requirement.q_clarity_7,
-            _requirement.q_clarity_8
+            attributes['q_clarity_0'], attributes['q_clarity_1'],
+            attributes['q_clarity_2'], attributes['q_clarity_3'],
+            attributes['q_clarity_4'], attributes['q_clarity_5'],
+            attributes['q_clarity_6'], attributes['q_clarity_7'],
+            attributes['q_clarity_8']
         ]
         _model = self.tvwClear.get_model()
         _row = _model.get_iter_first()
@@ -898,11 +763,11 @@ class RequirementAnalysis(RAMSTKWorkView):
             _row = _model.iter_next(_row)
 
         self._lst_complete_a = [
-            _requirement.q_complete_0, _requirement.q_complete_1,
-            _requirement.q_complete_2, _requirement.q_complete_3,
-            _requirement.q_complete_4, _requirement.q_complete_5,
-            _requirement.q_complete_6, _requirement.q_complete_7,
-            _requirement.q_complete_8, _requirement.q_complete_9
+            attributes['q_complete_0'], attributes['q_complete_1'],
+            attributes['q_complete_2'], attributes['q_complete_3'],
+            attributes['q_complete_4'], attributes['q_complete_5'],
+            attributes['q_complete_6'], attributes['q_complete_7'],
+            attributes['q_complete_8'], attributes['q_complete_9']
         ]
         _model = self.tvwComplete.get_model()
         _row = _model.get_iter_first()
@@ -911,11 +776,11 @@ class RequirementAnalysis(RAMSTKWorkView):
             _row = _model.iter_next(_row)
 
         self._lst_consistent_a = [
-            _requirement.q_consistent_0, _requirement.q_consistent_1,
-            _requirement.q_consistent_2, _requirement.q_consistent_3,
-            _requirement.q_consistent_4, _requirement.q_consistent_5,
-            _requirement.q_consistent_6, _requirement.q_consistent_7,
-            _requirement.q_consistent_8
+            attributes['q_consistent_0'], attributes['q_consistent_1'],
+            attributes['q_consistent_2'], attributes['q_consistent_3'],
+            attributes['q_consistent_4'], attributes['q_consistent_5'],
+            attributes['q_consistent_6'], attributes['q_consistent_7'],
+            attributes['q_consistent_8']
         ]
         _model = self.tvwConsistent.get_model()
         _row = _model.get_iter_first()
@@ -924,9 +789,9 @@ class RequirementAnalysis(RAMSTKWorkView):
             _row = _model.iter_next(_row)
 
         self._lst_verifiable_a = [
-            _requirement.q_verifiable_0, _requirement.q_verifiable_1,
-            _requirement.q_verifiable_2, _requirement.q_verifiable_3,
-            _requirement.q_verifiable_4, _requirement.q_verifiable_5
+            attributes['q_verifiable_0'], attributes['q_verifiable_1'],
+            attributes['q_verifiable_2'], attributes['q_verifiable_3'],
+            attributes['q_verifiable_4'], attributes['q_verifiable_5']
         ]
         _model = self.tvwVerifiable.get_model()
         _row = _model.get_iter_first()
@@ -934,7 +799,38 @@ class RequirementAnalysis(RAMSTKWorkView):
             _model.set_value(_row, 2, _answer)
             _row = _model.iter_next(_row)
 
-        return _return
+        return None
+
+    def _do_request_update(self, __button):
+        """
+        Send request to save the currently selected Requirement.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.set_cursor(gtk.gdk.WATCH)
+        pub.sendMessage(
+            'request_update_requirement', node_id=self._requirement_id)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return None
+
+    def _do_request_update_all(self, __button):
+        """
+        Request to save all the Requirements.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`.
+        :return: None
+        :rtype: None
+        """
+        self.set_cursor(gtk.gdk.WATCH)
+        pub.sendMessage('request_update_all_requirements')
+        self.set_cursor(gtk.gdk.LEFT_PTR)
+
+        return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -1136,7 +1032,7 @@ class RequirementAnalysis(RAMSTKWorkView):
             _cell = gtk.CellRendererToggle()
             _cell.set_property('activatable', 1)
             _cell.set_property('cell-background', '#E5E5E5')
-            _cell.connect('toggled', self._do_edit_cell, None, None, _model,
+            _cell.connect('toggled', self._on_cell_edit, None, 2, _model,
                           _index)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, active=2)
@@ -1147,27 +1043,27 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         _model = self.tvwClear.get_model()
         _model.clear()
-        for _index, _clear in enumerate(_lst_clear):
+        for _index, _answer in enumerate(_lst_clear):
             _model.append(
-                [_index, "<span weight='bold'>" + _clear + "</span>", 0])
+                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
 
         _model = self.tvwComplete.get_model()
         _model.clear()
-        for _index, _complete in enumerate(_lst_complete):
+        for _index, _answer in enumerate(_lst_complete):
             _model.append(
-                [_index, "<span weight='bold'>" + _complete + "</span>", 0])
+                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
 
         _model = self.tvwConsistent.get_model()
         _model.clear()
-        for _index, _consistent in enumerate(_lst_consistent):
+        for _index, _answer in enumerate(_lst_consistent):
             _model.append(
-                [_index, "<span weight='bold'>" + _consistent + "</span>", 0])
+                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
 
         _model = self.tvwVerifiable.get_model()
         _model.clear()
-        for _index, _verifiable in enumerate(_lst_verifiable):
+        for _index, _answer in enumerate(_lst_verifiable):
             _model.append(
-                [_index, "<span weight='bold'>" + _verifiable + "</span>", 0])
+                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
 
         # Insert the tab.
         _label = gtk.Label()
@@ -1180,19 +1076,57 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         return _hpaned
 
-    def _on_select(self, module_id, **kwargs):
+    def _on_cell_edit(self, cell, path, new_text, position, model, index):
         """
-        Load the Requirement Analysis Work View gtk.Notebook() widgets.
+        Handle edits of the Requirement Analysis RAMSTKTreeview().
 
-        :param int module_id: the Requirement ID of the selected Requirement.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param cell: the gtk.CellRendererToggle() that was toggled.
+        :type cell: :class:`gtk.CellRendererToggle`
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+                         that was edited.
+        :param model: the gtk.TreeModel() for the gtk.Treeview() that is being
+                      edited.
+        :type model: :class:`gtk.TreeModel`
+        :param int index: the index of the Requirement analysis gtk.Treeview()
+                          questions being answered.  Indices are:
+
+                             * 0 = clarity
+                             * 1 = completeness
+                             * 2 = consistency
+                             * 3 = verifiability
+
+        :return: None
+        :rtype: None
         """
-        self._requirement_id = module_id
+        position = model[path][0]
 
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-            'requirement']
+        new_text = boolean_to_integer(not cell.get_active())
+        model[path][2] = new_text
 
-        return self._do_load_page(**kwargs)
+        try:
+            if index == 0:
+                self._lst_clear_a[position] = new_text
+                _key = 'q_clarity_{0:d}'.format(position)
+            elif index == 1:
+                self._lst_complete_a[position] = new_text
+                _key = 'q_complete_{0:d}'.format(position)
+            elif index == 2:
+                self._lst_consistent_a[position] = new_text
+                _key = 'q_consistent_{0:d}'.format(position)
+            elif index == 3:
+                self._lst_verifiable_a[position] = new_text
+                _key = 'q_verifiable_{0:d}'.format(position)
+        except IndexError:
+            _debug_msg = ("RAMSTK ERROR: No position {0:d} in Requirements "
+                          "Analysis question list for index {1:d}.").format(
+                              position, index)
+            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
+                _debug_msg)
+
+        pub.sendMessage(
+            'wvw_editing_requirement',
+            module_id=self._requirement_id,
+            key=_key,
+            value=new_text)
+
+        return None

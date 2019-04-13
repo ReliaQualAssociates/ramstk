@@ -534,7 +534,7 @@ class HazOps(RAMSTKWorkView):
             self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'hazops']
             self._dtc_data_controller.request_do_select_all(
-                revision_id=self._revision_id)
+                {'revision_id': self._revision_id})
 
         (_error_code, _user_msg, _debug_msg) = self._do_load_page()
 

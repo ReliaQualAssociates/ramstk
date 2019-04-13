@@ -1,5 +1,5 @@
 defusedxml==0.5.0
-lifelines>=0.13
+lifelines>=0.13,<0.15
 lxml==4.2.5
 openpyxl==2.5.7
 pandas==0.23.4

@@ -42,7 +42,7 @@ Product</defaulttitle>
             <usertitle>Satisfaction
 with Existing
 Product</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gfloat</datatype>
             <position>2</position>
             <widget>spin</widget>
             <editable>1</editable>
@@ -100,7 +100,7 @@ Rating</defaulttitle>
             <usertitle>Planned
 Satisfaction
 Rating</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gfloat</datatype>
             <position>7</position>
             <widget>spin</widget>
             <editable>1</editable>
@@ -110,7 +110,7 @@ Rating</usertitle>
         <column>
             <defaulttitle>Priority</defaulttitle>
             <usertitle>Priority</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gfloat</datatype>
             <position>8</position>
             <widget>spin</widget>
             <editable>1</editable>
@@ -120,7 +120,7 @@ Rating</usertitle>
         <column>
             <defaulttitle>Requirement ID</defaulttitle>
             <usertitle>Requirement ID</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>9</position>
             <widget>combo</widget>
             <editable>1</editable>

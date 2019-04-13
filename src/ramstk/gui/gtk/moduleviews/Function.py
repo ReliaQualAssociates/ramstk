@@ -47,7 +47,6 @@ class ModuleView(RAMSTKModuleView):
         # Initialize private scalar attributes.
         self._function_id = None
         self._parent_id = None
-        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -72,52 +71,10 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_tree, 'retrieved_functions')
-        pub.subscribe(self._do_load_tree, 'deleted_function')
-        pub.subscribe(self._do_load_tree, 'inserted_function')
-        pub.subscribe(self._do_refresh_tree, 'editing_function')
-
-    def _do_load_tree(self, tree):
-        """
-        Load the Function Module View RAMSTKTreeView().
-
-        This method is called in response to the 'retrieved_functions'.
-
-        :param tree: the treelib Tree containing the Functions to load.
-        :type tree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        if self.treeview.do_load_tree(tree):
-            _prompt = _(u"An error occured while loading the Functions "
-                        u"for Revision ID {0:d} into the Module "
-                        u"View.").format(self._revision_id)
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == self._response_ok:
-                _dialog.do_destroy()
-
-        return None
-
-    def _do_refresh_tree(self, module_id, key, value):  # pylint: disable=unused-argument
-        """
-        Refresh the data in the Function Module View RAMSTKTreeView().
-
-        :return: None
-        :rtype: None
-        """
-        _column = [
-            _index for _index, _key in enumerate(self.treeview.korder)
-            if _key == key
-        ][0]
-
-        _model, _row = self.treeview.get_selection().get_selected()
-        _model.set_value(_row, _column, value)
-
-        return None
+        pub.subscribe(self.do_load_tree, 'deleted_function')
+        pub.subscribe(self.do_load_tree, 'inserted_function')
+        pub.subscribe(self.do_load_tree, 'retrieved_functions')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_function')
 
     def _do_request_delete(self, __button):
         """
@@ -178,28 +135,6 @@ class ModuleView(RAMSTKModuleView):
 
         return None
 
-    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to insert a new chid Function.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        return self._do_request_insert(sibling=False)
-
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to insert a new sibling Function.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        return self._do_request_insert(sibling=True)
-
     def _do_request_update(self, __button):
         """
         Request to save the currently selected Function.
@@ -209,9 +144,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_function', node_id=self._function_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -224,9 +159,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(gtk.gdk.WATCH)
         pub.sendMessage('request_update_all_functions')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -248,7 +183,7 @@ class ModuleView(RAMSTKModuleView):
               u"text files are supported).")
         ]
         _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
+            self.do_request_insert_sibling, self.do_request_insert_child,
             self._do_request_delete, self._do_request_export
         ]
         _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
@@ -338,19 +273,22 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        _dic_keys = {
+            5: 'function_code',
+            15: 'name',
+            17: 'remarks',
+            18: 'safety_critical'
+        }
+
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
-            if self._lst_col_order[position] == 5:
-                _key = 'function_code'
-            elif self._lst_col_order[position] == 15:
-                _key = 'name'
-            elif self._lst_col_order[position] == 17:
-                _key = 'remarks'
-            elif self._lst_col_order[position] == 18:
-                _key = 'safety_critical'
+            try:
+                _key = _dic_keys[self._lst_col_order[position]]
+            except KeyError:
+                _key = None
 
             pub.sendMessage(
-                'editing_function',
+                'mvw_editing_function',
                 module_id=self._function_id,
                 key=_key,
                 value=new_text)
@@ -373,7 +311,7 @@ class ModuleView(RAMSTKModuleView):
 
         treeview.handler_block(self._lst_handler_id[0])
 
-        _model, _row = treeview.get_selection().get_selected()
+        (_model, _row) = treeview.get_selection().get_selected()
 
         _attributes['revision_id'] = _model.get_value(_row,
                                                       self._lst_col_order[0])
@@ -414,6 +352,8 @@ class ModuleView(RAMSTKModuleView):
                                                   self._lst_col_order[21])
 
         self._function_id = _attributes['function_id']
+        self._parent_id = _attributes['parent_id']
+        self._revision_id = _attributes['revision_id']
 
         treeview.handler_unblock(self._lst_handler_id[0])
 

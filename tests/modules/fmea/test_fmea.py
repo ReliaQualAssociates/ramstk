@@ -16,19 +16,21 @@ from ramstk.dao import RAMSTKMechanism
 from ramstk.dao import RAMSTKCause
 from ramstk.dao import RAMSTKControl
 from ramstk.dao import RAMSTKAction
-from ramstk.modules.fmea import (dtcFMEA, dtmFMEA, dtmAction, dtmControl, dtmMode,
-                              dtmMechanism, dtmCause)
+from ramstk.modules.fmea import (dtcFMEA, dtmFMEA, dtmAction, dtmControl,
+                                 dtmMode, dtmMechanism, dtmCause)
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
+ATTRIBUTES = {'function_id': 1, 'hardware_id': 1, 'functional': True}
+
 
 @pytest.mark.integration
 def test_create_data_model(test_dao):
     """ __init__() should return instance of FMEA data model. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
 
     assert isinstance(DUT, dtmFMEA)
     assert isinstance(DUT.dtm_mode, dtmMode)
@@ -41,47 +43,47 @@ def test_create_data_model(test_dao):
 @pytest.mark.integration
 def test_do_select_all_functional(test_dao):
     """ do_select_all() should return a treelib Tree() on success when selecting a Functional FMEA. """
-    DUT = dtmFMEA(test_dao)
-    _tree = DUT.do_select_all(parent_id=1, functional=True)
+    DUT = dtmFMEA(test_dao, test=True)
+    DUT.do_select_all(parent_id=1, functional=True)
 
-    assert isinstance(_tree, Tree)
+    assert isinstance(DUT.tree, Tree)
 
 
 @pytest.mark.integration
 def test_do_select_all_hardware(test_dao):
     """ do_select_all() should return a treelib Tree() on success when selecting a Hardware FMEA. """
-    DUT = dtmFMEA(test_dao)
-    _tree = DUT.do_select_all(parent_id=1, functional=False)
+    DUT = dtmFMEA(test_dao, test=True)
+    DUT.do_select_all(parent_id=1, functional=False)
 
-    assert isinstance(_tree, Tree)
+    assert isinstance(DUT.tree, Tree)
 
 
 @pytest.mark.integration
 def test_do_select_all_non_existent_hardware_id(test_dao):
     """ do_select_all() should return an empty Tree() when passed a Hardware ID that doesn't exist. """
-    DUT = dtmFMEA(test_dao)
-    _tree = DUT.do_select_all(parent_id=100, functional=False)
+    DUT = dtmFMEA(test_dao, test=True)
+    DUT.do_select_all(parent_id=100, functional=False)
 
-    assert isinstance(_tree, Tree)
-    assert _tree.get_node(0).tag == 'FMEA'
-    assert _tree.get_node(1) is None
+    assert isinstance(DUT.tree, Tree)
+    assert DUT.tree.get_node(0).tag == 'FMEA'
+    assert DUT.tree.get_node(1) is None
 
 
 @pytest.mark.integration
 def test_do_select_all_non_existent_function_id(test_dao):
     """ do_select_all() should return an empty Tree() when passed a Function ID that doesn't exist. """
-    DUT = dtmFMEA(test_dao)
-    _tree = DUT.do_select_all(parent_id=100, functional=True)
+    DUT = dtmFMEA(test_dao, test=True)
+    DUT.do_select_all(parent_id=100, functional=True)
 
-    assert isinstance(_tree, Tree)
-    assert _tree.get_node(0).tag == 'FMEA'
-    assert _tree.get_node(1) is None
+    assert isinstance(DUT.tree, Tree)
+    assert DUT.tree.get_node(0).tag == 'FMEA'
+    assert DUT.tree.get_node(1) is None
 
 
 @pytest.mark.integration
 def test_do_select_mode(test_dao):
     """ do_select() should return an instance of RAMSTKMode on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _entity = DUT.do_select('0.1')
@@ -92,7 +94,7 @@ def test_do_select_mode(test_dao):
 @pytest.mark.integration
 def test_do_select_mechanism(test_dao):
     """ do_select() should return an instance of RAMSTKMechanism on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _entity = DUT.do_select('0.4.1')
@@ -104,7 +106,7 @@ def test_do_select_mechanism(test_dao):
 @pytest.mark.integration
 def test_do_select_cause(test_dao):
     """ do_select() should return an instance of RAMSTKCause on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _entity = DUT.do_select('0.4.1.4')
@@ -116,7 +118,7 @@ def test_do_select_cause(test_dao):
 @pytest.mark.integration
 def test_do_select_control_functional(test_dao):
     """ do_select() should return an instance of RAMSTKControl when selecting from a functional FMEA on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _entity = DUT.do_select('0.1.1.1c')
@@ -129,7 +131,7 @@ def test_do_select_control_functional(test_dao):
 @pytest.mark.integration
 def test_do_select_control_hardware(test_dao):
     """ do_select() should return an instance of RAMSTKControl when selecting from a hardware FMEA on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
     _entity = DUT.do_select('0.4.1.4.4c')
 
@@ -140,7 +142,7 @@ def test_do_select_control_hardware(test_dao):
 @pytest.mark.integration
 def test_do_select_action_functional(test_dao):
     """ do_select() should return an instance of RAMSTKAction when selecting from a functional FMEA on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _entity = DUT.do_select('0.1.1.1a')
@@ -153,7 +155,7 @@ def test_do_select_action_functional(test_dao):
 @pytest.mark.integration
 def test_do_select_action_hardware(test_dao):
     """ do_select() should return an instance of RAMSTKAction when selecting from a hardware FMEA on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _entity = DUT.do_select('0.4.1.4.4a')
@@ -166,14 +168,15 @@ def test_do_select_action_hardware(test_dao):
 @pytest.mark.integration
 def test_do_insert_mode_functional(test_dao):
     """ do_insert() should return a zero error code on success when adding a new Mode to a Functional FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='mode')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     _node_id = '0.' + str(DUT.dtm_mode.last_id)
 
     _mode = DUT.do_select(_node_id)
@@ -190,14 +193,15 @@ def test_do_insert_mode_functional(test_dao):
 @pytest.mark.integration
 def test_do_insert_mode_hardware(test_dao):
     """ do_insert() should return a zero error code on success when adding a new Mode to a Hardware FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='mode')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     _node_id = '0.' + str(DUT.dtm_mode.last_id)
 
     _mode = DUT.do_select(_node_id)
@@ -214,30 +218,32 @@ def test_do_insert_mode_hardware(test_dao):
 @pytest.mark.integration
 def test_do_insert_mode_hardware_non_existant_level(test_dao):
     """ do_insert() should return a non-zero error code when trying to add a non-existant level. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='juice')
 
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to add an item to the FMEA with an "
-                    "undefined indenture level.  Level juice was requested.  "
-                    "Must be one of mode, mechanism, cause, control, or "
-                    "action.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to add an item to the FMEA with an "
+        "undefined indenture level.  Level juice was requested.  "
+        "Must be one of mode, mechanism, cause, control, or "
+        "action.")
 
 
 @pytest.mark.integration
 def test_do_insert_mechanism(test_dao):
     """ do_insert() should return a zero error code on success when adding a new Mechanism to a Hardware FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
         entity_id=4, parent_id='0.4', level='mechanism')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     _node_id = '0.4.' + str(DUT.dtm_mechanism.last_id)
 
     _mechanism = DUT.do_select(_node_id)
@@ -254,15 +260,16 @@ def test_do_insert_mechanism(test_dao):
 @pytest.mark.integration
 def test_do_insert_cause(test_dao):
     """ do_insert() should return a zero error code on success when adding a new Cause to a Hardware FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
         entity_id=1, parent_id='0.4.1', level='cause')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
 
     _node_id = '0.4.1.' + str(DUT.dtm_cause.last_id)
 
@@ -280,15 +287,16 @@ def test_do_insert_cause(test_dao):
 @pytest.mark.integration
 def test_do_insert_control_functional(test_dao):
     """ do_insert() should return a zero error code on success when adding a new Control to a Functional FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _error_code, _msg = DUT.do_insert(
         entity_id=1, parent_id='0.1', level='control')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     _node_id = '0.1.' + str(DUT.dtm_control.last_id) + 'c'
 
     _control = DUT.do_select(_node_id)
@@ -304,15 +312,16 @@ def test_do_insert_control_functional(test_dao):
 @pytest.mark.integration
 def test_do_insert_control_hardware(test_dao):
     """ do_insert() should return a zero error code on success when adding a new Control to a Hardware FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
         entity_id=4, parent_id='0.4.1.4', level='control')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     _node_id = '0.4.1.4.' + str(DUT.dtm_control.last_id) + 'c'
 
     _control = DUT.do_select(_node_id)
@@ -328,15 +337,16 @@ def test_do_insert_control_hardware(test_dao):
 @pytest.mark.integration
 def test_do_insert_action_functional(test_dao):
     """ do_insert() should return a zero error code on success when adding a new Action to a Functional FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _error_code, _msg = DUT.do_insert(
         entity_id=1, parent_id='0.1', level='action')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     _node_id = '0.1.' + str(DUT.dtm_action.last_id) + 'a'
 
     _action = DUT.do_select(_node_id)
@@ -352,15 +362,16 @@ def test_do_insert_action_functional(test_dao):
 @pytest.mark.integration
 def test_do_insert_action_hardware(test_dao):
     """ do_insert() should return a zero error code on success when adding a new Action to a Hardware FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
         entity_id=4, parent_id='0.4.1.4', level='action')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
     _node_id = '0.4.1.4.' + str(DUT.dtm_action.last_id) + 'a'
 
     _action = DUT.do_select(_node_id)
@@ -376,37 +387,39 @@ def test_do_insert_action_hardware(test_dao):
 @pytest.mark.integration
 def test_do_insert_non_existent_type(test_dao):
     """ do_insert() should return a 2005 error code when attempting to add something other than a Mode, Mechanism, Cause, Control, or Action. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
         entity_id=100, parent_id=0, level='scadamoosh')
 
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to add an item to the FMEA with an "
-                    "undefined indenture level.  Level scadamoosh was "
-                    "requested.  Must be one of mode, mechanism, cause, "
-                    "control, or action.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to add an item to the FMEA with an "
+        "undefined indenture level.  Level scadamoosh was "
+        "requested.  Must be one of mode, mechanism, cause, "
+        "control, or action.")
 
 
 @pytest.mark.integration
 def test_do_insert_no_parent_in_tree(test_dao):
     """ do_insert() should return a 2005 error code when attempting to add something to a non-existant parent Node. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
         entity_id=1, parent_id='mode_1', level='action')
 
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to add an item under non-existent "
-                    "Node ID: mode_1.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to add an item under non-existent "
+        "Node ID: mode_1.")
 
 
 @pytest.mark.integration
 def test_do_delete_control_functional(test_dao):
     """ do_delete() should return a zero error code on success when removing a Control. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
     DUT.do_insert(entity_id=1, parent_id='0.1.1', level='control')
 
@@ -422,7 +435,7 @@ def test_do_delete_control_functional(test_dao):
 @pytest.mark.integration
 def test_do_delete_non_existent_node_id(test_dao):
     """ do_delete() should return a 2105 error code when attempting to remove a non-existant item from the FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _error_code, _msg = DUT.do_delete('scadamoosh_1')
@@ -435,7 +448,7 @@ def test_do_delete_non_existent_node_id(test_dao):
 @pytest.mark.integration
 def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _error_code, _msg = DUT.do_update('0.1')
@@ -447,7 +460,7 @@ def test_do_update(test_dao):
 @pytest.mark.integration
 def test_do_update_non_existent_node_id(test_dao):
     """ do_update() should return a 2106 error code when attempting to update a non-existent Node ID from a functional FMEA. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _error_code, _msg = DUT.do_update('mode_1000')
@@ -460,7 +473,7 @@ def test_do_update_non_existent_node_id(test_dao):
 @pytest.mark.integration
 def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
     _error_code, _msg = DUT.do_update_all()
@@ -472,7 +485,7 @@ def test_do_update_all(test_dao):
 @pytest.mark.integration
 def test_do_calculate_criticality(test_dao):
     """ do_calculate() returns a zero error code on success when calculate criticality. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
     _mode = DUT.do_select('0.4')
 
@@ -490,7 +503,7 @@ def test_do_calculate_criticality(test_dao):
 @pytest.mark.integration
 def test_do_calculate_mechanism_rpn(test_dao):
     """ do_calculate() returns a zero error code on success when calculate RPN for a failure mechanism. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     for _node in DUT.tree.all_nodes():
@@ -521,7 +534,7 @@ def test_do_calculate_mechanism_rpn(test_dao):
 @pytest.mark.integration
 def test_do_calculate_cause_rpn(test_dao):
     """ do_calculate() returns a zero error code on success when calculate the RPN for a cause. """
-    DUT = dtmFMEA(test_dao)
+    DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
     for _node in DUT.tree.all_nodes():
@@ -562,24 +575,28 @@ def test_create_data_controller(test_dao, test_configuration):
 def test_request_do_select_all_hardware(test_dao, test_configuration):
     """ request_do_select_all() should return a treelib Tree() with the hardware FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
+    DUT.request_do_select_all(ATTRIBUTES)
 
-    assert isinstance(DUT.request_do_select_all(parent_id=1, functional=False), Tree)
+    assert isinstance(DUT._dtm_data_model.tree, Tree)
 
 
 @pytest.mark.integration
 def test_request_do_select_all_functional(test_dao, test_configuration):
     """ request_do_select_all() should return a treelib Tree() with the functional FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    ATTRIBUTES['parent_id'] = ATTRIBUTES['function_id']
+    DUT.request_do_select_all(ATTRIBUTES)
 
-    assert isinstance(DUT.request_do_select_all(parent_id=1, functional=True), Tree)
+    assert isinstance(DUT._dtm_data_model.tree, Tree)
 
 
 @pytest.mark.integration
 def test_request_do_insert_mode_functional(test_dao, test_configuration):
     """ request_do_insert() should return False on success when adding a mode to a functional FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-
-    DUT.request_do_select_all(parent_id=1, functional=True)
+    ATTRIBUTES['parent_id'] = ATTRIBUTES['function_id']
+    DUT.request_do_select_all(ATTRIBUTES)
     assert not DUT.request_do_insert(entity_id=1, parent_id=0, level='mode')
 
 
@@ -587,7 +604,8 @@ def test_request_do_insert_mode_functional(test_dao, test_configuration):
 def test_request_do_insert_mode_hardware(test_dao, test_configuration):
     """ request_do_insert() should return False on success when addin a mode to a hardware FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(parent_id=1, functional=False)
+    ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(entity_id=1, parent_id=0, level='mode')
 
@@ -596,7 +614,9 @@ def test_request_do_insert_mode_hardware(test_dao, test_configuration):
 def test_request_do_insert_mechanism(test_dao, test_configuration):
     """ request_do_insert() should return a False on success when adding a new Mechanism to a Hardware FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(parent_id=1, functional=False)
+    ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
+    ATTRIBUTES['functional'] = False
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(
         entity_id=4, parent_id='0.4', level='mechanism')
@@ -606,7 +626,9 @@ def test_request_do_insert_mechanism(test_dao, test_configuration):
 def test_request_do_delete_control_functional(test_dao, test_configuration):
     """ request_do_delete() should return False on success when removing a Control from a functional FMEA. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(parent_id=1, functional=True)
+    ATTRIBUTES['parent_id'] = ATTRIBUTES['function_id']
+    ATTRIBUTES['functional'] = True
+    DUT.request_do_select_all(ATTRIBUTES)
     _node_id = '0.1.1.' + str(DUT._dtm_data_model.dtm_control.last_id) + 'c'
 
     assert not DUT.request_do_delete(_node_id)
@@ -616,6 +638,8 @@ def test_request_do_delete_control_functional(test_dao, test_configuration):
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(parent_id=1, functional=True)
+    ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
+    ATTRIBUTES['functional'] = False
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_update_all()

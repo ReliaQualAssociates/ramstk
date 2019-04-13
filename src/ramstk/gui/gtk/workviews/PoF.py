@@ -762,10 +762,11 @@ class PoF(RAMSTKWorkView):
         if self._dtc_data_controller is None:
             self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['pof']
 
-        _pof = self._dtc_data_controller.request_do_select_all(
-            parent_id=self._hardware_id, functional=False)
+        self._dtc_data_controller.request_do_select_all(
+            {'hardware_id': self._hardware_id, 'functional': False})
+
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
-            tree=_pof, row=None)
+            tree=self._dtc_data_controller.request_tree(), row=None)
 
         RAMSTKWorkView.on_select(
             self,
