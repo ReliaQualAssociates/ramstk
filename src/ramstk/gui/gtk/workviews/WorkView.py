@@ -107,7 +107,6 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         of General Data page widgets.  This, then, ensures WorkView specific
         widgets don't overlap the Remarks widget.
         """
-
         self._lst_assess_labels = [
             [
                 _(u"Active Failure Intensity [\u039B(t)]:"),
@@ -304,14 +303,16 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
                       u"per operating hour for "
                       u"the selected {0:s}.").format(self._module))
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_select_revision, 'selectedRevision')
 
     def _make_assessment_results_page(self):
         """
         Create the gtk.Notebook() page for displaying assessment results.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :return: (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
+                  _y_pos_r)
+        :rtype: tuple
         """
         _hbox = gtk.HBox()
 
@@ -388,7 +389,7 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         """
         Create the gtk.Notebook() page for displaying general data.
 
-        :return: (_frame, _fixed); the :class:`gtk.Frame` and
+        :return: (_frame, _fixed, _x_pos, _y_pos); the :class:`gtk.Frame` and
                  :class:`gtk.Fixed` used to make the General Data page.
         :rtype: tuple
         """

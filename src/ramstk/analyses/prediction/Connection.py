@@ -297,7 +297,7 @@ def calculate_217f_part_stress(**attributes):
 
     if attributes['subcategory_id'] in [4, 5]:
         attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
-            attributes['type_id']]
+            attributes['type_id'] - 1]
         attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][attributes[
             'quality_id']]
     elif attributes['subcategory_id'] == 3:

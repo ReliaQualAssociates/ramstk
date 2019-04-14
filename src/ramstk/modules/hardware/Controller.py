@@ -398,8 +398,8 @@ class HardwareBoMDataController(RAMSTKDataController):
         """
         Request to calculate all hardware items.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: list of cumulative results.
+        :rtype: list
         """
         return self._dtm_data_model.do_calculate_all(
             node_id=node_id, hr_multiplier=hr_multiplier, **kwargs)
@@ -411,6 +411,8 @@ class HardwareBoMDataController(RAMSTKDataController):
         :param int revision_id: the ID of the Revision the desired Matrix is
                                 associated with.
         :param str matrix_type: the type of the Matrix to select all rows and
+        :return: None
+        :rtype: None
         """
         if matrix_type == 'hrdwr_rqrmnt':
             self._dmx_hw_rqrmnt_matrix.do_create(
@@ -425,7 +427,7 @@ class HardwareBoMDataController(RAMSTKDataController):
                 rkey='hardware_id',
                 ckey='validation_id')
 
-        return
+        return None
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """

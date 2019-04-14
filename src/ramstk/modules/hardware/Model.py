@@ -827,7 +827,7 @@ class HardwareDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RAMSTKHardware table records in the RAMSTK Program database.
 
@@ -1501,7 +1501,7 @@ class NSWCDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self):
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
         Update all RAMSTKNSWC table records in the RAMSTK Program database.
 

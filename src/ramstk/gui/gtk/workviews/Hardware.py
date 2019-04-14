@@ -656,8 +656,9 @@ class GeneralData(RAMSTKWorkView):
         """
         Make the Hardware class gtk.Notebook() general data page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: _hbox; the gtk.HBox() containing the Hardware general data
+                 widgets.
+        :rtype: :class:`gtk.HBox`
         """
         # Load the gtk.ComboBox() widgets.
         self.cmbCostType.do_load_combo(RAMSTK_COST_TYPES)
@@ -783,7 +784,16 @@ class GeneralData(RAMSTKWorkView):
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
         :param int index: the position in the Requirement class gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Entry().
+                          gtk.Entry().  Indices are:
+
+            +---------+------------------+---------+------------------+
+            |  Index  | Widget           |  Index  | Widget           |
+            +=========+==================+=========+==================+
+            |    2    | cmbCategory      |    4    | cmbManufacturer  |
+            +---------+------------------+---------+------------------+
+            |    3    | cmbCostType      |    5    | cmbSubcategory   |
+            +---------+------------------+---------+------------------+
+
         :return: None
         :rtype: None
         """
@@ -869,7 +879,8 @@ class GeneralData(RAMSTKWorkView):
 
         This method sends the 'wvwEditedHardware' message.
 
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
+                      method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
@@ -1142,12 +1153,12 @@ class AssessmentInputs(RAMSTKWorkView):
         #                     5: wvwInductorAI(),
         #                    6: wvwRelayAI(),
         #                   7: wvwSwitchAI(),
-        #                  8: wvwConnectionAI(),
         #                 9: wvwMeterAI(),
         #               10: wvwMiscellaneousAI(),
         #              }
         self._dic_assessment_input = {
-            4: wvwCapacitorAI(),
+            4: wvwCapacitorAI(fmt=self.fmt),
+            8: wvwConnectionAI(fmt=self.fmt),
         }
 
         # Initialize private list attributes.
@@ -1563,18 +1574,19 @@ class AssessmentInputs(RAMSTKWorkView):
 
         return None
 
-    def _do_set_sensitive(self, type_id):
+    def _do_set_sensitive(self, **kwargs):
         """
         Set certain widgets sensitive or insensitive.
 
         This method will set the sensitivity of various widgets depending on
         the hazard rate assessment type selected.
 
-        :param int type_id: the type of hazard rate that was selected.
         :return: None
         :rtype: None
         """
-        if type_id == 1:  # Assessed hazard rate using handbook models.
+        _type_id = kwargs['type_id']
+
+        if _type_id == 1:  # Assessed hazard rate using handbook models.
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(True)
             self.txtFailLocation.set_sensitive(False)
@@ -1584,7 +1596,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(False)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif type_id == 2:  # User specified hazard rate.
+        elif _type_id == 2:  # User specified hazard rate.
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(False)
@@ -1594,7 +1606,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(True)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif type_id == 3:  # User specified MTBF.
+        elif _type_id == 3:  # User specified MTBF.
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(False)
@@ -1604,7 +1616,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(False)
             self.txtSpecifiedMTBF.set_sensitive(True)
             self.txtSpecifiedMTBFVar.set_sensitive(True)
-        elif type_id == 4:  # User specified failure distribution.
+        elif _type_id == 4:  # User specified failure distribution.
             self.cmbFailureDist.set_sensitive(True)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(True)
@@ -2063,12 +2075,12 @@ class AssessmentResults(RAMSTKWorkView):
         #                     5: wvwInductorAI(),
         #                    6: wvwRelayAI(),
         #                   7: wvwSwitchAI(),
-        #                  8: wvwConnectionAI(),
         #                 9: wvwMeterAI(),
         #               10: wvwMiscellaneousAI(),
         #              }
         self._dic_assessment_results = {
-            4: wvwCapacitorAR(),
+            4: wvwCapacitorAR(fmt=self.fmt),
+            8: wvwConnectionAR(fmt=self.fmt),
         }
 
         # Initialize private list attributes.
@@ -2334,7 +2346,7 @@ class AssessmentResults(RAMSTKWorkView):
         except KeyError:
             _component_ar = None
 
-        _component_sr = Component.StressResults()
+        _component_sr = Component.StressResults(fmt=self.fmt)
 
         self.txtTotalCost.set_text(
             str(locale.currency(attributes['total_cost'])))
@@ -2428,8 +2440,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Send the PyPubSub message to let the component-specific widgets know
         # they can load.
-        pub.sendMessage(
-            'loaded_hardware_results', fmt=self.fmt, attributes=attributes)
+        pub.sendMessage('loaded_hardware_results', attributes=attributes)
 
         return None
 

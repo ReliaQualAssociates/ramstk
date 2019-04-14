@@ -65,7 +65,7 @@ class AssessmentInputs(gtk.Fixed):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
+        self.fmt = kwargs['fmt']
 
         self.cmbQuality = ramstk.RAMSTKComboBox(
             index=0,
@@ -173,7 +173,7 @@ class StressInputs(gtk.Fixed):
         _(u"Operating DC Voltage (V):")
     ]
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an instance of the Hardware stress input view.
 
@@ -448,11 +448,6 @@ class AssessmentResults(gtk.Fixed):
     :ivar txtPiE: displays the environment factor for the hardware item.
     """
 
-    # Define private list attributes.
-    _lst_labels = [
-        u"\u03BB<sub>b</sub>:", u"\u03C0<sub>Q</sub>:", u"\u03C0<sub>E</sub>:"
-    ]
-
     def __init__(self, **kwargs):
         """
         Initialize an instance of the Hardware assessment result view.
@@ -467,6 +462,10 @@ class AssessmentResults(gtk.Fixed):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_labels = [
+            u"\u03BB<sub>b</sub>:", u"\u03C0<sub>Q</sub>:",
+            u"\u03C0<sub>E</sub>:"
+        ]
 
         # Initialize private scalar attributes.
         self._hardware_id = None
@@ -483,7 +482,7 @@ class AssessmentResults(gtk.Fixed):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
+        self.fmt = kwargs['fmt']
 
         self.txtLambdaB = ramstk.RAMSTKEntry(
             width=125,
@@ -503,7 +502,7 @@ class AssessmentResults(gtk.Fixed):
 
         # Subscribe to PyPubSub messages.
 
-    def do_load_page(self, fmt, attributes):
+    def do_load_page(self, attributes):
         """
         Load the Hardware assessment results page.
 
@@ -511,8 +510,6 @@ class AssessmentResults(gtk.Fixed):
         :return: None
         :rtype: None
         """
-        self.fmt = fmt
-
         self.txtLambdaB.set_text(str(self.fmt.format(attributes['lambda_b'])))
         self.txtPiQ.set_text(str(self.fmt.format(attributes['piQ'])))
         self.txtPiE.set_text(str(self.fmt.format(attributes['piE'])))
@@ -523,15 +520,13 @@ class AssessmentResults(gtk.Fixed):
         """
         Set widget sensitivity as needed for the selected hardware item.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         self.txtPiQ.set_sensitive(True)
         self.txtPiE.set_sensitive(False)
 
-        return _return
+        return None
 
     def make_page(self):
         """
@@ -629,7 +624,7 @@ class StressResults(gtk.HPaned):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
+        self.fmt = kwargs['fmt']
 
         self.pltDerate = ramstk.RAMSTKPlot()
 
@@ -730,7 +725,7 @@ class StressResults(gtk.HPaned):
 
         return None
 
-    def _do_load_page(self, fmt, attributes):
+    def _do_load_page(self, attributes):
         """
         Load the Hardware assessment results page.
 
@@ -740,7 +735,6 @@ class StressResults(gtk.HPaned):
         """
         self._hardware_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']
-        self.fmt = fmt
 
         self.txtCurrentRatio.set_text(
             str(self.fmt.format(attributes['current_ratio'])))

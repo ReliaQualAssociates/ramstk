@@ -332,8 +332,8 @@ class ModuleView(RAMSTKModuleView):
                                     * 9 =
 
         :type event: :class:`gtk.gdk.Event`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         treeview.handler_block(self._lst_handler_id[1])
 
@@ -371,7 +371,7 @@ class ModuleView(RAMSTKModuleView):
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
-        return False
+        return None
 
     def _on_cell_edit(self, __cell, path, new_text, position, model):
         """

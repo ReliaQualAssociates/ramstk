@@ -324,6 +324,8 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         """
         Load the Capacitor Assessment Inputs page.
 
+        :param dict attributes: the attributes dictionary for the selected
+                                Capacitor.
         :return: None
         :rtype: None
         """
@@ -364,11 +366,11 @@ class CapacitorAssessmentInputs(AssessmentInputs):
                 str(self.fmt.format(attributes['resistance'])))
             self.txtESR.handler_unblock(self._lst_handler_id[6])
 
-        self._do_set_sensitive(attributes)
+        self._do_set_sensitive()
 
         return None
 
-    def _do_set_sensitive(self, attributes):
+    def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected capacitor.
 
@@ -377,7 +379,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         """
         self.cmbQuality.set_sensitive(True)
 
-        if attributes['hazard_rate_method_id'] == 1:
+        if self._hazard_rate_method_id == 1:
             if self._subcategory_id == 1:
                 self.cmbSpecification.set_sensitive(True)
             else:
@@ -413,8 +415,8 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         """
         Make the Capacitor class gtk.Notebook() assessment input page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         # Build the container for capacitors.
         _x_pos, _y_pos = AssessmentInputs.make_page(self)
@@ -654,16 +656,18 @@ class CapacitorAssessmentResults(AssessmentResults):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
 
-    def _do_load_page(self, fmt, attributes):
+    def _do_load_page(self, attributes):
         """
         Load the capacitor assessment results page.
 
+        :param str fmt: the format code for displaying floats.
+        :param dict attributes: the attributes dictionary for the selected
+                                Connection.
         :return: None
         :rtype: None
         """
-        AssessmentResults.do_load_page(self, fmt, attributes)
+        AssessmentResults.do_load_page(self, attributes)
 
-        self.fmt = fmt
         self._hardware_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
@@ -686,20 +690,20 @@ class CapacitorAssessmentResults(AssessmentResults):
         self.txtPiCF.set_text(str(self.fmt.format(attributes['piCF'])))
         self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
 
-        self._do_set_sensitive(attributes)
+        self._do_set_sensitive()
 
         return None
 
-    def _do_set_sensitive(self, attributes):
+    def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected capacitor.
 
         :return: None
         :rtype: None
         """
-        AssessmentResults.do_set_sensitive(self)
+        AssessmentResults.do_set_sensitive(self, **kwargs)
 
-        if attributes['hazard_rate_method_id'] == 1:
+        if self._hazard_rate_method_id == 1:
             self.txtPiCV.set_sensitive(False)
             self.txtPiCF.set_sensitive(False)
             self.txtPiC.set_sensitive(False)
@@ -716,11 +720,9 @@ class CapacitorAssessmentResults(AssessmentResults):
         """
         Make the capacitor gtk.Notebook() assessment results page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        #self._do_set_sensitive()
-
         # Build the container for capacitors.
         _x_pos, _y_pos = AssessmentResults.make_page(self)
 
@@ -729,18 +731,3 @@ class CapacitorAssessmentResults(AssessmentResults):
         self.put(self.txtPiC, _x_pos, _y_pos[5])
 
         return None
-
-    def on_select(self, module_id, **kwargs):
-        """
-        Load the capacitor assessment input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              capacitor.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._hardware_id = module_id
-
-        self._do_set_sensitive(**kwargs)
-
-        return self._do_load_page(**kwargs)
