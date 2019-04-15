@@ -162,6 +162,7 @@ class InductorAssessmentInputs(AssessmentInputs):
         """
         Load the Inductor RKTComboBox()s.
 
+        :param int subcategory_id: the newly selected inductor subcategory ID.
         :return: None
         :rtype: None
         """

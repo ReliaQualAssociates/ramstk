@@ -284,9 +284,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         """
         Load the specification RKTComboBox().
 
-        This method is used to load the specification RAMSTKComboBox() whenever
-        the capacitor subcategory is changed.
-
+        :param int subcategory_id: the newly selected capacitor subcategory ID.
         :return: None
         :rtype: None
         """

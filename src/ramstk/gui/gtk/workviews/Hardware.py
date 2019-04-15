@@ -1147,7 +1147,7 @@ class AssessmentInputs(RAMSTKWorkView):
         RAMSTKWorkView.__init__(self, controller, module='Hardware')
 
         # Initialize private dictionary attributes.
-        #self._dic_assessment_input = {1: wvwIntegratedCircuitAI(),
+        #self._dic_assessment_input = {,
         #                        2: wvwSemiconductorAI(),
         #                       3: wvwResistorAI(),
         #                    6: wvwRelayAI(),
@@ -1156,6 +1156,7 @@ class AssessmentInputs(RAMSTKWorkView):
         #               10: wvwMiscellaneousAI(),
         #              }
         self._dic_assessment_input = {
+            1: wvwIntegratedCircuitAI(fmt=self.fmt),
             4: wvwCapacitorAI(fmt=self.fmt),
             5: wvwInductorAI(fmt=self.fmt),
             8: wvwConnectionAI(fmt=self.fmt),
@@ -1395,7 +1396,7 @@ class AssessmentInputs(RAMSTKWorkView):
         except KeyError:
             _component_ai = None
 
-        _component_si = Component.StressInputs()
+        _component_si = Component.StressInputs(fmt=self.fmt)
 
         self.txtDutyCycle.handler_block(self._lst_handler_id[16])
         self.txtDutyCycle.set_text(self.fmt.format(attributes['duty_cycle']))
@@ -1416,7 +1417,6 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Load the component-specific widgets.
         if _component_ai is not None:
-            _component_ai.fmt = self.fmt
             _child.add(_component_ai)
 
         _child = self.scwOperatingStress.get_child().get_children()[0]
@@ -1426,7 +1426,6 @@ class AssessmentInputs(RAMSTKWorkView):
             pass
 
         if _component_si is not None:
-            _component_si.fmt = self.fmt
             _component_si.do_load_page(attributes)
             _child.add(_component_si)
 
@@ -2068,7 +2067,7 @@ class AssessmentResults(RAMSTKWorkView):
         RAMSTKWorkView.__init__(self, controller, module='Hardware')
 
         # Initialize private dictionary attributes.
-        #self._dic_assessment_results = {1: wvwIntegratedCircuitAI(),
+        #self._dic_assessment_results = {
         #                        2: wvwSemiconductorAI(),
         #                       3: wvwResistorAI(),
         #                    6: wvwRelayAI(),
@@ -2077,6 +2076,7 @@ class AssessmentResults(RAMSTKWorkView):
         #               10: wvwMiscellaneousAI(),
         #              }
         self._dic_assessment_results = {
+            1: wvwIntegratedCircuitAR(fmt=self.fmt),
             4: wvwCapacitorAR(fmt=self.fmt),
             5: wvwInductorAR(fmt=self.fmt),
             8: wvwConnectionAR(fmt=self.fmt),

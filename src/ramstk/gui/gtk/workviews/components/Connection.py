@@ -265,6 +265,8 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         """
         Load the connection RKTComboBox()s.
 
+        :param int subcategory_id: the newly selected connection subcategory
+                                   ID.
         :return: None
         :rtype: None
         """

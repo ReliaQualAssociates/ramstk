@@ -199,7 +199,7 @@ class StressInputs(gtk.Fixed):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
+        self.fmt = kwargs['fmt']
 
         self.txtTemperatureRatedMin = ramstk.RAMSTKEntry(
             width=125,
