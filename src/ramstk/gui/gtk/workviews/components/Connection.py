@@ -265,8 +265,6 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         """
         Load the connection RKTComboBox()s.
 
-        :param int subcategery_id: the ID of the Connection sub-subcategory
-                                   that is selected.
         :return: None
         :rtype: None
         """
@@ -312,9 +310,6 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
         self._do_load_comboboxes(self._subcategory_id)
 
-        # Load the subcategory RAMSTKComboBox.  We need to block the quality and
-        # connector type RAMSTKComboBoxes otherwise loading them causes the
-        # respective attributes to be set to -1.
         self.cmbQuality.handler_block(self._lst_handler_id[0])
         self.cmbQuality.set_active(attributes['quality_id'])
         self.cmbQuality.handler_unblock(self._lst_handler_id[0])
@@ -446,9 +441,6 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         self.put(self.txtNWave, _x_pos, _y_pos[8])
         self.put(self.txtNHand, _x_pos, _y_pos[9])
         self.put(self.txtNPlanes, _x_pos, _y_pos[10])
-
-        # Load the gtk.ComboBox() widgets.
-        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
 
         return None
 
@@ -609,25 +601,23 @@ class ConnectionAssessmentResults(AssessmentResults):
     :ivar txtPiC: displays the construction factor for the connection.
     """
 
-    # Define private dict attributes.
-    _dic_part_stress = {
-        1:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
-        2:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
-        3:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
-        4:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>[N<sub>1</sub>\u03C0<sub>C</sub> + N<sub>2</sub>(\u03C0<sub>C</sub> + 13)]\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        5:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-    }
-
     def __init__(self, **kwargs):
         """Initialize an instance of the Connection assessment result view."""
         AssessmentResults.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
+        self._dic_part_stress = {
+            1:
+            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
+            2:
+            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
+            3:
+            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
+            4:
+            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>[N<sub>1</sub>\u03C0<sub>C</sub> + N<sub>2</sub>(\u03C0<sub>C</sub> + 13)]\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            5:
+            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        }
 
         # Initialize private list attributes.
         self._lst_labels.append(u"\u03C0<sub>K</sub>:")
@@ -681,20 +671,6 @@ class ConnectionAssessmentResults(AssessmentResults):
         self._hardware_id = attributes['hardware_id']
         self._subcategory_id = attributes['subcategory_id']
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        # Display the correct calculation model.
-        if self._hazard_rate_method_id == 1:
-            self._lblModel.set_markup(
-                u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
-            )
-        elif self._hazard_rate_method_id == 2:
-            try:
-                self._lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self._lblModel.set_markup("No Model")
-        else:
-            self._lblModel.set_markup("No Model")
 
         self.txtPiK.set_text(str(self.fmt.format(attributes['piK'])))
         self.txtPiP.set_text(str(self.fmt.format(attributes['piP'])))

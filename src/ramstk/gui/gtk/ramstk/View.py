@@ -245,6 +245,7 @@ class RAMSTKBaseView(object):
         :rtype: None
         """
         _model, _row = self.treeview.get_selection().get_selected()
+
         try:
             _column = [
                 _index for _index, _key in enumerate(self.treeview.korder)

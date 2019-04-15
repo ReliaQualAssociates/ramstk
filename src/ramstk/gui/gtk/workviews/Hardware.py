@@ -1150,7 +1150,6 @@ class AssessmentInputs(RAMSTKWorkView):
         #self._dic_assessment_input = {1: wvwIntegratedCircuitAI(),
         #                        2: wvwSemiconductorAI(),
         #                       3: wvwResistorAI(),
-        #                     5: wvwInductorAI(),
         #                    6: wvwRelayAI(),
         #                   7: wvwSwitchAI(),
         #                 9: wvwMeterAI(),
@@ -1158,6 +1157,7 @@ class AssessmentInputs(RAMSTKWorkView):
         #              }
         self._dic_assessment_input = {
             4: wvwCapacitorAI(fmt=self.fmt),
+            5: wvwInductorAI(fmt=self.fmt),
             8: wvwConnectionAI(fmt=self.fmt),
         }
 
@@ -1287,7 +1287,6 @@ class AssessmentInputs(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'selected_hardware')
-        pub.subscribe(self._do_set_sensitive, 'changed_hazard_rate_type')
         pub.subscribe(self._on_edit, 'mvw_editing_hardware')
 
     def _do_clear_page(self):
@@ -1805,7 +1804,7 @@ class AssessmentInputs(RAMSTKWorkView):
         #     3 = Defined, MTBF
         #     4 = Defined, Distribution
         if index == 3:
-            pub.sendMessage('changed_hazard_rate_type', type_id=_new_text)
+            self._do_set_sensitive(type_id=_new_text)
         # Hazard rate methods are:
         #     1 = MIL-HDBK-217F Parts Count
         #     2 = MIL-HDNK-217F Parts Stress
@@ -2072,7 +2071,6 @@ class AssessmentResults(RAMSTKWorkView):
         #self._dic_assessment_results = {1: wvwIntegratedCircuitAI(),
         #                        2: wvwSemiconductorAI(),
         #                       3: wvwResistorAI(),
-        #                     5: wvwInductorAI(),
         #                    6: wvwRelayAI(),
         #                   7: wvwSwitchAI(),
         #                 9: wvwMeterAI(),
@@ -2080,6 +2078,7 @@ class AssessmentResults(RAMSTKWorkView):
         #              }
         self._dic_assessment_results = {
             4: wvwCapacitorAR(fmt=self.fmt),
+            5: wvwInductorAR(fmt=self.fmt),
             8: wvwConnectionAR(fmt=self.fmt),
         }
 
