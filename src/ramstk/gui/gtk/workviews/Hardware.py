@@ -1152,7 +1152,7 @@ class AssessmentInputs(RAMSTKWorkView):
         #                       3: wvwResistorAI(),
         #                    6: wvwRelayAI(),
         #                   7: wvwSwitchAI(),
-        #                 9: wvwMeterAI(),
+        #
         #               10: wvwMiscellaneousAI(),
         #              }
         self._dic_assessment_input = {
@@ -1160,6 +1160,7 @@ class AssessmentInputs(RAMSTKWorkView):
             4: wvwCapacitorAI(fmt=self.fmt),
             5: wvwInductorAI(fmt=self.fmt),
             8: wvwConnectionAI(fmt=self.fmt),
+            9: wvwMeterAI(fmt=self.fmt),
         }
 
         # Initialize private list attributes.
@@ -2072,7 +2073,6 @@ class AssessmentResults(RAMSTKWorkView):
         #                       3: wvwResistorAI(),
         #                    6: wvwRelayAI(),
         #                   7: wvwSwitchAI(),
-        #                 9: wvwMeterAI(),
         #               10: wvwMiscellaneousAI(),
         #              }
         self._dic_assessment_results = {
@@ -2080,6 +2080,7 @@ class AssessmentResults(RAMSTKWorkView):
             4: wvwCapacitorAR(fmt=self.fmt),
             5: wvwInductorAR(fmt=self.fmt),
             8: wvwConnectionAR(fmt=self.fmt),
+            9: wvwMeterAR(fmt=self.fmt),
         }
 
         # Initialize private list attributes.

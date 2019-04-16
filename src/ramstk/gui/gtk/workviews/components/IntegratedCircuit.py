@@ -144,12 +144,7 @@ class ICAssessmentInputs(AssessmentInputs):
     ]
 
     def __init__(self, **kwargs):
-        """
-        Initialize an instance of the Integrated Circuit assessment input view.
-
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`ramstk.hardware.IntegratedCircuitDataController`
-        """
+        """Initialize an instance of the IC assessment input view."""
         AssessmentInputs.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
