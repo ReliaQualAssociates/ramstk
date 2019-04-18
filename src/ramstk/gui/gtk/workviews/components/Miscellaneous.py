@@ -141,6 +141,8 @@ class MiscAssessmentInputs(AssessmentInputs):
         """
         Load the Miscellaneous assesment input widgets.
 
+        :param dict attributes: the attributes dictionary for the selected
+                                Miscellaneous item.
         :return: None
         :rtype: None
         """
@@ -397,6 +399,8 @@ class MiscAssessmentResults(AssessmentResults):
         """
         Load the miscellaneous devices assessment results page.
 
+        :param dict attributes: the attributes dictionary for the selected
+                                Miscellaneous item.
         :return: None
         :rtype: None
         """

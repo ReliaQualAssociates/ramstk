@@ -327,6 +327,8 @@ class ICAssessmentInputs(AssessmentInputs):
         """
         Load the Integrated Circuit assesment input widgets.
 
+        :param dict attributes: the attributes dictionary for the selected
+                                Integrated Circuit.
         :return: None
         :rtype: None
         """

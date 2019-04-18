@@ -662,7 +662,6 @@ class ConnectionAssessmentResults(AssessmentResults):
         """
         Load the connection assessment results page.
 
-        :param str fmt: the format code for displaying floats.
         :param dict attributes: the attributes dictionary for the selected
                                 Connection.
         :return: None

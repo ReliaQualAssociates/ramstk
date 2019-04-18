@@ -146,6 +146,8 @@ class MeterAssessmentInputs(AssessmentInputs):
         """
         Load the Meter assesment input widgets.
 
+        :param dict attributes: the attributes dictionary for the selected
+                                Meter.
         :return: None
         :rtype: None
         """
@@ -319,6 +321,8 @@ class MeterAssessmentResults(AssessmentResults):
         """
         Load the meter assessment results page.
 
+        :param dict attributes: the attributes dictionary for the selected
+                                Meter.
         :return: None
         :rtype: None
         """
