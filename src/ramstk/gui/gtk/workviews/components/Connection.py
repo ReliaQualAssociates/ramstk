@@ -530,7 +530,8 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             * RAMSTKEntry() 'changed' signal
             * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
+                      method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()

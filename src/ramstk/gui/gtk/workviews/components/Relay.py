@@ -486,7 +486,6 @@ class RelayAssessmentInputs(AssessmentInputs):
         except ValueError:
             _new_text = 0.0
 
-        # Only publish the message if something is selected in the ComboBox.
         pub.sendMessage(
             'wvw_editing_hardware',
             module_id=self._hardware_id,

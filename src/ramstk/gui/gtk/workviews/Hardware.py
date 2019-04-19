@@ -1149,11 +1149,11 @@ class AssessmentInputs(RAMSTKWorkView):
         # Initialize private dictionary attributes.
         #self._dic_assessment_input = {,
         #                        2: wvwSemiconductorAI(),
-        #                       3: wvwResistorAI(),
         #                   7: wvwSwitchAI(),
         #              }
         self._dic_assessment_input = {
             1: wvwIntegratedCircuitAI(fmt=self.fmt),
+            3: wvwResistorAI(fmt=self.fmt),
             4: wvwCapacitorAI(fmt=self.fmt),
             5: wvwInductorAI(fmt=self.fmt),
             6: wvwRelayAI(fmt=self.fmt),
@@ -2069,11 +2069,11 @@ class AssessmentResults(RAMSTKWorkView):
         # Initialize private dictionary attributes.
         #self._dic_assessment_results = {
         #                        2: wvwSemiconductorAI(),
-        #                       3: wvwResistorAI(),
         #                   7: wvwSwitchAI(),
         #              }
         self._dic_assessment_results = {
             1: wvwIntegratedCircuitAR(fmt=self.fmt),
+            3: wvwResistorAR(fmt=self.fmt),
             4: wvwCapacitorAR(fmt=self.fmt),
             5: wvwInductorAR(fmt=self.fmt),
             6: wvwRelayAR(fmt=self.fmt),
