@@ -155,8 +155,8 @@ class RAMSTKValidation(RAMSTK_BASE):
             self.cost_ul = float(none_to_default(attributes['cost_ul'], 0.0))
             self.cost_variance = float(
                 none_to_default(attributes['cost_variance'], 0.0))
-            self.date_end = none_to_default(
-                attributes['date_end'], date.today() + timedelta(days=30))
+            self.date_end = none_to_default(attributes['date_end'],
+                                            date.today() + timedelta(days=30))
             self.date_start = none_to_default(attributes['date_start'],
                                               date.today())
             self.description = str(
@@ -184,7 +184,7 @@ class RAMSTKValidation(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKValidation.set_attributes().".format(_err)
+                   "RAMSTKValidation.set_attributes().".format(str(_err))
 
         return _error_code, _msg
 

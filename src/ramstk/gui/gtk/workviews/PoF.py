@@ -366,14 +366,14 @@ class PoF(RAMSTKWorkView):
                 _entity.remarks = model[path][self._lst_col_order[10]]
             elif _entity.is_opstress:
                 _entity.description = model[path][self._lst_col_order[1]]
-                _entity.measurable_parameter = model[path][self._lst_col_order[
-                    6]]
+                _entity.measurable_parameter = model[path][self.
+                                                           _lst_col_order[6]]
                 _entity.load_history = model[path][self._lst_col_order[7]]
                 _entity.remarks = model[path][self._lst_col_order[10]]
             elif _entity.is_testmethod:
                 _entity.description = model[path][self._lst_col_order[1]]
-                _entity.boundary_conditions = model[path][self._lst_col_order[
-                    8]]
+                _entity.boundary_conditions = model[path][self.
+                                                          _lst_col_order[8]]
                 _entity.remarks = model[path][self._lst_col_order[10]]
 
         return _return
@@ -477,8 +477,8 @@ class PoF(RAMSTKWorkView):
 
         # Insert the new entity into the RAMSTK Program database and then refresh
         # the TreeView.
-        if (_undefined or _return or
-                self._dtc_data_controller.request_do_insert(
+        if (_undefined or _return
+                or self._dtc_data_controller.request_do_insert(
                     entity_id=_entity_id, parent_id=_parent_id, level=_level)):
             _return = True
 
@@ -592,21 +592,15 @@ class PoF(RAMSTKWorkView):
               u"currently selected entity."),
             _(u"Add a new PoF entity one level below the currently "
               u"selected entity."),
-            _(u"Remove the selected entity from the PoF."),
-            _(u"Save the currently selected item in the PoF to the RAMSTK "
-              u"Program database."),
-            _(u"Save the PoF to the open RAMSTK Program database.")
+            _(u"Remove the selected entity from the PoF.")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_delete
         ]
-        _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
-        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -628,7 +622,8 @@ class PoF(RAMSTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Physics of Failure (PoF) Analysis"))
+        _frame = ramstk.RAMSTKFrame(
+            label=_(u"Physics of Failure (PoF) Analysis"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -646,9 +641,8 @@ class PoF(RAMSTKWorkView):
         _model = self._get_cell_model(self._lst_col_order[5])
         _model.append(('', ))
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS:
-            _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS[
-                    _item][0], ))
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_DAMAGE_MODELS[_item][0], ))
 
         # Load the measureable parameter into the gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[6])
@@ -661,9 +655,8 @@ class PoF(RAMSTKWorkView):
         _model = self._get_cell_model(self._lst_col_order[7])
         _model.append(('', ))
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY:
-            _model.append(
-                (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY[
-                    _item][0], ))
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_LOAD_HISTORY[_item][0], ))
 
         # Set the priority gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
@@ -725,58 +718,28 @@ class PoF(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
+            _icons = [
+                'insert_sibling', 'insert_child', 'remove', 'calculate', 'save'
+            ]
+            _labels = [
+                _(u"Insert Sibling"),
+                _(u"Insert Child"),
+                _(u"Remove"),
+                _(u"Save"),
+                _(u"Save All")
+            ]
+            _callbacks = [
+                self._do_request_insert_sibling, self._do_request_insert_child,
+                self._do_request_delete, self._do_request_update,
+                self._do_request_update_all
+            ]
+            RAMSTKWorkView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Sibling"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_sibling)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_(u"Add Child"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert_child)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
         treeview.handler_unblock(self._lst_handler_id[1])
 
         return _return
@@ -799,10 +762,11 @@ class PoF(RAMSTKWorkView):
         if self._dtc_data_controller is None:
             self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['pof']
 
-        _pof = self._dtc_data_controller.request_do_select_all(
-            parent_id=self._hardware_id, functional=False)
+        self._dtc_data_controller.request_do_select_all(
+            {'hardware_id': self._hardware_id, 'functional': False})
+
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
-            tree=_pof, row=None)
+            tree=self._dtc_data_controller.request_tree(), row=None)
 
         RAMSTKWorkView.on_select(
             self,

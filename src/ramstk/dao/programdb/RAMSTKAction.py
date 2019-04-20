@@ -129,8 +129,8 @@ class RAMSTKAction(RAMSTK_BASE):
                 attributes['action_close_date'], _date)
         except KeyError as _err:
             _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKAction.set_attributes().".format(_err)
+            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                    "dictionary passed to "
+                    "RAMSTKAction.set_attributes().").format(str(_err))
 
         return _error_code, _msg

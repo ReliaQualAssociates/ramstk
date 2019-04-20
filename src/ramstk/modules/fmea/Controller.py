@@ -34,7 +34,7 @@ class FMEADataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmFMEA(dao),
+            model=dtmFMEA(dao, **kwargs),
             ramstk_module='FMEA',
             **kwargs)
 
@@ -50,7 +50,7 @@ class FMEADataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_do_select_all(self, **kwargs):
+    def request_do_select_all(self, attributes):
         """
         Load the entire FMEA for a Function or Hardware item.
 
@@ -60,7 +60,13 @@ class FMEADataController(RAMSTKDataController):
         :return: tree; the FMEA treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        return self._dtm_data_model.do_select_all(**kwargs)
+        if attributes['functional']:
+            _parent_id = attributes['function_id']
+        else:
+            _parent_id = attributes['hardware_id']
+
+        return self._dtm_data_model.do_select_all(
+            parent_id=_parent_id, functional=attributes['functional'])
 
     def request_do_insert(self, **kwargs):
         """

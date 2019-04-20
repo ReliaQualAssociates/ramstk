@@ -75,12 +75,10 @@ class RAMSTKMilHdbkF(RAMSTK_BASE):
         """
         Retrieve the current values of the RAMSTKMilHdbkF data model attributes.
 
-        :return: {hardware_id, availability_alloc, env_factor, goal_measure_id,
-                  hazard_rate_alloc, hazard_rate_goal, included, int_factor,
-                  method_id, mtbf_alloc, mtbf_goal, n_sub_systems,
-                  n_sub_elements, parent_id, percent_wt_factor,
-                  reliability_alloc, reliability_goal, op_time_factor,
-                  soa_factor, weight_factor} pairs.
+        :return: {hardware_id, A2, A2, B1, B2, C1, C2, lambdaBD, lambdaBP,
+                  lambdaCYC, lambdaEOS, piA, piC, piCD, piCF, piCR, piCV,
+                  piCYC, piE, piF, piI, piK, piL, piM, piMFG, piN, piNR, piP,
+                  piPT, piQ, piR, piS, piT, piTAPS, piU, piV} pairs.
         :rtype: dict
         """
         _attributes = {
@@ -179,6 +177,6 @@ class RAMSTKMilHdbkF(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKMilHdbkF.set_attributes().".format(_err)
+                   "RAMSTKMilHdbkF.set_attributes().".format(str(_err))
 
         return _error_code, _msg

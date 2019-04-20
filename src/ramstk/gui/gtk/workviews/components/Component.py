@@ -23,9 +23,6 @@ class AssessmentInputs(gtk.Fixed):
     MIL-HDBK-217FN2 parts count and part stress analyses.  The attributes of a
     Hardware assessment input view are:
 
-    :cvar list _lst_labels: the text to use for the assessment input widget
-                            labels.
-
     :ivar list _lst_handler_id: the list of signal handler IDs for each of the
                                 input widgets.
 
@@ -36,22 +33,17 @@ class AssessmentInputs(gtk.Fixed):
 
     :ivar cmbQuality: select and display the quality level of the hardware
                       item.
-
-    Callbacks signals in _lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | cmbQuality - `changed`                    |
-    +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller, **kwargs):
+    # Define private list attributes.
+    _lst_labels = []
+
+    def __init__(self, **kwargs):
         """
         Initialize an instance of the Hardware assessment input view.
 
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`ramstk.hardware.Controller.HardwareBoMDataController`
+        :param controller: the RAMSTK master data controller instance.
+        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         :param int hardware_id: the hardware ID of the currently selected
                                 hardware item.
         :param int subcategory_id: the ID of the hardware item subcategory.
@@ -62,69 +54,25 @@ class AssessmentInputs(gtk.Fixed):
 
         # Initialize private list attributes.
         self._lst_handler_id = []
-        self._lst_labels = [
-            _(u"Quality Level:"),
-        ]
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = kwargs['hardware_id']
-        self._subcategory_id = kwargs['subcategory_id']
+        self._hardware_id = None
+        self._subcategory_id = None
+        self._hazard_rate_method_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
+        self.fmt = kwargs['fmt']
 
         self.cmbQuality = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
             tooltip=_(u"The quality level of the hardware item."))
 
-    def do_load_comboboxes(self, **kwargs):
-        """
-        Load the assessment input RKTComboBox()s.
-
-        :param int subcategory_id: the newly selected hardware item
-                                   subcategory ID.
-        :return: _attributes
-        :rtype: dict
-        """
-        self._subcategory_id = kwargs['subcategory_id']
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        return _attributes
-
-    def do_load_page(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Load the Component assessment input widgets.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(_attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
-
-        return _attributes
-
-    def do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Set widget sensitivity as needed for the selected hardware item.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbQuality.set_sensitive(True)
-
-        return None
+        # Subscribe to PyPubSub messages.
 
     def make_page(self):
         """
@@ -133,9 +81,6 @@ class AssessmentInputs(gtk.Fixed):
         :return: _x_pos, _y_pos
         :rtype: tuple
         """
-        self.do_load_comboboxes(subcategory_id=self._subcategory_id)
-        self.do_set_sensitive()
-
         # Build the assessment input container for hardware items.
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels, self, 5, 5)
         _x_pos += 50
@@ -143,52 +88,6 @@ class AssessmentInputs(gtk.Fixed):
         self.put(self.cmbQuality, _x_pos, _y_pos[0])
 
         return _x_pos, _y_pos
-
-    def on_combo_changed(self, combo, index):
-        """
-        Retrieve RAMSTKCombo() changes and assign to hardware item attribute.
-
-        This method is called by:
-
-            * gtk.Combo() 'changed' signal
-
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
-                          with the calling RAMSTKComboBox().  Indices are:
-
-            +---------+------------------+---------+------------------+
-            |  Index  | Widget           |  Index  | Widget           |
-            +=========+==================+=========+==================+
-            |    0    | cmbQuality       |         |                  |
-            +---------+------------------+---------+------------------+
-
-        :return: _attributes
-        :rtype: dict
-        """
-        _attributes = {}
-
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            if index == 0:
-                _attributes['quality_id'] = int(combo.get_active())
-
-        return _attributes
-
-    def on_select(self, module_id, **kwargs):
-        """
-        Load the hardware item assessment input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              hardware item.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._hardware_id = module_id
-
-        return self._do_load_page(**kwargs)
 
 
 class StressInputs(gtk.Fixed):
@@ -218,10 +117,14 @@ class StressInputs(gtk.Fixed):
                               hardware item must be derated.
     :ivar txtTemperatureRatedMax: enter and display the maximum rated
                                   temperature of the hardware item.
-    :ivar txtCurrentRated:
-    :ivar txtCurrentOperating:
-    :ivar txtPowerRated:
-    :ivar txtPowerOperating:
+    :ivar txtCurrentRated: enter and display the current rating of the hardware
+                           item.
+    :ivar txtCurrentOperating: enter and display the operating current of the
+                               hardware item.
+    :ivar txtPowerRated: enter and display the rated power of the hardware
+                         item.
+    :ivar txtPowerOperating: enter and display the operating power of the
+                             hardware item.
     :ivar txtVoltageRated: enter and display the rated voltage of the
                            hardware item.
     :ivar txtVoltageAC: enter and display the operating ac voltage of the
@@ -229,7 +132,7 @@ class StressInputs(gtk.Fixed):
     :ivar txtVoltageDC: enter and display the operating DC voltage of the
                         hardware item.
 
-    Callbacks signals in _lst_handler_id:
+    Callbacks signals in RAMSTKBaseView._lst_handler_id:
 
     +-------+-------------------------------------------+
     | Index | Widget - Signal                           |
@@ -270,7 +173,7 @@ class StressInputs(gtk.Fixed):
         _(u"Operating DC Voltage (V):")
     ]
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an instance of the Hardware stress input view.
 
@@ -288,16 +191,15 @@ class StressInputs(gtk.Fixed):
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = kwargs['hardware_id']
-        self._subcategory_id = kwargs['subcategory_id']
+        self._hardware_id = None
+        self._subcategory_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
+        self.fmt = kwargs['fmt']
 
         self.txtTemperatureRatedMin = ramstk.RAMSTKEntry(
             width=125,
@@ -363,78 +265,77 @@ class StressInputs(gtk.Fixed):
         self._make_page()
         self.show_all()
 
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+        # Subscribe to PyPubSub messages.
+
+    def do_load_page(self, attributes):
         """
         Load the Component stress input widgets.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param dict attributes: the attributes dict for the selected Hardware.
+        :return: None
+        :rtype: None
         """
-        _return = False
+        self._hardware_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        # We don't block the callback signal otherwise the style RAMSTKComboBox()
-        # will not be loaded and set.
         self.txtTemperatureRatedMin.handler_block(self._lst_handler_id[0])
         self.txtTemperatureRatedMin.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_min'])))
+            str(self.fmt.format(attributes['temperature_rated_min'])))
         self.txtTemperatureRatedMin.handler_unblock(self._lst_handler_id[0])
 
         self.txtTemperatureKnee.handler_block(self._lst_handler_id[1])
         self.txtTemperatureKnee.set_text(
-            str(self.fmt.format(_attributes['temperature_knee'])))
+            str(self.fmt.format(attributes['temperature_knee'])))
         self.txtTemperatureKnee.handler_unblock(self._lst_handler_id[1])
 
         self.txtTemperatureRatedMax.handler_block(self._lst_handler_id[2])
         self.txtTemperatureRatedMax.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_max'])))
+            str(self.fmt.format(attributes['temperature_rated_max'])))
         self.txtTemperatureRatedMax.handler_unblock(self._lst_handler_id[2])
 
         self.txtCurrentRated.handler_block(self._lst_handler_id[3])
         self.txtCurrentRated.set_text(
-            str(self.fmt.format(_attributes['current_rated'])))
+            str(self.fmt.format(attributes['current_rated'])))
         self.txtCurrentRated.handler_unblock(self._lst_handler_id[3])
 
         self.txtCurrentOperating.handler_block(self._lst_handler_id[4])
         self.txtCurrentOperating.set_text(
-            str(self.fmt.format(_attributes['current_operating'])))
+            str(self.fmt.format(attributes['current_operating'])))
         self.txtCurrentOperating.handler_unblock(self._lst_handler_id[4])
 
         self.txtPowerRated.handler_block(self._lst_handler_id[5])
         self.txtPowerRated.set_text(
-            str(self.fmt.format(_attributes['power_rated'])))
+            str(self.fmt.format(attributes['power_rated'])))
         self.txtPowerRated.handler_unblock(self._lst_handler_id[5])
 
         self.txtPowerOperating.handler_block(self._lst_handler_id[6])
         self.txtPowerOperating.set_text(
-            str(self.fmt.format(_attributes['power_operating'])))
+            str(self.fmt.format(attributes['power_operating'])))
         self.txtPowerOperating.handler_unblock(self._lst_handler_id[6])
 
         self.txtVoltageRated.handler_block(self._lst_handler_id[7])
         self.txtVoltageRated.set_text(
-            str(self.fmt.format(_attributes['voltage_rated'])))
+            str(self.fmt.format(attributes['voltage_rated'])))
         self.txtVoltageRated.handler_unblock(self._lst_handler_id[7])
 
         self.txtVoltageAC.handler_block(self._lst_handler_id[8])
         self.txtVoltageAC.set_text(
-            str(self.fmt.format(_attributes['voltage_ac_operating'])))
+            str(self.fmt.format(attributes['voltage_ac_operating'])))
         self.txtVoltageAC.handler_unblock(self._lst_handler_id[8])
 
         self.txtVoltageDC.handler_block(self._lst_handler_id[9])
         self.txtVoltageDC.set_text(
-            str(self.fmt.format(_attributes['voltage_dc_operating'])))
+            str(self.fmt.format(attributes['voltage_dc_operating'])))
         self.txtVoltageDC.handler_unblock(self._lst_handler_id[9])
 
-        return _return
+        return None
 
     def _make_page(self):
         """
         Make the Hardware module stress input container.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels, self, 5, 5)
         _x_pos += 50
@@ -463,7 +364,8 @@ class StressInputs(gtk.Fixed):
             * RAMSTKEntry() 'changed' signal
             * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
+                      method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
@@ -484,63 +386,42 @@ class StressInputs(gtk.Fixed):
             |   4   | txtCurrentOperating    |   9   | txtVoltageDC      |
             +-------+------------------------+-------+-------------------+
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-        _text = ''
+        _dic_keys = {
+            0: 'temperature_rated_min',
+            1: 'temperature_knee',
+            2: 'temperature_rated_max',
+            3: 'current_rated',
+            4: 'current_operating',
+            5: 'power_rated',
+            6: 'power_operating',
+            7: 'voltage_rated',
+            8: 'voltage_ac_operating',
+            9: 'voltage_dc_operating',
+        }
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
+        try:
+            _new_text = float(entry.get_text())
+        except ValueError:
+            _new_text = 0.0
 
-            try:
-                _text = float(entry.get_text())
-            except ValueError:
-                _text = 0.0
-
-            if index == 0:
-                _attributes['temperature_rated_min'] = _text
-            elif index == 1:
-                _attributes['temperature_knee'] = _text
-            elif index == 2:
-                _attributes['temperature_rated_max'] = _text
-            elif index == 3:
-                _attributes['current_rated'] = _text
-            elif index == 4:
-                _attributes['current_operating'] = _text
-            elif index == 5:
-                _attributes['power_rated'] = _text
-            elif index == 6:
-                _attributes['power_operating'] = _text
-            elif index == 7:
-                _attributes['voltage_rated'] = _text
-            elif index == 8:
-                _attributes['voltage_ac_operating'] = _text
-            elif index == 9:
-                _attributes['voltage_dc_operating'] = _text
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
+        pub.sendMessage(
+            'wvw_editing_hardware',
+            module_id=self._hardware_id,
+            key=_key,
+            value=_new_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-        return _return
-
-    def on_select(self, module_id, **kwargs):
-        """
-        Load the hardware item stress input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              hardware item.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._hardware_id = module_id
-
-        return self._do_load_page(**kwargs)
+        return None
 
 
 class AssessmentResults(gtk.Fixed):
@@ -559,23 +440,22 @@ class AssessmentResults(gtk.Fixed):
                             displayed.
     :ivar int _subcategory_id: the ID of the subcategory for the hardware item
                                currently being displayed.
-    :ivar _lblModel: the :class:`ramstk.gui.gtk.ramstk.Label.RAMSTKLabel` to display
-                     the failure rate mathematical model used.
+    :ivar _lblModel: the :class:`ramstk.gui.gtk.ramstk.Label.RAMSTKLabel` to
+                     display the failure rate mathematical model used.
 
     :ivar txtLambdaB: displays the base hazard rate of the hardware item.
     :ivar txtPiQ: displays the quality factor for the hardware item.
     :ivar txtPiE: displays the environment factor for the hardware item.
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, **kwargs):
         """
         Initialize an instance of the Hardware assessment result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`ramstk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                hardware item.
-        :param int subcategory_id: the ID of the hardware item subcategory.
+        :param attributes: the attributes dict for the selected capacitor.
+        :type attributes: dict
         """
         gtk.Fixed.__init__(self)
 
@@ -588,9 +468,9 @@ class AssessmentResults(gtk.Fixed):
         ]
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = kwargs['hardware_id']
-        self._subcategory_id = kwargs['subcategory_id']
+        self._hardware_id = None
+        self._subcategory_id = None
+        self._hazard_rate_method_id = None
 
         self._lblModel = ramstk.RAMSTKLabel(
             '',
@@ -602,7 +482,7 @@ class AssessmentResults(gtk.Fixed):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
+        self.fmt = kwargs['fmt']
 
         self.txtLambdaB = ramstk.RAMSTKEntry(
             width=125,
@@ -620,35 +500,51 @@ class AssessmentResults(gtk.Fixed):
             bold=True,
             tooltip=_(u"The environment factor for the hardware item."))
 
-    def do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+        # Subscribe to PyPubSub messages.
+
+    def do_load_page(self, attributes):
         """
         Load the Hardware assessment results page.
 
-        :return: _attributes
-        :rtype: dict
+        :param dict attributes: the attributes dict for the selected Hardware.
+        :return: None
+        :rtype: None
         """
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        self._hardware_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
-        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
+        # Display the correct calculation model.
+        if self._hazard_rate_method_id == 1:
+            self._lblModel.set_markup(
+                u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
+            )
+        elif self._hazard_rate_method_id == 2:
+            try:
+                self._lblModel.set_markup(
+                    self._dic_part_stress[self._subcategory_id])
+            except KeyError:
+                self._lblModel.set_markup("No Model")
+        else:
+            self._lblModel.set_markup("No Model")
 
-        return _attributes
+        self.txtLambdaB.set_text(str(self.fmt.format(attributes['lambda_b'])))
+        self.txtPiQ.set_text(str(self.fmt.format(attributes['piQ'])))
+        self.txtPiE.set_text(str(self.fmt.format(attributes['piE'])))
+
+        return None
 
     def do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected hardware item.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         self.txtPiQ.set_sensitive(True)
         self.txtPiE.set_sensitive(False)
 
-        return _return
+        return None
 
     def make_page(self):
         """
@@ -657,10 +553,7 @@ class AssessmentResults(gtk.Fixed):
         :return: _x_pos, _y_pos
         :rtype: tuple
         """
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        if _attributes['hazard_rate_method_id'] == 1:
+        if self._hazard_rate_method_id == 1:
             self._lblModel.set_markup(
                 u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
                 u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
@@ -701,8 +594,12 @@ class StressResults(gtk.HPaned):
     :ivar int _subcategory_id: the ID of the subcategory for the hardware item
                                currently being displayed.
 
+    :ivar str fmt: the format string for displaying numbers.
+
     :ivar chkOverstressed: display whether or not the selected hardware item is
                            overstressed.
+    :ivar pltDerate: displays the derating curves and the design operating
+                     point relative to those curves.
     :ivar txtCurrentRatio: display the ratio of operating current to rated
                            current.
     :ivar txtPowerRatio: display the ratio of operating power to rated power.
@@ -719,9 +616,9 @@ class StressResults(gtk.HPaned):
         _(u"Overstress Reason:")
     ]
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, **kwargs):
         """
-        Initialize an instance of the Hardware assessment result view.
+        Initialize an instance of the Hardware stress result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`ramstk.hardware.Controller.HardwareBoMDataController`
@@ -737,16 +634,15 @@ class StressResults(gtk.HPaned):
         self._lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = kwargs['hardware_id']
-        self._subcategory_id = kwargs['subcategory_id']
+        self._hardware_id = None
+        self._subcategory_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
+        self.fmt = kwargs['fmt']
 
         self.pltDerate = ramstk.RAMSTKPlot()
 
@@ -790,25 +686,21 @@ class StressResults(gtk.HPaned):
         self._make_page()
         self.show_all()
 
-        pub.subscribe(self._do_load_page, 'calculatedHardware')
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_page, 'loaded_hardware_results')
 
-    def _do_load_derating_curve(self):
+    def _do_load_derating_curve(self, attributes):
         """
         Load the benign and harsh environment derating curves.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
         # Plot the derating curve.
         _x = [
-            float(_attributes['temperature_rated_min']),
-            float(_attributes['temperature_knee']),
-            float(_attributes['temperature_rated_max'])
+            float(attributes['temperature_rated_min']),
+            float(attributes['temperature_knee']),
+            float(attributes['temperature_rated_max'])
         ]
 
         self.pltDerate.axis.cla()
@@ -827,14 +719,14 @@ class StressResults(gtk.HPaned):
             marker='b.-')
 
         self.pltDerate.do_load_plot(
-            x_values=[_attributes['temperature_active']],
-            y_values=[_attributes['voltage_ratio']],
+            x_values=[attributes['temperature_active']],
+            y_values=[attributes['voltage_ratio']],
             plot_type='scatter',
             marker='go')
 
         self.pltDerate.do_make_title(
             _(u"Voltage Derating Curve for {0:s} at {1:s}").format(
-                _attributes['part_number'], _attributes['ref_des']),
+                attributes['part_number'], attributes['ref_des']),
             fontsize=12)
         self.pltDerate.do_make_legend([
             _(u"Harsh Environment"),
@@ -849,48 +741,45 @@ class StressResults(gtk.HPaned):
 
         self.pltDerate.figure.canvas.draw()
 
-        return _return
+        return None
 
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+    def _do_load_page(self, attributes):
         """
         Load the Hardware assessment results page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param dict attributes: the attributes dict for the selected Hardware.
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        self._hardware_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
 
         self.txtCurrentRatio.set_text(
-            str(self.fmt.format(_attributes['current_ratio'])))
+            str(self.fmt.format(attributes['current_ratio'])))
         self.txtPowerRatio.set_text(
-            str(self.fmt.format(_attributes['power_ratio'])))
+            str(self.fmt.format(attributes['power_ratio'])))
         self.txtVoltageRatio.set_text(
-            str(self.fmt.format(_attributes['voltage_ratio'])))
-        self.chkOverstress.set_active(_attributes['overstress'])
+            str(self.fmt.format(attributes['voltage_ratio'])))
+        self.chkOverstress.set_active(attributes['overstress'])
         _textbuffer = self.txtReason.do_get_buffer()
-        _textbuffer.set_text(_attributes['reason'])
+        _textbuffer.set_text(attributes['reason'])
 
-        self._do_load_derating_curve()
+        self._do_load_derating_curve(attributes)
 
-        return _return
+        return None
 
     def _make_page(self):
         """
         Make the Hardware gtk.Notebook() assessment results page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        # Create the left side.
         _fixed = gtk.Fixed()
         self.pack1(_fixed, True, True)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels, _fixed, 5, 35)
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels, _fixed, 5,
+                                                 35)
         _x_pos += 50
 
         _fixed.put(self.txtCurrentRatio, _x_pos, _y_pos[0])
@@ -909,17 +798,4 @@ class StressResults(gtk.HPaned):
 
         self.pack2(_frame, True, True)
 
-        return _return
-
-    def on_select(self, module_id, **kwargs):
-        """
-        Load the Hardware assessment input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              hardware item.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._hardware_id = module_id
-
-        return self._do_load_page(**kwargs)
+        return None

@@ -16,7 +16,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'user_float_1': 0.0,
+    'user_float_1': 1.0,
     'priority': 1,
     'group': u'',
     'description': 'Test Stakeholder Input',
@@ -24,10 +24,10 @@ ATTRIBUTES = {
     'stakeholder': u'',
     'improvement': 0.0,
     'customer_rank': 1,
-    'user_float_5': 0.0,
-    'user_float_4': 0.0,
-    'user_float_3': 0.0,
-    'user_float_2': 0.0,
+    'user_float_5': 1.0,
+    'user_float_4': 1.0,
+    'user_float_3': 1.0,
+    'user_float_2': 1.0,
     'stakeholder_id': 1,
     'overall_weight': 0.0,
     'revision_id': 1,
@@ -57,11 +57,11 @@ def test_ramstkstakeholder_create(test_dao):
     assert DUT.priority == 1
     assert DUT.requirement_id == 0
     assert DUT.stakeholder == ''
-    assert DUT.user_float_1 == 0.0
-    assert DUT.user_float_2 == 0.0
-    assert DUT.user_float_3 == 0.0
-    assert DUT.user_float_4 == 0.0
-    assert DUT.user_float_5 == 0.0
+    assert DUT.user_float_1 == 1.0
+    assert DUT.user_float_2 == 1.0
+    assert DUT.user_float_3 == 1.0
+    assert DUT.user_float_4 == 1.0
+    assert DUT.user_float_5 == 1.0
 
 
 @pytest.mark.integration

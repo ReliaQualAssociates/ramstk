@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hazard Analysis Data Model."""
 
+# Import third party packages.
+from pubsub import pub
 from treelib import tree
 from treelib.exceptions import NodeIDAbsentError
 
@@ -19,7 +21,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
 
     _tag = 'HazardAnalysis'
 
-    def __init__(self, dao):
+    def __init__(self, dao, **kwargs):
         """
         Initialize a Hazard Analysis data model instance.
 
@@ -34,6 +36,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -45,9 +48,9 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
         """
         Retrieve all the Hazard Analysis from the RAMSTK Program database.
 
-        This method retrieves all the records from the RAMSTKHazardAnalysis table
-        in the connected RAMSTK Program database.  It then adds each to the
-        HazardAnalysis data model treelib.Tree().
+        This method retrieves all the records from the RAMSTKHazardAnalysis
+        table in the connected RAMSTK Program database.  It then adds each to
+        the HazardAnalysis data model treelib.Tree().
 
         :param int hardware_id: the Hardware ID the Hazards are associated
                                 with.
@@ -85,7 +88,12 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
 
         _session.close()
 
-        return self.tree
+        # If we're not running a test and there were hazards returned,
+        # let anyone who cares know the Hazards have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_hazards', tree=self.tree)
+
+        return None
 
     def do_select_children(self, node_id):
         """

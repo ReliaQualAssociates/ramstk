@@ -304,8 +304,8 @@ class Model(object):
                 configuration.RAMSTK_FAILURE_MODES[_record.category_id][
                     _subcat.subcategory_id] = _modes
 
-            configuration.RAMSTK_CATEGORIES[
-                _record.category_id] = _record.description
+            configuration.RAMSTK_CATEGORIES[_record.
+                                            category_id] = _record.description
             configuration.RAMSTK_SUBCATEGORIES[_record.category_id] = _subcats
 
         # ------------------------------------------------------------------- #
@@ -637,13 +637,13 @@ class RAMSTK(object):
         self.request_do_load_globals()
 
         # Create an Options module instance and read the Site options.
+        _attributes = {'site': True, 'program': False, 'user': True}
         self.dic_controllers['options'] = dtcOptions(
             self.ramstk_model.program_dao,
             self.RAMSTK_CONFIGURATION,
             site_dao=_dao,
             test=False)
-        self.dic_controllers['options'].request_do_select_all(
-            site=True, program=False)
+        self.dic_controllers['options'].request_do_select_all(_attributes)
 
         # Create a Preferences module instance and read the user preferences.
         self.dic_controllers['preferences'] = dtcPreferences(
@@ -651,16 +651,19 @@ class RAMSTK(object):
             self.RAMSTK_CONFIGURATION,
             site_dao=_dao,
             test=False)
-        self.dic_controllers['preferences'].request_do_select_all(
-            site=True, user=True)
+        self.dic_controllers['preferences'].request_do_select_all(_attributes)
 
         # Create an Import module instance.
         self.dic_controllers['imports'] = dtcImports(
-            self.ramstk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+            self.ramstk_model.program_dao,
+            self.RAMSTK_CONFIGURATION,
+            test=False)
 
         # Create an Export module instance.
         self.dic_controllers['exports'] = dtcExports(
-            self.ramstk_model.program_dao, self.RAMSTK_CONFIGURATION, test=False)
+            self.ramstk_model.program_dao,
+            self.RAMSTK_CONFIGURATION,
+            test=False)
 
         # Validate the license.
         # if self._validate_license():
@@ -799,8 +802,8 @@ class RAMSTK(object):
                 test=False)
 
             # Find which modules are active for the program being opened.
-            self.dic_controllers['options'].request_do_select_all(
-                site=False, program=True)
+            _attributes = {'site': False, 'program': True}
+            self.dic_controllers['options'].request_do_select_all(_attributes)
             _program_info = self.dic_controllers[
                 'options'].request_get_options(
                     site=False, program=True)
@@ -834,7 +837,9 @@ class RAMSTK(object):
 
             self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
             if not self.__test:
-                pub.sendMessage('openedProgram')
+                _attributes = {'revision_id': -1}
+                self.dic_controllers['revision'].request_do_select_all(
+                    _attributes)
 
         else:
             self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)

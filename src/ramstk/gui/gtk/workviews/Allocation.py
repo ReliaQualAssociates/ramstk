@@ -18,12 +18,12 @@ class Allocation(RAMSTKWorkView):
     """
     Display Allocation attribute data in the Work Book.
 
-    The WorkView displays all the attributes for the Failure Mode and Effects
-    Analysis (Allocation). The attributes of a Allocation Work View are:
+    The WorkView displays all the attributes for the Allocation. The
+    attributes of a Allocation Work View are:
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
-                           Functional Allocation attribute.
+    :ivar _lst_handler_id: list containing the ID's of the callback
+                           signals for each gtk.Widget() associated with
+                           an editable Allocation attribute.
 
     +-------+-------------------------------------------+
     | Index | Widget - Signal                           |
@@ -64,8 +64,8 @@ class Allocation(RAMSTKWorkView):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['allocation'])
         _fmt_path = "/root/tree[@name='Allocation']/column"
-        _tooltip = _(u"Displays the Allocation Analysis for the currently "
-                     u"selected Hardware item.")
+        _tooltip = _(u"Displays the Allocation Analysis for the "
+                     u"currently selected Hardware item.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
@@ -106,9 +106,11 @@ class Allocation(RAMSTKWorkView):
             self.cmbAllocationGoal.connect('changed', self._on_combo_changed,
                                            3))
         self._lst_handler_id.append(
-            self.txtReliabilityGoal.connect('focus_out_event', self._on_focus_out, 4))
+            self.txtReliabilityGoal.connect('focus_out_event',
+                                            self._on_focus_out, 4))
         self._lst_handler_id.append(
-            self.txtHazardRateGoal.connect('focus_out_event', self._on_focus_out, 5))
+            self.txtHazardRateGoal.connect('focus_out_event',
+                                           self._on_focus_out, 5))
         self._lst_handler_id.append(
             self.txtMTBFGoal.connect('focus_out_event', self._on_focus_out, 6))
 
@@ -391,42 +393,14 @@ class Allocation(RAMSTKWorkView):
 
     def _do_set_visible(self, **kwargs):
         """
-        Set the Allocation treeview columns visible and hidden.
+        Set the Allocation treeview columns visible, hidden, and/or editable.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _visible = kwargs['visible']
-        _hidden = kwargs['hidden']
-        _editable = kwargs['editable']
-        _return = False
+        return self.treeview.do_set_visible_columns(**kwargs)
 
-        for _col in _hidden:
-            self.treeview.get_column(_col).set_visible(0)
-        for _col in _visible:
-            self.treeview.get_column(_col).set_visible(1)
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'light gray')
-                    _cell.set_property('editable', 0)
-                except TypeError:
-                    _cell.set_property('cell-background', 'light gray')
-
-        for _col in _editable:
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'white')
-                    _cell.set_property('editable', 1)
-                except TypeError:
-                    _cell.set_property('cell-background', 'white')
-
-        return _return
-
-    def _make_buttonbox(self, **kwargs):  # pylin: disable=unused-argument
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Allocation class Work View.
 
@@ -434,20 +408,14 @@ class Allocation(RAMSTKWorkView):
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Calculate the currently selected child hardware item."),
-            _(u"Save the currently selected line in the Allocation to the "
-              u"open RAMSTK Program database."),
-            _(u"Save the Allocation to the open RAMSTK Program database.")
+            _(u"Calculate the currently selected child hardware item.")
         ]
 
-        _callbacks = [
-            self._do_request_calculate, self._do_request_update,
-            self._do_request_update_all
-        ]
+        _callbacks = [self._do_request_calculate]
 
-        _icons = ['calculate', 'save', 'save-all']
+        _icons = ['calculate']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -467,12 +435,13 @@ class Allocation(RAMSTKWorkView):
         :rtype: :class:`gtk.Frame`
         """
         # Load the method and goal comboboxes.
-        self.cmbAllocationGoal.do_load_combo(
-            [[_(u"Reliability"), 0], [_(u"Hazard Rate"), 1], [_(u"MTBF"), 2]])
+        self.cmbAllocationGoal.do_load_combo([[_(u"Reliability"), 0],
+                                              [_(u"Hazard Rate"), 1],
+                                              [_(u"MTBF"), 2]])
         self.cmbAllocationMethod.do_load_combo(
             [[_(u"Equal Apportionment"), 0], [_(u"AGREE Apportionment"), 1],
-             [_(u"ARINC Apportionment"),
-              2], [_(u"Feasibility of Objectives"), 3]])
+             [_(u"ARINC Apportionment"), 2],
+             [_(u"Feasibility of Objectives"), 3]])
 
         _fixed = gtk.Fixed()
 
@@ -549,38 +518,18 @@ class Allocation(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['calculate'])
-            _menu_item.set_label(_(u"Calculate"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_calculate)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save Allocation"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = ['calculate', 'save', 'save-all']
+            _labels = [_(u"Calculate"), _(u"Save"), _(u"Save All")]
+            _callbacks = [
+                self._do_request_calculate, self._do_request_update,
+                self._do_request_update_all
+            ]
+            RAMSTKWorkView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -631,8 +580,8 @@ class Allocation(RAMSTKWorkView):
                     _hidden = [0, 1, 4, 5, 6, 7, 20, 21]
                     _editable = [3, 8, 9, 10, 11]
 
-                self._do_set_visible(visible=_visible, hidden=_hidden,
-                                     editable=_editable)
+                self._do_set_visible(
+                    visible=_visible, hidden=_hidden, editable=_editable)
 
             elif index == 3:
                 _parent.goal_measure_id = combo.get_active()

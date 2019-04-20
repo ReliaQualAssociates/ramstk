@@ -214,77 +214,77 @@ class SimilarItem(RAMSTKWorkView):
                 _similaritem.quality_to_id = self._dic_quality[model[path][
                     self._lst_col_order[5]]]
             elif position == self._lst_col_order[6]:
-                _similaritem.environment_from_id = self._dic_environment[model[
-                    path][self._lst_col_order[6]]]
+                _similaritem.environment_from_id = self._dic_environment[
+                    model[path][self._lst_col_order[6]]]
             elif position == self._lst_col_order[7]:
-                _similaritem.environment_to_id = self._dic_environment[model[
-                    path][self._lst_col_order[7]]]
+                _similaritem.environment_to_id = self._dic_environment[
+                    model[path][self._lst_col_order[7]]]
             elif position == self._lst_col_order[8]:
-                _similaritem.temperature_from = model[path][
-                    self._lst_col_order[8]]
+                _similaritem.temperature_from = model[path][self.
+                                                            _lst_col_order[8]]
             elif position == self._lst_col_order[9]:
-                _similaritem.temperature_to = model[path][self._lst_col_order[
-                    9]]
+                _similaritem.temperature_to = model[path][self.
+                                                          _lst_col_order[9]]
             elif position == self._lst_col_order[10]:
                 _similaritem.change_description_1 = model[path][
                     self._lst_col_order[10]]
             elif position == self._lst_col_order[11]:
-                _similaritem.change_factor_1 = model[path][self._lst_col_order[
-                    11]]
+                _similaritem.change_factor_1 = model[path][self.
+                                                           _lst_col_order[11]]
             elif position == self._lst_col_order[12]:
                 _similaritem.change_description_2 = model[path][
                     self._lst_col_order[12]]
             elif position == self._lst_col_order[13]:
-                _similaritem.change_factor_2 = model[path][self._lst_col_order[
-                    13]]
+                _similaritem.change_factor_2 = model[path][self.
+                                                           _lst_col_order[13]]
             elif position == self._lst_col_order[14]:
                 _similaritem.change_description_3 = model[path][
                     self._lst_col_order[14]]
             elif position == self._lst_col_order[15]:
-                _similaritem.change_factor_3 = model[path][self._lst_col_order[
-                    15]]
+                _similaritem.change_factor_3 = model[path][self.
+                                                           _lst_col_order[15]]
             elif position == self._lst_col_order[16]:
                 _similaritem.change_description_4 = model[path][
                     self._lst_col_order[16]]
             elif position == self._lst_col_order[17]:
-                _similaritem.change_factor_4 = model[path][self._lst_col_order[
-                    17]]
+                _similaritem.change_factor_4 = model[path][self.
+                                                           _lst_col_order[17]]
             elif position == self._lst_col_order[18]:
                 _similaritem.change_description_5 = model[path][
                     self._lst_col_order[18]]
             elif position == self._lst_col_order[19]:
-                _similaritem.change_factor_5 = model[path][self._lst_col_order[
-                    19]]
+                _similaritem.change_factor_5 = model[path][self.
+                                                           _lst_col_order[19]]
             elif position == self._lst_col_order[20]:
                 _similaritem.change_description_6 = model[path][
                     self._lst_col_order[20]]
             elif position == self._lst_col_order[21]:
-                _similaritem.change_factor_6 = model[path][self._lst_col_order[
-                    21]]
+                _similaritem.change_factor_6 = model[path][self.
+                                                           _lst_col_order[21]]
             elif position == self._lst_col_order[22]:
                 _similaritem.change_description_7 = model[path][
                     self._lst_col_order[22]]
             elif position == self._lst_col_order[23]:
-                _similaritem.change_factor_7 = model[path][self._lst_col_order[
-                    23]]
+                _similaritem.change_factor_7 = model[path][self.
+                                                           _lst_col_order[23]]
             elif position == self._lst_col_order[24]:
                 _similaritem.change_description_8 = model[path][
                     self._lst_col_order[24]]
             elif position == self._lst_col_order[25]:
-                _similaritem.change_factor_8 = model[path][self._lst_col_order[
-                    25]]
+                _similaritem.change_factor_8 = model[path][self.
+                                                           _lst_col_order[25]]
             elif position == self._lst_col_order[26]:
                 _similaritem.change_description_9 = model[path][
                     self._lst_col_order[26]]
             elif position == self._lst_col_order[27]:
-                _similaritem.change_factor_9 = model[path][self._lst_col_order[
-                    27]]
+                _similaritem.change_factor_9 = model[path][self.
+                                                           _lst_col_order[27]]
             elif position == self._lst_col_order[28]:
                 _similaritem.change_description_10 = model[path][
                     self._lst_col_order[28]]
             elif position == self._lst_col_order[29]:
-                _similaritem.change_factor_10 = model[path][
-                    self._lst_col_order[29]]
+                _similaritem.change_factor_10 = model[path][self.
+                                                            _lst_col_order[29]]
             elif position == self._lst_col_order[40]:
                 _similaritem.user_blob_1 = model[path][self._lst_col_order[40]]
             elif position == self._lst_col_order[41]:
@@ -296,20 +296,20 @@ class SimilarItem(RAMSTKWorkView):
             elif position == self._lst_col_order[44]:
                 _similaritem.user_blob_5 = model[path][self._lst_col_order[44]]
             elif position == self._lst_col_order[45]:
-                _similaritem.user_float_1 = model[path][self._lst_col_order[
-                    45]]
+                _similaritem.user_float_1 = model[path][self.
+                                                        _lst_col_order[45]]
             elif position == self._lst_col_order[46]:
-                _similaritem.user_float_2 = model[path][self._lst_col_order[
-                    46]]
+                _similaritem.user_float_2 = model[path][self.
+                                                        _lst_col_order[46]]
             elif position == self._lst_col_order[47]:
-                _similaritem.user_float_3 = model[path][self._lst_col_order[
-                    47]]
+                _similaritem.user_float_3 = model[path][self.
+                                                        _lst_col_order[47]]
             elif position == self._lst_col_order[48]:
-                _similaritem.user_float_4 = model[path][self._lst_col_order[
-                    48]]
+                _similaritem.user_float_4 = model[path][self.
+                                                        _lst_col_order[48]]
             elif position == self._lst_col_order[49]:
-                _similaritem.user_float_5 = model[path][self._lst_col_order[
-                    49]]
+                _similaritem.user_float_5 = model[path][self.
+                                                        _lst_col_order[49]]
             elif position == self._lst_col_order[50]:
                 _similaritem.user_int_1 = model[path][self._lst_col_order[50]]
             elif position == self._lst_col_order[51]:
@@ -687,34 +687,7 @@ class SimilarItem(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _visible = kwargs['visible']
-        _editable = kwargs['editable']
-        _return = False
-
-        for _column in self.treeview.get_columns():
-            _column.set_visible(0)
-        for _col in _visible:
-            self.treeview.get_column(_col).set_visible(1)
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'light gray')
-                    _cell.set_property('editable', 0)
-                except TypeError:
-                    _cell.set_property('cell-background', 'light gray')
-
-        for _col in _editable:
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'white')
-                    _cell.set_property('editable', 1)
-                except TypeError:
-                    _cell.set_property('cell-background', 'white')
-
-        return _return
+        return self.treeview.do_set_visible_columns(**kwargs)
 
     def _get_cell_model(self, column):
         """
@@ -731,7 +704,7 @@ class SimilarItem(RAMSTKWorkView):
 
         return _model
 
-    def _make_buttonbox(self, **kwargs):  # pytest: disable=unused-argument
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the gtk.ButtonBox() for the Similar Item class Work View.
 
@@ -741,20 +714,15 @@ class SimilarItem(RAMSTKWorkView):
         _tooltips = [
             _(u"Edit the Similar Item analysis functions."),
             _(u"Roll up descriptions to next higher level assembly."),
-            _(u"Calculate the Similar Item analysis."),
-            _(u"Save the selected Similar Item analysis to the open RAMSTK "
-              u"Program database."),
-            _(u"Save all the Similar Item analyses for the selected Hardware "
-              u"item to the open RAMSTK Program database.")
+            _(u"Calculate the Similar Item analysis.")
         ]
         _callbacks = [
             self._do_request_edit_function, self._do_request_rollup,
-            self._do_request_calculate, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_calculate
         ]
-        _icons = ['edit', 'rollup', 'calculate', 'save', 'save-all']
+        _icons = ['edit', 'rollup', 'calculate']
 
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -854,48 +822,23 @@ class SimilarItem(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['edit'])
-            _menu_item.set_label(_(u"Edit Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_edit_function)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['calculate'])
-            _menu_item.set_label(_(u"Calculate"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_calculate)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save Allocation"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = ['edit', 'calculate', 'save', 'save-all']
+            _labels = [
+                _(u"Edit Function"),
+                _(u"Calculate"),
+                _(u"Save Selected"),
+                _(u"Save Allocation")
+            ]
+            _callbacks = [
+                self._do_request_edit_function, self._do_request_calculate,
+                self._do_request_update, self._do_request_update_all
+            ]
+            RAMSTKWorkView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 

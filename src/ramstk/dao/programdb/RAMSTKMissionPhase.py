@@ -92,6 +92,6 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKMissionPhase.set_attributes().".format(_err)
+                   "RAMSTKMissionPhase.set_attributes().".format(str(_err))
 
         return _error_code, _msg
