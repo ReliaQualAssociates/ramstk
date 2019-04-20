@@ -79,7 +79,7 @@ ATTRIBUTES = {
 @pytest.mark.integration
 def test_data_model_create(test_dao):
     """ __init__() should return a Requirement model. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
 
     assert isinstance(DUT, dtmRequirement)
     assert isinstance(DUT.tree, Tree)
@@ -89,19 +89,18 @@ def test_data_model_create(test_dao):
 @pytest.mark.integration
 def test_do_select_all(test_dao):
     """ do_select_all() should return a Tree() object populated with RAMSTKRequirement instances on success. """
-    DUT = dtmRequirement(test_dao)
-    _tree = DUT.do_select_all(revision_id=1)
+    DUT = dtmRequirement(test_dao, test=True)
+    DUT.do_select_all(revision_id=1)
 
-    assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(1).data, RAMSTKRequirement)
+    assert isinstance(DUT.tree, Tree)
+    assert isinstance(DUT.tree.get_node(1).data, RAMSTKRequirement)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
     """ do_select() should return an instance of the RAMSTKRequirement data model on success. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
-
     _requirement = DUT.do_select(1)
 
     assert isinstance(_requirement, RAMSTKRequirement)
@@ -112,7 +111,7 @@ def test_do_select(test_dao):
 @pytest.mark.integration
 def test_do_select_non_existent_id(test_dao):
     """ do_select() should return None when a non-existent Requirement ID is requested. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _requirement = DUT.do_select(100)
@@ -123,7 +122,7 @@ def test_do_select_non_existent_id(test_dao):
 @pytest.mark.integration
 def test_do_insert_sibling(test_dao):
     """ do_insert() should return False on success when inserting a sibling Requirement. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=0)
@@ -137,7 +136,7 @@ def test_do_insert_sibling(test_dao):
 @pytest.mark.integration
 def test_do_insert_child(test_dao):
     """ do_insert() should return False on success when inserting a child (derived) Requirement. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=DUT.last_id)
@@ -151,7 +150,7 @@ def test_do_insert_child(test_dao):
 @pytest.mark.integration
 def test_do_delete(test_dao):
     """ do_delete() should return a zero error code on success. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_delete(DUT.last_id)
@@ -165,7 +164,7 @@ def test_do_delete(test_dao):
 @pytest.mark.integration
 def test_do_delete_non_existent_id(test_dao):
     """ do_delete() should return a non-zero error code when passed a Requirement ID that doesn't exist. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_delete('300')
@@ -178,7 +177,7 @@ def test_do_delete_non_existent_id(test_dao):
 @pytest.mark.integration
 def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _requirement = DUT.do_select(1)
@@ -193,12 +192,12 @@ def test_do_update(test_dao):
 @pytest.mark.integration
 def test_do_update_non_existent_id(test_dao):
     """ do_update() should return a non-zero error code when passed a Requirement ID that doesn't exist. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update('100')
 
-    assert _error_code == 2006
+    assert _error_code == 2005
     assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Requirement '
                     'ID 100.')
 
@@ -206,7 +205,7 @@ def test_do_update_non_existent_id(test_dao):
 @pytest.mark.integration
 def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
-    DUT = dtmRequirement(test_dao)
+    DUT = dtmRequirement(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update_all()
@@ -233,9 +232,10 @@ def test_request_do_select_all(test_dao, test_configuration):
     """ request_do_select_all() should return a Tree of RAMSTKRequirement models. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
 
-    _tree = DUT.request_do_select_all(revision_id=1)
+    _tree = DUT.request_do_select_all(ATTRIBUTES)
 
-    assert isinstance(_tree.get_node(1).data, RAMSTKRequirement)
+    assert isinstance(
+        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKRequirement)
 
 
 @pytest.mark.integration
@@ -264,7 +264,7 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
 def test_request_do_select(test_dao, test_configuration):
     """ request_do_select() should return an RAMSTKRequirement model. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _requirement = DUT.request_do_select(1)
 
@@ -283,7 +283,7 @@ def test_request_do_select_non_existent_id(test_dao, test_configuration):
 def test_request_do_insert(test_dao, test_configuration):
     """ request_do_insert() should return False on success. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(revision_id=1, parent_id=0)
 
@@ -325,7 +325,7 @@ def test_request_do_insert_matrix_column(test_dao, test_configuration):
 def test_request_do_delete(test_dao, test_configuration):
     """ request_do_delete() should return False on success. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
     DUT.request_do_insert(revision_id=1, parent_id=0)
 
     assert not DUT.request_do_delete(DUT.request_last_id())
@@ -335,7 +335,7 @@ def test_request_do_delete(test_dao, test_configuration):
 def test_request_do_delete_non_existent_id(test_dao, test_configuration):
     """ request_do_delete() should return True when attempting to delete a non-existent Requirement. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert DUT.request_do_delete('100')
 
@@ -374,7 +374,7 @@ def test_request_do_delete_matrix_column(test_dao, test_configuration):
 def test_request_do_update(test_dao, test_configuration):
     """ request_do_update() should return False on success. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_update(1)
 
@@ -383,7 +383,7 @@ def test_request_do_update(test_dao, test_configuration):
 def test_request_do_update_non_existent_id(test_dao, test_configuration):
     """ request_do_update() should return True when attempting to save a non-existent Requirement. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert DUT.request_do_update(100)
 
@@ -410,7 +410,7 @@ def test_request_do_update_non_existent_matrix(test_dao, test_configuration):
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_update_all()
 
@@ -419,7 +419,7 @@ def test_request_do_update_all(test_dao, test_configuration):
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _attributes = DUT.request_get_attributes(1)
 
@@ -431,9 +431,9 @@ def test_request_get_attributes(test_dao, test_configuration):
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return a zero error code on success. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
-    _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
+    _error_code, _msg = DUT.request_set_attributes(1, 'requirement_code', 1)
 
     assert _error_code == 0
     assert _msg == ('RAMSTK SUCCESS: Updating RAMSTKRequirement 1 attributes.')
@@ -443,6 +443,6 @@ def test_request_set_attributes(test_dao, test_configuration):
 def test_request_last_id(test_dao, test_configuration):
     """ request_last_id() should return the last Requirement ID used in the RAMSTK Program database. """
     DUT = dtcRequirement(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(revision_id=1)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert DUT.request_last_id() == 3

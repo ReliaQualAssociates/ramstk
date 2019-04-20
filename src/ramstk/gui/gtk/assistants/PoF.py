@@ -4,35 +4,11 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Physics of Failue Assistants Module"""
-
-import gettext
-import sys
-
-# Modules required for the GUI.
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
+"""Physics of Failure Assistants Module"""
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
-
-_ = gettext.gettext
+from ramstk.gui.gtk.ramstk.Widget import _, gtk
 
 
 class AddStressMethod(ramstk.RAMSTKDialog):

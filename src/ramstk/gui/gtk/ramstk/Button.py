@@ -4,28 +4,85 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""
-Button Module
--------------------------------------------------------------------------------
-
-This module contains RAMSTK button classes.  These classes are derived from the
-applicable pyGTK buttons, but are provided with RAMSTK specific property values
-and methods.  This ensures a consistent look and feel to widgets in the RAMSTK
-application.
-"""
+"""RAMSTK Button Module."""
 
 # Import the ramstk.Widget base class.
 from .Widget import _, gtk  # pylint: disable=E0401
 
 
+def do_make_buttonbox(self, **kwargs):
+    """
+    Create the buttonbox for RAMSTK Matrix Views.
+
+    This method creates the base buttonbox used by all RAMSTK Matrix Views.
+    Use a buttonbox for an RAMSTK Matrix View if there are only buttons to be
+    added.
+
+    :return: _buttonbox
+    :rtype: :class:`gtk.ButtonBox`
+    """
+    _icons = kwargs['icons']
+    _tooltips = kwargs['tooltips']
+    _callbacks = kwargs['callbacks']
+    _orientation = kwargs['orientation']
+    _height = kwargs['height']
+    _width = kwargs['width']
+
+    # Append the default save and save-all buttons found on all toolbars to
+    # List Views, Module Views, and Work Views.
+    try:
+        _icons.extend(['save', 'save-all'])
+        _tooltips.extend(
+            [_(u"Save the currently selected item."),
+             _(u"Save all items.")])
+        _callbacks.extend(
+            [self._do_request_update, self._do_request_update_all])
+    except AttributeError:
+        pass
+
+    if _orientation == 'horizontal':
+        _buttonbox = gtk.HButtonBox()
+    else:
+        _buttonbox = gtk.VButtonBox()
+
+    _buttonbox.set_layout(gtk.BUTTONBOX_START)
+
+    i = 0
+    for _icon in _icons:
+        _image = gtk.Image()
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(self._dic_icons[_icon],
+                                                     _height, _width)
+        _image.set_from_pixbuf(_icon)
+
+        _button = gtk.Button()
+        _button.set_image(_image)
+
+        _button.props.width_request = _width
+        _button.props.height_request = _height
+
+        try:
+            _button.set_tooltip_markup(_tooltips[i])
+        except IndexError:
+            _button.set_tooltip_markup("")
+
+        try:
+            _button.connect('clicked', _callbacks[i])
+        except IndexError:
+            _button.set_sensitive(False)
+
+        _buttonbox.pack_start(_button)
+
+        i += 1
+
+    return _buttonbox
+
+
 class RAMSTKButton(gtk.Button):
-    """
-    This is the RAMSTK Button class.
-    """
+    """This is the RAMSTK Button class."""
 
     def __init__(self, height=40, width=200, label="", icon=None):
         """
-        Method to create Button widgets.
+        Create Button widgets.
 
         :keyword int height: the height of the gtk.Button().
                              Default is 40.

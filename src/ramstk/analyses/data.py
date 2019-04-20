@@ -276,6 +276,8 @@ HARDWARE_ATTRIBUTES = {
 }
 
 # These are the dormant hazard rate multipliers.
+# First key is the category ID; second key is the active environment ID;
+# third key is the dormant environment ID.
 DORMANT_MULT = {
     1: {
         1: {

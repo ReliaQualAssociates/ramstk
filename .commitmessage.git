@@ -1,0 +1,36 @@
+# Remember to format your commit message thusly...
+#
+# <type>(<primary scope:secondary scope>): Subject (try to keep it less than 50 
+#                                          characters)
+# <BLANK LINE>
+# <body>
+# 
+# Where <type> is one of:
+#    * feat: a new feature was added.
+#    * fix: a bug fix.
+#    * docs: documentation only change.
+#    * style: change that doesn't affect the meaning of the code.
+#    * refactor: code change that doesn't add a feature or fix a bug.
+#    * perf: change that improves performance.
+#    * test: add or correct tests.
+#    * chore: changes to the build process or auxiliary tools.
+# <primary scope> is one of:
+#    * Revision
+#    * Requirement
+#    * Function
+#    * Hardware
+#    * Validation
+# <secondary scope> is one of:
+#    * Usage
+#    * FailureDefinition
+#    * Stakeholder
+#    * Allocation
+#    * HazOps
+#    * SimilarItem
+#    * MIL217
+#    * FMEA
+#    * PoF
+# <body> is a multi-line description of the changes.  Use bulleted lists 
+#        (-, *, etc.)to make this easier to read.  Append [FIXES ISSUE:
+#        <issue number>] to the end of each line that fixes an issue.
+#

@@ -7,14 +7,16 @@
 """Hardware Package Data Controller."""
 
 from datetime import date
+
+# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataController
 from ramstk.modules import RAMSTKDataMatrix
-from ramstk.dao import RAMSTKHardware, RAMSTKRequirement, RAMSTKTest, RAMSTKValidation
+from ramstk.dao import (RAMSTKHardware, RAMSTKRequirement, RAMSTKTest,
+                        RAMSTKValidation)
 from . import dtmHardwareBoM
-
 
 # Set default attributes to be returned when there are none to return.  This
 # should only happen when adding the initial, top-level system hardware item.
@@ -310,7 +312,7 @@ class HardwareBoMDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmHardwareBoM(dao),
+            model=dtmHardwareBoM(dao, **kwargs),
             ramstk_module='hardware BOM',
             **kwargs)
 
@@ -332,6 +334,76 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._request_do_calculate, 'request_calculate_hardware')
+        pub.subscribe(self.request_do_calculate_all,
+                      'request_calculate_all_hardware')
+        pub.subscribe(self.request_do_delete, 'request_delete_hardware')
+        pub.subscribe(self._request_do_insert, 'request_insert_hardware')
+        pub.subscribe(self.request_do_make_composite_reference_designator,
+                      'request_make_comp_ref_des')
+        pub.subscribe(self.request_do_select_all, 'selected_revision')
+        pub.subscribe(self.request_do_update, 'request_update_hardware')
+        pub.subscribe(self.request_do_update_all,
+                      'request_update_all_hardware')
+        pub.subscribe(self._request_set_attributes, 'mvw_editing_hardware')
+        pub.subscribe(self._request_set_attributes, 'wvw_editing_hardware')
+
+    def _request_do_calculate(self, node_id, hr_multiplier):
+        """
+        Request to calculate the selected Hardware item.
+
+        :param int node_id: the Hardware ID of the item to calculate.
+        :param float hr_multiplier: the multipliers for the hazard rate.
+        :return: _attributes
+        :rtype: dict
+        """
+        _attributes = self._dtm_data_model.do_calculate(
+            node_id, hr_multiplier=hr_multiplier)
+
+        # Update the value of calculated attributes.
+        for _key in [
+                'hazard_rate_percent', 'lambdaBP', 'Cac',
+                'hazard_rate_logistics', 'lambdaBD', 'hazard_rate_software',
+                'total_power_dissipation', 'Cl', 'temperature_junction', 'piP',
+                'Cgs', 'reliability_miss_variance', 'piCYC', 'piU',
+                'cost_failure', 'B1', 'B2', 'piNR', 'hazard_rate_dormant',
+                'comp_ref_des', 'Csf', 'Csc', 'voltage_ratio', 'Cst', 'Csw',
+                'Csv', 'total_cost', 'piCV', 'piCR', 'temperature_case',
+                'hr_mission_variance', 'piCD', 'piCF', 'reliability_mission',
+                'hazard_rate_active', 'mtbf_log_variance', 'Ccw', 'Ccv', 'Cpd',
+                'Ccp', 'Cpf', 'piR', 'overstress', 'reason', 'Ccs', 'Ccf',
+                'Cpv', 'Cbl', 'availability_mission', 'piQ', 'Cf',
+                'temperature_hot_spot', 'Clc', 'hr_logistics_variance',
+                'cost_hour', 'lambda_b', 'lambdaCYC', 'Cd',
+                'reliability_logistics', 'C2', 'C1', 'Crd', 'Cmu',
+                'current_ratio', 'avail_mis_variance', 'Ck', 'Ci', 'Ch', 'Cn',
+                'Cm', 'Cc', 'Cb', 'Cg', 'Ce', 'mtbf_logistics', 'power_ratio',
+                'Cy', 'Cbv', 'Cbt', 'reliability_log_variance', 'Cs', 'piTAPS',
+                'Cq', 'Cp', 'Cw', 'Cv', 'Ct', 'Cnw', 'hr_specified_variance',
+                'Cnp', 'total_part_count', 'Csz', 'Calt', 'lambdaEOS',
+                'hazard_rate_mission', 'avail_log_variance', 'piK', 'piL',
+                'piM', 'piN', 'Cr', 'Cga', 'piA', 'piC', 'piE', 'piF', 'A1',
+                'A2', 'Cgp', 'piS', 'piT', 'Cgt', 'piV', 'Cgv', 'piPT',
+                'mtbf_miss_variance', 'hr_active_variance', 'mtbf_mission',
+                'piMFG', 'Cgl', 'piI', 'Cdc', 'Cdl', 'hr_dormant_variance',
+                'Cdt', 'Cdw', 'Cdp', 'Cds', 'availability_logistics', 'Cdy',
+                'temperature_rise'
+        ]:
+            self._request_set_attributes(node_id, _key, _attributes[_key])
+
+        return _attributes
+
+    def request_do_calculate_all(self, node_id, hr_multiplier, **kwargs):
+        """
+        Request to calculate all hardware items.
+
+        :return: list of cumulative results.
+        :rtype: list
+        """
+        return self._dtm_data_model.do_calculate_all(
+            node_id=node_id, hr_multiplier=hr_multiplier, **kwargs)
+
     def request_do_create(self, revision_id, matrix_type):
         """
         Request to create or refresh a Hardware matrix.
@@ -339,6 +411,8 @@ class HardwareBoMDataController(RAMSTKDataController):
         :param int revision_id: the ID of the Revision the desired Matrix is
                                 associated with.
         :param str matrix_type: the type of the Matrix to select all rows and
+        :return: None
+        :rtype: None
         """
         if matrix_type == 'hrdwr_rqrmnt':
             self._dmx_hw_rqrmnt_matrix.do_create(
@@ -353,7 +427,137 @@ class HardwareBoMDataController(RAMSTKDataController):
                 rkey='hardware_id',
                 ckey='validation_id')
 
-        return
+        return None
+
+    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
+        """
+        Request to remove a row or column from the selected Data Matrix.
+
+        :param str matrix_type: the type of the Matrix to retrieve.  Current
+                                Hardware matrix types are:
+
+                                hrdwr_tstng = Hardware:Testing
+                                hrdwr_vldtn = Hardware:Validation
+
+        :param int item_id: the ID of the row or column item to remove from the
+                            Matrix.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        if matrix_type == 'hrdwr_rqrmnt':
+            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_delete(
+                item_id, row=row)
+
+        if matrix_type == 'hrdwr_tstng':
+            _error_code, _msg = self._dmx_hw_tstng_matrix.do_delete(
+                item_id, row=row)
+
+        if matrix_type == 'hrdwr_vldtn':
+            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_delete(
+                item_id, row=row)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      'deletedMatrix')
+
+    def _request_do_insert(self, revision_id, parent_id, part):
+        """
+        Request to add an RAMSTKHardware table record.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            revision_id=revision_id, parent_id=parent_id, part=part)
+        # TODO: Move this to seperate method that responds to the 'inserted_hardware' signal.
+        if _error_code == 0:
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
+
+            _hardware_id = self.request_last_id()
+            _heading = self.request_do_select(_hardware_id)['ref_des']
+
+            # We add a record for each of the Hardware:X matrices.
+            for _matrix in ['hrdwr_rqrmnt', 'hrdwr_vldtn']:
+                if not part:
+                    self.request_do_insert_matrix(
+                        _matrix, _hardware_id, heading=_heading, row=True)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
+
+    def request_do_insert_matrix(self, matrix_type, item_id, heading,
+                                 row=True):
+        """
+        Request the to add a new row or column to the Data Matrix.
+
+        :param str matrix_type: the type of the Matrix to retrieve.  Current
+                                Hardware matrix types are:
+
+                                hrdwr_tstng = Hardware:Testing
+                                hrdwr_vldtn = Hardware:Validation
+
+        :param int item_id: the ID of the row or column item to insert into the
+                            Matrix.
+        :param str heading: the heading for the new row or column.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        if matrix_type == 'hrdwr_rqrmnt':
+            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_insert(
+                item_id, heading, row=row)
+
+        if matrix_type == 'hrdwr_tstng':
+            _error_code, _msg = self._dmx_hw_tstng_matrix.do_insert(
+                item_id, heading, row=row)
+
+        if matrix_type == 'hrdwr_vldtn':
+            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_insert(
+                item_id, heading, row=row)
+
+        if _error_code == 0 and not self._test:
+            pub.sendMessage(
+                'insertedMatrix',
+                matrix_type=matrix_type,
+                item_id=item_id,
+                row=row)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
+
+    def request_do_make_composite_reference_designator(self, node_id=1):
+        """
+        Request the composite reference designators be created.
+
+        :keyword int node_id: the Treelib tree() node ID to start with to make
+                              composite reference designators.  Defaults to the
+                              top node.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = ''
+
+        # Create the composite reference designators in the Hardware model.
+        if self._dtm_data_model.dtm_hardware.do_make_composite_ref_des(
+                node_id):
+            _error_code = 3005
+            _msg = 'RAMSTK ERROR: Failed to create all composite reference ' \
+                   'designators for Node ID {0:d} and ' \
+                   'children.'.format(node_id)
+
+        # If that was successful, update the BoM attributes.
+        if _error_code == 0:
+            for _node_id in self._dtm_data_model.tree.nodes:
+                if _node_id != 0:
+                    _attributes = self._request_get_attributes(_node_id)
+                    _comp_ref_des = self._dtm_data_model.dtm_hardware.do_select(
+                        _node_id).comp_ref_des
+                    _attributes['comp_ref_des'] = _comp_ref_des
+
+        return _error_code, _msg
 
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
@@ -414,151 +618,6 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_do_insert(self, **kwargs):
-        """
-        Request to add an RAMSTKHardware table record.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _revision_id = kwargs['revision_id']
-        _parent_id = kwargs['parent_id']
-        _part = kwargs['part']
-
-        _error_code, _msg = self._dtm_data_model.do_insert(
-            revision_id=_revision_id, parent_id=_parent_id, part=_part)
-
-        if _error_code == 0:
-            self._configuration.RAMSTK_USER_LOG.info(_msg)
-
-            _hardware_id = self.request_last_id()
-            _heading = self.request_do_select(
-                _hardware_id, table='general').ref_des
-
-            # We add a record for each of the Hardware:X matrices.
-            for _matrix in ['hrdwr_rqrmnt', 'hrdwr_vldtn']:
-                if not _part:
-                    self.request_do_insert_matrix(
-                        _matrix, _hardware_id, heading=_heading, row=True)
-
-            if not self._test:
-                pub.sendMessage(
-                    'insertedHardware',
-                    revision_id=_revision_id,
-                    hardware_id=self._dtm_data_model.dtm_hardware.last_id,
-                    parent_id=_parent_id)
-        else:
-            _msg = _msg + '  Failed to add a new Hardware item to the RAMSTK ' \
-                'Program database.'
-            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_insert_matrix(self, matrix_type, item_id, heading,
-                                 row=True):
-        """
-        Request the to add a new row or column to the Data Matrix.
-
-        :param str matrix_type: the type of the Matrix to retrieve.  Current
-                                Hardware matrix types are:
-
-                                hrdwr_tstng = Hardware:Testing
-                                hrdwr_vldtn = Hardware:Validation
-
-        :param int item_id: the ID of the row or column item to insert into the
-                            Matrix.
-        :param str heading: the heading for the new row or column.
-        :keyword bool row: indicates whether to insert a row (default) or a
-                           column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        if matrix_type == 'hrdwr_rqrmnt':
-            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_insert(
-                item_id, heading, row=row)
-
-        if matrix_type == 'hrdwr_tstng':
-            _error_code, _msg = self._dmx_hw_tstng_matrix.do_insert(
-                item_id, heading, row=row)
-
-        if matrix_type == 'hrdwr_vldtn':
-            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_insert(
-                item_id, heading, row=row)
-
-        if _error_code == 0 and not self._test:
-            pub.sendMessage(
-                'insertedMatrix',
-                matrix_type=matrix_type,
-                item_id=item_id,
-                row=row)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_delete(self, node_id):
-        """
-        Request to delete an RAMSTKHardware table record.
-
-        :param str node_id: the PyPubSub Tree() ID of the Hardware item to
-                            delete.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
-
-        if not self._test:
-            pub.sendMessage('deletedHardware', node_id=node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
-        """
-        Request to remove a row or column from the selected Data Matrix.
-
-        :param str matrix_type: the type of the Matrix to retrieve.  Current
-                                Hardware matrix types are:
-
-                                hrdwr_tstng = Hardware:Testing
-                                hrdwr_vldtn = Hardware:Validation
-
-        :param int item_id: the ID of the row or column item to remove from the
-                            Matrix.
-        :keyword bool row: indicates whether to insert a row (default) or a
-                           column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        if matrix_type == 'hrdwr_rqrmnt':
-            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_delete(
-                item_id, row=row)
-
-        if matrix_type == 'hrdwr_tstng':
-            _error_code, _msg = self._dmx_hw_tstng_matrix.do_delete(
-                item_id, row=row)
-
-        if matrix_type == 'hrdwr_vldtn':
-            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_delete(
-                item_id, row=row)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'deletedMatrix')
-
-    def request_do_update(self, node_id):
-        """
-        Request to update an RAMSTKHardware table record.
-
-        :param str node_id: the PyPubSub Tree() ID of the Hardware item to
-                            save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'savedHardware')
-
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
         Request to update the selected Data Matrix.
@@ -593,21 +652,12 @@ class HardwareBoMDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       'savedMatrix')
 
-    def request_do_update_all(self, **kwargs):
-        """
-        Request to update all records in the RAMSTKHardware table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_get_attributes(self, node_id):
+    def _request_get_attributes(self, node_id):
         """
         Get the attributes of the record associated with Node ID and table.
+
+        This is required to be local because the data package for the Hardware
+        BoM tree is a dict with the attributes from all tables included.
 
         :param int node_id: the ID of the Hardware item to get attributes for.
         :return: attributes; the {attribute:value} dict.
@@ -620,135 +670,56 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         return _attributes
 
-    def request_set_attributes(self, node_id, attributes):
+    def _request_set_attributes(self, module_id, key, value):
         """
-        Set the attributes of the record associated with the Node ID.
+        Set the attributes of the record associated with the Module ID.
 
-        :param int node_id: the ID of the record in the RAMSTK Program database
-                            table whose attributes are to be set.
-        :param dict attributes: the dictionary of attributes and values.
+        :param int module_id: the ID of the record in the RAMSTK Program
+                              database table whose attributes are to be set.
+        :param str key: the key in the attributes dict.
+        :param value: the new value of the attribute to set.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        # Set the overall BoM attributes.
-        self._dtm_data_model.tree.get_node(node_id).data = attributes
+        _attributes = self._dtm_data_model.tree.get_node(module_id).data
+        if key in _attributes:
+            _attributes[key] = value
+        else:
+            _return = True
 
         # Set the attributes for the individual tables.
         _error_code, _msg = self._dtm_data_model.dtm_hardware.do_select(
-            node_id).set_attributes(attributes)
+            module_id).set_attributes(_attributes)
         _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_design_electric.do_select(
-            node_id).set_attributes(attributes)
+            module_id).set_attributes(_attributes)
         _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_design_mechanic.do_select(
-            node_id).set_attributes(attributes)
+            module_id).set_attributes(_attributes)
         _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_mil_hdbk_f.do_select(
-            node_id).set_attributes(attributes)
+            module_id).set_attributes(_attributes)
         _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_nswc.do_select(
-            node_id).set_attributes(attributes)
+            module_id).set_attributes(_attributes)
         _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
         _error_code, _msg = self._dtm_data_model.dtm_reliability.do_select(
-            node_id).set_attributes(attributes)
+            module_id).set_attributes(_attributes)
         _return = (_return or RAMSTKDataController.do_handle_results(
             self, _error_code, _msg, None))
 
-        return _return
-
-    def request_last_id(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request the last Hardware ID used.
-
-        :return: _last_id; the last Hardware ID used.
-        :rtype: int
-        """
-        return self._dtm_data_model.last_id
-
-    def request_do_make_composite_reference_designator(self, node_id=1):
-        """
-        Request the composite reference designators be created.
-
-        :keyword int node_id: the Treelib tree() node ID to start with to make
-                              composite reference designators.  Defaults to the
-                              top node.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code = 0
-        _msg = ''
-
-        # Create the composite reference designators in the Hardware model.
-        if self._dtm_data_model.dtm_hardware.do_make_composite_ref_des(
-                node_id):
-            _error_code = 3005
-            _msg = 'RAMSTK ERROR: Failed to create all composite reference ' \
-                   'designators for Node ID {0:d} and ' \
-                   'children.'.format(node_id)
-
-        # If that was successful, update the BoM attributes.
-        if _error_code == 0:
-            for _node_id in self._dtm_data_model.tree.nodes:
-                if _node_id != 0:
-                    _attributes = self.request_get_attributes(_node_id)
-                    _comp_ref_des = self._dtm_data_model.dtm_hardware.do_select(
-                        _node_id).comp_ref_des
-                    _attributes['comp_ref_des'] = _comp_ref_des
-
-        return _error_code, _msg
-
-    def request_do_calculate(self, node_id, **kwargs):
-        """
-        Request to calculate the hardware item.
-
-        :param int node_id: the Hardware ID to calculate.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _attributes = self._dtm_data_model.do_calculate(node_id, **kwargs)
-
-        if (not self.request_set_attributes(node_id, _attributes)
-                and not self._test):
-            pub.sendMessage('calculatedHardware')
-        else:
-            _return = True
-
-        return _return
-
-    def request_do_calculate_all(self, **kwargs):
-        """
-        Request to calculate the hardware item.
-
-        :param int node_id: the Hardware ID to calculate.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._dtm_data_model.do_calculate_all(**kwargs)
-
-        if not self._test:
-            for _node_id in self._dtm_data_model.tree.nodes:
-                if _node_id != 0:
-                    _attributes = self.request_get_attributes(_node_id)
-                    self.request_set_attributes(_node_id, _attributes)
-
-            pub.sendMessage('calculatedAllHardware')
-        else:
-            _return = True
+        self._dtm_data_model.tree.get_node(module_id).data = _attributes
 
         return _return

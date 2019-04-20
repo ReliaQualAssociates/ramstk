@@ -49,6 +49,19 @@ class PreferencesDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
+    def request_do_select_all(self, attributes):
+        """
+        Retrieve the treelib Tree() from the RAMSTK Data Model.
+
+        The RAMSTK Data Model method sends the 'retrieved_<module>' PyPubSub
+        message.
+
+        :return: None
+        :rtype: None
+        """
+        return self._dtm_data_model.do_select_all(
+            site=attributes['site'], user=attributes['user'])
+
     def request_get_preferences(self, **kwargs):
         """
         Get the Site or User preferences dict.

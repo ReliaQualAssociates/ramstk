@@ -288,7 +288,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKSimilarItem.set_attributes().".format(_err)
+                   "RAMSTKSimilarItem.set_attributes().".format(str(_err))
         except ValueError as _err:
             # FIXME: Handle ValueError in RAMSTKSimilarItem.set_attrobutes().
             print _err

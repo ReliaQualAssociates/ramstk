@@ -6,6 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Module View."""
 
+# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
@@ -19,10 +20,12 @@ class ModuleView(RAMSTKModuleView):
     Display Function attribute data in the RAMSTK Module Book.
 
     The Function Module Book view displays all the Functions associated with
-    the RAMSTK Program in a flat list.  The attributes of the Function Module View
-    are:
+    the RAMSTK Program in a flat list.  The attributes of the Function Module
+    View are:
 
     :ivar int _function_id: the ID of the currently selected Function.
+    :ivar int _parent_id: the ID of the parent Function for the currently
+                          selected Function.
     :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
@@ -43,7 +46,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize private scalar attributes.
         self._function_id = None
-        self._revision_id = None
+        self._parent_id = None
 
         # Initialize public dictionary attributes.
 
@@ -51,10 +54,10 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self._make_treeview()
+        self.make_treeview(editable=[5, 15, 17, 18])
         self.treeview.set_tooltip_text(_(u"Displays the list of functions."))
         self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row))
+            self.treeview.connect('cursor_changed', self._on_row_change))
         self._lst_handler_id.append(
             self.treeview.connect('button_press_event', self._on_button_press))
 
@@ -65,135 +68,37 @@ class ModuleView(RAMSTKModuleView):
             height=-1,
             tooltip=_(u"Displays the program functions."))
 
-        self.hbx_tab_label.pack_start(self._img_tab)
         self.hbx_tab_label.pack_end(_label)
-        self.hbx_tab_label.show_all()
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(self._make_buttonbox())
-        self.pack_start(_scrollwindow, expand=False, fill=False)
-
-        self.show_all()
-
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
-        pub.subscribe(self._on_edit, 'wvwEditedFunction')
-
-    def _do_change_row(self, treeview):
-        """
-        Handle events for the Function package Module Book RAMSTKTreeView().
-
-        This method is called whenever a Module Book RAMSTKTreeView() row is
-        activated.
-
-        :param treeview: the Function Module View RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        treeview.handler_block(self._lst_handler_id[0])
-
-        _model, _row = treeview.get_selection().get_selected()
-
-        self._function_id = _model.get_value(_row, 1)
-
-        treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selectedFunction', module_id=self._function_id)
-
-        return _return
-
-    def _do_edit_cell(self, __cell, path, new_text, position, model):
-        """
-        Handle edits of the Function package Module View RAMSTKTreeview().
-
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :class:`gtk.CellRenderer`
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :class:`gtk.TreeModel`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
-
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._function_id)
-
-            if self._lst_col_order[position] == 5:
-                _attributes['function_code'] = str(new_text)
-            elif self._lst_col_order[position] == 15:
-                _attributes['name'] = str(new_text)
-            elif self._lst_col_order[position] == 17:
-                _attributes['remarks'] = str(new_text)
-            elif self._lst_col_order[position] == 18:
-                _attributes['safety_critical'] = int(new_text)
-
-            self._dtc_data_controller.request_set_attributes(
-                self._function_id, _attributes)
-
-            pub.sendMessage(
-                'mvwEditedFunction',
-                index=self._lst_col_order[position],
-                new_text=new_text)
-        else:
-            _return = True
-
-        return _return
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_load_tree, 'deleted_function')
+        pub.subscribe(self.do_load_tree, 'inserted_function')
+        pub.subscribe(self.do_load_tree, 'retrieved_functions')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_function')
 
     def _do_request_delete(self, __button):
         """
-        Send request to delete the selected Function and it's children.
+        Request to delete the selected Function and it's children.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _prompt = _(u"You are about to delete Function {0:d} and all data "
-                    u"associated with it.  Is this really what you want "
-                    u"to do?").format(self._function_id)
-        _dialog = ramstk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                          'question')
+        _prompt = _(u"You are about to delete Function {0:d} and all "
+                    u"data associated with it.  Is this really what "
+                    u"you want to do?").format(self._function_id)
+        _dialog = ramstk.RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
         if _response == gtk.RESPONSE_YES:
-            _dialog.do_destroy()
-            if self._dtc_data_controller.request_do_delete(self._function_id):
-                _prompt = _(u"An error occurred when attempting to delete "
-                            u"Function {0:d}.").format(self._function_id)
-                _error_dialog = ramstk.RAMSTKMessageDialog(
-                    _prompt, self._dic_icons['error'], 'error')
-                if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                    _error_dialog.do_destroy()
+            pub.sendMessage(
+                'request_delete_function', node_id=self._function_id)
 
-                _return = True
-            else:
-                _model, _row = self.treeview.get_selection().get_selected()
-                _prow = _model.iter_parent(_row)
-                _model.remove(_row)
+        _dialog.do_destroy()
 
-                if _prow is not None:
-                    _path = _model.get_path(_prow)
-                    _column = self.treeview.get_column(0)
-                    self.treeview.set_cursor(_path, None, False)
-                    self.treeview.row_activated(_path, _column)
-
-        else:
-            _dialog.do_destroy()
-
-        return _return
+        return None
 
     def _do_request_export(self, __button):
         """
@@ -208,99 +113,57 @@ class ModuleView(RAMSTKModuleView):
 
     def _do_request_insert(self, **kwargs):
         """
-        Send request to insert a new Function into the RAMSTK Program database.
+        Request insert a new Function into the RAMSTK Program database.
 
-        :param bool sibling: indicates whether to insert a sibling (default)
-                             Function or a child Function.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         _sibling = kwargs['sibling']
-        _return = False
-
-        _function = self._dtc_data_controller.request_do_select(
-            self._function_id)
 
         if _sibling:
             try:
-                _parent_id = _function.parent_id
+                _parent_id = self._parent_id
             except AttributeError:
                 _parent_id = 0
         else:
-            _parent_id = _function.function_id
+            _parent_id = self._function_id
 
-        if not self._dtc_data_controller.request_do_insert(
-                revision_id=self._revision_id, parent_id=_parent_id):
-            # TODO: Add code to the FMEA Class to respond to the 'insertedFunction' pubsub message and insert a set of functional failure modes.
-            # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
-            self._on_select_revision(self._revision_id)
-        else:
-            _prompt = _(u"An error occurred while attempting to add a "
-                        u"function to Revision "
-                        u"{0:d}.").format(self._revision_id)
-            _error_dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            self._mdcRAMSTK.debug_log.error(_prompt)
+        pub.sendMessage(
+            'request_insert_function',
+            revision_id=self._revision_id,
+            parent_id=_parent_id)
 
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-
-        return _return
-
-    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Send request to insert a new chid Function.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=False)
-
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Send request to insert a new sibling Function.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=True)
+        return None
 
     def _do_request_update(self, __button):
         """
-        Send request to save the currently selected Function.
+        Request to save the currently selected Function.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update(
-            self._function_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.WATCH)
+        pub.sendMessage('request_update_function', node_id=self._function_id)
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _do_request_update_all(self, __button):
         """
-        Send request to save all the Functions.
+        Request to save all the Functions.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(gtk.gdk.WATCH)
+        pub.sendMessage('request_update_all_functions')
+        self.do_set_cursor(gtk.gdk.LEFT_PTR)
 
-        return _return
+        return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -316,24 +179,16 @@ class ModuleView(RAMSTKModuleView):
             _(u"Adds a new Function one level subordinate to the "
               u"selected Function (i.e., a child function)."),
             _(u"Remove the currently selected Function."),
-            _(u"Save the currently selected Function to the open "
-              u"RAMSTK Program database."),
-            _(u"Saves all Functions to the open RAMSTK Program "
-              u"database."),
-            _(u"Exports Functions to an external file (CSV, Excel, and text "
-              u"files are supported).")
+            _(u"Exports Functions to an external file (CSV, Excel, and "
+              u"text files are supported).")
         ]
         _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all, self._do_request_export
+            self.do_request_insert_sibling, self.do_request_insert_child,
+            self._do_request_delete, self._do_request_export
         ]
-        _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all',
-            'export'
-        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
 
-        _buttonbox = RAMSTKModuleView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -344,37 +199,15 @@ class ModuleView(RAMSTKModuleView):
 
         return _buttonbox
 
-    def _make_treeview(self):
-        """
-        Set up the Function Module View RAMSTKTreeView().
-
-        This method sets all cells as non-editable to make the Function Module
-        View read-only.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _color = gtk.gdk.color_parse('#EEEEEE')
-        for _column in self.treeview.get_columns():
-            _cell = _column.get_cell_renderers()[0]
-            try:
-                _cell.set_property('editable', False)
-            except TypeError:
-                _cell.set_property('activatable', False)
-            _cell.set_property('cell-background-gdk', _color)
-
-        return _return
-
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Function package Module View RAMSTKTreeView().
+        Handle mouse clicks on the Function Module View RAMSTKTreeView().
 
         :param treeview: the Function Module View RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
+                      important attribute is which mouse button was
+                      clicked).
 
                                     * 1 = left
                                     * 2 = scrollwheel
@@ -391,108 +224,139 @@ class ModuleView(RAMSTKModuleView):
         treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
-        # _on_change_row is called from here, it gets called twice.  Once on
-        # the currently selected row and once on the newly selected row.  Thus,
-        # we don't need (or want) to respond to left button clicks.
+        # _on_change_row is called from here, it gets called twice.
+        # Once on the currently selected row and once on the newly
+        # selected row.  Thus, we don't need (or want) to respond to
+        # left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Sibling Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_(u"Add Child Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Function"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All Functions"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = [
+                'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+            ]
+            _labels = [
+                _(u"Add Sibling Function"),
+                _(u"Add Child Function"),
+                _(u"Remove the Selected Function"),
+                _(u"Save Selected Function"),
+                _(u"Save All Functions")
+            ]
+            _callbacks = [
+                self._do_request_insert_sibling, self._do_request_insert_child,
+                self._do_request_delete, self._do_request_update,
+                self._do_request_update_all
+            ]
+            RAMSTKModuleView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
         return False
 
-    def _on_edit(self, position, new_text):
+    def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
-        Update the Module View RAMSTKTreeView().
+        Handle edits of Function package Module View RAMSTKTreeview().
 
-        :ivar int position: the ordinal position in the Module Book
-                            gtk.TreeView() of the data being updated.
-        :ivar new_text: the new value of the attribute to be updated.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: :class:`gtk.CellRenderer`
+        :param str path: the gtk.TreeView() path of the
+                         gtk.CellRenderer() that was edited.
+        :param str new_text: the new text in the edited
+                             gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs
+                      to.
+        :type model: :class:`gtk.TreeStore`
+        :return: None
+        :rtype: None
         """
-        _model, _row = self.treeview.get_selection().get_selected()
+        _dic_keys = {
+            5: 'function_code',
+            15: 'name',
+            17: 'remarks',
+            18: 'safety_critical'
+        }
 
-        _model.set(_row, self._lst_col_order[position], new_text)
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
+                                          model):
+            try:
+                _key = _dic_keys[self._lst_col_order[position]]
+            except KeyError:
+                _key = None
 
-        return False
+            pub.sendMessage(
+                'mvw_editing_function',
+                module_id=self._function_id,
+                key=_key,
+                value=new_text)
 
-    def _on_select_revision(self, module_id):
+        return None
+
+    def _on_row_change(self, treeview):
         """
-        Load the Function Module View RAMSTKTreeView().
+        Handle events for the Function package Module Book RAMSTKTreeView().
 
-        This method is called whenever an RAMSTK Program database is opened.
+        This method is called whenever a Module Book RAMSTKTreeView() row is
+        activated.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param treeview: the Function Module View RAMSTKTreeView().
+        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
+        :return: None
+        :rtype: None
         """
-        self._revision_id = module_id
+        _attributes = {}
 
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['function']
-        _functions = self._dtc_data_controller.request_do_select_all(
-            revision_id=self._revision_id)
+        treeview.handler_block(self._lst_handler_id[0])
 
-        _return = RAMSTKModuleView.on_select_revision(self, tree=_functions)
-        if _return:
-            _prompt = _(u"An error occured while loading the Functions for "
-                        u"Revision ID {0:d} into the Module "
-                        u"View.").format(self._revision_id)
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == self._response_ok:
-                _dialog.do_destroy()
+        (_model, _row) = treeview.get_selection().get_selected()
 
-        return _return
+        _attributes['revision_id'] = _model.get_value(_row,
+                                                      self._lst_col_order[0])
+        _attributes['function_id'] = _model.get_value(_row,
+                                                      self._lst_col_order[1])
+        _attributes['availability_logistics'] = _model.get_value(
+            _row, self._lst_col_order[2])
+        _attributes['availability_mission'] = _model.get_value(
+            _row, self._lst_col_order[3])
+        _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
+        _attributes['function_code'] = _model.get_value(
+            _row, self._lst_col_order[5])
+        _attributes['hazard_rate_logistics'] = _model.get_value(
+            _row, self._lst_col_order[6])
+        _attributes['hazard_rate_mission'] = _model.get_value(
+            _row, self._lst_col_order[7])
+        _attributes['level'] = _model.get_value(_row, self._lst_col_order[8])
+        _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
+        _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[10])
+        _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[11])
+        _attributes['mtbf_logistics'] = _model.get_value(
+            _row, self._lst_col_order[12])
+        _attributes['mtbf_mission'] = _model.get_value(_row,
+                                                       self._lst_col_order[13])
+        _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
+        _attributes['name'] = _model.get_value(_row, self._lst_col_order[15])
+        _attributes['parent_id'] = _model.get_value(_row,
+                                                    self._lst_col_order[16])
+        _attributes['remarks'] = _model.get_value(_row,
+                                                  self._lst_col_order[17])
+        _attributes['safety_critical'] = _model.get_value(
+            _row, self._lst_col_order[18])
+        _attributes['total_mode_count'] = _model.get_value(
+            _row, self._lst_col_order[19])
+        _attributes['total_part_count'] = _model.get_value(
+            _row, self._lst_col_order[20])
+        _attributes['type_id'] = _model.get_value(_row,
+                                                  self._lst_col_order[21])
+
+        self._function_id = _attributes['function_id']
+        self._parent_id = _attributes['parent_id']
+        self._revision_id = _attributes['revision_id']
+
+        treeview.handler_unblock(self._lst_handler_id[0])
+
+        pub.sendMessage('selected_function', attributes=_attributes)
+
+        return None

@@ -4,39 +4,11 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""
-###############################################################################
-FMEA Package Assistants Module
-###############################################################################
-"""
-
-import gettext
-import sys
-
-# Modules required for the GUI.
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
+"""(D)FME(C)A Assistants Module"""
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
-
-_ = gettext.gettext
+from ramstk.gui.gtk.ramstk.Widget import _, gtk
 
 
 class AddControlAction(ramstk.RAMSTKDialog):
@@ -46,11 +18,7 @@ class AddControlAction(ramstk.RAMSTKDialog):
     """
 
     def __init__(self):
-        """
-        Method to initialize on instance of the Add Control or Action
-        Assistant.
-        """
-
+        """Initialize on instance of the Add Control or Action Assistant."""
         ramstk.RAMSTKDialog.__init__(
             self,
             _(u"RAMSTK FMEA/FMECA Design Control and "
@@ -69,7 +37,7 @@ class AddControlAction(ramstk.RAMSTKDialog):
         # Initialize public scalar attributes.
         self.rdoControl = ramstk.RAMSTKOptionButton(None, _(u"Add control"))
         self.rdoAction = ramstk.RAMSTKOptionButton(self.rdoControl,
-                                                _(u"Add action"))
+                                                   _(u"Add action"))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #
@@ -103,10 +71,9 @@ class AddControlAction(ramstk.RAMSTKDialog):
 
     def _cancel(self, __button):
         """
-        Method to destroy the assistant when the 'Cancel' button is
-        pressed.
+        Destroy the assistant when the 'Cancel' button is pressed.
 
-        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param __button: the gtk.Button() that called this method.
+        :type __button: :class:`gtk.Button`
         """
-
         self.destroy()

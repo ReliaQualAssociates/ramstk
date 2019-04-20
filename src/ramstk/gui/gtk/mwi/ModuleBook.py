@@ -126,7 +126,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         self.statusbar.push(1, _(u"Ready"))
 
         pub.subscribe(self._on_request_open, 'requestOpen')
-        pub.subscribe(self._on_open, 'openedProgram')
+        pub.subscribe(self._on_open, 'retrieved_revisions')
         pub.subscribe(self._on_close, 'closedProgram')
 
     def _make_menu(self):
@@ -357,7 +357,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         return None
 
-    def _on_open(self):
+    def _on_open(self, tree):
         """
         Update the status bar and clear the progress bar.
 

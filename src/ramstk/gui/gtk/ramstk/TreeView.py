@@ -23,16 +23,22 @@ class RAMSTKTreeView(gtk.TreeView):
     # Retain the arguments for backwards compatibility.  Once all current
     # RAMSTKTreeView() instances are updated to use the new API, the arguments
     # can be removed.
-    def __init__(self,
-                 fmt_path,
-                 fmt_idx,
-                 fmt_file,
-                 bg_col,
-                 fg_col,
-                 pixbuf=False,
-                 indexed=False):
-        """
-        Initialize an RAMSTKTreeView() instance.
+    def __init__(self, fmt_path, fmt_idx, fmt_file, bg_col, fg_col, **kwargs):
+        r"""
+        Initialize a RAMSTKTreeView() instance.
+
+        :param str fmt_path: the absolute path to the format file.
+        :param int fmt_idx: the index of the format file (deprecated).
+        :param str fmt_file: the name of the format file.
+        :param str bg_col: the hex string for the cell background color.
+        :param str fg_col: the hex string for the cell foreground color.
+        :param \**kwargs: See below
+
+        :Keyword Arguments:
+            * *pixbuf* (bool) -- indicates whether there is a pixbuf at the
+                                 beginning of each row.
+            * *indexed* (bool) -- indicates whether the data to load into the
+                                  tree will be indexed.
         """
         gtk.TreeView.__init__(self)
 
@@ -41,6 +47,14 @@ class RAMSTKTreeView(gtk.TreeView):
         # Initialize private list instance attributes:
 
         # Initialize private scalar instance attributes.
+        try:
+            _pixbuf = kwargs['pixbuf']
+        except KeyError:
+            _pixbuf = False
+        try:
+            _indexed = kwargs['indexed']
+        except KeyError:
+            _indexed = False
 
         # Initialize public dictionary instance attributes.
 
@@ -62,7 +76,8 @@ class RAMSTKTreeView(gtk.TreeView):
         # RAMSTKTreeView() instances are updated to use the new API, this if
         # block can be removed.
         if fmt_file is not None:
-            self.do_parse_format(fmt_path, fmt_file, pixbuf, indexed)
+            self.do_parse_format(
+                fmt_path, fmt_file, pixbuf=_pixbuf, indexed=_indexed)
             self.make_model(bg_col, fg_col)
 
     def do_parse_format(self, fmt_path, fmt_file, pixbuf=False, indexed=False):
@@ -150,78 +165,63 @@ class RAMSTKTreeView(gtk.TreeView):
         self.visible = [x for _, x in sorted(zip(self.order, self.visible))]
         self.widgets = [x for _, x in sorted(zip(self.order, self.widgets))]
 
-        return None
-
-    def make_model(self, bg_color='#000000', fg_color='#FFFFFF'):
-        """
-        Make the RAMSTKTreeView() data model.
-
-        :keyword str bg_col: the background color to use for each row.
-                             Defaults to white.
-        :keyword str fg_col: the foreground (text) color to use for each row.
-                             Defaults to black.
-        :return: None
-        :rtype: None
-        """
-        _types = []
-
-        # Create a list of GObject datatypes to pass to the model.
-        for i in range(len(self.datatypes)):  # pylint: disable=C0200
-            if self.datatypes[i] == 'pixbuf':
-                _types.append(gtk.gdk.Pixbuf)
-            else:
-                _types.append(gobject.type_from_name(self.datatypes[i]))
-
-        _model = gtk.TreeStore(*_types)
-        self.set_model(_model)
-
-        for _idx, _widget in enumerate(self.widgets):
-            if _widget == 'combo':
-                _cell = self._do_make_combo_cell()
-                self._do_set_properties(_cell, bg_color, fg_color,
-                                        self.editable[_idx])
-            elif _widget == 'spin':
-                _cell = self._do_make_spin_cell()
-                self._do_set_properties(_cell, bg_color, fg_color,
-                                        self.editable[_idx])
-            elif _widget == 'toggle':
-                _cell = self._do_make_toggle_cell(self.editable[_idx])
-                self._do_set_properties(_cell, bg_color, fg_color,
-                                        self.editable[_idx])
-            elif _widget == 'blob':
-                _cell = self._do_make_text_cell(True)
-                self._do_set_properties(_cell, bg_color, fg_color,
-                                        self.editable[_idx])
-            else:
-                _cell = self._do_make_text_cell()
-                self._do_set_properties(_cell, bg_color, fg_color,
-                                        self.editable[_idx])
-
-            if self.pixbuf_col is not None and _idx == 0:
-                _pbcell = gtk.CellRendererPixbuf()
-                _pbcell.set_property('xalign', 0.5)
-                _column = self._do_make_column(
-                    [_pbcell, _cell], self.visible[_idx], self.headings[_idx])
-                _column.set_attributes(_pbcell, pixbuf=self.pixbuf_col)
-            else:
-                _column = self._do_make_column([
-                    _cell,
-                ], self.visible[_idx], self.headings[_idx])
-            _column.set_cell_data_func(
-                _cell, self._format_cell,
-                (self.order[_idx], self.datatypes[_idx]))
-
-            if _widget == 'toggle':
-                _column.set_attributes(_cell, active=self.order[_idx])
-            elif _widget != 'pixbuf':
-                _column.set_attributes(_cell, text=self.order[_idx])
-
-            if _idx > 0:
-                _column.set_reorderable(True)
-
-            self.append_column(_column)
+        # Add a column at the end to hold a string representation of the
+        # attributes dict.
+        self.datatypes.append('gchararray')
+        self.editable.append(0)
+        self.headings.append('Attributes')
+        self.korder.append('dict')
+        self.order.append(len(self.order))
+        self.visible.append(0)
+        self.widgets.append('text')
 
         return None
+
+    def do_set_visible_columns(self, **kwargs):
+        """
+        Set the treeview columns visible, hidden, and/or editable.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        try:
+            _visible = kwargs['visible']
+        except KeyError:
+            _visible = []
+        try:
+            _hidden = kwargs['hidden']
+        except KeyError:
+            _hidden = []
+        try:
+            _editable = kwargs['editable']
+        except KeyError:
+            _editable = []
+        _return = False
+
+        for _col in _hidden:
+            self.get_column(_col).set_visible(0)
+        for _col in _visible:
+            self.get_column(_col).set_visible(1)
+            _column = self.get_column(_col)
+            _cells = _column.get_cell_renderers()
+            for __, _cell in enumerate(_cells):
+                try:
+                    _cell.set_property('background', 'light gray')
+                    _cell.set_property('editable', 0)
+                except TypeError:
+                    _cell.set_property('cell-background', 'light gray')
+
+        for _col in _editable:
+            _column = self.get_column(_col)
+            _cells = _column.get_cell_renderers()
+            for __, _cell in enumerate(_cells):
+                try:
+                    _cell.set_property('background', 'white')
+                    _cell.set_property('editable', 1)
+                except TypeError:
+                    _cell.set_property('cell-background', 'white')
+
+        return _return
 
     def do_load_tree(self, tree, row=None):
         """
@@ -243,23 +243,29 @@ class RAMSTKTreeView(gtk.TreeView):
 
         _attributes = []
         if _entity is not None:
-            # For simple data models that return an RAMSTK database table
-            # instance for the data object, the first try statement will create
-            # the list of attribute values.
+            # For simple data models that return an RAMSTK database
+            # table instance for the data object, the first try
+            # statement will create the list of attribute values.
             try:
                 _temp = _entity.get_attributes()
                 for _key in self.korder:
-                    if isinstance(_temp[_key], datetime.date):
-                        _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
-                    _attributes.append(_temp[_key])
+                    if _key == 'dict':
+                        _attributes.append(str(_temp))
+                    else:
+                        if isinstance(_temp[_key], datetime.date):
+                            _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
+                        _attributes.append(_temp[_key])
             except AttributeError:
-                # For aggregate data models (Hardware, Software) that return a
-                # dictionary of attributes from ALL associated RAMSTK database
-                # tables, this try statement will create the list of attribute
-                # values.
+                # For aggregate data models (Hardware, Software) that
+                # return a dictionary of attributes from ALL associated
+                # RAMSTK database tables, this try statement will create
+                # the list of attribute values.
                 try:
                     for _key in self.korder:
-                        _attributes.append(_entity[_key])
+                        if _key == 'dict':
+                            _attributes.append(str(_entity))
+                        else:
+                            _attributes.append(_entity[_key])
                 except TypeError:
                     _return = True
 
@@ -434,6 +440,71 @@ class RAMSTKTreeView(gtk.TreeView):
             model[path][position] = float(new_text)
 
         return _return
+
+    def make_model(self, bg_color='#000000', fg_color='#FFFFFF'):
+        """
+        Make the RAMSTKTreeView() data model.
+
+        :keyword str bg_col: the background color to use for each row.
+                             Defaults to white.
+        :keyword str fg_col: the foreground (text) color to use for each row.
+                             Defaults to black.
+        :return: None
+        :rtype: None
+        """
+        _types = []
+
+        # Create a list of GObject datatypes to pass to the model.
+        for i in range(len(self.datatypes)):  # pylint: disable=C0200
+            if self.datatypes[i] == 'pixbuf':
+                _types.append(gtk.gdk.Pixbuf)
+            elif self.datatypes[i] == 'pyobject':
+                _types.append(gobject.TYPE_PYOBJECT)
+            else:
+                _types.append(gobject.type_from_name(self.datatypes[i]))
+
+        _model = gtk.TreeStore(*_types)
+        self.set_model(_model)
+
+        for _idx, _widget in enumerate(self.widgets):
+            if _widget == 'combo':
+                _cell = self._do_make_combo_cell()
+            elif _widget == 'spin':
+                _cell = self._do_make_spin_cell()
+            elif _widget == 'toggle':
+                _cell = self._do_make_toggle_cell(self.editable[_idx])
+            elif _widget == 'blob':
+                _cell = self._do_make_text_cell(True)
+            else:
+                _cell = self._do_make_text_cell()
+            self._do_set_properties(_cell, bg_color, fg_color,
+                                    self.editable[_idx])
+
+            if self.pixbuf_col is not None and _idx == 0:
+                _pbcell = gtk.CellRendererPixbuf()
+                _pbcell.set_property('xalign', 0.5)
+                _column = self._do_make_column(
+                    [_pbcell, _cell], self.visible[_idx], self.headings[_idx])
+                _column.set_attributes(_pbcell, pixbuf=self.pixbuf_col)
+            else:
+                _column = self._do_make_column([
+                    _cell,
+                ], self.visible[_idx], self.headings[_idx])
+            _column.set_cell_data_func(
+                _cell, self._format_cell,
+                (self.order[_idx], self.datatypes[_idx]))
+
+            if _widget == 'toggle':
+                _column.set_attributes(_cell, active=self.order[_idx])
+            elif _widget != 'pixbuf':
+                _column.set_attributes(_cell, text=self.order[_idx])
+
+            if _idx > 0:
+                _column.set_reorderable(True)
+
+            self.append_column(_column)
+
+        return None
 
     @staticmethod
     def _format_cell(__column, cell, model, row, data):

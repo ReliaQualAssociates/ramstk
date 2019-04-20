@@ -24,6 +24,8 @@ __email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
+ATTRIBUTES = {'revision_id': 1, 'site_dao': '', 'site': True, 'user': True}
+
 try:
     VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
 except KeyError:
@@ -209,7 +211,7 @@ def test_request_do_select_all(test_dao, test_common_dao, test_configuration):
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
 
-    assert not DUT.request_do_select_all(site=True, user=True)
+    assert not DUT.request_do_select_all(ATTRIBUTES)
 
 
 @pytest.mark.integration
@@ -218,7 +220,7 @@ def test_request_get_preferences_site(test_dao, test_common_dao,
     """ request_get_preferences() should return a dict of dicts of site option:value pairs. """
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    DUT.request_do_select_all(site=True, user=True)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _preferences = DUT.request_get_preferences(site=True, user=False)
 
@@ -240,7 +242,7 @@ def test_request_get_preferences_user(test_dao, test_common_dao,
     """ request_get_preferences() should return a dict of program option:value pairs. """
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    DUT.request_do_select_all(site=True, user=True)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     _preferences = DUT.request_get_preferences(site=False, user=True)
 
@@ -257,7 +259,7 @@ def test_request_do_update(test_dao, test_common_dao, test_configuration):
     """ request_do_update() should return False on success. """
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    DUT.request_do_select_all(site=True, user=True)
+    DUT.request_do_select_all(ATTRIBUTES)
 
     DUT.request_get_preferences(site=False, user=True)
     DUT._dtm_data_model.user_preferences['hr_multiplier'] = 1.0

@@ -12,7 +12,7 @@ from pubsub import pub
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.ramstk.Widget import _
 from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                        AssessmentResults)
+                                                           AssessmentResults)
 
 
 class ResistorAssessmentInputs(AssessmentInputs):
@@ -122,28 +122,29 @@ class ResistorAssessmentInputs(AssessmentInputs):
     }
     # Key is subcategory ID; index is construction ID.
     _dic_construction = {
-        10: ["2", "3", "4", "5"],
+        10: [["RR0900A2A9J103"], ["RR0900A3A9J103"], ["RR0900A4A9J103"],
+             ["RR0900A5A9J103"]],
         12: [[_(u"Enclosed")], [_(u"Unenclosed")]]
     }
 
-    def __init__(self, controller, **kwargs):
-        """
-        Initialize an instance of the Resistor assessment input view.
+    # Define private list attributes.
+    _lst_labels = [
+        _(u"Quality Level:"),
+        _(u"Resistance (\u03A9):"),
+        _(u"Specification:"),
+        _(u"Type:"),
+        _(u"Style:"),
+        _(u"Construction:"),
+        _(u"Number of Elements:")
+    ]
 
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`ramstk.hardware.Controller.HardwareBoMDataController`
-        """
-        AssessmentInputs.__init__(self, controller, **kwargs)
+    def __init__(self, **kwargs):
+        """Initialize an instance of the Resistor assessment input view."""
+        AssessmentInputs.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_labels.append(_(u"Resistance (\u03A9):"))
-        self._lst_labels.append(_(u"Specification:"))
-        self._lst_labels.append(_(u"Type:"))
-        self._lst_labels.append(_(u"Style:"))
-        self._lst_labels.append(_(u"Construction:"))
-        self._lst_labels.append(_(u"Number of Elements:"))
 
         # Initialize private scalar attributes.
 
@@ -191,114 +192,119 @@ class ResistorAssessmentInputs(AssessmentInputs):
         self._lst_handler_id.append(
             self.txtNElements.connect('changed', self._on_focus_out, 6))
 
-    def _do_load_comboboxes(self, **kwargs):
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
+        pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+
+    def _do_load_comboboxes(self, subcategory_id):
         """
         Load the Resisotr RKTComboBox()s.
 
         :param int subcategory_id: the newly selected resistor subcategory ID.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _attributes = AssessmentInputs.do_load_comboboxes(self, **kwargs)
-
         # Load the quality level RAMSTKComboBox().
-        if _attributes['hazard_rate_method_id'] == 1:
-            _data = ["S", "R", "P", "M", ["MIL-SPEC"], [_(u"Lower")]]
-        else:
-            try:
-                _data = self._dic_quality[self._subcategory_id]
-            except KeyError:
-                _data = []
+        try:
+            if self._hazard_rate_method_id == 1:
+                _data = ["S", "R", "P", "M", ["MIL-SPEC"], [_(u"Lower")]]
+            else:
+                _data = self._dic_quality[subcategory_id]
+        except KeyError:
+            _data = []
         self.cmbQuality.do_load_combo(_data)
 
         # Load the specification RAMSTKComboBox().
         try:
-            _data = self._dic_specifications[self._subcategory_id]
+            _data = self._dic_specifications[subcategory_id]
         except KeyError:
             _data = []
         self.cmbSpecification.do_load_combo(_data)
 
         # Load the type RAMSTKComboBox().
-        if _attributes['hazard_rate_method_id'] == 1:
-            try:
-                _data = self._dic_types[self._subcategory_id]
-            except KeyError:
-                _data = []
-        else:
-            _data = [[_(u"Bead")], [_(u"Disk")], [_(u"Rod")]]
+        try:
+            if self._hazard_rate_method_id == 1:
+                _data = self._dic_types[subcategory_id]
+            else:
+                _data = [[_(u"Bead")], [_(u"Disk")], [_(u"Rod")]]
+        except KeyError:
+            _data = []
         self.cmbType.do_load_combo(_data)
 
         # Load the style RAMSTKComboBox().
+        _specification_id = int(self.cmbSpecification.get_active())
         try:
-            _data = self._dic_styles[_attributes['subcategory_id']][
-                _attributes['specification_id']]
+            _data = self._dic_styles[subcategory_id][_specification_id]
         except (KeyError, IndexError):
             _data = []
         self.cmbStyle.do_load_combo(_data)
 
         # Load the construction RAMSTKComboBox().
         try:
-            _data = self._dic_construction[self._subcategory_id]
+            _data = self._dic_construction[subcategory_id]
         except KeyError:
             _data = []
         self.cmbConstruction.do_load_combo(_data)
 
-        return _return
+        return None
 
-    def _do_load_page(self, **kwargs):
+    def _do_load_page(self, attributes):
         """
         Load the Resistor assesment input widgets.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param dict attributes: the attributes dictionary for the selected
+                                Resistor.
+        :return: None
+        :rtype: None
         """
-        _return = False
+        self._hardware_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        _attributes = AssessmentInputs.do_load_page(self, **kwargs)
+        self._do_load_comboboxes(self._subcategory_id)
+
+        self.cmbQuality.handler_block(self._lst_handler_id[0])
+        self.cmbQuality.set_active(attributes['quality_id'])
+        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
 
         self.cmbType.handler_block(self._lst_handler_id[2])
-        self.cmbType.set_active(_attributes['type_id'])
+        self.cmbType.set_active(attributes['type_id'])
         self.cmbType.handler_unblock(self._lst_handler_id[2])
 
-        if _attributes['hazard_rate_method_id'] == 2:
+        if self._hazard_rate_method_id == 2:
             self.cmbSpecification.handler_block(self._lst_handler_id[1])
-            self.cmbSpecification.set_active(_attributes['specification_id'])
+            self.cmbSpecification.set_active(attributes['specification_id'])
             self.cmbSpecification.handler_unblock(self._lst_handler_id[1])
 
             self.cmbStyle.handler_block(self._lst_handler_id[3])
-            self.cmbStyle.set_active(_attributes['family_id'])
+            self.cmbStyle.set_active(attributes['family_id'])
             self.cmbStyle.handler_unblock(self._lst_handler_id[3])
 
             self.cmbConstruction.handler_block(self._lst_handler_id[4])
-            self.cmbConstruction.set_active(_attributes['construction_id'])
+            self.cmbConstruction.set_active(attributes['construction_id'])
             self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
 
             self.txtResistance.handler_block(self._lst_handler_id[5])
             self.txtResistance.set_text(
-                str(self.fmt.format(_attributes['resistance'])))
+                str(self.fmt.format(attributes['resistance'])))
             self.txtResistance.handler_unblock(self._lst_handler_id[5])
 
             self.txtNElements.handler_block(self._lst_handler_id[6])
             self.txtNElements.set_text(
-                str(self.fmt.format(_attributes['n_elements'])))
+                str(self.fmt.format(attributes['n_elements'])))
             self.txtNElements.handler_unblock(self._lst_handler_id[6])
 
-        return _return
+        self._do_set_sensitive()
+
+        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
         Set widget sensitivity as needed for the selected resistor.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
         self.cmbQuality.set_sensitive(True)
         self.cmbSpecification.set_sensitive(False)
         self.cmbType.set_sensitive(False)
@@ -307,10 +313,10 @@ class ResistorAssessmentInputs(AssessmentInputs):
         self.txtResistance.set_sensitive(False)
         self.txtNElements.set_sensitive(False)
 
-        if _attributes['hazard_rate_method_id'] == 1:
+        if self._hazard_rate_method_id == 1:
             if self._subcategory_id in [1, 2, 5, 6, 7, 9, 11, 13, 15]:
                 self.cmbType.set_sensitive(True)
-        elif _attributes['hazard_rate_method_id'] == 2:
+        elif self._hazard_rate_method_id == 2:
             self.txtResistance.set_sensitive(True)
             if self._subcategory_id in [2, 6, 7, 15]:
                 self.cmbSpecification.set_sensitive(True)
@@ -327,18 +333,15 @@ class ResistorAssessmentInputs(AssessmentInputs):
             else:
                 self.txtNElements.set_sensitive(False)
 
-        return _return
+        return None
 
     def _make_page(self):
         """
         Make the Hardware class gtk.Notebook() assessment input page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        self._do_load_comboboxes(subcategory_id=self._subcategory_id)
-        self._do_set_sensitive()
-
         # Build the container for inductors.
         _x_pos, _y_pos = AssessmentInputs.make_page(self)
 
@@ -374,31 +377,39 @@ class ResistorAssessmentInputs(AssessmentInputs):
             |    2    | cmbType          |    4    | cmbConstruction  |
             +---------+------------------+---------+------------------+
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        _dic_keys = {
+            0: 'quality_id',
+            1: 'specification_id',
+            2: 'type_id',
+            3: 'family_id',
+            4: 'construction_id'
+        }
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         combo.handler_block(self._lst_handler_id[index])
 
-        _attributes = AssessmentInputs.on_combo_changed(self, combo, index)
+        try:
+            _new_text = int(combo.get_active())
+        except ValueError:
+            _new_text = 0
 
-        if _attributes:
-            if index == 1:
-                _attributes['specification_id'] = int(combo.get_active())
-            elif index == 2:
-                _attributes['type_id'] = int(combo.get_active())
-            elif index == 3:
-                _attributes['family_id'] = int(combo.get_active())
-            elif index == 4:
-                _attributes['construction_id'] = int(combo.get_active())
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
+        # Only publish the message if something is selected in the ComboBox.
+        if _new_text != -1:
+            pub.sendMessage(
+                'wvw_editing_hardware',
+                module_id=self._hardware_id,
+                key=_key,
+                value=_new_text)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
-        return _return
+        return None
 
     def _on_focus_out(self, entry, index):
         """
@@ -422,49 +433,31 @@ class ResistorAssessmentInputs(AssessmentInputs):
             |    5    | txtResistance       |    6    | txtNElements        |
             +---------+---------------------+---------+---------------------+
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-        _text = ''
+        _dic_keys = {5: 'resistance', 6: 'n_elements'}
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
+        try:
+            _new_text = float(entry.get_text())
+        except ValueError:
+            _new_text = 0.0
 
-            try:
-                _text = float(entry.get_text())
-            except ValueError:
-                _text = 0.0
-
-            if index == 5:
-                _attributes['resistance'] = _text
-            elif index == 6:
-                _attributes['n_elements'] = _text
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
+        pub.sendMessage(
+            'wvw_editing_hardware',
+            module_id=self._hardware_id,
+            key=_key,
+            value=_new_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-        return _return
-
-    def on_select(self, module_id, **kwargs):
-        """
-        Load the resistor assessment input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              resistor.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._hardware_id = module_id
-
-        self._do_set_sensitive(**kwargs)
-
-        return self._do_load_page(**kwargs)
+        return None
 
 
 class ResistorAssessmentResults(AssessmentResults):
@@ -518,14 +511,9 @@ class ResistorAssessmentResults(AssessmentResults):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
-    def __init__(self, controller, **kwargs):
-        """
-        Initialize an instance of the Resistor assessment result view.
-
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`ramstk.hardware.Controller.HardwareBoMDataController`
-        """
-        AssessmentResults.__init__(self, controller, **kwargs)
+    def __init__(self, **kwargs):
+        """Initialize an instance of the Resistor assessment result view."""
+        AssessmentResults.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -581,38 +569,43 @@ class ResistorAssessmentResults(AssessmentResults):
         self._make_page()
         self.show_all()
 
-        pub.subscribe(self._do_load_page, 'calculatedHardware')
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_page, 'loaded_hardware_results')
 
-    def _do_load_page(self, **kwargs):
+    def _do_load_page(self, attributes):
         """
         Load the Resistor assessment results page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param dict attributes: the attributes dictionary for the selected
+                                Resistor.
+        :return: None
+        :rtype: None
         """
-        _return = False
+        AssessmentResults.do_load_page(self, attributes)
 
-        _attributes = AssessmentResults.do_load_page(self, **kwargs)
+        self._hardware_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
-        self.txtPiR.set_text(str(self.fmt.format(_attributes['piR'])))
-        self.txtPiT.set_text(str(self.fmt.format(_attributes['piT'])))
-        self.txtPiNR.set_text(str(self.fmt.format(_attributes['piNR'])))
-        self.txtPiTAPS.set_text(str(self.fmt.format(_attributes['piTAPS'])))
-        self.txtPiV.set_text(str(self.fmt.format(_attributes['piV'])))
-        self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
+        self.txtPiR.set_text(str(self.fmt.format(attributes['piR'])))
+        self.txtPiT.set_text(str(self.fmt.format(attributes['piT'])))
+        self.txtPiNR.set_text(str(self.fmt.format(attributes['piNR'])))
+        self.txtPiTAPS.set_text(str(self.fmt.format(attributes['piTAPS'])))
+        self.txtPiV.set_text(str(self.fmt.format(attributes['piV'])))
+        self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
 
-        return _return
+        self._do_set_sensitive()
+
+        return None
 
     def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected resistor.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = AssessmentResults.do_set_sensitive(self, **kwargs)
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        AssessmentResults.do_set_sensitive(self, **kwargs)
 
         self.txtPiR.set_sensitive(False)
         self.txtPiT.set_sensitive(False)
@@ -621,27 +614,27 @@ class ResistorAssessmentResults(AssessmentResults):
         self.txtPiV.set_sensitive(False)
         self.txtPiC.set_sensitive(False)
 
-        if _attributes['hazard_rate_method_id'] == 2:
+        if self._hazard_rate_method_id == 2:
             self.txtPiE.set_sensitive(True)
-            if _attributes['subcategory_id'] != 8:
+            if self._subcategory_id != 8:
                 self.txtPiR.set_sensitive(True)
-            if _attributes['subcategory_id'] == 4:
+            if self._subcategory_id == 4:
                 self.txtPiT.set_sensitive(True)
                 self.txtPiNR.set_sensitive(True)
-            if _attributes['subcategory_id'] in [9, 10, 11, 12, 13, 14, 15]:
+            if self._subcategory_id in [9, 10, 11, 12, 13, 14, 15]:
                 self.txtPiTAPS.set_sensitive(True)
                 self.txtPiV.set_sensitive(True)
-            if _attributes['subcategory_id'] in [10, 12]:
+            if self._subcategory_id in [10, 12]:
                 self.txtPiC.set_sensitive(True)
 
-        return _return
+        return None
 
     def _make_page(self):
         """
         Make the resistor gtk.Notebook() assessment results page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         # Build the container for resistors.
         _x_pos, _y_pos = AssessmentResults.make_page(self)
@@ -654,18 +647,3 @@ class ResistorAssessmentResults(AssessmentResults):
         self.put(self.txtPiC, _x_pos, _y_pos[8])
 
         return None
-
-    def on_select(self, module_id, **kwargs):
-        """
-        Load the resistor assessment input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              resistor.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._hardware_id = module_id
-
-        self._do_set_sensitive(**kwargs)
-
-        return self._do_load_page(**kwargs)

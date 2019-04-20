@@ -243,60 +243,6 @@ class RAMSTKBaseMatrix(object):
         cell.set_property('yalign', 0.1)
         cell.connect('changed', self._do_edit_cell, position, col_index, model)
 
-    def _make_buttonbox(self, **kwargs):
-        """
-        Create the buttonbox for RAMSTK Matrix Views.
-
-        This method creates the base buttonbox used by all RAMSTK Matrix Views.
-        Use a buttonbox for an RAMSTK Matrix View if there are only buttons to be
-        added.
-
-        :return: _buttonbox
-        :rtype: :class:`gtk.ButtonBox`
-        """
-        _icons = kwargs['icons']
-        _tooltips = kwargs['tooltips']
-        _callbacks = kwargs['callbacks']
-        _orientation = kwargs['orientation']
-        _height = kwargs['height']
-        _width = kwargs['width']
-
-        if _orientation == 'horizontal':
-            _buttonbox = gtk.HButtonBox()
-        else:
-            _buttonbox = gtk.VButtonBox()
-
-        _buttonbox.set_layout(gtk.BUTTONBOX_START)
-
-        i = 0
-        for _icon in _icons:
-            _image = gtk.Image()
-            _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                self._dic_icons[_icon], _height, _width)
-            _image.set_from_pixbuf(_icon)
-
-            _button = gtk.Button()
-            _button.set_image(_image)
-
-            _button.props.width_request = _width
-            _button.props.height_request = _height
-
-            try:
-                _button.set_tooltip_markup(_tooltips[i])
-            except IndexError:
-                _button.set_tooltip_markup("")
-
-            try:
-                _button.connect('clicked', _callbacks[i])
-            except IndexError:
-                _button.set_sensitive(False)
-
-            _buttonbox.pack_start(_button)
-
-            i += 1
-
-        return _buttonbox
-
     @staticmethod
     def _make_combo_cell():
         """
