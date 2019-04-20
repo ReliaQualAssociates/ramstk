@@ -510,12 +510,16 @@ class AssessmentResults(gtk.Fixed):
         :return: None
         :rtype: None
         """
+        self._hardware_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
+
         # Display the correct calculation model.
-        if attributes['hazard_rate_method_id'] == 1:
+        if self._hazard_rate_method_id == 1:
             self._lblModel.set_markup(
                 u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
             )
-        elif attributes['hazard_rate_method_id'] == 2:
+        elif self._hazard_rate_method_id == 2:
             try:
                 self._lblModel.set_markup(
                     self._dic_part_stress[self._subcategory_id])

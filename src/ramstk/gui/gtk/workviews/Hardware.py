@@ -1147,9 +1147,6 @@ class AssessmentInputs(RAMSTKWorkView):
         RAMSTKWorkView.__init__(self, controller, module='Hardware')
 
         # Initialize private dictionary attributes.
-        #self._dic_assessment_input = {,
-        #                   7: wvwSwitchAI(),
-        #              }
         self._dic_assessment_input = {
             1: wvwIntegratedCircuitAI(fmt=self.fmt),
             2: wvwSemiconductorAI(fmt=self.fmt),
@@ -1157,6 +1154,7 @@ class AssessmentInputs(RAMSTKWorkView):
             4: wvwCapacitorAI(fmt=self.fmt),
             5: wvwInductorAI(fmt=self.fmt),
             6: wvwRelayAI(fmt=self.fmt),
+            7: wvwSwitchAI(fmt=self.fmt),
             8: wvwConnectionAI(fmt=self.fmt),
             9: wvwMeterAI(fmt=self.fmt),
             10: wvwMiscellaneousAI(fmt=self.fmt)
@@ -1388,6 +1386,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :rtype: None
         """
         self._hardware_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
         # Retrieve the appropriate component-specific work views.
         try:
@@ -2067,9 +2067,6 @@ class AssessmentResults(RAMSTKWorkView):
         RAMSTKWorkView.__init__(self, controller, module='Hardware')
 
         # Initialize private dictionary attributes.
-        #self._dic_assessment_results = {
-        #                   7: wvwSwitchAI(),
-        #              }
         self._dic_assessment_results = {
             1: wvwIntegratedCircuitAR(fmt=self.fmt),
             2: wvwSemiconductorAR(fmt=self.fmt),
@@ -2077,6 +2074,7 @@ class AssessmentResults(RAMSTKWorkView):
             4: wvwCapacitorAR(fmt=self.fmt),
             5: wvwInductorAR(fmt=self.fmt),
             6: wvwRelayAR(fmt=self.fmt),
+            7: wvwSwitchAR(fmt=self.fmt),
             8: wvwConnectionAR(fmt=self.fmt),
             9: wvwMeterAR(fmt=self.fmt),
             10: wvwMiscellaneousAR(fmt=self.fmt)
@@ -2336,6 +2334,8 @@ class AssessmentResults(RAMSTKWorkView):
         :rtype: None
         """
         self._hardware_id = attributes['hardware_id']
+        self._subcategory_id = attributes['subcategory_id']
+        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
         # Retrieve the appropriate component-specific work views and add them
         # to the gtk.ScrolledWindow()s.
