@@ -11,7 +11,7 @@ from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .ModuleView import RAMSTKModuleView
 
 
@@ -43,7 +43,6 @@ class ModuleView(RAMSTKModuleView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._parent_id = None
         self._requirement_id = None
 
         # Initialize public dictionary attributes.
@@ -52,6 +51,56 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_load_tree, 'retrieved_requirements')
+        pub.subscribe(self.do_load_tree, 'deleted_requirement')
+        pub.subscribe(self.do_load_tree, 'inserted_requirement')
+        pub.subscribe(self._do_load_code, 'created_requirement_code')
+        pub.subscribe(self._do_refresh_tree, 'wvw_editing_requirement')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Requirement Module View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement class
+                 Module View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Adds a new Requirement at the same hierarchy level as the "
+              u"selected Requirement (i.e., a sibling Requirement)."),
+            _(u"Adds a new Requirement one level subordinate to the selected "
+              u"Requirement (i.e., a derived requirement)."),
+            _(u"Remove the currently selected Requirement."),
+            _(u"Exports Requirementss to an external file (CSV, Excel, and "
+              u"text files are supported).")
+        ]
+        _callbacks = [
+            self.do_request_insert_sibling, self.do_request_insert_child,
+            self._do_request_delete, self._do_request_export
+        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
         self.make_treeview()
         self.treeview.set_tooltip_text(
             _(u"Displays the hierarchical list of "
@@ -70,12 +119,7 @@ class ModuleView(RAMSTKModuleView):
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_tree, 'retrieved_requirements')
-        pub.subscribe(self.do_load_tree, 'deleted_requirement')
-        pub.subscribe(self.do_load_tree, 'inserted_requirement')
-        pub.subscribe(self._do_load_code, 'created_requirement_code')
-        pub.subscribe(self._do_refresh_tree, 'wvw_editing_requirement')
+        return None
 
     def _do_load_code(self, code):
         """
@@ -195,40 +239,6 @@ class ModuleView(RAMSTKModuleView):
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Requirement Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement class
-                 Module View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Adds a new Requirement at the same hierarchy level as the "
-              u"selected Requirement (i.e., a sibling Requirement)."),
-            _(u"Adds a new Requirement one level subordinate to the selected "
-              u"Requirement (i.e., a derived requirement)."),
-            _(u"Remove the currently selected Requirement."),
-            _(u"Exports Requirementss to an external file (CSV, Excel, and "
-              u"text files are supported).")
-        ]
-        _callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
-            self._do_request_delete, self._do_request_export
-        ]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def _on_button_press(self, treeview, event):
         """
@@ -440,6 +450,7 @@ class ModuleView(RAMSTKModuleView):
         _attributes['q_verifiable_5'] = _model.get_value(
             _row, self._lst_col_order[47])
 
+        # pylint: disable=attribute-defined-outside-init
         self._parent_id = _attributes['parent_id']
         self._requirement_id = _attributes['requirement_id']
         self._revision_id = _attributes['revision_id']

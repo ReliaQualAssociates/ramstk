@@ -11,7 +11,7 @@ from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .ModuleView import RAMSTKModuleView
 
 
@@ -39,14 +39,14 @@ class ModuleView(RAMSTKModuleView):
         RAMSTKModuleView.__init__(self, controller, module='function')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/function.png'
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self._function_id = None
-        self._parent_id = None
 
         # Initialize public dictionary attributes.
 
@@ -54,12 +54,58 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
+        self.__make_ui()
+        self.__set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_load_tree, 'deleted_function')
+        pub.subscribe(self.do_load_tree, 'inserted_function')
+        pub.subscribe(self.do_load_tree, 'retrieved_functions')
+        pub.subscribe(self.do_refresh_tree, 'wvw_editing_function')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Function class Module View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Module
+                 View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Adds a new Function at the same hierarchy level as "
+              u"the selected Function (i.e., a sibling Function)."),
+            _(u"Adds a new Function one level subordinate to the "
+              u"selected Function (i.e., a child function)."),
+            _(u"Remove the currently selected Function."),
+            _(u"Exports Functions to an external file (CSV, Excel, and "
+              u"text files are supported).")
+        ]
+        _callbacks = [
+            self.do_request_insert_sibling, self.do_request_insert_child,
+            self._do_request_delete, self._do_request_export
+        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
         self.make_treeview(editable=[5, 15, 17, 18])
         self.treeview.set_tooltip_text(_(u"Displays the list of functions."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
         _label = ramstk.RAMSTKLabel(
@@ -70,11 +116,21 @@ class ModuleView(RAMSTKModuleView):
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_tree, 'deleted_function')
-        pub.subscribe(self.do_load_tree, 'inserted_function')
-        pub.subscribe(self.do_load_tree, 'retrieved_functions')
-        pub.subscribe(self.do_refresh_tree, 'wvw_editing_function')
+        return None
+
+    def __set_callbacks(self):
+        """
+        Set the callback functions.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.treeview.connect('cursor_changed', self._on_row_change))
+        self._lst_handler_id.append(
+            self.treeview.connect('button_press_event', self._on_button_press))
+
+        return None
 
     def _do_request_delete(self, __button):
         """
@@ -164,40 +220,6 @@ class ModuleView(RAMSTKModuleView):
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Function class Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Module
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Adds a new Function at the same hierarchy level as "
-              u"the selected Function (i.e., a sibling Function)."),
-            _(u"Adds a new Function one level subordinate to the "
-              u"selected Function (i.e., a child function)."),
-            _(u"Remove the currently selected Function."),
-            _(u"Exports Functions to an external file (CSV, Excel, and "
-              u"text files are supported).")
-        ]
-        _callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
-            self._do_request_delete, self._do_request_export
-        ]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def _on_button_press(self, treeview, event):
         """
@@ -351,6 +373,7 @@ class ModuleView(RAMSTKModuleView):
         _attributes['type_id'] = _model.get_value(_row,
                                                   self._lst_col_order[21])
 
+        # pylint: disable=attribute-defined-outside-init
         self._function_id = _attributes['function_id']
         self._parent_id = _attributes['parent_id']
         self._revision_id = _attributes['revision_id']

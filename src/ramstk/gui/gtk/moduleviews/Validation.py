@@ -11,7 +11,7 @@ from pubsub import pub
 # Import other RAMSTK modules.
 from ramstk.Utilities import date_to_ordinal
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .ModuleView import RAMSTKModuleView
 
 
@@ -20,8 +20,8 @@ class ModuleView(RAMSTKModuleView):
     Display Validation attribute data in the RAMSTK Module Book.
 
     The Validation Module View displays all the Validations associated with the
-    connected RAMSTK Program in a flat list.  The attributes of a Validation Module
-    View are:
+    connected RAMSTK Program in a flat list.  The attributes of a Validation
+    Module View are:
 
     :ivar int _validation_id: the ID of the currently selected Validation.
     """
@@ -51,6 +51,50 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_load_tree, 'retrieved_validations')
+        pub.subscribe(self._on_edit, 'wvwEditedValidation')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Create the Gtk.ButtonBox() for the Validation Module View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class
+                 Module View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Add a new Validation task."),
+            _(u"Remove the currently selected Validation task1."),
+            _(u"Exports Verification tasks to an external file (CSV, Excel, "
+              u"and text files are supported).")
+        ]
+        _callbacks = [
+            self._do_request_insert_sibling, self._do_request_delete,
+            self._do_request_export
+        ]
+        _icons = ['add', 'remove', 'export']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
         self.make_treeview()
         self.treeview.set_tooltip_text(
             _(u"Displays the list of validation "
@@ -80,9 +124,7 @@ class ModuleView(RAMSTKModuleView):
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_tree, 'retrieved_validations')
-        pub.subscribe(self._on_edit, 'wvwEditedValidation')
+        return None
 
     def _do_change_row(self, treeview):
         """
@@ -325,37 +367,6 @@ class ModuleView(RAMSTKModuleView):
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the Gtk.ButtonBox() for the Validation Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class
-                 Module View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Add a new Validation task."),
-            _(u"Remove the currently selected Validation task1."),
-            _(u"Exports Verification tasks to an external file (CSV, Excel, "
-              u"and text files are supported).")
-        ]
-        _callbacks = [
-            self._do_request_insert_sibling, self._do_request_delete,
-            self._do_request_export
-        ]
-        _icons = ['add', 'remove', 'export']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def _on_button_press(self, treeview, event):
         """

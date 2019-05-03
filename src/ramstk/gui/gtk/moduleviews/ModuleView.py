@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.moduleviews.ModuleView.py is part of the RAMSTK Project
@@ -8,7 +9,7 @@
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.assistants import ExportModule
-from ramstk.gui.gtk.ramstk.Widget from gi.repository import Gtk
+from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
 from ramstk.gui.gtk import ramstk
 
 
@@ -55,8 +56,18 @@ class RAMSTKModuleView(Gtk.HBox, ramstk.RAMSTKBaseView):
 
         # Initialize public scalar attributes.
 
+        self.__make_ui()
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
         _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
         _scrolledwindow.add_with_viewport(self._make_buttonbox())
         self.pack_start(_scrolledwindow, expand=False, fill=False)
 

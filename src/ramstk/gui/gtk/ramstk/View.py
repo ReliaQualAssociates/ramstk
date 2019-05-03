@@ -116,6 +116,7 @@ class RAMSTKBaseView(object):
             self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
         self._notebook = Gtk.Notebook()
         self._revision_id = None
+        self._parent_id = None
 
         # Initialize public dictionary attributes.
 
