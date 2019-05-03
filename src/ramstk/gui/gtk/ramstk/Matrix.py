@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       gui.gtk.ramstk.Matrix.py is part of The RAMSTK Project
@@ -6,15 +7,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKBaseMatrix Module."""
 
-# Import modules for localization support.
-import gettext
+# Modules for localization.
 import locale
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk import RAMSTKLabel
-from .Widget import gobject, gtk, pango
-
-_ = gettext.gettext
+from .Widget import _, GdkPixbuf, GObject, Gtk, Pango
 
 
 class RAMSTKBaseMatrix(object):
@@ -119,10 +117,9 @@ class RAMSTKBaseMatrix(object):
         # The first column will contain the Function ID and Function Code.
         _cell = Gtk.CellRendererText()
         _cell.set_property('background', 'light gray')
-        _column = self._make_column(
-            [
-                _cell,
-            ], '', visible=False)
+        _column = self._make_column([
+            _cell,
+        ], '', visible=False)
         _column.set_attributes(_cell, text=0)
         _cell = Gtk.CellRendererText()
         _cell.set_alignment(0.9, 0.5)

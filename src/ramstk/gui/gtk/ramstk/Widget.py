@@ -11,22 +11,15 @@ import sys
 import gettext
 
 # Modules required for the GUI.
-# Disable the unused-import because pango, pygtk, gtk, and gobject are all
+# Disable the unused-import because Gtk, Gdk, GObject, and Pango are all
 # imported from this module by all the other GUI modules.
-import pango  # pylint: disable=unused-import   # noqa
 try:
     import gi
     gi.require_version('Gtk', '3.0')
 except ImportError:
+    print("FAILED TO IMPORT gi")
     sys.exit(1)
-try:
-    from gi.repository import Gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject  # pylint: disable=unused-import     # noqa
-except ImportError:
-    sys.exit(1)
+from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'

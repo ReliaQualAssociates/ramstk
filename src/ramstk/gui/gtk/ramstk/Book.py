@@ -6,24 +6,11 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The Base RAMSTK Book."""
 
-import sys
-
-# Import modules for localization support.
-import gettext
+# Modules for localization support.
 import locale
 
-# Import modules required for the GUI.
-try:
-    import gi
-    gi.require_version('Gtk', '3.0')
-except ImportError:
-    sys.exit(1)
-try:
-    from gi.repository import Gtk
-except ImportError:
-    sys.exit(1)
-
-_ = gettext.gettext
+# Import the ramstk.Widget base class.
+from .Widget import Gdk, Gtk, GObject
 
 
 def destroy(__widget, __event=None):
@@ -80,7 +67,7 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
         :param controller: the RAMSTK master data controller.
         :type controller: :py:class:`ramstk.RAMSTK.RAMSTK`
         """
-        GObject.GObject.__init__(self)
+        GObject.GObject.__init__(self)      # pylint: disable=non-parent-init-called
 
         # Initialize private dictionary attributes.
 

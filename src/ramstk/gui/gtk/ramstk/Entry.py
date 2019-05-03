@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.Entry.py is part of the RAMSTK Project
@@ -7,7 +8,7 @@
 """RAMSTK Entry Module."""
 
 # Import the ramstk.Widget base class.
-from .Widget import gtk, pango  # pylint: disable=E0401
+from .Widget import Gdk, GObject, Gtk, Pango
 
 
 class RAMSTKEntry(Gtk.Entry):

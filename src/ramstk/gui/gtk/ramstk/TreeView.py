@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.TreeView.py is part of the RAMSTK Project
@@ -12,7 +13,7 @@ from sortedcontainers import SortedDict
 import defusedxml.lxml as lxml
 
 # Import other RAMSTK Widget classes.
-from .Widget import gobject, gtk, pango
+from .Widget import Gdk, GdkPixbuf, GObject, Gtk, Pango
 from .Label import RAMSTKLabel
 
 
@@ -629,7 +630,8 @@ class CellRendererML(Gtk.CellRendererText):
         self.textedit_window.connect('key-press-event', self._keyhandler)
 
         scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                   Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_property('visible', True)
         # self.textedit_window.vbox.pack_start(scrolled_window, True, True, 0)
 

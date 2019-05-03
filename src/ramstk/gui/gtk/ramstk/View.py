@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.View.py is part of the RAMSTK Project
@@ -14,7 +15,7 @@ from pubsub import pub
 
 # Import other RAMSTK Widget classes.
 from ramstk.Utilities import none_to_default
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, Gtk
 from ramstk.gui.gtk.ramstk import (RAMSTKMessageDialog, RAMSTKTreeView)
 
 
@@ -159,6 +160,7 @@ class RAMSTKBaseView(object):
         pub.subscribe(self.do_set_revision_id, 'selected_revision')
 
     def do_set_revision_id(self, attributes):
+        """Set the Revision ID when a new Revision is selected."""
         self._revision_id = attributes['revision_id']
 
         return None
@@ -296,7 +298,8 @@ class RAMSTKBaseView(object):
         return self._do_request_insert(sibling=True, **kwargs)
 
     def do_set_cursor(self, cursor):
-        # TODO: Move set_cursor code here after everthing has been updated.
+        """Set the cursor for the view."""
+        # TODO: Move set_cursor code from Widgets.py here after everthing has been updated.
         return self.set_cursor(cursor)
 
     def _make_toolbar(self,

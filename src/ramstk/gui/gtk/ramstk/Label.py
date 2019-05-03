@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.Label.py is part of the RAMSTK Project
@@ -7,7 +8,7 @@
 """RAMSTK Label Module."""
 
 # Import the ramstk.Widget base class.
-from .Widget import gtk, pango  # pylint: disable=E0401
+from .Widget import GObject, Gtk, Pango
 
 
 def make_label_group(text, container, x_pos, y_pos, **kwargs):

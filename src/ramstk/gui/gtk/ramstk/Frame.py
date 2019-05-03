@@ -1,37 +1,27 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.Frame.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""
-Frame Module
--------------------------------------------------------------------------------
-
-This module contains RAMSTK frame classes.  These classes are derived from the
-applicable pyGTK frame, but are provided with RAMSTK specific property values
-and methods.  This ensures a consistent look and feel to widgets in the RAMSTK
-application.
-"""
+"""The RAMSTK Frame Module."""
 
 # Import other RAMSTK Widget classes.
-from .Widget import _, gtk  # pylint: disable=E0401
-from .Label import RAMSTKLabel  # pylint: disable=E0401
+from .Widget import _, GObject, Gtk
+from .Label import RAMSTKLabel
 
 
 class RAMSTKFrame(Gtk.Frame):
-    """
-    This is the RAMSTK Frame class.
-    """
+    """This is the RAMSTK Frame class."""
 
     def __init__(self, label=_("")):
         """
-        Method to create an RAMSTK Frame widget.
+        Initialize an instance of the RAMSTK Frame.
 
         :keyword str label: the text to display in the RAMSTK Frame label.
                             Default is an empty string.
         """
-
         GObject.GObject.__init__(self)
 
         _label = RAMSTKLabel(label, width=-1)

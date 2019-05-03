@@ -54,7 +54,7 @@ from ramstk.modules.preferences import dtcPreferences
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.exports import dtcExports
 
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gtk
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook
 from ramstk.gui.gtk.mwi import ModuleBook

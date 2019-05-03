@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.Combo.py is part of the RAMSTK Project
@@ -7,7 +8,7 @@
 """RAMSTK Combo Module."""
 
 # Import the ramstk.Widget base class.
-from .Widget import gobject, gtk  # pylint: disable=E0401
+from .Widget import GObject, Gtk
 
 
 class RAMSTKComboBox(Gtk.ComboBox):
@@ -26,13 +27,15 @@ class RAMSTKComboBox(Gtk.ComboBox):
                                to display.  Only needed with complex
                                RAMSTKComboBox.
                                Default is 0.
-            * *simple* (bool) -- indicates whether this to make a simple (one
-                                 item) or complex (three item) RAMSTKComboBox.
+            * *simple* (bool) -- indicates whether to make a simple (one item)
+                                 or complex (three item) RAMSTKComboBox.
                                  Default is True.
             * *tooltip* (str) -- the tooltip, if any, for the combobox.
                                  Default is an empty string.
             * *width* (int) -- width of the Gtk.ComboBox() widget.
                                Default is 200.
+            * *entry* (bool) -- indicates whether to include an entry or not.
+                                Default is False.
         """
         GObject.GObject.__init__(self)
 
@@ -56,9 +59,15 @@ class RAMSTKComboBox(Gtk.ComboBox):
             _width = kwargs['width']
         except KeyError:
             _width = 200
+        try:
+            _entry = kwargs['entry']
+        except KeyError:
+            _entry = False
 
+        # Set widget properties.
         self.props.width_request = _width
         self.props.height_request = _height
+        self.props.has_entry = _entry
 
         if not _simple:
             _list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
@@ -114,63 +123,5 @@ class RAMSTKComboBox(Gtk.ComboBox):
             self.append_text("")
             for __, _entry in enumerate(entries):
                 self.append_text(list(_entry)[index])
-
-        return _return
-
-
-class RAMSTKComboBoxEntry(Gtk.ComboBoxEntry):
-    """This is the RAMSTK ComboBox with Entry class."""
-
-    def __init__(self,
-                 width=200,
-                 height=30,
-                 tooltip='RAMSTK WARNING: Missing tooltip.  '
-                 'Please register an Enhancement type bug.'):
-        """
-        Create RAMSTK Combo widgets.
-
-        :keyword int width: width of the Gtk.ComboBox() widget.  Default is
-                            200.
-        :keyword int height: height of the Gtk.ComboBox() widget.  Default is
-                             30.
-        :keyword bool simple: indicates whether the Gtk.ComboBox() contains
-                              only the display information or if there is
-                              additional, hidden, information in columns 1 and
-                              2.
-        :keyword bool has_entry: indicates whether the ComboBox can have
-                                 entries added by the user.
-        :keyword str tooltip: the tooltip text to display for the
-        Gtk.ComboBox().
-        """
-        GObject.GObject.__init__(self)
-
-        self.props.width_request = width
-        self.props.height_request = height
-
-        _list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
-                              GObject.TYPE_STRING)
-
-        self.set_model(_list)
-        self.set_text_column(0)
-        self.set_tooltip_markup(tooltip)
-
-        self.show()
-
-    def do_load_combo(self, entries):
-        """
-        Load RAMSTK ComboBoxEntry widgets.
-
-        :param list entries: the information to load into the Gtk.ComboBox().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _model = self.get_model()
-        _model.clear()
-
-        _model.append(None, ["", "", ""])
-        for __, entry in enumerate(entries):
-            _model.append(None, entry)
 
         return _return

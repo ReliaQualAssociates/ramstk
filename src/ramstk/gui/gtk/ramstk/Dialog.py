@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.Dialog.py is part of the RAMSTK Project
@@ -11,7 +12,7 @@ import os
 from datetime import datetime
 
 # Import the ramstk.Widget base class.
-from .Widget import _, gtk  # pylint: disable=E0401
+from .Widget import _, GObject, Gtk
 
 
 class RAMSTKDialog(Gtk.Dialog):
@@ -42,7 +43,8 @@ class RAMSTKDialog(Gtk.Dialog):
         try:
             _dlgflags = kwargs['dlgflags']
         except KeyError:
-            _dlgflags = (Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT)
+            _dlgflags = (Gtk.DialogFlags.MODAL
+                         | Gtk.DialogFlags.DESTROY_WITH_PARENT)
         try:
             _dlgbuttons = kwargs['dlgbuttons']
         except KeyError:
@@ -131,8 +133,8 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
             _buttons = Gtk.ButtonsType.YES_NO
 
         GObject.GObject.__init__(self, parent,
-                                   Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                   _criticality, _buttons)
+                                 Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                 _criticality, _buttons)
 
         self.set_markup(prompt)
         self.set_image(_image)

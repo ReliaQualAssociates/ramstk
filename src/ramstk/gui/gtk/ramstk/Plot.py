@@ -8,7 +8,8 @@
 
 # pylint: disable=E0401
 try:
-    from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+    from matplotlib.backends.backend_gtk3cairo \
+        import FigureCanvasGTK3Cairo as FigureCanvas
     from matplotlib.figure import Figure  # pylint: disable=E0401
     from matplotlib.lines import Line2D  # pylint: disable=E0401
 except RuntimeError:
@@ -16,7 +17,7 @@ except RuntimeError:
     pass
 
 # Import other RAMSTK Widget classes.
-from .Widget import _, gtk  # pylint: disable=E0401
+from .Widget import _, Gtk  # pylint: disable=E0401
 
 
 class RAMSTKPlot(object):

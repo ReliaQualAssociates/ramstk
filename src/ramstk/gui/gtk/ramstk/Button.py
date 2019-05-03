@@ -1,3 +1,4 @@
+# pylint: disable=protected-access, non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.Button.py is part of the RAMSTK Project
@@ -7,16 +8,15 @@
 """RAMSTK Button Module."""
 
 # Import the ramstk.Widget base class.
-from .Widget import _, gtk  # pylint: disable=E0401
+from .Widget import _, GdkPixbuf, GObject, Gtk
 
 
 def do_make_buttonbox(self, **kwargs):
     """
-    Create the buttonbox for RAMSTK Matrix Views.
+    Create the buttonbox for RAMSTK Views.
 
-    This method creates the base buttonbox used by all RAMSTK Matrix Views.
-    Use a buttonbox for an RAMSTK Matrix View if there are only buttons to be
-    added.
+    This method creates the base buttonbox used by all RAMSTK Views.  Use a
+    buttonbox for a RAMSTK View if there are only buttons to be added.
 
     :return: _buttonbox
     :rtype: :class:`Gtk.ButtonBox`
@@ -51,7 +51,7 @@ def do_make_buttonbox(self, **kwargs):
     for _icon in _icons:
         _image = Gtk.Image()
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self._dic_icons[_icon],
-                                                     _height, _width)
+                                                       _height, _width)
         _image.set_from_pixbuf(_icon)
 
         _button = Gtk.Button()
@@ -82,7 +82,7 @@ class RAMSTKButton(Gtk.Button):
 
     def __init__(self, height=40, width=200, label="", icon=None):
         """
-        Create Button widgets.
+        Initialize an instance of the RAMSTK Button.
 
         :keyword int height: the height of the Gtk.Button().
                              Default is 40.
@@ -92,8 +92,8 @@ class RAMSTKButton(Gtk.Button):
                             Default is an empty string.
         :keyword str icon: the image to display on the Gtk.Button().
         :return: None
+        :rtype: None
         """
-
         GObject.GObject.__init__(self, label=label)
 
         if width == 0:
@@ -112,9 +112,7 @@ class RAMSTKButton(Gtk.Button):
 
 
 class RAMSTKCheckButton(Gtk.CheckButton):
-    """
-    This is the RAMSTK Check Button class.
-    """
+    """This is the RAMSTK Check Button class."""
 
     def __init__(self,
                  label="",
@@ -122,7 +120,7 @@ class RAMSTKCheckButton(Gtk.CheckButton):
                  tooltip='RAMSTK WARNING: Missing tooltip.  '
                  'Please register an Enhancement type bug.'):
         """
-        Method to create CheckButton widgets.
+        Initialize an instance of the RAMSTK CheckButton.
 
         :keyword str label: the text to display with the Gtk.CheckButton().
                             Default is an empty string.
@@ -133,7 +131,6 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         :return: _checkbutton
         :rtype: :py:class:`Gtk.CheckButton`
         """
-
         GObject.GObject.__init__(self, label=label, use_underline=True)
 
         self.set_tooltip_markup(tooltip)
@@ -144,13 +141,11 @@ class RAMSTKCheckButton(Gtk.CheckButton):
 
 
 class RAMSTKOptionButton(Gtk.RadioButton):
-    """
-    This is the RAMSTK Option Button class.
-    """
+    """This is the RAMSTK Option Button class."""
 
     def __init__(self, btngroup=None, btnlabel=_(u"")):
         """
-        Method to create OptionButton widgets.
+        Initialize an instance of the RAMSTK OptionButton.
 
         :keyword str btngroup: the group the Gtk.RadioButton() belongs to, if
                                any.  Default is None.
@@ -159,5 +154,4 @@ class RAMSTKOptionButton(Gtk.RadioButton):
         :return: _optbutton
         :rtype: :py:class:`Gtk.RadioButton`
         """
-
         GObject.GObject.__init__(self, group=btngroup, label=btnlabel)
