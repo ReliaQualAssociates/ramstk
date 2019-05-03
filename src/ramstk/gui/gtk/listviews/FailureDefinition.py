@@ -10,12 +10,9 @@
 # Import third party modules.
 from pubsub import pub
 
-# Modules required for the GUI.
-from gi.repository import Pango
-
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gobject, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk, Pango
 from .ListView import RAMSTKListView
 
 
@@ -54,7 +51,7 @@ class ListView(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        self._make_treeview()
+        self.__make_treeview()
         self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
             _(u"Displays the list of failure definitions for the selected "
@@ -80,7 +77,7 @@ class ListView(RAMSTKListView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
         self.pack_end(_scrolledwindow, expand=True, fill=True)
 
         self.show_all()
@@ -195,7 +192,7 @@ class ListView(RAMSTKListView):
 
         return None
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the buttonbox for the Failure Definition List View.
 
@@ -221,7 +218,7 @@ class ListView(RAMSTKListView):
 
         return _buttonbox
 
-    def _make_treeview(self):
+    def __make_treeview(self):
         """
         Set up the RAMSTKTreeView() for Failure Definitions.
 

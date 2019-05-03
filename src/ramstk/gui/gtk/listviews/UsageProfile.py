@@ -10,12 +10,9 @@
 from pubsub import pub
 from sortedcontainers import SortedDict
 
-# Modules required for the GUI.
-from gi.repository import Pango
-
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gobject, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, GObject, Gtk, Pango
 from .ListView import RAMSTKListView
 
 
@@ -57,7 +54,7 @@ class ListView(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        self._make_treeview()
+        self.__make_treeview()
         self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
             _(u"Displays the list of usage profiles for the selected "
@@ -89,7 +86,7 @@ class ListView(RAMSTKListView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
         self.pack_end(_scrolledwindow, expand=True, fill=True)
 
         self.show_all()
@@ -315,7 +312,7 @@ class ListView(RAMSTKListView):
 
         return None
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the buttonbox for the Usage Profile List View.
 
@@ -353,7 +350,7 @@ class ListView(RAMSTKListView):
 
         return _buttonbox
 
-    def _make_cell(self, cell, editable, position, model):
+    def __make_cell(self, cell, editable, position, model):
         """
         Make a Gtk.CellRenderer() and set it's properties.
 
@@ -384,7 +381,7 @@ class ListView(RAMSTKListView):
 
         return _cell
 
-    def _make_treeview(self):
+    def __make_treeview(self):
         """
         Set up the RAMSTKTreeView() for the Usage Profile.
 
@@ -403,44 +400,44 @@ class ListView(RAMSTKListView):
         for i in range(10):
             _column = Gtk.TreeViewColumn()
             if i == 0:
-                _cell = self._make_cell('pixbuf', False, 0, _model)
+                _cell = self.__make_cell('pixbuf', False, 0, _model)
                 _cell.set_property('xalign', 0.5)
                 _column.pack_start(_cell, False)
                 _column.set_attributes(_cell, pixbuf=0)
 
-                _cell = self._make_cell('text', False, 1, _model)
+                _cell = self.__make_cell('text', False, 1, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=1)
                 _column.set_visible(True)
             elif i == 1:
-                _cell = self._make_cell('text', True, 2, _model)
+                _cell = self.__make_cell('text', True, 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=2)
 
-                _cell = self._make_cell('text', True, 3, _model)
+                _cell = self.__make_cell('text', True, 3, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=3, visible=10)
                 _column.set_visible(True)
             elif i in [2, 3, 4]:
-                _cell = self._make_cell('text', True, i + 2, _model)
+                _cell = self.__make_cell('text', True, i + 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2)
                 _column.set_visible(True)
             elif i in [5, 6]:
-                _cell = self._make_cell('text', True, i + 2, _model)
+                _cell = self.__make_cell('text', True, i + 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2, visible=10)
                 _column.set_visible(True)
             else:
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
 
                 _column.set_visible(False)

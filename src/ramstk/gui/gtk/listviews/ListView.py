@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.listviews.ListView.py is part of the RAMSTK Project
@@ -7,7 +8,7 @@
 """RAMSTKListView Meta-Class Module."""
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk.Widget import gobject, gtk
+from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
 from ramstk.gui.gtk import ramstk
 
 
