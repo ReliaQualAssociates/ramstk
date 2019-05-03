@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.matrixviews.MatrixView.py is part of the RAMSTK Project
@@ -7,11 +8,11 @@
 """The RAMSTKMatrixView Meta-Class Module."""
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk.Widget from gi.repository import Gtk
-from ramstk.gui.gtk import ramstk
+from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
+from ramstk.gui.gtk.ramstk import RAMSTKBaseMatrix
 
 
-class RAMSTKMatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
+class RAMSTKMatrixView(Gtk.HBox, RAMSTKBaseMatrix):
     """
     This is the meta class for all RAMSTK Matrix View classes.
 
@@ -24,13 +25,13 @@ class RAMSTKMatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
 
     def __init__(self, controller, **kwargs):
         """
-        Initialize the List View.
+        Initialize an instance of the RAMSTK Matrix View.
 
         :param controller: the RAMSTK master data controller instance.
         :type controller: :py:class:`ramstk.RAMSTK.RAMSTK`
         """
         GObject.GObject.__init__(self)
-        ramstk.RAMSTKBaseMatrix.__init__(self, controller, **kwargs)
+        RAMSTKBaseMatrix.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
 
