@@ -25,25 +25,25 @@ class GeneralData(RAMSTKWorkView):
 
     :ivar int _requirement_id: the ID of the Requirement Data Model currently
                                being displayed.
-    :ivar chkDerived: the :class:`gtk.CheckButton` used to indicate the
+    :ivar chkDerived: the :class:`Gtk.CheckButton` used to indicate the
                       selected Requirement is derived.
-    :ivar chkValidated: the :class:`gtk.CheckButton` used to indicates the
+    :ivar chkValidated: the :class:`Gtk.CheckButton` used to indicates the
                         selected Requirement has been validated.
-    :ivar cmbOwner: the :class:`gtk.ComboBox` used to display/select the
+    :ivar cmbOwner: the :class:`Gtk.ComboBox` used to display/select the
                     owning organization for the Requirement.
-    :ivar cmbRequirementType: the :class:`gtk.ComboBox` used to
+    :ivar cmbRequirementType: the :class:`Gtk.ComboBox` used to
                               display/select the type of Requirement.
-    :ivar cmbPriority: the :class:`gtk.ComboBox` used to display/select the
+    :ivar cmbPriority: the :class:`Gtk.ComboBox` used to display/select the
                        priority of the Requirement.
-    :ivar txtFigNum: the :class:`gtk.Entry` used to display/enter the
+    :ivar txtFigNum: the :class:`Gtk.Entry` used to display/enter the
                      spcification figure number associated with the
                      Requirement.
-    :ivar txtPageNum: the :class:`gtk.Entry` used to display/enter the
+    :ivar txtPageNum: the :class:`Gtk.Entry` used to display/enter the
                       specification page number associated with the
                       Requirement.
-    :ivar txtSpecification: the :class:`gtk.Entry` used to display/enter the
+    :ivar txtSpecification: the :class:`Gtk.Entry` used to display/enter the
                             governing specification.
-    :ivar txtValidatedDate: the :class:`gtk.Entry` used to display/enter the
+    :ivar txtValidatedDate: the :class:`Gtk.Entry` used to display/enter the
                             Requirement was validated.
 
     Callbacks signals in _lst_handler_id:
@@ -134,7 +134,7 @@ class GeneralData(RAMSTKWorkView):
         self.txtSpecification = ramstk.RAMSTKEntry()
         self.txtValidatedDate = ramstk.RAMSTKEntry()
 
-        # Connect to callback requirements for editable gtk.Widgets().
+        # Connect to callback requirements for editable Gtk.Widgets().
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
@@ -163,8 +163,8 @@ class GeneralData(RAMSTKWorkView):
                                          self._do_select_date,
                                          self.txtValidatedDate))
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_page(), expand=True, fill=True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -319,15 +319,15 @@ class GeneralData(RAMSTKWorkView):
         """
         Send request to save the currently selected Requirement.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
             'request_update_requirement', node_id=self._requirement_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -335,14 +335,14 @@ class GeneralData(RAMSTKWorkView):
         """
         Request to save all the Requirements.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_requirements')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -355,10 +355,10 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the ramstk.RAMSTKButton() that called this method.
         :type __button: :class:`ramstk.gui.gtk.ramstk.RAMSTKButton`
-        :param __event: the gtk.gdk.Event() that called this method.
-        :type __event: :class:`gtk.gdk.Event`
-        :param entry: the gtk.Entry() that the new date should be displayed in.
-        :type entry: :class:`gtk.Entry`
+        :param __event: the Gdk.Event() that called this method.
+        :type __event: :class:`Gdk.Event`
+        :param entry: the Gtk.Entry() that the new date should be displayed in.
+        :type entry: :class:`Gtk.Entry`
         :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
         :rtype: str
         """
@@ -373,10 +373,10 @@ class GeneralData(RAMSTKWorkView):
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Requirement Work View.
+        Make the Gtk.ButtonBox() for the Requirement Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Requirement Work View.
-        :rtype: :class:`gtk.ButtonBox`
+        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement Work View.
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = []
         _callbacks = []
@@ -395,12 +395,12 @@ class GeneralData(RAMSTKWorkView):
 
     def _make_page(self):
         """
-        Make the Requirement Work View General Data gtk.Notebook() page.
+        Make the Requirement Work View General Data Gtk.Notebook() page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # Load the requirement type gtk.ComboBox(); each _type is
+        # Load the requirement type Gtk.ComboBox(); each _type is
         # (Code, Description, Type).
         _types = []
         for _index, _key in enumerate(
@@ -410,7 +410,7 @@ class GeneralData(RAMSTKWorkView):
         self.cmbRequirementType.do_load_combo(
             list(_types), index=1, simple=False)
 
-        # Load the owner gtk.ComboBox(); each _owner is
+        # Load the owner Gtk.ComboBox(); each _owner is
         # (Description, Group Type).
         _owners = []
         for _index, _key in enumerate(
@@ -419,12 +419,12 @@ class GeneralData(RAMSTKWorkView):
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS[_key])
         self.cmbOwner.do_load_combo(list(_owners))
 
-        # Load the priority gtk.Combo().
+        # Load the priority Gtk.Combo().
         _priorities = [["1"], ["2"], ["3"], ["4"], ["5"]]
         self.cmbPriority.do_load_combo(_priorities)
 
         # Build the General Data page.
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
@@ -449,27 +449,27 @@ class GeneralData(RAMSTKWorkView):
 
         _fixed.show_all()
 
-        # Create the label for the gtk.Notebook() tab.
+        # Create the label for the Gtk.Notebook() tab.
         _label = ramstk.RAMSTKLabel(
             _(u"General\nData"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays general information for the selected "
                       u"requirement."))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _frame
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve gtk.ComboBox() changes and assign to Requirement attribute.
+        Retrieve Gtk.ComboBox() changes and assign to Requirement attribute.
 
-        :param gtk.CellRendererCombo combo: the gtk.CellRendererCombo() that
+        :param Gtk.CellRendererCombo combo: the Gtk.CellRendererCombo() that
                                             called this method.
-        :param int index: the position in the Requirement class gtk.TreeModel()
+        :param int index: the position in the Requirement class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Entry().
+                          Gtk.Entry().
         :return: None
         :rtype: None
         """
@@ -509,9 +509,9 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_edit(self, module_id, key, value):
         """
-        Update the Requirement Work View gtk.Widgets().
+        Update the Requirement Work View Gtk.Widgets().
 
-        This method updates the Requirement Work View gtk.Widgets() with
+        This method updates the Requirement Work View Gtk.Widgets() with
         changes to the Requirement data model attributes.  This method is
         called whenever an attribute is edited in a different RAMSTK View.
 
@@ -522,7 +522,7 @@ class GeneralData(RAMSTKWorkView):
                               RAMSTKDataController.
         :param str key: the key in the Requirement attributes list of the
                         attribute that was edited.
-        :param str value: the new text to update the gtk.Widget() with.
+        :param str value: the new text to update the Gtk.Widget() with.
         :return: None
         :rtype: None
         """
@@ -562,18 +562,18 @@ class GeneralData(RAMSTKWorkView):
         Retrieve RAMSTKEntry() changes and assign to Requirement attributes.
 
         This method retrieves changes to Requirement attributes through the
-        various gtk.Widgets() and assign the new data to the appropriate
+        various Gtk.Widgets() and assign the new data to the appropriate
         Requirement data model attribute.  This method is called by:
 
-            * gtk.Entry() 'changed' signal
-            * gtk.TextView() 'changed' signal
+            * Gtk.Entry() 'changed' signal
+            * Gtk.TextView() 'changed' signal
 
         This method sends the 'wvwEditedRequirement' message.
 
-        :param gtk.Entry entry: the gtk.Entry() that called the method.
-        :param int index: the position in the Requirement class gtk.TreeModel()
+        :param Gtk.Entry entry: the Gtk.Entry() that called the method.
+        :param int index: the position in the Requirement class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().
+                          Gtk.Widget().
         :return: None
         :rtype: None
         """
@@ -613,13 +613,13 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_toggled(self, togglebutton, index):
         """
-        Retrieve gtk.CheckButton() changes and assign to Requirement attribute.
+        Retrieve Gtk.CheckButton() changes and assign to Requirement attribute.
 
-        :param togglebutton: the gtk.CheckButton() that called this method.
-        :type togglebutton: :class:`gtk.CheckButton`
-        :param int index: the position in the Requirement class gtk.TreeModel()
+        :param togglebutton: the Gtk.CheckButton() that called this method.
+        :type togglebutton: :class:`Gtk.CheckButton`
+        :param int index: the position in the Requirement class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Entry().
+                          Gtk.Entry().
         :return: None
         :rtype: None
         """
@@ -664,13 +664,13 @@ class RequirementAnalysis(RAMSTKWorkView):
                                   the answers to the Verifiability questions.
     :ivar int _requirement_id: the ID of the Requirement Data Model currently
                                being controlled.
-    :ivar tvwClear: the :class:`gtk.RAMSTKTreeView` listing all the Clarity
+    :ivar tvwClear: the :class:`Gtk.RAMSTKTreeView` listing all the Clarity
                     questions and answers.
-    :ivar tvwComplete: the :class:`gtk.RAMSTKTreeView` listing all the
+    :ivar tvwComplete: the :class:`Gtk.RAMSTKTreeView` listing all the
                        Completeness questions and answers.
-    :ivar tvwConsistent: the :class:`gtk.RAMSTKTreeView` listing all the
+    :ivar tvwConsistent: the :class:`Gtk.RAMSTKTreeView` listing all the
                          Consistency questions and answers.
-    :ivar tvwVerifiable: the :class:`gtk.RAMSTKTreeView` listing all the
+    :ivar tvwVerifiable: the :class:`Gtk.RAMSTKTreeView` listing all the
                          Verifiability questions and answers.
     """
 
@@ -699,13 +699,13 @@ class RequirementAnalysis(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.tvwClear = gtk.TreeView()
-        self.tvwComplete = gtk.TreeView()
-        self.tvwConsistent = gtk.TreeView()
-        self.tvwVerifiable = gtk.TreeView()
+        self.tvwClear = Gtk.TreeView()
+        self.tvwComplete = Gtk.TreeView()
+        self.tvwConsistent = Gtk.TreeView()
+        self.tvwVerifiable = Gtk.TreeView()
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_page(), expand=True, fill=True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -805,15 +805,15 @@ class RequirementAnalysis(RAMSTKWorkView):
         """
         Send request to save the currently selected Requirement.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
             'request_update_requirement', node_id=self._requirement_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -821,23 +821,23 @@ class RequirementAnalysis(RAMSTKWorkView):
         """
         Request to save all the Requirements.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_requirements')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Requirement Work View.
+        Make the Gtk.ButtonBox() for the Requirement Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Requirement Work View.
-        :rtype: :class:`gtk.ButtonBox`
+        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement Work View.
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = []
         _callbacks = []
@@ -859,7 +859,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         Make the Requirement Analysis Work View page.
 
         :return: _hpaned
-        :rtype: :class:`gtk.HPaned`
+        :rtype: :class:`Gtk.HPaned`
         """
         _lst_clear = [
             _(u"1. The requirement clearly states what is needed or "
@@ -943,58 +943,58 @@ class RequirementAnalysis(RAMSTKWorkView):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hpaned = gtk.HPaned()
+        _hpaned = Gtk.HPaned()
 
         # Create quadrant #1 (upper left) for determining if the
         # requirement is clear.
-        _vpaned = gtk.VPaned()
+        _vpaned = Gtk.VPaned()
         _hpaned.pack1(_vpaned, resize=False)
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.tvwClear)
 
         _frame = ramstk.RAMSTKFrame(label=_(u"Clarity of Requirement"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
         _vpaned.pack1(_frame, resize=False)
 
         # Create quadrant #3 (lower left) for determining if the
         # requirement is complete.
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.tvwComplete)
 
         _frame = ramstk.RAMSTKFrame(label=_(u"Completeness of Requirement"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
         _vpaned.pack2(_frame, resize=False)
 
         # Create quadrant #2 (upper right) for determining if the
         # requirement is consistent.
-        _vpaned = gtk.VPaned()
+        _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, resize=False)
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.tvwConsistent)
 
         _frame = ramstk.RAMSTKFrame(label=_(u"Consistency of Requirement"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
         _vpaned.pack1(_frame, resize=False)
 
         # Create quadrant #4 (lower right) for determining if the
         # requirement is verifiable.
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.tvwVerifiable)
 
         _frame = ramstk.RAMSTKFrame(label=_(u"Verifiability of Requirement"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
         _vpaned.pack2(_frame, resize=False)
@@ -1007,29 +1007,29 @@ class RequirementAnalysis(RAMSTKWorkView):
                 self.tvwClear, self.tvwComplete, self.tvwConsistent,
                 self.tvwVerifiable
         ]):
-            _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                                   gobject.TYPE_INT)
+            _model = Gtk.ListStore(GObject.TYPE_INT, GObject.TYPE_STRING,
+                                   GObject.TYPE_INT)
             _treeview.set_model(_model)
             _treeview.set_headers_visible(False)
 
-            _column = gtk.TreeViewColumn()
+            _column = Gtk.TreeViewColumn()
 
-            _cell = gtk.CellRendererText()
+            _cell = Gtk.CellRendererText()
             _cell.set_property('editable', 0)
             _cell.set_property('visible', 0)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=0)
 
-            _cell = gtk.CellRendererText()
+            _cell = Gtk.CellRendererText()
             _cell.set_property('cell-background', '#E5E5E5')
             _cell.set_property('editable', 0)
             _cell.set_property('wrap-width', 650)
-            _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
             _cell.set_property('yalign', 0.1)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, markup=1)
 
-            _cell = gtk.CellRendererToggle()
+            _cell = Gtk.CellRendererToggle()
             _cell.set_property('activatable', 1)
             _cell.set_property('cell-background', '#E5E5E5')
             _cell.connect('toggled', self._on_cell_edit, None, 2, _model,
@@ -1037,7 +1037,7 @@ class RequirementAnalysis(RAMSTKWorkView):
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, active=2)
 
-            _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
             _treeview.append_column(_column)
 
@@ -1066,13 +1066,13 @@ class RequirementAnalysis(RAMSTKWorkView):
                 [_index, "<span weight='bold'>" + _answer + "</span>", 0])
 
         # Insert the tab.
-        _label = gtk.Label()
+        _label = Gtk.Label()
         _label.set_markup("<span weight='bold'>" + _(u"Analysis") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
+        _label.set_justify(Gtk.Justification.CENTER)
         _label.set_tooltip_text(_(u"Analyzes the selected requirement."))
         _label.show_all()
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _hpaned
 
@@ -1080,14 +1080,14 @@ class RequirementAnalysis(RAMSTKWorkView):
         """
         Handle edits of the Requirement Analysis RAMSTKTreeview().
 
-        :param cell: the gtk.CellRendererToggle() that was toggled.
-        :type cell: :class:`gtk.CellRendererToggle`
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+        :param cell: the Gtk.CellRendererToggle() that was toggled.
+        :type cell: :class:`Gtk.CellRendererToggle`
+        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
                          that was edited.
-        :param model: the gtk.TreeModel() for the gtk.Treeview() that is being
+        :param model: the Gtk.TreeModel() for the Gtk.Treeview() that is being
                       edited.
-        :type model: :class:`gtk.TreeModel`
-        :param int index: the index of the Requirement analysis gtk.Treeview()
+        :type model: :class:`Gtk.TreeModel`
+        :param int index: the index of the Requirement analysis Gtk.Treeview()
                           questions being answered.  Indices are:
 
                              * 0 = clarity

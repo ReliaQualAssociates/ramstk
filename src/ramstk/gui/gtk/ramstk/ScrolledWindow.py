@@ -10,7 +10,7 @@
 from .Widget import gtk  # pylint: disable=E0401
 
 
-class RAMSTKScrolledWindow(gtk.ScrolledWindow):
+class RAMSTKScrolledWindow(Gtk.ScrolledWindow):
     """
     This is the RAMSTK ScrolledWindow class.
 
@@ -24,13 +24,13 @@ class RAMSTKScrolledWindow(gtk.ScrolledWindow):
         """
         Create ScrolledWindow() widgets.
 
-        :param child: the gtk.Widget() to add to the scrolled window.
+        :param child: the Gtk.Widget() to add to the scrolled window.
         :param bool viewport: whether or not to add the child widget with a
-                              gtk.ViewPort().
+                              Gtk.ViewPort().
         """
-        gtk.ScrolledWindow.__init__(self)
+        GObject.GObject.__init__(self)
 
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         if child is not None:
             if viewport:

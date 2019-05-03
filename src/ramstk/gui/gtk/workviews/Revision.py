@@ -68,7 +68,7 @@ class GeneralData(RAMSTKWorkView):
         self.txtName = ramstk.RAMSTKEntry(
             width=800, tooltip=_(u"The name of the selected revision."))
         self.txtRemarks = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=800,
             tooltip=_(u"Enter any remarks associated with the "
                       u"selected revision."))
@@ -80,8 +80,8 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 2))
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_end(self._make_page(), expand=True, fill=True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_end(self._make_page(, True, True, 0), expand=True, fill=True)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -141,14 +141,14 @@ class GeneralData(RAMSTKWorkView):
         """
         Request to save the currently selected Revision.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :py:class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_revision', node_id=self._revision_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -156,24 +156,24 @@ class GeneralData(RAMSTKWorkView):
         """
         Request to save all the Revisions.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_revisions')
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Create the Revision Work View gtk.ButtonBox().
+        Create the Revision Work View Gtk.ButtonBox().
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Revision class Work
+        :return: _buttonbox; the Gtk.ButtonBox() for the Revision class Work
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = []
         _callbacks = []
@@ -194,8 +194,8 @@ class GeneralData(RAMSTKWorkView):
         """
         Create the Revision Work View general data page.
 
-        :return: _frame; the gtk.Frame() to embed in the notebook page.
-        :rtype: :class:`gtk.Frame`
+        :return: _frame; the Gtk.Frame() to embed in the notebook page.
+        :rtype: :class:`Gtk.Frame`
         """
         (_frame, __, __, __) = RAMSTKWorkView.make_general_data_page(self)
 
@@ -203,9 +203,9 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_edit(self, module_id, key, value):
         """
-        Update the Revision Work View gtk.Widgets().
+        Update the Revision Work View Gtk.Widgets().
 
-        This method updates the Revision Work View gtk.Widgets() with changes
+        This method updates the Revision Work View Gtk.Widgets() with changes
         to the Revision data model attributes.  This method is called whenever
         an attribute is edited in a different RAMSTK View.
 
@@ -216,7 +216,7 @@ class GeneralData(RAMSTKWorkView):
                               RAMSTKDataController.
         :param str key: the key in the Revision attributes list of the
                         attribute that was edited.
-        :param str value: the new text to update the gtk.Widget() with.
+        :param str value: the new text to update the Gtk.Widget() with.
         :return: None
         :rtype: None
         """
@@ -238,16 +238,16 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_focus_out(self, entry, index):
         """
-        Retrieve gtk.Entry() changes and assign the new data.
+        Retrieve Gtk.Entry() changes and assign the new data.
 
-        This method takes the new data from the gtk.Entry() and assigns it to
+        This method takes the new data from the Gtk.Entry() and assigns it to
         the appropriate Revision data model attribute.
 
-        :param entry: the gtk.Entry() that called the method.
-        :type entry: :class:`gtk.Entry`
-        :param int index: the position in the Revision class gtk.TreeModel()
+        :param entry: the Gtk.Entry() that called the method.
+        :type entry: :class:`Gtk.Entry`
+        :param int index: the position in the Revision class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Entry().
+                          Gtk.Entry().
         :return: None
         :rtype: None
         """

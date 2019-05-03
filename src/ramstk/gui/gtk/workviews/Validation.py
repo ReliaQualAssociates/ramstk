@@ -147,7 +147,7 @@ class GeneralData(RAMSTKWorkView):
                 u"Selects and displays the measurement unit for the selected "
                 u"V&amp;V activity acceptance parameter."))
 
-        self.spnStatus = gtk.SpinButton()
+        self.spnStatus = Gtk.SpinButton()
         self.spnStatus.set_tooltip_text(
             _(u"Displays % complete of the selected V&amp;V activity."))
 
@@ -179,7 +179,7 @@ class GeneralData(RAMSTKWorkView):
                 u"Displays the internal or industry specification or procedure "
                 u"governing the selected V&amp;V activity."))
         self.txtTask = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=600,
             tooltip=_(
                 u"Displays the description of the selected V&amp;V activity."))
@@ -271,8 +271,8 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_page(), expand=True, fill=True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
         self.show_all()
 
         self.txtCode.hide()
@@ -491,8 +491,8 @@ class GeneralData(RAMSTKWorkView):
         """
         Request to calculate the selected Validation task.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -511,7 +511,7 @@ class GeneralData(RAMSTKWorkView):
                             self._validation_id)
             _error_dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
+            if _error_dialog.do_run() == Gtk.ResponseType.OK:
                 _error_dialog.do_destroy()
 
             _return = True
@@ -525,8 +525,8 @@ class GeneralData(RAMSTKWorkView):
         """
         Request to calculate program cost and time.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -548,15 +548,15 @@ class GeneralData(RAMSTKWorkView):
         """
         Request to save the currently selected Validation.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update(
             self._validation_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
@@ -564,16 +564,16 @@ class GeneralData(RAMSTKWorkView):
         """
         Request to save all Validation tasks and program results.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update_all()
         if not _return:
             _return = self._dtc_data_controller.request_do_update_status()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
@@ -586,10 +586,10 @@ class GeneralData(RAMSTKWorkView):
         date.  The selected date (in ISO-8601 format) is set in the RAMSTKEntry()
         passed as an argument.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`ramstk.gui.gtk.Button.RAMSTKButton`
         :param __event: the button event that called this method.
-        :type __event: :class:`gtk.gdk.Event`
+        :type __event: :class:`Gdk.Event`
         :param entry: the RAMSTKEntry() to place the date in.
         :type entry: :class:`ramstk.gui.gtk.ramstk.Entry.RAMSTKEntry`
         :return: False if successful or True if an error is encountered.
@@ -621,12 +621,12 @@ class GeneralData(RAMSTKWorkView):
 
     def _make_page(self):
         """
-        Make the Validation class gtk.Notebook() general data page.
+        Make the Validation class Gtk.Notebook() general data page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # Load the gtk.ComboBox() widgets.
+        # Load the Gtk.ComboBox() widgets.
         _model = self.cmbTaskType.get_model()
         _model.clear()
 
@@ -650,9 +650,9 @@ class GeneralData(RAMSTKWorkView):
         self.cmbMeasurementUnit.do_load_combo(_data)
 
         # Build the General Data page starting with the left half.
-        _hbox = gtk.HBox()
+        _hbox = Gtk.HBox()
 
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Task Description"))
@@ -686,8 +686,8 @@ class GeneralData(RAMSTKWorkView):
         _fixed.show_all()
 
         # Now add the right hand side starting with the top pane.
-        _vpaned = gtk.VPaned()
-        _fixed = gtk.Fixed()
+        _vpaned = Gtk.VPaned()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Task Effort"))
@@ -721,13 +721,13 @@ class GeneralData(RAMSTKWorkView):
 
         # Set the spin button to be a 0-100 in steps of 0.1 spinner.  Only
         # update if value is numeric and within range.
-        self.spnStatus.set_adjustment(gtk.Adjustment(0, 0, 100, 1, 0.1))
-        self.spnStatus.set_update_policy(gtk.UPDATE_IF_VALID)
+        self.spnStatus.set_adjustment(Gtk.Adjustment(0, 0, 100, 1, 0.1))
+        self.spnStatus.set_update_policy(Gtk.UPDATE_IF_VALID)
         self.spnStatus.set_numeric(True)
         self.spnStatus.set_snap_to_ticks(True)
 
         # Now add the bottom pane to the right side.
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Project Effort"))
@@ -754,20 +754,20 @@ class GeneralData(RAMSTKWorkView):
             _(u"General\nData"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays general information for the selected "
                       u"validation."))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _hbox
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Validation class Work View.
+        Make the Gtk.ButtonBox() for the Validation class Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Validation class Work
+        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class Work
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Calculate the cost and time of the currently selected "
@@ -793,7 +793,7 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_combo_changed(self, combo, index):
         """
-        Handle changs made in gtk.ComboBox() widgets.
+        Handle changs made in Gtk.ComboBox() widgets.
 
         This method is called by:
 
@@ -804,7 +804,7 @@ class GeneralData(RAMSTKWorkView):
         :param combo: the RAMSTKComboBox() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.Combo.RAMSTKComboBox`
         :param int index: the index in the handler ID list of the callback
-                          signal associated with the gtk.ComboBox() that
+                          signal associated with the Gtk.ComboBox() that
                           called this method.
         :return: False if successful or True is an error is encountered.
         :rtype: bool
@@ -842,14 +842,14 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_edit(self, index, new_text):
         """
-        Update the Work View gtk.Widgets() when Validation attributes change.
+        Update the Work View Gtk.Widgets() when Validation attributes change.
 
         This method is called whenever an attribute is edited in a different
         view.
 
         :param int index: the index in the Validation attributes list of the
                           attribute that was edited.
-        :param str new_text: the new text to update the gtk.Widget() with.
+        :param str new_text: the new text to update the Gtk.Widget() with.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -951,9 +951,9 @@ class GeneralData(RAMSTKWorkView):
 
         :param entry: the RAMSTKEntry() or RAMSTKTextView() that called this method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.Entry`
-        :param __event: the gtk.gdk.Event() that called this method.
-        :type __event: :class:`gtk.gdk.Event`
-        :param int index: the position in the Validation class gtk.TreeModel()
+        :param __event: the Gdk.Event() that called this method.
+        :type __event: :class:`Gdk.Event`
+        :param int index: the position in the Validation class Gtk.TreeModel()
                           associated with the data from the calling
                           RAMSTK widget.
         :return: False if successful or True if an error is encountered.
@@ -1035,7 +1035,7 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
-        Load the Validation Work View class gtk.Notebook() widgets.
+        Load the Validation Work View class Gtk.Notebook() widgets.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1052,16 +1052,16 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_value_changed(self, spinbutton, index):
         """
-        Handle changes made in gtk.SpinButton() widgets.
+        Handle changes made in Gtk.SpinButton() widgets.
 
         This method is called by:
 
-            * gtk.SpinButton() 'changed' signal
+            * Gtk.SpinButton() 'changed' signal
 
         This method sends the 'wvwEditedValidation' message.
 
-        :param spinbutton: the gtk.SpinButton() that called this method.
-        :type spinbutton: :class:`gtk.SpinButton`
+        :param spinbutton: the Gtk.SpinButton() that called this method.
+        :type spinbutton: :class:`Gtk.SpinButton`
         :param int index: the position in the Validation class attribute list
                           associated with the data from the calling
                           spinbutton.
@@ -1126,8 +1126,8 @@ class BurndownCurve(RAMSTKWorkView):
         # Initialize public scalar attributes.
         self.burndown = ramstk.RAMSTKPlot()
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_page(), expand=True, fill=True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedValidation')
@@ -1243,7 +1243,7 @@ class BurndownCurve(RAMSTKWorkView):
                 _prompt, self._dic_icons['important'], 'warning')
             _response = _dialog.do_run()
 
-            if _response == gtk.RESPONSE_OK:
+            if _response == Gtk.ResponseType.OK:
                 _dialog.do_destroy()
 
             _return = True
@@ -1254,8 +1254,8 @@ class BurndownCurve(RAMSTKWorkView):
         """
         Request to calculate program cost and time.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -1270,8 +1270,8 @@ class BurndownCurve(RAMSTKWorkView):
         """
         Request to load planned and actual burndown curves.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -1293,8 +1293,8 @@ class BurndownCurve(RAMSTKWorkView):
         """
         Request to save all Validation tasks and program results.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -1307,7 +1307,7 @@ class BurndownCurve(RAMSTKWorkView):
 
     def _make_page(self):
         """
-        Make the Validation class gtk.Notebook() burndown curve page.
+        Make the Validation class Gtk.Notebook() burndown curve page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1317,12 +1317,12 @@ class BurndownCurve(RAMSTKWorkView):
         _frame.show_all()
 
         # Insert the tab.
-        self.hbx_tab_label = gtk.Label()
+        self.hbx_tab_label = Gtk.Label()
         self.hbx_tab_label.set_markup("<span weight='bold'>" +
                                       _(u"Program\nValidation\nProgress") +
                                       "</span>")
         self.hbx_tab_label.set_alignment(xalign=0.5, yalign=0.5)
-        self.hbx_tab_label.set_justify(gtk.JUSTIFY_CENTER)
+        self.hbx_tab_label.set_justify(Gtk.Justification.CENTER)
         self.hbx_tab_label.show_all()
         self.hbx_tab_label.set_tooltip_text(
             _(u"Shows a plot of the total expected time "
@@ -1333,11 +1333,11 @@ class BurndownCurve(RAMSTKWorkView):
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Validation class Work View.
+        Make the Gtk.ButtonBox() for the Validation class Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Validation class Work
+        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class Work
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Calculate the cost and time of the program (i.e., all "
@@ -1360,7 +1360,7 @@ class BurndownCurve(RAMSTKWorkView):
 
     def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
-        Load the Validation Work View class gtk.Notebook() widgets.
+        Load the Validation Work View class Gtk.Notebook() widgets.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

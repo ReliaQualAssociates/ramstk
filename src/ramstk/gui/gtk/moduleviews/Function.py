@@ -68,7 +68,7 @@ class ModuleView(RAMSTKModuleView):
             height=-1,
             tooltip=_(u"Displays the program functions."))
 
-        self.hbx_tab_label.pack_end(_label)
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_tree, 'deleted_function')
@@ -80,8 +80,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to delete the selected Function and it's children.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -92,7 +92,7 @@ class ModuleView(RAMSTKModuleView):
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
-        if _response == gtk.RESPONSE_YES:
+        if _response == Gtk.ResponseType.YES:
             pub.sendMessage(
                 'request_delete_function', node_id=self._function_id)
 
@@ -104,8 +104,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Launch the Export assistant.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -139,14 +139,14 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to save the currently selected Function.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_function', node_id=self._function_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -154,24 +154,24 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to save all the Functions.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_functions')
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Function class Module View.
+        Make the Gtk.ButtonBox() for the Function class Module View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Function class Module
+        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Module
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Adds a new Function at the same hierarchy level as "
@@ -205,7 +205,7 @@ class ModuleView(RAMSTKModuleView):
 
         :param treeview: the Function Module View RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was
                       clicked).
 
@@ -217,7 +217,7 @@ class ModuleView(RAMSTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :class:`gtk.gdk.Event`
+        :type event: :class:`Gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -259,17 +259,17 @@ class ModuleView(RAMSTKModuleView):
         """
         Handle edits of Function package Module View RAMSTKTreeview().
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :class:`gtk.CellRenderer`
-        :param str path: the gtk.TreeView() path of the
-                         gtk.CellRenderer() that was edited.
+        :param __cell: the Gtk.CellRenderer() that was edited.
+        :type __cell: :class:`Gtk.CellRenderer`
+        :param str path: the Gtk.TreeView() path of the
+                         Gtk.CellRenderer() that was edited.
         :param str new_text: the new text in the edited
-                             gtk.CellRenderer().
+                             Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs
+                             Gtk.CellRenderer().
+        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs
                       to.
-        :type model: :class:`gtk.TreeStore`
+        :type model: :class:`Gtk.TreeStore`
         :return: None
         :rtype: None
         """

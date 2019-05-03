@@ -184,7 +184,7 @@ class Configuration(object):
                               | password | User password (MySQL only)    |
                               +----------+-------------------------------+
     :cvar dict RAMSTK_TABPOS: Dictionary containing the location of tabs in the
-                           three main gtk.Notebook() widgets.  Can be one of:
+                           three main Gtk.Notebook() widgets.  Can be one of:
 
                            * Top
                            * Bottom

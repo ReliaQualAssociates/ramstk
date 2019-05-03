@@ -265,7 +265,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
     def _make_page(self):
         """
-        Make the Switch class gtk.Notebook() assessment input page.
+        Make the Switch class Gtk.Notebook() assessment input page.
 
         :return: None
         :rtype: None
@@ -289,7 +289,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
@@ -349,9 +349,9 @@ class SwitchAssessmentInputs(AssessmentInputs):
         :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +---------+---------------------+---------+---------------------+
             |  Index  | Widget              |  Index  | Widget              |
@@ -524,7 +524,7 @@ class SwitchAssessmentResults(AssessmentResults):
 
     def _make_page(self):
         """
-        Make the switch gtk.Notebook() assessment results page.
+        Make the switch Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None

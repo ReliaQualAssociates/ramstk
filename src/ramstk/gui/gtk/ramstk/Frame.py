@@ -19,7 +19,7 @@ from .Widget import _, gtk  # pylint: disable=E0401
 from .Label import RAMSTKLabel  # pylint: disable=E0401
 
 
-class RAMSTKFrame(gtk.Frame):
+class RAMSTKFrame(Gtk.Frame):
     """
     This is the RAMSTK Frame class.
     """
@@ -32,10 +32,10 @@ class RAMSTKFrame(gtk.Frame):
                             Default is an empty string.
         """
 
-        gtk.Frame.__init__(self)
+        GObject.GObject.__init__(self)
 
         _label = RAMSTKLabel(label, width=-1)
         _label.show_all()
 
-        self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        self.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         self.set_label_widget(_label)

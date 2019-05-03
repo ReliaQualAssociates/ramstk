@@ -72,15 +72,15 @@ def main():
 
     # If you don't do this, the splash screen will show, but wont render it's
     # contents
-    # while gtk.events_pending():
-    #     gtk.main_iteration()
+    # while Gtk.events_pending():
+    #     Gtk.main_iteration()
 
     # sleep(3)
     RAMSTK(test=False)
 
     # splScreen.window.destroy()
 
-    gtk.main()
+    Gtk.main()
 
     return 0
 
@@ -567,7 +567,7 @@ class RAMSTK(object):
             _response = _dialog.do_run()
             _dialog.do_destroy()
 
-            if _response == gtk.RESPONSE_YES:
+            if _response == Gtk.ResponseType.YES:
                 self.RAMSTK_CONFIGURATION.create_user_configuration()
 
             self.RAMSTK_CONFIGURATION.set_user_variables(first_run=False)
@@ -620,7 +620,7 @@ class RAMSTK(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.icoStatus = gtk.StatusIcon()
+        self.icoStatus = Gtk.StatusIcon()
         self.loaded = False
 
         # Connect to the RAMSTK Common database.
@@ -680,7 +680,7 @@ class RAMSTK(object):
 
         _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(
             _(u"RAMSTK is not currently connected to a "
@@ -826,7 +826,7 @@ class RAMSTK(object):
             # TODO: Where to put this code for the status icon?
             _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
                 '/32x32/db-connected.png'
-            _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
             self.icoStatus.set_from_pixbuf(_icon)
             self.icoStatus.set_tooltip(
                 _(u"RAMSTK is connected to program database "
@@ -856,7 +856,7 @@ class RAMSTK(object):
         """
         _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(
             _(u"RAMSTK is not currently connected to a "

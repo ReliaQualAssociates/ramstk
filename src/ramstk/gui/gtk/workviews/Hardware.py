@@ -133,7 +133,7 @@ class GeneralData(RAMSTKWorkView):
     """
 
     # Define private list attributes.
-    # We add an empty string in the positions where a gtk.CheckButton() will be
+    # We add an empty string in the positions where a Gtk.CheckButton() will be
     # placed.
     _lst_labels = [[
         _(u"Part Number:"),
@@ -204,7 +204,7 @@ class GeneralData(RAMSTKWorkView):
                       u"number (if any) of the "
                       u"selected hardware item."))
         self.txtAttachments = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=600,
             tooltip=_(u"Hyperlinks to any documents associated with the "
                       u"selected hardware item."))
@@ -221,7 +221,7 @@ class GeneralData(RAMSTKWorkView):
             width=100,
             tooltip=_(u"The unit cost of the selected hardware item."))
         self.txtDescription = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=600,
             tooltip=_(u"The description of the selected hardware item."))
         self.txtFigureNumber = ramstk.RAMSTKEntry(
@@ -254,7 +254,7 @@ class GeneralData(RAMSTKWorkView):
             tooltip=_(
                 u"The reference designator of the selected hardware item."))
         self.txtRemarks = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=600,
             tooltip=_(u"Enter any remarks associated with the selected "
                       u"hardware item."))
@@ -266,7 +266,7 @@ class GeneralData(RAMSTKWorkView):
             tooltip=_(
                 u"The year the the selected hardware item was manufactured."))
 
-        # Connect to callback hardwares for editable gtk.Widgets().
+        # Connect to callback hardwares for editable Gtk.Widgets().
         self._lst_handler_id.append(
             self.chkRepairable.connect('toggled', self._on_toggled, 0))
         self._lst_handler_id.append(
@@ -318,8 +318,8 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtYearMade.connect('changed', self._on_focus_out, 22))
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_page(), expand=True, fill=True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -447,8 +447,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Disable the category RAMSTKCombo() if the hardware item is not a part.
         if attributes['part'] == 1:
-            self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
-            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
+            self.cmbCategory.set_button_sensitivity(Gtk.SENSITIVITY_ON)
+            self.cmbSubcategory.set_button_sensitivity(Gtk.SENSITIVITY_ON)
 
             self.cmbCategory.set_active(int(attributes['category_id']))
 
@@ -458,8 +458,8 @@ class GeneralData(RAMSTKWorkView):
             self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
 
         else:
-            self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
-            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
+            self.cmbCategory.set_button_sensitivity(Gtk.SENSITIVITY_OFF)
+            self.cmbSubcategory.set_button_sensitivity(Gtk.SENSITIVITY_OFF)
 
             # Clear the subcategory RAMSTKComboBox() always so it is empty
             # whenever an assembly is selected.
@@ -585,14 +585,14 @@ class GeneralData(RAMSTKWorkView):
         """
         Send request to create the composite reference designator.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_make_comp_ref_des', node_id=self._hardware_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -600,14 +600,14 @@ class GeneralData(RAMSTKWorkView):
         """
         Send request to save the currently selected Hardware item.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_hardware', node_id=self._hardware_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -615,24 +615,24 @@ class GeneralData(RAMSTKWorkView):
         """
         Send request to save all Hardware items.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Hardware class Work View.
+        Make the Gtk.ButtonBox() for the Hardware class Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Hardware class Work
+        :return: _buttonbox; the Gtk.ButtonBox() for the Hardware class Work
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Creates the composite reference designator for the selected "
@@ -654,13 +654,13 @@ class GeneralData(RAMSTKWorkView):
 
     def _make_page(self):
         """
-        Make the Hardware class gtk.Notebook() general data page.
+        Make the Hardware class Gtk.Notebook() general data page.
 
-        :return: _hbox; the gtk.HBox() containing the Hardware general data
+        :return: _hbox; the Gtk.HBox() containing the Hardware general data
                  widgets.
-        :rtype: :class:`gtk.HBox`
+        :rtype: :class:`Gtk.HBox`
         """
-        # Load the gtk.ComboBox() widgets.
+        # Load the Gtk.ComboBox() widgets.
         self.cmbCostType.do_load_combo(RAMSTK_COST_TYPES)
 
         _data = []
@@ -676,8 +676,8 @@ class GeneralData(RAMSTKWorkView):
         self.cmbManufacturer.do_load_combo(_data, simple=False)
 
         # Build the General Data page starting with the left half.
-        _hbox = gtk.HBox()
-        _fixed = gtk.Fixed()
+        _hbox = Gtk.HBox()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Hardware Description"))
@@ -712,8 +712,8 @@ class GeneralData(RAMSTKWorkView):
         _fixed.show_all()
 
         # Now add the right hand side starting with the top pane.
-        _vpaned = gtk.VPaned()
-        _fixed = gtk.Fixed()
+        _vpaned = Gtk.VPaned()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Purchasing Information"))
@@ -734,7 +734,7 @@ class GeneralData(RAMSTKWorkView):
         _fixed.show_all()
 
         _vpaned.pack1(_frame, True, True)
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Miscellaneous Information"))
@@ -757,15 +757,15 @@ class GeneralData(RAMSTKWorkView):
 
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
-        # Create the label for the gtk.Notebook() tab.
+        # Create the label for the Gtk.Notebook() tab.
         _label = ramstk.RAMSTKLabel(
             _(u"General\nData"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays general information for the selected "
                       u"hardware item."))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _hbox
 
@@ -775,16 +775,16 @@ class GeneralData(RAMSTKWorkView):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         This method emits the 'changedCategory' and 'changedSubcategory'
         messages.
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the Requirement class gtk.TreeModel()
+        :param int index: the position in the Requirement class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Entry().  Indices are:
+                          Gtk.Entry().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -836,7 +836,7 @@ class GeneralData(RAMSTKWorkView):
 
     def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
         """
-        Update the Work View gtk.Widgets() when Hardware attributes change.
+        Update the Work View Gtk.Widgets() when Hardware attributes change.
 
         This method is called whenever an attribute is edited in a different
         view.
@@ -848,7 +848,7 @@ class GeneralData(RAMSTKWorkView):
                               RAMSTKDataController.
         :param int index: the index in the Hardware attributes list of the
                           attribute that was edited.
-        :param str value: the new text to update the gtk.Widget() with.
+        :param str value: the new text to update the Gtk.Widget() with.
         :return: None
         :rtype: None
         """
@@ -883,9 +883,9 @@ class GeneralData(RAMSTKWorkView):
                       method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -1053,9 +1053,9 @@ class AssessmentInputs(RAMSTKWorkView):
     :ivar cmbHRMethod: the assessment method to use for the selected hardware
                        item.
     :ivar fraDesignRatings: the container to embed the piece part design
-                            attributes gtk.Fised().
+                            attributes Gtk.Fised().
     :ivar fraOperatingStress: the container to embed the piece part operating
-                              stresses gtk.Fixed().
+                              stresses Gtk.Fixed().
     :ivar txtActiveTemp: the ambient temperature in the operating environment.
     :ivar txtAddAdjFactor: an adjustment factor to add to the assessed hazard
                            rate or MTBF.
@@ -1279,8 +1279,8 @@ class AssessmentInputs(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtMissionTime.connect('changed', self._on_focus_out, 17))
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_page(), expand=True, fill=True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -1303,7 +1303,7 @@ class AssessmentInputs(RAMSTKWorkView):
         self.txtMissionTime.set_text('')
         self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
 
-        # Clear the component-specific gtk.ScrolledWindow()s.
+        # Clear the component-specific Gtk.ScrolledWindow()s.
         for _child in self.scwDesignRatings.get_children():
             self.scwDesignRatings.remove(_child)
 
@@ -1407,7 +1407,7 @@ class AssessmentInputs(RAMSTKWorkView):
             self.fmt.format(attributes['mission_time']))
         self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
 
-        # Clear the component-specific gtk.ScrolledWindow()s if there are
+        # Clear the component-specific Gtk.ScrolledWindow()s if there are
         # already a component-specific work view objects.
         _child = self.scwDesignRatings.get_child().get_children()[0]
         try:
@@ -1529,8 +1529,8 @@ class AssessmentInputs(RAMSTKWorkView):
         """
         Send request to calculate the selected hardware.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -1546,14 +1546,14 @@ class AssessmentInputs(RAMSTKWorkView):
         """
         Send request to save the currently selected Hardware item.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_hardware', node_id=self._hardware_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -1561,14 +1561,14 @@ class AssessmentInputs(RAMSTKWorkView):
         """
         Send request to save all Hardware items.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -1629,11 +1629,11 @@ class AssessmentInputs(RAMSTKWorkView):
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Hardware class Work View.
+        Make the Gtk.ButtonBox() for the Hardware class Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Hardware class Work
+        :return: _buttonbox; the Gtk.ButtonBox() for the Hardware class Work
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [_(u"Calculate the currently selected Hardware item.")]
         _callbacks = [self._do_request_calculate]
@@ -1653,12 +1653,12 @@ class AssessmentInputs(RAMSTKWorkView):
 
     def _make_page(self):
         """
-        Make the Hardware class gtk.Notebook() assessment input page.
+        Make the Hardware class Gtk.Notebook() assessment input page.
 
-        :return: a gtk.HBox() instance.
-        :rtype: :class:`gtk.HBox`
+        :return: a Gtk.HBox() instance.
+        :rtype: :class:`Gtk.HBox`
         """
-        # Load the gtk.ComboBox() widgets.
+        # Load the Gtk.ComboBox() widgets.
         self.cmbActiveEnviron.do_load_combo(RAMSTK_ACTIVE_ENVIRONMENTS)
         self.cmbDormantEnviron.do_load_combo(RAMSTK_DORMANT_ENVIRONMENTS)
         self.cmbHRType.do_load_combo(RAMSTK_HR_TYPES)
@@ -1666,9 +1666,9 @@ class AssessmentInputs(RAMSTKWorkView):
         self.cmbFailureDist.do_load_combo(RAMSTK_HR_DISTRIBUTIONS)
 
         # Build the assessment input page starting with the top left half.
-        _hbox = gtk.HBox()
-        _vpaned = gtk.VPaned()
-        _fixed = gtk.Fixed()
+        _hbox = Gtk.HBox()
+        _vpaned = Gtk.VPaned()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Assessment Inputs"))
@@ -1703,8 +1703,8 @@ class AssessmentInputs(RAMSTKWorkView):
         _vpaned.pack2(_frame, True, True)
 
         # Now add the top right pane.
-        _vpaned = gtk.VPaned()
-        _fixed = gtk.Fixed()
+        _vpaned = Gtk.VPaned()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Environmental Inputs"))
@@ -1733,21 +1733,21 @@ class AssessmentInputs(RAMSTKWorkView):
 
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
-        _frame = gtk.Frame()
+        _frame = Gtk.Frame()
         self.scwDesignRatings.add_with_viewport(_frame)
 
-        _frame = gtk.Frame()
+        _frame = Gtk.Frame()
         self.scwOperatingStress.add_with_viewport(_frame)
 
-        # Create the label for the gtk.Notebook() tab.
+        # Create the label for the Gtk.Notebook() tab.
         _label = ramstk.RAMSTKLabel(
             _(u"Assessment\nInputs"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays reliability assessment inputs for the "
                       u"selected hardware item."))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _hbox
 
@@ -1757,13 +1757,13 @@ class AssessmentInputs(RAMSTKWorkView):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Entry().  Indices are:
+                          Gtk.Entry().  Indices are:
 
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
@@ -1826,7 +1826,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
     def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
         """
-        Update Hardware Assessment Input gtk.Widgets() when attributes change.
+        Update Hardware Assessment Input Gtk.Widgets() when attributes change.
 
         This method is called whenever an attribute is edited in a different
         view.
@@ -1838,7 +1838,7 @@ class AssessmentInputs(RAMSTKWorkView):
                               RAMSTKDataController.
         :param int index: the index in the Hardware attributes list of the
                           attribute that was edited.
-        :param str value: the new text to update the gtk.Widget() with.
+        :param str value: the new text to update the Gtk.Widget() with.
         :return: None
         :rtype: None
         """
@@ -1904,9 +1904,9 @@ class AssessmentInputs(RAMSTKWorkView):
                       method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +---------+---------------------+---------+---------------------+
             |  Index  | Widget              |  Index  | Widget              |
@@ -2272,8 +2272,8 @@ class AssessmentResults(RAMSTKWorkView):
             tooltip=_(u"Displays the total cost of the selected hardware "
                       u"item."))
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_page(), expand=True, fill=True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
+        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -2315,7 +2315,7 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtMissionRt.set_text('')
         self.txtMissionRtVar.set_text('')
 
-        # Clear the component-specific gtk.ScrolledWindow()s.
+        # Clear the component-specific Gtk.ScrolledWindow()s.
         for _child in self.scwReliability.get_children():
             self.scwReliability.remove(_child)
 
@@ -2338,7 +2338,7 @@ class AssessmentResults(RAMSTKWorkView):
         self._hazard_rate_method_id = attributes['hazard_rate_method_id']
 
         # Retrieve the appropriate component-specific work views and add them
-        # to the gtk.ScrolledWindow()s.
+        # to the Gtk.ScrolledWindow()s.
         try:
             _component_ar = self._dic_assessment_results[
                 attributes['category_id']]
@@ -2406,7 +2406,7 @@ class AssessmentResults(RAMSTKWorkView):
         self.txtMissionRtVar.set_text(
             str(self.fmt.format(attributes['reliability_miss_variance'])))
 
-        # Clear the component-specific gtk.ScrolledWindow()s if it already
+        # Clear the component-specific Gtk.ScrolledWindow()s if it already
         # contains a component-specific work view objects.  Then load the new
         # component-specific work view object.
         _child = self.scwReliability.get_child().get_children()[0]
@@ -2447,8 +2447,8 @@ class AssessmentResults(RAMSTKWorkView):
         """
         Send request to calculate the selected Hardware item.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -2464,14 +2464,14 @@ class AssessmentResults(RAMSTKWorkView):
         """
         Send request to save the currently selected Hardware item.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_hardware', node_id=self._hardware_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -2479,24 +2479,24 @@ class AssessmentResults(RAMSTKWorkView):
         """
         Send request to save all Hardware items.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Hardware class Work View.
+        Make the Gtk.ButtonBox() for the Hardware class Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Hardware class Work
+        :return: _buttonbox; the Gtk.ButtonBox() for the Hardware class Work
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [_(u"Calculate the currently selected Hardware item.")]
         _callbacks = [self._do_request_calculate]
@@ -2516,20 +2516,20 @@ class AssessmentResults(RAMSTKWorkView):
 
     def _make_page(self):
         """
-        Make the Hardware class gtk.Notebook() assessment results page.
+        Make the Hardware class Gtk.Notebook() assessment results page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _hbox = gtk.HBox()
+        _hbox = Gtk.HBox()
 
         # Build the assessment results page starting with the top left half.
-        _vpaned = gtk.VPaned()
+        _vpaned = Gtk.VPaned()
 
         _frame = ramstk.RAMSTKFrame(label=_(u"Reliability Results"))
         _vpaned.pack1(_frame, True, True)
 
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame.add(_scrollwindow)
 
@@ -2568,8 +2568,8 @@ class AssessmentResults(RAMSTKWorkView):
         _hbox.pack_start(_vpaned, expand=True, fill=True)
 
         # Now add the top right pane.
-        _vpaned = gtk.VPaned()
-        _fixed = gtk.Fixed()
+        _vpaned = Gtk.VPaned()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"Availability Results"))
@@ -2598,21 +2598,21 @@ class AssessmentResults(RAMSTKWorkView):
 
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
-        _frame = gtk.Frame()
+        _frame = Gtk.Frame()
         self.scwReliability.add_with_viewport(_frame)
 
-        _frame = gtk.Frame()
+        _frame = Gtk.Frame()
         self.scwStress.add_with_viewport(_frame)
 
         _label = ramstk.RAMSTKLabel(
             _(u"Assessment\nResults"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays reliability, "
                       u"maintainability, and availability "
                       u"assessment results for the selected "
                       u"{0:s}.").format(self._module))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _hbox

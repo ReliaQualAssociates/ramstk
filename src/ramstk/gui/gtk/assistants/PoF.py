@@ -46,8 +46,8 @@ class AddStressMethod(ramstk.RAMSTKDialog):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fixed = gtk.Fixed()
-        self.vbox.pack_start(_fixed)
+        _fixed = Gtk.Fixed()
+        self.vbox.pack_start(_fixed, True, True, 0)
 
         _label = ramstk.RAMSTKLabel(
             _(u"This is the RAMSTK Operating Stress and Test Method "
@@ -77,7 +77,7 @@ class AddStressMethod(ramstk.RAMSTKDialog):
         Method to destroy the assistant when the 'Cancel' button is
         pressed.
 
-        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param Gtk.Button __button: the Gtk.Button() that called this method.
         """
 
         self.destroy()

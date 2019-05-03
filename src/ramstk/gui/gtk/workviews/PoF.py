@@ -24,7 +24,7 @@ class PoF(RAMSTKWorkView):
     Analysis (PoF). The attributes of a PoF Work View are:
 
     :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
+                           each Gtk.Widget() associated with an editable
                            Functional PoF attribute.
 
     +----------+-------------------------------------------+
@@ -91,13 +91,13 @@ class PoF(RAMSTKWorkView):
             _(u"Damage\nModeling"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays the Physics of Failure (PoF) Analysis for "
                       u"the selected hardware item."))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(), False, True)
-        self.pack_end(self._make_page(), True, True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), False, True)
+        self.pack_end(self._make_page(, True, True, 0), True, True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
@@ -141,7 +141,7 @@ class PoF(RAMSTKWorkView):
         _entity = _node.data
         try:
             if _entity.is_mode:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['mode'], 22, 22)
                 _data = [
                     _entity.mode_id, _entity.description, _entity.effect_end,
@@ -150,14 +150,14 @@ class PoF(RAMSTKWorkView):
                 ]
                 _row = None
             elif _entity.is_mechanism:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['mechanism'], 22, 22)
                 _data = [
                     _entity.mechanism_id, _entity.description, '', '', '', '',
                     '', '', '', 0, '', _icon, _node.identifier
                 ]
             elif _entity.is_opload:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['opload'], 22, 22)
                 _data = [
                     _entity.load_id, _entity.description, '', '', '',
@@ -165,7 +165,7 @@ class PoF(RAMSTKWorkView):
                     _icon, _node.identifier
                 ]
             elif _entity.is_opstress and _row is not None:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['opstress'], 22, 22)
                 _data = [
                     _entity.stress_id, _entity.description, '', '', '', '',
@@ -173,7 +173,7 @@ class PoF(RAMSTKWorkView):
                     _entity.remarks, _icon, _node.identifier
                 ]
             elif _entity.is_testmethod and _row is not None:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['testmethod'], 22, 22)
                 _data = [
                     _entity.test_id, _entity.description, '', '', '', '', '',
@@ -310,19 +310,19 @@ class PoF(RAMSTKWorkView):
                 _cell = self.treeview.get_column(
                     self._lst_col_order[_idx]).get_cell_renderers()[0]
                 _cell.set_property('editable', False)
-                _cell.set_property('mode', gtk.CELL_RENDERER_MODE_INERT)
+                _cell.set_property('mode', Gtk.CellRendererMode.INERT)
             for _idx in [1, 8]:
                 _cell = self.treeview.get_column(
                     self._lst_col_order[_idx]).get_cell_renderers()[0]
                 _cell.set_property('editable', True)
-                _cell.set_property('mode', gtk.CELL_RENDERER_MODE_EDITABLE)
+                _cell.set_property('mode', Gtk.CellRendererMode.EDITABLE)
 
         _columns = self.treeview.get_columns()
 
         i = 0
         for _heading in _headings:
             _label = ramstk.RAMSTKLabel(
-                _heading, height=-1, justify=gtk.JUSTIFY_CENTER, wrap=True)
+                _heading, height=-1, justify=Gtk.Justification.CENTER, wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
             if _heading == '':
@@ -340,13 +340,13 @@ class PoF(RAMSTKWorkView):
         """
         Handle edits of the PoF RAMSTKTreeview().
 
-        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
                          that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                             Gtk.CellRenderer().
+        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
                                     belongs to.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -382,7 +382,7 @@ class PoF(RAMSTKWorkView):
         """
         Request to delete the selected entity from the PoF.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -453,7 +453,7 @@ class PoF(RAMSTKWorkView):
             _dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
 
-            if _dialog.do_run() == gtk.RESPONSE_OK:
+            if _dialog.do_run() == Gtk.ResponseType.OK:
                 _dialog.do_destroy()
 
             _return = True
@@ -461,7 +461,7 @@ class PoF(RAMSTKWorkView):
         if _choose:
             _dialog = AddStressMethod()
 
-            if _dialog.do_run() == gtk.RESPONSE_OK:
+            if _dialog.do_run() == Gtk.ResponseType.OK:
                 _opstress = _dialog.rdoStress.get_active()
                 _testmethod = _dialog.rdoMethod.get_active()
 
@@ -491,7 +491,7 @@ class PoF(RAMSTKWorkView):
         """
         Request to insert a new entity to the PoF at the next level.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -501,7 +501,7 @@ class PoF(RAMSTKWorkView):
         """
         Request to insert a new entity to the PoF at the same level.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -511,17 +511,17 @@ class PoF(RAMSTKWorkView):
         """
         Request to save the currently selected entity in the PoF.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 12)
 
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update(_node_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
@@ -529,24 +529,24 @@ class PoF(RAMSTKWorkView):
         """
         Request to save all the entities in the PoF.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
     def _get_cell_model(self, column):
         """
-        Retrieve the gtk.CellRendererCombo() gtk.TreeModel().
+        Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
 
         :param int column: the column number to retrieve the cell from.
         :return: _model
-        :rtype: :class:`gtk.TreeModel`
+        :rtype: :class:`Gtk.TreeModel`
         """
         _column = self.treeview.get_column(column)
         _cell = _column.get_cell_renderers()[0]
@@ -582,10 +582,10 @@ class PoF(RAMSTKWorkView):
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the PoF class Work View.
+        Make the Gtk.ButtonBox() for the PoF class Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the PoF Work View.
-        :rtype: :class:`gtk.ButtonBox`
+        :return: _buttonbox; the Gtk.ButtonBox() for the PoF Work View.
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Add a new PoF entity at the same level as the "
@@ -615,19 +615,19 @@ class PoF(RAMSTKWorkView):
         """
         Make the PoF RAMSTKTreeview().
 
-        :return: a gtk.Frame() containing the instance of gtk.Treeview().
-        :rtype: :class:`gtk.Frame`
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
         """
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
         _frame = ramstk.RAMSTKFrame(
             label=_(u"Physics of Failure (PoF) Analysis"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
-        self.treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         for i in [0, 1, 2, 3, 4]:
             _column = self.treeview.get_column(self._lst_col_order[i])
@@ -637,28 +637,28 @@ class PoF(RAMSTKWorkView):
                 _cell = _column.get_cell_renderers()[0]
             _cell.set_property('font', 'normal bold')
 
-        # Load the damage models into the gtk.CellRendererCombo().
+        # Load the damage models into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[5])
         _model.append(('', ))
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS:
             _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                            RAMSTK_DAMAGE_MODELS[_item][0], ))
 
-        # Load the measureable parameter into the gtk.CellRendererCombo().
+        # Load the measureable parameter into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[6])
         _model.append(('', ))
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS:
             _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                            RAMSTK_MEASURABLE_PARAMETERS[_item][1], ))
 
-        # Load the load history into the gtk.CellRendererCombo().
+        # Load the load history into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[7])
         _model.append(('', ))
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY:
             _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                            RAMSTK_LOAD_HISTORY[_item][0], ))
 
-        # Set the priority gtk.CellRendererSpin()'s adjustment limits and
+        # Set the priority Gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
         _cell = self.treeview.get_column(
             self._lst_col_order[9]).get_cell_renderers()[0]
@@ -674,12 +674,12 @@ class PoF(RAMSTKWorkView):
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cell_renderers()
 
-            if isinstance(_cell[0], gtk.CellRendererPixbuf):
+            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
                 pass
-            elif isinstance(_cell[0], gtk.CellRendererToggle):
+            elif isinstance(_cell[0], Gtk.CellRendererToggle):
                 _cell[0].connect('toggled', self._do_edit_cell, None, i,
                                  self.treeview.get_model())
-            elif isinstance(_cell[0], gtk.CellRendererCombo):
+            elif isinstance(_cell[0], Gtk.CellRendererCombo):
                 _cell[0].connect('edited', self._do_edit_cell, i,
                                  self.treeview.get_model())
             else:
@@ -694,7 +694,7 @@ class PoF(RAMSTKWorkView):
 
         :param treeview: the PoF TreeView RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                       * 1 = left
@@ -705,7 +705,7 @@ class PoF(RAMSTKWorkView):
                       * 8 =
                       * 9 =
 
-        :type event: :class:`gtk.gdk.Event`.
+        :type event: :class:`Gdk.Event`.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

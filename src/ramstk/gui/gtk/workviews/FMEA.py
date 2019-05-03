@@ -26,7 +26,7 @@ class FMEA(RAMSTKWorkView):
     Analysis (FMEA). The attributes of a FMEA Work View are:
 
     :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
+                           each Gtk.Widget() associated with an editable
                            Functional FMEA attribute.
 
     +----------+-------------------------------------------+
@@ -89,26 +89,26 @@ class FMEA(RAMSTKWorkView):
                 u"Select this option to calculate the (D)FME(C)A risk priority "
                 u"numbers (RPN)."))
         self.txtItemCriticality = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             height=75,
             tooltip=_(
                 u"Displays the MIL-SD-1629, Taks 102 item criticality for the "
                 u"selected hardware item."))
         self.txtItemCriticality.set_editable(False)
-        _bg_color = gtk.gdk.Color('#ADD8E6')
-        self.txtItemCriticality.modify_base(gtk.STATE_NORMAL, _bg_color)
-        self.txtItemCriticality.modify_base(gtk.STATE_ACTIVE, _bg_color)
-        self.txtItemCriticality.modify_base(gtk.STATE_PRELIGHT, _bg_color)
-        self.txtItemCriticality.modify_base(gtk.STATE_SELECTED, _bg_color)
-        self.txtItemCriticality.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
+        _bg_color = Gdk.Color('#ADD8E6')
+        self.txtItemCriticality.modify_base(Gtk.StateType.NORMAL, _bg_color)
+        self.txtItemCriticality.modify_base(Gtk.StateType.ACTIVE, _bg_color)
+        self.txtItemCriticality.modify_base(Gtk.StateType.PRELIGHT, _bg_color)
+        self.txtItemCriticality.modify_base(Gtk.StateType.SELECTED, _bg_color)
+        self.txtItemCriticality.modify_base(Gtk.StateType.INSENSITIVE, _bg_color)
 
     def _get_cell_model(self, column):
         """
-        Retrieve the gtk.CellRendererCombo() gtk.TreeModel().
+        Retrieve the Gtk.CellRendererCombo() Gtk.TreeModel().
 
         :param int column: the column number to retrieve the cell from.
         :return: _model
-        :rtype: :class:`gtk.TreeModel`
+        :rtype: :class:`Gtk.TreeModel`
         """
         _column = self.treeview.get_column(column)
         _cell = _column.get_cell_renderers()[0]
@@ -149,7 +149,7 @@ class FMEA(RAMSTKWorkView):
         """
         Calculate the FFMEA RPN or criticality.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -185,7 +185,7 @@ class FMEA(RAMSTKWorkView):
         """
         Request to delete the selected entity from the FMEA.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -229,7 +229,7 @@ class FMEA(RAMSTKWorkView):
             _dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
 
-            if _dialog.do_run() == gtk.RESPONSE_OK:
+            if _dialog.do_run() == Gtk.ResponseType.OK:
                 _dialog.do_destroy()
 
             _return = True
@@ -237,7 +237,7 @@ class FMEA(RAMSTKWorkView):
         if _choose:
             _dialog = AddControlAction()
 
-            if _dialog.do_run() == gtk.RESPONSE_OK:
+            if _dialog.do_run() == Gtk.ResponseType.OK:
                 _control = _dialog.rdoControl.get_active()
                 _action = _dialog.rdoAction.get_active()
 
@@ -264,7 +264,7 @@ class FMEA(RAMSTKWorkView):
         """
         Request to insert a new entity to the FMEA at the next level.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -274,7 +274,7 @@ class FMEA(RAMSTKWorkView):
         """
         Request to insert a new entity to the FMEA at the same level.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -284,8 +284,8 @@ class FMEA(RAMSTKWorkView):
         """
         Request to save the currently selected entity in the FMEA.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -295,9 +295,9 @@ class FMEA(RAMSTKWorkView):
         else:
             _node_id = _model.get_value(_row, 43)
 
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update(_node_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
@@ -305,23 +305,23 @@ class FMEA(RAMSTKWorkView):
         """
         Request to save all the entities in the FMEA.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the FMEA class Work View.
+        Make the Gtk.ButtonBox() for the FMEA class Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the FMEA Work View.
-        :rtype: :class:`gtk.ButtonBox`
+        :return: _buttonbox; the Gtk.ButtonBox() for the FMEA Work View.
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Add a new FMEA entity at the same level as the "
@@ -352,19 +352,19 @@ class FMEA(RAMSTKWorkView):
         """
         Make the FMEA RAMSTKTreeview().
 
-        :return: a gtk.Frame() containing the instance of gtk.Treeview().
-        :rtype: :class:`gtk.Frame`
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
         """
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
         _frame = ramstk.RAMSTKFrame(
             label=_(u"Failure Mode and Effects Analysis (FMEA)"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
-        self.treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         return _frame
 
@@ -374,7 +374,7 @@ class FMEA(RAMSTKWorkView):
 
         :param treeview: the FMEA TreeView RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                       * 1 = left
@@ -385,7 +385,7 @@ class FMEA(RAMSTKWorkView):
                       * 8 =
                       * 9 =
 
-        :type event: :class:`gtk.gdk.Event`.
+        :type event: :class:`Gdk.Event`.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -477,17 +477,17 @@ class FFMEA(FMEA):
             _(u"FMEA"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays the Functional Failure Mode and Effects "
                       u"Analysis (FFMEA) for the selected function."))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         _buttonbox = self._make_buttonbox()
         # Disable the calculate button for the Functional FMEA.
         _buttonbox.get_children()[3].set_sensitive(False)
 
         self.pack_start(_buttonbox, False, True)
-        self.pack_end(self._make_page(), True, True)
+        self.pack_end(self._make_page(, True, True, 0), True, True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedFunction')
@@ -559,7 +559,7 @@ class FFMEA(FMEA):
         i = 0
         for _heading in _headings:
             _label = ramstk.RAMSTKLabel(
-                _heading, justify=gtk.JUSTIFY_CENTER, wrap=True)
+                _heading, justify=Gtk.Justification.CENTER, wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
             if _heading == '':
@@ -593,8 +593,8 @@ class FFMEA(FMEA):
         """
         Handle edits of the FMEA Work View RAMSTKTreeview().
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :class:`gtk.CellRenderer`.
+        :param __cell: the Gtk.CellRenderer() that was edited.
+        :type __cell: :class:`Gtk.CellRenderer`.
         :param str path: the path that was edited.
         :param str __new_text: the edited text.
         :return: False if successful or True if an error is encountered.
@@ -660,7 +660,7 @@ class FFMEA(FMEA):
         _entity = _node.data
         try:
             if _entity.is_mode:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['mode'], 22, 22)
                 _data = [
                     _entity.mode_id, _entity.description, _entity.effect_local,
@@ -671,7 +671,7 @@ class FFMEA(FMEA):
                 ]
                 _row = None
             elif _entity.is_cause and _row is not None:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['cause'], 22, 22)
                 _data = [
                     _entity.cause_id, _entity.description, '', '', '', '', '',
@@ -679,7 +679,7 @@ class FFMEA(FMEA):
                     _node.identifier
                 ]
             elif _entity.is_control and _row is not None:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['control'], 22, 22)
                 _data = [
                     _entity.control_id, _entity.description, '', '', '', '',
@@ -687,7 +687,7 @@ class FFMEA(FMEA):
                     _node.identifier
                 ]
             elif _entity.is_action and _row is not None:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['action'], 22, 22)
                 _data = [
                     _entity.action_id, _entity.action_recommended, '', '', '',
@@ -840,24 +840,24 @@ class FFMEA(FMEA):
         """
         Make the (D)FME(C)A RAMSTKTreeview().
 
-        :return: a gtk.Frame() containing the instance of gtk.Treeview().
-        :rtype: :class:`gtk.Frame`
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
         """
-        # Load the severity classes into the gtk.CellRendererCombo().
+        # Load the severity classes into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[7])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
             _severity = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[
                 _item][1]
             _model.append((_severity, ))
 
-        # Load the users into the gtk.CellRendererCombo().
+        # Load the users into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[8])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS:
             _user = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][0] + ', ' \
                     + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][1]
             _model.append((_user, ))
 
-        # Load the status values into the gtk.CellRendererCombo()
+        # Load the status values into the Gtk.CellRendererCombo()
         _model = self._get_cell_model(self._lst_col_order[10])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS:
             _status = \
@@ -873,12 +873,12 @@ class FFMEA(FMEA):
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cell_renderers()
 
-            if isinstance(_cell[0], gtk.CellRendererPixbuf):
+            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
                 pass
-            elif isinstance(_cell[0], gtk.CellRendererToggle):
+            elif isinstance(_cell[0], Gtk.CellRendererToggle):
                 _cell[0].connect('toggled', self._do_edit_cell, None, i,
                                  self.treeview.get_model())
-            elif isinstance(_cell[0], gtk.CellRendererCombo):
+            elif isinstance(_cell[0], Gtk.CellRendererCombo):
                 _cell[0].connect('edited', self._do_edit_cell, i,
                                  self.treeview.get_model())
             else:
@@ -980,14 +980,14 @@ class DFMECA(FMEA):
             _(u"FMEA"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays the Design Failure Mode, Effects, (and "
                       u"Criticality) Analysis [(D)FME(C)A] for the selected "
                       u"Hardware item."))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(), False, True)
-        self.pack_end(self._make_methodbox(), True, True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), False, True)
+        self.pack_end(self._make_methodbox(, True, True, 0), True, True)
         self.show_all()
 
         pub.subscribe(self._do_load_missions, 'selectedRevision')
@@ -1110,7 +1110,7 @@ class DFMECA(FMEA):
         i = 0
         for _heading in _headings:
             _label = ramstk.RAMSTKLabel(
-                _heading, height=-1, justify=gtk.JUSTIFY_CENTER, wrap=True)
+                _heading, height=-1, justify=Gtk.Justification.CENTER, wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
             if _heading == '':
@@ -1149,13 +1149,13 @@ class DFMECA(FMEA):
         """
         Handle edits of the (D)FME(C)A RAMSTKTreeview().
 
-        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
                          that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                             Gtk.CellRenderer().
+        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
                                     belongs to.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1248,7 +1248,7 @@ class DFMECA(FMEA):
 
     def _do_load_mission_phases(self, mission):
         """
-        Load the mission phase gtk.CellRendererCombo().
+        Load the mission phase Gtk.CellRendererCombo().
 
         :param str mission: the mission that was selected.
         :return False if successful or True if an error is encountered.
@@ -1354,7 +1354,7 @@ class DFMECA(FMEA):
 
         try:
             if _entity.is_mode:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['mode'], 22, 22)
                 try:
                     self._dic_missions[_entity.mission]
@@ -1379,7 +1379,7 @@ class DFMECA(FMEA):
                 ]
                 _row = None
             elif _entity.is_mechanism:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['mechanism'], 22, 22)
                 _data = [
                     _entity.mechanism_id, _entity.description, '', '', '', '',
@@ -1390,7 +1390,7 @@ class DFMECA(FMEA):
                     _entity.pof_include, '', _icon, _node.identifier
                 ]
             elif _entity.is_cause:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['cause'], 22, 22)
                 _data = [
                     _entity.cause_id, _entity.description, '', '', '', '', '',
@@ -1401,7 +1401,7 @@ class DFMECA(FMEA):
                     '', _icon, _node.identifier
                 ]
             elif _entity.is_control and _row is not None:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['control'], 22, 22)
                 _data = [
                     _entity.control_id, _entity.description, '', '', '', '',
@@ -1412,7 +1412,7 @@ class DFMECA(FMEA):
                     _node.identifier
                 ]
             elif _entity.is_action and _row is not None:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['action'], 22, 22)
                 _data = [
                     _entity.action_id, _entity.action_recommended, '', '', '',
@@ -1660,18 +1660,18 @@ class DFMECA(FMEA):
         Make the (D)FME(C)A option box.
 
         :return: _vbox
-        :rtype: :class:`gtk.VBox`
+        :rtype: :class:`Gtk.VBox`
         """
-        _vbox = gtk.VBox()
+        _vbox = Gtk.VBox()
 
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
         _vbox.pack_start(_fixed, False, True)
 
         _fixed.put(self.chkCriticality, 5, 5)
         _fixed.put(self.chkRPN, 5, 35)
         _fixed.put(self.txtItemCriticality.scrollwindow, 550, 5)
 
-        _vbox.pack_end(self._make_page(), True, True)
+        _vbox.pack_end(self._make_page(, True, True, 0), True, True)
 
         # By default, calculate both Task 102 and RPN.
         self.chkCriticality.set_active(True)
@@ -1683,16 +1683,16 @@ class DFMECA(FMEA):
         """
         Make the (D)FME(C)A RAMSTKTreeview().
 
-        :return: a gtk.Frame() containing the instance of gtk.Treeview().
-        :rtype: :class:`gtk.Frame`
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
         """
-        # Load the severity classes into the gtk.CellRendererCombo().
+        # Load the severity classes into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[12])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
             _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                            RAMSTK_SEVERITY[_item][1], ))
 
-        # Load the RPN severity classes into the gtk.CellRendererCombo().
+        # Load the RPN severity classes into the Gtk.CellRendererCombo().
         for _position in [21, 34]:
             _model = self._get_cell_model(self._lst_col_order[_position])
             _model.append(('', ))
@@ -1701,7 +1701,7 @@ class DFMECA(FMEA):
                 _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                                RAMSTK_RPN_SEVERITY[_item][1], ))
 
-        # Load the RPN occurrence classes into the gtk.CellRendererCombo().
+        # Load the RPN occurrence classes into the Gtk.CellRendererCombo().
         for _position in [22, 35]:
             _model = self._get_cell_model(self._lst_col_order[_position])
             _model.append(('', ))
@@ -1710,7 +1710,7 @@ class DFMECA(FMEA):
                 _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                                RAMSTK_RPN_OCCURRENCE[_item][1], ))
 
-        # Load the RPN detection classes into the gtk.CellRendererCombo().
+        # Load the RPN detection classes into the Gtk.CellRendererCombo().
         for _position in [23, 36]:
             _model = self._get_cell_model(self._lst_col_order[_position])
             _model.append(('', ))
@@ -1719,30 +1719,30 @@ class DFMECA(FMEA):
                 _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                                RAMSTK_RPN_DETECTION[_item][1], ))
 
-        # Load the failure probabilities into the gtk.CellRendererCombo().
+        # Load the failure probabilities into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[14])
         for _item in RAMSTK_FAILURE_PROBABILITY:
             _model.append((_item[0], ))
 
-        # Load the control type gtk.CellRendererCombo().
+        # Load the control type Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[20])
         for _item in RAMSTK_CONTROL_TYPES:
             _model.append((_item, ))
 
-        # Load the action category gtk.CellRendererCombo().
+        # Load the action category Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[25])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_CATEGORY:
             _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                            RAMSTK_ACTION_CATEGORY[_item][1], ))
 
-        # Load the users into the gtk.CellRendererCombo().
+        # Load the users into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[26])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS:
             _user = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][0] + \
                 ', ' + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][1]
             _model.append((_user, ))
 
-        # Load the status values into the gtk.CellRendererCombo()
+        # Load the status values into the Gtk.CellRendererCombo()
         _model = self._get_cell_model(self._lst_col_order[28])
         for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS:
             _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
@@ -1752,12 +1752,12 @@ class DFMECA(FMEA):
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cell_renderers()
 
-            if isinstance(_cell[0], gtk.CellRendererPixbuf):
+            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
                 pass
-            elif isinstance(_cell[0], gtk.CellRendererToggle):
+            elif isinstance(_cell[0], Gtk.CellRendererToggle):
                 _cell[0].connect('toggled', self._do_edit_cell, None, i,
                                  self.treeview.get_model())
-            elif isinstance(_cell[0], gtk.CellRendererCombo):
+            elif isinstance(_cell[0], Gtk.CellRendererCombo):
                 _cell[0].connect('edited', self._do_edit_cell, i,
                                  self.treeview.get_model())
             else:

@@ -18,19 +18,19 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007, 2018 Doyle "weibullguy" Rowland'
 
 
-class RAMSTKImport(gtk.Assistant):
+class RAMSTKImport(Gtk.Assistant):
     """Assistant to walk user through the process of importing records."""
 
     def __init__(self, __widget, controller):
         """
         Initialize an instance of the Import Assistant.
 
-        :param __widget: the gtk.Widget() that called this class.
-        :type __widget: :class:`gtk.Widget`
+        :param __widget: the Gtk.Widget() that called this class.
+        :type __widget: :class:`Gtk.Widget`
         :param controller: the RAMSTK master data controller.
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         """
-        gtk.Assistant.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dict variables.
         self._dic_icons = {
@@ -56,26 +56,26 @@ class RAMSTKImport(gtk.Assistant):
         # Initialize public list variables.
 
         # Initialize public scalar variables.
-        self._tvw_field_map = gtk.TreeView()
+        self._tvw_field_map = Gtk.TreeView()
 
         # Build the assistant.
         _page = self._make_introduction_page()
         self.append_page(_page)
-        self.set_page_type(_page, gtk.ASSISTANT_PAGE_INTRO)
+        self.set_page_type(_page, Gtk.AssistantPageType.INTRO)
         self.set_page_title(_page, _(u"RAMSTK Import Assistant"))
         self.set_page_complete(_page, True)
         _page = self._make_input_file_select_page()
         self.append_page(_page)
-        self.set_page_type(_page, gtk.ASSISTANT_PAGE_CONTENT)
+        self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
         self.set_page_title(_page, _(u"Select Input File"))
         _page = self._make_map_field_page()
         self.append_page(_page)
-        self.set_page_type(_page, gtk.ASSISTANT_PAGE_CONTENT)
+        self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
         self.set_page_title(
             _page, _(u"Map Input File Fields to RAMSTK Database Fields"))
         _page = self._make_confirm_page()
         self.append_page(_page)
-        self.set_page_type(_page, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.set_page_type(_page, Gtk.AssistantPageType.CONFIRM)
         self.set_page_complete(_page, True)
 
         self.set_property('title', _(u"RAMSTK Import Assistant"))
@@ -91,15 +91,15 @@ class RAMSTKImport(gtk.Assistant):
 
     def _do_edit_cell(self, __cell, path, new_text, model):
         """
-        Handle gtk.CellRenderer() edits.
+        Handle Gtk.CellRenderer() edits.
 
-        :param gtk.CellRenderer cell: the gtk.CellRenderer() that was edited.
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer() that
+        :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
                          was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                             Gtk.CellRenderer().
+        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
                                     belongs to.
         :return: None
         :rtype: None
@@ -120,8 +120,8 @@ class RAMSTKImport(gtk.Assistant):
         """
         Quit the RAMSTK Import Assistant.
 
-        :param __widget: the gtk.Widget() that called this method.
-        :type __widget: :class:`gtk.Widget`
+        :param __widget: the Gtk.Widget() that called this method.
+        :type __widget: :class:`Gtk.Widget`
         :return: None
         :rtype: None
         """
@@ -133,17 +133,17 @@ class RAMSTKImport(gtk.Assistant):
         """
         Request the data controller insert new records.
 
-        :param __assistant: this gtk.Assistant() instance.
-        :type __assistant: :class:`gtk.Assistant`
+        :param __assistant: this Gtk.Assistant() instance.
+        :type __assistant: :class:`Gtk.Assistant`
         :return: None
         :rtype: None
         """
-        set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
+        set_cursor(self._mdcRAMSTK, Gdk.CursorType.WATCH)
 
         (_count, _error_code,
          _msg) = self._dtc_data_controller.request_do_insert(self._module)
 
-        set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
+        set_cursor(self._mdcRAMSTK, Gdk.CursorType.LEFT_PTR)
 
         if _error_code == 2:
             _msg_type = 'error'
@@ -170,7 +170,7 @@ class RAMSTKImport(gtk.Assistant):
 
         _dialog = ramstk.RAMSTKMessageDialog(
             _user_msg, self._dic_icons[_msg_type], _msg_type)
-        if _dialog.do_run() == gtk.RESPONSE_OK:
+        if _dialog.do_run() == Gtk.ResponseType.OK:
             _dialog.destroy()
 
         return None
@@ -179,8 +179,8 @@ class RAMSTKImport(gtk.Assistant):
         """
         Select the input file to be read.
 
-        :param filechooser: the gtk.FileChooser() that called this method.
-        :type filechooser: :class:`gtk.FileChooser`
+        :param filechooser: the Gtk.FileChooser() that called this method.
+        :type filechooser: :class:`Gtk.FileChooser`
         :return: None
         :rtype: None
         """
@@ -225,9 +225,9 @@ class RAMSTKImport(gtk.Assistant):
         Make the Import Assistant introduction page.
 
         :return: _page
-        :rtype: :class:`gtk.Fixed`
+        :rtype: :class:`Gtk.Fixed`
         """
-        _page = gtk.Fixed()
+        _page = Gtk.Fixed()
 
         _label = ramstk.RAMSTKLabel(
             _(u"This is the RAMSTK Import Assistant.  It "
@@ -249,33 +249,33 @@ class RAMSTKImport(gtk.Assistant):
         Make the Import Assistant page to select the input file.
 
         :return: _page
-        :rtype: :class:`gtk.ScrolledWindow`
+        :rtype: :class:`Gtk.ScrolledWindow`
         """
         # TODO: Implement NSWC (add Design Mechanic to this list).
         self._cmb_select_module.do_load_combo(
             [[_(u"Function")], [_(u"Requirement")], [_(u"Hardware")],
              [_(u"Validation")]])
 
-        _page = gtk.HBox()
+        _page = Gtk.HBox()
 
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
         _label = ramstk.RAMSTKLabel(_(u"Select the RAMSTK module to import:"))
         _fixed.put(_label, 5, 5)
         _fixed.put(self._cmb_select_module, 55, 5)
         _page.pack_start(_fixed, False, False)
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _file_chooser = gtk.FileChooserWidget(
-            action=gtk.FILE_CHOOSER_ACTION_OPEN)
+        _scrollwindow = Gtk.ScrolledWindow()
+        _file_chooser = Gtk.FileChooserWidget(
+            action=Gtk.FileChooserAction.OPEN)
         _scrollwindow.add_with_viewport(_file_chooser)
         _page.pack_end(_scrollwindow, True, True)
 
-        _file_filter = gtk.FileFilter()
+        _file_filter = Gtk.FileFilter()
         _file_filter.set_name(_(u"Delimited Text Files"))
         _file_filter.add_pattern('*.csv')
         _file_filter.add_pattern('*.txt')
         _file_chooser.add_filter(_file_filter)
-        _file_filter = gtk.FileFilter()
+        _file_filter = Gtk.FileFilter()
         _file_filter.set_name(_(u"Excel Files"))
         _file_filter.add_pattern('*.xls*')
         _file_chooser.add_filter(_file_filter)
@@ -292,20 +292,20 @@ class RAMSTKImport(gtk.Assistant):
         database table fields.
 
         :return: _page
-        :rtype: :class:`gtk.ScrolledWindow`
+        :rtype: :class:`Gtk.ScrolledWindow`
         """
-        _page = gtk.ScrolledWindow()
-        _page.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _page = Gtk.ScrolledWindow()
+        _page.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _page.add(self._tvw_field_map)
 
-        _model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_STRING)
+        _model = Gtk.TreeStore(GObject.TYPE_STRING, GObject.TYPE_STRING)
 
-        _column = gtk.TreeViewColumn()
+        _column = Gtk.TreeViewColumn()
         _label = ramstk.RAMSTKLabel(
-            _(u"Import File Column"), justify=gtk.JUSTIFY_CENTER)
+            _(u"Import File Column"), justify=Gtk.Justification.CENTER)
         _column.set_widget(_label)
 
-        _cell = gtk.CellRendererText()
+        _cell = Gtk.CellRendererText()
         _cell.set_property('foreground', '#000000')
         _cell.set_property('cell-background', 'light gray')
         _column.pack_start(_cell, True)
@@ -313,13 +313,13 @@ class RAMSTKImport(gtk.Assistant):
         _column.set_visible(True)
         self._tvw_field_map.append_column(_column)
 
-        _column = gtk.TreeViewColumn()
+        _column = Gtk.TreeViewColumn()
         _label = ramstk.RAMSTKLabel(
-            _(u"RAMSTK Field"), justify=gtk.JUSTIFY_CENTER)
+            _(u"RAMSTK Field"), justify=Gtk.Justification.CENTER)
         _column.set_widget(_label)
 
-        _cell = gtk.CellRendererCombo()
-        _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+        _cell = Gtk.CellRendererCombo()
+        _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
         _cellmodel.append([""])
         _cell.set_property('editable', True)
         _cell.set_property('foreground', '#000000')
@@ -342,9 +342,9 @@ class RAMSTKImport(gtk.Assistant):
         Make the Import Assistant confimation page.
 
         :return: _page
-        :rtype: :class:`gtk.Fixed`
+        :rtype: :class:`Gtk.Fixed`
         """
-        _page = gtk.Fixed()
+        _page = Gtk.Fixed()
 
         _label = ramstk.RAMSTKLabel(
             _(u"RAMSTK is all set and ready to import your "

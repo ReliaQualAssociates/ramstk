@@ -42,8 +42,8 @@ class AddControlAction(ramstk.RAMSTKDialog):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fixed = gtk.Fixed()
-        self.vbox.pack_start(_fixed)
+        _fixed = Gtk.Fixed()
+        self.vbox.pack_start(_fixed, True, True, 0)
 
         _label = ramstk.RAMSTKLabel(
             _(u"This is the RAMSTK Design Control and Action "
@@ -73,7 +73,7 @@ class AddControlAction(ramstk.RAMSTKDialog):
         """
         Destroy the assistant when the 'Cancel' button is pressed.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: :class:`gtk.Button`
+        :param __button: the Gtk.Button() that called this method.
+        :type __button: :class:`Gtk.Button`
         """
         self.destroy()

@@ -22,7 +22,7 @@ def make_label_group(text, container, x_pos, y_pos, **kwargs):
     to place the corresponding widget.
 
     :param list text: a list containing the text for each label.
-    :param gtk.Widget container: the container widget to place the labels in.
+    :param Gtk.Widget container: the container widget to place the labels in.
     :param int x_pos: the x position in the container for the left edge of all
                       labels.
     :param int y_pos: the y position in the container of the first label.
@@ -37,7 +37,7 @@ def make_label_group(text, container, x_pos, y_pos, **kwargs):
     :return: (_int_max_x, _lst_y_pos)
              the width of the label with the longest text and a list of the y
              position for each label in the container.  Use this list to place
-             gtk.Entry(), gtk.ComboBox(), etc. so they line up with their
+             Gtk.Entry(), Gtk.ComboBox(), etc. so they line up with their
              associated label.
     :rtype: tuple of (integer, list of integers)
     """
@@ -61,7 +61,7 @@ def make_label_group(text, container, x_pos, y_pos, **kwargs):
             width=-1,
             height=-1,
             wrap=_wrap,
-            justify=gtk.JUSTIFY_RIGHT)
+            justify=Gtk.Justification.RIGHT)
         _label.set_width_chars(_char_width)
         _max_x = max(_max_x, _label.size_request()[0])
         container.put(_label, x_pos, y_pos)
@@ -71,7 +71,7 @@ def make_label_group(text, container, x_pos, y_pos, **kwargs):
     return _max_x, _lst_y_pos
 
 
-class RAMSTKLabel(gtk.Label):
+class RAMSTKLabel(Gtk.Label):
     """This is the RAMSTK Label class."""
 
     # pylint: disable=R0913
@@ -79,13 +79,13 @@ class RAMSTKLabel(gtk.Label):
         r"""
         Create RAMSTK Label widgets.
 
-        :param str text: the text to display in the gtk.Label() widget.
+        :param str text: the text to display in the Gtk.Label() widget.
         :param \**kwargs: See below
 
         :Keyword Arguments:
-            * *width* (int) -- width of the gtk.Label() widget.
+            * *width* (int) -- width of the Gtk.Label() widget.
                                Default is 190.
-            * *height* (int) -- height of the gtk.Label() widget.
+            * *height* (int) -- height of the Gtk.Label() widget.
                                 Default is 25.
             * *bold* (bool) -- boolean indicating whether text should be bold.
                                Default is True.
@@ -98,7 +98,7 @@ class RAMSTKLabel(gtk.Label):
             * *tooltip* (str) -- the tooltip, if any, for the label.
                                  Default is an empty string.
         """
-        gtk.Label.__init__(self)
+        GObject.GObject.__init__(self)
 
         try:
             _bold = kwargs['bold']
@@ -111,7 +111,7 @@ class RAMSTKLabel(gtk.Label):
         try:
             _justify = kwargs['justify']
         except KeyError:
-            _justify = gtk.JUSTIFY_LEFT
+            _justify = Gtk.Justification.LEFT
         try:
             _tooltip = kwargs['tooltip']
         except KeyError:
@@ -129,9 +129,9 @@ class RAMSTKLabel(gtk.Label):
         self.set_line_wrap(_wrap)
         self.set_justify(_justify)
         self.set_tooltip_markup(_tooltip)
-        if _justify == gtk.JUSTIFY_CENTER:
+        if _justify == Gtk.Justification.CENTER:
             self.set_alignment(xalign=0.5, yalign=0.5)
-        elif _justify == gtk.JUSTIFY_LEFT:
+        elif _justify == Gtk.Justification.LEFT:
             self.set_alignment(xalign=0.05, yalign=0.5)
         else:
             self.set_alignment(xalign=0.99, yalign=0.5)
@@ -139,8 +139,8 @@ class RAMSTKLabel(gtk.Label):
         self.props.height_request = _height
 
         if not _bold:
-            self.modify_font(pango.FontDescription('normal'))
+            self.modify_font(Pango.FontDescription('normal'))
         else:
-            self.modify_font(pango.FontDescription('bold'))
+            self.modify_font(Pango.FontDescription('bold'))
 
         self.show_all()

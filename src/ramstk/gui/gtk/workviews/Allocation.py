@@ -22,7 +22,7 @@ class Allocation(RAMSTKWorkView):
     attributes of a Allocation Work View are:
 
     :ivar _lst_handler_id: list containing the ID's of the callback
-                           signals for each gtk.Widget() associated with
+                           signals for each Gtk.Widget() associated with
                            an editable Allocation attribute.
 
     +-------+-------------------------------------------+
@@ -133,15 +133,15 @@ class Allocation(RAMSTKWorkView):
             _(u"Allocation"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays the Allocation analysis for the selected "
                       u"hardware item."))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(), False, True)
-        _hbox = gtk.HBox()
-        _hbox.pack_start(self._make_goalbox(), False, True)
-        _hbox.pack_end(self._make_page(), True, True)
+        self.pack_start(self._make_buttonbox(, True, True, 0), False, True)
+        _hbox = Gtk.HBox()
+        _hbox.pack_start(self._make_goalbox(, True, True, 0), False, True)
+        _hbox.pack_end(self._make_page(, True, True, 0), True, True)
         self.pack_end(_hbox, True, True)
         self.show_all()
 
@@ -199,13 +199,13 @@ class Allocation(RAMSTKWorkView):
         """
         Handle edits of the Allocation Work View RAMSTKTreeview().
 
-        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
                          that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                             Gtk.CellRenderer().
+        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
                                     belongs to.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -339,7 +339,7 @@ class Allocation(RAMSTKWorkView):
         """
         Calculate the Allocation RPN or criticality.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -352,7 +352,7 @@ class Allocation(RAMSTKWorkView):
         """
         Calculate the Allocation RPN or criticality for all items.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -365,14 +365,14 @@ class Allocation(RAMSTKWorkView):
         """
         Request to save the currently selected entity in the Allocation.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update(self._parent_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
@@ -380,14 +380,14 @@ class Allocation(RAMSTKWorkView):
         """
         Request to save all the entities in the Allocation.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
@@ -402,10 +402,10 @@ class Allocation(RAMSTKWorkView):
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Allocation class Work View.
+        Make the Gtk.ButtonBox() for the Allocation class Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Allocation Work View.
-        :rtype: :class:`gtk.ButtonBox`
+        :return: _buttonbox; the Gtk.ButtonBox() for the Allocation Work View.
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Calculate the currently selected child hardware item.")
@@ -430,9 +430,9 @@ class Allocation(RAMSTKWorkView):
         """
         Make the Allocation methods and goal-setting container.
 
-        :return: a gtk.Frame() containing the widgets used to select the
+        :return: a Gtk.Frame() containing the widgets used to select the
                  allocation method and goals.
-        :rtype: :class:`gtk.Frame`
+        :rtype: :class:`Gtk.Frame`
         """
         # Load the method and goal comboboxes.
         self.cmbAllocationGoal.do_load_combo([[_(u"Reliability"), 0],
@@ -443,7 +443,7 @@ class Allocation(RAMSTKWorkView):
              [_(u"ARINC Apportionment"), 2],
              [_(u"Feasibility of Objectives"), 3]])
 
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
 
         _fixed.put(ramstk.RAMSTKLabel(_(u"Select Allocation Method")), 5, 5)
         _fixed.put(self.cmbAllocationMethod, 5, 30)
@@ -457,7 +457,7 @@ class Allocation(RAMSTKWorkView):
         _fixed.put(self.txtMTBFGoal, 5, 290)
 
         _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Goals and Method"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_fixed)
 
         self.txtHazardRateGoal.props.editable = 0
@@ -473,18 +473,18 @@ class Allocation(RAMSTKWorkView):
         """
         Make the Allocation RAMSTKTreeview().
 
-        :return: a gtk.Frame() containing the instance of gtk.Treeview().
-        :rtype: :class:`gtk.Frame`
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
         """
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
         _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Analysis"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
-        self.treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         return _frame
 
@@ -494,7 +494,7 @@ class Allocation(RAMSTKWorkView):
 
         :param treeview: the Allocation TreeView RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                       * 1 = left
@@ -505,7 +505,7 @@ class Allocation(RAMSTKWorkView):
                       * 8 =
                       * 9 =
 
-        :type event: :class:`gtk.gdk.Event`.
+        :type event: :class:`Gdk.Event`.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -537,11 +537,11 @@ class Allocation(RAMSTKWorkView):
 
     def _on_combo_changed(self, combo, index):
         """
-        Respond to gtk.ComboBox() 'changed' signals.
+        Respond to Gtk.ComboBox() 'changed' signals.
 
-        :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
+        :param Gtk.ComboBox combo: the Gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list oc the callback
-                          signal associated with the gtk.ComboBox() that
+                          signal associated with the Gtk.ComboBox() that
                           called this method.
         :return: None
         :rtype: None
@@ -638,13 +638,13 @@ class Allocation(RAMSTKWorkView):
 
     def _on_focus_out(self, entry, __event, index):
         """
-        Respond to gtk.Entry() 'changed' signals.
+        Respond to Gtk.Entry() 'changed' signals.
 
-        :param gtk.Entry entry: the gtk.Entry() that called this method.
-        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+        :param Gtk.Entry entry: the Gtk.Entry() that called this method.
+        :param Gdk.Event __event: the Gdk.Event() that called this
                                       method.
         :param int index: the index in the handler ID list oc the callback
-                          signal associated with the gtk.Entry() that
+                          signal associated with the Gtk.Entry() that
                           called this method.
         :return: False if successful or True is an error is encountered.
         :rtype: bool

@@ -26,8 +26,8 @@ class CreateProject(object):
         """
         Initialize an instance of the Create Project Assistant.
 
-        :param __button: the gtk.ToolButton() that launched this class.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that launched this class.
+        :type __button: :class:`Gtk.ToolButton`
         :param controller: the RAMSTK master data controller.
         :type controller: :py:class:`ramstk.RAMSTK.RAMSTK`
         """
@@ -44,31 +44,31 @@ class CreateProject(object):
 
         # Initialize public scalar attributes.
 
-        set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
+        set_cursor(self._mdcRAMSTK, Gdk.CursorType.WATCH)
 
         self._request_create_sqlite3_project()
 
-        set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
+        set_cursor(self._mdcRAMSTK, Gdk.CursorType.LEFT_PTR)
 
     def _request_create_sqlite3_project(self):
         """Create a RAMSTK Project database using SQLite3."""
-        _dialog = gtk.FileChooserDialog(
+        _dialog = Gtk.FileChooserDialog(
             title=_(u"Create a RAMSTK Program Database"),
-            action=gtk.FILE_CHOOSER_ACTION_SAVE,
-            buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
-                     gtk.RESPONSE_REJECT))
+            action=Gtk.FileChooserAction.SAVE,
+            buttons=(Gtk.STOCK_NEW, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL,
+                     Gtk.ResponseType.REJECT))
         _dialog.set_current_folder(
             self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 
-        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+        if _dialog.run() == Gtk.ResponseType.ACCEPT:
             _new_program = _dialog.get_filename()
             _new_program = _new_program + '.ramstk'
 
             if Utilities.file_exists(_new_program):
                 _dlgConfirm = ramstk.RAMSTKDialog(
                     _(u"RAMSTK - Confirm Overwrite"),
-                    dlgbuttons=(gtk.STOCK_YES, gtk.RESPONSE_YES, gtk.STOCK_NO,
-                                gtk.RESPONSE_NO))
+                    dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES, Gtk.STOCK_NO,
+                                Gtk.ResponseType.NO))
 
                 _label = ramstk.RTLabel(
                     _(u"RAMSTK Program database already exists. "
@@ -77,10 +77,10 @@ class CreateProject(object):
                     height=-1,
                     bold=False,
                     wrap=True)
-                _dlgConfirm.vbox.pack_start(_label)
+                _dlgConfirm.vbox.pack_start(_label, True, True, 0)
                 _label.show()
 
-                if _dlgConfirm.run() == gtk.RESPONSE_YES:
+                if _dlgConfirm.run() == Gtk.ResponseType.YES:
                     _dlgConfirm.destroy()
                     remove(_new_program)
                 else:
@@ -101,8 +101,8 @@ class CreateProject(object):
         """
         Destroy the Create Project Assistant.
 
-        :param __button: the gtk.Button() that called this method.
-        :type __button: :class:`gtk.Button `
+        :param __button: the Gtk.Button() that called this method.
+        :type __button: :class:`Gtk.Button `
         :return: True
         :rtype: boolean
         """

@@ -14,7 +14,7 @@ from ramstk.gui.gtk.ramstk.Widget import _, gtk
 from ramstk.gui.gtk import ramstk
 
 
-class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
+class RAMSTKWorkView(Gtk.HBox, ramstk.RAMSTKBaseView):
     """
     Class to display data in the RAMSTK Work Book.
 
@@ -79,7 +79,7 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         """
         _module = kwargs['module']
-        gtk.HBox.__init__(self)
+        GObject.GObject.__init__(self)
         ramstk.RAMSTKBaseView.__init__(self, controller, module=_module)
 
         self._module = None
@@ -158,7 +158,7 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
             tooltip=_(u"The name of the selected "
                       u"{0:s}.").format(self._module))
         self.txtRemarks = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=400,
             tooltip=_(u"Enter any remarks "
                       u"associated with the "
@@ -308,24 +308,24 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
 
     def _make_assessment_results_page(self):
         """
-        Create the gtk.Notebook() page for displaying assessment results.
+        Create the Gtk.Notebook() page for displaying assessment results.
 
         :return: (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                   _y_pos_r)
         :rtype: tuple
         """
-        _hbox = gtk.HBox()
+        _hbox = Gtk.HBox()
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build the left half of the page.                                    #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fxd_left = gtk.Fixed()
+        _fxd_left = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fxd_left)
         _frame = ramstk.RAMSTKFrame(label=_(u"Reliability Results"))
         _frame.add(_scrollwindow)
 
-        _hbox.pack_start(_frame)
+        _hbox.pack_start(_frame, True, True, 0)
 
         _x_pos_l, _y_pos_l = ramstk.make_label_group(
             self._lst_assess_labels[0], _fxd_left, 5, 5)
@@ -347,13 +347,13 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build the right half of the page.                                   #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fxd_right = gtk.Fixed()
+        _fxd_right = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fxd_right)
         _frame = ramstk.RAMSTKFrame(label=_(u"Maintainability Results"))
         _frame.add(_scrollwindow)
 
-        _hbox.pack_end(_frame)
+        _hbox.pack_end(_frame, True, True, 0)
 
         _x_pos_r, _y_pos_r = ramstk.make_label_group(
             self._lst_assess_labels[1], _fxd_right, 5, 5)
@@ -375,25 +375,25 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
             _(u"Assessment\nResults"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays reliability, "
                       u"maintainability, and availability "
                       u"assessment results for the selected "
                       u"{0:s}.").format(self._module))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
 
     def make_general_data_page(self):
         """
-        Create the gtk.Notebook() page for displaying general data.
+        Create the Gtk.Notebook() page for displaying general data.
 
-        :return: (_frame, _fixed, _x_pos, _y_pos); the :class:`gtk.Frame` and
-                 :class:`gtk.Fixed` used to make the General Data page.
+        :return: (_frame, _fixed, _x_pos, _y_pos); the :class:`Gtk.Frame` and
+                 :class:`Gtk.Fixed` used to make the General Data page.
         :rtype: tuple
         """
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
         _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
@@ -413,10 +413,10 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
             _(u"General\nData"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
+            justify=Gtk.Justification.CENTER,
             tooltip=_(u"Displays general information for the selected  "
                       u"{0:s}.").format(self._module))
-        self.hbx_tab_label.pack_start(_label)
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return (_frame, _fixed, _x_pos, _y_pos)
 

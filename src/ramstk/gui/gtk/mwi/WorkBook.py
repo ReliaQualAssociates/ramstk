@@ -129,13 +129,13 @@ class WorkBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
-        if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
+        if event.new_window_state == Gdk.WindowState.ICONIFIED:
             for _window in ['listbook', 'modulebook', 'workbook']:
                 self._mdcRAMSTK.dic_books[_window].iconify()
         elif event.new_window_state == 0:
             for _window in ['listbook', 'modulebook', 'workbook']:
                 self._mdcRAMSTK.dic_books[_window].deiconify()
-        elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
+        elif event.new_window_state == Gdk.WindowState.MAXIMIZED:
             window.maximize()
 
         return None
