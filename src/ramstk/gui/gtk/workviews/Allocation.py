@@ -231,12 +231,12 @@ class Allocation(RAMSTKWorkView):
                       u"hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self.__make_buttonbox(), False, True)
+        self.pack_start(self.__make_buttonbox(), False, True, 0)
 
         _hbox = Gtk.HBox()
-        _hbox.pack_start(self.__make_goalbox(), False, True)
-        _hbox.pack_end(_frame, True, True)
-        self.pack_end(_hbox, True, True)
+        _hbox.pack_start(self.__make_goalbox(), False, True, 0)
+        _hbox.pack_end(_frame, True, True, 0)
+        self.pack_end(_hbox, True, True, 0)
 
         self.show_all()
 

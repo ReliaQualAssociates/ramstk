@@ -163,8 +163,8 @@ class GeneralData(RAMSTKWorkView):
                                          self._do_select_date,
                                          self.txtValidatedDate))
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self.__make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(self.__make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -704,8 +704,8 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.tvwConsistent = Gtk.TreeView()
         self.tvwVerifiable = Gtk.TreeView()
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self.__make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(self.__make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.

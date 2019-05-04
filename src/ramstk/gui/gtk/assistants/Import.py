@@ -102,13 +102,13 @@ class RAMSTKImport(Gtk.Assistant):
         _label = ramstk.RAMSTKLabel(_(u"Select the RAMSTK module to import:"))
         _fixed.put(_label, 5, 5)
         _fixed.put(self._cmb_select_module, 55, 5)
-        _page.pack_start(_fixed, False, False)
+        _page.pack_start(_fixed, False, False, 0)
 
         _scrollwindow = Gtk.ScrolledWindow()
         _file_chooser = Gtk.FileChooserWidget(
             action=Gtk.FileChooserAction.OPEN)
         _scrollwindow.add_with_viewport(_file_chooser)
-        _page.pack_end(_scrollwindow, True, True)
+        _page.pack_end(_scrollwindow, True, True, 0)
 
         _file_filter = Gtk.FileFilter()
         _file_filter.set_name(_(u"Delimited Text Files"))

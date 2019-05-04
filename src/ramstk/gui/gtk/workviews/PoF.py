@@ -96,8 +96,8 @@ class PoF(RAMSTKWorkView):
                       u"the selected hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self.__make_buttonbox(), False, True)
-        self.pack_end(self.__make_page(), True, True)
+        self.pack_start(self.__make_buttonbox(), False, True, 0)
+        self.pack_end(self.__make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.

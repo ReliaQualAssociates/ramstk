@@ -169,8 +169,8 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         _hbox = Gtk.HBox()
         _fixed = Gtk.Fixed()
-        _hbox.pack_start(_buttonbox, False, True)
-        _hbox.pack_end(_fixed, True, True)
+        _hbox.pack_start(_buttonbox, False, True, 0)
+        _hbox.pack_end(_fixed, True, True, 0)
 
         _fixed.put(self.chkFunctions, 5, 5)
         _fixed.put(self.chkRequirements, 5, 35)
@@ -214,8 +214,8 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         _hbox = Gtk.HBox()
         _fixed = Gtk.Fixed()
-        _hbox.pack_start(_buttonbox, False, True)
-        _hbox.pack_end(_fixed, True, True)
+        _hbox.pack_start(_buttonbox, False, True, 0)
+        _hbox.pack_end(_fixed, True, True, 0)
 
         _positions = [["Bottom"], ["Left"], ["Right"], ["Top"]]
         self.cmbModuleBookTabPosition.do_load_combo(_positions)
@@ -351,10 +351,10 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _frame.add(_vbox)
         _fixed = Gtk.Fixed()
         _scrollwindow = Gtk.ScrolledWindow()
-        _hbox.pack_start(_buttonbox, False, True)
-        _hbox.pack_end(_frame, True, True)
-        _vbox.pack_start(_fixed, False, True)
-        _vbox.pack_end(_scrollwindow, True, True)
+        _hbox.pack_start(_buttonbox, False, True, 0)
+        _hbox.pack_end(_frame, True, True, 0)
+        _vbox.pack_start(_fixed, False, True, 0)
+        _vbox.pack_end(_scrollwindow, True, True, 0)
 
         _label = ramstk.RAMSTKLabel(
             _(u"Select RAMSTK list to load:"), width=-1)
@@ -441,10 +441,10 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _frame.add(_hbox_inner)
         _fixed = Gtk.Fixed()
         _scrollwindow = Gtk.ScrolledWindow()
-        _hbox_outer.pack_start(_buttonbox, False, True)
-        _hbox_outer.pack_end(_frame, True, True)
-        _hbox_inner.pack_start(_fixed, False, True)
-        _hbox_inner.pack_end(_scrollwindow, True, True)
+        _hbox_outer.pack_start(_buttonbox, False, True, 0)
+        _hbox_outer.pack_end(_frame, True, True, 0)
+        _hbox_inner.pack_start(_fixed, False, True, 0)
+        _hbox_inner.pack_end(_scrollwindow, True, True, 0)
 
         _formats = [[_(u"Allocation"), 'allocation', ''],
                     [_("(D)FME(C)A"), 'dfmeca', ''],
@@ -682,8 +682,8 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _buttonbox.set_layout(Gtk.ButtonBoxStyle.END)
 
         _vbox = Gtk.VBox()
-        _vbox.pack_start(self.notebook, expand=True, fill=True)
-        _vbox.pack_end(_buttonbox, expand=False, fill=False)
+        _vbox.pack_start(self.notebook, True, True, 0)
+        _vbox.pack_end(_buttonbox, False, False, 0)
 
         self.add(_vbox)
 

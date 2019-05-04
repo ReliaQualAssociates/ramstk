@@ -76,8 +76,8 @@ class GeneralData(RAMSTKWorkView):
 
         self.__set_callbacks()
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_end(self.__make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_end(self.__make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.

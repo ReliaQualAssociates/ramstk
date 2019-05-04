@@ -15,9 +15,10 @@ import gettext
 # imported from this module by all the other GUI modules.
 try:
     import gi
+    gi.require_version('Gdk', '3.0')
     gi.require_version('Gtk', '3.0')
 except ImportError:
-    print("FAILED TO IMPORT gi")
+    print("Failed to import package gi; exiting.")
     sys.exit(1)
 from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango
 

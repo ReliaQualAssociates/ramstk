@@ -318,8 +318,8 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtYearMade.connect('changed', self._on_focus_out, 22))
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self.__make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(self.__make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -389,7 +389,7 @@ class GeneralData(RAMSTKWorkView):
                                                  5, 5)
         _x_pos += 50
 
-        _hbox.pack_start(_frame, expand=True, fill=True)
+        _hbox.pack_start(_frame, True, True, 0)
 
         # Move the labels after the description to account for the extra
         # vertical space needed by the description RAMSTKTextView().
@@ -457,7 +457,7 @@ class GeneralData(RAMSTKWorkView):
 
         _vpaned.pack2(_frame, True, True)
 
-        _hbox.pack_end(_vpaned, expand=True, fill=True)
+        _hbox.pack_end(_vpaned, True, True, 0)
 
         # Create the label for the Gtk.Notebook() tab.
         _label = ramstk.RAMSTKLabel(
@@ -1280,8 +1280,8 @@ class AssessmentInputs(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtMissionTime.connect('changed', self._on_focus_out, 17))
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self.__make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(self.__make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -1341,7 +1341,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _x_pos += 50
 
         _vpaned.pack1(_frame, True, True)
-        _hbox.pack_start(_vpaned, expand=True, fill=True)
+        _hbox.pack_start(_vpaned, True, True, 0)
 
         _fixed.put(self.cmbHRType, _x_pos, _y_pos[0])
         _fixed.put(self.cmbHRMethod, _x_pos, _y_pos[1])
@@ -1393,7 +1393,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _frame.add(self.scwOperatingStress)
         _vpaned.pack2(_frame, True, True)
 
-        _hbox.pack_end(_vpaned, expand=True, fill=True)
+        _hbox.pack_end(_vpaned, True, True, 0)
 
         _frame = Gtk.Frame()
         self.scwDesignRatings.add_with_viewport(_frame)
@@ -2275,8 +2275,8 @@ class AssessmentResults(RAMSTKWorkView):
             tooltip=_(u"Displays the total cost of the selected hardware "
                       u"item."))
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self.__make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(self.__make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -2358,8 +2358,7 @@ class AssessmentResults(RAMSTKWorkView):
         _frame.add(self.scwReliability)
 
         _vpaned.pack2(_frame, True, True)
-
-        _hbox.pack_start(_vpaned, expand=True, fill=True)
+        _hbox.pack_start(_vpaned, True, True, 0)
 
         # Now add the top right pane.
         _vpaned = Gtk.VPaned()

@@ -271,8 +271,8 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self.__make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(self.__make_page(), True, True, 0)
         self.show_all()
 
         self.txtCode.hide()
@@ -359,7 +359,7 @@ class GeneralData(RAMSTKWorkView):
             self._lst_gendata_labels[0][:2], _fixed, 5, 5)
         _x_pos += 50
 
-        _hbox.pack_start(_frame, expand=True, fill=True)
+        _hbox.pack_start(_frame, True, True, 0)
 
         _fixed.put(self.txtID, _x_pos, _y_pos[0])
         _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1])
@@ -445,7 +445,7 @@ class GeneralData(RAMSTKWorkView):
 
         _fixed.show_all()
 
-        _hbox.pack_end(_vpaned, expand=True, fill=True)
+        _hbox.pack_end(_vpaned, True, True, 0)
 
         _label = ramstk.RAMSTKLabel(
             _(u"General\nData"),
@@ -1127,8 +1127,8 @@ class BurndownCurve(RAMSTKWorkView):
         # Initialize public scalar attributes.
         self.burndown = ramstk.RAMSTKPlot()
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self.__make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(self.__make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.

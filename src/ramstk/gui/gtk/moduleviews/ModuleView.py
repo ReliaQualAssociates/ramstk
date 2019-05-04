@@ -66,14 +66,8 @@ class RAMSTKModuleView(Gtk.HBox, ramstk.RAMSTKBaseView):
         :rtype: None
         """
         _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(self._make_buttonbox())
-        self.pack_start(_scrolledwindow, expand=False, fill=False)
-
-        _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
-        self.pack_end(_scrolledwindow, expand=True, fill=True)
+        self.pack_end(_scrolledwindow, True, True, 0)
 
         self.hbx_tab_label.pack_start(self._img_tab, True, True, 0)
         self.hbx_tab_label.show_all()

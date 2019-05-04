@@ -143,8 +143,8 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_start(_frame, expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(_frame, True, True, 0)
         self.show_all()
 
         return None

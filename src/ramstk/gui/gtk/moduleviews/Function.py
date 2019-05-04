@@ -104,6 +104,12 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(self.__make_buttonbox())
+        self.pack_start(_scrolledwindow, False, False, 0)
+
         self.make_treeview(editable=[5, 15, 17, 18])
         self.treeview.set_tooltip_text(_(u"Displays the list of functions."))
 

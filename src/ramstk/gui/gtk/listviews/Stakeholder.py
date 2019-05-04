@@ -76,8 +76,8 @@ class ListView(RAMSTKListView):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_end(_scrolledwindow, expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_end(_scrolledwindow, True, True, 0)
 
         self.show_all()
 
@@ -164,7 +164,9 @@ class ListView(RAMSTKListView):
             _column = self.treeview.get_column(self._lst_col_order[i])
             _cell = _column.get_cells()[0]
             _adjustment = _cell.get_property('adjustment')
-            _adjustment.set_all(1, 1, 5, 1)
+            _adjustment.set_lower(1)
+            _adjustment.set_step_increment(1)
+            _adjustment.set_upper(5)
 
         for i in [
                 self._lst_col_order[2], self._lst_col_order[3],

@@ -104,8 +104,8 @@ class MatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.matrix)
 
-        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
-        self.pack_end(_scrolledwindow, expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_end(_scrolledwindow, True, True, 0)
 
         self.show_all()
 

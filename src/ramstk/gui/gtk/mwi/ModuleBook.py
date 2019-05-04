@@ -69,7 +69,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.progressbar = Gtk.ProgressBar(adjustment=None)
+        self.progressbar = Gtk.ProgressBar()
         self.statusbar = Gtk.Statusbar()
 
         self.__make_ui()
@@ -315,10 +315,10 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
             _page, tab_label=_page.hbx_tab_label, position=0)
 
         _vbox = Gtk.VBox()
-        _vbox.pack_start(self.__make_menu(), expand=False, fill=False)
-        _vbox.pack_start(self.__make_toolbar(), expand=False, fill=False)
-        _vbox.pack_start(self.notebook, expand=True, fill=True)
-        _vbox.pack_start(self.statusbar, expand=False, fill=False)
+        _vbox.pack_start(self.__make_menu(), False, False, 0)
+        _vbox.pack_start(self.__make_toolbar(), False, False, 0)
+        _vbox.pack_start(self.notebook, True, True, 0)
+        _vbox.pack_start(self.statusbar, False, False, 0)
 
         self.connect('window_state_event', self._on_window_state_event)
 
