@@ -4,10 +4,10 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Open Project Assistant Module."""
+"""The RAMSTK Open Project Assistant Module."""
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk.Widget import _, gtk, set_cursor
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk, set_cursor
 from ramstk.gui.gtk import ramstk
 
 __author__ = 'Doyle Rowland'
@@ -17,20 +17,17 @@ __copyright__ = 'Copyright 2007 - 2018 Doyle "weibullguy" Rowland'
 
 
 class OpenProject(object):
-    """
-    This is the Gtk.Assistant() that guides the user through the process of
-    creating a new RAMSTK Project database.
-    """
+    """Assistant to guide user through process of creating RAMSTK Project."""
 
     def __init__(self, __button, controller):
         """
-        Method to initialize an instance of the Create Project Assistant.
+        Initialize an instance of the Create Project Assistant.
 
         :param Gtk.ToolButton __button: the Gtk.ToolButton() that launched this
                                         class.
-        :param controller: the :class:`ramstk.RAMSTK.RAMSTK` master data controller.
+        :param controller: the :class:`ramstk.RAMSTK.RAMSTK` master data
+                           controller.
         """
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -71,8 +68,8 @@ class OpenProject(object):
         else:
             _dialog = Gtk.FileChooserDialog(
                 title=_(u"RAMSTK - Open Program"),
-                buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL,
-                         Gtk.ResponseType.REJECT))
+                buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+                         Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
             _dialog.set_current_folder(
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 

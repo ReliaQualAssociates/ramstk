@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.assistants.Export.py is part of The RAMSTK Project
@@ -12,7 +11,7 @@ import os
 # Export other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.ramstk import RAMSTKMessageDialog
-from ramstk.gui.gtk.ramstk.Widget import _, gtk, set_cursor
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk, set_cursor
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -27,8 +26,6 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
         """
         Initialize an instance of the Export Assistant.
 
-        :param __widget: the Gtk.Widget() that called this class.
-        :type __widget: :class:`Gtk.Widget`
         :param controller: the RAMSTK master data controller.
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         :param str module: the RAMSTK module to export.

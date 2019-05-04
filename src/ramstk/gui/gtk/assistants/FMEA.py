@@ -4,18 +4,15 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""(D)FME(C)A Assistants Module"""
+"""The RAMSTK (D)FME(C)A Assistants Module."""
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gtk
 
 
 class AddControlAction(ramstk.RAMSTKDialog):
-    """
-    This is the assistant that walks the user through the process of adding
-    a new design control or action to the selected failure cause.
-    """
+    """Assistant to walk user through process of adding control or action."""
 
     def __init__(self):
         """Initialize on instance of the Add Control or Action Assistant."""
@@ -39,9 +36,15 @@ class AddControlAction(ramstk.RAMSTKDialog):
         self.rdoAction = ramstk.RAMSTKOptionButton(self.rdoControl,
                                                    _(u"Add action"))
 
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the dialog.                       #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        self.__make_ui()
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
         _fixed = Gtk.Fixed()
         self.vbox.pack_start(_fixed, True, True, 0)
 
@@ -58,16 +61,17 @@ class AddControlAction(ramstk.RAMSTKDialog):
         _y_pos = _label.size_request()[1] + 50
 
         self.rdoControl.set_tooltip_text(
-            _(u"Select to add a design control "
-              u"to the selected failure cause."))
+            _(u"Select to add a design control to the selected failure "
+              u"cause."))
         self.rdoAction.set_tooltip_text(
-            _(u"Select to add an Action to the "
-              u"selected failure cause."))
+            _(u"Select to add an Action to the selected failure cause."))
 
         _fixed.put(self.rdoControl, 10, _y_pos)
         _fixed.put(self.rdoAction, 10, _y_pos + 35)
 
         _fixed.show_all()
+
+        return None
 
     def _cancel(self, __button):
         """

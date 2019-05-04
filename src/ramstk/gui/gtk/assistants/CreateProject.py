@@ -10,7 +10,7 @@ from os import remove
 
 # Import other RAMSTK modules.
 import ramstk.Utilities as Utilities
-from ramstk.gui.gtk.ramstk.Widget import _, gtk, set_cursor
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk, set_cursor
 from ramstk.gui.gtk import ramstk
 
 __author__ = 'Doyle Rowland'
@@ -67,8 +67,8 @@ class CreateProject(object):
             if Utilities.file_exists(_new_program):
                 _dlgConfirm = ramstk.RAMSTKDialog(
                     _(u"RAMSTK - Confirm Overwrite"),
-                    dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES, Gtk.STOCK_NO,
-                                Gtk.ResponseType.NO))
+                    dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES,
+                                Gtk.STOCK_NO, Gtk.ResponseType.NO))
 
                 _label = ramstk.RTLabel(
                     _(u"RAMSTK Program database already exists. "
