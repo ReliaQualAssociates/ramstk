@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Module Book Module."""
+"""RAMSTK Module Book Module."""
 
 from pubsub import pub
 
@@ -16,8 +16,8 @@ from ramstk.gui.gtk.moduleviews import mvwRequirement
 from ramstk.gui.gtk.moduleviews import mvwHardware
 from ramstk.gui.gtk.moduleviews import mvwValidation
 from ramstk.gui.gtk.assistants import (CreateProject, OpenProject, Options,
-                                    Preferences, ImportProject)
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+                                       Preferences, ImportProject)
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 
 
 class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
@@ -72,64 +72,14 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         self.progressbar = Gtk.ProgressBar(adjustment=None)
         self.statusbar = Gtk.Statusbar()
 
-        # Set the properties for the ModuleBook and it's widgets.
-        self.set_title(_(u"RAMSTK Module Book"))
+        self.__make_ui()
 
-        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_OS == 'Linux':
-            _width = (2 * self._width / 3) - 10
-            _height = 2 * self._height / 7
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_OS == 'Windows':
-            _width = (2 * self._width / 3) - 30
-            _height = 2 * self._height / 7
-
-        self.set_default_size(_width, _height)
-        self.move(0, 0)
-
-        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
-                'modulebook'].lower() == 'left':
-            self.notebook.set_tab_pos(self._left_tab)
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
-                'modulebook'].lower() == 'right':
-            self.notebook.set_tab_pos(self._right_tab)
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
-                'modulebook'].lower() == 'top':
-            self.notebook.set_tab_pos(self._top_tab)
-        else:
-            self.notebook.set_tab_pos(self._bottom_tab)
-
-        self.progressbar.set_pulse_step(0.25)
-        self.statusbar.add(self.progressbar)
-
-        self._lst_handler_id.append(
-            self.notebook.connect('select-page', self._on_switch_page))
-        self._lst_handler_id.append(
-            self.notebook.connect('switch-page', self._on_switch_page))
-
-        # Insert a page for each of the active RAMSTK Modules.
-        _object = mvwRevision(controller)
-        self.notebook.insert_page(
-            _object, tab_label=_object.hbx_tab_label, position=0)
-
-        _vbox = Gtk.VBox()
-        _vbox.pack_start(self._make_menu(, True, True, 0), expand=False, fill=False)
-        _vbox.pack_start(self._make_toolbar(, True, True, 0), expand=False, fill=False)
-        _vbox.pack_start(self.notebook, expand=True, fill=True)
-        _vbox.pack_start(self.statusbar, expand=False, fill=False)
-
-        self.connect('window_state_event', self._on_window_state_event)
-
-        self.add(_vbox)
-
-        self.show_all()
-        self.notebook.set_current_page(0)
-
-        self.statusbar.push(1, _(u"Ready"))
-
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_request_open, 'requestOpen')
         pub.subscribe(self._on_open, 'retrieved_revisions')
         pub.subscribe(self._on_close, 'closedProgram')
 
-    def _make_menu(self):
+    def __make_menu(self):
         """
         Make the menu for the Module Book.
 
@@ -230,7 +180,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         return _menubar
 
-    def _make_toolbar(self):
+    def __make_toolbar(self):
         """
         Make the toolbar for the Module Book.
 
@@ -320,6 +270,67 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         return _toolbar
 
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.set_title(_(u"RAMSTK Module Book"))
+
+        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_OS == 'Linux':
+            _width = (2 * self._width / 3) - 10
+            _height = 2 * self._height / 7
+        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_OS == 'Windows':
+            _width = (2 * self._width / 3) - 30
+            _height = 2 * self._height / 7
+
+        self.set_default_size(_width, _height)
+        self.move(0, 0)
+
+        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+                'modulebook'].lower() == 'left':
+            self.notebook.set_tab_pos(self._left_tab)
+        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+                'modulebook'].lower() == 'right':
+            self.notebook.set_tab_pos(self._right_tab)
+        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+                'modulebook'].lower() == 'top':
+            self.notebook.set_tab_pos(self._top_tab)
+        else:
+            self.notebook.set_tab_pos(self._bottom_tab)
+
+        self.progressbar.set_pulse_step(0.25)
+        self.statusbar.add(self.progressbar)
+
+        self._lst_handler_id.append(
+            self.notebook.connect('select-page', self._on_switch_page))
+        self._lst_handler_id.append(
+            self.notebook.connect('switch-page', self._on_switch_page))
+
+        # Insert a page for the Revision Module.
+        _page = mvwRevision(self._mdcRAMSTK)
+        self.notebook.insert_page(
+            _page, tab_label=_page.hbx_tab_label, position=0)
+
+        _vbox = Gtk.VBox()
+        _vbox.pack_start(self.__make_menu(), expand=False, fill=False)
+        _vbox.pack_start(self.__make_toolbar(), expand=False, fill=False)
+        _vbox.pack_start(self.notebook, expand=True, fill=True)
+        _vbox.pack_start(self.statusbar, expand=False, fill=False)
+
+        self.connect('window_state_event', self._on_window_state_event)
+
+        self.add(_vbox)
+
+        self.show_all()
+        self.notebook.set_current_page(0)
+
+        self.statusbar.push(1, _(u"Ready"))
+
+        return None
+
     def _on_request_open(self):
         """
         Set the status bar and update the progress bar.
@@ -334,8 +345,8 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         self.statusbar.push(1, _message)
         self.set_title(
             _(u"RAMSTK - Analyzing {0:s}").format(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO[
-                    'database']))
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                RAMSTK_PROG_INFO['database']))
 
         return _return
 
@@ -357,15 +368,13 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         return None
 
-    def _on_open(self, tree):
+    def _on_open(self, tree):   # pylint: disable=unused-argument
         """
         Update the status bar and clear the progress bar.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         # Insert a page for each of the active RAMSTK Modules.
         for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER:
             _mkey = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[
@@ -376,7 +385,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         self.statusbar.pop(1)
 
-        return _return
+        return None
 
     def _on_switch_page(self, __notebook, __page, page_num):
         """
