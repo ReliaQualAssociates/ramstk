@@ -354,7 +354,7 @@ class RAMSTKImport(Gtk.Assistant):
         _model = self._tvw_field_map.get_model()
         _model.clear()
 
-        _cell = self._tvw_field_map.get_column(1).get_cell_renderers()[0]
+        _cell = self._tvw_field_map.get_column(1).get_cells()[0]
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
         _cellmodel.append([''])

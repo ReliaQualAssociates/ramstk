@@ -157,9 +157,9 @@ class PoF(RAMSTKWorkView):
         for i in [0, 1, 2, 3, 4]:
             _column = self.treeview.get_column(self._lst_col_order[i])
             if i == 0:
-                _cell = _column.get_cell_renderers()[1]
+                _cell = _column.get_cells()[1]
             else:
-                _cell = _column.get_cell_renderers()[0]
+                _cell = _column.get_cells()[0]
             _cell.set_property('font', 'normal bold')
 
         # Load the damage models into the Gtk.CellRendererCombo().
@@ -186,7 +186,7 @@ class PoF(RAMSTKWorkView):
         # Set the priority Gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
         _cell = self.treeview.get_column(
-            self._lst_col_order[9]).get_cell_renderers()[0]
+            self._lst_col_order[9]).get_cells()[0]
         _adjustment = _cell.get_property('adjustment')
         _adjustment.configure(5, 1, 5, -1, 0, 0)
 
@@ -197,7 +197,7 @@ class PoF(RAMSTKWorkView):
 
         for i in self._lst_col_order:
             _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
+                self._lst_col_order[i]).get_cells()
 
             if isinstance(_cell[0], Gtk.CellRendererPixbuf):
                 pass
@@ -382,48 +382,48 @@ class PoF(RAMSTKWorkView):
             _headings[1] = self.treeview.headings[self._lst_col_order[1]]
             for _idx in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                 _cell = self.treeview.get_column(
-                    self._lst_col_order[_idx]).get_cell_renderers()[0]
+                    self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', False)
         elif _level == 'mechanism':
             _headings[0] = _(u"Mechanism ID")
             _headings[1] = _(u"Failure\nMechanism")
             for _idx in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                 _cell = self.treeview.get_column(
-                    self._lst_col_order[_idx]).get_cell_renderers()[0]
+                    self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', False)
         elif _level == 'opload':
             _headings[0] = _(u"Operating\nLoad ID")
             _headings[1] = _(u"Damaging\nCondition")
             for _idx in [2, 3, 4, 6, 7, 8]:
                 _cell = self.treeview.get_column(
-                    self._lst_col_order[_idx]).get_cell_renderers()[0]
+                    self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', False)
             for _idx in [1, 5, 9]:
                 _cell = self.treeview.get_column(
-                    self._lst_col_order[_idx]).get_cell_renderers()[0]
+                    self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', True)
         elif _level == 'opstress':
             _headings[0] = _(u"Stress ID")
             _headings[1] = _(u"Operating\nStress")
             for _idx in [2, 3, 4, 5, 8, 9]:
                 _cell = self.treeview.get_column(
-                    self._lst_col_order[_idx]).get_cell_renderers()[0]
+                    self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', False)
             for _idx in [1, 6, 7]:
                 _cell = self.treeview.get_column(
-                    self._lst_col_order[_idx]).get_cell_renderers()[0]
+                    self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', True)
         elif _level == 'testmethod':
             _headings[0] = _(u"Test ID")
             _headings[1] = _(u"Existing or\nProposed Test")
             for _idx in [2, 3, 4, 5, 6, 7, 9]:
                 _cell = self.treeview.get_column(
-                    self._lst_col_order[_idx]).get_cell_renderers()[0]
+                    self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', False)
                 _cell.set_property('mode', Gtk.CellRendererMode.INERT)
             for _idx in [1, 8]:
                 _cell = self.treeview.get_column(
-                    self._lst_col_order[_idx]).get_cell_renderers()[0]
+                    self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', True)
                 _cell.set_property('mode', Gtk.CellRendererMode.EDITABLE)
 
@@ -662,7 +662,7 @@ class PoF(RAMSTKWorkView):
         :rtype: :class:`Gtk.TreeModel`
         """
         _column = self.treeview.get_column(column)
-        _cell = _column.get_cell_renderers()[0]
+        _cell = _column.get_cells()[0]
         _model = _cell.get_property('model')
         _model.clear()
 

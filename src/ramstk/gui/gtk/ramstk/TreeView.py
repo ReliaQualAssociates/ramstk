@@ -204,7 +204,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         for _col in _visible:
             self.get_column(_col).set_visible(1)
             _column = self.get_column(_col)
-            _cells = _column.get_cell_renderers()
+            _cells = _column.get_cells()
             for __, _cell in enumerate(_cells):
                 try:
                     _cell.set_property('background', 'light gray')
@@ -214,7 +214,7 @@ class RAMSTKTreeView(Gtk.TreeView):
 
         for _col in _editable:
             _column = self.get_column(_col)
-            _cells = _column.get_cell_renderers()
+            _cells = _column.get_cells()
             for __, _cell in enumerate(_cells):
                 try:
                     _cell.set_property('background', 'white')

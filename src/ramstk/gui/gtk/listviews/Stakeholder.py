@@ -81,11 +81,108 @@ class ListView(RAMSTKListView):
 
         self.show_all()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_requirements, 'retrieved_requirements')
         pub.subscribe(self.do_load_tree, 'deleted_stakeholder')
         pub.subscribe(self.do_load_tree, 'inserted_stakeholder')
         pub.subscribe(self.do_load_tree, 'retrieved_stakeholders')
         pub.subscribe(self._do_refresh_tree, 'calculated_stakeholder')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the buttonbox for the Stakeholder List View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Stakeholder
+                             List View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Add a new Stakeholder input."),
+            _(u"Remove the currently selected Stakeholder input."),
+            _(u"Calculate the currently selected Stakeholder input."),
+            _(u"Calculate all Stakeholder intputs."),
+        ]
+        _callbacks = [
+            self.do_request_insert_sibling, self._do_request_delete,
+            self._do_request_calculate, self._do_request_calculate_all
+        ]
+        _icons = [
+            'add',
+            'remove',
+            'calculate',
+            'calculate_all',
+        ]
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_treeview(self):
+        """
+        Set up the RAMSTKTreeView() for Stakeholders.
+
+        :return: None
+        :rtype: None
+        """
+        # Load the Affinity Group Gtk.CellRendererCombo()
+        _cell = self.treeview.get_column(
+            self._lst_col_order[4]).get_cells()[0]
+        _cell.set_property('has-entry', True)
+        _cellmodel = _cell.get_property('model')
+        _cellmodel.clear()
+        _cellmodel.append([""])
+        # Each _group is (Description, Group Type).
+        for _index, _key in enumerate(
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS):
+            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
+                _key]
+            _cellmodel.append([_group[0]])
+
+        # Load the Stakeholders Gtk.CellRendererCombo()
+        _cell = self.treeview.get_column(
+            self._lst_col_order[10]).get_cells()[0]
+        _cell.set_property('has-entry', True)
+        _cellmodel = _cell.get_property('model')
+        _cellmodel.clear()
+        _cellmodel.append([""])
+        # Each _owner is (Description, Group Type).
+        for _index, _key in enumerate(
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS):
+            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS[
+                _key]
+            _cellmodel.append([_group[0]])
+
+        # Set the CellRendererSpin() columns to [1, 5] step 1.
+        for i in [2, 7, 8]:
+            _column = self.treeview.get_column(self._lst_col_order[i])
+            _cell = _column.get_cells()[0]
+            _adjustment = _cell.get_property('adjustment')
+            _adjustment.set_all(1, 1, 5, 1)
+
+        for i in [
+                self._lst_col_order[2], self._lst_col_order[3],
+                self._lst_col_order[4], self._lst_col_order[5],
+                self._lst_col_order[6], self._lst_col_order[7],
+                self._lst_col_order[8], self._lst_col_order[9],
+                self._lst_col_order[10], self._lst_col_order[11],
+                self._lst_col_order[12], self._lst_col_order[13],
+                self._lst_col_order[14], self._lst_col_order[15]
+        ]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cells()
+            _cell[0].connect('edited', self._on_cell_edit, i,
+                             self.treeview.get_model())
+
+        self.treeview.set_rubber_banding(True)
+
+        return None
 
     def _do_load_requirements(self, tree):
         """
@@ -95,7 +192,7 @@ class ListView(RAMSTKListView):
         :rtype: None
         """
         _cell = self.treeview.get_column(
-            self._lst_col_order[9]).get_cell_renderers()[0]
+            self._lst_col_order[9]).get_cells()[0]
         _model = _cell.get_property('model')
         _model.clear()
 
@@ -217,102 +314,6 @@ class ListView(RAMSTKListView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_stakeholders')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
-
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the buttonbox for the Stakeholder List View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Stakeholder
-                             List View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Add a new Stakeholder input."),
-            _(u"Remove the currently selected Stakeholder input."),
-            _(u"Calculate the currently selected Stakeholder input."),
-            _(u"Calculate all Stakeholder intputs."),
-        ]
-        _callbacks = [
-            self.do_request_insert_sibling, self._do_request_delete,
-            self._do_request_calculate, self._do_request_calculate_all
-        ]
-        _icons = [
-            'add',
-            'remove',
-            'calculate',
-            'calculate_all',
-        ]
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def __make_treeview(self):
-        """
-        Set up the RAMSTKTreeView() for Stakeholders.
-
-        :return: None
-        :rtype: None
-        """
-        # Load the Affinity Group Gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(
-            self._lst_col_order[4]).get_cell_renderers()[0]
-        _cell.set_property('has-entry', True)
-        _cellmodel = _cell.get_property('model')
-        _cellmodel.clear()
-        _cellmodel.append([""])
-        # Each _group is (Description, Group Type).
-        for _index, _key in enumerate(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS):
-            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
-                _key]
-            _cellmodel.append([_group[0]])
-
-        # Load the Stakeholders Gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(
-            self._lst_col_order[10]).get_cell_renderers()[0]
-        _cell.set_property('has-entry', True)
-        _cellmodel = _cell.get_property('model')
-        _cellmodel.clear()
-        _cellmodel.append([""])
-        # Each _owner is (Description, Group Type).
-        for _index, _key in enumerate(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS):
-            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS[
-                _key]
-            _cellmodel.append([_group[0]])
-
-        # Set the CellRendererSpin() columns to [1, 5] step 1.
-        for i in [2, 7, 8]:
-            _column = self.treeview.get_column(self._lst_col_order[i])
-            _cell = _column.get_cell_renderers()[0]
-            _adjustment = _cell.get_property('adjustment')
-            _adjustment.set_all(1, 1, 5, 1)
-
-        for i in [
-                self._lst_col_order[2], self._lst_col_order[3],
-                self._lst_col_order[4], self._lst_col_order[5],
-                self._lst_col_order[6], self._lst_col_order[7],
-                self._lst_col_order[8], self._lst_col_order[9],
-                self._lst_col_order[10], self._lst_col_order[11],
-                self._lst_col_order[12], self._lst_col_order[13],
-                self._lst_col_order[14], self._lst_col_order[15]
-        ]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-            _cell[0].connect('edited', self._on_cell_edit, i,
-                             self.treeview.get_model())
-
-        self.treeview.set_rubber_banding(True)
 
         return None
 

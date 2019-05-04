@@ -113,7 +113,7 @@ class FMEA(RAMSTKWorkView):
         :rtype: :class:`Gtk.TreeModel`
         """
         _column = self.treeview.get_column(column)
-        _cell = _column.get_cell_renderers()[0]
+        _cell = _column.get_cells()[0]
         _model = _cell.get_property('model')
         _model.clear()
 
@@ -532,7 +532,7 @@ class FFMEA(FMEA):
 
         for i in self._lst_col_order:
             _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
+                self._lst_col_order[i]).get_cells()
 
             if isinstance(_cell[0], Gtk.CellRendererPixbuf):
                 pass
@@ -1095,7 +1095,7 @@ class DFMECA(FMEA):
 
         for i in self._lst_col_order:
             _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
+                self._lst_col_order[i]).get_cells()
 
             if isinstance(_cell[0], Gtk.CellRendererPixbuf):
                 pass

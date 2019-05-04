@@ -214,7 +214,7 @@ class Allocation(RAMSTKWorkView):
                 self._lst_col_order[10], self._lst_col_order[11]
         ]:
             _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
+                self._lst_col_order[i]).get_cells()
             try:
                 _cell[0].connect('edited', self._do_edit_cell, i,
                                  self.treeview.get_model())

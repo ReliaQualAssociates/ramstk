@@ -106,7 +106,7 @@ class ModuleView(RAMSTKModuleView):
 
         i = 0
         for _column in self.treeview.get_columns():
-            _cell = _column.get_cell_renderers()[0]
+            _cell = _column.get_cells()[0]
             try:
                 if _cell.get_property('editable'):
                     _cell.connect('edited', self._do_edit_cell, i,

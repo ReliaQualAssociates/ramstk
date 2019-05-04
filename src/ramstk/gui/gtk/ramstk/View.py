@@ -369,7 +369,7 @@ class RAMSTKBaseView(object):
         _index = 0
 
         for _column in self.treeview.get_columns():
-            _cell = _column.get_cell_renderers()[0]
+            _cell = _column.get_cells()[0]
             if _index in _editable:
                 _color = Gdk.color_parse('#FFFFFF')
                 try:

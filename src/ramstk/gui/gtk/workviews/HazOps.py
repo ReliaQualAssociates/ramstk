@@ -103,7 +103,7 @@ class HazOps(RAMSTKWorkView):
 
         for i in self._lst_col_order[3:]:
             _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
+                self._lst_col_order[i]).get_cells()
             try:
                 _cell[0].connect('edited', self._do_edit_cell, i,
                                  self.treeview.get_model())
@@ -297,7 +297,7 @@ class HazOps(RAMSTKWorkView):
         :rtype: :class:`Gtk.TreeModel`
         """
         _column = self.treeview.get_column(column)
-        _cell = _column.get_cell_renderers()[0]
+        _cell = _column.get_cells()[0]
         _model = _cell.get_property('model')
         _model.clear()
 
