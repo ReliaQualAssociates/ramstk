@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Validation Work View."""
+"""The RASMTK Validation Work View."""
 
 from datetime import datetime
 
@@ -15,7 +15,7 @@ from matplotlib.patches import Ellipse
 # Import other RAMSTK modules.
 from ramstk.Utilities import ordinal_to_date
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
 
@@ -271,19 +271,192 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
-        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
+        self.pack_start(self.__make_page(), expand=True, fill=True)
         self.show_all()
 
         self.txtCode.hide()
         self.txtName.hide()
         self.txtRemarks.scrollwindow.hide()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_revision, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedValidation')
         pub.subscribe(self._on_select, 'calculatedValidation')
         pub.subscribe(self._on_edit, 'mvwEditedValidation')
         pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Validation class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class Work
+                 View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Calculate the cost and time of the currently selected "
+              u"Validation task only."),
+            _(u"Calculate the cost and time of the program (i.e., all "
+              u"Validation tasks).")
+        ]
+        _callbacks = [
+            self._do_request_calculate, self._do_request_calculate_all
+        ]
+        _icons = ['calculate', 'calculate-all']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_page(self):
+        """
+        Make the Validation class Gtk.Notebook() general data page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        # Load the Gtk.ComboBox() widgets.
+        _model = self.cmbTaskType.get_model()
+        _model.clear()
+
+        _data = []
+        for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE:
+            _data.append([
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                RAMSTK_VALIDATION_TYPE[_key][1]
+            ])
+        self.cmbTaskType.do_load_combo(_data)
+
+        _model = self.cmbMeasurementUnit.get_model()
+        _model.clear()
+
+        _data = []
+        for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS:
+            _data.append([
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                RAMSTK_MEASUREMENT_UNITS[_key][1]
+            ])
+        self.cmbMeasurementUnit.do_load_combo(_data)
+
+        # Build the General Data page starting with the left half.
+        _hbox = Gtk.HBox()
+
+        _fixed = Gtk.Fixed()
+
+        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
+        _frame = ramstk.RAMSTKFrame(label=_(u"Task Description"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = ramstk.make_label_group(
+            self._lst_gendata_labels[0][:2], _fixed, 5, 5)
+        _x_pos += 50
+
+        _hbox.pack_start(_frame, expand=True, fill=True)
+
+        _fixed.put(self.txtID, _x_pos, _y_pos[0])
+        _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1])
+
+        _x_pos, _y_pos = ramstk.make_label_group(
+            self._lst_gendata_labels[0][2:],
+            _fixed,
+            5,
+            _y_pos[1] + 110,
+            y_inc=30)
+        _x_pos += 35
+
+        _fixed.put(self.cmbTaskType, _x_pos, _y_pos[0])
+        _fixed.put(self.txtSpecification, _x_pos, _y_pos[1])
+        _fixed.put(self.cmbMeasurementUnit, _x_pos, _y_pos[2])
+        _fixed.put(self.txtMinAcceptable, _x_pos, _y_pos[3])
+        _fixed.put(self.txtMaxAcceptable, _x_pos, _y_pos[4])
+        _fixed.put(self.txtMeanAcceptable, _x_pos, _y_pos[5])
+        _fixed.put(self.txtVarAcceptable, _x_pos, _y_pos[6])
+
+        _fixed.show_all()
+
+        # Now add the right hand side starting with the top pane.
+        _vpaned = Gtk.VPaned()
+        _fixed = Gtk.Fixed()
+
+        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
+        _frame = ramstk.RAMSTKFrame(label=_(u"Task Effort"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[1],
+                                                 _fixed, 5, 5)
+        _x_pos += 50
+
+        _vpaned.pack1(_frame, True, True)
+
+        _fixed.put(self.btnEndDate, _x_pos + 105, _y_pos[1])
+        _fixed.put(self.btnStartDate, _x_pos + 105, _y_pos[0])
+        _fixed.put(self.txtStartDate, _x_pos, _y_pos[0])
+        _fixed.put(self.txtEndDate, _x_pos, _y_pos[1])
+        _fixed.put(self.spnStatus, _x_pos, _y_pos[2])
+        _fixed.put(self.txtMinTime, _x_pos, _y_pos[3])
+        _fixed.put(self.txtExpTime, _x_pos, _y_pos[4])
+        _fixed.put(self.txtMaxTime, _x_pos, _y_pos[5])
+        _fixed.put(self.txtMeanTimeLL, _x_pos, _y_pos[6])
+        _fixed.put(self.txtMeanTime, _x_pos + 105, _y_pos[6])
+        _fixed.put(self.txtMeanTimeUL, _x_pos + 210, _y_pos[6])
+        _fixed.put(self.txtMinCost, _x_pos, _y_pos[7])
+        _fixed.put(self.txtExpCost, _x_pos, _y_pos[8])
+        _fixed.put(self.txtMaxCost, _x_pos, _y_pos[9])
+        _fixed.put(self.txtMeanCostLL, _x_pos, _y_pos[10])
+        _fixed.put(self.txtMeanCost, _x_pos + 105, _y_pos[10])
+        _fixed.put(self.txtMeanCostUL, _x_pos + 210, _y_pos[10])
+
+        _fixed.show_all()
+
+        # Set the spin button to be a 0-100 in steps of 0.1 spinner.  Only
+        # update if value is numeric and within range.
+        self.spnStatus.set_adjustment(Gtk.Adjustment(0, 0, 100, 1, 0.1))
+        self.spnStatus.set_update_policy(Gtk.UPDATE_IF_VALID)
+        self.spnStatus.set_numeric(True)
+        self.spnStatus.set_snap_to_ticks(True)
+
+        # Now add the bottom pane to the right side.
+        _fixed = Gtk.Fixed()
+
+        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
+        _frame = ramstk.RAMSTKFrame(label=_(u"Project Effort"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[2],
+                                                 _fixed, 5, 5)
+        _x_pos += 50
+
+        _vpaned.pack2(_frame, True, True)
+
+        _fixed.put(self.txtProjectTimeLL, _x_pos, _y_pos[0])
+        _fixed.put(self.txtProjectTime, _x_pos + 105, _y_pos[0])
+        _fixed.put(self.txtProjectTimeUL, _x_pos + 210, _y_pos[0])
+        _fixed.put(self.txtProjectCostLL, _x_pos, _y_pos[1])
+        _fixed.put(self.txtProjectCost, _x_pos + 105, _y_pos[1])
+        _fixed.put(self.txtProjectCostUL, _x_pos + 210, _y_pos[1])
+
+        _fixed.show_all()
+
+        _hbox.pack_end(_vpaned, expand=True, fill=True)
+
+        _label = ramstk.RAMSTKLabel(
+            _(u"General\nData"),
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_(u"Displays general information for the selected "
+                      u"validation."))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
+        return _hbox
 
     def _do_clear_page(self):
         """
@@ -618,178 +791,6 @@ class GeneralData(RAMSTKWorkView):
         self._revision_id = module_id
 
         return None
-
-    def _make_page(self):
-        """
-        Make the Validation class Gtk.Notebook() general data page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        # Load the Gtk.ComboBox() widgets.
-        _model = self.cmbTaskType.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE:
-            _data.append([
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                RAMSTK_VALIDATION_TYPE[_key][1]
-            ])
-        self.cmbTaskType.do_load_combo(_data)
-
-        _model = self.cmbMeasurementUnit.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS:
-            _data.append([
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                RAMSTK_MEASUREMENT_UNITS[_key][1]
-            ])
-        self.cmbMeasurementUnit.do_load_combo(_data)
-
-        # Build the General Data page starting with the left half.
-        _hbox = Gtk.HBox()
-
-        _fixed = Gtk.Fixed()
-
-        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Task Description"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = ramstk.make_label_group(
-            self._lst_gendata_labels[0][:2], _fixed, 5, 5)
-        _x_pos += 50
-
-        _hbox.pack_start(_frame, expand=True, fill=True)
-
-        _fixed.put(self.txtID, _x_pos, _y_pos[0])
-        _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1])
-
-        _x_pos, _y_pos = ramstk.make_label_group(
-            self._lst_gendata_labels[0][2:],
-            _fixed,
-            5,
-            _y_pos[1] + 110,
-            y_inc=30)
-        _x_pos += 35
-
-        _fixed.put(self.cmbTaskType, _x_pos, _y_pos[0])
-        _fixed.put(self.txtSpecification, _x_pos, _y_pos[1])
-        _fixed.put(self.cmbMeasurementUnit, _x_pos, _y_pos[2])
-        _fixed.put(self.txtMinAcceptable, _x_pos, _y_pos[3])
-        _fixed.put(self.txtMaxAcceptable, _x_pos, _y_pos[4])
-        _fixed.put(self.txtMeanAcceptable, _x_pos, _y_pos[5])
-        _fixed.put(self.txtVarAcceptable, _x_pos, _y_pos[6])
-
-        _fixed.show_all()
-
-        # Now add the right hand side starting with the top pane.
-        _vpaned = Gtk.VPaned()
-        _fixed = Gtk.Fixed()
-
-        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Task Effort"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[1],
-                                                 _fixed, 5, 5)
-        _x_pos += 50
-
-        _vpaned.pack1(_frame, True, True)
-
-        _fixed.put(self.btnEndDate, _x_pos + 105, _y_pos[1])
-        _fixed.put(self.btnStartDate, _x_pos + 105, _y_pos[0])
-        _fixed.put(self.txtStartDate, _x_pos, _y_pos[0])
-        _fixed.put(self.txtEndDate, _x_pos, _y_pos[1])
-        _fixed.put(self.spnStatus, _x_pos, _y_pos[2])
-        _fixed.put(self.txtMinTime, _x_pos, _y_pos[3])
-        _fixed.put(self.txtExpTime, _x_pos, _y_pos[4])
-        _fixed.put(self.txtMaxTime, _x_pos, _y_pos[5])
-        _fixed.put(self.txtMeanTimeLL, _x_pos, _y_pos[6])
-        _fixed.put(self.txtMeanTime, _x_pos + 105, _y_pos[6])
-        _fixed.put(self.txtMeanTimeUL, _x_pos + 210, _y_pos[6])
-        _fixed.put(self.txtMinCost, _x_pos, _y_pos[7])
-        _fixed.put(self.txtExpCost, _x_pos, _y_pos[8])
-        _fixed.put(self.txtMaxCost, _x_pos, _y_pos[9])
-        _fixed.put(self.txtMeanCostLL, _x_pos, _y_pos[10])
-        _fixed.put(self.txtMeanCost, _x_pos + 105, _y_pos[10])
-        _fixed.put(self.txtMeanCostUL, _x_pos + 210, _y_pos[10])
-
-        _fixed.show_all()
-
-        # Set the spin button to be a 0-100 in steps of 0.1 spinner.  Only
-        # update if value is numeric and within range.
-        self.spnStatus.set_adjustment(Gtk.Adjustment(0, 0, 100, 1, 0.1))
-        self.spnStatus.set_update_policy(Gtk.UPDATE_IF_VALID)
-        self.spnStatus.set_numeric(True)
-        self.spnStatus.set_snap_to_ticks(True)
-
-        # Now add the bottom pane to the right side.
-        _fixed = Gtk.Fixed()
-
-        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Project Effort"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[2],
-                                                 _fixed, 5, 5)
-        _x_pos += 50
-
-        _vpaned.pack2(_frame, True, True)
-
-        _fixed.put(self.txtProjectTimeLL, _x_pos, _y_pos[0])
-        _fixed.put(self.txtProjectTime, _x_pos + 105, _y_pos[0])
-        _fixed.put(self.txtProjectTimeUL, _x_pos + 210, _y_pos[0])
-        _fixed.put(self.txtProjectCostLL, _x_pos, _y_pos[1])
-        _fixed.put(self.txtProjectCost, _x_pos + 105, _y_pos[1])
-        _fixed.put(self.txtProjectCostUL, _x_pos + 210, _y_pos[1])
-
-        _fixed.show_all()
-
-        _hbox.pack_end(_vpaned, expand=True, fill=True)
-
-        _label = ramstk.RAMSTKLabel(
-            _(u"General\nData"),
-            height=30,
-            width=-1,
-            justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays general information for the selected "
-                      u"validation."))
-        self.hbx_tab_label.pack_start(_label, True, True, 0)
-
-        return _hbox
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Validation class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class Work
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Calculate the cost and time of the currently selected "
-              u"Validation task only."),
-            _(u"Calculate the cost and time of the program (i.e., all "
-              u"Validation tasks).")
-        ]
-        _callbacks = [
-            self._do_request_calculate, self._do_request_calculate_all
-        ]
-        _icons = ['calculate', 'calculate-all']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def _on_combo_changed(self, combo, index):
         """
@@ -1126,13 +1127,67 @@ class BurndownCurve(RAMSTKWorkView):
         # Initialize public scalar attributes.
         self.burndown = ramstk.RAMSTKPlot()
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
-        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
+        self.pack_start(self.__make_page(), expand=True, fill=True)
         self.show_all()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_select, 'selectedValidation')
         pub.subscribe(self._do_request_plot, 'calculatedProgram')
         pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Validation class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class Work
+                 View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Calculate the cost and time of the program (i.e., all "
+              u"Validation tasks)."),
+            _(u"Load the planned and actual burndown curves."),
+        ]
+        _callbacks = [self._do_request_calculate_all, self._do_request_plot]
+        _icons = ['calculate-all', 'plot']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_page(self):
+        """
+        Make the Validation class Gtk.Notebook() burndown curve page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _frame = ramstk.RAMSTKFrame(label=_(u"Program Validation Effort"))
+        _frame.add(self.burndown.plot)
+        _frame.show_all()
+
+        # Insert the tab.
+        self.hbx_tab_label = Gtk.Label()
+        self.hbx_tab_label.set_markup("<span weight='bold'>" +
+                                      _(u"Program\nValidation\nProgress") +
+                                      "</span>")
+        self.hbx_tab_label.set_alignment(xalign=0.5, yalign=0.5)
+        self.hbx_tab_label.set_justify(Gtk.Justification.CENTER)
+        self.hbx_tab_label.show_all()
+        self.hbx_tab_label.set_tooltip_text(
+            _(u"Shows a plot of the total expected time "
+              u"to complete all V&amp;V tasks and the "
+              u"current progress."))
+
+        return _frame
 
     def _do_clear_page(self):
         """
@@ -1158,9 +1213,8 @@ class BurndownCurve(RAMSTKWorkView):
         """
         _return = False
 
-        (_y_minimum,
-         _y_average,
-         _y_maximum) = self._dtc_data_controller.request_get_planned_burndown()
+        (_y_minimum, _y_average, _y_maximum
+        ) = self._dtc_data_controller.request_get_planned_burndown()
 
         self.burndown.axis.cla()
         self.burndown.axis.grid(True, which='both')
@@ -1304,59 +1358,6 @@ class BurndownCurve(RAMSTKWorkView):
             _return = self._dtc_data_controller.request_do_update_status()
 
         return _return
-
-    def _make_page(self):
-        """
-        Make the Validation class Gtk.Notebook() burndown curve page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _frame = ramstk.RAMSTKFrame(label=_(u"Program Validation Effort"))
-        _frame.add(self.burndown.plot)
-        _frame.show_all()
-
-        # Insert the tab.
-        self.hbx_tab_label = Gtk.Label()
-        self.hbx_tab_label.set_markup("<span weight='bold'>" +
-                                      _(u"Program\nValidation\nProgress") +
-                                      "</span>")
-        self.hbx_tab_label.set_alignment(xalign=0.5, yalign=0.5)
-        self.hbx_tab_label.set_justify(Gtk.Justification.CENTER)
-        self.hbx_tab_label.show_all()
-        self.hbx_tab_label.set_tooltip_text(
-            _(u"Shows a plot of the total expected time "
-              u"to complete all V&amp;V tasks and the "
-              u"current progress."))
-
-        return _frame
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Validation class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class Work
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Calculate the cost and time of the program (i.e., all "
-              u"Validation tasks)."),
-            _(u"Load the planned and actual burndown curves."),
-        ]
-        _callbacks = [self._do_request_calculate_all, self._do_request_plot]
-        _icons = ['calculate-all', 'plot']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """

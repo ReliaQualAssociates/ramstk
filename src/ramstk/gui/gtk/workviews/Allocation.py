@@ -4,13 +4,13 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Allocation Work View."""
+"""The RAMSTK Allocation Work View."""
 
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
 
@@ -95,6 +95,99 @@ class Allocation(RAMSTKWorkView):
                 u"Displays the reliability goal for the selected hardware "
                 u"item."))
 
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._on_select, 'selectedHardware')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Allocation class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Allocation Work View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Calculate the currently selected child hardware item.")
+        ]
+
+        _callbacks = [self._do_request_calculate]
+
+        _icons = ['calculate']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_goalbox(self):
+        """
+        Make the Allocation methods and goal-setting container.
+
+        :return: a Gtk.Frame() containing the widgets used to select the
+                 allocation method and goals.
+        :rtype: :class:`Gtk.Frame`
+        """
+        # Load the method and goal comboboxes.
+        self.cmbAllocationGoal.do_load_combo([[_(u"Reliability"), 0],
+                                              [_(u"Hazard Rate"), 1],
+                                              [_(u"MTBF"), 2]])
+        self.cmbAllocationMethod.do_load_combo(
+            [[_(u"Equal Apportionment"), 0], [_(u"AGREE Apportionment"), 1],
+             [_(u"ARINC Apportionment"), 2],
+             [_(u"Feasibility of Objectives"), 3]])
+
+        _fixed = Gtk.Fixed()
+
+        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Allocation Method")), 5, 5)
+        _fixed.put(self.cmbAllocationMethod, 5, 30)
+        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Goal Metric")), 5, 70)
+        _fixed.put(self.cmbAllocationGoal, 5, 95)
+        _fixed.put(ramstk.RAMSTKLabel(_(u"R(t) Goal")), 5, 135)
+        _fixed.put(self.txtReliabilityGoal, 5, 160)
+        _fixed.put(ramstk.RAMSTKLabel(_(u"h(t) Goal")), 5, 200)
+        _fixed.put(self.txtHazardRateGoal, 5, 225)
+        _fixed.put(ramstk.RAMSTKLabel(_(u"MTBF Goal")), 5, 265)
+        _fixed.put(self.txtMTBFGoal, 5, 290)
+
+        _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Goals and Method"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_fixed)
+
+        self.txtHazardRateGoal.props.editable = 0
+        self.txtHazardRateGoal.set_sensitive(0)
+        self.txtMTBFGoal.props.editable = 0
+        self.txtMTBFGoal.set_sensitive(0)
+        self.txtReliabilityGoal.props.editable = 0
+        self.txtReliabilityGoal.set_sensitive(0)
+
+        return _frame
+
+    def __make_ui(self):
+        """
+        Make the Allocation RAMSTKTreeview().
+
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
+        """
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+
+        _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Analysis"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))
         self._lst_handler_id.append(
@@ -138,15 +231,16 @@ class Allocation(RAMSTKWorkView):
                       u"hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), False, True)
+        self.pack_start(self.__make_buttonbox(), False, True)
+
         _hbox = Gtk.HBox()
-        _hbox.pack_start(self._make_goalbox(, True, True, 0), False, True)
-        _hbox.pack_end(self._make_page(, True, True, 0), True, True)
+        _hbox.pack_start(self.__make_goalbox(), False, True)
+        _hbox.pack_end(_frame, True, True)
         self.pack_end(_hbox, True, True)
+
         self.show_all()
 
-        pub.subscribe(self._on_select, 'selectedHardware')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
+        return None
 
     def _do_clear_page(self):
         """
@@ -399,94 +493,6 @@ class Allocation(RAMSTKWorkView):
         :rtype: bool
         """
         return self.treeview.do_set_visible_columns(**kwargs)
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Allocation class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Allocation Work View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Calculate the currently selected child hardware item.")
-        ]
-
-        _callbacks = [self._do_request_calculate]
-
-        _icons = ['calculate']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def _make_goalbox(self):
-        """
-        Make the Allocation methods and goal-setting container.
-
-        :return: a Gtk.Frame() containing the widgets used to select the
-                 allocation method and goals.
-        :rtype: :class:`Gtk.Frame`
-        """
-        # Load the method and goal comboboxes.
-        self.cmbAllocationGoal.do_load_combo([[_(u"Reliability"), 0],
-                                              [_(u"Hazard Rate"), 1],
-                                              [_(u"MTBF"), 2]])
-        self.cmbAllocationMethod.do_load_combo(
-            [[_(u"Equal Apportionment"), 0], [_(u"AGREE Apportionment"), 1],
-             [_(u"ARINC Apportionment"), 2],
-             [_(u"Feasibility of Objectives"), 3]])
-
-        _fixed = Gtk.Fixed()
-
-        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Allocation Method")), 5, 5)
-        _fixed.put(self.cmbAllocationMethod, 5, 30)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Goal Metric")), 5, 70)
-        _fixed.put(self.cmbAllocationGoal, 5, 95)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"R(t) Goal")), 5, 135)
-        _fixed.put(self.txtReliabilityGoal, 5, 160)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"h(t) Goal")), 5, 200)
-        _fixed.put(self.txtHazardRateGoal, 5, 225)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"MTBF Goal")), 5, 265)
-        _fixed.put(self.txtMTBFGoal, 5, 290)
-
-        _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Goals and Method"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_fixed)
-
-        self.txtHazardRateGoal.props.editable = 0
-        self.txtHazardRateGoal.set_sensitive(0)
-        self.txtMTBFGoal.props.editable = 0
-        self.txtMTBFGoal.set_sensitive(0)
-        self.txtReliabilityGoal.props.editable = 0
-        self.txtReliabilityGoal.set_sensitive(0)
-
-        return _frame
-
-    def _make_page(self):
-        """
-        Make the Allocation RAMSTKTreeview().
-
-        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
-        :rtype: :class:`Gtk.Frame`
-        """
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Analysis"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-        return _frame
 
     def _on_button_press(self, treeview, event):
         """

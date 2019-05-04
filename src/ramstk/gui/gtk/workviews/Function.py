@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Function Work View."""
+"""The RAMSTK Function Work View."""
 
 # Import third party modules.
 from pubsub import pub
@@ -12,7 +12,7 @@ from pubsub import pub
 # Import other RAMSTK modules.
 from ramstk.Utilities import boolean_to_integer
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
 
@@ -91,6 +91,48 @@ class GeneralData(RAMSTKWorkView):
             tooltip=_(u"Enter any remarks associated with the "
                       u"selected function."))
 
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._on_edit, 'mvw_editing_function')
+        pub.subscribe(self._do_load_page, 'selected_function')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Function class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Work
+                 View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = []
+        _callbacks = []
+        _icons = []
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_ui(self):
+        """
+        Make the Function class Gtk.Notebook() general data page.
+
+        :return: None
+        :rtype: None
+        """
+        (_frame, _fixed, __,
+         _y_pos) = RAMSTKWorkView.make_general_data_page(self)
+
+        _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
+
         # Connect to callback functions for editable Gtk.Widgets().
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 0))
@@ -101,14 +143,11 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
-        self.pack_start(self._make_page(, True, True, 0), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
+        self.pack_start(_frame, expand=True, fill=True)
         self.show_all()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._on_edit, 'mvw_editing_function')
-        pub.subscribe(self._do_load_page, 'selected_function')
+        return None
 
     def _do_clear_page(self):
         """
@@ -201,44 +240,7 @@ class GeneralData(RAMSTKWorkView):
 
         return None
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Function class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Work
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = []
-        _callbacks = []
-        _icons = []
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def _make_page(self):
-        """
-        Make the Function class Gtk.Notebook() general data page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        (_frame, _fixed, __,
-         _y_pos) = RAMSTKWorkView.make_general_data_page(self)
-
-        _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
-
-        return _frame
-
-    def _on_edit(self, module_id, key, value):
+    def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
         """
         Update the Function Work View Gtk.Widgets().
 

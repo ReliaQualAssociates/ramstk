@@ -1,16 +1,17 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.workviews.WorkView.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKWorkView Meta-Class Module."""
+"""The RAMSTKWorkView Meta-Class Module."""
 
 # Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, GObject, Gtk
 from ramstk.gui.gtk import ramstk
 
 

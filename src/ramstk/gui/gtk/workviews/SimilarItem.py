@@ -4,13 +4,13 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""SimilarItem Work View."""
+"""The RASMTK SimilarItem Work View."""
 
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
 
@@ -122,15 +122,105 @@ class SimilarItem(RAMSTKWorkView):
                       u"hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), False, True)
+        self.pack_start(self.__make_buttonbox(), False, True)
         _hbox = Gtk.HBox()
-        _hbox.pack_start(self._make_methodbox(, True, True, 0), False, True)
-        _hbox.pack_end(self._make_page(, True, True, 0), True, True)
+        _hbox.pack_start(self.__make_methodbox(), False, True)
+        _hbox.pack_end(self.__make_page(), True, True)
         self.pack_end(_hbox, True, True)
         self.show_all()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Similar Item class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the SimilarItem Work View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Edit the Similar Item analysis functions."),
+            _(u"Roll up descriptions to next higher level assembly."),
+            _(u"Calculate the Similar Item analysis.")
+        ]
+        _callbacks = [
+            self._do_request_edit_function, self._do_request_rollup,
+            self._do_request_calculate
+        ]
+        _icons = ['edit', 'rollup', 'calculate']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        self._btn_rollup = _buttonbox.get_children()[1]
+
+        return _buttonbox
+
+    def __make_methodbox(self):
+        """
+        Make the Similar Item analysis method container.
+
+        :return: a Gtk.Frame() containing the widgets used to select the
+                 allocation method and goals.
+        :rtype: :class:`Gtk.Frame`
+        """
+        # Load the method and goal comboboxes.
+        self.cmbSimilarItemMethod.do_load_combo([[_(u"Topic 633"), 0],
+                                                 [_(u"User-Defined"), 1]])
+
+        _fixed = Gtk.Fixed()
+
+        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Method")), 5, 5)
+        _fixed.put(self.cmbSimilarItemMethod, 5, 30)
+
+        _frame = ramstk.RAMSTKFrame(label=_(u"Similar Item Method"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_fixed)
+
+        return _frame
+
+    def __make_page(self):
+        """
+        Make the Similar Item RAMSTKTreeview().
+
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
+        """
+        # Load the quality from and quality to Gtk.CellRendererCombo().
+        for _idx in [4, 5]:
+            _model = self._get_cell_model(_idx)
+            for _quality in self._dic_quality:
+                _model.append([
+                    _quality,
+                ])
+        # Load the environment from and environment to Gtk.CellRendererCombo().
+        for _idx in [6, 7]:
+            _model = self._get_cell_model(_idx)
+            for _environment in self._dic_environment:
+                _model.append([
+                    _environment,
+                ])
+
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+
+        _frame = ramstk.RAMSTKFrame(label=_(u"Similar Item Analysis"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+        return _frame
 
     def _do_clear_page(self):
         """
@@ -703,94 +793,6 @@ class SimilarItem(RAMSTKWorkView):
         _model.clear()
 
         return _model
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Similar Item class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the SimilarItem Work View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Edit the Similar Item analysis functions."),
-            _(u"Roll up descriptions to next higher level assembly."),
-            _(u"Calculate the Similar Item analysis.")
-        ]
-        _callbacks = [
-            self._do_request_edit_function, self._do_request_rollup,
-            self._do_request_calculate
-        ]
-        _icons = ['edit', 'rollup', 'calculate']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        self._btn_rollup = _buttonbox.get_children()[1]
-
-        return _buttonbox
-
-    def _make_methodbox(self):
-        """
-        Make the Similar Item analysis method container.
-
-        :return: a Gtk.Frame() containing the widgets used to select the
-                 allocation method and goals.
-        :rtype: :class:`Gtk.Frame`
-        """
-        # Load the method and goal comboboxes.
-        self.cmbSimilarItemMethod.do_load_combo([[_(u"Topic 633"), 0],
-                                                 [_(u"User-Defined"), 1]])
-
-        _fixed = Gtk.Fixed()
-
-        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Method")), 5, 5)
-        _fixed.put(self.cmbSimilarItemMethod, 5, 30)
-
-        _frame = ramstk.RAMSTKFrame(label=_(u"Similar Item Method"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_fixed)
-
-        return _frame
-
-    def _make_page(self):
-        """
-        Make the Similar Item RAMSTKTreeview().
-
-        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
-        :rtype: :class:`Gtk.Frame`
-        """
-        # Load the quality from and quality to Gtk.CellRendererCombo().
-        for _idx in [4, 5]:
-            _model = self._get_cell_model(_idx)
-            for _quality in self._dic_quality:
-                _model.append([
-                    _quality,
-                ])
-        # Load the environment from and environment to Gtk.CellRendererCombo().
-        for _idx in [6, 7]:
-            _model = self._get_cell_model(_idx)
-            for _environment in self._dic_environment:
-                _model.append([
-                    _environment,
-                ])
-
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = ramstk.RAMSTKFrame(label=_(u"Similar Item Analysis"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-        return _frame
 
     def _on_button_press(self, treeview, event):
         """

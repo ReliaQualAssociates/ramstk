@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""HazOps Work View."""
+"""The RAMSTK HazOps Work View."""
 
 from sortedcontainers import SortedDict
 from pubsub import pub
@@ -12,7 +12,7 @@ from pubsub import pub
 # Import other RAMSTK modules.
 from ramstk.Configuration import RAMSTK_FAILURE_PROBABILITY
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
 
@@ -120,13 +120,64 @@ class HazOps(RAMSTKWorkView):
                       u"hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), False, True)
-        self.pack_end(self._make_page(, True, True, 0), True, True)
+        self.pack_start(self.__make_buttonbox(), False, True)
+        self.pack_end(self.__make_page(), True, True)
         self.show_all()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._on_select, 'insertedHazardAnalysis')
         pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the HazOps class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the HazOps Work View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Calculate the HazOps analysis."),
+            _(u"Add a hazard to the HazOps analysis."),
+            _(u"Remove the selected hazard and all associated data from the "
+              u"HazOps analysis.")
+        ]
+        _callbacks = [
+            self._do_request_calculate, self._do_request_insert_sibling,
+            self._do_request_delete
+        ]
+        _icons = ['calculate', 'add', 'remove']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_page(self):
+        """
+        Make the HazOps RAMSTKTreeview().
+
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
+        """
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+
+        _frame = ramstk.RAMSTKFrame(label=_(u"HazOps Analysis"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+        return _frame
 
     def _do_clear_page(self):
         """
@@ -418,55 +469,6 @@ class HazOps(RAMSTKWorkView):
 
         return _return
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the HazOps class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the HazOps Work View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Calculate the HazOps analysis."),
-            _(u"Add a hazard to the HazOps analysis."),
-            _(u"Remove the selected hazard and all associated data from the "
-              u"HazOps analysis.")
-        ]
-        _callbacks = [
-            self._do_request_calculate, self._do_request_insert_sibling,
-            self._do_request_delete
-        ]
-        _icons = ['calculate', 'add', 'remove']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def _make_page(self):
-        """
-        Make the HazOps RAMSTKTreeview().
-
-        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
-        :rtype: :class:`Gtk.Frame`
-        """
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = ramstk.RAMSTKFrame(label=_(u"HazOps Analysis"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-        return _frame
-
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the HazOps Work View RAMSTKTreeView().
@@ -533,8 +535,10 @@ class HazOps(RAMSTKWorkView):
         if self._dtc_data_controller is None:
             self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
                 'hazops']
-            self._dtc_data_controller.request_do_select_all(
-                {'revision_id': self._revision_id})
+            self._dtc_data_controller.request_do_select_all({
+                'revision_id':
+                self._revision_id
+            })
 
         (_error_code, _user_msg, _debug_msg) = self._do_load_page()
 

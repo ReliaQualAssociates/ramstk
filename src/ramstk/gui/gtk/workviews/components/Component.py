@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.workviews.components.Component.py is part of the RAMSTK
@@ -5,13 +6,13 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Component Base Work View."""
+"""The RAMSTK Component Base Work View."""
 
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk
 
 
 class AssessmentInputs(Gtk.Fixed):

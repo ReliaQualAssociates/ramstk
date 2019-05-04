@@ -4,16 +4,17 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""FMEA Work View."""
+"""The RAMSTK (D)FME(C)A Work View."""
 
 from datetime import datetime
 from sortedcontainers import SortedDict
 from pubsub import pub
 
 # Import other RAMSTK modules.
-from ramstk.Configuration import RAMSTK_CONTROL_TYPES, RAMSTK_FAILURE_PROBABILITY
+from ramstk.Configuration import (RAMSTK_CONTROL_TYPES,
+                                  RAMSTK_FAILURE_PROBABILITY)
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, Gtk
 from ramstk.gui.gtk.assistants import AddControlAction
 from .WorkView import RAMSTKWorkView
 
@@ -100,7 +101,8 @@ class FMEA(RAMSTKWorkView):
         self.txtItemCriticality.modify_base(Gtk.StateType.ACTIVE, _bg_color)
         self.txtItemCriticality.modify_base(Gtk.StateType.PRELIGHT, _bg_color)
         self.txtItemCriticality.modify_base(Gtk.StateType.SELECTED, _bg_color)
-        self.txtItemCriticality.modify_base(Gtk.StateType.INSENSITIVE, _bg_color)
+        self.txtItemCriticality.modify_base(Gtk.StateType.INSENSITIVE,
+                                            _bg_color)
 
     def _get_cell_model(self, column):
         """
@@ -356,7 +358,8 @@ class FMEA(RAMSTKWorkView):
         :rtype: :class:`Gtk.Frame`
         """
         _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
         _frame = ramstk.RAMSTKFrame(
@@ -487,11 +490,63 @@ class FFMEA(FMEA):
         _buttonbox.get_children()[3].set_sensitive(False)
 
         self.pack_start(_buttonbox, False, True)
-        self.pack_end(self._make_page(, True, True, 0), True, True)
+        self.pack_end(self.__make_page(), True, True)
         self.show_all()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_select, 'selectedFunction')
         pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_page(self):
+        """
+        Make the (D)FME(C)A RAMSTKTreeview().
+
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
+        """
+        # Load the severity classes into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[7])
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
+            _severity = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[
+                _item][1]
+            _model.append((_severity, ))
+
+        # Load the users into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[8])
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS:
+            _user = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][0] + ', ' \
+                    + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][1]
+            _model.append((_user, ))
+
+        # Load the status values into the Gtk.CellRendererCombo()
+        _model = self._get_cell_model(self._lst_col_order[10])
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS:
+            _status = \
+                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS[_item][0]
+            _model.append((_status, ))
+
+        self._lst_handler_id.append(
+            self.treeview.connect('cursor_changed', self._do_change_row))
+        self._lst_handler_id.append(
+            self.treeview.connect('button_press_event', self._on_button_press))
+
+        for i in self._lst_col_order:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+
+            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
+                pass
+            elif isinstance(_cell[0], Gtk.CellRendererToggle):
+                _cell[0].connect('toggled', self._do_edit_cell, None, i,
+                                 self.treeview.get_model())
+            elif isinstance(_cell[0], Gtk.CellRendererCombo):
+                _cell[0].connect('edited', self._do_edit_cell, i,
+                                 self.treeview.get_model())
+            else:
+                _cell[0].connect('edited', self._do_edit_cell, i,
+                                 self.treeview.get_model())
+
+        return FMEA._make_page(self)
 
     def _do_change_row(self, treeview):
         """
@@ -836,57 +891,6 @@ class FFMEA(FMEA):
 
         return _level
 
-    def _make_page(self):
-        """
-        Make the (D)FME(C)A RAMSTKTreeview().
-
-        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
-        :rtype: :class:`Gtk.Frame`
-        """
-        # Load the severity classes into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[7])
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
-            _severity = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[
-                _item][1]
-            _model.append((_severity, ))
-
-        # Load the users into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[8])
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS:
-            _user = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][0] + ', ' \
-                    + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][1]
-            _model.append((_user, ))
-
-        # Load the status values into the Gtk.CellRendererCombo()
-        _model = self._get_cell_model(self._lst_col_order[10])
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS:
-            _status = \
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS[_item][0]
-            _model.append((_status, ))
-
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-        for i in self._lst_col_order:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-
-            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
-                pass
-            elif isinstance(_cell[0], Gtk.CellRendererToggle):
-                _cell[0].connect('toggled', self._do_edit_cell, None, i,
-                                 self.treeview.get_model())
-            elif isinstance(_cell[0], Gtk.CellRendererCombo):
-                _cell[0].connect('edited', self._do_edit_cell, i,
-                                 self.treeview.get_model())
-            else:
-                _cell[0].connect('edited', self._do_edit_cell, i,
-                                 self.treeview.get_model())
-
-        return FMEA._make_page(self)
-
     def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
         """
         Respond to selectedFunction signal from pypubsub.
@@ -986,14 +990,126 @@ class DFMECA(FMEA):
                       u"Hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), False, True)
-        self.pack_end(self._make_methodbox(, True, True, 0), True, True)
+        self.pack_start(self.__make_buttonbox(), False, True)
+        self.pack_end(self.__make_methodbox(), True, True)
         self.show_all()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_missions, 'selectedRevision')
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_load_missions, 'editedUsage')
         pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_methodbox(self):
+        """
+        Make the (D)FME(C)A option box.
+
+        :return: _vbox
+        :rtype: :class:`Gtk.VBox`
+        """
+        _vbox = Gtk.VBox()
+
+        _fixed = Gtk.Fixed()
+        _vbox.pack_start(_fixed, False, True)
+
+        _fixed.put(self.chkCriticality, 5, 5)
+        _fixed.put(self.chkRPN, 5, 35)
+        _fixed.put(self.txtItemCriticality.scrollwindow, 550, 5)
+
+        _vbox.pack_end(self.__make_page(), True, True)
+
+        # By default, calculate both Task 102 and RPN.
+        self.chkCriticality.set_active(True)
+        self.chkRPN.set_active(True)
+
+        return _vbox
+
+    def __make_page(self):
+        """
+        Make the (D)FME(C)A RAMSTKTreeview().
+
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
+        """
+        # Load the severity classes into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[12])
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_SEVERITY[_item][1], ))
+
+        # Load the RPN severity classes into the Gtk.CellRendererCombo().
+        for _position in [21, 34]:
+            _model = self._get_cell_model(self._lst_col_order[_position])
+            _model.append(('', ))
+            for _item in sorted(
+                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY):
+                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                               RAMSTK_RPN_SEVERITY[_item][1], ))
+
+        # Load the RPN occurrence classes into the Gtk.CellRendererCombo().
+        for _position in [22, 35]:
+            _model = self._get_cell_model(self._lst_col_order[_position])
+            _model.append(('', ))
+            for _item in sorted(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                                RAMSTK_RPN_OCCURRENCE):
+                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                               RAMSTK_RPN_OCCURRENCE[_item][1], ))
+
+        # Load the RPN detection classes into the Gtk.CellRendererCombo().
+        for _position in [23, 36]:
+            _model = self._get_cell_model(self._lst_col_order[_position])
+            _model.append(('', ))
+            for _item in sorted(
+                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION):
+                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                               RAMSTK_RPN_DETECTION[_item][1], ))
+
+        # Load the failure probabilities into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[14])
+        for _item in RAMSTK_FAILURE_PROBABILITY:
+            _model.append((_item[0], ))
+
+        # Load the control type Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[20])
+        for _item in RAMSTK_CONTROL_TYPES:
+            _model.append((_item, ))
+
+        # Load the action category Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[25])
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_CATEGORY:
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_ACTION_CATEGORY[_item][1], ))
+
+        # Load the users into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[26])
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS:
+            _user = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][0] + \
+                ', ' + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][1]
+            _model.append((_user, ))
+
+        # Load the status values into the Gtk.CellRendererCombo()
+        _model = self._get_cell_model(self._lst_col_order[28])
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS:
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_ACTION_STATUS[_item][0], ))
+
+        for i in self._lst_col_order:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+
+            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
+                pass
+            elif isinstance(_cell[0], Gtk.CellRendererToggle):
+                _cell[0].connect('toggled', self._do_edit_cell, None, i,
+                                 self.treeview.get_model())
+            elif isinstance(_cell[0], Gtk.CellRendererCombo):
+                _cell[0].connect('edited', self._do_edit_cell, i,
+                                 self.treeview.get_model())
+            else:
+                _cell[0].connect('edited', self._do_edit_cell, i,
+                                 self.treeview.get_model())
+
+        return FMEA._make_page(self)
 
     def _do_change_row(self, treeview):
         """
@@ -1110,7 +1226,10 @@ class DFMECA(FMEA):
         i = 0
         for _heading in _headings:
             _label = ramstk.RAMSTKLabel(
-                _heading, height=-1, justify=Gtk.Justification.CENTER, wrap=True)
+                _heading,
+                height=-1,
+                justify=Gtk.Justification.CENTER,
+                wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
             if _heading == '':
@@ -1654,117 +1773,6 @@ class DFMECA(FMEA):
                 _rpn_detection = ''
 
         return _rpn_detection
-
-    def _make_methodbox(self):
-        """
-        Make the (D)FME(C)A option box.
-
-        :return: _vbox
-        :rtype: :class:`Gtk.VBox`
-        """
-        _vbox = Gtk.VBox()
-
-        _fixed = Gtk.Fixed()
-        _vbox.pack_start(_fixed, False, True)
-
-        _fixed.put(self.chkCriticality, 5, 5)
-        _fixed.put(self.chkRPN, 5, 35)
-        _fixed.put(self.txtItemCriticality.scrollwindow, 550, 5)
-
-        _vbox.pack_end(self._make_page(, True, True, 0), True, True)
-
-        # By default, calculate both Task 102 and RPN.
-        self.chkCriticality.set_active(True)
-        self.chkRPN.set_active(True)
-
-        return _vbox
-
-    def _make_page(self):
-        """
-        Make the (D)FME(C)A RAMSTKTreeview().
-
-        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
-        :rtype: :class:`Gtk.Frame`
-        """
-        # Load the severity classes into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[12])
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
-            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                           RAMSTK_SEVERITY[_item][1], ))
-
-        # Load the RPN severity classes into the Gtk.CellRendererCombo().
-        for _position in [21, 34]:
-            _model = self._get_cell_model(self._lst_col_order[_position])
-            _model.append(('', ))
-            for _item in sorted(
-                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY):
-                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                               RAMSTK_RPN_SEVERITY[_item][1], ))
-
-        # Load the RPN occurrence classes into the Gtk.CellRendererCombo().
-        for _position in [22, 35]:
-            _model = self._get_cell_model(self._lst_col_order[_position])
-            _model.append(('', ))
-            for _item in sorted(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                                RAMSTK_RPN_OCCURRENCE):
-                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                               RAMSTK_RPN_OCCURRENCE[_item][1], ))
-
-        # Load the RPN detection classes into the Gtk.CellRendererCombo().
-        for _position in [23, 36]:
-            _model = self._get_cell_model(self._lst_col_order[_position])
-            _model.append(('', ))
-            for _item in sorted(
-                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION):
-                _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                               RAMSTK_RPN_DETECTION[_item][1], ))
-
-        # Load the failure probabilities into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[14])
-        for _item in RAMSTK_FAILURE_PROBABILITY:
-            _model.append((_item[0], ))
-
-        # Load the control type Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[20])
-        for _item in RAMSTK_CONTROL_TYPES:
-            _model.append((_item, ))
-
-        # Load the action category Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[25])
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_CATEGORY:
-            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                           RAMSTK_ACTION_CATEGORY[_item][1], ))
-
-        # Load the users into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[26])
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS:
-            _user = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][0] + \
-                ', ' + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_USERS[_item][1]
-            _model.append((_user, ))
-
-        # Load the status values into the Gtk.CellRendererCombo()
-        _model = self._get_cell_model(self._lst_col_order[28])
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ACTION_STATUS:
-            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                           RAMSTK_ACTION_STATUS[_item][0], ))
-
-        for i in self._lst_col_order:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-
-            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
-                pass
-            elif isinstance(_cell[0], Gtk.CellRendererToggle):
-                _cell[0].connect('toggled', self._do_edit_cell, None, i,
-                                 self.treeview.get_model())
-            elif isinstance(_cell[0], Gtk.CellRendererCombo):
-                _cell[0].connect('edited', self._do_edit_cell, i,
-                                 self.treeview.get_model())
-            else:
-                _cell[0].connect('edited', self._do_edit_cell, i,
-                                 self.treeview.get_model())
-
-        return FMEA._make_page(self)
 
     def _on_select(self, **kwargs):
         """

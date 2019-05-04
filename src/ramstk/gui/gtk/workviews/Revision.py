@@ -4,13 +4,14 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Revision Work View."""
+"""The RAMSTK Revision Work View."""
 
 from pubsub import pub
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk import (RAMSTKEntry, RAMSTKTextView,
+                                   do_make_buttonbox)
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
 # from Assistants import AddRevision
@@ -63,16 +64,68 @@ class GeneralData(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtCode = ramstk.RAMSTKEntry(
+        self.txtCode = RAMSTKEntry(
             width=125, tooltip=_(u"A unique code for the selected revision."))
-        self.txtName = ramstk.RAMSTKEntry(
+        self.txtName = RAMSTKEntry(
             width=800, tooltip=_(u"The name of the selected revision."))
-        self.txtRemarks = ramstk.RAMSTKTextView(
+        self.txtRemarks = RAMSTKTextView(
             Gtk.TextBuffer(),
             width=800,
             tooltip=_(u"Enter any remarks associated with the "
                       u"selected revision."))
 
+        self.__set_callbacks()
+
+        self.pack_start(self.__make_buttonbox(), expand=False, fill=False)
+        self.pack_end(self.__make_page(), expand=True, fill=True)
+        self.show_all()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._do_load_page, 'selected_revision')
+        pub.subscribe(self._on_edit, 'mvw_editing_revision')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Create the Revision Work View Gtk.ButtonBox().
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Revision class Work
+                 View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = []
+        _callbacks = []
+        _icons = []
+
+        _buttonbox = do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_page(self):
+        """
+        Create the Revision Work View general data page.
+
+        :return: _frame; the Gtk.Frame() to embed in the notebook page.
+        :rtype: :class:`Gtk.Frame`
+        """
+        (_frame, __, __, __) = RAMSTKWorkView.make_general_data_page(self)
+
+        return _frame
+
+    def __set_callbacks(self):
+        """
+        Set the callback methods and functions.
+
+        :return: None
+        :rtype: None
+        """
         self._lst_handler_id.append(
             self.txtName.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
@@ -80,14 +133,7 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 2))
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), expand=False, fill=False)
-        self.pack_end(self._make_page(, True, True, 0), expand=True, fill=True)
-        self.show_all()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._do_load_page, 'selected_revision')
-        pub.subscribe(self._on_edit, 'mvw_editing_revision')
+        return None
 
     def _do_clear_page(self):
         """
@@ -167,41 +213,7 @@ class GeneralData(RAMSTKWorkView):
 
         return None
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the Revision Work View Gtk.ButtonBox().
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Revision class Work
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = []
-        _callbacks = []
-        _icons = []
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def _make_page(self):
-        """
-        Create the Revision Work View general data page.
-
-        :return: _frame; the Gtk.Frame() to embed in the notebook page.
-        :rtype: :class:`Gtk.Frame`
-        """
-        (_frame, __, __, __) = RAMSTKWorkView.make_general_data_page(self)
-
-        return _frame
-
-    def _on_edit(self, module_id, key, value):
+    def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
         """
         Update the Revision Work View Gtk.Widgets().
 

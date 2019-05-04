@@ -4,14 +4,14 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""PoF Work View."""
+"""The RAMSTK PoF Work View."""
 
 from sortedcontainers import SortedDict
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, Gtk
 from ramstk.gui.gtk.assistants import AddStressMethod
 from .WorkView import RAMSTKWorkView
 
@@ -96,12 +96,122 @@ class PoF(RAMSTKWorkView):
                       u"the selected hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(, True, True, 0), False, True)
-        self.pack_end(self._make_page(, True, True, 0), True, True)
+        self.pack_start(self.__make_buttonbox(), False, True)
+        self.pack_end(self.__make_page(), True, True)
         self.show_all()
 
+        # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the PoF class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the PoF Work View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Add a new PoF entity at the same level as the "
+              u"currently selected entity."),
+            _(u"Add a new PoF entity one level below the currently "
+              u"selected entity."),
+            _(u"Remove the selected entity from the PoF.")
+        ]
+        _callbacks = [
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_delete
+        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_page(self):
+        """
+        Make the PoF RAMSTKTreeview().
+
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
+        """
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+
+        _frame = ramstk.RAMSTKFrame(
+            label=_(u"Physics of Failure (PoF) Analysis"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+
+        for i in [0, 1, 2, 3, 4]:
+            _column = self.treeview.get_column(self._lst_col_order[i])
+            if i == 0:
+                _cell = _column.get_cell_renderers()[1]
+            else:
+                _cell = _column.get_cell_renderers()[0]
+            _cell.set_property('font', 'normal bold')
+
+        # Load the damage models into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[5])
+        _model.append(('', ))
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS:
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_DAMAGE_MODELS[_item][0], ))
+
+        # Load the measureable parameter into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[6])
+        _model.append(('', ))
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS:
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_MEASURABLE_PARAMETERS[_item][1], ))
+
+        # Load the load history into the Gtk.CellRendererCombo().
+        _model = self._get_cell_model(self._lst_col_order[7])
+        _model.append(('', ))
+        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY:
+            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                           RAMSTK_LOAD_HISTORY[_item][0], ))
+
+        # Set the priority Gtk.CellRendererSpin()'s adjustment limits and
+        # step increments.
+        _cell = self.treeview.get_column(
+            self._lst_col_order[9]).get_cell_renderers()[0]
+        _adjustment = _cell.get_property('adjustment')
+        _adjustment.configure(5, 1, 5, -1, 0, 0)
+
+        self._lst_handler_id.append(
+            self.treeview.connect('cursor_changed', self._do_change_row))
+        self._lst_handler_id.append(
+            self.treeview.connect('button_press_event', self._on_button_press))
+
+        for i in self._lst_col_order:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+
+            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
+                pass
+            elif isinstance(_cell[0], Gtk.CellRendererToggle):
+                _cell[0].connect('toggled', self._do_edit_cell, None, i,
+                                 self.treeview.get_model())
+            elif isinstance(_cell[0], Gtk.CellRendererCombo):
+                _cell[0].connect('edited', self._do_edit_cell, i,
+                                 self.treeview.get_model())
+            else:
+                _cell[0].connect('edited', self._do_edit_cell, i,
+                                 self.treeview.get_model())
+
+        return _frame
 
     def _do_clear_page(self):
         """
@@ -322,7 +432,10 @@ class PoF(RAMSTKWorkView):
         i = 0
         for _heading in _headings:
             _label = ramstk.RAMSTKLabel(
-                _heading, height=-1, justify=Gtk.Justification.CENTER, wrap=True)
+                _heading,
+                height=-1,
+                justify=Gtk.Justification.CENTER,
+                wrap=True)
             _label.show_all()
             _columns[i].set_widget(_label)
             if _heading == '':
@@ -580,114 +693,6 @@ class PoF(RAMSTKWorkView):
 
         return _level
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the PoF class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the PoF Work View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Add a new PoF entity at the same level as the "
-              u"currently selected entity."),
-            _(u"Add a new PoF entity one level below the currently "
-              u"selected entity."),
-            _(u"Remove the selected entity from the PoF.")
-        ]
-        _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete
-        ]
-        _icons = ['insert_sibling', 'insert_child', 'remove']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def _make_page(self):
-        """
-        Make the PoF RAMSTKTreeview().
-
-        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
-        :rtype: :class:`Gtk.Frame`
-        """
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = ramstk.RAMSTKFrame(
-            label=_(u"Physics of Failure (PoF) Analysis"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-        for i in [0, 1, 2, 3, 4]:
-            _column = self.treeview.get_column(self._lst_col_order[i])
-            if i == 0:
-                _cell = _column.get_cell_renderers()[1]
-            else:
-                _cell = _column.get_cell_renderers()[0]
-            _cell.set_property('font', 'normal bold')
-
-        # Load the damage models into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[5])
-        _model.append(('', ))
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DAMAGE_MODELS:
-            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                           RAMSTK_DAMAGE_MODELS[_item][0], ))
-
-        # Load the measureable parameter into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[6])
-        _model.append(('', ))
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASURABLE_PARAMETERS:
-            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                           RAMSTK_MEASURABLE_PARAMETERS[_item][1], ))
-
-        # Load the load history into the Gtk.CellRendererCombo().
-        _model = self._get_cell_model(self._lst_col_order[7])
-        _model.append(('', ))
-        for _item in self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOAD_HISTORY:
-            _model.append((self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                           RAMSTK_LOAD_HISTORY[_item][0], ))
-
-        # Set the priority Gtk.CellRendererSpin()'s adjustment limits and
-        # step increments.
-        _cell = self.treeview.get_column(
-            self._lst_col_order[9]).get_cell_renderers()[0]
-        _adjustment = _cell.get_property('adjustment')
-        _adjustment.configure(5, 1, 5, -1, 0, 0)
-
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-        for i in self._lst_col_order:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
-
-            if isinstance(_cell[0], Gtk.CellRendererPixbuf):
-                pass
-            elif isinstance(_cell[0], Gtk.CellRendererToggle):
-                _cell[0].connect('toggled', self._do_edit_cell, None, i,
-                                 self.treeview.get_model())
-            elif isinstance(_cell[0], Gtk.CellRendererCombo):
-                _cell[0].connect('edited', self._do_edit_cell, i,
-                                 self.treeview.get_model())
-            else:
-                _cell[0].connect('edited', self._do_edit_cell, i,
-                                 self.treeview.get_model())
-
-        return _frame
-
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the PoF Work View RAMSTKTreeView().
@@ -762,8 +767,12 @@ class PoF(RAMSTKWorkView):
         if self._dtc_data_controller is None:
             self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['pof']
 
-        self._dtc_data_controller.request_do_select_all(
-            {'hardware_id': self._hardware_id, 'functional': False})
+        self._dtc_data_controller.request_do_select_all({
+            'hardware_id':
+            self._hardware_id,
+            'functional':
+            False
+        })
 
         (_error_code, _user_msg, _debug_msg) = self._do_load_page(
             tree=self._dtc_data_controller.request_tree(), row=None)
