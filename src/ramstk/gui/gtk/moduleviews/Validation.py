@@ -36,13 +36,13 @@ class ModuleView(RAMSTKModuleView):
         RAMSTKModuleView.__init__(self, controller, module='validation')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/validation.png'
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._revision_id = None
         self._validation_id = None
 
         # Initialize public dictionary attributes.
@@ -57,37 +57,6 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_load_tree, 'retrieved_validations')
         pub.subscribe(self._on_edit, 'wvwEditedValidation')
 
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the Gtk.ButtonBox() for the Validation Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class
-                 Module View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Add a new Validation task."),
-            _(u"Remove the currently selected Validation task1."),
-            _(u"Exports Verification tasks to an external file (CSV, Excel, "
-              u"and text files are supported).")
-        ]
-        _callbacks = [
-            self._do_request_insert_sibling, self._do_request_delete,
-            self._do_request_export
-        ]
-        _icons = ['add', 'remove', 'export']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
     def __make_ui(self):
         """
         Build the user interface.
@@ -95,14 +64,11 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        RAMSTKModuleView._make_ui(self)
+
         self.make_treeview()
         self.treeview.set_tooltip_text(
-            _(u"Displays the list of validation "
-              u"tasks."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
+            _(u"Displays the list of validation tasks."))
 
         i = 0
         for _column in self.treeview.get_columns():
@@ -115,42 +81,17 @@ class ModuleView(RAMSTKModuleView):
                 pass
             i += 1
 
-        self._img_tab.set_from_file(self._dic_icons['tab'])
         _label = ramstk.RAMSTKLabel(
             _(u"Validation"),
             width=-1,
             height=-1,
-            tooltip=_(u"Displays the program validation tasks."))
+            tooltip=_(u"Displays the list of validation tasks."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
+        self.show_all()
+
         return None
-
-    def _do_change_row(self, treeview):
-        """
-        Handle events for the Validation package Module View RAMSTKTreeView().
-
-        This method is called whenever a Validation Module View RAMSTKTreeView()
-        row is activated/changed.
-
-        :param treeview: the Validation class Gtk.TreeView().
-        :type treeview: :class:`Gtk.TreeView`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        treeview.handler_block(self._lst_handler_id[0])
-
-        _model, _row = treeview.get_selection().get_selected()
-
-        self._validation_id = _model.get_value(_row, 1)
-
-        treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selectedValidation', module_id=self._validation_id)
-
-        return _return
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
@@ -368,6 +309,37 @@ class ModuleView(RAMSTKModuleView):
 
         return _return
 
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Create the Gtk.ButtonBox() for the Validation Module View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class
+                 Module View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Add a new Validation task."),
+            _(u"Remove the currently selected Validation task1."),
+            _(u"Exports Verification tasks to an external file (CSV, Excel, "
+              u"and text files are supported).")
+        ]
+        _callbacks = [
+            self._do_request_insert_sibling, self._do_request_delete,
+            self._do_request_export
+        ]
+        _icons = ['add', 'remove', 'export']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the Validation Module View RAMSTKTreeView().
@@ -458,6 +430,31 @@ class ModuleView(RAMSTKModuleView):
         _model.set(_row, self._lst_col_order[position], new_text)
 
         return False
+
+    def _on_row_change(self, treeview):
+        """
+        Handle events for the Validation package Module View RAMSTKTreeView().
+
+        This method is called whenever a Validation Module View RAMSTKTreeView()
+        row is activated/changed.
+
+        :param treeview: the Validation class Gtk.TreeView().
+        :type treeview: :class:`Gtk.TreeView`
+        :return: None
+        :rtype: None
+        """
+        treeview.handler_block(self._lst_handler_id[0])
+
+        _model, _row = treeview.get_selection().get_selected()
+
+        if _row is not None:
+            self._validation_id = _model.get_value(_row, 1)
+
+            pub.sendMessage('selectedValidation', module_id=self._validation_id)
+
+        treeview.handler_unblock(self._lst_handler_id[0])
+
+        return None
 
     def _on_select_revision(self, module_id):
         """

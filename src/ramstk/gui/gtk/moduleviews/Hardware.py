@@ -38,7 +38,8 @@ class ModuleView(RAMSTKModuleView):
         RAMSTKModuleView.__init__(self, controller, module='hardware')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/hardware.png'
 
         # Initialize private list attributes.
@@ -61,59 +62,6 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self._do_refresh_tree, 'calculated_hardware')
         pub.subscribe(self.do_refresh_tree, 'wvw_editing_hardware')
 
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Hardware class Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Hardware class Module
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Adds a new Hardware assembly at the same hierarchy level as "
-              u"the selected Hardware (i.e., a sibling Hardware)."),
-            _(u"Adds a new Hardware assembly one level subordinate to the "
-              u"selected Hardware (i.e., a child hardware)."),
-            _(u"Adds a new Hardware component/piece-part at the same "
-              u"hierarchy level as the selected Hardware component/piece-part "
-              u"(i.e., a sibling component/piece-part)."),
-            _(u"Adds a new Hardware component/piece-part one level "
-              u"subordinate to selected Hardware component/piece-part "
-              u"(i.e., a child component/piece-part)."),
-            _(u"Remove the currently selected Hardware item and any "
-              u"children."),
-            _(u"Calculate the entire system."),
-            _(u"Exports Hardware to an external file (CSV, Excel, and text "
-              u"files are supported).")
-        ]
-        _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_calculate_all,
-            self._do_request_export
-        ]
-        _icons = [
-            'insert_sibling', 'insert_child', 'insert_part', 'insert_part',
-            'remove', 'calculate_all', 'export'
-        ]
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        _buttons = _buttonbox.get_children()
-        _buttons[0].set_property('name', 'assembly')
-        _buttons[1].set_property('name', 'assembly')
-        _buttons[2].set_property('name', 'part')
-        _buttons[3].set_property('name', 'part')
-
-        return _buttonbox
-
     def __make_ui(self):
         """
         Build the user interface.
@@ -121,16 +69,13 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        RAMSTKModuleView._make_ui(self)
+
         self.make_treeview()
         self.treeview.set_tooltip_text(
             _(u"Displays the hierarchical list of "
               u"hardware items."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
 
-        self._img_tab.set_from_file(self._dic_icons['tab'])
         _label = ramstk.RAMSTKLabel(
             _(u"Hardware"),
             width=-1,
@@ -138,6 +83,8 @@ class ModuleView(RAMSTKModuleView):
             tooltip=_(u"Displays the hierarchical list of hardware items."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
+
+        self.show_all()
 
         return None
 
@@ -323,6 +270,59 @@ class ModuleView(RAMSTKModuleView):
 
         return None
 
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Hardware class Module View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Hardware class Module
+                 View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Adds a new Hardware assembly at the same hierarchy level as "
+              u"the selected Hardware (i.e., a sibling Hardware)."),
+            _(u"Adds a new Hardware assembly one level subordinate to the "
+              u"selected Hardware (i.e., a child hardware)."),
+            _(u"Adds a new Hardware component/piece-part at the same "
+              u"hierarchy level as the selected Hardware component/piece-part "
+              u"(i.e., a sibling component/piece-part)."),
+            _(u"Adds a new Hardware component/piece-part one level "
+              u"subordinate to selected Hardware component/piece-part "
+              u"(i.e., a child component/piece-part)."),
+            _(u"Remove the currently selected Hardware item and any "
+              u"children."),
+            _(u"Calculate the entire system."),
+            _(u"Exports Hardware to an external file (CSV, Excel, and text "
+              u"files are supported).")
+        ]
+        _callbacks = [
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_delete, self._do_request_calculate_all,
+            self._do_request_export
+        ]
+        _icons = [
+            'insert_sibling', 'insert_child', 'insert_part', 'insert_part',
+            'remove', 'calculate_all', 'export'
+        ]
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        _buttons = _buttonbox.get_children()
+        _buttons[0].set_property('name', 'assembly')
+        _buttons[1].set_property('name', 'assembly')
+        _buttons[2].set_property('name', 'part')
+        _buttons[3].set_property('name', 'part')
+
+        return _buttonbox
+
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the Hardware package Module View RAMSTKTreeView().
@@ -469,15 +469,16 @@ class ModuleView(RAMSTKModuleView):
 
         (_model, _row) = treeview.get_selection().get_selected()
 
-        _attributes = eval(_model.get_value(_row, _model.get_n_columns() - 1))
+        if _row is not None:
+            _attributes = eval(_model.get_value(_row, _model.get_n_columns() - 1))
 
-        # pylint: disable=attribute-defined-outside-init
-        self._hardware_id = _attributes['hardware_id']
-        self._parent_id = _attributes['parent_id']
-        self._revision_id = _attributes['revision_id']
+            # pylint: disable=attribute-defined-outside-init
+            self._hardware_id = _attributes['hardware_id']
+            self._parent_id = _attributes['parent_id']
+            self._revision_id = _attributes['revision_id']
+
+            pub.sendMessage('selected_hardware', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selected_hardware', attributes=_attributes)
 
         return None

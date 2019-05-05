@@ -200,7 +200,7 @@ class ListView(RAMSTKListView):
 
         for _key in tree.nodes:
             try:
-                _model.append([tree.nodes[_key].data.requirement_id])
+                _model.append([str(tree.nodes[_key].data.requirement_id)])
             except AttributeError:
                 pass
 
@@ -470,43 +470,43 @@ class ListView(RAMSTKListView):
 
         _model, _row = treeview.get_selection().get_selected()
 
-        _attributes['revision_id'] = _model.get_value(_row,
+        if _row is not None:
+            _attributes['revision_id'] = _model.get_value(_row,
                                                       self._lst_col_order[0])
-        _attributes['stakeholder_id'] = _model.get_value(
+            _attributes['stakeholder_id'] = _model.get_value(
             _row, self._lst_col_order[1])
-        _attributes['customer_rank'] = _model.get_value(
+            _attributes['customer_rank'] = _model.get_value(
             _row, self._lst_col_order[2])
-        _attributes['description'] = _model.get_value(_row,
+            _attributes['description'] = _model.get_value(_row,
                                                       self._lst_col_order[3])
-        _attributes['group'] = _model.get_value(_row, self._lst_col_order[4])
-        _attributes['improvement'] = _model.get_value(_row,
-                                                      self._lst_col_order[5])
-        _attributes['overall_weight'] = _model.get_value(
-            _row, self._lst_col_order[6])
-        _attributes['planned_rank'] = _model.get_value(_row,
-                                                       self._lst_col_order[7])
-        _attributes['priority'] = _model.get_value(_row,
-                                                   self._lst_col_order[8])
-        _attributes['requirement_id'] = _model.get_value(
-            _row, self._lst_col_order[9])
-        _attributes['stakeholder'] = _model.get_value(_row,
-                                                      self._lst_col_order[10])
-        _attributes['user_float_1'] = _model.get_value(_row,
-                                                       self._lst_col_order[11])
-        _attributes['user_float_2'] = _model.get_value(_row,
-                                                       self._lst_col_order[12])
-        _attributes['user_float_3'] = _model.get_value(_row,
-                                                       self._lst_col_order[13])
-        _attributes['user_float_4'] = _model.get_value(_row,
-                                                       self._lst_col_order[14])
-        _attributes['user_float_5'] = _model.get_value(_row,
-                                                       self._lst_col_order[15])
+            _attributes['group'] = _model.get_value(_row, self._lst_col_order[4])
+            _attributes['improvement'] = _model.get_value(_row,
+                                                          self._lst_col_order[5])
+            _attributes['overall_weight'] = _model.get_value(
+                _row, self._lst_col_order[6])
+            _attributes['planned_rank'] = _model.get_value(_row,
+                                                           self._lst_col_order[7])
+            _attributes['priority'] = _model.get_value(_row,
+                                                       self._lst_col_order[8])
+            _attributes['requirement_id'] = _model.get_value(
+                _row, self._lst_col_order[9])
+            _attributes['stakeholder'] = _model.get_value(_row,
+                                                          self._lst_col_order[10])
+            _attributes['user_float_1'] = _model.get_value(_row,
+                                                           self._lst_col_order[11])
+            _attributes['user_float_2'] = _model.get_value(_row,
+                                                           self._lst_col_order[12])
+            _attributes['user_float_3'] = _model.get_value(_row,
+                                                           self._lst_col_order[13])
+            _attributes['user_float_4'] = _model.get_value(_row,
+                                                           self._lst_col_order[14])
+            _attributes['user_float_5'] = _model.get_value(_row,
+                                                           self._lst_col_order[15])
 
-        self._revision_id = _attributes['revision_id']
-        self._stakeholder_id = _attributes['stakeholder_id']
+            self._stakeholder_id = _attributes['stakeholder_id']
+
+            pub.sendMessage('selected_stakeholder', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selected_stakeholder', attributes=_attributes)
 
         return None

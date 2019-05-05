@@ -114,7 +114,7 @@ class ListView(RAMSTKListView):
             except ValueError:
                 _row = None
 
-        _row = _model.get_iter_root()
+        _row = _model.get_iter_first()
         self.treeview.expand_all()
         if _row is not None:
             _column = self.treeview.get_column(0)
@@ -413,15 +413,15 @@ class ListView(RAMSTKListView):
 
         (_model, _row) = treeview.get_selection().get_selected()
 
-        _attributes['revision_id'] = _model.get_value(_row, 0)
-        _attributes['definition_id'] = _model.get_value(_row, 1)
-        _attributes['definition'] = _model.get_value(_row, 2)
+        if _row is not None:
+            _attributes['revision_id'] = _model.get_value(_row, 0)
+            _attributes['definition_id'] = _model.get_value(_row, 1)
+            _attributes['definition'] = _model.get_value(_row, 2)
 
-        self._definition_id = _attributes['definition_id']
-        self._revision_id = _attributes['revision_id']
+            self._definition_id = _attributes['definition_id']
+
+            pub.sendMessage('selected_definition', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selected_definition', attributes=_attributes)
 
         return None
