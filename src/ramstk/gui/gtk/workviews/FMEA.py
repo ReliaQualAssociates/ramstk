@@ -41,7 +41,7 @@ class FMEA(RAMSTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    _lst_control_type = [_(u"Prevention"), _(u"Detection")]
+    _lst_control_type = [_("Prevention"), _("Detection")]
 
     def __init__(self, controller, **kwargs):
         """
@@ -80,21 +80,21 @@ class FMEA(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.chkCriticality = ramstk.RAMSTKCheckButton(
-            label=_(u"Calculate Criticality"),
+            label=_("Calculate Criticality"),
             tooltip=_(
-                u"Select this option to calculate the (D)FME(C)A MIL-STD-1629, "
-                u"Task 102 criticality analysis."))
+                "Select this option to calculate the (D)FME(C)A MIL-STD-1629, "
+                "Task 102 criticality analysis."))
         self.chkRPN = ramstk.RAMSTKCheckButton(
-            label=_(u"Calculate RPNs"),
+            label=_("Calculate RPNs"),
             tooltip=_(
-                u"Select this option to calculate the (D)FME(C)A risk priority "
-                u"numbers (RPN)."))
+                "Select this option to calculate the (D)FME(C)A risk priority "
+                "numbers (RPN)."))
         self.txtItemCriticality = ramstk.RAMSTKTextView(
             Gtk.TextBuffer(),
             height=75,
             tooltip=_(
-                u"Displays the MIL-SD-1629, Taks 102 item criticality for the "
-                u"selected hardware item."))
+                "Displays the MIL-SD-1629, Taks 102 item criticality for the "
+                "selected hardware item."))
         self.txtItemCriticality.set_editable(False)
         _bg_color = Gdk.RGBA(red=173.0, green=216.0, blue=230.0, alpha=1.0)
         self.txtItemCriticality.override_background_color(
@@ -179,7 +179,7 @@ class FMEA(RAMSTKWorkView):
             _dic_item_crit = self._dtc_data_controller.request_item_criticality(
             )
             for _key in _dic_item_crit:
-                _str_item_crit = (_str_item_crit + _(u"{0:s}: {1:g}\n").format(
+                _str_item_crit = (_str_item_crit + _("{0:s}: {1:g}\n").format(
                     _key, _dic_item_crit[_key]))
 
             self.txtItemCriticality.do_get_buffer().set_text(
@@ -230,8 +230,8 @@ class FMEA(RAMSTKWorkView):
         _undefined = kwargs['undefined']
 
         if _undefined:
-            _prompt = _(u"A FMEA control or an action cannot have a "
-                        u"child entity.")
+            _prompt = _("A FMEA control or an action cannot have a "
+                        "child entity.")
             _dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
 
@@ -330,12 +330,12 @@ class FMEA(RAMSTKWorkView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Add a new FMEA entity at the same level as the "
-              u"currently selected entity."),
-            _(u"Add a new FMEA entity one level below the currently "
-              u"selected entity."),
-            _(u"Remove the selected entity from the FMEA."),
-            _(u"Calculate the FMEA.")
+            _("Add a new FMEA entity at the same level as the "
+              "currently selected entity."),
+            _("Add a new FMEA entity one level below the currently "
+              "selected entity."),
+            _("Remove the selected entity from the FMEA."),
+            _("Calculate the FMEA.")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
@@ -367,7 +367,7 @@ class FMEA(RAMSTKWorkView):
         _scrollwindow.add(self.treeview)
 
         _frame = ramstk.RAMSTKFrame(
-            label=_(u"Failure Mode and Effects Analysis (FMEA)"))
+            label=_("Failure Mode and Effects Analysis (FMEA)"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -409,11 +409,11 @@ class FMEA(RAMSTKWorkView):
                 'insert_sibling', 'insert_child', 'remove', 'calculate', 'save'
             ]
             _labels = [
-                _(u"Insert Sibling"),
-                _(u"Insert Child"),
-                _(u"Remove"),
-                _(u"Calculate"),
-                _(u"Save")
+                _("Insert Sibling"),
+                _("Insert Child"),
+                _("Remove"),
+                _("Calculate"),
+                _("Save")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_insert_child,
@@ -465,9 +465,9 @@ class FFMEA(FMEA):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['ffmea'])
         _fmt_path = "/root/tree[@name='FFMEA']/column"
-        _tooltip = _(u"Displays the Functional Failure Mode and Effects "
-                     u"Analysis (FFMEA) for the currently selected "
-                     u"Function.")
+        _tooltip = _("Displays the Functional Failure Mode and Effects "
+                     "Analysis (FFMEA) for the currently selected "
+                     "Function.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path,
@@ -481,12 +481,12 @@ class FFMEA(FMEA):
         self.treeview.set_tooltip_text(_tooltip)
 
         _label = ramstk.RAMSTKLabel(
-            _(u"FMEA"),
+            _("FMEA"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays the Functional Failure Mode and Effects "
-                      u"Analysis (FFMEA) for the selected function."))
+            tooltip=_("Displays the Functional Failure Mode and Effects "
+                      "Analysis (FFMEA) for the selected function."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         _buttonbox = self._make_buttonbox()
@@ -576,7 +576,7 @@ class FFMEA(FMEA):
         _level = self._get_level(_node_id)
         if _level == 'mode':
             _headings = [
-                _(u"Mode ID"), self.treeview.headings[self._lst_col_order[1]],
+                _("Mode ID"), self.treeview.headings[self._lst_col_order[1]],
                 self.treeview.headings[self._lst_col_order[2]],
                 self.treeview.headings[self._lst_col_order[3]],
                 self.treeview.headings[self._lst_col_order[4]],
@@ -587,20 +587,20 @@ class FFMEA(FMEA):
             ]
         elif _level == 'cause':
             _headings = [
-                _(u"Cause ID"),
-                _(u"Failure\nCause"), '', '', '', '', '', '', '', '', '', '',
+                _("Cause ID"),
+                _("Failure\nCause"), '', '', '', '', '', '', '', '', '', '',
                 '', '', '', '', ''
             ]
         elif _level == 'control':
             _headings = [
-                _(u"Control ID"),
-                _(u"Existing\nControl"), '', '', '', '', '', '', '', '', '',
+                _("Control ID"),
+                _("Existing\nControl"), '', '', '', '', '', '', '', '', '',
                 '', '', '', '', '', ''
             ]
         elif _level == 'action':
             _headings = [
-                _(u"Action ID"),
-                _(u"Recommended\nAction"), '', '', '', '', '', '',
+                _("Action ID"),
+                _("Recommended\nAction"), '', '', '', '', '', '',
                 self.treeview.headings[self._lst_col_order[8]],
                 self.treeview.headings[self._lst_col_order[9]],
                 self.treeview.headings[self._lst_col_order[10]],
@@ -715,7 +715,7 @@ class FFMEA(FMEA):
         _data = []
         _model = self.treeview.get_model()
 
-        _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
+        _node = _tree.nodes[list(SortedDict(_tree.nodes).keys())[0]]
         _entity = _node.data
         try:
             if _entity.is_mode:
@@ -761,9 +761,9 @@ class FFMEA(FMEA):
                 _new_row = _model.append(_row, _data)
             except TypeError:
                 _error_code = 1
-                _user_msg = _(u"One or more Functional FMEA line items had "
-                              u"the wrong data type in it's data package and "
-                              u"is not displayed in the FMEA form.")
+                _user_msg = _("One or more Functional FMEA line items had "
+                              "the wrong data type in it's data package and "
+                              "is not displayed in the FMEA form.")
                 _debug_msg = (
                     "RAMSTK ERROR: Data for FMEA ID {0:s} for Function "
                     "ID {1:s} is the wrong type for one or more "
@@ -773,8 +773,8 @@ class FFMEA(FMEA):
             except ValueError:
                 _error_code = 1
                 _user_msg = _(
-                    u"One or more Functional FMEA line items was missing some "
-                    u"of it's data and is not displayed in the FMEA form.")
+                    "One or more Functional FMEA line items was missing some "
+                    "of it's data and is not displayed in the FMEA form.")
                 _debug_msg = (
                     "RAMSTK ERROR: Too few fields for FMEA ID {0:s} for Function "
                     "ID {1:s}.".format(
@@ -784,9 +784,9 @@ class FFMEA(FMEA):
         except AttributeError:
             if _node.identifier != 0:
                 _error_code = 1
-                _user_msg = _(u"One or more Functional FMEA line items was "
-                              u"missing it's data package and is not "
-                              u"displayed in the FMEA form.")
+                _user_msg = _("One or more Functional FMEA line items was "
+                              "missing it's data package and is not "
+                              "displayed in the FMEA form.")
                 _debug_msg = (
                     "RAMSTK ERROR: There is no data package for FMEA ID {0:s} "
                     "for Function ID {1:s}.".format(
@@ -920,7 +920,7 @@ class FFMEA(FMEA):
 
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Failure Modes for Function ID {0:d}").format(
+            title=_("Analyzing Failure Modes for Function ID {0:d}").format(
                 self._function_id),
             error_code=_error_code,
             user_msg=_user_msg,
@@ -964,9 +964,9 @@ class DFMECA(FMEA):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['dfmeca'])
         _fmt_path = "/root/tree[@name='DFMECA']/column"
-        _tooltip = _(u"Displays the (Design) Failure Mode and Effects "
-                     u"(and Criticality) Analysis [(D)FME(C)A] for the "
-                     u"currently selected Hardware item.")
+        _tooltip = _("Displays the (Design) Failure Mode and Effects "
+                     "(and Criticality) Analysis [(D)FME(C)A] for the "
+                     "currently selected Hardware item.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path,
@@ -985,13 +985,13 @@ class DFMECA(FMEA):
             self.treeview.connect('button_press_event', self._on_button_press))
 
         _label = ramstk.RAMSTKLabel(
-            _(u"FMEA"),
+            _("FMEA"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays the Design Failure Mode, Effects, (and "
-                      u"Criticality) Analysis [(D)FME(C)A] for the selected "
-                      u"Hardware item."))
+            tooltip=_("Displays the Design Failure Mode, Effects, (and "
+                      "Criticality) Analysis [(D)FME(C)A] for the selected "
+                      "Hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.pack_start(self._make_buttonbox(), False, True, 0)
@@ -1172,8 +1172,8 @@ class DFMECA(FMEA):
             self._do_load_mission_phases(_mission)
         elif _level == 'mechanism':
             _headings = [
-                _(u"Mechanism ID"),
-                _(u"Failure\nMechanism"), '', '', '', '', '', '', '', '', '',
+                _("Mechanism ID"),
+                _("Failure\nMechanism"), '', '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', '', '', '', '',
                 self.treeview.headings[self._lst_col_order[22]],
                 self.treeview.headings[self._lst_col_order[23]],
@@ -1186,8 +1186,8 @@ class DFMECA(FMEA):
             ]
         elif _level == 'cause':
             _headings = [
-                _(u"Cause ID"),
-                _(u"Failure\nCause"), '', '', '', '', '', '', '', '', '', '',
+                _("Cause ID"),
+                _("Failure\nCause"), '', '', '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', '', '', '',
                 self.treeview.headings[self._lst_col_order[22]],
                 self.treeview.headings[self._lst_col_order[23]],
@@ -1199,8 +1199,8 @@ class DFMECA(FMEA):
             ]
         elif _level == 'control':
             _headings = [
-                _(u"Control ID"),
-                _(u"Existing\nControl"), '', '', '', '', '', '', '', '', '',
+                _("Control ID"),
+                _("Existing\nControl"), '', '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', '', '',
                 self.treeview.headings[self._lst_col_order[20]], '', '', '',
                 '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
@@ -1208,8 +1208,8 @@ class DFMECA(FMEA):
             ]
         elif _level == 'action':
             _headings = [
-                _(u"Action ID"),
-                _(u"Recommended\nAction"), '', '', '', '', '', '', '', '', '',
+                _("Action ID"),
+                _("Recommended\nAction"), '', '', '', '', '', '', '', '', '',
                 '', '', '', '', '', '', '', '', '', '', '', '', '', '',
                 self.treeview.headings[self._lst_col_order[25]],
                 self.treeview.headings[self._lst_col_order[26]],
@@ -1445,7 +1445,7 @@ class DFMECA(FMEA):
         _data = []
         _model = self.treeview.get_model()
 
-        _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
+        _node = _tree.nodes[list(SortedDict(_tree.nodes).keys())[0]]
         _entity = _node.data
         if _entity is not None:
             try:
@@ -1553,9 +1553,9 @@ class DFMECA(FMEA):
                 _new_row = _model.append(_row, _data)
             except TypeError:
                 _error_code = 1
-                _user_msg = _(u"One or more Hardware FMEA line items had "
-                              u"the wrong data type in it's data package and "
-                              u"is not displayed in the FMEA form.")
+                _user_msg = _("One or more Hardware FMEA line items had "
+                              "the wrong data type in it's data package and "
+                              "is not displayed in the FMEA form.")
                 _debug_msg = (
                     "RAMSTK ERROR: Data for FMEA ID {0:s} for Hardware "
                     "ID {1:s} is the wrong type for one or more "
@@ -1565,8 +1565,8 @@ class DFMECA(FMEA):
             except ValueError:
                 _error_code = 1
                 _user_msg = _(
-                    u"One or more Hardware FMEA line items was missing some "
-                    u"of it's data and is not displayed in the FMEA form.")
+                    "One or more Hardware FMEA line items was missing some "
+                    "of it's data and is not displayed in the FMEA form.")
                 _debug_msg = (
                     "RAMSTK ERROR: Too few fields for FMEA ID {0:s} for Hardware "
                     "ID {1:s}.".format(
@@ -1576,9 +1576,9 @@ class DFMECA(FMEA):
         except AttributeError:
             if _node.identifier != 0:
                 _error_code = 1
-                _user_msg = _(u"One or more Hardware FMEA line items was "
-                              u"missing it's data package and is not "
-                              u"displayed in the FMEA form.")
+                _user_msg = _("One or more Hardware FMEA line items was "
+                              "missing it's data package and is not "
+                              "displayed in the FMEA form.")
                 _debug_msg = (
                     "RAMSTK ERROR: There is no data package for FMEA ID {0:s} "
                     "for Hardware ID {1:s}.".format(
@@ -1700,8 +1700,8 @@ class DFMECA(FMEA):
         if score:
             try:
                 _rpn_severity = [
-                    x[4] for x in self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                    RAMSTK_RPN_SEVERITY.values() if x[1] == severity
+                    x[4] for x in list(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    RAMSTK_RPN_SEVERITY.values()) if x[1] == severity
                 ][0]
             except IndexError:
                 _rpn_severity = 0
@@ -1732,8 +1732,8 @@ class DFMECA(FMEA):
         if score:
             try:
                 _rpn_occurrence = [
-                    x[4] for x in self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                    RAMSTK_RPN_OCCURRENCE.values() if x[1] == occurrence
+                    x[4] for x in list(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    RAMSTK_RPN_OCCURRENCE.values()) if x[1] == occurrence
                 ][0]
             except IndexError:
                 _rpn_occurrence = 0
@@ -1764,8 +1764,8 @@ class DFMECA(FMEA):
         if score:
             try:
                 _rpn_detection = [
-                    x[4] for x in self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                    RAMSTK_RPN_DETECTION.values() if x[1] == detection
+                    x[4] for x in list(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    RAMSTK_RPN_DETECTION.values()) if x[1] == detection
                 ][0]
             except IndexError:
                 _rpn_detection = 0
@@ -1812,8 +1812,8 @@ class DFMECA(FMEA):
 
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Failure Modes for Hardware ID "
-                    u"{0:d}").format(self._hardware_id),
+            title=_("Analyzing Failure Modes for Hardware ID "
+                    "{0:d}").format(self._hardware_id),
             error_code=_error_code,
             user_msg=_user_msg,
             debug_msg=_debug_msg)

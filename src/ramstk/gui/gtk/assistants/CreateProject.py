@@ -53,7 +53,7 @@ class CreateProject(object):
     def _request_create_sqlite3_project(self):
         """Create a RAMSTK Project database using SQLite3."""
         _dialog = Gtk.FileChooserDialog(
-            title=_(u"Create a RAMSTK Program Database"),
+            title=_("Create a RAMSTK Program Database"),
             action=Gtk.FileChooserAction.SAVE,
             buttons=(Gtk.STOCK_NEW, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL,
                      Gtk.ResponseType.REJECT))
@@ -66,13 +66,13 @@ class CreateProject(object):
 
             if Utilities.file_exists(_new_program):
                 _dlgConfirm = ramstk.RAMSTKDialog(
-                    _(u"RAMSTK - Confirm Overwrite"),
+                    _("RAMSTK - Confirm Overwrite"),
                     dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES,
                                 Gtk.STOCK_NO, Gtk.ResponseType.NO))
 
                 _label = ramstk.RTLabel(
-                    _(u"RAMSTK Program database already exists. "
-                      u"\n\n{0:s}\n\nOverwrite?").format(_new_program),
+                    _("RAMSTK Program database already exists. "
+                      "\n\n{0:s}\n\nOverwrite?").format(_new_program),
                     width=-1,
                     height=-1,
                     bold=False,

@@ -239,7 +239,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         _row = None
         _model = self.get_model()
 
-        _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
+        _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
         _entity = _node.data
 
         _attributes = []
@@ -672,7 +672,7 @@ class CellRendererML(Gtk.CellRendererText):
         elif response == Gtk.ResponseType.CANCEL:
             self.textedit_window.destroy()
         else:
-            print("response %i received" % response)
+            print(("response %i received" % response))
             self.textedit_window.destroy()
 
     def _keyhandler(self, __widget, event):

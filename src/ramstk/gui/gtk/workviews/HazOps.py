@@ -66,8 +66,8 @@ class HazOps(RAMSTKWorkView):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['hazops'])
         _fmt_path = "/root/tree[@name='HazOps']/column"
-        _tooltip = _(u"Displays the HazOps Analysis for the currently "
-                     u"selected Hardware item.")
+        _tooltip = _("Displays the HazOps Analysis for the currently "
+                     "selected Hardware item.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
@@ -112,12 +112,12 @@ class HazOps(RAMSTKWorkView):
                                  self.treeview.get_model())
 
         _label = ramstk.RAMSTKLabel(
-            _(u"HazOps"),
+            _("HazOps"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays the HazOps analysis for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the HazOps analysis for the selected "
+                      "hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.pack_start(self.__make_buttonbox(), False, True, 0)
@@ -137,10 +137,10 @@ class HazOps(RAMSTKWorkView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Calculate the HazOps analysis."),
-            _(u"Add a hazard to the HazOps analysis."),
-            _(u"Remove the selected hazard and all associated data from the "
-              u"HazOps analysis.")
+            _("Calculate the HazOps analysis."),
+            _("Add a hazard to the HazOps analysis."),
+            _("Remove the selected hazard and all associated data from the "
+              "HazOps analysis.")
         ]
         _callbacks = [
             self._do_request_calculate, self._do_request_insert_sibling,
@@ -171,7 +171,7 @@ class HazOps(RAMSTKWorkView):
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"HazOps Analysis"))
+        _frame = ramstk.RAMSTKFrame(label=_("HazOps Analysis"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -326,7 +326,7 @@ class HazOps(RAMSTKWorkView):
 
         if _tree is not None:
             i = 1
-            for _node in _tree.children(SortedDict(_tree.nodes).keys()[0]):
+            for _node in _tree.children(list(SortedDict(_tree.nodes).keys())[0]):
                 _entity = _node.data
 
                 _data = [
@@ -355,9 +355,9 @@ class HazOps(RAMSTKWorkView):
                     _model.append(None, _data)
                 except TypeError:
                     _error_code = 1
-                    _user_msg = _(u"One or more HazOp line items had the "
-                                  u"wrong data type in it's data package and "
-                                  u"is not displayed in the HazOp analysis.")
+                    _user_msg = _("One or more HazOp line items had the "
+                                  "wrong data type in it's data package and "
+                                  "is not displayed in the HazOp analysis.")
                     _debug_msg = ("RAMSTK ERROR: Data for HazOp ID {0:s} for "
                                   "Hardware ID {1:s} is the wrong type for "
                                   "one or more columns.".format(
@@ -365,9 +365,9 @@ class HazOps(RAMSTKWorkView):
                                       str(self._hardware_id)))
                 except ValueError:
                     _error_code = 1
-                    _user_msg = _(u"One or more HazOp line items was missing "
-                                  u"some of it's data and is not displayed in "
-                                  u"the HazOp analysis.")
+                    _user_msg = _("One or more HazOp line items was missing "
+                                  "some of it's data and is not displayed in "
+                                  "the HazOp analysis.")
                     _debug_msg = ("RAMSTK ERROR: Too few fields for HazOp ID "
                                   "{0:s} for Hardware ID {1:s}.".format(
                                       str(_node.identifier),
@@ -501,11 +501,11 @@ class HazOps(RAMSTKWorkView):
         if event.button == 3:
             _icons = ['add', 'remove', 'calculate', 'save', 'save-all']
             _labels = [
-                _(u"Add Hazard"),
-                _(u"Remove Selected Hazard"),
-                _(u"Calculate HazOp"),
-                _(u"Save Selected Hazard"),
-                _(u"Save All Hazards")
+                _("Add Hazard"),
+                _("Remove Selected Hazard"),
+                _("Calculate HazOp"),
+                _("Save Selected Hazard"),
+                _("Save All Hazards")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_delete,
@@ -544,7 +544,7 @@ class HazOps(RAMSTKWorkView):
 
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Hazards for Hardware ID {0:d}").format(
+            title=_("Analyzing Hazards for Hardware ID {0:d}").format(
                 self._hardware_id),
             error_code=_error_code,
             user_msg=_user_msg,

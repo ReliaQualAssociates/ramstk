@@ -62,9 +62,9 @@ class MatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Save the Hardware:Requirement Matrix to the open RAMSTK "
-              u"Program database."),
-            _(u"Create or refresh the Hardware:Requirement Matrix.")
+            _("Save the Hardware:Requirement Matrix to the open RAMSTK "
+              "Program database."),
+            _("Create or refresh the Hardware:Requirement Matrix.")
         ]
         _callbacks = [self._do_request_update, self._do_request_create]
         _icons = ['save', 'view-refresh']
@@ -89,13 +89,13 @@ class MatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
         """
         _label = Gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"Hardware\nRequirement") + "</span>")
+                          _("Hardware\nRequirement") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(Gtk.Justification.CENTER)
         _label.show_all()
         _label.set_tooltip_text(
-            _(u"Displays hardware/requirement matrix for the "
-              u"selected revision."))
+            _("Displays hardware/requirement matrix for the "
+              "selected revision."))
 
         # self.hbx_tab_label.pack_start(_image, True, True, 0)
         self.hbx_tab_label.pack_end(_label, True, True, 0)
@@ -154,6 +154,6 @@ class MatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
             for _column in self.matrix.get_columns():
                 self.matrix.remove_column(_column)
             ramstk.RAMSTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
-                                                   _row_hdrs, _(u"Hardware"))
+                                                   _row_hdrs, _("Hardware"))
 
         return None

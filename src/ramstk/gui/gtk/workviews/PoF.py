@@ -73,8 +73,8 @@ class PoF(RAMSTKWorkView):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['pof'])
         _fmt_path = "/root/tree[@name='PoF']/column"
-        _tooltip = _(u"Displays the Physics of Failure (PoF) Analysis for the "
-                     u"currently selected hardware item.")
+        _tooltip = _("Displays the Physics of Failure (PoF) Analysis for the "
+                     "currently selected hardware item.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path,
@@ -88,12 +88,12 @@ class PoF(RAMSTKWorkView):
         self.treeview.set_tooltip_text(_tooltip)
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Damage\nModeling"),
+            _("Damage\nModeling"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays the Physics of Failure (PoF) Analysis for "
-                      u"the selected hardware item."))
+            tooltip=_("Displays the Physics of Failure (PoF) Analysis for "
+                      "the selected hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.pack_start(self.__make_buttonbox(), False, True, 0)
@@ -112,11 +112,11 @@ class PoF(RAMSTKWorkView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Add a new PoF entity at the same level as the "
-              u"currently selected entity."),
-            _(u"Add a new PoF entity one level below the currently "
-              u"selected entity."),
-            _(u"Remove the selected entity from the PoF.")
+            _("Add a new PoF entity at the same level as the "
+              "currently selected entity."),
+            _("Add a new PoF entity one level below the currently "
+              "selected entity."),
+            _("Remove the selected entity from the PoF.")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
@@ -148,7 +148,7 @@ class PoF(RAMSTKWorkView):
         _scrollwindow.add(self.treeview)
 
         _frame = ramstk.RAMSTKFrame(
-            label=_(u"Physics of Failure (PoF) Analysis"))
+            label=_("Physics of Failure (PoF) Analysis"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -247,7 +247,7 @@ class PoF(RAMSTKWorkView):
         _data = []
         _model = self.treeview.get_model()
 
-        _node = _tree.nodes[SortedDict(_tree.nodes).keys()[0]]
+        _node = _tree.nodes[list(SortedDict(_tree.nodes).keys())[0]]
         _entity = _node.data
         try:
             if _entity.is_mode:
@@ -295,9 +295,9 @@ class PoF(RAMSTKWorkView):
                 _new_row = _model.append(_row, _data)
             except TypeError:
                 _error_code = 1
-                _user_msg = _(u"One or more PoF line items had the wrong data "
-                              u"type in it's data package and is not "
-                              u"displayed in the PoF form.")
+                _user_msg = _("One or more PoF line items had the wrong data "
+                              "type in it's data package and is not "
+                              "displayed in the PoF form.")
                 _debug_msg = (
                     "RAMSTK ERROR: Data for PoF ID {0:s} for Hardware "
                     "ID {1:s} is the wrong type for one or more "
@@ -307,8 +307,8 @@ class PoF(RAMSTKWorkView):
             except ValueError:
                 _error_code = 1
                 _user_msg = _(
-                    u"One or more PoF line items was missing some of it's "
-                    u"data and is not displayed in the PoF form.")
+                    "One or more PoF line items was missing some of it's "
+                    "data and is not displayed in the PoF form.")
                 _debug_msg = (
                     "RAMSTK ERROR: Too few fields for PoF ID {0:s} for Hardware "
                     "ID {1:s}.".format(
@@ -318,9 +318,9 @@ class PoF(RAMSTKWorkView):
         except AttributeError:
             if _node.identifier != 0:
                 _error_code = 1
-                _user_msg = _(u"One or more PoF line items was missing it's "
-                              u"data package and is not displayed in the PoF "
-                              u"form.")
+                _user_msg = _("One or more PoF line items was missing it's "
+                              "data package and is not displayed in the PoF "
+                              "form.")
                 _debug_msg = (
                     "RAMSTK ERROR: There is no data package for PoF ID {0:s} "
                     "for Hardware ID {1:s}.".format(
@@ -385,15 +385,15 @@ class PoF(RAMSTKWorkView):
                     self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', False)
         elif _level == 'mechanism':
-            _headings[0] = _(u"Mechanism ID")
-            _headings[1] = _(u"Failure\nMechanism")
+            _headings[0] = _("Mechanism ID")
+            _headings[1] = _("Failure\nMechanism")
             for _idx in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
                 _cell = self.treeview.get_column(
                     self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', False)
         elif _level == 'opload':
-            _headings[0] = _(u"Operating\nLoad ID")
-            _headings[1] = _(u"Damaging\nCondition")
+            _headings[0] = _("Operating\nLoad ID")
+            _headings[1] = _("Damaging\nCondition")
             for _idx in [2, 3, 4, 6, 7, 8]:
                 _cell = self.treeview.get_column(
                     self._lst_col_order[_idx]).get_cells()[0]
@@ -403,8 +403,8 @@ class PoF(RAMSTKWorkView):
                     self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', True)
         elif _level == 'opstress':
-            _headings[0] = _(u"Stress ID")
-            _headings[1] = _(u"Operating\nStress")
+            _headings[0] = _("Stress ID")
+            _headings[1] = _("Operating\nStress")
             for _idx in [2, 3, 4, 5, 8, 9]:
                 _cell = self.treeview.get_column(
                     self._lst_col_order[_idx]).get_cells()[0]
@@ -414,8 +414,8 @@ class PoF(RAMSTKWorkView):
                     self._lst_col_order[_idx]).get_cells()[0]
                 _cell.set_property('editable', True)
         elif _level == 'testmethod':
-            _headings[0] = _(u"Test ID")
-            _headings[1] = _(u"Existing or\nProposed Test")
+            _headings[0] = _("Test ID")
+            _headings[1] = _("Existing or\nProposed Test")
             for _idx in [2, 3, 4, 5, 6, 7, 9]:
                 _cell = self.treeview.get_column(
                     self._lst_col_order[_idx]).get_cells()[0]
@@ -561,8 +561,8 @@ class PoF(RAMSTKWorkView):
         # Insert the new entity into the RAMSTK Program database and then refresh
         # the TreeView.
         if _undefined:
-            _prompt = _(u"A Physics of Failure operating stress or test "
-                        u"method cannot have a child entity.")
+            _prompt = _("A Physics of Failure operating stress or test "
+                        "method cannot have a child entity.")
             _dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
 
@@ -727,11 +727,11 @@ class PoF(RAMSTKWorkView):
                 'insert_sibling', 'insert_child', 'remove', 'calculate', 'save'
             ]
             _labels = [
-                _(u"Insert Sibling"),
-                _(u"Insert Child"),
-                _(u"Remove"),
-                _(u"Save"),
-                _(u"Save All")
+                _("Insert Sibling"),
+                _("Insert Child"),
+                _("Remove"),
+                _("Save"),
+                _("Save All")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_insert_child,
@@ -779,8 +779,8 @@ class PoF(RAMSTKWorkView):
 
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Physics of Failure for Hardware ID "
-                    u"{0:d}").format(self._hardware_id),
+            title=_("Analyzing Physics of Failure for Hardware ID "
+                    "{0:d}").format(self._hardware_id),
             error_code=_error_code,
             user_msg=_user_msg,
             debug_msg=_debug_msg)

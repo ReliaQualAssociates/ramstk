@@ -149,27 +149,27 @@ class RAMSTKMechanism(RAMSTK_BASE):
 
         if not 0 < severity < 11:
             _error_code = 2020
-            _msg = _(u"RPN severity is outside the range [1, 10].")
+            _msg = _("RPN severity is outside the range [1, 10].")
             raise OutOfRangeError(_msg)
         if not 0 < self.rpn_occurrence < 11:
             _error_code = 2020
-            _msg = _(u"RPN occurrence is outside the range [1, 10].")
+            _msg = _("RPN occurrence is outside the range [1, 10].")
             raise OutOfRangeError(_msg)
         if not 0 < self.rpn_detection < 11:
             _error_code = 2020
-            _msg = _(u"RPN detection is outside the range [1, 10].")
+            _msg = _("RPN detection is outside the range [1, 10].")
             raise OutOfRangeError(_msg)
         if not 0 < severity_new < 11:
             _error_code = 2020
-            _msg = _(u"RPN new severity is outside the range [1, 10].")
+            _msg = _("RPN new severity is outside the range [1, 10].")
             raise OutOfRangeError(_msg)
         if not 0 < self.rpn_occurrence_new < 11:
             _error_code = 2020
-            _msg = _(u"RPN new occurrence is outside the range [1, 10].")
+            _msg = _("RPN new occurrence is outside the range [1, 10].")
             raise OutOfRangeError(_msg)
         if not 0 < self.rpn_detection_new < 11:
             _error_code = 2020
-            _msg = _(u"RPN new detection is outside the range [1, 10].")
+            _msg = _("RPN new detection is outside the range [1, 10].")
             raise OutOfRangeError(_msg)
 
         self.rpn = int(severity) \
@@ -183,13 +183,13 @@ class RAMSTKMechanism(RAMSTK_BASE):
             _error_code = 2020
             _msg = 'Failure mechanism RPN has a value less than 1.'
             raise OutOfRangeError(
-                _(u"Failure mechanism RPN has a value less "
-                  u"than 1."))
+                _("Failure mechanism RPN has a value less "
+                  "than 1."))
         if self.rpn_new > 1000:
             _error_code = 2020
             _msg = 'Failure mechanism RPN has a value greater than 1000.'
             raise OutOfRangeError(
-                _(u"Failure mechanism RPN has a value "
-                  u"greater than 1000."))
+                _("Failure mechanism RPN has a value "
+                  "greater than 1000."))
 
         return _error_code, _msg

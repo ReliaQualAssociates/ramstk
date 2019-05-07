@@ -101,7 +101,7 @@ ATTRIBUTES = {
     'matching_id': 0,
     'n_elements': 0,
     'environment_dormant_id': 0,
-    'reason': u'',
+    'reason': '',
     'voltage_esd': 0.0,
     'manufacturing_id': 0,
     'n_wave_soldered': 0,

@@ -62,22 +62,22 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
     # Define private dict attributes.
     _dic_quality = {
-        1: [["S"], ["R"], ["P"], ["M"], ["MIL-R-11"], [_(u"Lower")]],
+        1: [["S"], ["R"], ["P"], ["M"], ["MIL-R-11"], [_("Lower")]],
         2: [["S"], ["R"], ["P"], ["M"], ["MIL-R-10509"], ["MIL-R-22684"],
-            [_(u"Lower")]],
-        3: [["MIL-SPEC"], [_(u"Lower")]],
-        4: [["MIL-SPEC"], [_(u"Lower")]],
-        5: [["S"], ["R"], ["P"], ["M"], ["MIL-R-93"], [_(u"Lower")]],
-        6: [["S"], ["R"], ["P"], ["M"], ["MIL-R-26"], [_(u"Lower")]],
-        7: [["S"], ["R"], ["P"], ["M"], ["MIL-R-18546"], [_(u"Lower")]],
-        8: [["MIL-SPEC"], [_(u"Lower")]],
-        9: [["S"], ["R"], ["P"], ["M"], ["MIL-R-27208"], [_(u"Lower")]],
-        10: [["MIL-SPEC"], [_(u"Lower")]],
-        11: [["MIL-SPEC"], [_(u"Lower")]],
-        12: [["MIL-SPEC"], [_(u"Lower")]],
-        13: [["S"], ["R"], ["P"], ["M"], ["MIL-R-22097"], [_(u"Lower")]],
-        14: [["MIL-SPEC"], [_(u"Lower")]],
-        15: [["MIL-SPEC"], [_(u"Lower")]]
+            [_("Lower")]],
+        3: [["MIL-SPEC"], [_("Lower")]],
+        4: [["MIL-SPEC"], [_("Lower")]],
+        5: [["S"], ["R"], ["P"], ["M"], ["MIL-R-93"], [_("Lower")]],
+        6: [["S"], ["R"], ["P"], ["M"], ["MIL-R-26"], [_("Lower")]],
+        7: [["S"], ["R"], ["P"], ["M"], ["MIL-R-18546"], [_("Lower")]],
+        8: [["MIL-SPEC"], [_("Lower")]],
+        9: [["S"], ["R"], ["P"], ["M"], ["MIL-R-27208"], [_("Lower")]],
+        10: [["MIL-SPEC"], [_("Lower")]],
+        11: [["MIL-SPEC"], [_("Lower")]],
+        12: [["MIL-SPEC"], [_("Lower")]],
+        13: [["S"], ["R"], ["P"], ["M"], ["MIL-R-22097"], [_("Lower")]],
+        14: [["MIL-SPEC"], [_("Lower")]],
+        15: [["MIL-SPEC"], [_("Lower")]]
     }
     # Key is subcategory ID; index is specification ID.
     _dic_specifications = {
@@ -124,18 +124,18 @@ class ResistorAssessmentInputs(AssessmentInputs):
     _dic_construction = {
         10: [["RR0900A2A9J103"], ["RR0900A3A9J103"], ["RR0900A4A9J103"],
              ["RR0900A5A9J103"]],
-        12: [[_(u"Enclosed")], [_(u"Unenclosed")]]
+        12: [[_("Enclosed")], [_("Unenclosed")]]
     }
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Resistance (\u03A9):"),
-        _(u"Specification:"),
-        _(u"Type:"),
-        _(u"Style:"),
-        _(u"Construction:"),
-        _(u"Number of Elements:")
+        _("Quality Level:"),
+        _("Resistance (\u03A9):"),
+        _("Specification:"),
+        _("Type:"),
+        _("Style:"),
+        _("Construction:"),
+        _("Number of Elements:")
     ]
 
     def __init__(self, **kwargs):
@@ -156,22 +156,22 @@ class ResistorAssessmentInputs(AssessmentInputs):
         self.cmbSpecification = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The governing specification for the resistor."))
+            tooltip=_("The governing specification for the resistor."))
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The type of thermistor."))
+            index=0, simple=True, tooltip=_("The type of thermistor."))
         self.cmbStyle = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The style of resistor."))
+            index=0, simple=True, tooltip=_("The style of resistor."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The method of construction of the resistor."))
+            tooltip=_("The method of construction of the resistor."))
         self.txtResistance = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The resistance (in \u03A9) of the resistor."))
+            tooltip=_("The resistance (in \u03A9) of the resistor."))
         self.txtNElements = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of active resistors in a resistor network "
-                      u"or the number of potentiometer taps."))
+            tooltip=_("The number of active resistors in a resistor network "
+                      "or the number of potentiometer taps."))
 
         self._make_page()
         self.show_all()
@@ -207,7 +207,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
         # Load the quality level RAMSTKComboBox().
         try:
             if self._hazard_rate_method_id == 1:
-                _data = ["S", "R", "P", "M", ["MIL-SPEC"], [_(u"Lower")]]
+                _data = ["S", "R", "P", "M", ["MIL-SPEC"], [_("Lower")]]
             else:
                 _data = self._dic_quality[subcategory_id]
         except KeyError:
@@ -226,7 +226,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
             if self._hazard_rate_method_id == 1:
                 _data = self._dic_types[subcategory_id]
             else:
-                _data = [[_(u"Bead")], [_(u"Disk")], [_(u"Rod")]]
+                _data = [[_("Bead")], [_("Disk")], [_("Rod")]]
         except KeyError:
             _data = []
         self.cmbType.do_load_combo(_data)
@@ -480,35 +480,35 @@ class ResistorAssessmentResults(AssessmentResults):
     # Define private dict attributes.
     _dic_part_stress = {
         1:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         3:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         4:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>NR</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>NR</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         5:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         6:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         7:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         8:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         9:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         10:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>C</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>C</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         11:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         12:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         13:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         14:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         15:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
     def __init__(self, **kwargs):
@@ -518,17 +518,17 @@ class ResistorAssessmentResults(AssessmentResults):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_labels.append(u"\u03C0<sub>R</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>T</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>NR</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>TAPS</sub>")
-        self._lst_labels.append(u"\u03C0<sub>V</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>C</sub>:")
+        self._lst_labels.append("\u03C0<sub>R</sub>:")
+        self._lst_labels.append("\u03C0<sub>T</sub>:")
+        self._lst_labels.append("\u03C0<sub>NR</sub>:")
+        self._lst_labels.append("\u03C0<sub>TAPS</sub>")
+        self._lst_labels.append("\u03C0<sub>V</sub>:")
+        self._lst_labels.append("\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _(u"The assessment model used to calculate the resistor "
-              u"failure rate."))
+            _("The assessment model used to calculate the resistor "
+              "failure rate."))
 
         # Initialize public dictionary attributes.
 
@@ -539,32 +539,32 @@ class ResistorAssessmentResults(AssessmentResults):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The resistance factor for the resistor."))
+            tooltip=_("The resistance factor for the resistor."))
         self.txtPiT = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The temperature factor for the resistor."))
+            tooltip=_("The temperature factor for the resistor."))
         self.txtPiNR = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The number of resistors factor for the resistor."))
+            tooltip=_("The number of resistors factor for the resistor."))
         self.txtPiTAPS = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The potentiometer taps factor for the resistor."))
+            tooltip=_("The potentiometer taps factor for the resistor."))
         self.txtPiV = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The voltage factor for the resistor."))
+            tooltip=_("The voltage factor for the resistor."))
         self.txtPiC = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The construction class factor for the resistor."))
+            tooltip=_("The construction class factor for the resistor."))
 
         self._make_page()
         self.show_all()

@@ -338,8 +338,8 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
         _calculations['res4'] = self.result_4
         _calculations['res5'] = self.result_5
 
-        _keys = _calculations.keys()
-        _values = _calculations.values()
+        _keys = list(_calculations.keys())
+        _values = list(_calculations.values())
 
         for _index, _key in enumerate(_keys):
             vars()[_key] = _values[_index]

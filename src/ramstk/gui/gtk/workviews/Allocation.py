@@ -64,8 +64,8 @@ class Allocation(RAMSTKWorkView):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['allocation'])
         _fmt_path = "/root/tree[@name='Allocation']/column"
-        _tooltip = _(u"Displays the Allocation Analysis for the "
-                     u"currently selected Hardware item.")
+        _tooltip = _("Displays the Allocation Analysis for the "
+                     "currently selected Hardware item.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
@@ -74,26 +74,26 @@ class Allocation(RAMSTKWorkView):
 
         self.cmbAllocationGoal = ramstk.RAMSTKComboBox(
             tooltip=_(
-                u"Selects the goal measure for the selected hardware assembly."
+                "Selects the goal measure for the selected hardware assembly."
             ))
         self.cmbAllocationMethod = ramstk.RAMSTKComboBox(
             tooltip=_(
-                u"Selects the method for allocating the reliability goal for "
-                u"the selected hardware assembly."))
+                "Selects the method for allocating the reliability goal for "
+                "the selected hardware assembly."))
         self.txtHazardRateGoal = ramstk.RAMSTKEntry(
             width=125,
             tooltip=(
-                u"Displays the hazard rate goal for the selected hardware "
-                u"item."))
+                "Displays the hazard rate goal for the selected hardware "
+                "item."))
         self.txtMTBFGoal = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"Displays the MTBF goal for the selected hardware item."))
+                "Displays the MTBF goal for the selected hardware item."))
         self.txtReliabilityGoal = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"Displays the reliability goal for the selected hardware "
-                u"item."))
+                "Displays the reliability goal for the selected hardware "
+                "item."))
 
         self.__make_ui()
 
@@ -109,7 +109,7 @@ class Allocation(RAMSTKWorkView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Calculate the currently selected child hardware item.")
+            _("Calculate the currently selected child hardware item.")
         ]
 
         _callbacks = [self._do_request_calculate]
@@ -136,28 +136,28 @@ class Allocation(RAMSTKWorkView):
         :rtype: :class:`Gtk.Frame`
         """
         # Load the method and goal comboboxes.
-        self.cmbAllocationGoal.do_load_combo([[_(u"Reliability"), 0],
-                                              [_(u"Hazard Rate"), 1],
-                                              [_(u"MTBF"), 2]])
+        self.cmbAllocationGoal.do_load_combo([[_("Reliability"), 0],
+                                              [_("Hazard Rate"), 1],
+                                              [_("MTBF"), 2]])
         self.cmbAllocationMethod.do_load_combo(
-            [[_(u"Equal Apportionment"), 0], [_(u"AGREE Apportionment"), 1],
-             [_(u"ARINC Apportionment"), 2],
-             [_(u"Feasibility of Objectives"), 3]])
+            [[_("Equal Apportionment"), 0], [_("AGREE Apportionment"), 1],
+             [_("ARINC Apportionment"), 2],
+             [_("Feasibility of Objectives"), 3]])
 
         _fixed = Gtk.Fixed()
 
-        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Allocation Method")), 5, 5)
+        _fixed.put(ramstk.RAMSTKLabel(_("Select Allocation Method")), 5, 5)
         _fixed.put(self.cmbAllocationMethod, 5, 30)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Goal Metric")), 5, 70)
+        _fixed.put(ramstk.RAMSTKLabel(_("Select Goal Metric")), 5, 70)
         _fixed.put(self.cmbAllocationGoal, 5, 95)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"R(t) Goal")), 5, 135)
+        _fixed.put(ramstk.RAMSTKLabel(_("R(t) Goal")), 5, 135)
         _fixed.put(self.txtReliabilityGoal, 5, 160)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"h(t) Goal")), 5, 200)
+        _fixed.put(ramstk.RAMSTKLabel(_("h(t) Goal")), 5, 200)
         _fixed.put(self.txtHazardRateGoal, 5, 225)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"MTBF Goal")), 5, 265)
+        _fixed.put(ramstk.RAMSTKLabel(_("MTBF Goal")), 5, 265)
         _fixed.put(self.txtMTBFGoal, 5, 290)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Goals and Method"))
+        _frame = ramstk.RAMSTKFrame(label=_("Allocation Goals and Method"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_fixed)
 
@@ -182,7 +182,7 @@ class Allocation(RAMSTKWorkView):
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Analysis"))
+        _frame = ramstk.RAMSTKFrame(label=_("Allocation Analysis"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -223,12 +223,12 @@ class Allocation(RAMSTKWorkView):
                                  self.treeview.get_model())
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Allocation"),
+            _("Allocation"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays the Allocation analysis for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the Allocation analysis for the selected "
+                      "hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.pack_start(self.__make_buttonbox(), False, True, 0)
@@ -398,10 +398,10 @@ class Allocation(RAMSTKWorkView):
                         _model.append(None, _data)
                     except TypeError:
                         _error_code = 1
-                        _user_msg = _(u"One or more Allocation line items had "
-                                      u"the wrong data type in it's data "
-                                      u"package and is not displayed in the "
-                                      u"Allocation.")
+                        _user_msg = _("One or more Allocation line items had "
+                                      "the wrong data type in it's data "
+                                      "package and is not displayed in the "
+                                      "Allocation.")
                         _debug_msg = ("RAMSTK ERROR: Data for Allocation ID "
                                       "{0:s} for Hardware ID {1:s} is the "
                                       "wrong type for one or more "
@@ -409,9 +409,9 @@ class Allocation(RAMSTKWorkView):
                                           str(_node_id), str(self._parent_id)))
                     except ValueError:
                         _error_code = 1
-                        _user_msg = _(u"One or more Allocation line items was "
-                                      u"missing some of it's data and is not "
-                                      u"displayed in the Allocation.")
+                        _user_msg = _("One or more Allocation line items was "
+                                      "missing some of it's data and is not "
+                                      "displayed in the Allocation.")
                         _debug_msg = ("RAMSTK ERROR: Too few fields for "
                                       "Allocation ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
@@ -419,9 +419,9 @@ class Allocation(RAMSTKWorkView):
                 except AttributeError:
                     if _node_id != 0:
                         _error_code = 1
-                        _user_msg = _(u"One or more Allocation line items was "
-                                      u"missing it's data package and is not "
-                                      u"displayed in the Allocation.")
+                        _user_msg = _("One or more Allocation line items was "
+                                      "missing it's data package and is not "
+                                      "displayed in the Allocation.")
                         _debug_msg = ("RAMSTK ERROR: There is no data package "
                                       "for Allocation ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
@@ -525,7 +525,7 @@ class Allocation(RAMSTKWorkView):
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
             _icons = ['calculate', 'save', 'save-all']
-            _labels = [_(u"Calculate"), _(u"Save"), _(u"Save All")]
+            _labels = [_("Calculate"), _("Save"), _("Save All")]
             _callbacks = [
                 self._do_request_calculate, self._do_request_update,
                 self._do_request_update_all
@@ -660,7 +660,7 @@ class Allocation(RAMSTKWorkView):
         _parent = self._dtc_data_controller.request_do_select(self._parent_id)
         if _parent is not None:
             if index == 4:  # Reliability goal
-                print entry.get_text()
+                print(entry.get_text())
                 _parent.reliability_goal = float(entry.get_text())
                 _parent.calculate_goals()
 
@@ -725,8 +725,8 @@ class Allocation(RAMSTKWorkView):
 
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Allocating Reliability Requirement for Hardware ID "
-                    u"{0:d}").format(self._parent_id),
+            title=_("Allocating Reliability Requirement for Hardware ID "
+                    "{0:d}").format(self._parent_id),
             error_code=_error_code,
             user_msg=_user_msg,
             debug_msg=_debug_msg)

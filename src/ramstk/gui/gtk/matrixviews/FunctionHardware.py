@@ -62,9 +62,9 @@ class MatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
         :rtype: :py:class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Save the Function:Hardware Matrix to the open RAMSTK "
-              u"Program database."),
-            _(u"Create or refresh the Function:Hardware Matrix.")
+            _("Save the Function:Hardware Matrix to the open RAMSTK "
+              "Program database."),
+            _("Create or refresh the Function:Hardware Matrix.")
         ]
         _callbacks = [self._do_request_update, self._do_request_create]
         _icons = ['save', 'view-refresh']
@@ -88,14 +88,14 @@ class MatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
         :rtype: None
         """
         _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Function\nHardware") +
+        _label.set_markup("<span weight='bold'>" + _("Function\nHardware") +
                           "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(Gtk.Justification.CENTER)
         _label.show_all()
         _label.set_tooltip_text(
-            _(u"Displays function/hardware matrix for the "
-              u"selected revision."))
+            _("Displays function/hardware matrix for the "
+              "selected revision."))
 
         # self.hbx_tab_label.pack_start(_image, True, True, 0)
         self.hbx_tab_label.pack_end(_label, True, True, 0)
@@ -154,6 +154,6 @@ class MatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
             for _column in self.matrix.get_columns():
                 self.matrix.remove_column(_column)
             ramstk.RAMSTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
-                                                   _row_hdrs, _(u"Function"))
+                                                   _row_hdrs, _("Function"))
 
         return None

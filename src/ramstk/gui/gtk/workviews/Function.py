@@ -61,9 +61,9 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private list attributes.
         self._lst_gendata_labels = [
-            _(u"Function Code:"),
-            _(u"Function Description:"),
-            _(u"Remarks:")
+            _("Function Code:"),
+            _("Function Description:"),
+            _("Remarks:")
         ]
 
         # Initialize private scalar attributes.
@@ -77,19 +77,19 @@ class GeneralData(RAMSTKWorkView):
 
         # General data page widgets.
         self.chkSafetyCritical = ramstk.RAMSTKCheckButton(
-            label=_(u"Function is safety critical."),
-            tooltip=_(u"Indicates whether or not the selected function is "
-                      u"safety critical."))
+            label=_("Function is safety critical."),
+            tooltip=_("Indicates whether or not the selected function is "
+                      "safety critical."))
 
         self.txtCode = ramstk.RAMSTKEntry(
-            width=125, tooltip=_(u"A unique code for the selected function."))
+            width=125, tooltip=_("A unique code for the selected function."))
         self.txtName = ramstk.RAMSTKEntry(
-            width=800, tooltip=_(u"The name of the selected function."))
+            width=800, tooltip=_("The name of the selected function."))
         self.txtRemarks = ramstk.RAMSTKTextView(
             Gtk.TextBuffer(),
             width=800,
-            tooltip=_(u"Enter any remarks associated with the "
-                      u"selected function."))
+            tooltip=_("Enter any remarks associated with the "
+                      "selected function."))
 
         self.__make_ui()
 
@@ -188,7 +188,7 @@ class GeneralData(RAMSTKWorkView):
         self._function_id = attributes['function_id']
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Function {0:s} - {1:s}").format(
+            title=_("Analyzing Function {0:s} - {1:s}").format(
                 str(attributes['function_code']), str(attributes['name'])))
 
         self.txtCode.handler_block(self._lst_handler_id[0])

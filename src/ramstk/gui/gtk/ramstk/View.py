@@ -183,9 +183,9 @@ class RAMSTKBaseView(object):
         _tag = tree.get_node(0).tag
 
         if self.treeview.do_load_tree(tree):
-            _prompt = _(u"An error occured while loading the {1:s} "
-                        u"records for Revision ID {0:d} into the "
-                        u"view.").format(self._revision_id, _tag)
+            _prompt = _("An error occured while loading the {1:s} "
+                        "records for Revision ID {0:d} into the "
+                        "view.").format(self._revision_id, _tag)
             _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
                                           'error')
             if _dialog.do_run() == self._response_ok:
@@ -258,8 +258,8 @@ class RAMSTKBaseView(object):
             try:
                 _model.set_value(_row, _column, value)
             except AttributeError:
-                _prompt = _(u"An error occurred while refreshing column {0:d} "
-                            u"for record {1:d}.").format(_column, module_id)
+                _prompt = _("An error occurred while refreshing column {0:d} "
+                            "for record {1:d}.").format(_column, module_id)
                 _dialog = RAMSTKMessageDialog(
                     _prompt, self._dic_icons['error'], 'error')
                 if _dialog.do_run() == self._response_ok:
@@ -523,7 +523,7 @@ class RAMSTKBaseView(object):
         try:
             _return = self.treeview.do_load_tree(_tree)
         except AttributeError:
-            for _node in _tree.nodes.values()[1:]:
+            for _node in list(_tree.nodes.values())[1:]:
                 _entity = _node.data
 
                 _attributes = []

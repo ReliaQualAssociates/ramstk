@@ -25,7 +25,7 @@ ATTRIBUTES = {
     'revision_id': 1,
     'mission_time': 72.0,
     'description': 'Test Mission',
-    'time_units': u'minutes'
+    'time_units': 'minutes'
 }
 
 

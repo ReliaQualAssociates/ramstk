@@ -17,7 +17,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'description': u'Test Operating Stress',
+    'description': 'Test Operating Stress',
     'load_id': 1,
     'load_history': '',
     'measurable_parameter': '',

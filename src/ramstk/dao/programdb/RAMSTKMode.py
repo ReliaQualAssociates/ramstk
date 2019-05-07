@@ -233,22 +233,22 @@ class RAMSTKMode(RAMSTK_BASE):
 
         if item_hr < 0.0:
             _error_code = 2010
-            _msg = _(u"RAMSTK ERROR: Item hazard rate has a negative value.")
+            _msg = _("RAMSTK ERROR: Item hazard rate has a negative value.")
             raise OutOfRangeError(_msg)
         if not 0.0 <= self.mode_ratio <= 1.0:
             _error_code = 2010
             _msg = _(
-                u"RAMSTK ERROR: Failure mode ratio is outside the range of "
-                u"[0.0, 1.0].")
+                "RAMSTK ERROR: Failure mode ratio is outside the range of "
+                "[0.0, 1.0].")
             raise OutOfRangeError(_msg)
         if self.mode_op_time < 0.0:
             _error_code = 2010
-            _msg = _(u"Failure mode operating time has a negative value.")
+            _msg = _("Failure mode operating time has a negative value.")
             raise OutOfRangeError(_msg)
         if not 0.0 <= self.effect_probability <= 1.0:
             _error_code = 2010
-            _msg = _(u"Failure effect probability is outside the range "
-                     u"[0.0, 1.0].")
+            _msg = _("Failure effect probability is outside the range "
+                     "[0.0, 1.0].")
             raise OutOfRangeError(_msg)
 
         self.mode_hazard_rate = item_hr * self.mode_ratio
@@ -257,11 +257,11 @@ class RAMSTKMode(RAMSTK_BASE):
 
         if self.mode_hazard_rate < 0.0:
             _error_code = 2010
-            _msg = _(u"Failure mode hazard rate has a negative value.")
+            _msg = _("Failure mode hazard rate has a negative value.")
             raise OutOfRangeError(_msg)
         if self.mode_criticality < 0.0:
             _error_code = 2010
-            _msg = _(u"Failure mode criticality has a negative value.")
+            _msg = _("Failure mode criticality has a negative value.")
             raise OutOfRangeError(_msg)
 
         return _error_code, _msg

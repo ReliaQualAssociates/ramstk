@@ -84,8 +84,8 @@ class SimilarItem(RAMSTKWorkView):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['similaritem'])
         _fmt_path = "/root/tree[@name='SimilarItem']/column"
-        _tooltip = _(u"Displays the Similar Item Analysis for the currently "
-                     u"selected Hardware item.")
+        _tooltip = _("Displays the Similar Item Analysis for the currently "
+                     "selected Hardware item.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
@@ -93,7 +93,7 @@ class SimilarItem(RAMSTKWorkView):
         self.treeview.set_tooltip_text(_tooltip)
 
         self.cmbSimilarItemMethod = ramstk.RAMSTKComboBox(
-            tooltip=_(u"Select the similar item analysis method."))
+            tooltip=_("Select the similar item analysis method."))
 
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))
@@ -114,12 +114,12 @@ class SimilarItem(RAMSTKWorkView):
                                  _idx, self.treeview.get_model())
 
         _label = ramstk.RAMSTKLabel(
-            _(u"SimilarItem"),
+            _("SimilarItem"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays the Similar Item analysis for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the Similar Item analysis for the selected "
+                      "hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.pack_start(self.__make_buttonbox(), False, True, 0)
@@ -141,9 +141,9 @@ class SimilarItem(RAMSTKWorkView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Edit the Similar Item analysis functions."),
-            _(u"Roll up descriptions to next higher level assembly."),
-            _(u"Calculate the Similar Item analysis.")
+            _("Edit the Similar Item analysis functions."),
+            _("Roll up descriptions to next higher level assembly."),
+            _("Calculate the Similar Item analysis.")
         ]
         _callbacks = [
             self._do_request_edit_function, self._do_request_rollup,
@@ -173,15 +173,15 @@ class SimilarItem(RAMSTKWorkView):
         :rtype: :class:`Gtk.Frame`
         """
         # Load the method and goal comboboxes.
-        self.cmbSimilarItemMethod.do_load_combo([[_(u"Topic 633"), 0],
-                                                 [_(u"User-Defined"), 1]])
+        self.cmbSimilarItemMethod.do_load_combo([[_("Topic 633"), 0],
+                                                 [_("User-Defined"), 1]])
 
         _fixed = Gtk.Fixed()
 
-        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Method")), 5, 5)
+        _fixed.put(ramstk.RAMSTKLabel(_("Select Method")), 5, 5)
         _fixed.put(self.cmbSimilarItemMethod, 5, 30)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Similar Item Method"))
+        _frame = ramstk.RAMSTKFrame(label=_("Similar Item Method"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_fixed)
 
@@ -214,7 +214,7 @@ class SimilarItem(RAMSTKWorkView):
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Similar Item Analysis"))
+        _frame = ramstk.RAMSTKFrame(label=_("Similar Item Analysis"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -454,26 +454,26 @@ class SimilarItem(RAMSTKWorkView):
                         _node_id, table='reliability').hazard_rate_logistics
 
                     try:
-                        _quality_from = self._dic_quality.keys()[
-                            self._dic_quality.values().index(
+                        _quality_from = list(self._dic_quality.keys())[
+                            list(self._dic_quality.values()).index(
                                 _entity.quality_from_id)]
                     except ValueError:
                         _quality_from = ''
                     try:
-                        _quality_to = self._dic_quality.keys()[
-                            self._dic_quality.values().index(
+                        _quality_to = list(self._dic_quality.keys())[
+                            list(self._dic_quality.values()).index(
                                 _entity.quality_to_id)]
                     except ValueError:
                         _quality_to = ''
                     try:
-                        _environment_from = self._dic_environment.keys()[
-                            self._dic_environment.values().index(
+                        _environment_from = list(self._dic_environment.keys())[
+                            list(self._dic_environment.values()).index(
                                 _entity.environment_from_id)]
                     except ValueError:
                         _environment_from = ''
                     try:
-                        _environment_to = self._dic_environment.keys()[
-                            self._dic_environment.values().index(
+                        _environment_to = list(self._dic_environment.keys())[
+                            list(self._dic_environment.values()).index(
                                 _entity.environment_to_id)]
                     except ValueError:
                         _environment_to = ''
@@ -512,10 +512,10 @@ class SimilarItem(RAMSTKWorkView):
                         _model.append(None, _data)
                     except TypeError:
                         _error_code = 1
-                        _user_msg = _(u"One or more Similar Item line items "
-                                      u"had the wrong data type in it's data "
-                                      u"package and is not displayed in the "
-                                      u"Similar Item analysis.")
+                        _user_msg = _("One or more Similar Item line items "
+                                      "had the wrong data type in it's data "
+                                      "package and is not displayed in the "
+                                      "Similar Item analysis.")
                         _debug_msg = ("RAMSTK ERROR: Data for Similar Item ID "
                                       "{0:s} for Hardware ID {1:s} is the "
                                       "wrong type for one or more "
@@ -524,10 +524,10 @@ class SimilarItem(RAMSTKWorkView):
                                           str(self._hardware_id)))
                     except ValueError:
                         _error_code = 1
-                        _user_msg = _(u"One or more Similar Item line items "
-                                      u"was missing some of it's data and is "
-                                      u"not displayed in the Similar Item "
-                                      u"analysis.")
+                        _user_msg = _("One or more Similar Item line items "
+                                      "was missing some of it's data and is "
+                                      "not displayed in the Similar Item "
+                                      "analysis.")
                         _debug_msg = ("RAMSTK ERROR: Too few fields for "
                                       "Similar Item ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
@@ -536,10 +536,10 @@ class SimilarItem(RAMSTKWorkView):
                 except AttributeError:
                     if _node_id != 0:
                         _error_code = 1
-                        _user_msg = _(u"One or more Similar Item line items "
-                                      u"was missing it's data package and is "
-                                      u"not displayed in the Similar Item "
-                                      u"analysis.")
+                        _user_msg = _("One or more Similar Item line items "
+                                      "was missing it's data package and is "
+                                      "not displayed in the Similar Item "
+                                      "analysis.")
                         _debug_msg = ("RAMSTK ERROR: There is no data package "
                                       "for Similar Item ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
@@ -592,14 +592,14 @@ class SimilarItem(RAMSTKWorkView):
         """
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _title = _(u"RAMSTK - Edit Similar Item Analysis Functions")
+        _title = _("RAMSTK - Edit Similar Item Analysis Functions")
         _label = ramstk.RAMSTKLabel(
-            _(u"You can define up to five functions.  "
-              u"You can use the system failure rate, "
-              u"selected assembly failure rate, the "
-              u"change factor, the user float, the "
-              u"user integer values, and results of "
-              u"other functions.\n\n \
+            _("You can define up to five functions.  "
+              "You can use the system failure rate, "
+              "selected assembly failure rate, the "
+              "change factor, the user float, the "
+              "user integer values, and results of "
+              "other functions.\n\n \
         System hazard rate is hr_sys\n \
         Assembly hazard rate is hr\n \
         Change factor is pi[1-8]\n \
@@ -610,10 +610,10 @@ class SimilarItem(RAMSTKWorkView):
             height=-1,
             wrap=True)
         _label2 = ramstk.RAMSTKLabel(
-            _(u"For example, pi1*pi2+pi3, multiplies "
-              u"the first two change factors and "
-              u"adds the value to the third change "
-              u"factor."),
+            _("For example, pi1*pi2+pi3, multiplies "
+              "the first two change factors and "
+              "adds the value to the third change "
+              "factor."),
             width=600,
             height=-1,
             wrap=True)
@@ -629,7 +629,7 @@ class SimilarItem(RAMSTKWorkView):
         _fixed.put(_label2, 5, _y_pos)
         _y_pos += _label2.size_request()[1] + 10
 
-        _label = ramstk.RAMSTKLabel(_(u"User function 1:"))
+        _label = ramstk.RAMSTKLabel(_("User function 1:"))
         _txtFunction1 = ramstk.RAMSTKEntry()
         _txtFunction1.set_text(_model.get_value(_row, 30))
 
@@ -637,35 +637,35 @@ class SimilarItem(RAMSTKWorkView):
         _fixed.put(_txtFunction1, 195, _y_pos)
         _y_pos += 30
 
-        _label = ramstk.RAMSTKLabel(_(u"User function 2:"))
+        _label = ramstk.RAMSTKLabel(_("User function 2:"))
         _txtFunction2 = ramstk.RAMSTKEntry()
         _txtFunction2.set_text(_model.get_value(_row, 31))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction2, 195, _y_pos)
         _y_pos += 30
 
-        _label = ramstk.RAMSTKLabel(_(u"User function 3:"))
+        _label = ramstk.RAMSTKLabel(_("User function 3:"))
         _txtFunction3 = ramstk.RAMSTKEntry()
         _txtFunction3.set_text(_model.get_value(_row, 32))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction3, 195, _y_pos)
         _y_pos += 30
 
-        _label = ramstk.RAMSTKLabel(_(u"User function 4:"))
+        _label = ramstk.RAMSTKLabel(_("User function 4:"))
         _txtFunction4 = ramstk.RAMSTKEntry()
         _txtFunction4.set_text(_model.get_value(_row, 33))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction4, 195, _y_pos)
         _y_pos += 30
 
-        _label = ramstk.RAMSTKLabel(_(u"User function 5:"))
+        _label = ramstk.RAMSTKLabel(_("User function 5:"))
         _txtFunction5 = ramstk.RAMSTKEntry()
         _txtFunction5.set_text(_model.get_value(_row, 34))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction5, 195, _y_pos)
         _y_pos += 30
 
-        _chkApplyAll = Gtk.CheckButton(label=_(u"Apply to all assemblies."))
+        _chkApplyAll = Gtk.CheckButton(label=_("Apply to all assemblies."))
         _fixed.put(_chkApplyAll, 5, _y_pos)
 
         _fixed.show_all()
@@ -826,10 +826,10 @@ class SimilarItem(RAMSTKWorkView):
         if event.button == 3:
             _icons = ['edit', 'calculate', 'save', 'save-all']
             _labels = [
-                _(u"Edit Function"),
-                _(u"Calculate"),
-                _(u"Save Selected"),
-                _(u"Save Allocation")
+                _("Edit Function"),
+                _("Calculate"),
+                _("Save Selected"),
+                _("Save Allocation")
             ]
             _callbacks = [
                 self._do_request_edit_function, self._do_request_calculate,
@@ -922,8 +922,8 @@ class SimilarItem(RAMSTKWorkView):
 
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Similar Item Analysis for Hardware ID "
-                    u"{0:d}").format(self._parent_id),
+            title=_("Similar Item Analysis for Hardware ID "
+                    "{0:d}").format(self._parent_id),
             error_code=_error_code,
             user_msg=_user_msg,
             debug_msg=_debug_msg)

@@ -219,12 +219,12 @@ class RAMSTKDataMatrix(object):
                 self.dic_column_hdrs[
                     _attributes[_ckey]] = _attributes[_cheader]
             except TypeError:
-                print 'FIXME: Handle TypeError in ' \
+                print('FIXME: Handle TypeError in ' \
                       'RAMSTKDataMatrix.do_select_all().  Tuple indices must ' \
                       'be integers, not str.  This will be fixed when all ' \
                       'the RAMSTK database tables are converted to return ' \
                       'dicts from the get_attributes() method.  Matrix {0:s} ' \
-                      'is not working.  See issue #59'.format(matrix_type)
+                      'is not working.  See issue #59'.format(matrix_type))
 
             self.n_col += 1
 

@@ -88,47 +88,47 @@ class ConnectionAssessmentInputs(AssessmentInputs):
     # Define private dict attributes.
     # Quality levels; key is the subcategory ID.
     _dic_quality = {
-        1: [["MIL-SPEC"], [_(u"Lower")]],
-        2: [["MIL-SPEC"], [_(u"Lower")]],
-        4: [[_(u"MIL-SPEC or comparable IPC standards")], [_(u"Lower")]],
-        5: [[_(u"Automated")], [_(u"Manual, Upper")], [_(u"Manual, Standard")],
-            [_(u"Manual, Lower")]]
+        1: [["MIL-SPEC"], [_("Lower")]],
+        2: [["MIL-SPEC"], [_("Lower")]],
+        4: [[_("MIL-SPEC or comparable IPC standards")], [_("Lower")]],
+        5: [[_("Automated")], [_("Manual, Upper")], [_("Manual, Standard")],
+            [_("Manual, Lower")]]
     }
     # Connector types; key is the subcategory ID.
     _dic_type = {
-        1: [[_("Rack and Panel")], [_(u"Circular")], [_(u"Power")],
-            [_(u"Coaxial")], [_(u"Triaxial")]],
+        1: [[_("Rack and Panel")], [_("Circular")], [_("Power")],
+            [_("Coaxial")], [_("Triaxial")]],
         4:
-        [[_(u"PWA/PCB with PTHs")],
+        [[_("PWA/PCB with PTHs")],
          [
-             _(u"Discrete Wiring with Electroless Deposited PTH (<3 Levels of "
-               u"Circuitry)")
+             _("Discrete Wiring with Electroless Deposited PTH (<3 Levels of "
+               "Circuitry)")
          ]],
-        5: [[_(u"Hand Solder w/o Wrapping")], [_(u"Hand Solder w/ Wrapping")],
-            [_(u"Crimp")], [_(u"Weld")], [_(u"Solderless Wrap")],
-            [_(u"Clip Termination")], [_(u"Reflow Solder")]]
+        5: [[_("Hand Solder w/o Wrapping")], [_("Hand Solder w/ Wrapping")],
+            [_("Crimp")], [_("Weld")], [_("Solderless Wrap")],
+            [_("Clip Termination")], [_("Reflow Solder")]]
     }
     # Specifications; key is the type ID.
     _dic_specification = {
-        1: [[_(u"MIL-C-24308")], [_(u"MIL-C-28748")], [_(u"MIL-C-28804")],
-            [_(u"MIL-C-83513")], [_(u"MIL-C-83733")]],
-        2: [[_(u"MIL-C-5015")], [_(u"MIL-C-26482")], [_(u"MIL-C-28840")],
-            [_(u"MIL-C-38999")], [_(u"MIL-C-81511")], [_(u"MIL-C-83723")]],
-        3: [[_(u"MIL-C-3767")], [_(u"MIL-C-22992")]],
-        4: [[_(u"MIL-C-3607")], [_(u"MIL-C-3643")], [_(u"MIL-C-3650")],
-            [_(u"MIL-C-3655")], [_(u"MIL-C-25516")], [_(u"MIL-C-39012")],
-            [_(u"MIL-C-55235")], [_(u"MIL-C-55339")]],
-        5: [[_(u"MIL-C-49142")]]
+        1: [[_("MIL-C-24308")], [_("MIL-C-28748")], [_("MIL-C-28804")],
+            [_("MIL-C-83513")], [_("MIL-C-83733")]],
+        2: [[_("MIL-C-5015")], [_("MIL-C-26482")], [_("MIL-C-28840")],
+            [_("MIL-C-38999")], [_("MIL-C-81511")], [_("MIL-C-83723")]],
+        3: [[_("MIL-C-3767")], [_("MIL-C-22992")]],
+        4: [[_("MIL-C-3607")], [_("MIL-C-3643")], [_("MIL-C-3650")],
+            [_("MIL-C-3655")], [_("MIL-C-25516")], [_("MIL-C-39012")],
+            [_("MIL-C-55235")], [_("MIL-C-55339")]],
+        5: [[_("MIL-C-49142")]]
     }
-    _lst_insert_A = [[_(u"Vitreous Glass")], [_(u"Alumina Ceramic")],
-                     [_(u"Polyimide")]]
-    _lst_insert_B = [[_(u"Diallylphtalate")], [_(u"Melamine")],
-                     [_(u"Flourosilicone")], [_(u"Silicone Rubber")],
-                     [_(u"Polysulfone")], [_(u"Epoxy Resin")]]
-    _lst_insert_C = [[_(u"Polytetraflourethylene (Teflon)")],
-                     [_(u"Chlorotriflourethylene (Kel-f)")]]
-    _lst_insert_D = [[_(u"Polyamide (Nylon)")],
-                     [_(u"Polychloroprene (Neoprene)")], [_(u"Polyethylene")]]
+    _lst_insert_A = [[_("Vitreous Glass")], [_("Alumina Ceramic")],
+                     [_("Polyimide")]]
+    _lst_insert_B = [[_("Diallylphtalate")], [_("Melamine")],
+                     [_("Flourosilicone")], [_("Silicone Rubber")],
+                     [_("Polysulfone")], [_("Epoxy Resin")]]
+    _lst_insert_C = [[_("Polytetraflourethylene (Teflon)")],
+                     [_("Chlorotriflourethylene (Kel-f)")]]
+    _lst_insert_D = [[_("Polyamide (Nylon)")],
+                     [_("Polychloroprene (Neoprene)")], [_("Polyethylene")]]
     # Connector insert material; first key is the type ID, second key is the
     # specification ID.
     _dic_insert = {
@@ -168,17 +168,17 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Connector Type:"),
-        _(u"Specification:"),
-        _(u"Insert Material:"),
-        _(u"Contact Gauge:"),
-        _(u"Active Pins:"),
-        _(u"Amperes/Contact:"),
-        _(u"Mating/Unmating Cycles (per 1000 hours):"),
-        _(u"Number of Wave Soldered PTH:"),
-        _(u"Number of Hand Soldered PTH:"),
-        _(u"Number of Circuit Planes:")
+        _("Quality Level:"),
+        _("Connector Type:"),
+        _("Specification:"),
+        _("Insert Material:"),
+        _("Contact Gauge:"),
+        _("Active Pins:"),
+        _("Amperes/Contact:"),
+        _("Mating/Unmating Cycles (per 1000 hours):"),
+        _("Number of Wave Soldered PTH:"),
+        _("Number of Hand Soldered PTH:"),
+        _("Number of Circuit Planes:")
     ]
 
     def __init__(self, **kwargs):
@@ -199,36 +199,36 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         self.cmbType = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The type of connector/connection."))
+            tooltip=_("The type of connector/connection."))
         self.cmbSpecification = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The governing specification for the connection."))
+            tooltip=_("The governing specification for the connection."))
         self.cmbInsert = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The connector insert material."))
+            index=0, simple=True, tooltip=_("The connector insert material."))
 
         self.txtContactGauge = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The gauge of the contacts in the connector."))
+            tooltip=_("The gauge of the contacts in the connector."))
         self.txtActivePins = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of active pins in the connector."))
+            tooltip=_("The number of active pins in the connector."))
         self.txtAmpsContact = ramstk.RAMSTKEntry(
-            width=125, tooltip=_(u"The amperes per active contact."))
+            width=125, tooltip=_("The amperes per active contact."))
         self.txtMating = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of connector mate and unmate cycles per "
-                      u"1000 hours of operation."))
+            tooltip=_("The number of connector mate and unmate cycles per "
+                      "1000 hours of operation."))
         self.txtNWave = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of wave soldered PTH connections."))
+            tooltip=_("The number of wave soldered PTH connections."))
         self.txtNHand = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of hand soldered PTH connections."))
+            tooltip=_("The number of hand soldered PTH connections."))
         self.txtNPlanes = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of circuit planes for wave soldered "
-                      u"connections."))
+            tooltip=_("The number of circuit planes for wave soldered "
+                      "connections."))
 
         self._make_page()
         self.show_all()
@@ -272,7 +272,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         """
         # Load the quality level RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
-            _data = [["MIL-SPEC"], [_(u"Lower")]]
+            _data = [["MIL-SPEC"], [_("Lower")]]
         else:
             try:
                 _data = self._dic_quality[subcategory_id]
@@ -611,26 +611,26 @@ class ConnectionAssessmentResults(AssessmentResults):
         # Initialize private dictionary attributes.
         self._dic_part_stress = {
             1:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
             2:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
             3:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
             4:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>[N<sub>1</sub>\u03C0<sub>C</sub> + N<sub>2</sub>(\u03C0<sub>C</sub> + 13)]\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>[N<sub>1</sub>\u03C0<sub>C</sub> + N<sub>2</sub>(\u03C0<sub>C</sub> + 13)]\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             5:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         }
 
         # Initialize private list attributes.
-        self._lst_labels.append(u"\u03C0<sub>K</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>P</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>C</sub>:")
+        self._lst_labels.append("\u03C0<sub>K</sub>:")
+        self._lst_labels.append("\u03C0<sub>P</sub>:")
+        self._lst_labels.append("\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _(u"The assessment model used to calculate the connection failure "
-              u"rate."))
+            _("The assessment model used to calculate the connection failure "
+              "rate."))
 
         # Initialize public dictionary attributes.
 
@@ -641,17 +641,17 @@ class ConnectionAssessmentResults(AssessmentResults):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The mating/unmating factor for the connection."))
+            tooltip=_("The mating/unmating factor for the connection."))
         self.txtPiP = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The active pins factor for the connection."))
+            tooltip=_("The active pins factor for the connection."))
         self.txtPiC = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The complexity factor for the connection."))
+            tooltip=_("The complexity factor for the connection."))
 
         self._make_page()
         self.show_all()

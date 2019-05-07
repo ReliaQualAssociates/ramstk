@@ -35,8 +35,8 @@ except KeyError:
     elif platform.system() == 'Windows':
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
-        print("The {0:s} system platform is not "
-              "supported.").format(platform.system())
+        print(("The {0:s} system platform is not "
+              "supported.").format(platform.system()))
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

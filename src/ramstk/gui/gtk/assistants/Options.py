@@ -69,28 +69,28 @@ class Options(Gtk.Window):
         self.btnQuit = ramstk.RAMSTKButton(
             icon=self._dic_icons['cancel'], height=-1, width=-1)
         self.chkFunctions = ramstk.RAMSTKCheckButton(
-            label=_(u"Function Module Active"),
+            label=_("Function Module Active"),
             tooltip=_(
-                u"Activates/deactivates the Function module for this program.")
+                "Activates/deactivates the Function module for this program.")
         )
         self.chkRequirements = ramstk.RAMSTKCheckButton(
-            label=_(u"Requirements Module Active"),
-            tooltip=_(u"Activates/deactivates the Requirements module for "
-                      u"this program."))
+            label=_("Requirements Module Active"),
+            tooltip=_("Activates/deactivates the Requirements module for "
+                      "this program."))
         self.chkHardware = ramstk.RAMSTKCheckButton(
-            label=_(u"Hardware Module Active"),
+            label=_("Hardware Module Active"),
             tooltip=_(
-                u"Activates/deactivates the Hardware module for this program.")
+                "Activates/deactivates the Hardware module for this program.")
         )
         self.chkValidation = ramstk.RAMSTKCheckButton(
-            label=_(u"Validation Module Active"),
+            label=_("Validation Module Active"),
             tooltip=_(
-                u"Activates/deactivates the Validation module for this program."
+                "Activates/deactivates the Validation module for this program."
             ))
         self.chkFMEA = ramstk.RAMSTKCheckButton(
-            label=_(u"(D)FME(C)A Module Active"),
+            label=_("(D)FME(C)A Module Active"),
             tooltip=_(
-                u"Activates/deactivates the (D)FME(C)A module for this program."
+                "Activates/deactivates the (D)FME(C)A module for this program."
             ))
 
         self.__make_ui()
@@ -110,8 +110,8 @@ class Options(Gtk.Window):
         _fixed.put(self.chkValidation, 5, 95)
         _fixed.put(self.chkFMEA, 5, 125)
 
-        _label = Gtk.Label(label=_(u"Active RAMSTK Modules"))
-        _label.set_tooltip_text(_(u"Select active RAMSTK modules."))
+        _label = Gtk.Label(label=_("Active RAMSTK Modules"))
+        _label.set_tooltip_text(_("Select active RAMSTK modules."))
         self.notebook.insert_page(_fixed, tab_label=_label, position=-1)
 
         return None

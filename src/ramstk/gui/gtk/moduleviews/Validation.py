@@ -68,7 +68,7 @@ class ModuleView(RAMSTKModuleView):
 
         self.make_treeview()
         self.treeview.set_tooltip_text(
-            _(u"Displays the list of validation tasks."))
+            _("Displays the list of validation tasks."))
 
         i = 0
         for _column in self.treeview.get_columns():
@@ -82,10 +82,10 @@ class ModuleView(RAMSTKModuleView):
             i += 1
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Validation"),
+            _("Validation"),
             width=-1,
             height=-1,
-            tooltip=_(u"Displays the list of validation tasks."))
+            tooltip=_("Displays the list of validation tasks."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
@@ -192,9 +192,9 @@ class ModuleView(RAMSTKModuleView):
         """
         _return = False
 
-        _prompt = _(u"You are about to delete Validation {0:d} and all data "
-                    u"associated with it.  Is this really what you want "
-                    u"to do?").format(self._validation_id)
+        _prompt = _("You are about to delete Validation {0:d} and all data "
+                    "associated with it.  Is this really what you want "
+                    "to do?").format(self._validation_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
@@ -203,8 +203,8 @@ class ModuleView(RAMSTKModuleView):
             _dialog.do_destroy()
             if self._dtc_data_controller.request_do_delete(
                     self._validation_id):
-                _prompt = _(u"An error occurred when attempting to delete "
-                            u"Validation {0:d}.").format(self._validation_id)
+                _prompt = _("An error occurred when attempting to delete "
+                            "Validation {0:d}.").format(self._validation_id)
                 _error_dialog = ramstk.RAMSTKMessageDialog(
                     _prompt, self._dic_icons['error'], 'error')
                 if _error_dialog.do_run() == Gtk.ResponseType.OK:
@@ -254,8 +254,8 @@ class ModuleView(RAMSTKModuleView):
                 revision_id=self._revision_id):
             self._on_select_revision(self._revision_id)
         else:
-            _prompt = _(u"An error occurred while attempting to add a "
-                        u"Validation.")
+            _prompt = _("An error occurred while attempting to add a "
+                        "Validation.")
             _error_dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             self._mdcRAMSTK.debug_log.error(_prompt)
@@ -318,10 +318,10 @@ class ModuleView(RAMSTKModuleView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Add a new Validation task."),
-            _(u"Remove the currently selected Validation task1."),
-            _(u"Exports Verification tasks to an external file (CSV, Excel, "
-              u"and text files are supported).")
+            _("Add a new Validation task."),
+            _("Remove the currently selected Validation task1."),
+            _("Exports Verification tasks to an external file (CSV, Excel, "
+              "and text files are supported).")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_delete,
@@ -370,10 +370,10 @@ class ModuleView(RAMSTKModuleView):
         if event.button == 3:
             _icons = ['add', 'remove', 'save', 'save-all']
             _labels = [
-                _(u"Add Validation Task"),
-                _(u"Remove the Selected Validation Task"),
-                _(u"Save Selected Validation Task"),
-                _(u"Save All Validation Tasks")
+                _("Add Validation Task"),
+                _("Remove the Selected Validation Task"),
+                _("Save Selected Validation Task"),
+                _("Save All Validation Tasks")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_delete,
@@ -477,8 +477,8 @@ class ModuleView(RAMSTKModuleView):
 
         _return = RAMSTKModuleView.on_select_revision(self, tree=_validations)
         if _return:
-            _prompt = _(u"An error occured while loading Validation Tasks "
-                        u"into the Module View.")
+            _prompt = _("An error occured while loading Validation Tasks "
+                        "into the Module View.")
             _dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _dialog.do_run() == self._response_ok:

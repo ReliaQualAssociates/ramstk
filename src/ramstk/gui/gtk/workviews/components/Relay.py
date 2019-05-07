@@ -67,85 +67,85 @@ class RelayAssessmentInputs(AssessmentInputs):
 
     # Define private dict attributes.
     _dic_quality = {
-        1: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_(u"Lower")]],
-        2: [["MIL-SPEC"], [_(u"Lower")]]
+        1: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
+        2: [["MIL-SPEC"], [_("Lower")]]
     }
     # Key is subcategory ID.  Index is type ID.
     _dic_pc_types = {
-        1: [[_(u"General Purpose")], [_(u"Contactor, High Current")],
-            [_(u"Latching")], [_(u"Reed")], [_(u"Thermal, Bi-Metal")],
-            [_(u"Meter Movement")]],
-        2: [[_(u"Solid State")], [_(u"Hybrid and Solid State Time Delay")]]
+        1: [[_("General Purpose")], [_("Contactor, High Current")],
+            [_("Latching")], [_("Reed")], [_("Thermal, Bi-Metal")],
+            [_("Meter Movement")]],
+        2: [[_("Solid State")], [_("Hybrid and Solid State Time Delay")]]
     }
     # Key is subcategory ID, index is type ID.
     _dic_types = {
         1: [[_("85C Rated")], [_("125C Rated")]],
-        2: [[_(u"Solid State")], [_(u"Solid State Time Delay")],
-            [_(u"Hybrid")]]
+        2: [[_("Solid State")], [_("Solid State Time Delay")],
+            [_("Hybrid")]]
     }
     # Key is contact rating ID.  Index is application ID.
     _dic_application = {
-        1: [[_(u"Dry Circuit")]],
-        2: [[_(u"General Purpose")], [_(u"Sensitve (0 - 100mW)")],
-            [_(u"Polarized")], [_(u"Vibrating Reed")], [_(u"High Speed")],
-            [_(u"Thermal Time Delay")],
-            [_(u"Electronic Time Delay, Non-Thermal")],
-            [_(u"Latching, Magnetic")]],
-        3: [[_(u"High Voltage")], [_(u"Medium Power")]],
-        4: [[_(u"Contactors, High Current")]]
+        1: [[_("Dry Circuit")]],
+        2: [[_("General Purpose")], [_("Sensitve (0 - 100mW)")],
+            [_("Polarized")], [_("Vibrating Reed")], [_("High Speed")],
+            [_("Thermal Time Delay")],
+            [_("Electronic Time Delay, Non-Thermal")],
+            [_("Latching, Magnetic")]],
+        3: [[_("High Voltage")], [_("Medium Power")]],
+        4: [[_("Contactors, High Current")]]
     }
     # First key is contact rating ID, second key is application ID.  Index is
     # construction ID.
     _dic_construction = {
         1: {
-            1: [[_(u"Armature (Long)")], [_(u"Dry Reed")],
-                [_(u"Mercury Wetted")], [_(u"Magnetic Latching")],
-                [_(u"Balanced Armature")], [_(u"Solenoid")]]
+            1: [[_("Armature (Long)")], [_("Dry Reed")],
+                [_("Mercury Wetted")], [_("Magnetic Latching")],
+                [_("Balanced Armature")], [_("Solenoid")]]
         },
         2: {
-            1: [[_(u"Armature (Long)")], [_(u"Balanced Armature")],
-                [_(u"Solenoid")]],
-            2: [[_(u"Armature (LOng and Short)")], [_(u"Mercury Wetted")],
-                [_(u"Magnetic Latching")], [_(u"Meter Movement")],
-                [_(u"Balanced Armature")]],
-            3: [[_(u"Armature (Short)")], [_(u"Meter Movement")]],
-            4: [[_(u"Dry Reed")], [_(u"Mercury Wetted")]],
-            5: [[_(u"Armature (Balanced and Short)")], [_(u"Dry Reed")]],
-            6: [[_(u"Bimetal")]],
-            8: [[_(u"Dry Reed")], [_(u"Mercury Wetted")],
-                [_(u"Balanced Armature")]]
+            1: [[_("Armature (Long)")], [_("Balanced Armature")],
+                [_("Solenoid")]],
+            2: [[_("Armature (LOng and Short)")], [_("Mercury Wetted")],
+                [_("Magnetic Latching")], [_("Meter Movement")],
+                [_("Balanced Armature")]],
+            3: [[_("Armature (Short)")], [_("Meter Movement")]],
+            4: [[_("Dry Reed")], [_("Mercury Wetted")]],
+            5: [[_("Armature (Balanced and Short)")], [_("Dry Reed")]],
+            6: [[_("Bimetal")]],
+            8: [[_("Dry Reed")], [_("Mercury Wetted")],
+                [_("Balanced Armature")]]
         },
         3: {
-            1: [[_(u"Vacuum (Glass)")], [_(u"Vacuum (Ceramic)")]],
-            2: [[_(u"Armature (Long and Short)")], [_(u"Mercury Wetted")],
-                [_(u"Magnetic Latching")], [_(u"Mechanical Latching")],
-                [_(u"Balanced Armature")], [_(u"Solenoid")]]
+            1: [[_("Vacuum (Glass)")], [_("Vacuum (Ceramic)")]],
+            2: [[_("Armature (Long and Short)")], [_("Mercury Wetted")],
+                [_("Magnetic Latching")], [_("Mechanical Latching")],
+                [_("Balanced Armature")], [_("Solenoid")]]
         },
         4: {
-            1: [[_(u"Armature (Short)")], [_(u"Mechanical Latching")],
-                [_(u"Balanced Armature")], [_(u"Solenoid")]]
+            1: [[_("Armature (Short)")], [_("Mechanical Latching")],
+                [_("Balanced Armature")], [_("Solenoid")]]
         }
     }
 
     # Define private list attributes.
     # Index is the technology ID (load type).
-    _lst_technology = [[_(u"Resistive")], [_(u"Inductive")], [_(u"Lamp")]]
+    _lst_technology = [[_("Resistive")], [_("Inductive")], [_("Lamp")]]
     # Index is the contact form ID.
     _lst_contact_form = [["SPST"], ["DPST"], ["SPDT"], ["3PST"], ["4PST"],
                          ["DPDT"], ["3PDT"], ["4PDT"], ["6PDT"]]
     # Index is contact rating ID.
-    _lst_contact_rating = [[_(u"Signal Current (low mV and mA)")],
-                           [_(u"0 - 5 Amp")], [_(u"5 - 20 Amp")],
-                           [_(u"20 - 600 Amp")]]
+    _lst_contact_rating = [[_("Signal Current (low mV and mA)")],
+                           [_("0 - 5 Amp")], [_("5 - 20 Amp")],
+                           [_("20 - 600 Amp")]]
     _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Type:"),
-        _(u"Load Type"),
-        _(u"Contact Form:"),
-        _(u"Contact Rating:"),
-        _(u"Application:"),
-        _(u"Construction:"),
-        _(u"Number of Cycles/Hour:")
+        _("Quality Level:"),
+        _("Type:"),
+        _("Load Type"),
+        _("Contact Form:"),
+        _("Contact Rating:"),
+        _("Application:"),
+        _("Construction:"),
+        _("Number of Cycles/Hour:")
     ]
 
     def __init__(self, **kwargs):
@@ -164,26 +164,26 @@ class RelayAssessmentInputs(AssessmentInputs):
 
         # Initialize public scalar attributes.
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The relay type."))
+            index=0, simple=True, tooltip=_("The relay type."))
         self.cmbLoadType = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The type of load the relay is switching."))
+            tooltip=_("The type of load the relay is switching."))
         self.cmbContactForm = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The contact form of the relay."))
+            index=0, simple=True, tooltip=_("The contact form of the relay."))
         self.cmbContactRating = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The rating of the relay contacts."))
+            tooltip=_("The rating of the relay contacts."))
         self.cmbApplication = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The type of relay appliction."))
+            index=0, simple=True, tooltip=_("The type of relay appliction."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The method of construction of the relay."))
+            tooltip=_("The method of construction of the relay."))
         self.txtCycles = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of relay on/off cycles per hour."))
+            tooltip=_("The number of relay on/off cycles per hour."))
 
         self._make_page()
         self.show_all()
@@ -225,8 +225,8 @@ class RelayAssessmentInputs(AssessmentInputs):
         """
         # Load the quality level RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
-            _data = [[_(u"Established Reliability")], ["MIL-SPEC"],
-                     [_(u"Lower")]]
+            _data = [[_("Established Reliability")], ["MIL-SPEC"],
+                     [_("Lower")]]
         else:
             try:
                 _data = self._dic_quality[subcategory_id]
@@ -516,9 +516,9 @@ class RelayAssessmentResults(AssessmentResults):
     # Define private dict attributes.
     _dic_part_stress = {
         1:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
     def __init__(self, **kwargs):
@@ -528,15 +528,15 @@ class RelayAssessmentResults(AssessmentResults):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_labels.append(u"\u03C0<sub>C</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>CYC</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>F</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>L</sub>:")
+        self._lst_labels.append("\u03C0<sub>C</sub>:")
+        self._lst_labels.append("\u03C0<sub>CYC</sub>:")
+        self._lst_labels.append("\u03C0<sub>F</sub>:")
+        self._lst_labels.append("\u03C0<sub>L</sub>:")
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _(u"The assessment model used to calculate the relay's failure "
-              u"rate."))
+            _("The assessment model used to calculate the relay's failure "
+              "rate."))
 
         # Initialize public dictionary attributes.
 
@@ -547,23 +547,23 @@ class RelayAssessmentResults(AssessmentResults):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The contact form factor for the relay."))
+            tooltip=_("The contact form factor for the relay."))
         self.txtPiCYC = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The cycling factor for the relay."))
+            tooltip=_("The cycling factor for the relay."))
         self.txtPiF = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The application and construction factor for the "
-                      u"relay."))
+            tooltip=_("The application and construction factor for the "
+                      "relay."))
         self.txtPiL = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The load stress factor for the relay."))
+            tooltip=_("The load stress factor for the relay."))
 
         self._make_page()
         self.show_all()

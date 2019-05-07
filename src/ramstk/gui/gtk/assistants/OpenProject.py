@@ -55,10 +55,10 @@ class OpenProject(object):
         :rtype: None
         """
         if self._mdcRAMSTK.loaded:
-            _prompt = _(u"A database is already open.  Only one database can "
-                        u"be open at a time in RAMSTK.  You must close the "
-                        u"currently open RAMSTK database before a new "
-                        u"database can be opened.")
+            _prompt = _("A database is already open.  Only one database can "
+                        "be open at a time in RAMSTK.  You must close the "
+                        "currently open RAMSTK database before a new "
+                        "database can be opened.")
             _icon = (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
                      '/32x32/information.png')
             _dialog = ramstk.RAMSTKMessageDialog(_prompt, _icon, 'information')
@@ -67,7 +67,7 @@ class OpenProject(object):
 
         else:
             _dialog = Gtk.FileChooserDialog(
-                title=_(u"RAMSTK - Open Program"),
+                title=_("RAMSTK - Open Program"),
                 buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
                          Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
             _dialog.set_current_folder(
@@ -75,12 +75,12 @@ class OpenProject(object):
 
             # Set some filters to select all files or only some text files.
             _filter = Gtk.FileFilter()
-            _filter.set_name(_(u"RAMSTK Program Databases"))
+            _filter.set_name(_("RAMSTK Program Databases"))
             _filter.add_pattern("*.rtk")
             _dialog.add_filter(_filter)
 
             _filter = Gtk.FileFilter()
-            _filter.set_name(_(u"All files"))
+            _filter.set_name(_("All files"))
             _filter.add_pattern("*")
             _dialog.add_filter(_filter)
 

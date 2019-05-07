@@ -33,8 +33,8 @@ def do_make_buttonbox(self, **kwargs):
     try:
         _icons.extend(['save', 'save-all'])
         _tooltips.extend(
-            [_(u"Save the currently selected item."),
-             _(u"Save all items.")])
+            [_("Save the currently selected item."),
+             _("Save all items.")])
         _callbacks.extend(
             [self._do_request_update, self._do_request_update_all])
     except AttributeError:
@@ -143,7 +143,7 @@ class RAMSTKCheckButton(Gtk.CheckButton):
 class RAMSTKOptionButton(Gtk.RadioButton):
     """This is the RAMSTK Option Button class."""
 
-    def __init__(self, btngroup=None, btnlabel=_(u"")):
+    def __init__(self, btngroup=None, btnlabel=_("")):
         """
         Initialize an instance of the RAMSTK OptionButton.
 

@@ -61,36 +61,36 @@ class SwitchAssessmentInputs(AssessmentInputs):
     # Define private dict attributes.
     # Key is subcategory ID; index is application ID.
     _dic_applications = {
-        1: [[_(u"Resistive")], [_(u"Inductive")], [_(u"Lamp")]],
-        2: [[_(u"Resistive")], [_(u"Inductive")], [_(u"Lamp")]],
-        3: [[_(u"Resistive")], [_(u"Inductive")], [_(u"Lamp")]],
-        4: [[_(u"Resistive")], [_(u"Inductive")], [_(u"Lamp")]],
-        5: [[_(u"Not Used as a Power On/Off Switch")],
-            [_(u"Also Used as a Power On/Off Switch")]]
+        1: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+        2: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+        3: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+        4: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+        5: [[_("Not Used as a Power On/Off Switch")],
+            [_("Also Used as a Power On/Off Switch")]]
     }
     # Key is subcategory ID; index is construction ID.
     _dic_constructions = {
-        1: [[_(u"Snap Action")], [_(u"Non-Snap Action")]],
-        2: [[_(u"Actuation Differential > 0.002 inches")],
-            [_(u"Actuation Differential < 0.002 inches")]],
-        3: [[_(u"Ceramic RF Wafers")], [_(u"Medium Power Wafers")]],
-        5: [[_(u"Magnetic")], [_(u"Thermal")], [_(u"Thermal-Magnetic")]]
+        1: [[_("Snap Action")], [_("Non-Snap Action")]],
+        2: [[_("Actuation Differential > 0.002 inches")],
+            [_("Actuation Differential < 0.002 inches")]],
+        3: [[_("Ceramic RF Wafers")], [_("Medium Power Wafers")]],
+        5: [[_("Magnetic")], [_("Thermal")], [_("Thermal-Magnetic")]]
     }
     # Key is subcategory ID; index is contact form ID.
     _dic_contact_forms = {
         1: [["SPST"], ["DPST"], ["SPDT"], ["3PST"], ["4PST"], ["DPDT"],
             ["3PDT"], ["4PDT"], ["6PDT"]],
-        5: [[u"SPST"], [u"DPST"], [u"3PST"], [u"4PST"]]
+        5: [["SPST"], ["DPST"], ["3PST"], ["4PST"]]
     }
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Application:"),
-        _(u"Construction:"),
-        _(u"Contact Form:"),
-        _(u"Number of Cycles/Hour:"),
-        _(u"Number of Active Contacts:")
+        _("Quality Level:"),
+        _("Application:"),
+        _("Construction:"),
+        _("Contact Form:"),
+        _("Number of Cycles/Hour:"),
+        _("Number of Active Contacts:")
     ]
 
     def __init__(self, **kwargs):
@@ -109,22 +109,22 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
         # Initialize public scalar attributes.
         self.cmbApplication = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The application of the switch."))
+            index=0, simple=True, tooltip=_("The application of the switch."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The construction method for "
-                      u"the switch."))
+            tooltip=_("The construction method for "
+                      "the switch."))
         self.cmbContactForm = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The contact form and quantity of the switch."))
+            tooltip=_("The contact form and quantity of the switch."))
         self.txtNCycles = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of cycles per hour of the switch."))
+            tooltip=_("The number of cycles per hour of the switch."))
         self.txtNElements = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The number of active contacts in the switch."))
+            tooltip=_("The number of active contacts in the switch."))
 
         self._make_page()
         self.show_all()
@@ -159,7 +159,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
         :rtype: None
         """
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_(u"Lower")]])
+        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]])
 
         # Load the application RAMSTKCOmboBOx().
         try:
@@ -171,7 +171,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
         # Load the construction RAMSTKComboBox().
         try:
             if self._hazard_rate_method_id == 1:
-                _data = [[_(u"Thermal")], [_(u"Magnetic")]]
+                _data = [[_("Thermal")], [_("Magnetic")]]
             else:
                 _data = self._dic_constructions[self._subcategory_id]
         except KeyError:
@@ -405,15 +405,15 @@ class SwitchAssessmentResults(AssessmentResults):
     # Define private dict attributes.
     _dic_part_stress = {
         1:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>E</sub></span>",
         2:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>",
         3:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>",
         4:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = (\u03BB<sub>b1</sub> + \u03C0<sub>N</sub>\u03BB<sub>b2</sub>)\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = (\u03BB<sub>b1</sub> + \u03C0<sub>N</sub>\u03BB<sub>b2</sub>)\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>",
         5:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>U</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>U</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
     def __init__(self, **kwargs):
@@ -423,16 +423,16 @@ class SwitchAssessmentResults(AssessmentResults):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_labels.append(u"\u03C0<sub>CYC</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>L</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>C</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>N</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>U</sub>:")
+        self._lst_labels.append("\u03C0<sub>CYC</sub>:")
+        self._lst_labels.append("\u03C0<sub>L</sub>:")
+        self._lst_labels.append("\u03C0<sub>C</sub>:")
+        self._lst_labels.append("\u03C0<sub>N</sub>:")
+        self._lst_labels.append("\u03C0<sub>U</sub>:")
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _(u"The assessment model used to calculate the switch failure "
-              u"rate."))
+            _("The assessment model used to calculate the switch failure "
+              "rate."))
 
         # Initialize public dictionary attributes.
 
@@ -443,27 +443,27 @@ class SwitchAssessmentResults(AssessmentResults):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The cycling factor for the switch."))
+            tooltip=_("The cycling factor for the switch."))
         self.txtPiL = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The load stress factor for the switch."))
+            tooltip=_("The load stress factor for the switch."))
         self.txtPiC = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The contact form and quantity factor for the switch."))
+            tooltip=_("The contact form and quantity factor for the switch."))
         self.txtPiN = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The number of active contacts factor for the switch."))
+            tooltip=_("The number of active contacts factor for the switch."))
         self.txtPiU = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The use factor for the breaker."))
+            tooltip=_("The use factor for the breaker."))
 
         self._make_page()
         self.show_all()

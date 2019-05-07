@@ -31,7 +31,7 @@ ATTRIBUTES = {
         'function_id': 1,
         'mtbf_mission': 0.0,
         'function_code': 'FUNC-0001',
-        'name': u'Function Name',
+        'name': 'Function Name',
         'level': 0,
         'mttr': 0.0,
         'mcmt': 0.0,

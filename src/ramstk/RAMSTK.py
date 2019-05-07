@@ -17,8 +17,8 @@ from treelib import Tree  # pylint: disable=E0401
 
 # Import other RAMSTK modules.
 # pylint: disable=E0401
-from Configuration import Configuration
-import Utilities
+from .Configuration import Configuration
+from . import Utilities
 from ramstk.dao.DAO import DAO
 from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
 from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
@@ -112,20 +112,20 @@ def _initialize_loggers(configuration):
         try:
             os.remove(__user_log)
         except WindowsError as _error:
-            print("Could not delete {0:s} because {1:s}.").format(
-                __user_log, _error)
+            print(("Could not delete {0:s} because {1:s}.").format(
+                __user_log, _error))
     if Utilities.file_exists(__error_log):
         try:
             os.remove(__error_log)
         except WindowsError as _error:
-            print("Could not delete {0:s} because {1:s}.").format(
-                __user_log, _error)
+            print(("Could not delete {0:s} because {1:s}.").format(
+                __user_log, _error))
     if Utilities.file_exists(__import_log):
         try:
             os.remove(__import_log)
         except WindowsError as _error:
-            print("Could not delete {0:s} because {1:s}.").format(
-                __user_log, _error)
+            print(("Could not delete {0:s} because {1:s}.").format(
+                __user_log, _error))
 
     _debug_log = Utilities.create_logger("RAMSTK.debug", logging.DEBUG,
                                          __error_log)
@@ -555,12 +555,12 @@ class RAMSTK(object):
         self.RAMSTK_CONFIGURATION.set_site_variables()
         if self.RAMSTK_CONFIGURATION.set_user_variables():
             _prompt = _(
-                u"A user-specific configuration directory could not "
-                u"be found at {0:s}.  You will be given the option to "
-                u"create and populate this directory.  If you choose "
-                u"not to, you will recieve this prompt every time you "
-                u"execute RAMSTK.  Would you like to create and populate "
-                u"a user-specific configuration directory?").format(
+                "A user-specific configuration directory could not "
+                "be found at {0:s}.  You will be given the option to "
+                "create and populate this directory.  If you choose "
+                "not to, you will recieve this prompt every time you "
+                "execute RAMSTK.  Would you like to create and populate "
+                "a user-specific configuration directory?").format(
                     self.RAMSTK_CONFIGURATION.RAMSTK_HOME_DIR +
                     "/.config/RAMSTK")
             _dialog = ramstk.RAMSTKMessageDialog(_prompt, '', 'question')
@@ -861,8 +861,8 @@ class RAMSTK(object):
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(
-            _(u"RAMSTK is not currently connected to a "
-              u"project database."))
+            _("RAMSTK is not currently connected to a "
+              "project database."))
 
         if not self.__test:
             pub.sendMessage('closedProgram')
@@ -882,7 +882,7 @@ class RAMSTK(object):
         _return = False
 
         # TODO: Move this to the ModuleBook.
-        _message = _(u"Saving Program Database {0:s}"). \
+        _message = _("Saving Program Database {0:s}"). \
             format(self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])
         self.dic_books['modulebook'].statusbar.push(2, _message)
 
@@ -918,9 +918,9 @@ class RAMSTK(object):
             _license_file = open(_license_file, 'r')
         except IOError:
             ramstk_warning(
-                _(u"Cannot find license file {0:s}.  If your "
-                  u"license file is elsewhere, please place "
-                  u"it in {1:s}.").format(
+                _("Cannot find license file {0:s}.  If your "
+                  "license file is elsewhere, please place "
+                  "it in {1:s}.").format(
                       _license_file,
                       self.RAMSTK_CONFIGURATION.RAMSTK_DATA_DIR))
             _return = True
@@ -932,16 +932,16 @@ class RAMSTK(object):
         _error_code, _msg = self.ramstk_model.validate_license(_license_key)
         if _error_code == 1:
             ramstk_error(
-                _(u"Invalid license (Invalid key).  Your "
-                  u"license key is incorrect.  Closing the RAMSTK "
-                  u"application."))
+                _("Invalid license (Invalid key).  Your "
+                  "license key is incorrect.  Closing the RAMSTK "
+                  "application."))
             _return = True
         elif _error_code == 2:
             # noinspection PyUnresolvedReferences
             ramstk_error(
-                _(u"Invalid license (Expired).  Your license "
-                  u"expired on {0:s}.  Closing the RAMSTK "
-                  u"application.").format(_expire_date.strftime('%Y-%d-%m')))
+                _("Invalid license (Expired).  Your license "
+                  "expired on {0:s}.  Closing the RAMSTK "
+                  "application.").format(_expire_date.strftime('%Y-%d-%m')))
             _return = True
 
         return _return

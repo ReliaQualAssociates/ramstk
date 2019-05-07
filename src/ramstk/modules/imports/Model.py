@@ -879,10 +879,10 @@ class ImportDataModel(RAMSTKDataModel):
         :rtype: (list, list)
         """
         try:
-            _db_fields = self._dic_field_map[module].keys()
+            _db_fields = list(self._dic_field_map[module].keys())
             if module.lower() == 'hardware':
-                _db_fields += self._dic_field_map['Design Electric'].keys()[1:]
-                _db_fields += self._dic_field_map['Reliability'].keys()[1:]
+                _db_fields += list(self._dic_field_map['Design Electric'].keys())[1:]
+                _db_fields += list(self._dic_field_map['Reliability'].keys())[1:]
         except KeyError:
             _db_fields = []
 

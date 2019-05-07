@@ -53,22 +53,22 @@ class ListView(RAMSTKListView):
 
         self.__make_treeview()
         self.treeview.set_tooltip_text(
-            _(u"Displays the list of stakeholder inputs for the selected "
-              u"revision."))
+            _("Displays the list of stakeholder inputs for the selected "
+              "revision."))
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._on_row_change))
         self._lst_handler_id.append(
             self.treeview.connect('button_press_event', self._on_button_press))
 
         _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Stakeholder\nInputs") +
+        _label.set_markup("<span weight='bold'>" + _("Stakeholder\nInputs") +
                           "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(Gtk.Justification.CENTER)
         _label.show_all()
         _label.set_tooltip_text(
-            _(u"Displays stakeholder inputs for the "
-              u"selected revision."))
+            _("Displays stakeholder inputs for the "
+              "selected revision."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
         self.hbx_tab_label.show_all()
@@ -97,10 +97,10 @@ class ListView(RAMSTKListView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Add a new Stakeholder input."),
-            _(u"Remove the currently selected Stakeholder input."),
-            _(u"Calculate the currently selected Stakeholder input."),
-            _(u"Calculate all Stakeholder intputs."),
+            _("Add a new Stakeholder input."),
+            _("Remove the currently selected Stakeholder input."),
+            _("Calculate the currently selected Stakeholder input."),
+            _("Calculate all Stakeholder intputs."),
         ]
         _callbacks = [
             self.do_request_insert_sibling, self._do_request_delete,
@@ -259,9 +259,9 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _prompt = _(u"You are about to delete Stakeholder input {0:d} and "
-                    u"all data associated with it.  Is this really what you "
-                    u"want to do?").format(self._stakeholder_id)
+        _prompt = _("You are about to delete Stakeholder input {0:d} and "
+                    "all data associated with it.  Is this really what you "
+                    "want to do?").format(self._stakeholder_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
@@ -353,7 +353,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['add'])
-            _menu_item.set_label(_(u"Add New Stakeholder Input"))
+            _menu_item.set_label(_("Add New Stakeholder Input"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_insert)
@@ -363,7 +363,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Stakeholder Input"))
+            _menu_item.set_label(_("Remove Selected Stakeholder Input"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_delete)
@@ -373,7 +373,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Stakeholder Input"))
+            _menu_item.set_label(_("Save Selected Stakeholder Input"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_update)
@@ -383,7 +383,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All Stakeholder Inputs"))
+            _menu_item.set_label(_("Save All Stakeholder Inputs"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_update_all)

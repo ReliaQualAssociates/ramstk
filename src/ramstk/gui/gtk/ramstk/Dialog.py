@@ -112,14 +112,14 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
                      "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
             prompt = '<b>' \
                      + prompt \
-                     + _(u"  Check the error log for additional information "
-                         u"(if any).  Please e-mail <span foreground='blue' "
-                         u"underline='single'>") \
+                     + _("  Check the error log for additional information "
+                         "(if any).  Please e-mail <span foreground='blue' "
+                         "underline='single'>") \
                      + _hyper \
-                     + _(u"bugs@reliaqual.com</a></span> with a detailed "
-                         u"description of the problem, the workflow you are "
-                         u"using and the error log attached if the problem "
-                         u"persists.</b>")
+                     + _("bugs@reliaqual.com</a></span> with a detailed "
+                         "description of the problem, the workflow you are "
+                         "using and the error log attached if the problem "
+                         "persists.</b>")
             _criticality = Gtk.MessageType.ERROR
             _buttons = Gtk.ButtonsType.OK
         elif criticality == 'warning':
@@ -156,7 +156,7 @@ class RAMSTKDateSelect(Gtk.Dialog):
         """Initialize an instance of the RAMSTKDateSelect class."""
         GObject.GObject.__init__(
             self,
-            _(u"Select Date"),
+            _("Select Date"),
             buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
 
         self._calendar = Gtk.Calendar()
@@ -199,18 +199,18 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         self.set_current_folder(cwd)
 
         _filter = Gtk.FileFilter()
-        _filter.set_name(_(u"Excel Files"))
+        _filter.set_name(_("Excel Files"))
         _filter.add_pattern('*.xls')
         _filter.add_pattern('*xlsm')
         _filter.add_pattern('*xlsx')
         self.add_filter(_filter)
         _filter = Gtk.FileFilter()
-        _filter.set_name(_(u"Delimited Text Files"))
+        _filter.set_name(_("Delimited Text Files"))
         _filter.add_pattern('*.csv')
         _filter.add_pattern('*.txt')
         self.add_filter(_filter)
         _filter = Gtk.FileFilter()
-        _filter.set_name(u"All files")
+        _filter.set_name("All files")
         _filter.add_pattern("*")
         self.add_filter(_filter)
 

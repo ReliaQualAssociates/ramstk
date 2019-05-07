@@ -66,13 +66,13 @@ class ModuleView(RAMSTKModuleView):
         RAMSTKModuleView._make_ui(self)
 
         self.make_treeview()
-        self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
+        self.treeview.set_tooltip_text(_("Displays the list of revisions."))
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Revisions"),
+            _("Revisions"),
             width=-1,
             height=-1,
-            tooltip=_(u"Displays the program revisions."))
+            tooltip=_("Displays the program revisions."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
@@ -89,9 +89,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _prompt = _(u"You are about to delete Revision {0:d} and all "
-                    u"data associated with it.  Is this really what "
-                    u"you want to do?").format(self._revision_id)
+        _prompt = _("You are about to delete Revision {0:d} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._revision_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
@@ -158,8 +158,8 @@ class ModuleView(RAMSTKModuleView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Add a new Revision."),
-            _(u"Remove the currently selected Revision.")
+            _("Add a new Revision."),
+            _("Remove the currently selected Revision.")
         ]
         _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
         _icons = ['add', 'remove']
@@ -205,10 +205,10 @@ class ModuleView(RAMSTKModuleView):
         if event.button == 3:
             _icons = ['add', 'remove', 'save', 'save-all']
             _labels = [
-                _(u"Add Revision"),
-                _(u"Remove the Selected Revision"),
-                _(u"Save Selected Revision"),
-                _(u"Save All Revisions")
+                _("Add Revision"),
+                _("Remove the Selected Revision"),
+                _("Save Selected Revision"),
+                _("Save All Revisions")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_delete,

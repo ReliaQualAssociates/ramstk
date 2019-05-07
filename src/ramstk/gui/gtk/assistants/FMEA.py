@@ -18,8 +18,8 @@ class AddControlAction(ramstk.RAMSTKDialog):
         """Initialize on instance of the Add Control or Action Assistant."""
         ramstk.RAMSTKDialog.__init__(
             self,
-            _(u"RAMSTK FMEA/FMECA Design Control and "
-              u"Action Addition Assistant"))
+            _("RAMSTK FMEA/FMECA Design Control and "
+              "Action Addition Assistant"))
 
         # Initialize private dictionary attributes.
 
@@ -32,9 +32,9 @@ class AddControlAction(ramstk.RAMSTKDialog):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.rdoControl = ramstk.RAMSTKOptionButton(None, _(u"Add control"))
+        self.rdoControl = ramstk.RAMSTKOptionButton(None, _("Add control"))
         self.rdoAction = ramstk.RAMSTKOptionButton(self.rdoControl,
-                                                   _(u"Add action"))
+                                                   _("Add action"))
 
         self.__make_ui()
 
@@ -49,11 +49,11 @@ class AddControlAction(ramstk.RAMSTKDialog):
         self.vbox.pack_start(_fixed, True, True, 0)
 
         _label = ramstk.RAMSTKLabel(
-            _(u"This is the RAMSTK Design Control and Action "
-              u"Addition Assistant.  Enter the information "
-              u"requested below and then press 'OK' to add "
-              u"a new design control or action to the RAMSTK "
-              u"Program database."),
+            _("This is the RAMSTK Design Control and Action "
+              "Addition Assistant.  Enter the information "
+              "requested below and then press 'OK' to add "
+              "a new design control or action to the RAMSTK "
+              "Program database."),
             width=600,
             height=-1,
             wrap=True)
@@ -61,10 +61,10 @@ class AddControlAction(ramstk.RAMSTKDialog):
         _y_pos = _label.size_request()[1] + 50
 
         self.rdoControl.set_tooltip_text(
-            _(u"Select to add a design control to the selected failure "
-              u"cause."))
+            _("Select to add a design control to the selected failure "
+              "cause."))
         self.rdoAction.set_tooltip_text(
-            _(u"Select to add an Action to the selected failure cause."))
+            _("Select to add an Action to the selected failure cause."))
 
         _fixed.put(self.rdoControl, 10, _y_pos)
         _fixed.put(self.rdoAction, 10, _y_pos + 35)

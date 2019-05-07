@@ -85,7 +85,7 @@ class WorkBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
-        self.set_title(_(u"RAMSTK Work Book"))
+        self.set_title(_("RAMSTK Work Book"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)

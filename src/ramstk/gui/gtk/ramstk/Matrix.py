@@ -137,7 +137,7 @@ class RAMSTKBaseMatrix(object):
         # The remaining columns will be Gtk.CellRendererCombo()'s for
         # displaying the interaction between Function and Hardware.
         j = 2
-        for i in xrange(self._n_columns):  # pylint: disable=E0602
+        for i in range(self._n_columns):  # pylint: disable=E0602
             _cell = self._make_combo_cell()
             self._do_set_properties(_cell, True, i + j + 1,
                                     self._ramstk_matrix.columns[i], _model)
@@ -251,8 +251,8 @@ class RAMSTKBaseMatrix(object):
         _cell = Gtk.CellRendererCombo()
         _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
         _cellmodel.append([""])
-        _cellmodel.append([_(u"Partial")])
-        _cellmodel.append([_(u"Complete")])
+        _cellmodel.append([_("Partial")])
+        _cellmodel.append([_("Complete")])
         _cell.set_property('has-entry', False)
         _cell.set_property('model', _cellmodel)
         _cell.set_property('text-column', 0)

@@ -181,7 +181,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
         :rtype: bool
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
-        print _error_code, _msg
+        print(_error_code, _msg)
         if _error_code != 0:
             _error_code = 2207
             _msg = 'RAMSTK ERROR: Attempted to save non-existent Hazard ' \

@@ -136,29 +136,29 @@ class GeneralData(RAMSTKWorkView):
     # We add an empty string in the positions where a Gtk.CheckButton() will be
     # placed.
     _lst_labels = [[
-        _(u"Part Number:"),
-        _(u"Alternate Part Number:"),
-        _(u"Name:"),
-        _(u"Description:"),
-        _(u"Reference Designator:"),
-        _(u"Composite Ref. Des."),
-        _(u"Category:"),
-        _(u"Subcategory:"),
-        _(u"Specification:"),
-        _(u"Page Number:"),
-        _(u"Figure Number:"), "",
-        _(u"LCN:")
+        _("Part Number:"),
+        _("Alternate Part Number:"),
+        _("Name:"),
+        _("Description:"),
+        _("Reference Designator:"),
+        _("Composite Ref. Des."),
+        _("Category:"),
+        _("Subcategory:"),
+        _("Specification:"),
+        _("Page Number:"),
+        _("Figure Number:"), "",
+        _("LCN:")
     ],
                    [
-                       _(u"Manufacturer:"),
-                       _(u"CAGE Code:"),
-                       _(u"NSN:"),
-                       _(u"Year Made:"),
-                       _(u"Quantity:"),
-                       _(u"Unit Cost:"),
-                       _(u"Cost Method:")
-                   ], ["", _(u"Attachments:"),
-                       _(u"Remarks:")]]
+                       _("Manufacturer:"),
+                       _("CAGE Code:"),
+                       _("NSN:"),
+                       _("Year Made:"),
+                       _("Quantity:"),
+                       _("Unit Cost:"),
+                       _("Cost Method:")
+                   ], ["", _("Attachments:"),
+                       _("Remarks:")]]
 
     def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
         """
@@ -189,10 +189,10 @@ class GeneralData(RAMSTKWorkView):
 
         # General Data page widgets.
         self.chkRepairable = ramstk.RAMSTKCheckButton(
-            label=_(u"Repairable"),
-            tooltip=_(u"Indicates whether or not the selected hardware item "
-                      u"is repairable."))
-        self.chkTagged = ramstk.RAMSTKCheckButton(label=_(u"Tagged Part"))
+            label=_("Repairable"),
+            tooltip=_("Indicates whether or not the selected hardware item "
+                      "is repairable."))
+        self.chkTagged = ramstk.RAMSTKCheckButton(label=_("Tagged Part"))
 
         self.cmbCategory = ramstk.RAMSTKComboBox()
         self.cmbCostType = ramstk.RAMSTKComboBox()
@@ -200,71 +200,71 @@ class GeneralData(RAMSTKWorkView):
         self.cmbSubcategory = ramstk.RAMSTKComboBox()
 
         self.txtAltPartNum = ramstk.RAMSTKEntry(
-            tooltip=_(u"The alternate part "
-                      u"number (if any) of the "
-                      u"selected hardware item."))
+            tooltip=_("The alternate part "
+                      "number (if any) of the "
+                      "selected hardware item."))
         self.txtAttachments = ramstk.RAMSTKTextView(
             Gtk.TextBuffer(),
             width=600,
-            tooltip=_(u"Hyperlinks to any documents associated with the "
-                      u"selected hardware item."))
+            tooltip=_("Hyperlinks to any documents associated with the "
+                      "selected hardware item."))
         self.txtCAGECode = ramstk.RAMSTKEntry(
-            tooltip=_(u"The Commerical and "
-                      u"Government Entity (CAGE) "
-                      u"Code of the selected "
-                      u"hardware item."))
+            tooltip=_("The Commerical and "
+                      "Government Entity (CAGE) "
+                      "Code of the selected "
+                      "hardware item."))
         self.txtCompRefDes = ramstk.RAMSTKEntry(
-            tooltip=_(u"The composite reference "
-                      u"designator of the "
-                      u"selected hardware item."))
+            tooltip=_("The composite reference "
+                      "designator of the "
+                      "selected hardware item."))
         self.txtCost = ramstk.RAMSTKEntry(
             width=100,
-            tooltip=_(u"The unit cost of the selected hardware item."))
+            tooltip=_("The unit cost of the selected hardware item."))
         self.txtDescription = ramstk.RAMSTKTextView(
             Gtk.TextBuffer(),
             width=600,
-            tooltip=_(u"The description of the selected hardware item."))
+            tooltip=_("The description of the selected hardware item."))
         self.txtFigureNumber = ramstk.RAMSTKEntry(
-            tooltip=_(u"The figure number in "
-                      u"the governing "
-                      u"specification for the "
-                      u"selected hardware "
-                      u"item."))
+            tooltip=_("The figure number in "
+                      "the governing "
+                      "specification for the "
+                      "selected hardware "
+                      "item."))
         self.txtLCN = ramstk.RAMSTKEntry(
-            tooltip=_(u"The Logistics Control Number "
-                      u"(LCN) of the selected hardware "
-                      u"item."))
+            tooltip=_("The Logistics Control Number "
+                      "(LCN) of the selected hardware "
+                      "item."))
         self.txtName = ramstk.RAMSTKEntry(
-            width=600, tooltip=_(u"The name of the selected hardware item."))
+            width=600, tooltip=_("The name of the selected hardware item."))
         self.txtNSN = ramstk.RAMSTKEntry(
-            tooltip=_(u"The National Stock Number (NSN) of the selected "
-                      u"hardware item."))
+            tooltip=_("The National Stock Number (NSN) of the selected "
+                      "hardware item."))
         self.txtPageNumber = ramstk.RAMSTKEntry(
-            tooltip=_(u"The page number in the "
-                      u"governing specification "
-                      u"for the selected "
-                      u"hardware item."))
+            tooltip=_("The page number in the "
+                      "governing specification "
+                      "for the selected "
+                      "hardware item."))
         self.txtPartNumber = ramstk.RAMSTKEntry(
-            tooltip=_(u"The part number of the selected hardware item."))
+            tooltip=_("The part number of the selected hardware item."))
         self.txtQuantity = ramstk.RAMSTKEntry(
             width=50,
             tooltip=_(
-                u"The number of the selected hardware items in the design."))
+                "The number of the selected hardware items in the design."))
         self.txtRefDes = ramstk.RAMSTKEntry(
             tooltip=_(
-                u"The reference designator of the selected hardware item."))
+                "The reference designator of the selected hardware item."))
         self.txtRemarks = ramstk.RAMSTKTextView(
             Gtk.TextBuffer(),
             width=600,
-            tooltip=_(u"Enter any remarks associated with the selected "
-                      u"hardware item."))
+            tooltip=_("Enter any remarks associated with the selected "
+                      "hardware item."))
         self.txtSpecification = ramstk.RAMSTKEntry(
-            tooltip=_(u"The specification (if any) governing the selected "
-                      u"hardware item."))
+            tooltip=_("The specification (if any) governing the selected "
+                      "hardware item."))
         self.txtYearMade = ramstk.RAMSTKEntry(
             width=100,
             tooltip=_(
-                u"The year the the selected hardware item was manufactured."))
+                "The year the the selected hardware item was manufactured."))
 
         # Connect to callback hardwares for editable Gtk.Widgets().
         self._lst_handler_id.append(
@@ -337,8 +337,8 @@ class GeneralData(RAMSTKWorkView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Creates the composite reference designator for the selected "
-              u"hardware item.")
+            _("Creates the composite reference designator for the selected "
+              "hardware item.")
         ]
         _callbacks = [self._do_request_make_comp_ref_des]
         _icons = ['comp_ref_des']
@@ -382,7 +382,7 @@ class GeneralData(RAMSTKWorkView):
         _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Hardware Description"))
+        _frame = ramstk.RAMSTKFrame(label=_("Hardware Description"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[0], _fixed,
@@ -393,7 +393,7 @@ class GeneralData(RAMSTKWorkView):
 
         # Move the labels after the description to account for the extra
         # vertical space needed by the description RAMSTKTextView().
-        for _index in xrange(4, 13):  # pylint: disable=undefined-variable
+        for _index in range(4, 13):  # pylint: disable=undefined-variable
             _fixed.move(_fixed.get_children()[_index], 5,
                         _y_pos[_index - 1] + 100)
 
@@ -418,7 +418,7 @@ class GeneralData(RAMSTKWorkView):
         _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Purchasing Information"))
+        _frame = ramstk.RAMSTKFrame(label=_("Purchasing Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[1], _fixed,
@@ -439,7 +439,7 @@ class GeneralData(RAMSTKWorkView):
         _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Miscellaneous Information"))
+        _frame = ramstk.RAMSTKFrame(label=_("Miscellaneous Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[2], _fixed,
@@ -461,12 +461,12 @@ class GeneralData(RAMSTKWorkView):
 
         # Create the label for the Gtk.Notebook() tab.
         _label = ramstk.RAMSTKLabel(
-            _(u"General\nData"),
+            _("General\nData"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays general information for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays general information for the selected "
+                      "hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _hbox
@@ -585,7 +585,7 @@ class GeneralData(RAMSTKWorkView):
         self._hardware_id = attributes['hardware_id']
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Hardware {0:s} - {1:s}").format(
+            title=_("Analyzing Hardware {0:s} - {1:s}").format(
                 str(attributes['ref_des']), str(attributes['name'])))
 
         # Disable the category RAMSTKCombo() if the hardware item is not a part.
@@ -1115,26 +1115,26 @@ class AssessmentInputs(RAMSTKWorkView):
 
     # Define private list attributes.
     _lst_labels = [[
-        _(u"Assessment Type:"),
-        _(u"Assessment Method:"),
-        _(u"Failure Distribution:"),
-        _(u"Scale Parameter:"),
-        _(u"Shape Parameter:"),
-        _(u"Location Parameter:"),
-        _(u"Stated Hazard Rate [h(t)]:"),
-        _(u"Stated h(t) Variance:"),
-        _(u"Stated MTBF:"),
-        _(u"Stated MTBF Variance:"),
-        _(u"Additive Adjustment Factor:"),
-        _(u"Multiplicative Adjustment Factor:")
+        _("Assessment Type:"),
+        _("Assessment Method:"),
+        _("Failure Distribution:"),
+        _("Scale Parameter:"),
+        _("Shape Parameter:"),
+        _("Location Parameter:"),
+        _("Stated Hazard Rate [h(t)]:"),
+        _("Stated h(t) Variance:"),
+        _("Stated MTBF:"),
+        _("Stated MTBF Variance:"),
+        _("Additive Adjustment Factor:"),
+        _("Multiplicative Adjustment Factor:")
     ],
                    [
-                       _(u"Active Environment:"),
-                       _(u"Dormant Environment:"),
-                       _(u"Active Temperature (\u00B0C):"),
-                       _(u"Dormant Temperature (\u00B0C):"),
-                       _(u"Mission Time:"),
-                       _(u"Duty Cycle:")
+                       _("Active Environment:"),
+                       _("Dormant Environment:"),
+                       _("Active Temperature (\u00B0C):"),
+                       _("Dormant Temperature (\u00B0C):"),
+                       _("Mission Time:"),
+                       _("Duty Cycle:")
                    ]]
 
     def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
@@ -1173,18 +1173,18 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.cmbActiveEnviron = ramstk.RAMSTKComboBox(
-            tooltip=_(u"The operating environment for the hardware item."))
+            tooltip=_("The operating environment for the hardware item."))
         self.cmbDormantEnviron = ramstk.RAMSTKComboBox(
-            tooltip=_(u"The storage environment for the hardware item."))
+            tooltip=_("The storage environment for the hardware item."))
         self.cmbFailureDist = ramstk.RAMSTKComboBox(
             tooltip=_(
-                u"The statistical failure distribution of the hardware item."))
+                "The statistical failure distribution of the hardware item."))
         self.cmbHRType = ramstk.RAMSTKComboBox(
-            tooltip=_(u"The type of reliability assessment for the selected "
-                      u"hardware item."))
+            tooltip=_("The type of reliability assessment for the selected "
+                      "hardware item."))
         self.cmbHRMethod = ramstk.RAMSTKComboBox(
             tooltip=_(
-                u"The assessment method to use for the selected hardware item."
+                "The assessment method to use for the selected hardware item."
             ))
 
         self.scwDesignRatings = ramstk.RAMSTKScrolledWindow(None)
@@ -1193,51 +1193,51 @@ class AssessmentInputs(RAMSTKWorkView):
         self.txtActiveTemp = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"The ambient temperature in the operating environment."))
+                "The ambient temperature in the operating environment."))
         self.txtAddAdjFactor = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"An adjustment factor to add to the assessed hazard rate or "
-                u"MTBF."))
+                "An adjustment factor to add to the assessed hazard rate or "
+                "MTBF."))
         self.txtDormantTemp = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The ambient temperature in the storage environment."))
+            tooltip=_("The ambient temperature in the storage environment."))
         self.txtDutyCycle = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The duty cycle of the selected hardware item."))
+            tooltip=_("The duty cycle of the selected hardware item."))
         self.txtFailScale = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"The scale parameter of the statistical failure distribution."
+                "The scale parameter of the statistical failure distribution."
             ))
         self.txtFailShape = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"The shape parameter of the statistical failure distribution."
+                "The shape parameter of the statistical failure distribution."
             ))
         self.txtFailLocation = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The location parameter of the statistical failure "
-                      u"distribution."))
+            tooltip=_("The location parameter of the statistical failure "
+                      "distribution."))
         self.txtMissionTime = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The mission time of the selected hardware item."))
+            tooltip=_("The mission time of the selected hardware item."))
         self.txtMultAdjFactor = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"An adjustment factor to multiply the assessed hazard rate "
-                u"or MTBF by."))
+                "An adjustment factor to multiply the assessed hazard rate "
+                "or MTBF by."))
         self.txtSpecifiedHt = ramstk.RAMSTKEntry(
-            width=125, tooltip=_(u"The stated hazard rate."))
+            width=125, tooltip=_("The stated hazard rate."))
         self.txtSpecifiedHtVar = ramstk.RAMSTKEntry(
-            width=125, tooltip=_(u"The variance of the stated hazard rate."))
+            width=125, tooltip=_("The variance of the stated hazard rate."))
         self.txtSpecifiedMTBF = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The stated mean time between failure (MTBF)."))
+            tooltip=_("The stated mean time between failure (MTBF)."))
         self.txtSpecifiedMTBFVar = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The variance of the stated mean time between failure "
-                      u"(MTBF)."))
+            tooltip=_("The variance of the stated mean time between failure "
+                      "(MTBF)."))
 
         self._lst_handler_id.append(
             self.cmbActiveEnviron.connect('changed', self._on_combo_changed,
@@ -1297,7 +1297,7 @@ class AssessmentInputs(RAMSTKWorkView):
                  View.
         :rtype: :class:`Gtk.ButtonBox`
         """
-        _tooltips = [_(u"Calculate the currently selected Hardware item.")]
+        _tooltips = [_("Calculate the currently selected Hardware item.")]
         _callbacks = [self._do_request_calculate]
 
         _icons = ['calculate']
@@ -1333,7 +1333,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Assessment Inputs"))
+        _frame = ramstk.RAMSTKFrame(label=_("Assessment Inputs"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[0], _fixed,
@@ -1360,7 +1360,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Now add the bottom left pane.  This is just an RAMSTKFrame() and will
         # be the container for component-specific design attributes.
-        _frame = ramstk.RAMSTKFrame(label=_(u"Design Ratings"))
+        _frame = ramstk.RAMSTKFrame(label=_("Design Ratings"))
         _frame.add(self.scwDesignRatings)
         _vpaned.pack2(_frame, True, True)
 
@@ -1369,7 +1369,7 @@ class AssessmentInputs(RAMSTKWorkView):
         _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Environmental Inputs"))
+        _frame = ramstk.RAMSTKFrame(label=_("Environmental Inputs"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels[1], _fixed,
@@ -1389,7 +1389,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Finally, add the bottom right pane.  This is just an RAMSTKFrame()
         # and will be the container for component-specific design attributes.
-        _frame = ramstk.RAMSTKFrame(label=_(u"Operating Stresses"))
+        _frame = ramstk.RAMSTKFrame(label=_("Operating Stresses"))
         _frame.add(self.scwOperatingStress)
         _vpaned.pack2(_frame, True, True)
 
@@ -1403,12 +1403,12 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Create the label for the Gtk.Notebook() tab.
         _label = ramstk.RAMSTKLabel(
-            _(u"Assessment\nInputs"),
+            _("Assessment\nInputs"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays reliability assessment inputs for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays reliability assessment inputs for the "
+                      "selected hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _hbox
@@ -2038,24 +2038,24 @@ class AssessmentResults(RAMSTKWorkView):
 
     # Define private list attributes.
     _lst_labels = [[
-        _(u"Active Failure Intensity [\u03BB(t)]:"),
-        _(u"Dormant \u03BB(t):"),
-        _(u"Software \u03BB(t):"),
-        _(u"Logistics \u03BB(t):"),
-        _(u"Mission \u03BB(t):"),
-        _(u"Percent \u03BB(t):"),
-        _(u"Logistics MTBF:"),
-        _(u"Mission MTBF:"),
-        _(u"Logistics Reliability [R(t)]:"),
-        _(u"Mission R(t):")
+        _("Active Failure Intensity [\u03BB(t)]:"),
+        _("Dormant \u03BB(t):"),
+        _("Software \u03BB(t):"),
+        _("Logistics \u03BB(t):"),
+        _("Mission \u03BB(t):"),
+        _("Percent \u03BB(t):"),
+        _("Logistics MTBF:"),
+        _("Mission MTBF:"),
+        _("Logistics Reliability [R(t)]:"),
+        _("Mission R(t):")
     ],
                    [
-                       _(u"Logistics Availability [A(t)]:"),
-                       _(u"Mission A(t):"),
-                       _(u"Total Cost:"),
-                       _(u"Cost/Failure:"),
-                       _(u"Cost/Hour:"),
-                       _(u"Total # of Parts:")
+                       _("Logistics Availability [A(t)]:"),
+                       _("Mission A(t):"),
+                       _("Total Cost:"),
+                       _("Cost/Failure:"),
+                       _("Cost/Hour:"),
+                       _("Total # of Parts:")
                    ]]
 
     def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
@@ -2100,180 +2100,180 @@ class AssessmentResults(RAMSTKWorkView):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the active failure intensity for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays the active failure intensity for the "
+                      "selected hardware item."))
         self.txtActiveHtVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the active failure intensity "
-                      u"for the selected hardware item."))
+            tooltip=_("Displays the variance on the active failure intensity "
+                      "for the selected hardware item."))
         self.txtCostFailure = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the cost per failure of the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the cost per failure of the selected "
+                      "hardware item."))
         self.txtCostHour = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the failure cost per operating hour for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays the failure cost per operating hour for the "
+                      "selected hardware item."))
         self.txtDormantHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the dormant failure intensity for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays the dormant failure intensity for the "
+                      "selected hardware item."))
         self.txtDormantHtVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
             tooltip=_(
-                u"Displays the variance on the dormant failure intensity "
-                u"for the selected hardware item."))
+                "Displays the variance on the dormant failure intensity "
+                "for the selected hardware item."))
         self.txtLogisticsAt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics availability for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the logistics availability for the selected "
+                      "hardware item."))
         self.txtLogisticsAtVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the logistics availability "
-                      u"for the selected hardware item."))
+            tooltip=_("Displays the variance on the logistics availability "
+                      "for the selected hardware item."))
         self.txtLogisticsHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics failure intensity for the "
-                      u"selected hardware item.  This is the sum of the "
-                      u"active, dormant, and software hazard rates."))
+            tooltip=_("Displays the logistics failure intensity for the "
+                      "selected hardware item.  This is the sum of the "
+                      "active, dormant, and software hazard rates."))
         self.txtLogisticsHtVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the logistics failure "
-                      u"intensity for the selected hardware item."))
+            tooltip=_("Displays the variance on the logistics failure "
+                      "intensity for the selected hardware item."))
         self.txtLogisticsMTBF = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics mean time between failure "
-                      u"(MTBF) for the selected hardware item."))
+            tooltip=_("Displays the logistics mean time between failure "
+                      "(MTBF) for the selected hardware item."))
         self.txtLogisticsMTBFVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the logistics MTBF for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays the variance on the logistics MTBF for the "
+                      "selected hardware item."))
         self.txtLogisticsRt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics reliability for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the logistics reliability for the selected "
+                      "hardware item."))
         self.txtLogisticsRtVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the logistics reliability "
-                      u"for the selected hardware item."))
+            tooltip=_("Displays the variance on the logistics reliability "
+                      "for the selected hardware item."))
         self.txtMCMT = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean corrective maintenance time (MCMT) "
-                      u"for the selected hardware item."))
+            tooltip=_("Displays the mean corrective maintenance time (MCMT) "
+                      "for the selected hardware item."))
         self.txtMissionAt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission availability for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the mission availability for the selected "
+                      "hardware item."))
         self.txtMissionAtVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the mission availability for "
-                      u"the selected hardware item."))
+            tooltip=_("Displays the variance on the mission availability for "
+                      "the selected hardware item."))
         self.txtMissionHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission failure intensity for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays the mission failure intensity for the "
+                      "selected hardware item."))
         self.txtMissionHtVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the mission failure "
-                      u"intensity for the selected hardware item."))
+            tooltip=_("Displays the variance on the mission failure "
+                      "intensity for the selected hardware item."))
         self.txtMissionMTBF = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission mean time between failure (MTBF) "
-                      u"for the selected hardware item."))
+            tooltip=_("Displays the mission mean time between failure (MTBF) "
+                      "for the selected hardware item."))
         self.txtMissionMTBFVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the mission MTBF for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays the variance on the mission MTBF for the "
+                      "selected hardware item."))
         self.txtMissionRt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission reliability for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the mission reliability for the selected "
+                      "hardware item."))
         self.txtMissionRtVar = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the variance on the mission reliability for "
-                      u"the selected hardware item."))
+            tooltip=_("Displays the variance on the mission reliability for "
+                      "the selected hardware item."))
         self.txtMMT = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean maintenance time (MMT) for the "
-                      u"selected hardware item.  This includes preventive and "
-                      u"corrective maintenance."))
+            tooltip=_("Displays the mean maintenance time (MMT) for the "
+                      "selected hardware item.  This includes preventive and "
+                      "corrective maintenance."))
         self.txtMPMT = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean preventive maintenance time (MPMT) "
-                      u"for the selected hardware item."))
+            tooltip=_("Displays the mean preventive maintenance time (MPMT) "
+                      "for the selected hardware item."))
         self.txtMTTR = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean time to repair (MTTR) for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays the mean time to repair (MTTR) for the "
+                      "selected hardware item."))
         self.txtPartCount = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the total part count for the selected "
-                      u"hardware item."))
+            tooltip=_("Displays the total part count for the selected "
+                      "hardware item."))
         self.txtPercentHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the percentage of the system failure "
-                      u"intensity the selected hardware item represents."))
+            tooltip=_("Displays the percentage of the system failure "
+                      "intensity the selected hardware item represents."))
         self.txtSoftwareHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the software failure intensity for the "
-                      u"selected hardware item."))
+            tooltip=_("Displays the software failure intensity for the "
+                      "selected hardware item."))
         self.txtTotalCost = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the total cost of the selected hardware "
-                      u"item."))
+            tooltip=_("Displays the total cost of the selected hardware "
+                      "item."))
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
         self.pack_start(self.__make_page(), True, True, 0)
@@ -2292,7 +2292,7 @@ class AssessmentResults(RAMSTKWorkView):
                  View.
         :rtype: :class:`Gtk.ButtonBox`
         """
-        _tooltips = [_(u"Calculate the currently selected Hardware item.")]
+        _tooltips = [_("Calculate the currently selected Hardware item.")]
         _callbacks = [self._do_request_calculate]
 
         _icons = ['calculate']
@@ -2320,7 +2320,7 @@ class AssessmentResults(RAMSTKWorkView):
         # Build the assessment results page starting with the top left half.
         _vpaned = Gtk.VPaned()
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Reliability Results"))
+        _frame = ramstk.RAMSTKFrame(label=_("Reliability Results"))
         _vpaned.pack1(_frame, True, True)
 
         _fixed = Gtk.Fixed()
@@ -2354,7 +2354,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Now add the bottom left pane.  This is just an RAMSTKScrolledwindow()
         # and will be the container for component-specific reliability results.
-        _frame = ramstk.RAMSTKFrame(label=_(u"Assessment Model Results"))
+        _frame = ramstk.RAMSTKFrame(label=_("Assessment Model Results"))
         _frame.add(self.scwReliability)
 
         _vpaned.pack2(_frame, True, True)
@@ -2365,7 +2365,7 @@ class AssessmentResults(RAMSTKWorkView):
         _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Availability Results"))
+        _frame = ramstk.RAMSTKFrame(label=_("Availability Results"))
         _frame.add(_scrollwindow)
 
         _vpaned.pack1(_frame, True, True)
@@ -2385,7 +2385,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Finally, add the bottom right pane.  This is just an RAMSTKFrame() and
         # will be the container for component-specific design attributes.
-        _frame = ramstk.RAMSTKFrame(label=_(u"Stress Results"))
+        _frame = ramstk.RAMSTKFrame(label=_("Stress Results"))
         _frame.add(self.scwStress)
         _vpaned.pack2(_frame, True, True)
 
@@ -2398,14 +2398,14 @@ class AssessmentResults(RAMSTKWorkView):
         self.scwStress.add_with_viewport(_frame)
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Assessment\nResults"),
+            _("Assessment\nResults"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays reliability, "
-                      u"maintainability, and availability "
-                      u"assessment results for the selected "
-                      u"{0:s}.").format(self._module))
+            tooltip=_("Displays reliability, "
+                      "maintainability, and availability "
+                      "assessment results for the selected "
+                      "{0:s}.").format(self._module))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _hbox

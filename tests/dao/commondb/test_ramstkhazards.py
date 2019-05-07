@@ -16,9 +16,9 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'category': u'Acceleration/Gravity',
+    'category': 'Acceleration/Gravity',
     'hazard_id': 1,
-    'subcategory': u'Falls'
+    'subcategory': 'Falls'
 }
 
 

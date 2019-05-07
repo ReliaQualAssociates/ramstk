@@ -18,10 +18,10 @@ __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 ATTRIBUTES = {
     'user_float_1': 1.0,
     'priority': 1,
-    'group': u'',
+    'group': '',
     'description': 'Test Stakeholder Input',
     'planned_rank': 1,
-    'stakeholder': u'',
+    'stakeholder': '',
     'improvement': 0.0,
     'customer_rank': 1,
     'user_float_5': 1.0,

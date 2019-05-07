@@ -413,7 +413,7 @@ class ValidationDataModel(RAMSTKDataModel):
         """
         _time_remaining = {}
 
-        _dates = SortedDict(self.status_tree.nodes).keys()
+        _dates = list(SortedDict(self.status_tree.nodes).keys())
         _dates.pop(0)
 
         for _key in _dates:

@@ -291,7 +291,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
                    "RAMSTKSimilarItem.set_attributes().".format(str(_err))
         except ValueError as _err:
             # FIXME: Handle ValueError in RAMSTKSimilarItem.set_attrobutes().
-            print _err
+            print(_err)
 
         return _error_code, _msg
 
@@ -512,8 +512,8 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         _sia['res4'] = self.result_4
         _sia['res5'] = self.result_5
 
-        _keys = _sia.keys()
-        _values = _sia.values()
+        _keys = list(_sia.keys())
+        _values = list(_sia.values())
 
         for _index, _key in enumerate(_keys):
             vars()[_key] = _values[_index]

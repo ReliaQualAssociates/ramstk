@@ -72,13 +72,13 @@ class ModuleView(RAMSTKModuleView):
         RAMSTKModuleView._make_ui(self)
 
         self.make_treeview(editable=[5, 15, 17, 18])
-        self.treeview.set_tooltip_text(_(u"Displays the list of functions."))
+        self.treeview.set_tooltip_text(_("Displays the list of functions."))
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Functions"),
+            _("Functions"),
             width=-1,
             height=-1,
-            tooltip=_(u"Displays the list of functions."))
+            tooltip=_("Displays the list of functions."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
@@ -95,9 +95,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _prompt = _(u"You are about to delete Function {0:d} and all "
-                    u"data associated with it.  Is this really what "
-                    u"you want to do?").format(self._function_id)
+        _prompt = _("You are about to delete Function {0:d} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._function_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
@@ -184,13 +184,13 @@ class ModuleView(RAMSTKModuleView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Adds a new Function at the same hierarchy level as "
-              u"the selected Function (i.e., a sibling Function)."),
-            _(u"Adds a new Function one level subordinate to the "
-              u"selected Function (i.e., a child function)."),
-            _(u"Remove the currently selected Function."),
-            _(u"Exports Functions to an external file (CSV, Excel, and "
-              u"text files are supported).")
+            _("Adds a new Function at the same hierarchy level as "
+              "the selected Function (i.e., a sibling Function)."),
+            _("Adds a new Function one level subordinate to the "
+              "selected Function (i.e., a child function)."),
+            _("Remove the currently selected Function."),
+            _("Exports Functions to an external file (CSV, Excel, and "
+              "text files are supported).")
         ]
         _callbacks = [
             self.do_request_insert_sibling, self.do_request_insert_child,
@@ -243,11 +243,11 @@ class ModuleView(RAMSTKModuleView):
                 'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
             ]
             _labels = [
-                _(u"Add Sibling Function"),
-                _(u"Add Child Function"),
-                _(u"Remove the Selected Function"),
-                _(u"Save Selected Function"),
-                _(u"Save All Functions")
+                _("Add Sibling Function"),
+                _("Add Child Function"),
+                _("Remove the Selected Function"),
+                _("Save Selected Function"),
+                _("Save All Functions")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_insert_child,

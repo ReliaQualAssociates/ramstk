@@ -71,13 +71,13 @@ class ModuleView(RAMSTKModuleView):
 
         self.make_treeview()
         self.treeview.set_tooltip_text(
-            _(u"Displays the hierarchical list of requirements."))
+            _("Displays the hierarchical list of requirements."))
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Requirements"),
+            _("Requirements"),
             width=-1,
             height=-1,
-            tooltip=_(u"Displays the hierarchical list of requirements."))
+            tooltip=_("Displays the hierarchical list of requirements."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
@@ -121,9 +121,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _prompt = _(u"You are about to delete Requirement {0:d} and all "
-                    u"data associated with it.  Is this really what "
-                    u"you want to do?").format(self._requirement_id)
+        _prompt = _("You are about to delete Requirement {0:d} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._requirement_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
@@ -213,13 +213,13 @@ class ModuleView(RAMSTKModuleView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Adds a new Requirement at the same hierarchy level as the "
-              u"selected Requirement (i.e., a sibling Requirement)."),
-            _(u"Adds a new Requirement one level subordinate to the selected "
-              u"Requirement (i.e., a derived requirement)."),
-            _(u"Remove the currently selected Requirement."),
-            _(u"Exports Requirementss to an external file (CSV, Excel, and "
-              u"text files are supported).")
+            _("Adds a new Requirement at the same hierarchy level as the "
+              "selected Requirement (i.e., a sibling Requirement)."),
+            _("Adds a new Requirement one level subordinate to the selected "
+              "Requirement (i.e., a derived requirement)."),
+            _("Remove the currently selected Requirement."),
+            _("Exports Requirementss to an external file (CSV, Excel, and "
+              "text files are supported).")
         ]
         _callbacks = [
             self.do_request_insert_sibling, self.do_request_insert_child,
@@ -270,11 +270,11 @@ class ModuleView(RAMSTKModuleView):
                 'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
             ]
             _labels = [
-                _(u"Add Sibling Requirement"),
-                _(u"Add Child Requirement"),
-                _(u"Remove the Selected Requirement"),
-                _(u"Save Selected Requirement"),
-                _(u"Save All Requirements")
+                _("Add Sibling Requirement"),
+                _("Add Child Requirement"),
+                _("Remove the Selected Requirement"),
+                _("Save Selected Requirement"),
+                _("Save All Requirements")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_insert_child,

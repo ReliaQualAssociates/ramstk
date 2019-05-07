@@ -73,14 +73,14 @@ class ModuleView(RAMSTKModuleView):
 
         self.make_treeview()
         self.treeview.set_tooltip_text(
-            _(u"Displays the hierarchical list of "
-              u"hardware items."))
+            _("Displays the hierarchical list of "
+              "hardware items."))
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Hardware"),
+            _("Hardware"),
             width=-1,
             height=-1,
-            tooltip=_(u"Displays the hierarchical list of hardware items."))
+            tooltip=_("Displays the hierarchical list of hardware items."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
@@ -153,9 +153,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _prompt = _(u"You are about to delete Hardware {0:d} and all "
-                    u"data associated with it.  Is this really what "
-                    u"you want to do?").format(self._hardware_id)
+        _prompt = _("You are about to delete Hardware {0:d} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._hardware_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
@@ -279,21 +279,21 @@ class ModuleView(RAMSTKModuleView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Adds a new Hardware assembly at the same hierarchy level as "
-              u"the selected Hardware (i.e., a sibling Hardware)."),
-            _(u"Adds a new Hardware assembly one level subordinate to the "
-              u"selected Hardware (i.e., a child hardware)."),
-            _(u"Adds a new Hardware component/piece-part at the same "
-              u"hierarchy level as the selected Hardware component/piece-part "
-              u"(i.e., a sibling component/piece-part)."),
-            _(u"Adds a new Hardware component/piece-part one level "
-              u"subordinate to selected Hardware component/piece-part "
-              u"(i.e., a child component/piece-part)."),
-            _(u"Remove the currently selected Hardware item and any "
-              u"children."),
-            _(u"Calculate the entire system."),
-            _(u"Exports Hardware to an external file (CSV, Excel, and text "
-              u"files are supported).")
+            _("Adds a new Hardware assembly at the same hierarchy level as "
+              "the selected Hardware (i.e., a sibling Hardware)."),
+            _("Adds a new Hardware assembly one level subordinate to the "
+              "selected Hardware (i.e., a child hardware)."),
+            _("Adds a new Hardware component/piece-part at the same "
+              "hierarchy level as the selected Hardware component/piece-part "
+              "(i.e., a sibling component/piece-part)."),
+            _("Adds a new Hardware component/piece-part one level "
+              "subordinate to selected Hardware component/piece-part "
+              "(i.e., a child component/piece-part)."),
+            _("Remove the currently selected Hardware item and any "
+              "children."),
+            _("Calculate the entire system."),
+            _("Exports Hardware to an external file (CSV, Excel, and text "
+              "files are supported).")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_insert_child,
@@ -356,14 +356,14 @@ class ModuleView(RAMSTKModuleView):
                 'calculate_all', 'remove', 'save', 'save-all'
             ]
             _labels = [
-                _(u"Add Sibling Assembly"),
-                _(u"Add Child Assembly"),
-                _(u"Add Sibling Piece Part"),
-                _(u"Add Child Piece Part"),
-                _(u"Calculate the System"),
-                _(u"Remove the Selected Hardware"),
-                _(u"Save Selected Hardware"),
-                _(u"Save All Hardware")
+                _("Add Sibling Assembly"),
+                _("Add Child Assembly"),
+                _("Add Sibling Piece Part"),
+                _("Add Child Piece Part"),
+                _("Calculate the System"),
+                _("Remove the Selected Hardware"),
+                _("Save Selected Hardware"),
+                _("Save All Hardware")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_insert_child,

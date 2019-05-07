@@ -26,14 +26,12 @@ __trove__ = [
     'Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)'
 ]
 
-if not sys.version_info[0] == 2:
-    sys.exit("Sorry, Python 3 is not supported yet.")
-
 # Lists of required packages for RAMSTK.
 INSTALL_REQUIRES = [
-    'defusedxml', 'lifelines>=0.13,<15.0', 'matplotlib==1.4.3', 'numpy',
-    'pandas', 'PyPubSub==3.3.0', 'scipy', 'sortedcontainers==2.1.0',
-    'SQLAlchemy', 'SQLAlchemy-Utils', 'statsmodels', 'treelib', 'xlrd', 'xlwt'
+    'defusedxml', 'lifelines>=0.13,<15.0', 'matplotlib', 'numpy',
+    'pandas', 'pycairo', 'PyGObject>=2.28,<=3.18.2', 'PyPubSub==3.3.0', 'scipy',
+    'sortedcontainers==2.1.0', 'SQLAlchemy', 'SQLAlchemy-Utils', 'statsmodels',
+    'treelib', 'xlrd', 'xlwt'
 ]
 TEST_REQUIRES = [
     'pytest', 'pytest-cov', 'coverage', 'coveralls', 'codacy-coverage'

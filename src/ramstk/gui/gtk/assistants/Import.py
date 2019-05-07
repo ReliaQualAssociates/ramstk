@@ -48,7 +48,7 @@ class RAMSTKImport(Gtk.Assistant):
         self._mdcRAMSTK = controller
         self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['imports']
         self._cmb_select_module = ramstk.RAMSTKComboBox(
-            tooltip=_(u"Select the RAMSTK module to map."))
+            tooltip=_("Select the RAMSTK module to map."))
         self._module = None
 
         # Initialize public dict variables.
@@ -71,9 +71,9 @@ class RAMSTKImport(Gtk.Assistant):
         _page = Gtk.Fixed()
 
         _label = ramstk.RAMSTKLabel(
-            _(u"RAMSTK is all set and ready to import your "
-              u"data.  Press 'Apply' to import or 'Cancel' "
-              u"to abort the import."),
+            _("RAMSTK is all set and ready to import your "
+              "data.  Press 'Apply' to import or 'Cancel' "
+              "to abort the import."),
             height=300,
             width=-1,
             wrap=True)
@@ -91,15 +91,15 @@ class RAMSTKImport(Gtk.Assistant):
         :rtype: :class:`Gtk.ScrolledWindow`
         """
         # TODO: Implement NSWC (add Design Mechanic to this list).
-        self._cmb_select_module.do_load_combo([[_(u"Function")],
-                                               [_(u"Requirement")],
-                                               [_(u"Hardware")],
-                                               [_(u"Validation")]])
+        self._cmb_select_module.do_load_combo([[_("Function")],
+                                               [_("Requirement")],
+                                               [_("Hardware")],
+                                               [_("Validation")]])
 
         _page = Gtk.HBox()
 
         _fixed = Gtk.Fixed()
-        _label = ramstk.RAMSTKLabel(_(u"Select the RAMSTK module to import:"))
+        _label = ramstk.RAMSTKLabel(_("Select the RAMSTK module to import:"))
         _fixed.put(_label, 5, 5)
         _fixed.put(self._cmb_select_module, 55, 5)
         _page.pack_start(_fixed, False, False, 0)
@@ -111,12 +111,12 @@ class RAMSTKImport(Gtk.Assistant):
         _page.pack_end(_scrollwindow, True, True, 0)
 
         _file_filter = Gtk.FileFilter()
-        _file_filter.set_name(_(u"Delimited Text Files"))
+        _file_filter.set_name(_("Delimited Text Files"))
         _file_filter.add_pattern('*.csv')
         _file_filter.add_pattern('*.txt')
         _file_chooser.add_filter(_file_filter)
         _file_filter = Gtk.FileFilter()
-        _file_filter.set_name(_(u"Excel Files"))
+        _file_filter.set_name(_("Excel Files"))
         _file_filter.add_pattern('*.xls*')
         _file_chooser.add_filter(_file_filter)
 
@@ -135,11 +135,11 @@ class RAMSTKImport(Gtk.Assistant):
         _page = Gtk.Fixed()
 
         _label = ramstk.RAMSTKLabel(
-            _(u"This is the RAMSTK Import Assistant.  It "
-              u"will guide you through the process of "
-              u"importing RAMSTK Program module data from "
-              u"an external file.  Press 'Forward' to continue "
-              u"or 'Cancel' to quit."),
+            _("This is the RAMSTK Import Assistant.  It "
+              "will guide you through the process of "
+              "importing RAMSTK Program module data from "
+              "an external file.  Press 'Forward' to continue "
+              "or 'Cancel' to quit."),
             height=300,
             width=-1,
             wrap=True)
@@ -167,7 +167,7 @@ class RAMSTKImport(Gtk.Assistant):
 
         _column = Gtk.TreeViewColumn()
         _label = ramstk.RAMSTKLabel(
-            _(u"Import File Column"), justify=Gtk.Justification.CENTER)
+            _("Import File Column"), justify=Gtk.Justification.CENTER)
         _column.set_widget(_label)
 
         _cell = Gtk.CellRendererText()
@@ -180,7 +180,7 @@ class RAMSTKImport(Gtk.Assistant):
 
         _column = Gtk.TreeViewColumn()
         _label = ramstk.RAMSTKLabel(
-            _(u"RAMSTK Field"), justify=Gtk.Justification.CENTER)
+            _("RAMSTK Field"), justify=Gtk.Justification.CENTER)
         _column.set_widget(_label)
 
         _cell = Gtk.CellRendererCombo()
@@ -212,23 +212,23 @@ class RAMSTKImport(Gtk.Assistant):
         _page = self.__make_introduction_page()
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.INTRO)
-        self.set_page_title(_page, _(u"RAMSTK Import Assistant"))
+        self.set_page_title(_page, _("RAMSTK Import Assistant"))
         self.set_page_complete(_page, True)
         _page = self.__make_input_file_select_page()
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
-        self.set_page_title(_page, _(u"Select Input File"))
+        self.set_page_title(_page, _("Select Input File"))
         _page = self.__make_map_field_page()
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
         self.set_page_title(
-            _page, _(u"Map Input File Fields to RAMSTK Database Fields"))
+            _page, _("Map Input File Fields to RAMSTK Database Fields"))
         _page = self.__make_confirm_page()
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONFIRM)
         self.set_page_complete(_page, True)
 
-        self.set_property('title', _(u"RAMSTK Import Assistant"))
+        self.set_property('title', _("RAMSTK Import Assistant"))
 
         self.resize(800, 400)
         self.move(200, 100)
@@ -299,26 +299,26 @@ class RAMSTKImport(Gtk.Assistant):
 
         if _error_code == 2:
             _msg_type = 'error'
-            _user_msg = _(u"A RAMSTK Program database must be connected to "
-                          u"import the data into from an external file.  "
-                          u"Please create or open a RAMSTK Program database "
-                          u"and try again.")
+            _user_msg = _("A RAMSTK Program database must be connected to "
+                          "import the data into from an external file.  "
+                          "Please create or open a RAMSTK Program database "
+                          "and try again.")
         elif _error_code == 3:
             _msg_type = 'error'
-            _user_msg = _(u"One or more import records violated PRIMARY KEY "
-                          u"constraints.  Check your import file data and try "
-                          u"again.")
+            _user_msg = _("One or more import records violated PRIMARY KEY "
+                          "constraints.  Check your import file data and try "
+                          "again.")
         elif _error_code == 4:
             _msg_type = 'error'
             _user_msg = _(
-                u"One or more import records contains a field with "
-                u"a value that is incompatible with the required "
-                u"data type for the RAMSTK Program database field it "
-                u"was mapped to.")
+                "One or more import records contains a field with "
+                "a value that is incompatible with the required "
+                "data type for the RAMSTK Program database field it "
+                "was mapped to.")
         else:
             _msg_type = 'information'
-            _user_msg = _(u"Successfully imported {0:d} {1:s} "
-                          u"records.").format(_count, self._module)
+            _user_msg = _("Successfully imported {0:d} {1:s} "
+                          "records.").format(_count, self._module)
 
         _dialog = ramstk.RAMSTKMessageDialog(
             _user_msg, self._dic_icons[_msg_type], _msg_type)
@@ -344,7 +344,7 @@ class RAMSTKImport(Gtk.Assistant):
         elif _file_type == 'Excel Files':
             _file_type = 'excel'
         _file = filechooser.get_filename()
-        print _file
+        print(_file)
         if _file is not None:
             self._dtc_data_controller.request_do_read_input(_file_type, _file)
 

@@ -18,9 +18,9 @@ __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 ATTRIBUTES = {
     'remarks': '',
     'test_id': 1,
-    'boundary_conditions': u'',
+    'boundary_conditions': '',
     'load_id': 1,
-    'description': u'Test Test Method'
+    'description': 'Test Test Method'
 }
 
 

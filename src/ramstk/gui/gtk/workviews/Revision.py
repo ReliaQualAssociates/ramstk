@@ -52,9 +52,9 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private list attributes.
         self._lst_gendata_labels = [
-            _(u"Revision Code:"),
-            _(u"Revision Name:"),
-            _(u"Remarks:")
+            _("Revision Code:"),
+            _("Revision Name:"),
+            _("Remarks:")
         ]
 
         # Initialize private scalar attributes.
@@ -65,14 +65,14 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize public scalar attributes.
         self.txtCode = RAMSTKEntry(
-            width=125, tooltip=_(u"A unique code for the selected revision."))
+            width=125, tooltip=_("A unique code for the selected revision."))
         self.txtName = RAMSTKEntry(
-            width=800, tooltip=_(u"The name of the selected revision."))
+            width=800, tooltip=_("The name of the selected revision."))
         self.txtRemarks = RAMSTKTextView(
             Gtk.TextBuffer(),
             width=800,
-            tooltip=_(u"Enter any remarks associated with the "
-                      u"selected revision."))
+            tooltip=_("Enter any remarks associated with the "
+                      "selected revision."))
 
         self.__set_callbacks()
 
@@ -165,7 +165,7 @@ class GeneralData(RAMSTKWorkView):
         self._revision_id = attributes['revision_id']
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Revision {0:s} - {1:s}").format(
+            title=_("Analyzing Revision {0:s} - {1:s}").format(
                 str(attributes['revision_code']), str(attributes['name'])))
 
         self.txtCode.handler_block(self._lst_handler_id[2])

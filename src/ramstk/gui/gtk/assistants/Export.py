@@ -31,7 +31,7 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
         :param str module: the RAMSTK module to export.
         """
         ramstk.RAMSTKFileChooser.__init__(
-            self, _(u"RAMSTK Export"),
+            self, _("RAMSTK Export"),
             controller.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 
         # Initialize private dict variables.
@@ -106,8 +106,8 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
                 _filetype = 'excel'
 
             if os.path.exists(_filename):
-                _prompt = _(u"File {0:s} already exists.  "
-                            u"Overwrite?").format(_filename)
+                _prompt = _("File {0:s} already exists.  "
+                            "Overwrite?").format(_filename)
                 _icon = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
                         '/32x32/warning.png'
                 _dialog = RAMSTKMessageDialog(_prompt, _icon, 'question')

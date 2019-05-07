@@ -88,15 +88,15 @@ class GeneralData(RAMSTKWorkView):
 
         # Initialize private list attributes.
         self._lst_gendata_labels = [
-            _(u"Requirement Code:"),
-            _(u"Requirement Description:"),
-            _(u"Requirement Type:"), "",
-            _(u"Specification:"),
-            _(u"Page Number:"),
-            _(u"Figure Number:"),
-            _(u"Priority:"),
-            _(u"Owner:"), "",
-            _(u"Validated Date:")
+            _("Requirement Code:"),
+            _("Requirement Description:"),
+            _("Requirement Type:"), "",
+            _("Specification:"),
+            _("Page Number:"),
+            _("Figure Number:"),
+            _("Priority:"),
+            _("Owner:"), "",
+            _("Validated Date:")
         ]
 
         # Initialize private scalar attributes.
@@ -111,13 +111,13 @@ class GeneralData(RAMSTKWorkView):
             height=25, width=25, label="...")
 
         self.chkDerived = ramstk.RAMSTKCheckButton(
-            label=_(u"Requirement is derived."),
-            tooltip=_(u"Indicates whether or not the selected requirement is "
-                      u"derived."))
+            label=_("Requirement is derived."),
+            tooltip=_("Indicates whether or not the selected requirement is "
+                      "derived."))
         self.chkValidated = ramstk.RAMSTKCheckButton(
-            label=_(u"Requirement is validated."),
-            tooltip=_(u"Indicates whether or not the selected requirement is "
-                      u"validated."))
+            label=_("Requirement is validated."),
+            tooltip=_("Indicates whether or not the selected requirement is "
+                      "validated."))
 
         self.cmbOwner = ramstk.RAMSTKComboBox()
         self.cmbRequirementType = ramstk.RAMSTKComboBox(index=1, simple=False)
@@ -125,11 +125,11 @@ class GeneralData(RAMSTKWorkView):
 
         self.txtCode = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"A unique code for the selected requirement."))
+            tooltip=_("A unique code for the selected requirement."))
         self.txtFigNum = ramstk.RAMSTKEntry()
         self.txtName = ramstk.RAMSTKEntry(
             width=800,
-            tooltip=_(u"The description of the selected requirement."))
+            tooltip=_("The description of the selected requirement."))
         self.txtPageNum = ramstk.RAMSTKEntry()
         self.txtSpecification = ramstk.RAMSTKEntry()
         self.txtValidatedDate = ramstk.RAMSTKEntry()
@@ -229,7 +229,7 @@ class GeneralData(RAMSTKWorkView):
         _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
+        _frame = ramstk.RAMSTKFrame(label=_("General Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
@@ -253,12 +253,12 @@ class GeneralData(RAMSTKWorkView):
 
         # Create the label for the Gtk.Notebook() tab.
         _label = ramstk.RAMSTKLabel(
-            _(u"General\nData"),
+            _("General\nData"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_(u"Displays general information for the selected "
-                      u"requirement."))
+            tooltip=_("Displays general information for the selected "
+                      "requirement."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return _frame
@@ -341,7 +341,7 @@ class GeneralData(RAMSTKWorkView):
         self._requirement_id = attributes['requirement_id']
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Requirement {0:s} - {1:s}").format(
+            title=_("Analyzing Requirement {0:s} - {1:s}").format(
                 str(attributes['requirement_code']),
                 str(attributes['description'])))
 
@@ -361,7 +361,7 @@ class GeneralData(RAMSTKWorkView):
         _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE
         self.cmbRequirementType.set_active(0)
         _idx = 1
-        for _key, _type in _types.iteritems():
+        for _key, _type in _types.items():
             if _type[1] == attributes['requirement_type']:
                 self.cmbRequirementType.set_active(_idx)
             else:
@@ -387,7 +387,7 @@ class GeneralData(RAMSTKWorkView):
         self.cmbOwner.handler_block(self._lst_handler_id[8])
         _groups = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS
         self.cmbOwner.set_active(0)
-        for _key, _group in _groups.iteritems():
+        for _key, _group in _groups.items():
             if _group[0] == attributes['owner']:
                 self.cmbOwner.set_property('active', int(_key))
         self.cmbOwner.handler_unblock(self._lst_handler_id[8])
@@ -742,82 +742,82 @@ class RequirementAnalysis(RAMSTKWorkView):
         :rtype: :class:`Gtk.HPaned`
         """
         _lst_clear = [
-            _(u"1. The requirement clearly states what is needed or "
-              u"desired."),
-            _(u"2. The requirement is unambiguous and not open to "
-              u"interpretation."),
-            _(u"3. All terms that can have more than one meaning are "
-              u"qualified so that the desired meaning is readily "
-              u"apparent."),
-            _(u"4. Diagrams, drawings, etc. are used to increase "
-              u"understanding of the requirement."),
-            _(u"5. The requirement is free from spelling and "
-              u"grammatical errors."),
-            _(u"6. The requirement is written in non-technical "
-              u"language using the vocabulary of the stakeholder."),
-            _(u"7. Stakeholders understand the requirement as written."),
-            _(u"8. The requirement is clear enough to be turned over "
-              u"to an independent group and still be understood."),
-            _(u"9. The requirement avoids stating how the problem is "
-              u"to be solved or what techniques are to be used.")
+            _("1. The requirement clearly states what is needed or "
+              "desired."),
+            _("2. The requirement is unambiguous and not open to "
+              "interpretation."),
+            _("3. All terms that can have more than one meaning are "
+              "qualified so that the desired meaning is readily "
+              "apparent."),
+            _("4. Diagrams, drawings, etc. are used to increase "
+              "understanding of the requirement."),
+            _("5. The requirement is free from spelling and "
+              "grammatical errors."),
+            _("6. The requirement is written in non-technical "
+              "language using the vocabulary of the stakeholder."),
+            _("7. Stakeholders understand the requirement as written."),
+            _("8. The requirement is clear enough to be turned over "
+              "to an independent group and still be understood."),
+            _("9. The requirement avoids stating how the problem is "
+              "to be solved or what techniques are to be used.")
         ]
         _lst_complete = [
-            _(u"1. Performance objectives are properly documented "
-              u"from the user's point of view."),
-            _(u"2. No necessary information is missing from the "
-              u"requirement."),
-            _(u"3. The requirement has been assigned a priority."),
-            _(u"4. The requirement is realistic given the technology "
-              u"that will used to implement the system."),
-            _(u"5. The requirement is feasible to implement given the "
-              u"defined project time frame, scope, structure and "
-              u"budget."),
-            _(u"6. If the requirement describes something as a "
-              u"'standard' the specific source is cited."),
-            _(u"7. The requirement is relevant to the problem and its "
-              u"solution."),
-            _(u"8. The requirement contains no implied design details."),
-            _(u"9. The requirement contains no implied implementation "
-              u"constraints."),
-            _(u"10. The requirement contains no implied project "
-              u"management constraints.")
+            _("1. Performance objectives are properly documented "
+              "from the user's point of view."),
+            _("2. No necessary information is missing from the "
+              "requirement."),
+            _("3. The requirement has been assigned a priority."),
+            _("4. The requirement is realistic given the technology "
+              "that will used to implement the system."),
+            _("5. The requirement is feasible to implement given the "
+              "defined project time frame, scope, structure and "
+              "budget."),
+            _("6. If the requirement describes something as a "
+              "'standard' the specific source is cited."),
+            _("7. The requirement is relevant to the problem and its "
+              "solution."),
+            _("8. The requirement contains no implied design details."),
+            _("9. The requirement contains no implied implementation "
+              "constraints."),
+            _("10. The requirement contains no implied project "
+              "management constraints.")
         ]
         _lst_consistent = [
-            _(u"1. The requirement describes a single need or want; "
-              u"it could not be broken into several different "
-              u"requirements."),
-            _(u"2. The requirement requires non-standard hardware or "
-              u"must use software to implement."),
-            _(u"3. The requirement can be implemented within known "
-              u"constraints."),
-            _(u"4. The requirement provides an adequate basis for "
-              u"design and testing."),
-            _(u"5. The requirement adequately supports the business "
-              u"goal of the project."),
-            _(u"6. The requirement does not conflict with some "
-              u"constraint, policy or regulation."),
-            _(u"7. The requirement does not conflict with another "
-              u"requirement."),
-            _(u"8. The requirement is not a duplicate of another "
-              u"requirement."),
-            _(u"9. The requirement is in scope for the project.")
+            _("1. The requirement describes a single need or want; "
+              "it could not be broken into several different "
+              "requirements."),
+            _("2. The requirement requires non-standard hardware or "
+              "must use software to implement."),
+            _("3. The requirement can be implemented within known "
+              "constraints."),
+            _("4. The requirement provides an adequate basis for "
+              "design and testing."),
+            _("5. The requirement adequately supports the business "
+              "goal of the project."),
+            _("6. The requirement does not conflict with some "
+              "constraint, policy or regulation."),
+            _("7. The requirement does not conflict with another "
+              "requirement."),
+            _("8. The requirement is not a duplicate of another "
+              "requirement."),
+            _("9. The requirement is in scope for the project.")
         ]
         _lst_verifiable = [
-            _(u"1. The requirement is verifiable by testing, "
-              u"demonstration, review, or analysis."),
-            _(u"2. The requirement lacks 'weasel words' (e.g. "
-              u"various, mostly, suitable, integrate, maybe, "
-              u"consistent, robust, modular, user-friendly, "
-              u"superb, good)."),
-            _(u"3. Any performance criteria are quantified such that "
-              u"they are testable."),
-            _(u"4. Independent testing would be able to determine "
-              u"whether the requirement has been satisfied."),
-            _(u"5. The task(s) that will validate and verify the "
-              u"final design satisfies the requirement have been "
-              u"identified."),
-            _(u"6. The identified V&amp;V task(s) have been added to "
-              u"the validation plan (e.g., DVP)")
+            _("1. The requirement is verifiable by testing, "
+              "demonstration, review, or analysis."),
+            _("2. The requirement lacks 'weasel words' (e.g. "
+              "various, mostly, suitable, integrate, maybe, "
+              "consistent, robust, modular, user-friendly, "
+              "superb, good)."),
+            _("3. Any performance criteria are quantified such that "
+              "they are testable."),
+            _("4. Independent testing would be able to determine "
+              "whether the requirement has been satisfied."),
+            _("5. The task(s) that will validate and verify the "
+              "final design satisfies the requirement have been "
+              "identified."),
+            _("6. The identified V&amp;V task(s) have been added to "
+              "the validation plan (e.g., DVP)")
         ]
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -835,7 +835,7 @@ class RequirementAnalysis(RAMSTKWorkView):
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.tvwClear)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Clarity of Requirement"))
+        _frame = ramstk.RAMSTKFrame(label=_("Clarity of Requirement"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -848,7 +848,7 @@ class RequirementAnalysis(RAMSTKWorkView):
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.tvwComplete)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Completeness of Requirement"))
+        _frame = ramstk.RAMSTKFrame(label=_("Completeness of Requirement"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -864,7 +864,7 @@ class RequirementAnalysis(RAMSTKWorkView):
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.tvwConsistent)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Consistency of Requirement"))
+        _frame = ramstk.RAMSTKFrame(label=_("Consistency of Requirement"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -877,7 +877,7 @@ class RequirementAnalysis(RAMSTKWorkView):
                                  Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.tvwVerifiable)
 
-        _frame = ramstk.RAMSTKFrame(label=_(u"Verifiability of Requirement"))
+        _frame = ramstk.RAMSTKFrame(label=_("Verifiability of Requirement"))
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -951,10 +951,10 @@ class RequirementAnalysis(RAMSTKWorkView):
 
         # Insert the tab.
         _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Analysis") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _("Analysis") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(Gtk.Justification.CENTER)
-        _label.set_tooltip_text(_(u"Analyzes the selected requirement."))
+        _label.set_tooltip_text(_("Analyzes the selected requirement."))
         _label.show_all()
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
@@ -991,7 +991,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         self._requirement_id = attributes['requirement_id']
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Analyzing Requirement {0:s} - {1:s}").format(
+            title=_("Analyzing Requirement {0:s} - {1:s}").format(
                 str(attributes['requirement_code']),
                 str(attributes['description'])))
 

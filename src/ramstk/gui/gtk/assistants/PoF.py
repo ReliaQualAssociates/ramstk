@@ -18,8 +18,8 @@ class AddStressMethod(ramstk.RAMSTKDialog):
         """Initialize instance of the Add Stress or Test Method Assistant."""
         ramstk.RAMSTKDialog.__init__(
             self,
-            _(u"RAMSTK Physics of Failure Analysis Operating Stress and "
-              u"Test Method Addition Assistant"))
+            _("RAMSTK Physics of Failure Analysis Operating Stress and "
+              "Test Method Addition Assistant"))
 
         # Initialize private dictionary attributes.
 
@@ -32,9 +32,9 @@ class AddStressMethod(ramstk.RAMSTKDialog):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.rdoStress = ramstk.RAMSTKOptionButton(None, _(u"Add stress"))
+        self.rdoStress = ramstk.RAMSTKOptionButton(None, _("Add stress"))
         self.rdoMethod = ramstk.RAMSTKOptionButton(self.rdoStress,
-                                                   _(u"Add test method"))
+                                                   _("Add test method"))
 
         self.__make_ui()
 
@@ -49,11 +49,11 @@ class AddStressMethod(ramstk.RAMSTKDialog):
         self.vbox.pack_start(_fixed, True, True, 0)
 
         _label = ramstk.RAMSTKLabel(
-            _(u"This is the RAMSTK Operating Stress and Test Method "
-              u"Addition Assistant.  Enter the information "
-              u"requested below and then press 'OK' to add "
-              u"a new design control or action to the RAMSTK "
-              u"Program database."),
+            _("This is the RAMSTK Operating Stress and Test Method "
+              "Addition Assistant.  Enter the information "
+              "requested below and then press 'OK' to add "
+              "a new design control or action to the RAMSTK "
+              "Program database."),
             width=600,
             height=-1,
             wrap=True)
@@ -61,10 +61,10 @@ class AddStressMethod(ramstk.RAMSTKDialog):
         _y_pos = _label.size_request()[1] + 50
 
         self.rdoStress.set_tooltip_text(
-            _(u"Select to add an operating stress to the selected operating "
-              u"load."))
+            _("Select to add an operating stress to the selected operating "
+              "load."))
         self.rdoMethod.set_tooltip_text(
-            _(u"Select to add a test method to the selected operating load."))
+            _("Select to add a test method to the selected operating load."))
 
         _fixed.put(self.rdoStress, 10, _y_pos)
         _fixed.put(self.rdoMethod, 10, _y_pos + 35)

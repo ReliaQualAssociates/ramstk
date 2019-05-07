@@ -54,22 +54,22 @@ class ListView(RAMSTKListView):
         self.__make_treeview()
         self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
-            _(u"Displays the list of failure definitions for the selected "
-              u"revision."))
+            _("Displays the list of failure definitions for the selected "
+              "revision."))
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._on_row_change))
         self._lst_handler_id.append(
             self.treeview.connect('button_press_event', self._on_button_press))
 
         _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Failure\nDefinitions") +
+        _label.set_markup("<span weight='bold'>" + _("Failure\nDefinitions") +
                           "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(Gtk.Justification.CENTER)
         _label.show_all()
         _label.set_tooltip_text(
-            _(u"Displays failure definitions for the "
-              u"selected revision."))
+            _("Displays failure definitions for the "
+              "selected revision."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
         self.hbx_tab_label.show_all()
@@ -99,7 +99,7 @@ class ListView(RAMSTKListView):
         _model = self.treeview.get_model()
         _model.clear()
 
-        for _node in tree.nodes.values()[1:]:
+        for _node in list(tree.nodes.values())[1:]:
             _entity = _node.data
 
             _attributes = []
@@ -132,9 +132,9 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _prompt = _(u"You are about to delete Failure Definition {0:d} and "
-                    u"all data associated with it.  Is this really what you "
-                    u"want to do?").format(self._definition_id)
+        _prompt = _("You are about to delete Failure Definition {0:d} and "
+                    "all data associated with it.  Is this really what you "
+                    "want to do?").format(self._definition_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
@@ -201,8 +201,8 @@ class ListView(RAMSTKListView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Add a new Failure Definition."),
-            _(u"Remove the currently selected Failure Definition."),
+            _("Add a new Failure Definition."),
+            _("Remove the currently selected Failure Definition."),
         ]
         _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
         _icons = ['add', 'remove']
@@ -327,7 +327,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['add'])
-            _menu_item.set_label(_(u"Add New Definition"))
+            _menu_item.set_label(_("Add New Definition"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_insert)
@@ -337,7 +337,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Definition"))
+            _menu_item.set_label(_("Remove Selected Definition"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_delete)
@@ -347,7 +347,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Definition"))
+            _menu_item.set_label(_("Save Selected Definition"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_update)
@@ -357,7 +357,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All Definitions"))
+            _menu_item.set_label(_("Save All Definitions"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_update_all)

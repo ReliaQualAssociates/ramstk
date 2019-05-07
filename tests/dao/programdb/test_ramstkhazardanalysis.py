@@ -28,12 +28,12 @@ ATTRIBUTES = {
     'system_probability_f': 'Level A - Frequent',
     'assembly_hri': 20,
     'system_hri': 20,
-    'system_effect': u'',
+    'system_effect': '',
     'user_int_1': 0,
     'user_float_3': 0.0,
     'result_4': 0.0,
     'user_float_1': 0.0,
-    'potential_hazard': u'',
+    'potential_hazard': '',
     'remarks': '',
     'hazard_id': 1,
     'system_hri_f': 20,
@@ -41,20 +41,20 @@ ATTRIBUTES = {
     'assembly_severity': 'Medium',
     'assembly_probability_f': 'Level A - Frequent',
     'assembly_hri_f': 4,
-    'assembly_effect': u'',
-    'function_4': u'',
-    'potential_cause': u'',
+    'assembly_effect': '',
+    'function_4': '',
+    'potential_cause': '',
     'system_mitigation': '',
     'hardware_id': 1,
-    'function_3': u'',
-    'function_2': u'',
-    'function_1': u'',
+    'function_3': '',
+    'function_2': '',
+    'function_1': '',
     'user_int_3': 0,
     'user_int_2': 0,
     'assembly_severity_f': 'Medium',
     'system_severity_f': 'Medium',
     'assembly_mitigation': '',
-    'function_5': u'',
+    'function_5': '',
     'result_1': 0.0,
     'user_float_2': 0.0
 }
@@ -212,7 +212,7 @@ def test_set_attributes_too_few_passed(test_dao):
         'system_hri':
         20,
         'system_effect':
-        u'',
+        '',
         'user_int_1':
         0,
         'user_float_3':
@@ -222,7 +222,7 @@ def test_set_attributes_too_few_passed(test_dao):
         'user_float_1':
         0.0,
         'potential_hazard':
-        u'',
+        '',
         'remarks':
         '',
         'hazard_id':
@@ -238,21 +238,21 @@ def test_set_attributes_too_few_passed(test_dao):
         'assembly_hri_f':
         4,
         'assembly_effect':
-        u'',
+        '',
         'function_4':
-        u'',
+        '',
         'potential_cause':
-        u'',
+        '',
         'system_mitigation':
         '',
         'hardware_id':
         1,
         'function_3':
-        u'',
+        '',
         'function_2':
-        u'',
+        '',
         'function_1':
-        u'',
+        '',
         'user_int_3':
         0,
         'user_int_2':
@@ -264,7 +264,7 @@ def test_set_attributes_too_few_passed(test_dao):
         'assembly_mitigation':
         '',
         'function_5':
-        u'',
+        '',
         'result_1':
         0.0
     })

@@ -57,8 +57,8 @@ class ListView(RAMSTKListView):
         self.__make_treeview()
         self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
-            _(u"Displays the list of usage profiles for the selected "
-              u"revision."))
+            _("Displays the list of usage profiles for the selected "
+              "revision."))
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._on_row_change))
         self._lst_handler_id.append(
@@ -70,14 +70,14 @@ class ListView(RAMSTKListView):
         # _image.set_from_pixbuf(_icon)
 
         _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Usage\nProfiles") +
+        _label.set_markup("<span weight='bold'>" + _("Usage\nProfiles") +
                           "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(Gtk.Justification.CENTER)
         _label.show_all()
         _label.set_tooltip_text(
-            _(u"Displays usage profiles for the selected "
-              u"revision."))
+            _("Displays usage profiles for the selected "
+              "revision."))
 
         # self.hbx_tab_label.pack_start(_image, True, True, 0)
         self.hbx_tab_label.pack_end(_label, True, True, 0)
@@ -115,7 +115,7 @@ class ListView(RAMSTKListView):
         _row = None
         _model = self.treeview.get_model()
 
-        _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
+        _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
         _entity = _node.data
         if _entity is None:
             _model.clear()
@@ -155,9 +155,9 @@ class ListView(RAMSTKListView):
                 _new_row = _model.append(row, _attributes)
             except TypeError:
                 _error_code = 1
-                _user_msg = _(u"One or more Usage Profile line items had the "
-                              u"wrong data type in it's data package and is "
-                              u"not displayed in the Usage Profile.")
+                _user_msg = _("One or more Usage Profile line items had the "
+                              "wrong data type in it's data package and is "
+                              "not displayed in the Usage Profile.")
                 _debug_msg = (
                     "RAMSTK ERROR: Data for Usage Profile ID {0:s} for "
                     "Revision ID {1:s} is the wrong type for one or "
@@ -166,9 +166,9 @@ class ListView(RAMSTKListView):
                 _new_row = None
             except ValueError:
                 _error_code = 1
-                _user_msg = _(u"One or more Usage Profile line items was "
-                              u"missing some of it's data and is not "
-                              u"displayed in the Usage Profile.")
+                _user_msg = _("One or more Usage Profile line items was "
+                              "missing some of it's data and is not "
+                              "displayed in the Usage Profile.")
                 _debug_msg = (
                     "RAMSTK ERROR: Too few fields for Usage Profile ID "
                     "{0:s} for Revision ID {1:s}.".format(
@@ -177,9 +177,9 @@ class ListView(RAMSTKListView):
         except AttributeError:
             if _node.identifier != 0:
                 _error_code = 1
-                _user_msg = _(u"One or more Usage Profile line items was "
-                              u"missing it's data package and is not "
-                              u"displayed in the Usage Profile.")
+                _user_msg = _("One or more Usage Profile line items was "
+                              "missing it's data package and is not "
+                              "displayed in the Usage Profile.")
                 _debug_msg = (
                     "RAMSTK ERROR: There is no data package for Usage "
                     "Profile ID {0:s} for Revision ID {1:s}.".format(
@@ -212,9 +212,9 @@ class ListView(RAMSTKListView):
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 9)
 
-        _prompt = _(u"You are about to delete Mission, Mission Phase, or "
-                    u"Environment {0:d} and all data associated with it.  Is "
-                    u"this really what you want to do?").format(_node_id)
+        _prompt = _("You are about to delete Mission, Mission Phase, or "
+                    "Environment {0:d} and all data associated with it.  Is "
+                    "this really what you want to do?").format(_node_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
@@ -263,7 +263,7 @@ class ListView(RAMSTKListView):
             _level = 'environment'
 
         elif _level == 'environment' and not _sibling:
-            _prompt = _(u"An environmental condition cannot have a child.")
+            _prompt = _("An environmental condition cannot have a child.")
             _dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _dialog.do_run() == Gtk.ResponseType.OK:
@@ -321,12 +321,12 @@ class ListView(RAMSTKListView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Add a new Usage Profile entity at the same level "
-              u"as the currently selected entity."),
-            _(u"Add a new Usage Profile entity one level below the "
-              u"currently selected entity."),
-            _(u"Remove the curently selected entity from the Usage "
-              u"Profile.")
+            _("Add a new Usage Profile entity at the same level "
+              "as the currently selected entity."),
+            _("Add a new Usage Profile entity one level below the "
+              "currently selected entity."),
+            _("Remove the curently selected entity from the Usage "
+              "Profile.")
         ]
         _callbacks = [
             self.do_request_insert_sibling,
@@ -481,7 +481,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Sibling Entity"))
+            _menu_item.set_label(_("Add Sibling Entity"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_insert)
@@ -491,7 +491,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_(u"Add Child Entity"))
+            _menu_item.set_label(_("Add Child Entity"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_insert)
@@ -501,7 +501,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Entity"))
+            _menu_item.set_label(_("Remove Selected Entity"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_delete)
@@ -511,7 +511,7 @@ class ListView(RAMSTKListView):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Usage Profile"))
+            _menu_item.set_label(_("Save Usage Profile"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_update_all)
@@ -612,14 +612,14 @@ class ListView(RAMSTKListView):
         # Change the column headings depending on what is being selected.
         if _level == 'mission':
             _headings = [
-                _(u"Mission ID"),
-                _(u"Description"),
-                _(u"Units"),
-                _(u"Start Time"),
-                _(u"End Time"),
-                _(u""),
-                _(u""),
-                _(u"")
+                _("Mission ID"),
+                _("Description"),
+                _("Units"),
+                _("Start Time"),
+                _("End Time"),
+                _(""),
+                _(""),
+                _("")
             ]
             _attributes['mission_id'] = _model.get_value(_row, 0)
             _attributes['description'] = _model.get_value(_row, 2)
@@ -628,14 +628,14 @@ class ListView(RAMSTKListView):
 
         elif _level == 'phase':
             _headings = [
-                _(u"Phase ID"),
-                _(u"  Code\t\tDescription"),
-                _(u"Units"),
-                _(u"Start Time"),
-                _(u"End Time"),
-                _(u""),
-                _(u""),
-                _(u"")
+                _("Phase ID"),
+                _("  Code\t\tDescription"),
+                _("Units"),
+                _("Start Time"),
+                _("End Time"),
+                _(""),
+                _(""),
+                _("")
             ]
             _attributes['phase_id'] = _model.get_value(_row, 0)
             _attributes['name'] = _model.get_value(_row, 2)
@@ -645,14 +645,14 @@ class ListView(RAMSTKListView):
 
         elif _level == 'environment':
             _headings = [
-                _(u"Environment ID"),
-                _(u"Condition"),
-                _(u"Units"),
-                _(u"Minimum Value"),
-                _(u"Maximum Value"),
-                _(u"Mean Value"),
-                _(u"Variance"),
-                _(u"")
+                _("Environment ID"),
+                _("Condition"),
+                _("Units"),
+                _("Minimum Value"),
+                _("Maximum Value"),
+                _("Mean Value"),
+                _("Variance"),
+                _("")
             ]
             _attributes['environment_id'] = _model.get_value(_row, 0)
             _attributes['name'] = _model.get_value(_row, 2)
