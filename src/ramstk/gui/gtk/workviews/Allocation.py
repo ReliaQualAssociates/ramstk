@@ -186,7 +186,7 @@ class Allocation(RAMSTKWorkView):
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
-        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
 
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))

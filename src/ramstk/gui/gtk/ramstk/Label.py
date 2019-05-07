@@ -64,10 +64,10 @@ def make_label_group(text, container, x_pos, y_pos, **kwargs):
             wrap=_wrap,
             justify=Gtk.Justification.RIGHT)
         _label.set_width_chars(_char_width)
-        _max_x = max(_max_x, _label.size_request()[0])
+        _max_x = max(_max_x, _label.get_preferred_size()[0].width)
         container.put(_label, x_pos, y_pos)
         _lst_y_pos.append(y_pos)
-        y_pos += max(_label.size_request()[1], _y_inc) + 5
+        y_pos += max(_label.get_preferred_size()[0].height, _y_inc) + 5
 
     return _max_x, _lst_y_pos
 

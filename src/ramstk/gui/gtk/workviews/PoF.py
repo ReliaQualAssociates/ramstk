@@ -152,7 +152,7 @@ class PoF(RAMSTKWorkView):
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
-        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
 
         for i in [0, 1, 2, 3, 4]:
             _column = self.treeview.get_column(self._lst_col_order[i])
@@ -331,7 +331,7 @@ class PoF(RAMSTKWorkView):
             _child_tree = _tree.subtree(_n.identifier)
             self._do_load_page(tree=_child_tree, row=_new_row)
 
-        _row = _model.get_iter_root()
+        _row = _model.get_iter_first()
         self.treeview.expand_all()
         if _row is not None:
             _path = _model.get_path(_row)

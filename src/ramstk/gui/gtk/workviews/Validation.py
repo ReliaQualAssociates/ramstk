@@ -419,7 +419,7 @@ class GeneralData(RAMSTKWorkView):
         # Set the spin button to be a 0-100 in steps of 0.1 spinner.  Only
         # update if value is numeric and within range.
         self.spnStatus.set_adjustment(Gtk.Adjustment(0, 0, 100, 1, 0.1))
-        self.spnStatus.set_update_policy(Gtk.UPDATE_IF_VALID)
+        self.spnStatus.set_update_policy(Gtk.SpinButtonUpdatePolicy.IF_VALID)
         self.spnStatus.set_numeric(True)
         self.spnStatus.set_snap_to_ticks(True)
 
@@ -1069,15 +1069,18 @@ class GeneralData(RAMSTKWorkView):
         """
         spinbutton.handler_block(self._lst_handler_id[index])
 
-        _validation = self._dtc_data_controller.request_do_select(
-            self._validation_id)
+        try:
+            _validation = self._dtc_data_controller.request_do_select(
+                self._validation_id)
 
-        if index == 10:
-            _index = 12
-            _text = spinbutton.get_value()
-            _validation.status = float(_text)
+            if index == 10:
+                _index = 12
+                _text = spinbutton.get_value()
+                _validation.status = float(_text)
 
-        pub.sendMessage('wvwEditedValidation', position=_index, new_text=_text)
+            pub.sendMessage('wvwEditedValidation', position=_index, new_text=_text)
+        except AttributeError:
+            pass
 
         spinbutton.handler_unblock(self._lst_handler_id[index])
 

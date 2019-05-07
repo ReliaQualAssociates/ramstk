@@ -112,7 +112,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
             index=0, simple=True, tooltip=_(u"The application of the switch."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(
             index=0,
-            simple=False,
+            simple=True,
             tooltip=_(u"The construction method for "
                       u"the switch."))
         self.cmbContactForm = ramstk.RAMSTKComboBox(

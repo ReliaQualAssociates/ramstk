@@ -56,32 +56,6 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_load_tree, 'retrieved_revisions')
         pub.subscribe(self.do_refresh_tree, 'wvw_editing_revision')
 
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the Gtk.ButtonBox() for the Revision Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Revision class Module
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Add a new Revision."),
-            _(u"Remove the currently selected Revision.")
-        ]
-        _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
-        _icons = ['add', 'remove']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
     def __make_ui(self):
         """
         Build the user interface.
@@ -89,14 +63,11 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        RAMSTKModuleView._make_ui(self)
+
         self.make_treeview()
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
 
-        self._img_tab.set_from_file(self._dic_icons['tab'])
         _label = ramstk.RAMSTKLabel(
             _(u"Revisions"),
             width=-1,
@@ -104,6 +75,8 @@ class ModuleView(RAMSTKModuleView):
             tooltip=_(u"Displays the program revisions."))
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
+
+        self.show_all()
 
         return None
 
@@ -175,6 +148,32 @@ class ModuleView(RAMSTKModuleView):
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
+
+    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Create the Gtk.ButtonBox() for the Revision Module View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Revision class Module
+                 View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _(u"Add a new Revision."),
+            _(u"Remove the currently selected Revision.")
+        ]
+        _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
+        _icons = ['add', 'remove']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
 
     def _on_button_press(self, treeview, event):
         """

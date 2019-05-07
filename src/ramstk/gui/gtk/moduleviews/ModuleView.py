@@ -56,15 +56,21 @@ class RAMSTKModuleView(Gtk.HBox, ramstk.RAMSTKBaseView):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
-
-    def __make_ui(self):
+    def _make_ui(self):
         """
         Build the user interface.
 
         :return: None
         :rtype: None
         """
+        self._img_tab.set_from_file(self._dic_icons['tab'])
+
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(self._make_buttonbox())
+        self.pack_start(_scrolledwindow, False, False, 0)
+
         _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
         self.pack_end(_scrolledwindow, True, True, 0)
@@ -73,6 +79,13 @@ class RAMSTKModuleView(Gtk.HBox, ramstk.RAMSTKBaseView):
         self.hbx_tab_label.show_all()
 
         self.show_all()
+
+        self._lst_handler_id.append(
+            self.treeview.connect('cursor_changed', self._on_row_change))
+        self._lst_handler_id.append(
+            self.treeview.connect('button_press_event', self._on_button_press))
+
+        return None
 
     def do_request_export(self, module):
         """

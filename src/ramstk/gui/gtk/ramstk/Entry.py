@@ -72,12 +72,17 @@ class RAMSTKEntry(Gtk.Entry):
             self.modify_font(Pango.FontDescription('bold'))
 
         if not _editable:
-            _bg_color = Gdk.Color(_color)
-            self.modify_base(Gtk.StateType.NORMAL, _bg_color)
-            self.modify_base(Gtk.StateType.ACTIVE, _bg_color)
-            self.modify_base(Gtk.StateType.PRELIGHT, _bg_color)
-            self.modify_base(Gtk.StateType.SELECTED, _bg_color)
-            self.modify_base(Gtk.StateType.INSENSITIVE, Gdk.Color('#BFBFBF'))
+            _bg_color = Gdk.RGBA(
+                red=float(int(_color[1:3], 16)),
+                green=float(int(_color[3:5], 16)),
+                blue=float(int(_color[5:7], 16)),
+                alpha=1.0)
+            self.override_background_color(Gtk.StateFlags.NORMAL, _bg_color)
+            self.override_background_color(Gtk.StateFlags.ACTIVE, _bg_color)
+            self.override_background_color(Gtk.StateFlags.PRELIGHT, _bg_color)
+            self.override_background_color(Gtk.StateFlags.SELECTED, _bg_color)
+            self.override_background_color(Gtk.StateFlags.INSENSITIVE,
+                                           Gdk.RGBA(191.0, 191.0, 191.0, 1.0))
             self.modify_font(Pango.FontDescription('bold'))
 
         self.set_tooltip_markup(_tooltip)

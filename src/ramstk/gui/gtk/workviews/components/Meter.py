@@ -92,7 +92,7 @@ class MeterAssessmentInputs(AssessmentInputs):
             simple=True,
             tooltip=_(u"The appliction of the panel meter."))
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=False, tooltip=_(u"The type of meter."))
+            index=0, simple=True, tooltip=_(u"The type of meter."))
 
         self._make_page()
         self.show_all()

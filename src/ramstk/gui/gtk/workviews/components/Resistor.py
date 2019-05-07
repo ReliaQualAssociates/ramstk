@@ -158,7 +158,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
             simple=True,
             tooltip=_(u"The governing specification for the resistor."))
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=False, tooltip=_(u"The type of thermistor."))
+            index=0, simple=True, tooltip=_(u"The type of thermistor."))
         self.cmbStyle = ramstk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The style of resistor."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(

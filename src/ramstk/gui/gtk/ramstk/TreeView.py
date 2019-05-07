@@ -272,7 +272,10 @@ class RAMSTKTreeView(Gtk.TreeView):
 
             try:
                 _row = _model.append(row, _attributes)
-            except (TypeError, ValueError):
+            except TypeError:
+                _row = None
+                _return = True
+            except ValueError:
                 _row = None
                 _return = True
 

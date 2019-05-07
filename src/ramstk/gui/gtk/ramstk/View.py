@@ -191,7 +191,7 @@ class RAMSTKBaseView(object):
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
 
-        _row = _model.get_iter_root()
+        _row = _model.get_iter_first()
         self.treeview.expand_all()
         if _row is not None:
             _path = _model.get_path(_row)
@@ -371,7 +371,7 @@ class RAMSTKBaseView(object):
         for _column in self.treeview.get_columns():
             _cell = _column.get_cells()[0]
             if _index in _editable:
-                _color = Gdk.color_parse('#FFFFFF')
+                _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
                 try:
                     _cell.set_property('editable', True)
                     _cell.connect('edited', self._on_cell_edit, _index,
@@ -381,12 +381,12 @@ class RAMSTKBaseView(object):
                     _cell.connect('toggled', self._on_cell_edit, _index,
                                   self.treeview.get_model())
             else:
-                _color = Gdk.color_parse('#EEEEEE')
+                _color = Gdk.RGBA(238.0, 238.0, 238.0, 1.0)
                 try:
                     _cell.set_property('editable', False)
                 except TypeError:
                     _cell.set_property('activatable', False)
-            _cell.set_property('cell-background-gdk', _color)
+            _cell.set_property('cell-background-rgba', _color)
             _index += 1
 
         return None
@@ -539,7 +539,7 @@ class RAMSTKBaseView(object):
                     _row = None
                     _return = True
 
-        _row = _model.get_iter_root()
+        _row = _model.get_iter_first()
         self.treeview.expand_all()
         if _row is not None:
             _path = _model.get_path(_row)

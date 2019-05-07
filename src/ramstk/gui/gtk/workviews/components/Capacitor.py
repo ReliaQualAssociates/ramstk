@@ -239,7 +239,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             simple=True,
             tooltip=_(u"The governing specification for the capacitor."))
         self.cmbStyle = ramstk.RAMSTKComboBox(
-            index=0, simple=False, tooltip=_(u"The style of the capacitor."))
+            index=0, simple=True, tooltip=_(u"The style of the capacitor."))
         self.cmbConfiguration = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,

@@ -590,8 +590,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Disable the category RAMSTKCombo() if the hardware item is not a part.
         if attributes['part'] == 1:
-            self.cmbCategory.set_button_sensitivity(Gtk.SENSITIVITY_ON)
-            self.cmbSubcategory.set_button_sensitivity(Gtk.SENSITIVITY_ON)
+            self.cmbCategory.set_button_sensitivity(Gtk.SensitivityType.ON)
+            self.cmbSubcategory.set_button_sensitivity(Gtk.SensitivityType.ON)
 
             self.cmbCategory.set_active(int(attributes['category_id']))
 
@@ -601,8 +601,8 @@ class GeneralData(RAMSTKWorkView):
             self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
 
         else:
-            self.cmbCategory.set_button_sensitivity(Gtk.SENSITIVITY_OFF)
-            self.cmbSubcategory.set_button_sensitivity(Gtk.SENSITIVITY_OFF)
+            self.cmbCategory.set_button_sensitivity(Gtk.SensitivityType.OFF)
+            self.cmbSubcategory.set_button_sensitivity(Gtk.SensitivityType.OFF)
 
             # Clear the subcategory RAMSTKComboBox() always so it is empty
             # whenever an assembly is selected.
@@ -2389,7 +2389,7 @@ class AssessmentResults(RAMSTKWorkView):
         _frame.add(self.scwStress)
         _vpaned.pack2(_frame, True, True)
 
-        _hbox.pack_end(_vpaned, expand=True, fill=True)
+        _hbox.pack_end(_vpaned, True, True, 0)
 
         _frame = Gtk.Frame()
         self.scwReliability.add_with_viewport(_frame)

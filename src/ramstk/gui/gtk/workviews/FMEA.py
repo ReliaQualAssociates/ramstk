@@ -96,13 +96,17 @@ class FMEA(RAMSTKWorkView):
                 u"Displays the MIL-SD-1629, Taks 102 item criticality for the "
                 u"selected hardware item."))
         self.txtItemCriticality.set_editable(False)
-        _bg_color = Gdk.Color('#ADD8E6')
-        self.txtItemCriticality.modify_base(Gtk.StateType.NORMAL, _bg_color)
-        self.txtItemCriticality.modify_base(Gtk.StateType.ACTIVE, _bg_color)
-        self.txtItemCriticality.modify_base(Gtk.StateType.PRELIGHT, _bg_color)
-        self.txtItemCriticality.modify_base(Gtk.StateType.SELECTED, _bg_color)
-        self.txtItemCriticality.modify_base(Gtk.StateType.INSENSITIVE,
-                                            _bg_color)
+        _bg_color = Gdk.RGBA(red=173.0, green=216.0, blue=230.0, alpha=1.0)
+        self.txtItemCriticality.override_background_color(
+            Gtk.StateFlags.NORMAL, _bg_color)
+        self.txtItemCriticality.override_background_color(
+            Gtk.StateFlags.ACTIVE, _bg_color)
+        self.txtItemCriticality.override_background_color(
+            Gtk.StateFlags.PRELIGHT, _bg_color)
+        self.txtItemCriticality.override_background_color(
+            Gtk.StateFlags.SELECTED, _bg_color)
+        self.txtItemCriticality.override_background_color(
+            Gtk.StateFlags.INSENSITIVE, _bg_color)
 
     def _get_cell_model(self, column):
         """
@@ -367,7 +371,7 @@ class FMEA(RAMSTKWorkView):
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
-        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
 
         return _frame
 
@@ -489,8 +493,8 @@ class FFMEA(FMEA):
         # Disable the calculate button for the Functional FMEA.
         _buttonbox.get_children()[3].set_sensitive(False)
 
-        self.pack_start(_buttonbox, False, True)
-        self.pack_end(self.__make_page(), True, True)
+        self.pack_start(_buttonbox, False, True, 0)
+        self.pack_end(self._make_page(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -794,7 +798,7 @@ class FFMEA(FMEA):
             _child_tree = _tree.subtree(_n.identifier)
             self._do_load_page(tree=_child_tree, row=_new_row)
 
-        _row = _model.get_iter_root()
+        _row = _model.get_iter_first()
         self.treeview.expand_all()
         if _row is not None:
             _path = _model.get_path(_row)
@@ -990,8 +994,8 @@ class DFMECA(FMEA):
                       u"Hardware item."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self.__make_buttonbox(), False, True)
-        self.pack_end(self.__make_methodbox(), True, True)
+        self.pack_start(self._make_buttonbox(), False, True, 0)
+        self.pack_end(self.__make_methodbox(), True, True, 0)
         self.show_all()
 
         # Subscribe to PyPubSub messages.
@@ -1010,13 +1014,13 @@ class DFMECA(FMEA):
         _vbox = Gtk.VBox()
 
         _fixed = Gtk.Fixed()
-        _vbox.pack_start(_fixed, False, True)
+        _vbox.pack_start(_fixed, False, True, 0)
 
         _fixed.put(self.chkCriticality, 5, 5)
         _fixed.put(self.chkRPN, 5, 35)
         _fixed.put(self.txtItemCriticality.scrollwindow, 550, 5)
 
-        _vbox.pack_end(self.__make_page(), True, True)
+        _vbox.pack_end(self.__make_page(), True, True, 0)
 
         # By default, calculate both Task 102 and RPN.
         self.chkCriticality.set_active(True)
@@ -1585,7 +1589,7 @@ class DFMECA(FMEA):
             _child_tree = _tree.subtree(_n.identifier)
             self._do_load_page(tree=_child_tree, row=_new_row)
 
-        _row = _model.get_iter_root()
+        _row = _model.get_iter_first()
         self.treeview.expand_all()
         if _row is not None:
             _path = _model.get_path(_row)

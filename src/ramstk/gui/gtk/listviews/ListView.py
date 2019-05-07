@@ -85,35 +85,3 @@ class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
             model[path][position] = float(new_text)
 
         return _return
-
-    def on_select(self, **kwargs):
-        """
-        Respond to load the List View Gtk.Notebook() widgets.
-
-        This method handles the results of the an individual module's
-        _on_select() method.  It sets the title of the RAMSTK Work Book and
-        raises an error dialog if needed.
-
-        :return: None
-        :rtype: None
-        """
-        _title = kwargs['title']
-        _error_code = kwargs['error_code']
-        _user_msg = kwargs['user_msg']
-        _debug_msg = kwargs['debug_msg']
-
-        try:
-            _workbook = self.get_parent().get_parent()
-            _workbook.set_title(_title)
-        except AttributeError:
-            pass
-
-        if _error_code != 0:
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
-                _debug_msg)
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _user_msg, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                _dialog.destroy()
-
-        return None

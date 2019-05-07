@@ -54,7 +54,7 @@ from ramstk.modules.preferences import dtcPreferences
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.exports import dtcExports
 
-from ramstk.gui.gtk.ramstk.Widget import _, Gtk
+from ramstk.gui.gtk.ramstk.Widget import _, GdkPixbuf, Gtk
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook
 from ramstk.gui.gtk.mwi import ModuleBook
@@ -682,9 +682,10 @@ class RAMSTK(object):
             '/32x32/db-disconnected.png'
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
-        self.icoStatus.set_tooltip(
-            _(u"RAMSTK is not currently connected to a "
-              u"project database."))
+        # Deprecated since version 3.14: Use Gio.Notification and Gtk.Application to provide status notifications; there is no direct replacement for this function
+        #self.icoStatus.set_tooltip(
+        #    _(u"RAMSTK is not currently connected to a "
+        #      u"project database."))
 
     def request_do_create_program(self):
         """
@@ -828,10 +829,11 @@ class RAMSTK(object):
                 '/32x32/db-connected.png'
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
             self.icoStatus.set_from_pixbuf(_icon)
-            self.icoStatus.set_tooltip(
-                _(u"RAMSTK is connected to program database "
-                  u"{0:s}.".format(
-                      self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
+            # Deprecated since version 3.14: Use Gio.Notification and Gtk.Application to provide status notifications; there is no direct replacement for this function
+            #self.icoStatus.set_tooltip(
+            #    _(u"RAMSTK is connected to program database "
+            #      u"{0:s}.".format(
+            #          self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
 
             self.loaded = True
 

@@ -10,11 +10,8 @@ from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk import RAMSTKBook, destroy
-from ramstk.gui.gtk.moduleviews import mvwRevision
-from ramstk.gui.gtk.moduleviews import mvwFunction
-from ramstk.gui.gtk.moduleviews import mvwRequirement
-from ramstk.gui.gtk.moduleviews import mvwHardware
-from ramstk.gui.gtk.moduleviews import mvwValidation
+from ramstk.gui.gtk.moduleviews import (
+    mvwRevision, mvwFunction, mvwRequirement, mvwHardware, mvwValidation)
 from ramstk.gui.gtk.assistants import (CreateProject, OpenProject, Options,
                                        Preferences, ImportProject)
 from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
@@ -335,11 +332,9 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         """
         Set the status bar and update the progress bar.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         _message = _(u"Opening Program Database {0:s}"). \
             format(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])
         self.statusbar.push(1, _message)
@@ -348,7 +343,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.
                 RAMSTK_PROG_INFO['database']))
 
-        return _return
+        return None
 
     def _on_close(self):
         """
@@ -368,7 +363,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         return None
 
-    def _on_open(self, tree):   # pylint: disable=unused-argument
+    def _on_open(self, tree):  # pylint: disable=unused-argument
         """
         Update the status bar and clear the progress bar.
 

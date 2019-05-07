@@ -164,12 +164,12 @@ class ICAssessmentInputs(AssessmentInputs):
             tooltip=_(u"The application of the integrated circuit."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(
             index=0,
-            simple=False,
+            simple=True,
             tooltip=_(u"The integrated circuit method "
                       u"of construction."))
         self.cmbECC = ramstk.RAMSTKComboBox(
             index=0,
-            simple=False,
+            simple=True,
             tooltip=_(u"The error correction code used by the EEPROM."))
         self.cmbManufacturing = ramstk.RAMSTKComboBox(
             index=0,

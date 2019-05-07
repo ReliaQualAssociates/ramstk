@@ -198,7 +198,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         # Initialize public scalar attributes.
         self.cmbType = ramstk.RAMSTKComboBox(
             index=0,
-            simple=False,
+            simple=True,
             tooltip=_(u"The type of connector/connection."))
         self.cmbSpecification = ramstk.RAMSTKComboBox(
             index=0,

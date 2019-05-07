@@ -677,12 +677,17 @@ class StressResults(Gtk.HPaned):
 
         self.chkOverstress.set_sensitive(False)
         self.txtReason.set_editable(False)
-        _bg_color = Gdk.Color('#ADD8E6')
-        self.txtReason.modify_base(Gtk.StateType.NORMAL, _bg_color)
-        self.txtReason.modify_base(Gtk.StateType.ACTIVE, _bg_color)
-        self.txtReason.modify_base(Gtk.StateType.PRELIGHT, _bg_color)
-        self.txtReason.modify_base(Gtk.StateType.SELECTED, _bg_color)
-        self.txtReason.modify_base(Gtk.StateType.INSENSITIVE, _bg_color)
+        _bg_color = Gdk.RGBA(red=173.0, green=216.0, blue=230.0, alpha=1.0)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.NORMAL, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.ACTIVE, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.PRELIGHT, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.SELECTED, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.INSENSITIVE, _bg_color)
 
         self._make_page()
         self.show_all()

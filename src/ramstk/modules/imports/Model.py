@@ -230,7 +230,7 @@ class ImportDataModel(RAMSTKDataModel):
         :rtype: None
         """
         if file_type == 'csv':
-            self._input_data = pd.read_table(
+            self._input_data = pd.read_csv(
                 file_name, sep=';', na_values=[''], parse_dates=True)
         elif file_type == 'excel':
             self._input_data = pd.read_excel(file_name)

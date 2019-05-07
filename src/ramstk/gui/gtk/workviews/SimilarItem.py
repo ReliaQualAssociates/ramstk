@@ -218,7 +218,7 @@ class SimilarItem(RAMSTKWorkView):
         _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         _frame.add(_scrollwindow)
 
-        self.treeview.set_grid_lines(Gtk.TREE_VIEW_GRID_LINES_BOTH)
+        self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
 
         return _frame
 
@@ -675,7 +675,7 @@ class SimilarItem(RAMSTKWorkView):
         # Run the dialog and apply the changes if the 'OK' button is pressed.
         if _dialog.run() == Gtk.ResponseType.OK:
             if _chkApplyAll.get_active():
-                _row = _model.get_iter_root()
+                _row = _model.get_iter_first()
                 while _row is not None:
                     _hardware_id = _model.get_value(_row, 1)
                     _similaritem = self._dtc_data_controller.request_do_select(

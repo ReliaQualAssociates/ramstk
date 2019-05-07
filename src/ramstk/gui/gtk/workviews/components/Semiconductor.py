@@ -198,7 +198,7 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
             simple=True,
             tooltip=_(u"The package type for the semiconductor."))
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=False, tooltip=_(u"The type of semiconductor."))
+            index=0, simple=True, tooltip=_(u"The type of semiconductor."))
         self.cmbApplication = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,

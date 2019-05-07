@@ -190,7 +190,7 @@ class ListView(RAMSTKListView):
             _child_tree = tree.subtree(_n.identifier)
             self._do_load_tree(tree=_child_tree, row=_new_row)
 
-        _row = _model.get_iter_root()
+        _row = _model.get_iter_first()
         self.treeview.expand_all()
         if _row is not None:
             _path = _model.get_path(_row)

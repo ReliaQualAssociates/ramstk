@@ -34,8 +34,6 @@ class RAMSTKComboBox(Gtk.ComboBox):
                                  Default is an empty string.
             * *width* (int) -- width of the Gtk.ComboBox() widget.
                                Default is 200.
-            * *entry* (bool) -- indicates whether to include an entry or not.
-                                Default is False.
         """
         GObject.GObject.__init__(self)
 
@@ -59,15 +57,10 @@ class RAMSTKComboBox(Gtk.ComboBox):
             _width = kwargs['width']
         except KeyError:
             _width = 200
-        try:
-            _entry = kwargs['entry']
-        except KeyError:
-            _entry = False
 
         # Set widget properties.
         self.props.width_request = _width
         self.props.height_request = _height
-        self.props.has_entry = _entry
 
         if not _simple:
             _list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
@@ -120,8 +113,8 @@ class RAMSTKComboBox(Gtk.ComboBox):
             for __, _entry in enumerate(entries):
                 _model.append(list(_entry))
         else:
-            self.append_text("")
+            _model.append([""])
             for __, _entry in enumerate(entries):
-                self.append_text(list(_entry)[index])
+                _model.append([_entry[index]])
 
         return _return
