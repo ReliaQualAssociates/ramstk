@@ -11,22 +11,16 @@ import sys
 import gettext
 
 # Modules required for the GUI.
-# Disable the unused-import because pango, pygtk, gtk, and gobject are all
+# Disable the unused-import because Gtk, Gdk, GObject, and Pango are all
 # imported from this module by all the other GUI modules.
-import pango  # pylint: disable=unused-import   # noqa
 try:
-    import pygtk
-    pygtk.require('2.0')
+    import gi
+    gi.require_version('Gdk', '3.0')
+    gi.require_version('Gtk', '3.0')
 except ImportError:
+    print("Failed to import package gi; exiting.")
     sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject  # pylint: disable=unused-import     # noqa
-except ImportError:
-    sys.exit(1)
+from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -38,53 +32,53 @@ _ = gettext.gettext
 
 def set_cursor(controller, cursor):
     """
-    Set the cursor for the Module, List, and Work Book gtk.gdk.Window().
+    Set the cursor for the Module, List, and Work Book Gdk.Window().
 
     :param controller: the RAMSTK master data controller.
     :type controller: :class:`ramstk.RAMSTK.RAMSTK`
-    :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only handles
+    :param Gdk.Cursor cursor: the Gdk.Cursor.new() to set.  Only handles
                                   one of the following:
-                                  - gtk.gdk.X_CURSOR
-                                  - gtk.gdk.ARROW
-                                  - gtk.gdk.CENTER_PTR
-                                  - gtk.gdk.CIRCLE
-                                  - gtk.gdk.CROSS
-                                  - gtk.gdk.CROSS_REVERSE
-                                  - gtk.gdk.CROSSHAIR
-                                  - gtk.gdk.DIAMOND_CROSS
-                                  - gtk.gdk.DOUBLE_ARROW
-                                  - gtk.gdk.DRAFT_LARGE
-                                  - gtk.gdk.DRAFT_SMALL
-                                  - gtk.gdk.EXCHANGE
-                                  - gtk.gdk.FLEUR
-                                  - gtk.gdk.GUMBY
-                                  - gtk.gdk.HAND1
-                                  - gtk.gdk.HAND2
-                                  - gtk.gdk.LEFT_PTR - non-busy cursor
-                                  - gtk.gdk.PENCIL
-                                  - gtk.gdk.PLUS
-                                  - gtk.gdk.QUESTION_ARROW
-                                  - gtk.gdk.RIGHT_PTR
-                                  - gtk.gdk.SB_DOWN_ARROW
-                                  - gtk.gdk.SB_H_DOUBLE_ARROW
-                                  - gtk.gdk.SB_LEFT_ARROW
-                                  - gtk.gdk.SB_RIGHT_ARROW
-                                  - gtk.gdk.SB_UP_ARROW
-                                  - gtk.gdk.SB_V_DOUBLE_ARROW
-                                  - gtk.gdk.TCROSS
-                                  - gtk.gdk.TOP_LEFT_ARROW
-                                  - gtk.gdk.WATCH - when application is busy
-                                  - gtk.gdk.XTERM - selection bar
+                                  - Gdk.CursorType.X_CURSOR
+                                  - Gdk.CursorType.ARROW
+                                  - Gdk.CursorType.CENTER_PTR
+                                  - Gdk.CIRCLE
+                                  - Gdk.CROSS
+                                  - Gdk.CROSS_REVERSE
+                                  - Gdk.CursorType.CROSSHAIR
+                                  - Gdk.DIAMOND_CROSS
+                                  - Gdk.DOUBLE_ARROW
+                                  - Gdk.DRAFT_LARGE
+                                  - Gdk.DRAFT_SMALL
+                                  - Gdk.EXCHANGE
+                                  - Gdk.FLEUR
+                                  - Gdk.GUMBY
+                                  - Gdk.HAND1
+                                  - Gdk.HAND2
+                                  - Gdk.CursorType.LEFT_PTR - non-busy cursor
+                                  - Gdk.PENCIL
+                                  - Gdk.PLUS
+                                  - Gdk.QUESTION_ARROW
+                                  - Gdk.CursorType.RIGHT_PTR
+                                  - Gdk.SB_DOWN_ARROW
+                                  - Gdk.SB_H_DOUBLE_ARROW
+                                  - Gdk.SB_LEFT_ARROW
+                                  - Gdk.SB_RIGHT_ARROW
+                                  - Gdk.SB_UP_ARROW
+                                  - Gdk.SB_V_DOUBLE_ARROW
+                                  - Gdk.TCROSS
+                                  - Gdk.TOP_LEFT_ARROW
+                                  - Gdk.CursorType.WATCH - when application is busy
+                                  - Gdk.XTERM - selection bar
     :return: None
     :rtype: None
     """
     controller.dic_books['listbook'].get_window().set_cursor(
-        gtk.gdk.Cursor(cursor))
+        Gdk.Cursor.new(cursor))
     controller.dic_books['modulebook'].get_window().set_cursor(
-        gtk.gdk.Cursor(cursor))
+        Gdk.Cursor.new(cursor))
     controller.dic_books['workbook'].get_window().set_cursor(
-        gtk.gdk.Cursor(cursor))
+        Gdk.Cursor.new(cursor))
 
-    gtk.gdk.flush()
+    Gdk.flush()
 
     return None

@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.moduleviews.ModuleView.py is part of the RAMSTK Project
@@ -8,23 +9,23 @@
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.assistants import ExportModule
-from ramstk.gui.gtk.ramstk.Widget import gtk
+from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
 from ramstk.gui.gtk import ramstk
 
 
-class RAMSTKModuleView(gtk.HBox, ramstk.RAMSTKBaseView):
+class RAMSTKModuleView(Gtk.HBox, ramstk.RAMSTKBaseView):
     """
     Display data in the RAMSTK Module Book.
 
     This is the meta class for all RAMSTK Module View classes.  Attributes of
     the RAMSTKModuleView are:
 
-    :ivar _img_tab: the :class:`gtk.Image` to display on the tab.
+    :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.
     :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View gtk.TreeView().
-    :ivar hbx_tab_label: the :class:`gtk.HBox` used for the label in the
+                          Module View Gtk.TreeView().
+    :ivar hbx_tab_label: the :class:`Gtk.HBox` used for the label in the
                          ModuleBook.
-    :ivar treeview: the :class:`gtk.TreeView` displaying the list of items
+    :ivar treeview: the :class:`Gtk.TreeView` displaying the list of items
                     in the selected module.
     """
 
@@ -36,7 +37,7 @@ class RAMSTKModuleView(gtk.HBox, ramstk.RAMSTKBaseView):
         :type controller: :py:class:`ramstk.RAMSTK.RAMSTK`
         :param str module: the module that is being loaded.
         """
-        gtk.HBox.__init__(self)
+        GObject.GObject.__init__(self)
         ramstk.RAMSTKBaseView.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
@@ -47,7 +48,7 @@ class RAMSTKModuleView(gtk.HBox, ramstk.RAMSTKBaseView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._img_tab = gtk.Image()
+        self._img_tab = Gtk.Image()
 
         # Initialize public dictionary attributes.
 
@@ -55,26 +56,43 @@ class RAMSTKModuleView(gtk.HBox, ramstk.RAMSTKBaseView):
 
         # Initialize public scalar attributes.
 
-        _scrolledwindow = gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+    def _make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self._img_tab.set_from_file(self._dic_icons['tab'])
+
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
         _scrolledwindow.add_with_viewport(self._make_buttonbox())
-        self.pack_start(_scrolledwindow, expand=False, fill=False)
+        self.pack_start(_scrolledwindow, False, False, 0)
 
-        _scrolledwindow = gtk.ScrolledWindow()
+        _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
-        self.pack_end(_scrolledwindow, expand=True, fill=True)
+        self.pack_end(_scrolledwindow, True, True, 0)
 
-        self.hbx_tab_label.pack_start(self._img_tab)
+        self.hbx_tab_label.pack_start(self._img_tab, True, True, 0)
         self.hbx_tab_label.show_all()
 
         self.show_all()
+
+        self._lst_handler_id.append(
+            self.treeview.connect('cursor_changed', self._on_row_change))
+        self._lst_handler_id.append(
+            self.treeview.connect('button_press_event', self._on_button_press))
+
+        return None
 
     def do_request_export(self, module):
         """
         Launch the Export assistant.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """

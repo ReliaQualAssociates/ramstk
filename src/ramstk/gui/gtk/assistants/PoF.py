@@ -4,25 +4,18 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Physics of Failure Assistants Module"""
+"""The RASMTK Physics of Failure Assistants Module."""
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gtk
 
 
 class AddStressMethod(ramstk.RAMSTKDialog):
-    """
-    This is the assistant that walks the user through the process of adding
-    a new operating stress or test method to the selected operating load.
-    """
+    """Assistant to walk user through process of adding stress or test method."""
 
     def __init__(self):
-        """
-        Method to initialize on instance of the Add Stress or Test Method
-        Assistant.
-        """
-
+        """Initialize instance of the Add Stress or Test Method Assistant."""
         ramstk.RAMSTKDialog.__init__(
             self,
             _(u"RAMSTK Physics of Failure Analysis Operating Stress and "
@@ -41,13 +34,19 @@ class AddStressMethod(ramstk.RAMSTKDialog):
         # Initialize public scalar attributes.
         self.rdoStress = ramstk.RAMSTKOptionButton(None, _(u"Add stress"))
         self.rdoMethod = ramstk.RAMSTKOptionButton(self.rdoStress,
-                                                _(u"Add test method"))
+                                                   _(u"Add test method"))
 
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the dialog.                       #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fixed = gtk.Fixed()
-        self.vbox.pack_start(_fixed)
+        self.__make_ui()
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        _fixed = Gtk.Fixed()
+        self.vbox.pack_start(_fixed, True, True, 0)
 
         _label = ramstk.RAMSTKLabel(
             _(u"This is the RAMSTK Operating Stress and Test Method "
@@ -72,12 +71,12 @@ class AddStressMethod(ramstk.RAMSTKDialog):
 
         _fixed.show_all()
 
+        return None
+
     def _cancel(self, __button):
         """
-        Method to destroy the assistant when the 'Cancel' button is
-        pressed.
+        Destroy the assistant when the 'Cancel' button is pressed.
 
-        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param Gtk.Button __button: the Gtk.Button() that called this method.
         """
-
         self.destroy()

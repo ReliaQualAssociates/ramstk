@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Function Work View."""
+"""The RAMSTK Function Work View."""
 
 # Import third party modules.
 from pubsub import pub
@@ -12,7 +12,7 @@ from pubsub import pub
 # Import other RAMSTK modules.
 from ramstk.Utilities import boolean_to_integer
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
 
@@ -86,12 +86,54 @@ class GeneralData(RAMSTKWorkView):
         self.txtName = ramstk.RAMSTKEntry(
             width=800, tooltip=_(u"The name of the selected function."))
         self.txtRemarks = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=800,
             tooltip=_(u"Enter any remarks associated with the "
                       u"selected function."))
 
-        # Connect to callback functions for editable gtk.Widgets().
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._on_edit, 'mvw_editing_function')
+        pub.subscribe(self._do_load_page, 'selected_function')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Function class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Work
+                 View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = []
+        _callbacks = []
+        _icons = []
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_ui(self):
+        """
+        Make the Function class Gtk.Notebook() general data page.
+
+        :return: None
+        :rtype: None
+        """
+        (_frame, _fixed, __,
+         _y_pos) = RAMSTKWorkView.make_general_data_page(self)
+
+        _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
+
+        # Connect to callback functions for editable Gtk.Widgets().
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
@@ -101,14 +143,11 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_start(self._make_page(), expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(_frame, True, True, 0)
         self.show_all()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._on_edit, 'mvw_editing_function')
-        pub.subscribe(self._do_load_page, 'selected_function')
+        return None
 
     def _do_clear_page(self):
         """
@@ -175,14 +214,14 @@ class GeneralData(RAMSTKWorkView):
         """
         Send request to save the currently selected Function.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_function', node_id=self._function_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -190,59 +229,22 @@ class GeneralData(RAMSTKWorkView):
         """
         Request to save all the Functions.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_functions')
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+    def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Function class Work View.
+        Update the Function Work View Gtk.Widgets().
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Function class Work
-                 View.
-        :rtype: :class:`gtk.ButtonBox`
-        """
-        _tooltips = []
-        _callbacks = []
-        _icons = []
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def _make_page(self):
-        """
-        Make the Function class gtk.Notebook() general data page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        (_frame, _fixed, __,
-         _y_pos) = RAMSTKWorkView.make_general_data_page(self)
-
-        _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
-
-        return _frame
-
-    def _on_edit(self, module_id, key, value):
-        """
-        Update the Function Work View gtk.Widgets().
-
-        This method updates the function Work View gtk.Widgets() with changes
+        This method updates the function Work View Gtk.Widgets() with changes
         to the Function data model attributes.  This method is called whenever
         an attribute is edited in a different RAMSTK View.
 
@@ -253,7 +255,7 @@ class GeneralData(RAMSTKWorkView):
                               RAMSTKDataController.
         :param str key: the key in the Function attributes list of the
                         attribute that was edited.
-        :param str value: the new text to update the gtk.Widget() with.
+        :param str value: the new text to update the Gtk.Widget() with.
         :return: None
         :rtype: None
         """
@@ -283,15 +285,15 @@ class GeneralData(RAMSTKWorkView):
 
         This method is called by:
 
-            * gtk.Entry() 'changed' signal
-            * gtk.TextView() 'changed' signal
+            * Gtk.Entry() 'changed' signal
+            * Gtk.TextView() 'changed' signal
 
         This method sends the 'wvwEditedFunction' message.
 
-        :param gtk.Entry entry: the gtk.Entry() that called the method.
-        :param int index: the position in the Function class gtk.TreeModel()
+        :param Gtk.Entry entry: the Gtk.Entry() that called the method.
+        :param int index: the position in the Function class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().
+                          Gtk.Widget().
         :return: None
         :rtype: None
         """

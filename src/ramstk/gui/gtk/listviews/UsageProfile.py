@@ -10,12 +10,9 @@
 from pubsub import pub
 from sortedcontainers import SortedDict
 
-# Modules required for the GUI.
-import pango
-
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gobject, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, GObject, Gtk, Pango
 from .ListView import RAMSTKListView
 
 
@@ -57,7 +54,7 @@ class ListView(RAMSTKListView):
 
         # Initialize public scalar attributes.
 
-        self._make_treeview()
+        self.__make_treeview()
         self.treeview.set_rubber_banding(True)
         self.treeview.set_tooltip_text(
             _(u"Displays the list of usage profiles for the selected "
@@ -67,30 +64,30 @@ class ListView(RAMSTKListView):
         self._lst_handler_id.append(
             self.treeview.connect('button_press_event', self._on_button_press))
 
-        # _icon = gdk.pixbuf_new_from_file_at_size(self._dic_icons['tab'],
+        # _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self._dic_icons['tab'],
         #                                          22, 22)
         # _image = Image()
         # _image.set_from_pixbuf(_icon)
 
-        _label = gtk.Label()
+        _label = Gtk.Label()
         _label.set_markup("<span weight='bold'>" + _(u"Usage\nProfiles") +
                           "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
+        _label.set_justify(Gtk.Justification.CENTER)
         _label.show_all()
         _label.set_tooltip_text(
             _(u"Displays usage profiles for the selected "
               u"revision."))
 
-        # self.hbx_tab_label.pack_start(_image)
-        self.hbx_tab_label.pack_end(_label)
+        # self.hbx_tab_label.pack_start(_image, True, True, 0)
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
         self.hbx_tab_label.show_all()
 
-        _scrolledwindow = gtk.ScrolledWindow()
+        _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_end(_scrolledwindow, expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_end(_scrolledwindow, True, True, 0)
 
         self.show_all()
 
@@ -101,13 +98,13 @@ class ListView(RAMSTKListView):
 
     def _do_load_tree(self, tree, row=None):
         """
-        Recursively load the Usage Profile List View's gtk.TreeModel.
+        Recursively load the Usage Profile List View's Gtk.TreeModel.
 
         :param tree: the Usage Profile treelib Tree().
         :type tree: :class:`treelib.Tree`
-        :param row: the parent row in the Usage Profile gtk.TreeView() to
+        :param row: the parent row in the Usage Profile Gtk.TreeView() to
                     add the new item.
-        :type row: :class:`gtk.TreeIter`
+        :type row: :class:`Gtk.TreeIter`
 
         :return: (_error_code, _user_msg, _debug_msg); the error code, message
                  to be displayed to the user, and the message to be written to
@@ -126,7 +123,7 @@ class ListView(RAMSTKListView):
         _attributes = []
         try:
             if _entity.is_mission:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['mission'], 22, 22)
                 _attributes = [
                     _icon, _entity.mission_id, _entity.description, '',
@@ -136,7 +133,7 @@ class ListView(RAMSTKListView):
                 _new_row = None
 
             elif _entity.is_phase:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['phase'], 22, 22)
                 _attributes = [
                     _icon, _entity.phase_id, _entity.name, _entity.description,
@@ -145,7 +142,7 @@ class ListView(RAMSTKListView):
                 ]
 
             elif _entity.is_env:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons['environment'], 22, 22)
                 _attributes = [
                     _icon, _entity.environment_id, _entity.name, '',
@@ -193,7 +190,7 @@ class ListView(RAMSTKListView):
             _child_tree = tree.subtree(_n.identifier)
             self._do_load_tree(tree=_child_tree, row=_new_row)
 
-        _row = _model.get_iter_root()
+        _row = _model.get_iter_first()
         self.treeview.expand_all()
         if _row is not None:
             _path = _model.get_path(_row)
@@ -207,8 +204,8 @@ class ListView(RAMSTKListView):
         """
         Request to delete the selected Usage Profile record.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -222,7 +219,7 @@ class ListView(RAMSTKListView):
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
-        if _response == gtk.RESPONSE_YES:
+        if _response == Gtk.ResponseType.YES:
             pub.sendMessage('request_delete_profile', node_id=_node_id)
 
         _dialog.do_destroy()
@@ -269,7 +266,7 @@ class ListView(RAMSTKListView):
             _prompt = _(u"An environmental condition cannot have a child.")
             _dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == gtk.RESPONSE_OK:
+            if _dialog.do_run() == Gtk.ResponseType.OK:
                 _dialog.do_destroy()
             else:
                 _dialog.do_destroy()
@@ -286,17 +283,17 @@ class ListView(RAMSTKListView):
         """
         Request to update the currently selected Usage Profile record.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 9)
 
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_profile', node_id=_node_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -304,24 +301,24 @@ class ListView(RAMSTKListView):
         """
         Request to update all the Usage Profile records.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_profiles')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
         Make the buttonbox for the Usage Profile List View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Usage Profile List
+        :return: _buttonbox; the Gtk.ButtonBox() for the Usage Profile List
                              View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Add a new Usage Profile entity at the same level "
@@ -353,20 +350,20 @@ class ListView(RAMSTKListView):
 
         return _buttonbox
 
-    def _make_cell(self, cell, editable, position, model):
+    def __make_cell(self, cell, editable, position, model):
         """
-        Make a gtk.CellRenderer() and set it's properties.
+        Make a Gtk.CellRenderer() and set it's properties.
 
-        :param str cell: the type of gtk.CellRenderer() to create.
+        :param str cell: the type of Gtk.CellRenderer() to create.
         :param bool editable: indicates whether or not the cell should be
                               editable.
-        :param int position: the position of the cell in the gtk.Model().
+        :param int position: the position of the cell in the Gtk.Model().
         :return: _cell
-        :rtype: :class:`gtk.CellRenderer`
+        :rtype: :class:`Gtk.CellRenderer`
         """
         _cellrenderers = {
-            'pixbuf': gtk.CellRendererPixbuf(),
-            'text': gtk.CellRendererText()
+            'pixbuf': Gtk.CellRendererPixbuf(),
+            'text': Gtk.CellRendererText()
         }
 
         _cell = _cellrenderers[cell]
@@ -379,12 +376,12 @@ class ListView(RAMSTKListView):
         if cell == 'text':
             _cell.set_property('editable', editable)
             _cell.set_property('wrap-width', 250)
-            _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
             _cell.set_property('yalign', 0.1)
 
         return _cell
 
-    def _make_treeview(self):
+    def __make_treeview(self):
         """
         Set up the RAMSTKTreeView() for the Usage Profile.
 
@@ -393,59 +390,59 @@ class ListView(RAMSTKListView):
         """
         _return = False
 
-        _model = gtk.TreeStore(
-            gtk.gdk.Pixbuf, gobject.TYPE_INT, gobject.TYPE_STRING,
-            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_FLOAT,
-            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_STRING)
+        _model = Gtk.TreeStore(
+            GdkPixbuf.Pixbuf, GObject.TYPE_INT, GObject.TYPE_STRING,
+            GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_FLOAT,
+            GObject.TYPE_FLOAT, GObject.TYPE_FLOAT, GObject.TYPE_FLOAT,
+            GObject.TYPE_INT, GObject.TYPE_INT, GObject.TYPE_STRING)
         self.treeview.set_model(_model)
 
         for i in range(10):
-            _column = gtk.TreeViewColumn()
+            _column = Gtk.TreeViewColumn()
             if i == 0:
-                _cell = self._make_cell('pixbuf', False, 0, _model)
+                _cell = self.__make_cell('pixbuf', False, 0, _model)
                 _cell.set_property('xalign', 0.5)
                 _column.pack_start(_cell, False)
                 _column.set_attributes(_cell, pixbuf=0)
 
-                _cell = self._make_cell('text', False, 1, _model)
+                _cell = self.__make_cell('text', False, 1, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=1)
                 _column.set_visible(True)
             elif i == 1:
-                _cell = self._make_cell('text', True, 2, _model)
+                _cell = self.__make_cell('text', True, 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=2)
 
-                _cell = self._make_cell('text', True, 3, _model)
+                _cell = self.__make_cell('text', True, 3, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=3, visible=10)
                 _column.set_visible(True)
             elif i in [2, 3, 4]:
-                _cell = self._make_cell('text', True, i + 2, _model)
+                _cell = self.__make_cell('text', True, i + 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2)
                 _column.set_visible(True)
             elif i in [5, 6]:
-                _cell = self._make_cell('text', True, i + 2, _model)
+                _cell = self.__make_cell('text', True, i + 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2, visible=10)
                 _column.set_visible(True)
             else:
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-                _cell = self._make_cell('text', False, i + 2, _model)
+                _cell = self.__make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
 
                 _column.set_visible(False)
 
-            _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
             self.treeview.append_column(_column)
 
         return _return
@@ -454,9 +451,9 @@ class ListView(RAMSTKListView):
         """
         Handle mouse clicks on the Usage Profile List View RAMSTKTreeView().
 
-        :param treeview: the Usage Profile ListView gtk.TreeView().
-        :type treeview: :class:`gtk.TreeView`.
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param treeview: the Usage Profile ListView Gtk.TreeView().
+        :type treeview: :class:`Gtk.TreeView`.
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                       * 1 = left
@@ -467,7 +464,7 @@ class ListView(RAMSTKListView):
                       * 8 =
                       * 9 =
 
-        :type event: :class:`gtk.gdk.Event`
+        :type event: :class:`Gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -478,11 +475,11 @@ class ListView(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
+            _menu = Gtk.Menu()
             _menu.popup(None, None, None, event.button, event.time)
 
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
+            _menu_item = Gtk.ImageMenuItem()
+            _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['insert_sibling'])
             _menu_item.set_label(_(u"Add Sibling Entity"))
             _menu_item.set_image(_image)
@@ -491,8 +488,8 @@ class ListView(RAMSTKListView):
             _menu_item.show()
             _menu.append(_menu_item)
 
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
+            _menu_item = Gtk.ImageMenuItem()
+            _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['insert_child'])
             _menu_item.set_label(_(u"Add Child Entity"))
             _menu_item.set_image(_image)
@@ -501,8 +498,8 @@ class ListView(RAMSTKListView):
             _menu_item.show()
             _menu.append(_menu_item)
 
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
+            _menu_item = Gtk.ImageMenuItem()
+            _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['remove'])
             _menu_item.set_label(_(u"Remove Selected Entity"))
             _menu_item.set_image(_image)
@@ -511,8 +508,8 @@ class ListView(RAMSTKListView):
             _menu_item.show()
             _menu.append(_menu_item)
 
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
+            _menu_item = Gtk.ImageMenuItem()
+            _image = Gtk.Image()
             _image.set_from_file(self._dic_icons['save'])
             _menu_item.set_label(_(u"Save Usage Profile"))
             _menu_item.set_image(_image)
@@ -530,14 +527,14 @@ class ListView(RAMSTKListView):
         """
         Handle edits of the Usage Profile List View RAMSTKTreeView().
 
-        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
                          that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :class:`gtk.TreeModel`
+                             Gtk.CellRenderer().
+        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
+        :type model: :class:`Gtk.TreeModel`
         :return: None
         :rtype: None
         """
@@ -671,10 +668,10 @@ class ListView(RAMSTKListView):
         i = 0
         _columns = treeview.get_columns()
         for _heading in _headings:
-            _label = gtk.Label()
+            _label = Gtk.Label()
             _label.set_line_wrap(True)
             _label.set_alignment(xalign=0.5, yalign=0.5)
-            _label.set_justify(gtk.JUSTIFY_CENTER)
+            _label.set_justify(Gtk.Justification.CENTER)
             _label.set_markup("<span weight='bold'>" + _heading + "</span>")
             _label.set_use_markup(True)
             _label.show_all()

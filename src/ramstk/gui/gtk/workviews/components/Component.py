@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.workviews.components.Component.py is part of the RAMSTK
@@ -5,16 +6,16 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Component Base Work View."""
+"""The RAMSTK Component Base Work View."""
 
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk
 
 
-class AssessmentInputs(gtk.Fixed):
+class AssessmentInputs(Gtk.Fixed):
     """
     Display Hardware assessment input attribute data in the RAMSTK Work Book.
 
@@ -48,7 +49,7 @@ class AssessmentInputs(gtk.Fixed):
                                 hardware item.
         :param int subcategory_id: the ID of the hardware item subcategory.
         """
-        gtk.Fixed.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
 
@@ -76,7 +77,7 @@ class AssessmentInputs(gtk.Fixed):
 
     def make_page(self):
         """
-        Make the Hardware class gtk.Notebook() assessment input page.
+        Make the Hardware class Gtk.Notebook() assessment input page.
 
         :return: _x_pos, _y_pos
         :rtype: tuple
@@ -90,7 +91,7 @@ class AssessmentInputs(gtk.Fixed):
         return _x_pos, _y_pos
 
 
-class StressInputs(gtk.Fixed):
+class StressInputs(Gtk.Fixed):
     """
     Display hardware item stress input attribute data in the RAMSTK Work Book.
 
@@ -183,7 +184,7 @@ class StressInputs(gtk.Fixed):
                                 hardware item.
         :param int subcategory_id: the ID of the hardware item subcategory.
         """
-        gtk.Fixed.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
 
@@ -368,9 +369,9 @@ class StressInputs(gtk.Fixed):
                       method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +-------+------------------------+-------+-------------------+
             | Index | Widget                 | Index | Widget            |
@@ -424,7 +425,7 @@ class StressInputs(gtk.Fixed):
         return None
 
 
-class AssessmentResults(gtk.Fixed):
+class AssessmentResults(Gtk.Fixed):
     """
     Display Hardware assessment results attribute data in the RAMSTK Work Book.
 
@@ -457,7 +458,7 @@ class AssessmentResults(gtk.Fixed):
         :param attributes: the attributes dict for the selected capacitor.
         :type attributes: dict
         """
-        gtk.Fixed.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
 
@@ -548,7 +549,7 @@ class AssessmentResults(gtk.Fixed):
 
     def make_page(self):
         """
-        Make the Hardware gtk.Notebook() assessment results page.
+        Make the Hardware Gtk.Notebook() assessment results page.
 
         :return: _x_pos, _y_pos
         :rtype: tuple
@@ -577,7 +578,7 @@ class AssessmentResults(gtk.Fixed):
         return _x_pos, _y_pos
 
 
-class StressResults(gtk.HPaned):
+class StressResults(Gtk.HPaned):
     """
     Display Hardware stress results attribute data in the RAMSTK Work Book.
 
@@ -626,7 +627,7 @@ class StressResults(gtk.HPaned):
                                 hardware item.
         :param int subcategory_id: the ID of the hardware item subcategory.
         """
-        gtk.HPaned.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
 
@@ -669,19 +670,24 @@ class StressResults(gtk.HPaned):
             tooltip=_(u"The ratio of operating voltage to rated voltage for "
                       u"the hardware item."))
         self.txtReason = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=250,
             tooltip=_(u"The reason(s) the selected hardware item is "
                       u"overstressed."))
 
         self.chkOverstress.set_sensitive(False)
         self.txtReason.set_editable(False)
-        _bg_color = gtk.gdk.Color('#ADD8E6')
-        self.txtReason.modify_base(gtk.STATE_NORMAL, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_ACTIVE, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_PRELIGHT, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_SELECTED, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
+        _bg_color = Gdk.RGBA(red=173.0, green=216.0, blue=230.0, alpha=1.0)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.NORMAL, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.ACTIVE, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.PRELIGHT, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.SELECTED, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.INSENSITIVE, _bg_color)
 
         self._make_page()
         self.show_all()
@@ -770,12 +776,12 @@ class StressResults(gtk.HPaned):
 
     def _make_page(self):
         """
-        Make the Hardware gtk.Notebook() assessment results page.
+        Make the Hardware Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None
         """
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
         self.pack1(_fixed, True, True)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels, _fixed, 5,

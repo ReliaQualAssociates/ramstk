@@ -8,7 +8,8 @@
 
 # pylint: disable=E0401
 try:
-    from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
+    from matplotlib.backends.backend_gtk3cairo \
+        import FigureCanvasGTK3Cairo as FigureCanvas
     from matplotlib.figure import Figure  # pylint: disable=E0401
     from matplotlib.lines import Line2D  # pylint: disable=E0401
 except RuntimeError:
@@ -16,7 +17,7 @@ except RuntimeError:
     pass
 
 # Import other RAMSTK Widget classes.
-from .Widget import _, gtk  # pylint: disable=E0401
+from .Widget import _, Gtk  # pylint: disable=E0401
 
 
 class RAMSTKPlot(object):
@@ -192,12 +193,12 @@ class RAMSTKPlot(object):
         """
         Return the plot to the Work Book page it is part of.
 
-        :param __window: the gtk.Window() that is being destroyed.
-        :type __window: :class:`gtk.Window`
-        :param __event: the gtk.gdk.Event() that called this method.
-        :type __event: :class:`gtk.gdk.Event`
-        :param parent: the original parent gtk.Widget() for the plot.
-        :type parent: :class:`gtk.Widget`
+        :param __window: the Gtk.Window() that is being destroyed.
+        :type __window: :class:`Gtk.Window`
+        :param __event: the Gdk.Event() that called this method.
+        :type __event: :class:`Gdk.Event`
+        :param parent: the original parent Gtk.Widget() for the plot.
+        :type parent: :class:`Gtk.Widget`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -218,12 +219,12 @@ class RAMSTKPlot(object):
         _parent = self.plot.get_parent()
 
         if event.button == 3:  # Right click.
-            _window = gtk.Window()
+            _window = Gtk.Window()
             _window.set_skip_pager_hint(True)
             _window.set_skip_taskbar_hint(True)
             _window.set_default_size(800, 400)
             _window.set_border_width(5)
-            _window.set_position(gtk.WIN_POS_NONE)
+            _window.set_position(Gtk.WindowPosition.NONE)
             _window.set_title(_(u"RAMSTK Plot"))
 
             _window.connect('delete_event', self.close_plot, _parent)

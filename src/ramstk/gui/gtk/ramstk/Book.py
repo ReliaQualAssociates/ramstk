@@ -6,24 +6,11 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The Base RAMSTK Book."""
 
-import sys
-
-# Import modules for localization support.
-import gettext
+# Modules for localization support.
 import locale
 
-# Import modules required for the GUI.
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-
-_ = gettext.gettext
+# Import the ramstk.Widget base class.
+from .Widget import Gdk, Gtk, GObject
 
 
 def destroy(__widget, __event=None):
@@ -33,19 +20,19 @@ def destroy(__widget, __event=None):
     This function quits the RAMSTK application when the X in the upper right
     corner is pressed or if this function is called as a callback.
 
-    :param __widget: the gtk.Widget() that called this method.
-    :type __widget: :py:class:`gtk.Widget`
-    :keyword __event: the gtk.gdk.Event() that called this method.
-    :type __event: :py:class:`gtk.gdk.Event`
+    :param __widget: the Gtk.Widget() that called this method.
+    :type __widget: :py:class:`Gtk.Widget`
+    :keyword __event: the Gdk.Event() that called this method.
+    :type __event: :py:class:`Gdk.Event`
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
-    gtk.main_quit()
+    Gtk.main_quit()
 
     return False
 
 
-class RAMSTKBook(gtk.Window):  # pylint: disable=R0904
+class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
     """
     The base view for the pyGTK multiple window interface Books.
 
@@ -55,23 +42,23 @@ class RAMSTKBook(gtk.Window):  # pylint: disable=R0904
     :ivar list _lst_handler_id:
     :ivar _mdcRAMSTK: the RAMSTK master data controller.
     :type _mdcRAMSTK: :py:class:`ramstk.RAMSTK.RAMSTK`
-    :ivar notebook: the gtk.Notebook() widget used to hold each of the RAMSTK
+    :ivar notebook: the Gtk.Notebook() widget used to hold each of the RAMSTK
                     module WorkViews.
-    :type notebook: :py:class:`gtk.Notebook`
-    :ivar menubar: the gtk.MenuBar() for the RAMSTK ModuleBook menu.
-    :type menubar: :py:class:`gtk.MenuBar`
-    :ivar toolbar: the gtk.Toolbar() for the RAMSTK ModuleBook tools.
-    :type toolbar: :py:class:`gtk.Toolbar`
-    :ivar statusbar: the gtk.Statusbar() for displaying messages.
-    :type statusbar: :py:class:`gtk.Statusbar`
-    :ivar progressbar: the gtk.Progressbar() for displaying progress counters.
-    :type progressbar: :py:class:`gtk.Progressbar`
+    :type notebook: :py:class:`Gtk.Notebook`
+    :ivar menubar: the Gtk.MenuBar() for the RAMSTK ModuleBook menu.
+    :type menubar: :py:class:`Gtk.MenuBar`
+    :ivar toolbar: the Gtk.Toolbar() for the RAMSTK ModuleBook tools.
+    :type toolbar: :py:class:`Gtk.Toolbar`
+    :ivar statusbar: the Gtk.Statusbar() for displaying messages.
+    :type statusbar: :py:class:`Gtk.Statusbar`
+    :ivar progressbar: the Gtk.Progressbar() for displaying progress counters.
+    :type progressbar: :py:class:`Gtk.Progressbar`
     """
 
-    _left_tab = gtk.POS_LEFT
-    _right_tab = gtk.POS_RIGHT
-    _top_tab = gtk.POS_TOP
-    _bottom_tab = gtk.POS_BOTTOM
+    _left_tab = Gtk.PositionType.LEFT
+    _right_tab = Gtk.PositionType.RIGHT
+    _top_tab = Gtk.PositionType.TOP
+    _bottom_tab = Gtk.PositionType.BOTTOM
 
     def __init__(self, controller):
         """
@@ -80,7 +67,7 @@ class RAMSTKBook(gtk.Window):  # pylint: disable=R0904
         :param controller: the RAMSTK master data controller.
         :type controller: :py:class:`ramstk.RAMSTK.RAMSTK`
         """
-        gtk.Window.__init__(self)
+        GObject.GObject.__init__(self)      # pylint: disable=non-parent-init-called
 
         # Initialize private dictionary attributes.
 
@@ -89,16 +76,16 @@ class RAMSTKBook(gtk.Window):  # pylint: disable=R0904
 
         # Initialize private scalar attributes.
         self._mdcRAMSTK = controller
-        self._n_screens = gtk.gdk.screen_get_default().get_n_monitors()
-        self._width = gtk.gdk.screen_width() / self._n_screens
-        self._height = gtk.gdk.screen_height()
+        self._n_screens = Gdk.Screen.get_default().get_n_monitors()
+        self._width = Gdk.Screen.width() / self._n_screens
+        self._height = Gdk.Screen.height()
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.notebook = gtk.Notebook()
+        self.notebook = Gtk.Notebook()
 
         try:
             locale.setlocale(locale.LC_ALL,
@@ -109,7 +96,7 @@ class RAMSTKBook(gtk.Window):  # pylint: disable=R0904
         # Set the common properties for the Book and it's widgets.
         self.set_resizable(True)
         self.set_border_width(5)
-        self.set_position(gtk.WIN_POS_NONE)
+        self.set_position(Gtk.WindowPosition.NONE)
 
         self.connect('delete_event', destroy)
 

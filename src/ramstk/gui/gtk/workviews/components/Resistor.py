@@ -158,7 +158,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
             simple=True,
             tooltip=_(u"The governing specification for the resistor."))
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=False, tooltip=_(u"The type of thermistor."))
+            index=0, simple=True, tooltip=_(u"The type of thermistor."))
         self.cmbStyle = ramstk.RAMSTKComboBox(
             index=0, simple=True, tooltip=_(u"The style of resistor."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(
@@ -337,7 +337,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
     def _make_page(self):
         """
-        Make the Hardware class gtk.Notebook() assessment input page.
+        Make the Hardware class Gtk.Notebook() assessment input page.
 
         :return: None
         :rtype: None
@@ -362,7 +362,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
@@ -423,9 +423,9 @@ class ResistorAssessmentInputs(AssessmentInputs):
         :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +---------+---------------------+---------+---------------------+
             |  Index  | Widget              |  Index  | Widget              |
@@ -631,7 +631,7 @@ class ResistorAssessmentResults(AssessmentResults):
 
     def _make_page(self):
         """
-        Make the resistor gtk.Notebook() assessment results page.
+        Make the resistor Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None

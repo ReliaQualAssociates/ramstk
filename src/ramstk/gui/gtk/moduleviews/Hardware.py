@@ -10,7 +10,7 @@ from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .ModuleView import RAMSTKModuleView
 
 
@@ -38,15 +38,14 @@ class ModuleView(RAMSTKModuleView):
         RAMSTKModuleView.__init__(self, controller, module='hardware')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/hardware.png'
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self._hardware_id = None
-        self._parent_id = None
-        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -54,23 +53,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.make_treeview()
-        self.treeview.set_tooltip_text(
-            _(u"Displays the hierarchical list of "
-              u"hardware items."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-        self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = ramstk.RAMSTKLabel(
-            _(u"Hardware"),
-            width=-1,
-            height=-1,
-            tooltip=_(u"Displays the hierarchical list of hardware items."))
-
-        self.hbx_tab_label.pack_end(_label)
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_tree, 'deleted_hardware')
@@ -78,6 +61,32 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_load_tree, 'retrieved_hardware')
         pub.subscribe(self._do_refresh_tree, 'calculated_hardware')
         pub.subscribe(self.do_refresh_tree, 'wvw_editing_hardware')
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKModuleView._make_ui(self)
+
+        self.make_treeview()
+        self.treeview.set_tooltip_text(
+            _(u"Displays the hierarchical list of "
+              u"hardware items."))
+
+        _label = ramstk.RAMSTKLabel(
+            _(u"Hardware"),
+            width=-1,
+            height=-1,
+            tooltip=_(u"Displays the hierarchical list of hardware items."))
+
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
+
+        self.show_all()
+
+        return None
 
     def _do_refresh_tree(self, attributes):
         """
@@ -122,8 +131,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to calculate all Hardware inputs.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -139,8 +148,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to delete the selected Hardware and it's children.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -151,7 +160,7 @@ class ModuleView(RAMSTKModuleView):
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
-        if _response == gtk.RESPONSE_YES:
+        if _response == Gtk.ResponseType.YES:
             pub.sendMessage(
                 'request_delete_hardware', node_id=self._hardware_id)
 
@@ -163,8 +172,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Launch the Export assistant.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -203,8 +212,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to insert a new child Hardware assembly.
 
-        :param button: the gtk.ToolButton() that called this method.
-        :type button: :class:`gtk.ToolButton`
+        :param button: the Gtk.ToolButton() that called this method.
+        :type button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -219,8 +228,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to insert a new sibling Hardware assembly.
 
-        :param button: the gtk.ToolButton() that called this method.
-        :type button: :class:`gtk.ToolButton`
+        :param button: the Gtk.ToolButton() that called this method.
+        :type button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -235,14 +244,14 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to save the currently selected Hardware.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_hardware', node_id=self._hardware_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -250,24 +259,24 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to save all the Hardwares.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_hardware')
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Hardware class Module View.
+        Make the Gtk.ButtonBox() for the Hardware class Module View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Hardware class Module
+        :return: _buttonbox; the Gtk.ButtonBox() for the Hardware class Module
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Adds a new Hardware assembly at the same hierarchy level as "
@@ -320,7 +329,7 @@ class ModuleView(RAMSTKModuleView):
 
         :param treeview: the Hardware Module View RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                                     * 1 = left
@@ -331,7 +340,7 @@ class ModuleView(RAMSTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :class:`gtk.gdk.Event`
+        :type event: :class:`Gdk.Event`
         :return: None
         :rtype: None
         """
@@ -377,15 +386,15 @@ class ModuleView(RAMSTKModuleView):
         """
         Handle edits of the Hardware package Module View RAMSTKTreeview().
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :class:`gtk.CellRenderer`
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+        :param __cell: the Gtk.CellRenderer() that was edited.
+        :type __cell: :class:`Gtk.CellRenderer`
+        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
                          that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :class:`gtk.TreeModel`
+                             Gtk.CellRenderer().
+        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
+        :type model: :class:`Gtk.TreeModel`
         :return: None
         :rtype: None
         """
@@ -460,14 +469,16 @@ class ModuleView(RAMSTKModuleView):
 
         (_model, _row) = treeview.get_selection().get_selected()
 
-        _attributes = eval(_model.get_value(_row, _model.get_n_columns() - 1))
+        if _row is not None:
+            _attributes = eval(_model.get_value(_row, _model.get_n_columns() - 1))
 
-        self._hardware_id = _attributes['hardware_id']
-        self._parent_id = _attributes['parent_id']
-        self._revision_id = _attributes['revision_id']
+            # pylint: disable=attribute-defined-outside-init
+            self._hardware_id = _attributes['hardware_id']
+            self._parent_id = _attributes['parent_id']
+            self._revision_id = _attributes['revision_id']
+
+            pub.sendMessage('selected_hardware', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selected_hardware', attributes=_attributes)
 
         return None

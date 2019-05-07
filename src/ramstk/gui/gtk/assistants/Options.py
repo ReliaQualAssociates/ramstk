@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.assistants.Options.py is part of The RAMSTK Project
@@ -8,7 +9,7 @@
 
 # Import other RAMSTK modules.
 from ramstk.Utilities import boolean_to_integer, integer_to_boolean
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk
 from ramstk.gui.gtk import ramstk
 
 __author__ = 'Doyle Rowland'
@@ -17,7 +18,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 Doyle "weibullguy" Rowland'
 
 
-class Options(gtk.Window):
+class Options(Gtk.Window):
     """
     An assistant to provide a GUI to set various RAMSTK configuration options.
 
@@ -33,11 +34,11 @@ class Options(gtk.Window):
         """
         Initialize an instance of the Options assistant.
 
-        :param gtk.Widget __widget: the gtk.Widget() that called this class.
+        :param Gtk.Widget __widget: the Gtk.Widget() that called this class.
         :param controller: the RAMSTK master data controller.
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         """
-        gtk.Window.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
         self._dic_icons = {
@@ -62,7 +63,7 @@ class Options(gtk.Window):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.notebook = gtk.Notebook()
+        self.notebook = Gtk.Notebook()
         self.btnSave = ramstk.RAMSTKButton(
             icon=self._dic_icons['save'], height=-1, width=-1)
         self.btnQuit = ramstk.RAMSTKButton(
@@ -92,9 +93,39 @@ class Options(gtk.Window):
                 u"Activates/deactivates the (D)FME(C)A module for this program."
             ))
 
-        _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
-        _width = gtk.gdk.screen_width() / _n_screens
-        _height = gtk.gdk.screen_height()
+        self.__make_ui()
+
+    def __make_modules_page(self):
+        """
+        Make the Option class Gtk.Notebook() active modules page.
+
+        :return: None
+        :rtype: None
+        """
+        _fixed = Gtk.Fixed()
+
+        _fixed.put(self.chkFunctions, 5, 5)
+        _fixed.put(self.chkRequirements, 5, 35)
+        _fixed.put(self.chkHardware, 5, 65)
+        _fixed.put(self.chkValidation, 5, 95)
+        _fixed.put(self.chkFMEA, 5, 125)
+
+        _label = Gtk.Label(label=_(u"Active RAMSTK Modules"))
+        _label.set_tooltip_text(_(u"Select active RAMSTK modules."))
+        self.notebook.insert_page(_fixed, tab_label=_label, position=-1)
+
+        return None
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        _n_screens = Gdk.Screen.get_default().get_n_monitors()
+        _width = Gdk.Screen.width() / _n_screens
+        _height = Gdk.Screen.height()
 
         self.set_default_size((_width / 3) - 10, (2 * _height / 7))
 
@@ -112,17 +143,17 @@ class Options(gtk.Window):
         self._lst_handler_id.append(
             self.chkFMEA.connect('toggled', self._on_toggled, 4))
 
-        self._make_page()
+        self.__make_page()
 
-        _vbox = gtk.HBox()
+        _vbox = Gtk.HBox()
 
-        _buttonbox = gtk.VButtonBox()
-        _buttonbox.set_layout(gtk.BUTTONBOX_START)
-        _buttonbox.pack_start(self.btnSave)
-        _buttonbox.pack_start(self.btnQuit)
-        _vbox.pack_start(_buttonbox, expand=False)
+        _buttonbox = Gtk.VButtonBox()
+        _buttonbox.set_layout(Gtk.ButtonBoxStyle.START)
+        _buttonbox.pack_start(self.btnSave, True, True, 0)
+        _buttonbox.pack_start(self.btnQuit, True, True, 0)
+        _vbox.pack_start(_buttonbox, False, True, 0)
 
-        _vbox.pack_end(self.notebook)
+        _vbox.pack_end(self.notebook, True, True, 0)
 
         self.add(_vbox)
 
@@ -132,11 +163,13 @@ class Options(gtk.Window):
 
         self.show_all()
 
+        return None
+
     def _do_quit(self, __button):
         """
-        Quit the options gtk.Assistant().
+        Quit the options Gtk.Assistant().
 
-        :param gtk.Button __button: the gtk.Button() that called this method.
+        :param Gtk.Button __button: the Gtk.Button() that called this method.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -148,8 +181,8 @@ class Options(gtk.Window):
         """
         Save the configuration changes made by the user.
 
-        :param __button: the gtk.Button() that called this method.
-        :param __button: :class:`gtk.Button`
+        :param __button: the Gtk.Button() that called this method.
+        :param __button: :class:`Gtk.Button`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -178,27 +211,6 @@ class Options(gtk.Window):
 
         return None
 
-    def _make_page(self):
-        """
-        Make the Option class gtk.Notebook() active modules page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _fixed = gtk.Fixed()
-
-        _fixed.put(self.chkFunctions, 5, 5)
-        _fixed.put(self.chkRequirements, 5, 35)
-        _fixed.put(self.chkHardware, 5, 65)
-        _fixed.put(self.chkValidation, 5, 95)
-        _fixed.put(self.chkFMEA, 5, 125)
-
-        _label = gtk.Label(_(u"Active RAMSTK Modules"))
-        _label.set_tooltip_text(_(u"Select active RAMSTK modules."))
-        self.notebook.insert_page(_fixed, tab_label=_label, position=-1)
-
-        return None
-
     def _on_toggled(self, togglebutton, index):
         """
         Handle RAMSTKCheckButton() 'toggle' signals.
@@ -206,11 +218,9 @@ class Options(gtk.Window):
         :param togglebutton: the RAMSTKToggleButton() that called this method.
         :type: :class:`ramstk.gui.gtk.ramstk.Button.RAMSTKToggleButton`
         :param int index: the index in the signal handler ID list.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         togglebutton.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
@@ -238,4 +248,4 @@ class Options(gtk.Window):
 
         togglebutton.handler_unblock(self._lst_handler_id[index])
 
-        return _return
+        return None

@@ -92,7 +92,7 @@ class MeterAssessmentInputs(AssessmentInputs):
             simple=True,
             tooltip=_(u"The appliction of the panel meter."))
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=False, tooltip=_(u"The type of meter."))
+            index=0, simple=True, tooltip=_(u"The type of meter."))
 
         self._make_page()
         self.show_all()
@@ -190,7 +190,7 @@ class MeterAssessmentInputs(AssessmentInputs):
 
     def _make_page(self):
         """
-        Make the Meter class gtk.Notebook() assessment input page.
+        Make the Meter class Gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -209,7 +209,7 @@ class MeterAssessmentInputs(AssessmentInputs):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
@@ -366,7 +366,7 @@ class MeterAssessmentResults(AssessmentResults):
 
     def _make_page(self):
         """
-        Make the meter gtk.Notebook() assessment results page.
+        Make the meter Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None
