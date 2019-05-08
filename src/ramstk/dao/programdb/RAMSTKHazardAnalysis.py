@@ -16,7 +16,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKHazardAnalysis(RAMSTK_BASE):
     """
-    Class to represent the ramstk_hazard_analysis table in the Program database.
+    Class to represent ramstk_hazard_analysis table in the Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     This table shares a Many-to-One relationship with ramstk_hardware.
@@ -50,7 +50,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
     assembly_probability = Column(
         'fld_assembly_probability', String(256), default='Level A - Frequent')
     assembly_hri = Column('fld_assembly_hri', Integer, default=20)
-    assembly_mitigation = Column('fld_assembly_mitigation', BLOB, default='')
+    assembly_mitigation = Column('fld_assembly_mitigation', BLOB, default=b'')
     assembly_severity_f = Column(
         'fld_assembly_severity_f', String(256), default='Major')
     assembly_probability_f = Column(
@@ -63,7 +63,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
     function_3 = Column('fld_function_3', String(128), default='')
     function_4 = Column('fld_function_4', String(128), default='')
     function_5 = Column('fld_function_5', String(128), default='')
-    remarks = Column('fld_remarks', BLOB, default='')
+    remarks = Column('fld_remarks', BLOB, default=b'')
     result_1 = Column('fld_result_1', Float, default=0.0)
     result_2 = Column('fld_result_2', Float, default=0.0)
     result_3 = Column('fld_result_3', Float, default=0.0)
@@ -75,15 +75,15 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
     system_probability = Column(
         'fld_system_probability', String(256), default='Level A - Frequent')
     system_hri = Column('fld_system_hri', Integer, default=20)
-    system_mitigation = Column('fld_system_mitigation', BLOB, default='')
+    system_mitigation = Column('fld_system_mitigation', BLOB, default=b'')
     system_severity_f = Column(
         'fld_system_severity_f', String(256), default='Major')
     system_probability_f = Column(
         'fld_system_probability_f', String(256), default='Level A - Frequent')
     system_hri_f = Column('fld_system_hri_f', Integer, default=20)
-    user_blob_1 = Column('fld_user_blob_1', BLOB, default='')
-    user_blob_2 = Column('fld_user_blob_2', BLOB, default='')
-    user_blob_3 = Column('fld_user_blob_3', BLOB, default='')
+    user_blob_1 = Column('fld_user_blob_1', BLOB, default=b'')
+    user_blob_2 = Column('fld_user_blob_2', BLOB, default=b'')
+    user_blob_3 = Column('fld_user_blob_3', BLOB, default=b'')
     user_float_1 = Column('fld_user_float_1', Float, default=0.0)
     user_float_2 = Column('fld_user_float_2', Float, default=0.0)
     user_float_3 = Column('fld_user_float_3', Float, default=0.0)
@@ -185,8 +185,8 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
                 none_to_default(attributes['assembly_probability'], ''))
             self.assembly_hri = int(
                 none_to_default(attributes['assembly_hri'], 0))
-            self.assembly_mitigation = str(
-                none_to_default(attributes['assembly_mitigation'], ''))
+            self.assembly_mitigation = none_to_default(
+                attributes['assembly_mitigation'], b'')
             self.assembly_severity_f = str(
                 none_to_default(attributes['assembly_severity_f'], ''))
             self.assembly_probability_f = str(
@@ -200,8 +200,8 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
             self.system_probability = str(
                 none_to_default(attributes['system_probability'], ''))
             self.system_hri = int(none_to_default(attributes['system_hri'], 0))
-            self.system_mitigation = str(
-                none_to_default(attributes['system_mitigation'], ''))
+            self.system_mitigation = none_to_default(
+                attributes['system_mitigation'], b'')
             self.system_severity_f = str(
                 none_to_default(attributes['system_severity_f'], ''))
             self.system_probability_f = str(
@@ -224,12 +224,9 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
             self.result_3 = float(none_to_default(attributes['result_3'], 0.0))
             self.result_4 = float(none_to_default(attributes['result_4'], 0.0))
             self.result_5 = float(none_to_default(attributes['result_5'], 0.0))
-            self.user_blob_1 = str(
-                none_to_default(attributes['user_blob_1'], ''))
-            self.user_blob_2 = str(
-                none_to_default(attributes['user_blob_2'], ''))
-            self.user_blob_3 = str(
-                none_to_default(attributes['user_blob_3'], ''))
+            self.user_blob_1 = none_to_default(attributes['user_blob_1'], b'')
+            self.user_blob_2 = none_to_default(attributes['user_blob_2'], b'')
+            self.user_blob_3 = none_to_default(attributes['user_blob_3'], b'')
             self.user_float_1 = float(
                 none_to_default(attributes['user_float_1'], 0.0))
             self.user_float_2 = float(

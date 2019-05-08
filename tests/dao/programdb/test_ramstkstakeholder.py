@@ -19,7 +19,7 @@ ATTRIBUTES = {
     'user_float_1': 1.0,
     'priority': 1,
     'group': '',
-    'description': 'Test Stakeholder Input',
+    'description': b'Test Stakeholder Input',
     'planned_rank': 1,
     'stakeholder': '',
     'improvement': 0.0,
@@ -49,7 +49,7 @@ def test_ramstkstakeholder_create(test_dao):
     assert DUT.revision_id == 1
     assert DUT.stakeholder_id == 1
     assert DUT.customer_rank == 1
-    assert DUT.description == 'Test Stakeholder Input'
+    assert DUT.description == b'Test Stakeholder Input'
     assert DUT.group == ''
     assert DUT.improvement == 0.0
     assert DUT.overall_weight == 0.0

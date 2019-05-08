@@ -16,7 +16,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKStakeholder(RAMSTK_BASE):
     """
-    Class to represent the ramstk_stakeholder table in the RAMSTK Program database.
+    Class to represent ramstk_stakeholder table in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -37,7 +37,7 @@ class RAMSTKStakeholder(RAMSTK_BASE):
         nullable=False)
 
     customer_rank = Column('fld_customer_rank', Integer, default=1)
-    description = Column('fld_description', BLOB, default='Stakeholder Input')
+    description = Column('fld_description', BLOB, default=b'Stakeholder Input')
     group = Column('fld_group', String(128), default='')
     improvement = Column('fld_improvement', Float, default=0.0)
     overall_weight = Column('fld_overall_weight', Float, default=0.0)
@@ -101,8 +101,7 @@ class RAMSTKStakeholder(RAMSTK_BASE):
         try:
             self.customer_rank = int(
                 none_to_default(float(attributes['customer_rank']), 1))
-            self.description = str(
-                none_to_default(attributes['description'], ''))
+            self.description = none_to_default(attributes['description'], b'')
             self.group = str(none_to_default(attributes['group'], ''))
             self.improvement = float(
                 none_to_default(attributes['improvement'], 0.0))

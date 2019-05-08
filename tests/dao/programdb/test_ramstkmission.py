@@ -19,7 +19,7 @@ ATTRIBUTES = {
     'mission_id': 1,
     'revision_id': 1,
     'mission_time': 0.0,
-    'description': 'Test Mission',
+    'description': b'Test Mission',
     'time_units': 'hours'
 }
 
@@ -37,7 +37,7 @@ def test_ramstkmission_create(test_dao):
     assert DUT.__tablename__ == 'ramstk_mission'
     assert DUT.revision_id == 1
     assert DUT.mission_id == 1
-    assert DUT.description == 'Test Mission'
+    assert DUT.description == b'Test Mission'
     assert DUT.mission_time == 0.0
     assert DUT.time_units == 'hours'
 

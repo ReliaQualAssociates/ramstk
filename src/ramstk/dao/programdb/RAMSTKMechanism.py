@@ -25,7 +25,7 @@ _ = gettext.gettext
 
 class RAMSTKMechanism(RAMSTK_BASE):
     """
-    Class to represent the table ramstk_mechanism in the RAMSTK Program database.
+    Class to represent table ramstk_mechanism in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mode.
     This table shares a One-to-Many relationship with ramstk_cause.

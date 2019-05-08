@@ -23,20 +23,20 @@ ATTRIBUTES = {
     'other_indications': '',
     'mode_criticality': 0.0,
     'single_point': 0,
-    'design_provisions': '',
+    'design_provisions': b'',
     'type_id': 0,
     'rpn_severity_new': 1,
     'effect_next': '',
     'detection_method': '',
     'hardware_id': -1,
-    'operator_actions': '',
+    'operator_actions': b'',
     'critical_item': 0,
     'hazard_rate_source': '',
     'severity_class': '',
     'description': 'Test Functional Failure Mode #1',
     'mission_phase': '',
     'mode_probability': '',
-    'remarks': '',
+    'remarks': b'',
     'function_id': 1,
     'mode_ratio': 0.0,
     'mode_hazard_rate': 0.0,
@@ -64,7 +64,7 @@ def test_ramstkmode_create(test_dao):
     assert DUT.mode_id == 1
     assert DUT.critical_item == 0
     assert DUT.description == 'Test Functional Failure Mode #1'
-    assert DUT.design_provisions == ''
+    assert DUT.design_provisions == b''
     assert DUT.detection_method == ''
     assert DUT.effect_end == ''
     assert DUT.effect_local == ''
@@ -79,9 +79,9 @@ def test_ramstkmode_create(test_dao):
     assert DUT.mode_op_time == 0.0
     assert DUT.mode_probability == ''
     assert DUT.mode_ratio == 0.0
-    assert DUT.operator_actions == ''
+    assert DUT.operator_actions == b''
     assert DUT.other_indications == ''
-    assert DUT.remarks == ''
+    assert DUT.remarks == b''
     assert DUT.rpn_severity == 1
     assert DUT.rpn_severity_new == 1
     assert DUT.severity_class == ''

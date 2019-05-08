@@ -17,7 +17,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 # pylint: disable=R0902
 class RAMSTKNSWC(RAMSTK_BASE):
     """
-    Class to represent the ramstk_nswc table in the RAMSTK Program database.
+    Class to represent ramstk_nswc table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """

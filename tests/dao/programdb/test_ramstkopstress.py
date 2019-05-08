@@ -21,7 +21,7 @@ ATTRIBUTES = {
     'load_id': 1,
     'load_history': '',
     'measurable_parameter': '',
-    'remarks': '',
+    'remarks': b'',
     'stress_id': 1
 }
 
@@ -42,7 +42,7 @@ def test_ramstkopstress_create(test_dao):
     assert DUT.description == 'Test Operating Stress'
     assert DUT.measurable_parameter == ''
     assert DUT.load_history == ''
-    assert DUT.remarks == ''
+    assert DUT.remarks == b''
 
 
 @pytest.mark.integration
@@ -61,7 +61,7 @@ def test_get_attributes(test_dao):
     assert _attributes['description'] == 'Test Operating Stress'
     assert _attributes['load_history'] == ''
     assert _attributes['measurable_parameter'] == ''
-    assert _attributes['remarks'] == ''
+    assert _attributes['remarks'] == b''
 
 
 @pytest.mark.integration

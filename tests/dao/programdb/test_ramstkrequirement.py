@@ -53,7 +53,7 @@ ATTRIBUTES = {
     'q_clarity_4': 0,
     'q_clarity_5': 0,
     'q_clarity_2': 0,
-    'description': '',
+    'description': b'',
     'q_clarity_0': 0,
     'q_clarity_1': 0,
     'q_verifiable_4': 0,
@@ -82,7 +82,7 @@ def test_ramstkrequirement_create(test_dao):
     assert DUT.revision_id == 1
     assert DUT.requirement_id == 1
     assert DUT.derived == 0
-    assert DUT.description == ''
+    assert DUT.description == b''
     assert DUT.figure_number == ''
     assert DUT.owner == ''
     assert DUT.page_number == ''

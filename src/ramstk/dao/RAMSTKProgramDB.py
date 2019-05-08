@@ -163,12 +163,12 @@ def do_create_test_database(database):
 
     _definition = RAMSTKFailureDefinition()
     _definition.revision_id = _revision.revision_id
-    _definition.definition = 'Failure Definition'
+    _definition.definition = b'Failure Definition'
 
     _mission = RAMSTKMission()
     _mission.revision_id = _revision.revision_id
     _mission.mission_id = 1
-    _mission.description = "Test Mission"
+    _mission.description = b'Test Mission'
     session.add(_definition)
     session.add(_mission)
     session.commit()
@@ -176,7 +176,7 @@ def do_create_test_database(database):
     _phase = RAMSTKMissionPhase()
     _phase.mission_id = _mission.mission_id
     _phase.phase_id = 1
-    _phase.description = "Test Mission Phase 1"
+    _phase.description = b'Test Mission Phase 1'
     session.add(_phase)
     session.commit()
 
@@ -219,9 +219,9 @@ def do_create_test_database(database):
                 i, _cause.cause_id)
         _action = RAMSTKAction()
         _action.cause_id = _cause.cause_id
-        _action.action_recommended = (
+        _action.action_recommended = bytes((
             "Test Functional FMEA Recommended "
-            "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
+            "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id), 'utf-8')
         session.add(_control)
         session.add(_action)
         _dic_rows[i] = _function.function_id
@@ -232,7 +232,7 @@ def do_create_test_database(database):
     _requirement.requirement_code = 'REL-0001'
     _stakeholder = RAMSTKStakeholder()
     _stakeholder.revision_id = _revision.revision_id
-    _stakeholder.description = 'Test Stakeholder Input'
+    _stakeholder.description = b'Test Stakeholder Input'
     session.add(_requirement)
     session.add(_stakeholder)
     session.commit()
@@ -302,8 +302,8 @@ def do_create_test_database(database):
         _cause.cause_id)
     _action = RAMSTKAction()
     _action.cause_id = _cause.cause_id
-    _action.action_recommended = 'Test FMEA Recommended Action #1 for Cause ID {0:d}'.format(
-        _cause.cause_id)
+    _action.action_recommended = bytes('Test FMEA Recommended Action #1 for Cause ID {0:d}'.format(
+        _cause.cause_id), 'utf-8')
 
     # Build the PoF for the system.
     _opload = RAMSTKOpLoad()
@@ -439,7 +439,7 @@ def do_create_test_database(database):
 
     _validation = RAMSTKValidation()
     _validation.revision_id = _revision.revision_id
-    _validation.description = 'Test Validation'
+    _validation.description = b'Test Validation'
     session.add(_validation)
     session.commit()
 

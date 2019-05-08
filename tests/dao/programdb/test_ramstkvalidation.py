@@ -29,7 +29,7 @@ ATTRIBUTES = {
     'cost_average': 0.0,
     'date_end': date.today() + timedelta(days=30),
     'time_maximum': 0.0,
-    'description': 'Test Validation',
+    'description': b'Test Validation',
     'time_variance': 0.0,
     'acceptable_minimum': 0.0,
     'cost_variance': 0.0,
@@ -77,7 +77,7 @@ def test_ramstkvalidation_create(test_dao):
     assert DUT.cost_variance == 0.0
     assert DUT.date_end == date.today() + timedelta(days=30)
     assert DUT.date_start == date.today()
-    assert DUT.description == 'Test Validation'
+    assert DUT.description == b'Test Validation'
     assert DUT.measurement_unit == ''
     assert DUT.name == ''
     assert DUT.status == 0.0

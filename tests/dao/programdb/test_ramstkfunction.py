@@ -27,7 +27,7 @@ ATTRIBUTES = {
         'safety_critical': 0,
         'mmt': 0.0,
         'hazard_rate_logistics': 0.0,
-        'remarks': '',
+        'remarks': b'',
         'function_id': 1,
         'mtbf_mission': 0.0,
         'function_code': 'FUNC-0001',
@@ -69,7 +69,7 @@ def test_ramstkfunction_create(test_dao):
     assert DUT.mttr == 0.0
     assert DUT.name == 'Function Name'
     assert DUT.parent_id == 0
-    assert DUT.remarks == ''
+    assert DUT.remarks == b''
     assert DUT.safety_critical == 0
     assert DUT.total_mode_count == 0
     assert DUT.total_part_count == 0
