@@ -723,8 +723,7 @@ class Configuration(object):
             _config.add_section('Backend')
             _config.set('Backend', 'type', self.RAMSTK_BACKEND)
             _config.set('Backend', 'host', self.RAMSTK_PROG_INFO['host'])
-            _config.set('Backend', 'socket',
-                        int(self.RAMSTK_PROG_INFO['socket']))
+            _config.set('Backend', 'socket', self.RAMSTK_PROG_INFO['socket'])
             _config.set('Backend', 'database',
                         self.RAMSTK_PROG_INFO['database'])
             _config.set('Backend', 'user', self.RAMSTK_PROG_INFO['user'])

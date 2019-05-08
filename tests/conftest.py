@@ -170,20 +170,21 @@ def test_configuration():
 
     configuration.RAMSTK_SITE_DIR = CONF_DIR
     configuration.RAMSTK_CONF_DIR = CONF_DIR
-    configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + '/RAMSTK.conf'
+    configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + \
+        '/RAMSTK.conf'
 
     configuration.RAMSTK_COM_BACKEND = 'sqlite'
     configuration.RAMSTK_COM_INFO['host'] = 'localhost'
-    configuration.RAMSTK_COM_INFO['socket'] = 3306
+    configuration.RAMSTK_COM_INFO['socket'] = '3306'
     configuration.RAMSTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
     configuration.RAMSTK_COM_INFO['user'] = 'ramstkcom'
     configuration.RAMSTK_COM_INFO['password'] = 'ramstkcom'
 
     configuration.RAMSTK_REPORT_SIZE = 'letter'
-    configuration.RAMSTK_HR_MULTIPLIER = 1000000.0
-    configuration.RAMSTK_MTIME = 100.0
-    configuration.RAMSTK_DEC_PLACES = 6
-    configuration.RAMSTK_MODE_SOURCE = 1
+    configuration.RAMSTK_HR_MULTIPLIER = '1000000.0'
+    configuration.RAMSTK_MTIME = '100.0'
+    configuration.RAMSTK_DEC_PLACES = '6'
+    configuration.RAMSTK_MODE_SOURCE = '1'
     configuration.RAMSTK_TABPOS = {
         'modulebook': 'top',
         'listbook': 'bottom',
@@ -192,7 +193,7 @@ def test_configuration():
 
     configuration.RAMSTK_BACKEND = 'sqlite'
     configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
-    configuration.RAMSTK_PROG_INFO['socket'] = 3306
+    configuration.RAMSTK_PROG_INFO['socket'] = '3306'
     configuration.RAMSTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
     configuration.RAMSTK_PROG_INFO['user'] = 'johnny.tester'
     configuration.RAMSTK_PROG_INFO['password'] = 'clear.text.password'
