@@ -84,7 +84,10 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
+            try:
+                self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
+            except TypeError:
+                self.last_id = _hazard_analysis.hazard_id
 
         _session.close()
 
@@ -146,7 +149,10 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
                 parent=_hazard_analysis.hardware_id,
                 data=_hazard_analysis)
 
-        self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
+        try:
+            self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
+        except TypeError:
+            self.last_id = _hazard_analysis.hazard_id
 
         return _error_code, _msg
 
@@ -167,7 +173,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
             _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Hazard Analysis ID {0:d}.'.format(node_id)
         else:
-            self.last_id = max(self.tree.nodes.keys())
+            self.last_id = max(list(map(str, self.tree.nodes.keys())))
 
         return _error_code, _msg
 
@@ -181,7 +187,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
         :rtype: bool
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
-        print(_error_code, _msg)
+
         if _error_code != 0:
             _error_code = 2207
             _msg = 'RAMSTK ERROR: Attempted to save non-existent Hazard ' \

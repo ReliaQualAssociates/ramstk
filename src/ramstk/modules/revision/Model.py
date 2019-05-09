@@ -131,7 +131,10 @@ class RevisionDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _revision.revision_id)
+            try:
+                self.last_id = max(self.last_id, _revision.revision_id)
+            except TypeError:
+                    self.last_id = _revision.revision_id
 
         _session.close()
 

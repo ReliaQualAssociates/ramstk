@@ -77,7 +77,10 @@ class OpLoadDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _opload.load_id)
+            try:
+                self.last_id = max(self.last_id, _opload.load_id)
+            except TypeError:
+                    self.last_id = _opload.load_id
 
         _session.close()
 
@@ -236,7 +239,10 @@ class OpStressDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _opstress.stress_id)
+            try:
+                self.last_id = max(self.last_id, _opstress.stress_id)
+            except TypeError:
+                    self.last_id = _opstress.stress_id
 
         _session.close()
 
@@ -396,7 +402,10 @@ class TestMethodDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _testmethod.test_id)
+            try:
+                self.last_id = max(self.last_id, _testmethod.test_id)
+            except TypeError:
+                    self.last_id = _testmethod.test_id
 
         _session.close()
 
