@@ -6,7 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKStakeholder Table Module."""
 
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
+from sqlalchemy import TEXT, BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RAMSTK modules.
@@ -37,7 +37,7 @@ class RAMSTKStakeholder(RAMSTK_BASE):
         nullable=False)
 
     customer_rank = Column('fld_customer_rank', Integer, default=1)
-    description = Column('fld_description', BLOB, default=b'Stakeholder Input')
+    description = Column('fld_description', TEXT, default=b'Stakeholder Input')
     group = Column('fld_group', String(128), default='')
     improvement = Column('fld_improvement', Float, default=0.0)
     overall_weight = Column('fld_overall_weight', Float, default=0.0)

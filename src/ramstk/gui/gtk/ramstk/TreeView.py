@@ -255,6 +255,10 @@ class RAMSTKTreeView(Gtk.TreeView):
                     else:
                         if isinstance(_temp[_key], datetime.date):
                             _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
+                        try:
+                            _temp[_key] = _temp[_key].decode('utf-8')
+                        except AttributeError:
+                            pass
                         _attributes.append(_temp[_key])
             except AttributeError:
                 # For aggregate data models (Hardware, Software) that
@@ -266,6 +270,10 @@ class RAMSTKTreeView(Gtk.TreeView):
                         if _key == 'dict':
                             _attributes.append(str(_entity))
                         else:
+                            try:
+                                _entity[_key] = _entity[_key].decode('utf-8')
+                            except AttributeError:
+                                pass
                             _attributes.append(_entity[_key])
                 except TypeError:
                     _return = True
