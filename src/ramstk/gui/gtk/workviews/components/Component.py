@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.workviews.components.Component.py is part of the RAMSTK
@@ -5,16 +6,16 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Component Base Work View."""
+"""The RAMSTK Component Base Work View."""
 
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk
 
 
-class AssessmentInputs(gtk.Fixed):
+class AssessmentInputs(Gtk.Fixed):
     """
     Display Hardware assessment input attribute data in the RAMSTK Work Book.
 
@@ -48,7 +49,7 @@ class AssessmentInputs(gtk.Fixed):
                                 hardware item.
         :param int subcategory_id: the ID of the hardware item subcategory.
         """
-        gtk.Fixed.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
 
@@ -70,13 +71,13 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbQuality = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The quality level of the hardware item."))
+            tooltip=_("The quality level of the hardware item."))
 
         # Subscribe to PyPubSub messages.
 
     def make_page(self):
         """
-        Make the Hardware class gtk.Notebook() assessment input page.
+        Make the Hardware class Gtk.Notebook() assessment input page.
 
         :return: _x_pos, _y_pos
         :rtype: tuple
@@ -90,7 +91,7 @@ class AssessmentInputs(gtk.Fixed):
         return _x_pos, _y_pos
 
 
-class StressInputs(gtk.Fixed):
+class StressInputs(Gtk.Fixed):
     """
     Display hardware item stress input attribute data in the RAMSTK Work Book.
 
@@ -161,16 +162,16 @@ class StressInputs(gtk.Fixed):
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Minimum Rated Temperature (\u00B0C):"),
-        _(u"Knee Temperature (\u00B0C):"),
-        _(u"Maximum Rated Temperature (\u00B0C):"),
-        _(u"Rated Current (A):"),
-        _(u"Operating Current (A):"),
-        _(u"Rated Power (W):"),
-        _(u"Operating Power (W):"),
-        _(u"Rated Voltage (V):"),
-        _(u"Operating ac Voltage (V):"),
-        _(u"Operating DC Voltage (V):")
+        _("Minimum Rated Temperature (\u00B0C):"),
+        _("Knee Temperature (\u00B0C):"),
+        _("Maximum Rated Temperature (\u00B0C):"),
+        _("Rated Current (A):"),
+        _("Operating Current (A):"),
+        _("Rated Power (W):"),
+        _("Operating Power (W):"),
+        _("Rated Voltage (V):"),
+        _("Operating ac Voltage (V):"),
+        _("Operating DC Voltage (V):")
     ]
 
     def __init__(self, **kwargs):  # pylint: disable=unused-argument
@@ -183,7 +184,7 @@ class StressInputs(gtk.Fixed):
                                 hardware item.
         :param int subcategory_id: the ID of the hardware item subcategory.
         """
-        gtk.Fixed.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
 
@@ -203,41 +204,41 @@ class StressInputs(gtk.Fixed):
 
         self.txtTemperatureRatedMin = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The minimum rated temperature (in \u00B0C) of the "
-                      u"hardware item."))
+            tooltip=_("The minimum rated temperature (in \u00B0C) of the "
+                      "hardware item."))
         self.txtTemperatureKnee = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"The break temperature (in \u00B0C) of the hardware item "
-                u"beyond which it must be derated."))
+                "The break temperature (in \u00B0C) of the hardware item "
+                "beyond which it must be derated."))
         self.txtTemperatureRatedMax = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"The maximum rated temperature (in \u00B0C) of the hardware "
-                u"item."))
+                "The maximum rated temperature (in \u00B0C) of the hardware "
+                "item."))
         self.txtCurrentRated = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The rated current (in A) of the hardware item."))
+            tooltip=_("The rated current (in A) of the hardware item."))
         self.txtCurrentOperating = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The operating current (in A) of the hardware item."))
+            tooltip=_("The operating current (in A) of the hardware item."))
         self.txtPowerRated = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The rated power (in W) of the hardware item."))
+            tooltip=_("The rated power (in W) of the hardware item."))
         self.txtPowerOperating = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The operating power (in W) of the hardware item."))
+            tooltip=_("The operating power (in W) of the hardware item."))
         self.txtVoltageRated = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The rated voltage (in V) of the hardware item."))
+            tooltip=_("The rated voltage (in V) of the hardware item."))
         self.txtVoltageAC = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The operating ac voltage (in V) of the hardware "
-                      u"item."))
+            tooltip=_("The operating ac voltage (in V) of the hardware "
+                      "item."))
         self.txtVoltageDC = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The operating DC voltage (in V) of the hardware "
-                      u"item."))
+            tooltip=_("The operating DC voltage (in V) of the hardware "
+                      "item."))
 
         self._lst_handler_id.append(
             self.txtTemperatureRatedMin.connect('changed', self._on_focus_out,
@@ -368,9 +369,9 @@ class StressInputs(gtk.Fixed):
                       method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +-------+------------------------+-------+-------------------+
             | Index | Widget                 | Index | Widget            |
@@ -424,7 +425,7 @@ class StressInputs(gtk.Fixed):
         return None
 
 
-class AssessmentResults(gtk.Fixed):
+class AssessmentResults(Gtk.Fixed):
     """
     Display Hardware assessment results attribute data in the RAMSTK Work Book.
 
@@ -457,14 +458,14 @@ class AssessmentResults(gtk.Fixed):
         :param attributes: the attributes dict for the selected capacitor.
         :type attributes: dict
         """
-        gtk.Fixed.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
         self._lst_labels = [
-            u"\u03BB<sub>b</sub>:", u"\u03C0<sub>Q</sub>:",
-            u"\u03C0<sub>E</sub>:"
+            "\u03BB<sub>b</sub>:", "\u03C0<sub>Q</sub>:",
+            "\u03C0<sub>E</sub>:"
         ]
 
         # Initialize private scalar attributes.
@@ -474,8 +475,8 @@ class AssessmentResults(gtk.Fixed):
 
         self._lblModel = ramstk.RAMSTKLabel(
             '',
-            tooltip=_(u"The assessment model used to calculate the hardware "
-                      u"item failure rate."))
+            tooltip=_("The assessment model used to calculate the hardware "
+                      "item failure rate."))
 
         # Initialize public dictionary attributes.
 
@@ -488,17 +489,17 @@ class AssessmentResults(gtk.Fixed):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The base hazard rate of the hardware item."))
+            tooltip=_("The base hazard rate of the hardware item."))
         self.txtPiQ = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The quality factor for the hardware item."))
+            tooltip=_("The quality factor for the hardware item."))
         self.txtPiE = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The environment factor for the hardware item."))
+            tooltip=_("The environment factor for the hardware item."))
 
         # Subscribe to PyPubSub messages.
 
@@ -517,7 +518,7 @@ class AssessmentResults(gtk.Fixed):
         # Display the correct calculation model.
         if self._hazard_rate_method_id == 1:
             self._lblModel.set_markup(
-                u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
+                "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
             )
         elif self._hazard_rate_method_id == 2:
             try:
@@ -548,23 +549,23 @@ class AssessmentResults(gtk.Fixed):
 
     def make_page(self):
         """
-        Make the Hardware gtk.Notebook() assessment results page.
+        Make the Hardware Gtk.Notebook() assessment results page.
 
         :return: _x_pos, _y_pos
         :rtype: tuple
         """
         if self._hazard_rate_method_id == 1:
             self._lblModel.set_markup(
-                u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
-                u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
-            self._lst_labels[0] = u"\u03BB<sub>g</sub>:"
+                "<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
+                "\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
+            self._lst_labels[0] = "\u03BB<sub>g</sub>:"
         else:
             try:
                 self._lblModel.set_markup(
                     self._dic_part_stress[self._subcategory_id])
             except KeyError:
-                self._lblModel.set_markup(_(u"Missing Model"))
-            self._lst_labels[0] = u"\u03BB<sub>b</sub>:"
+                self._lblModel.set_markup(_("Missing Model"))
+            self._lst_labels[0] = "\u03BB<sub>b</sub>:"
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels, self, 5, 35)
         _x_pos += 50
@@ -577,7 +578,7 @@ class AssessmentResults(gtk.Fixed):
         return _x_pos, _y_pos
 
 
-class StressResults(gtk.HPaned):
+class StressResults(Gtk.HPaned):
     """
     Display Hardware stress results attribute data in the RAMSTK Work Book.
 
@@ -610,10 +611,10 @@ class StressResults(gtk.HPaned):
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Current Ratio:"),
-        _(u"Power Ratio:"),
-        _(u"Voltage Ratio:"), "",
-        _(u"Overstress Reason:")
+        _("Current Ratio:"),
+        _("Power Ratio:"),
+        _("Voltage Ratio:"), "",
+        _("Overstress Reason:")
     ]
 
     def __init__(self, **kwargs):
@@ -626,7 +627,7 @@ class StressResults(gtk.HPaned):
                                 hardware item.
         :param int subcategory_id: the ID of the hardware item subcategory.
         """
-        gtk.HPaned.__init__(self)
+        GObject.GObject.__init__(self)
 
         # Initialize private dictionary attributes.
 
@@ -647,41 +648,46 @@ class StressResults(gtk.HPaned):
         self.pltDerate = ramstk.RAMSTKPlot()
 
         self.chkOverstress = ramstk.RAMSTKCheckButton(
-            label=_(u"Overstressed"),
-            tooltip=_(u"Indicates whether or not the selected hardware item "
-                      u"is overstressed."))
+            label=_("Overstressed"),
+            tooltip=_("Indicates whether or not the selected hardware item "
+                      "is overstressed."))
         self.txtCurrentRatio = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The ratio of operating current to rated current for "
-                      u"the hardware item."))
+            tooltip=_("The ratio of operating current to rated current for "
+                      "the hardware item."))
         self.txtPowerRatio = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The ratio of operating power to rated power for "
-                      u"the hardware item."))
+            tooltip=_("The ratio of operating power to rated power for "
+                      "the hardware item."))
         self.txtVoltageRatio = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The ratio of operating voltage to rated voltage for "
-                      u"the hardware item."))
+            tooltip=_("The ratio of operating voltage to rated voltage for "
+                      "the hardware item."))
         self.txtReason = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=250,
-            tooltip=_(u"The reason(s) the selected hardware item is "
-                      u"overstressed."))
+            tooltip=_("The reason(s) the selected hardware item is "
+                      "overstressed."))
 
         self.chkOverstress.set_sensitive(False)
         self.txtReason.set_editable(False)
-        _bg_color = gtk.gdk.Color('#ADD8E6')
-        self.txtReason.modify_base(gtk.STATE_NORMAL, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_ACTIVE, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_PRELIGHT, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_SELECTED, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
+        _bg_color = Gdk.RGBA(red=173.0, green=216.0, blue=230.0, alpha=1.0)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.NORMAL, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.ACTIVE, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.PRELIGHT, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.SELECTED, _bg_color)
+        self.txtReason.override_background_color(
+            Gtk.StateFlags.INSENSITIVE, _bg_color)
 
         self._make_page()
         self.show_all()
@@ -725,19 +731,19 @@ class StressResults(gtk.HPaned):
             marker='go')
 
         self.pltDerate.do_make_title(
-            _(u"Voltage Derating Curve for {0:s} at {1:s}").format(
+            _("Voltage Derating Curve for {0:s} at {1:s}").format(
                 attributes['part_number'], attributes['ref_des']),
             fontsize=12)
         self.pltDerate.do_make_legend([
-            _(u"Harsh Environment"),
-            _(u"Mild Environment"),
-            _(u"Voltage Operating Point")
+            _("Harsh Environment"),
+            _("Mild Environment"),
+            _("Voltage Operating Point")
         ])
 
         self.pltDerate.do_make_labels(
-            _(u"Temperature (\u2070C)"), 0, -0.2, fontsize=10)
+            _("Temperature (\u2070C)"), 0, -0.2, fontsize=10)
         self.pltDerate.do_make_labels(
-            _(u"Voltage Ratio"), -1, 0, set_x=False, fontsize=10)
+            _("Voltage Ratio"), -1, 0, set_x=False, fontsize=10)
 
         self.pltDerate.figure.canvas.draw()
 
@@ -770,12 +776,12 @@ class StressResults(gtk.HPaned):
 
     def _make_page(self):
         """
-        Make the Hardware gtk.Notebook() assessment results page.
+        Make the Hardware Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None
         """
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
         self.pack1(_fixed, True, True)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_labels, _fixed, 5,
@@ -792,7 +798,7 @@ class StressResults(gtk.HPaned):
 
         # Create the derating plot.
         _frame = ramstk.RAMSTKFrame(
-            label=_(u"Derating Curve and Operating Point"))
+            label=_("Derating Curve and Operating Point"))
         _frame.add(self.pltDerate.plot)
         _frame.show_all()
 

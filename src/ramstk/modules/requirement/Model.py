@@ -135,7 +135,10 @@ class RequirementDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _requirement.requirement_id)
+            try:
+                self.last_id = max(self.last_id, _requirement.requirement_id)
+            except TypeError:
+                self.last_id = _requirement.requirement_id
 
         _session.close()
 

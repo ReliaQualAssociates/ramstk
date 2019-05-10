@@ -17,7 +17,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKProgramInfo(RAMSTK_BASE):
     """
-    Class to represent the table ramstk_program_info in the RAMSTK Program database.
+    Class to represent table ramstk_program_info in the RAMSTK Program database.
 
     This table has a one-to-one relationship with RAMSTKProgramStatus.
     """

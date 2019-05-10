@@ -45,7 +45,7 @@ Invocation:
     and [FILE(s)] is a comma-separated list of files to check
 """
 
-from __future__ import print_function
+
 
 import os
 import sys

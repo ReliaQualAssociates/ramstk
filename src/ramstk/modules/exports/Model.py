@@ -185,7 +185,7 @@ class ExportDataModel(RAMSTKDataModel):
         elif file_type == 'text':
             self._output_data.to_csv(file_name, sep=' ', index=False)
         elif file_type == 'pdf':
-            print "Portable Document Format"
+            print("Portable Document Format")
 
         return None
 
@@ -229,7 +229,7 @@ class ExportDataModel(RAMSTKDataModel):
 
         for _header in self._dic_column_headers['Function']:
             _temp = []
-            for _node in tree.nodes.values()[1:]:
+            for _node in list(tree.nodes.values())[1:]:
                 _temp.append(_node.data.get_attributes()[_header])
             _dic_output_data[_header] = _temp
 
@@ -251,7 +251,7 @@ class ExportDataModel(RAMSTKDataModel):
 
         for _header in self._dic_column_headers['Requirement']:
             _temp = []
-            for _node in tree.nodes.values()[1:]:
+            for _node in list(tree.nodes.values())[1:]:
                 _temp.append(_node.data.get_attributes()[_header])
             _dic_output_data[_header] = _temp
 
@@ -273,7 +273,7 @@ class ExportDataModel(RAMSTKDataModel):
 
         for _header in self._dic_column_headers['Hardware']:
             _temp = []
-            for _node in tree.nodes.values()[1:]:
+            for _node in list(tree.nodes.values())[1:]:
                 _temp.append(_node.data[_header])
             _dic_output_data[_header] = _temp
 
@@ -295,7 +295,7 @@ class ExportDataModel(RAMSTKDataModel):
 
         for _header in self._dic_column_headers['Design Electric']:
             _temp = []
-            for _node in tree.nodes.values()[1:]:
+            for _node in list(tree.nodes.values())[1:]:
                 _temp.append(_node.data.get_attributes()[_header])
             _dic_output_data[_header] = _temp
 
@@ -317,8 +317,8 @@ class ExportDataModel(RAMSTKDataModel):
 
         for _header in self._dic_column_headers['Reliability']:
             _temp = []
-            for _node in tree.nodes.values()[1:]:
-                print _node.data.get_attributes()
+            for _node in list(tree.nodes.values())[1:]:
+                print(_node.data.get_attributes())
                 _temp.append(_node.data.get_attributes()[_header])
             _dic_output_data[_header] = _temp
 
@@ -340,7 +340,7 @@ class ExportDataModel(RAMSTKDataModel):
 
         for _header in self._dic_column_headers['Validation']:
             _temp = []
-            for _node in tree.nodes.values()[1:]:
+            for _node in list(tree.nodes.values())[1:]:
                 _temp.append(_node.data.get_attributes()[_header])
             _dic_output_data[_header] = _temp
 

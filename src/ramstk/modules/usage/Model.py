@@ -340,7 +340,10 @@ class MissionDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _mission.mission_id)
+            try:
+                self.last_id = max(self.last_id, _mission.mission_id)
+            except TypeError:
+                self.last_id = _mission.mission_id
 
         _session.close()
 
@@ -497,7 +500,10 @@ class MissionPhaseDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _phase.phase_id)
+            try:
+                self.last_id = max(self.last_id, _phase.phase_id)
+            except TypeError:
+                self.last_id = _phase.phase_id
 
         _session.close()
 
@@ -655,7 +661,10 @@ class EnvironmentDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _environment.environment_id)
+            try:
+                self.last_id = max(self.last_id, _environment.environment_id)
+            except TypeError:
+                self.last_id = _environment.environment_id
 
         _session.close()
 

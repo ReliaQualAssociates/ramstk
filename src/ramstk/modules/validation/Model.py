@@ -94,7 +94,10 @@ class ValidationDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _validation.validation_id)
+            try:
+                self.last_id = max(self.last_id, _validation.validation_id)
+            except TypeError:
+                self.last_id = _validation.validation_id
 
         # Now select all the status updates.
         _today = False
@@ -413,7 +416,7 @@ class ValidationDataModel(RAMSTKDataModel):
         """
         _time_remaining = {}
 
-        _dates = SortedDict(self.status_tree.nodes).keys()
+        _dates = list(SortedDict(self.status_tree.nodes).keys())
         _dates.pop(0)
 
         for _key in _dates:

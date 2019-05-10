@@ -78,7 +78,10 @@ class SimilarItemDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _similar_item.hardware_id)
+            try:
+                self.last_id = max(self.last_id, _similar_item.hardware_id)
+            except TypeError:
+                self.last_id = _similar_item.hardware_id
 
         _session.close()
 
@@ -127,7 +130,10 @@ class SimilarItemDataModel(RAMSTKDataModel):
             parent=_similar_item.parent_id,
             data=_similar_item)
 
-        self.last_id = max(self.last_id, _similar_item.hardware_id)
+        try:
+            self.last_id = max(self.last_id, _similar_item.hardware_id)
+        except TypeError:
+            self.last_id = _similar_item.hardware_id
 
         return _error_code, _msg
 
@@ -247,7 +253,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
         :rtype: bool
         """
         _return = False
-        _description = ['', '', '', '', '', '', '', '', '', '']
+        _description = [b'', b'', b'', b'', b'', b'', b'', b'', b'', b'']
 
         # Retrieve the change descriptions from all the child elements and
         # concatenate them together to form the parent descriptions.
@@ -255,25 +261,25 @@ class SimilarItemDataModel(RAMSTKDataModel):
             _attributes = _child.data.get_attributes()
 
             _description[0] = _description[0] + \
-                              _attributes['change_description_1'] + '\n\n'
+                              _attributes['change_description_1'] + b'\n\n'
             _description[1] = _description[1] + \
-                              _attributes['change_description_2'] + '\n\n'
+                              _attributes['change_description_2'] + b'\n\n'
             _description[2] = _description[2] + \
-                              _attributes['change_description_3'] + '\n\n'
+                              _attributes['change_description_3'] + b'\n\n'
             _description[3] = _description[3] + \
-                              _attributes['change_description_4'] + '\n\n'
+                              _attributes['change_description_4'] + b'\n\n'
             _description[4] = _description[4] + \
-                              _attributes['change_description_5'] + '\n\n'
+                              _attributes['change_description_5'] + b'\n\n'
             _description[5] = _description[5] + \
-                              _attributes['change_description_6'] + '\n\n'
+                              _attributes['change_description_6'] + b'\n\n'
             _description[6] = _description[6] + \
-                              _attributes['change_description_7'] + '\n\n'
+                              _attributes['change_description_7'] + b'\n\n'
             _description[7] = _description[7] + \
-                              _attributes['change_description_8'] + '\n\n'
+                              _attributes['change_description_8'] + b'\n\n'
             _description[8] = _description[8] + \
-                              _attributes['change_description_9'] + '\n\n'
+                              _attributes['change_description_9'] + b'\n\n'
             _description[9] = _description[9] + \
-                              _attributes['change_description_10'] + '\n\n'
+                              _attributes['change_description_10'] + b'\n\n'
 
         # Now set the parent change descriptions to the concatenated versions
         # created above.

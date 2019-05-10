@@ -16,7 +16,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'description': 'Test Mission Phase 1',
+    'description': b'Test Mission Phase 1',
     'phase_end': 0.0,
     'phase_start': 0.0,
     'mission_id': 1,
@@ -38,7 +38,7 @@ def test_ramstkmissionphase_create(test_dao):
     assert DUT.__tablename__ == 'ramstk_mission_phase'
     assert DUT.mission_id == 1
     assert DUT.phase_id == 1
-    assert DUT.description == 'Test Mission Phase 1'
+    assert DUT.description == b'Test Mission Phase 1'
     assert DUT.name == ''
     assert DUT.phase_start == 0.0
     assert DUT.phase_end == 0.0

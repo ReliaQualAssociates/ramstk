@@ -36,7 +36,7 @@ class RAMSTKMission(RAMSTK_BASE):
         primary_key=True,
         autoincrement=True,
         nullable=False)
-    description = Column('fld_description', BLOB, default='Description')
+    description = Column('fld_description', BLOB, default=b'')
     mission_time = Column('fld_mission_time', Float, default=0.0)
     time_units = Column('fld_time_units', String(256), default='hours')
 
@@ -78,8 +78,7 @@ class RAMSTKMission(RAMSTK_BASE):
             format(self.mission_id)
 
         try:
-            self.description = str(
-                none_to_default(attributes['description'], 'Description'))
+            self.description = none_to_default(attributes['description'], b'')
             self.mission_time = float(
                 none_to_default(attributes['mission_time'], 0.0))
             self.time_units = str(

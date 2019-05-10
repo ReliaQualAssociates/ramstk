@@ -80,14 +80,14 @@ class Test00MatrixModel(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT.dtf_matrix, pd.DataFrame))
         self.assertEqual(self.DUT.dic_column_hdrs, {
-            1: u'S1',
-            2: u'S1:SS1',
-            3: u'S1:SS2'
+            1: 'S1',
+            2: 'S1:SS1',
+            3: 'S1:SS2'
         })
         self.assertEqual(self.DUT.dic_row_hdrs, {
-            1: u'PRESS-001',
-            2: u'FLOW-001',
-            3: u'TEMP-001'
+            1: 'PRESS-001',
+            2: 'FLOW-001',
+            3: 'TEMP-001'
         })
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 3)

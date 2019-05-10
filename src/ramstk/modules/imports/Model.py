@@ -14,10 +14,9 @@ import pandas as pd
 
 # Import other RAMSTK modules.
 from ramstk.dao import (RAMSTKDesignElectric, RAMSTKDesignMechanic,
-                     RAMSTKFunction, RAMSTKHardware, RAMSTKMilHdbkF,
-                     RAMSTKNSWC, RAMSTKReliability, RAMSTKAllocation,
-                     RAMSTKSimilarItem, RAMSTKRequirement,
-                     RAMSTKValidation)
+                        RAMSTKFunction, RAMSTKHardware, RAMSTKMilHdbkF,
+                        RAMSTKNSWC, RAMSTKReliability, RAMSTKAllocation,
+                        RAMSTKSimilarItem, RAMSTKRequirement, RAMSTKValidation)
 from ramstk.modules import RAMSTKDataModel
 
 
@@ -30,170 +29,111 @@ class ImportDataModel(RAMSTKDataModel):
         'Function':
         OrderedDict([('Revision ID', ''), ('Function ID', ''), ('Level', ''),
                      ('Function Code', ''), ('Function Name', ''),
-                     ('Parent', ''), ('Remarks', ''), ('Safety Critical',
-                                                       ''), ('Type', '')]),
+                     ('Parent', ''), ('Remarks', ''), ('Safety Critical', ''),
+                     ('Type', '')]),
         'Requirement':
-        OrderedDict(
-            [('Revision ID', ''), ('Requirement ID', ''), ('Derived?', ''),
-             ('Requirement', ''), ('Figure Number',
-                                   ''), ('Owner', ''), ('Page Number', ''),
-             ('Parent ID', ''), ('Priority', ''), ('Requirement Code',
-                                                   ''), ('Specification', ''),
-             ('Requirement Type', ''), ('Validated?', ''), ('Validated Date',
-                                                            '')]),
+        OrderedDict([('Revision ID', ''), ('Requirement ID', ''),
+                     ('Derived?', ''), ('Requirement', ''),
+                     ('Figure Number', ''), ('Owner', ''), ('Page Number', ''),
+                     ('Parent ID', ''), ('Priority', ''),
+                     ('Requirement Code', ''), ('Specification', ''),
+                     ('Requirement Type', ''), ('Validated?', ''),
+                     ('Validated Date', '')]),
         'Hardware':
-        OrderedDict(
-            [('Revision ID', ''), ('Hardware ID',
-                                   ''), ('Alternate Part Number', ''),
-             ('CAGE Code', ''), ('Category ID', ''), ('Composite Ref. Des.',
-                                                      ''), ('Cost', ''),
-             ('Cost Type',
-              ''), ('Description',
-                    ''), ('Duty Cycle', ''), ('Figure Number',
-                                              ''), ('LCN', ''), ('Level', ''),
-             ('Manufacturer',
-              ''), ('Mission Time',
-                    ''), ('Name', ''), ('NSN', ''), ('Page Number',
-                                                     ''), ('Parent Assembly',
-                                                           ''), ('Part', ''),
-             ('Part Number',
-              ''), ('Quantity', ''), ('Reference Designator',
-                                      ''), ('Remarks', ''), ('Repairable', ''),
-             ('Specification', ''), ('Subcategory ID',
-                                     ''), ('Tagged Part',
-                                           ''), ('Year of Manufacture', '')]),
+        OrderedDict([('Revision ID', ''), ('Hardware ID', ''),
+                     ('Alternate Part Number', ''), ('CAGE Code', ''),
+                     ('Category ID', ''), ('Composite Ref. Des.', ''),
+                     ('Cost', ''), ('Cost Type', ''), ('Description', ''),
+                     ('Duty Cycle', ''), ('Figure Number', ''), ('LCN', ''),
+                     ('Level', ''), ('Manufacturer', ''), ('Mission Time', ''),
+                     ('Name', ''), ('NSN', ''), ('Page Number', ''),
+                     ('Parent Assembly', ''), ('Part', ''),
+                     ('Part Number', ''), ('Quantity', ''),
+                     ('Reference Designator', ''), ('Remarks', ''),
+                     ('Repairable', ''), ('Specification', ''),
+                     ('Subcategory ID', ''), ('Tagged Part', ''),
+                     ('Year of Manufacture', '')]),
         'Design Electric':
-        OrderedDict(
-            [('Hardware ID', ''), ('Application ID', ''), ('Area', ''),
-             ('Capacitance',
-              ''), ('Configuration ID', ''), ('Construction ID',
-                                              ''), ('Contact Form ID',
-                                                    ''), ('Contact Gauge', ''),
-             ('Contact Rating ID',
-              ''), ('Current Operating',
-                    ''), ('Current Rated',
-                          ''), ('Current Ratio',
-                                ''), ('Environment Active ID',
-                                      ''), ('Environment Dormant ID',
-                                            ''), ('Family ID',
-                                                  ''), ('Feature Size', ''),
-             ('Frequency Operating',
-              ''), ('Insert ID',
-                    ''), ('Insulation ID', ''), ('Manufacturing ID',
-                                                 ''), ('Matching ID', ''),
-             ('N Active Pins', ''), ('N Circuit Planes',
-                                     ''), ('N Cycles', ''), ('N Elements', ''),
-             ('N Hand Soldered',
-              ''), ('N Wave Soldered',
-                    ''), ('Operating Life',
-                          ''), ('Overstress',
-                                ''), ('Package ID',
-                                      ''), ('Power Operating',
-                                            ''), ('Power Rated',
-                                                  ''), ('Power Ratio', ''),
-             ('Reason', ''), ('Resistance',
-                              ''), ('Specification ID',
-                                    ''), ('Technology ID',
-                                          ''), ('Temperature, Active',
-                                                ''), ('Temperature, Case', ''),
-             ('Temperature, Dormant',
-              ''), ('Temperature, Hot Spot',
-                    ''), ('Temperature, Junction',
-                          ''), ('Temperature, Knee',
-                                ''), ('Temperature, Rated Max',
-                                      ''), ('Temperature, Rated Min',
-                                            ''), ('Temperature Rise',
-                                                  ''), ('Theta JC',
-                                                        ''), ('Type ID', ''),
-             ('Voltage, AC Operating',
-              ''), ('Voltage, DC Operating',
-                    ''), ('Voltage ESD',
-                          ''), ('Voltage, Rated',
-                                ''), ('Voltage Ratio',
-                                      ''), ('Weight',
-                                            ''), ('Years in Production', '')]),
+        OrderedDict([('Hardware ID', ''), ('Application ID', ''), ('Area', ''),
+                     ('Capacitance', ''), ('Configuration ID', ''),
+                     ('Construction ID', ''), ('Contact Form ID', ''),
+                     ('Contact Gauge', ''), ('Contact Rating ID', ''),
+                     ('Current Operating', ''), ('Current Rated', ''),
+                     ('Current Ratio', ''), ('Environment Active ID', ''),
+                     ('Environment Dormant ID', ''), ('Family ID', ''),
+                     ('Feature Size', ''), ('Frequency Operating', ''),
+                     ('Insert ID', ''), ('Insulation ID', ''),
+                     ('Manufacturing ID', ''), ('Matching ID', ''),
+                     ('N Active Pins', ''), ('N Circuit Planes', ''),
+                     ('N Cycles', ''), ('N Elements', ''),
+                     ('N Hand Soldered', ''), ('N Wave Soldered', ''),
+                     ('Operating Life', ''), ('Overstress', ''),
+                     ('Package ID', ''), ('Power Operating', ''),
+                     ('Power Rated', ''), ('Power Ratio', ''), ('Reason', ''),
+                     ('Resistance', ''), ('Specification ID', ''),
+                     ('Technology ID', ''), ('Temperature, Active', ''),
+                     ('Temperature, Case', ''), ('Temperature, Dormant', ''),
+                     ('Temperature, Hot Spot', ''),
+                     ('Temperature, Junction', ''), ('Temperature, Knee', ''),
+                     ('Temperature, Rated Max', ''),
+                     ('Temperature, Rated Min', ''), ('Temperature Rise', ''),
+                     ('Theta JC', ''), ('Type ID', ''),
+                     ('Voltage, AC Operating', ''),
+                     ('Voltage, DC Operating', ''), ('Voltage ESD', ''),
+                     ('Voltage, Rated', ''), ('Voltage Ratio', ''),
+                     ('Weight', ''), ('Years in Production', '')]),
         'Design Mechanic':
-        OrderedDict(
-            [('Hardware ID', ''), ('Altitude, Operating', ''),
-             ('Application ID',
-              ''), ('Balance ID', ''), ('Clearance', ''), ('Casing ID', ''),
-             ('Contact Pressure',
-              ''), ('Deflection',
-                    ''), ('Diameter, Coil', ''), ('Diameter, Inner',
-                                                  ''), ('Diameter, Outer', ''),
-             ('Diameter, Wire',
-              ''), ('Filter Size',
-                    ''), ('Flow, Design', ''), ('Flow, Operating',
-                                                ''), ('Frequency, Operating',
-                                                      ''), ('Friction', ''),
-             ('Impact ID', ''), ('Allowable Leakage',
-                                 ''), ('Length',
-                                       ''), ('Length, Compressed',
-                                             ''), ('Length, Relaxed',
-                                                   ''), ('Design Load',
-                                                         ''), ('Load ID', ''),
-             ('Operating Load',
-              ''), ('Lubrication ID',
-                    ''), ('Manufacturing ID',
-                          ''), ('Material ID',
-                                ''), ('Meyer Hardness',
-                                      ''), ('Misalignment Angle',
-                                            ''), ('N Ten', ''), ('N Cycles',
-                                                                 ''),
-             ('N Elements',
-              ''), ('Offset', ''), ('Particle Size',
-                                    ''), ('Contact Pressure',
-                                          ''), ('Differential Pressure',
-                                                ''), ('Downstream Pressure',
-                                                      ''), ('Rated Pressure',
-                                                            ''),
-             ('Upstream Pressure',
-              ''), ('Design RPM',
-                    ''), ('Operating RPM',
-                          ''), ('Service ID',
-                                ''), ('Spring Index',
-                                      ''), ('Surface Finish',
-                                            ''), ('Technology ID',
-                                                  ''), ('Thickness',
-                                                        ''), ('Torque ID', ''),
-             ('Type ID', ''), ('Design Viscosity',
-                               ''), ('Dynamic Viscosity',
-                                     ''), ('% Water', ''), ('Minimum Width',
-                                                            '')]),
+        OrderedDict([('Hardware ID', ''), ('Altitude, Operating', ''),
+                     ('Application ID', ''), ('Balance ID', ''),
+                     ('Clearance', ''), ('Casing ID', ''),
+                     ('Contact Pressure', ''), ('Deflection', ''),
+                     ('Diameter, Coil', ''), ('Diameter, Inner', ''),
+                     ('Diameter, Outer', ''), ('Diameter, Wire', ''),
+                     ('Filter Size', ''), ('Flow, Design', ''),
+                     ('Flow, Operating', ''), ('Frequency, Operating', ''),
+                     ('Friction', ''), ('Impact ID', ''),
+                     ('Allowable Leakage', ''), ('Length', ''),
+                     ('Length, Compressed', ''), ('Length, Relaxed', ''),
+                     ('Design Load', ''), ('Load ID', ''),
+                     ('Operating Load', ''), ('Lubrication ID', ''),
+                     ('Manufacturing ID', ''), ('Material ID', ''),
+                     ('Meyer Hardness', ''), ('Misalignment Angle', ''),
+                     ('N Ten', ''), ('N Cycles', ''), ('N Elements', ''),
+                     ('Offset', ''), ('Particle Size', ''),
+                     ('Contact Pressure', ''), ('Differential Pressure', ''),
+                     ('Downstream Pressure', ''), ('Rated Pressure', ''),
+                     ('Upstream Pressure', ''), ('Design RPM', ''),
+                     ('Operating RPM', ''), ('Service ID', ''),
+                     ('Spring Index', ''), ('Surface Finish', ''),
+                     ('Technology ID', ''), ('Thickness', ''), ('Torque ID',
+                                                                ''),
+                     ('Type ID', ''), ('Design Viscosity', ''),
+                     ('Dynamic Viscosity', ''), ('% Water', ''),
+                     ('Minimum Width', '')]),
         'Reliability':
         OrderedDict([('Hardware ID', ''), ('Additive Adjustment Factor', ''),
-                     ('Failure Distribution ID',
-                      ''), ('Failure Rate Method ID',
-                            ''), ('Failure Rate Model',
-                                  ''), ('Specified Failure Rate',
-                                        ''), ('Failure Rate Type ID', ''),
-                     ('Location Parameter',
-                      ''), ('Specified MTBF',
-                            ''), ('Multiplicative Adjustment Factor',
-                                  ''), ('Quality ID', ''), ('Reliability Goal',
-                                                            ''),
-                     ('Reliability Goal Measure ID',
-                      ''), ('Scale Parameter',
-                            ''), ('Shape Parameter',
-                                  ''), ('Survival Analysis ID', '')]),
+                     ('Failure Distribution ID', ''),
+                     ('Failure Rate Method ID', ''), ('Failure Rate Model',
+                                                      ''),
+                     ('Specified Failure Rate', ''),
+                     ('Failure Rate Type ID', ''), ('Location Parameter', ''),
+                     ('Specified MTBF', ''),
+                     ('Multiplicative Adjustment Factor', ''),
+                     ('Quality ID', ''), ('Reliability Goal', ''),
+                     ('Reliability Goal Measure ID', ''),
+                     ('Scale Parameter', ''), ('Shape Parameter', ''),
+                     ('Survival Analysis ID', '')]),
         'Validation':
-        OrderedDict([('Revision ID', ''), ('Validation ID',
-                                           ''), ('Acceptable Maximum', ''),
-                     ('Acceptable Mean', ''), ('Acceptable Minimum',
-                                               ''), ('Acceptable Variance',
-                                                     ''), ('s-Confidence', ''),
-                     ('Average Task Cost', ''), ('Maximum Task Cost',
-                                                 ''), ('Minimum Task Cost',
-                                                       ''), ('Start Date', ''),
-                     ('End Date', ''), ('Task Description',
-                                        ''), ('Unit of Measure',
-                                              ''), ('Name',
-                                                    ''), ('Task Status', ''),
-                     ('Task Type', ''), ('Task Specification',
-                                         ''), ('Average Task Time',
-                                               ''), ('Maximum Task Time',
-                                                     ''), ('Minimum Task Time',
-                                                           '')])
+        OrderedDict([('Revision ID', ''), ('Validation ID', ''),
+                     ('Acceptable Maximum', ''), ('Acceptable Mean', ''),
+                     ('Acceptable Minimum', ''), ('Acceptable Variance', ''),
+                     ('s-Confidence', ''), ('Average Task Cost', ''),
+                     ('Maximum Task Cost', ''), ('Minimum Task Cost', ''),
+                     ('Start Date', ''), ('End Date', ''),
+                     ('Task Description', ''), ('Unit of Measure', ''),
+                     ('Name', ''), ('Task Status', ''), ('Task Type', ''),
+                     ('Task Specification', ''), ('Average Task Time', ''),
+                     ('Maximum Task Time', ''), ('Minimum Task Time', '')])
     }
 
     _tag = 'Imports'
@@ -230,7 +170,7 @@ class ImportDataModel(RAMSTKDataModel):
         :rtype: None
         """
         if file_type == 'csv':
-            self._input_data = pd.read_table(
+            self._input_data = pd.read_csv(
                 file_name, sep=';', na_values=[''], parse_dates=True)
         elif file_type == 'excel':
             self._input_data = pd.read_excel(file_name)
@@ -330,10 +270,16 @@ class ImportDataModel(RAMSTKDataModel):
         _function.level = self._get_input_value(_map, row, 'Level', 0)
         _function.name = self._get_input_value(_map, row, 'Function Name', '')
         _function.parent_id = self._get_input_value(_map, row, 'Parent', 1)
-        _function.remarks = self._get_input_value(_map, row, 'Remarks', '')
+        _function.remarks = self._get_input_value(_map, row, 'Remarks', b'')
         _function.safety_critical = self._get_input_value(
             _map, row, 'Safety Critical', 0)
         _function.type_id = self._get_input_value(_map, row, 'Type', '')
+
+        # Ensure the remarks are a byte-object.
+        try:
+            _function.remarks = _function.remarks.encode('utf-8')
+        except AttributeError:
+            pass
 
         return _function
 
@@ -374,6 +320,12 @@ class ImportDataModel(RAMSTKDataModel):
                                                        0)
         _requirement.validated_date = self._get_input_value(
             _map, row, 'Validated Date', date.today())
+
+        # Ensure the description is a byte-like object.
+        try:
+            _requirement.description = _requirement.description.encide('utf-8')
+        except AttributeError:
+            pass
 
         return _requirement
 
@@ -438,6 +390,12 @@ class ImportDataModel(RAMSTKDataModel):
                                                       0)
         _hardware.year_of_manufacture = self._get_input_value(
             _map, row, 'Year of Manufacture', 1900)
+
+        # Ensure the remarks are a byte-like object.
+        try:
+            _hardware.remarks = _hardware.remarks.encide('utf-8')
+        except AttributeError:
+            pass
 
         return _hardware
 
@@ -784,10 +742,10 @@ class ImportDataModel(RAMSTKDataModel):
         _allocation = RAMSTKAllocation()
         _map = self._dic_field_map['Hardware']
 
-        _allocation.revision_id = self._get_input_value(_map, row,
-                                                        'Revision ID', 1)
-        _allocation.hardware_id = self._get_input_value(_map, row,
-                                                        'Hardware ID', 1)
+        _allocation.revision_id = self._get_input_value(
+            _map, row, 'Revision ID', 1)
+        _allocation.hardware_id = self._get_input_value(
+            _map, row, 'Hardware ID', 1)
         _allocation.parent_id = self._get_input_value(_map, row,
                                                       'Parent Assembly', 1)
 
@@ -805,12 +763,12 @@ class ImportDataModel(RAMSTKDataModel):
         _similar_item = RAMSTKSimilarItem()
         _map = self._dic_field_map['Hardware']
 
-        _similar_item.revision_id = self._get_input_value(_map, row,
-                                                          'Revision ID', 1)
-        _similar_item.hardware_id = self._get_input_value(_map, row,
-                                                          'Hardware ID', 1)
-        _similar_item.parent_id = self._get_input_value(_map, row,
-                                                        'Parent Assembly', 1)
+        _similar_item.revision_id = self._get_input_value(
+            _map, row, 'Revision ID', 1)
+        _similar_item.hardware_id = self._get_input_value(
+            _map, row, 'Hardware ID', 1)
+        _similar_item.parent_id = self._get_input_value(
+            _map, row, 'Parent Assembly', 1)
 
         return _similar_item
 
@@ -868,6 +826,12 @@ class ImportDataModel(RAMSTKDataModel):
         _validation.time_minimum = self._get_input_value(
             _map, row, 'Minimum Task Time', 0.0)
 
+        # Ensure the description is a byte-like object, not 'str'.
+        try:
+            _validation.description = _validation.description.encode('utf-8')
+        except AttributeError:
+            pass
+
         return _validation
 
     def get_db_fields(self, module):
@@ -879,10 +843,12 @@ class ImportDataModel(RAMSTKDataModel):
         :rtype: (list, list)
         """
         try:
-            _db_fields = self._dic_field_map[module].keys()
+            _db_fields = list(self._dic_field_map[module].keys())
             if module.lower() == 'hardware':
-                _db_fields += self._dic_field_map['Design Electric'].keys()[1:]
-                _db_fields += self._dic_field_map['Reliability'].keys()[1:]
+                _db_fields += list(
+                    self._dic_field_map['Design Electric'].keys())[1:]
+                _db_fields += list(
+                    self._dic_field_map['Reliability'].keys())[1:]
         except KeyError:
             _db_fields = []
 
@@ -899,9 +865,11 @@ class ImportDataModel(RAMSTKDataModel):
         Retrieve the input value for a field from the Pandas dataframe.
 
         :param dict mapper: the field mapping dict to use as the Rosetta stone.
-        :param row: the row from the pandas DataFrame containing the input data.
+        :param row: the row from the pandas DataFrame containing the input
+                    data.
         :type row: :class:`pandas.Series`
-        :param str field: the name of the RAMSTK database field to retrieve the data for.
+        :param str field: the name of the RAMSTK database field to retrieve the
+                          data for.
         :param default: the default value to assign to the field.
         :return: _value
         :rtype: the value of the requested input field or the default.

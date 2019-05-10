@@ -11,7 +11,7 @@ from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .ModuleView import RAMSTKModuleView
 
 
@@ -43,7 +43,6 @@ class ModuleView(RAMSTKModuleView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._parent_id = None
         self._requirement_id = None
 
         # Initialize public dictionary attributes.
@@ -52,34 +51,43 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.make_treeview()
-        self.treeview.set_tooltip_text(
-            _(u"Displays the hierarchical list of "
-              u"requirements."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-        self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = ramstk.RAMSTKLabel(
-            _(u"Requirements"),
-            width=-1,
-            height=-1,
-            tooltip=_(u"Displays the program requirements."))
-
-        self.hbx_tab_label.pack_end(_label)
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_tree, 'retrieved_requirements')
         pub.subscribe(self.do_load_tree, 'deleted_requirement')
         pub.subscribe(self.do_load_tree, 'inserted_requirement')
+        pub.subscribe(self.do_load_tree, 'retrieved_requirements')
         pub.subscribe(self._do_load_code, 'created_requirement_code')
         pub.subscribe(self._do_refresh_tree, 'wvw_editing_requirement')
 
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKModuleView._make_ui(self)
+
+        self.make_treeview()
+        self.treeview.set_tooltip_text(
+            _("Displays the hierarchical list of requirements."))
+
+        _label = ramstk.RAMSTKLabel(
+            _("Requirements"),
+            width=-1,
+            height=-1,
+            tooltip=_("Displays the hierarchical list of requirements."))
+
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
+
+        self.show_all()
+
+        return None
+
     def _do_load_code(self, code):
         """
-        Refresh the Requirement Code gtk.Entry().
+        Refresh the Requirement Code Gtk.Entry().
 
         :param str code: the new Requirement code.
         :return: None
@@ -108,19 +116,19 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to delete the selected Requirement and it's children.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        _prompt = _(u"You are about to delete Requirement {0:d} and all "
-                    u"data associated with it.  Is this really what "
-                    u"you want to do?").format(self._requirement_id)
+        _prompt = _("You are about to delete Requirement {0:d} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._requirement_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
-        if _response == gtk.RESPONSE_YES:
+        if _response == Gtk.ResponseType.YES:
             pub.sendMessage(
                 'request_delete_requirement', node_id=self._requirement_id)
 
@@ -132,8 +140,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Launch the Export assistant.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -169,15 +177,15 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to save the currently selected Requirement.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
             'request_update_requirement', node_id=self._requirement_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -185,33 +193,33 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to save all the Requirements.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_requirements')
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Requirement Module View.
+        Make the Gtk.ButtonBox() for the Requirement Module View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Requirement class
+        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement class
                  Module View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Adds a new Requirement at the same hierarchy level as the "
-              u"selected Requirement (i.e., a sibling Requirement)."),
-            _(u"Adds a new Requirement one level subordinate to the selected "
-              u"Requirement (i.e., a derived requirement)."),
-            _(u"Remove the currently selected Requirement."),
-            _(u"Exports Requirementss to an external file (CSV, Excel, and "
-              u"text files are supported).")
+            _("Adds a new Requirement at the same hierarchy level as the "
+              "selected Requirement (i.e., a sibling Requirement)."),
+            _("Adds a new Requirement one level subordinate to the selected "
+              "Requirement (i.e., a derived requirement)."),
+            _("Remove the currently selected Requirement."),
+            _("Exports Requirementss to an external file (CSV, Excel, and "
+              "text files are supported).")
         ]
         _callbacks = [
             self.do_request_insert_sibling, self.do_request_insert_child,
@@ -236,7 +244,7 @@ class ModuleView(RAMSTKModuleView):
 
         :param treeview: the Requirement class RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                                     * 1 = left
@@ -247,7 +255,7 @@ class ModuleView(RAMSTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :class:`gtk.gdk.Event`
+        :type event: :class:`Gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -262,11 +270,11 @@ class ModuleView(RAMSTKModuleView):
                 'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
             ]
             _labels = [
-                _(u"Add Sibling Requirement"),
-                _(u"Add Child Requirement"),
-                _(u"Remove the Selected Requirement"),
-                _(u"Save Selected Requirement"),
-                _(u"Save All Requirements")
+                _("Add Sibling Requirement"),
+                _("Add Child Requirement"),
+                _("Remove the Selected Requirement"),
+                _("Save Selected Requirement"),
+                _("Save All Requirements")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_insert_child,
@@ -288,17 +296,17 @@ class ModuleView(RAMSTKModuleView):
         """
         Handle edits of Requirement package Module View RAMSTKTreeview().
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :class:`gtk.CellRenderer`
-        :param str path: the gtk.TreeView() path of the
-                         gtk.CellRenderer() that was edited.
+        :param __cell: the Gtk.CellRenderer() that was edited.
+        :type __cell: :class:`Gtk.CellRenderer`
+        :param str path: the Gtk.TreeView() path of the
+                         Gtk.CellRenderer() that was edited.
         :param str new_text: the new text in the edited
-                             gtk.CellRenderer().
+                             Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs
+                             Gtk.CellRenderer().
+        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs
                       to.
-        :type model: :class:`gtk.TreeStore`
+        :type model: :class:`Gtk.TreeStore`
         :return: None
         :rtype: None
         """
@@ -345,107 +353,108 @@ class ModuleView(RAMSTKModuleView):
 
         _model, _row = treeview.get_selection().get_selected()
 
-        _attributes['revision_id'] = _model.get_value(_row,
-                                                      self._lst_col_order[0])
-        _attributes['requirement_id'] = _model.get_value(
-            _row, self._lst_col_order[1])
-        _attributes['derived'] = _model.get_value(_row, self._lst_col_order[2])
-        _attributes['description'] = _model.get_value(_row,
-                                                      self._lst_col_order[3])
-        _attributes['figure_number'] = _model.get_value(
-            _row, self._lst_col_order[4])
-        _attributes['owner'] = _model.get_value(_row, self._lst_col_order[5])
-        _attributes['page_number'] = _model.get_value(_row,
-                                                      self._lst_col_order[6])
-        _attributes['parent_id'] = _model.get_value(_row,
-                                                    self._lst_col_order[7])
-        _attributes['priority'] = _model.get_value(_row,
-                                                   self._lst_col_order[8])
-        _attributes['requirement_code'] = _model.get_value(
-            _row, self._lst_col_order[9])
-        _attributes['specification'] = _model.get_value(
-            _row, self._lst_col_order[10])
-        _attributes['requirement_type'] = _model.get_value(
-            _row, self._lst_col_order[11])
-        _attributes['validated'] = _model.get_value(_row,
-                                                    self._lst_col_order[12])
-        _attributes['validated_date'] = _model.get_value(
-            _row, self._lst_col_order[13])
-        _attributes['q_clarity_0'] = _model.get_value(_row,
-                                                      self._lst_col_order[14])
-        _attributes['q_clarity_1'] = _model.get_value(_row,
-                                                      self._lst_col_order[15])
-        _attributes['q_clarity_2'] = _model.get_value(_row,
-                                                      self._lst_col_order[16])
-        _attributes['q_clarity_3'] = _model.get_value(_row,
-                                                      self._lst_col_order[17])
-        _attributes['q_clarity_4'] = _model.get_value(_row,
-                                                      self._lst_col_order[18])
-        _attributes['q_clarity_5'] = _model.get_value(_row,
-                                                      self._lst_col_order[19])
-        _attributes['q_clarity_6'] = _model.get_value(_row,
-                                                      self._lst_col_order[20])
-        _attributes['q_clarity_7'] = _model.get_value(_row,
-                                                      self._lst_col_order[21])
-        _attributes['q_clarity_8'] = _model.get_value(_row,
-                                                      self._lst_col_order[22])
-        _attributes['q_complete_0'] = _model.get_value(_row,
-                                                       self._lst_col_order[23])
-        _attributes['q_complete_1'] = _model.get_value(_row,
-                                                       self._lst_col_order[24])
-        _attributes['q_complete_2'] = _model.get_value(_row,
-                                                       self._lst_col_order[25])
-        _attributes['q_complete_3'] = _model.get_value(_row,
-                                                       self._lst_col_order[26])
-        _attributes['q_complete_4'] = _model.get_value(_row,
-                                                       self._lst_col_order[27])
-        _attributes['q_complete_5'] = _model.get_value(_row,
-                                                       self._lst_col_order[28])
-        _attributes['q_complete_6'] = _model.get_value(_row,
-                                                       self._lst_col_order[29])
-        _attributes['q_complete_7'] = _model.get_value(_row,
-                                                       self._lst_col_order[30])
-        _attributes['q_complete_8'] = _model.get_value(_row,
-                                                       self._lst_col_order[31])
-        _attributes['q_complete_9'] = _model.get_value(_row,
-                                                       self._lst_col_order[32])
-        _attributes['q_consistent_0'] = _model.get_value(
-            _row, self._lst_col_order[33])
-        _attributes['q_consistent_1'] = _model.get_value(
-            _row, self._lst_col_order[34])
-        _attributes['q_consistent_2'] = _model.get_value(
-            _row, self._lst_col_order[35])
-        _attributes['q_consistent_3'] = _model.get_value(
-            _row, self._lst_col_order[36])
-        _attributes['q_consistent_4'] = _model.get_value(
-            _row, self._lst_col_order[37])
-        _attributes['q_consistent_5'] = _model.get_value(
-            _row, self._lst_col_order[38])
-        _attributes['q_consistent_6'] = _model.get_value(
-            _row, self._lst_col_order[39])
-        _attributes['q_consistent_7'] = _model.get_value(
-            _row, self._lst_col_order[40])
-        _attributes['q_consistent_8'] = _model.get_value(
-            _row, self._lst_col_order[41])
-        _attributes['q_verifiable_0'] = _model.get_value(
-            _row, self._lst_col_order[42])
-        _attributes['q_verifiable_1'] = _model.get_value(
-            _row, self._lst_col_order[43])
-        _attributes['q_verifiable_2'] = _model.get_value(
-            _row, self._lst_col_order[44])
-        _attributes['q_verifiable_3'] = _model.get_value(
-            _row, self._lst_col_order[45])
-        _attributes['q_verifiable_4'] = _model.get_value(
-            _row, self._lst_col_order[46])
-        _attributes['q_verifiable_5'] = _model.get_value(
-            _row, self._lst_col_order[47])
+        if _row is not None:
+            _attributes['revision_id'] = _model.get_value(
+                _row, self._lst_col_order[0])
+            _attributes['requirement_id'] = _model.get_value(
+                _row, self._lst_col_order[1])
+            _attributes['derived'] = _model.get_value(_row,
+                                                      self._lst_col_order[2])
+            _attributes['description'] = _model.get_value(
+                _row, self._lst_col_order[3])
+            _attributes['figure_number'] = _model.get_value(
+                _row, self._lst_col_order[4])
+            _attributes['owner'] = _model.get_value(_row,
+                                                    self._lst_col_order[5])
+            _attributes['page_number'] = _model.get_value(
+                _row, self._lst_col_order[6])
+            _attributes['parent_id'] = _model.get_value(
+                _row, self._lst_col_order[7])
+            _attributes['priority'] = _model.get_value(_row,
+                                                       self._lst_col_order[8])
+            _attributes['requirement_code'] = _model.get_value(
+                _row, self._lst_col_order[9])
+            _attributes['specification'] = _model.get_value(
+                _row, self._lst_col_order[10])
+            _attributes['requirement_type'] = _model.get_value(
+                _row, self._lst_col_order[11])
+            _attributes['validated'] = _model.get_value(
+                _row, self._lst_col_order[12])
+            _attributes['validated_date'] = _model.get_value(
+                _row, self._lst_col_order[13])
+            _attributes['q_clarity_0'] = _model.get_value(
+                _row, self._lst_col_order[14])
+            _attributes['q_clarity_1'] = _model.get_value(
+                _row, self._lst_col_order[15])
+            _attributes['q_clarity_2'] = _model.get_value(
+                _row, self._lst_col_order[16])
+            _attributes['q_clarity_3'] = _model.get_value(
+                _row, self._lst_col_order[17])
+            _attributes['q_clarity_4'] = _model.get_value(
+                _row, self._lst_col_order[18])
+            _attributes['q_clarity_5'] = _model.get_value(
+                _row, self._lst_col_order[19])
+            _attributes['q_clarity_6'] = _model.get_value(
+                _row, self._lst_col_order[20])
+            _attributes['q_clarity_7'] = _model.get_value(
+                _row, self._lst_col_order[21])
+            _attributes['q_clarity_8'] = _model.get_value(
+                _row, self._lst_col_order[22])
+            _attributes['q_complete_0'] = _model.get_value(
+                _row, self._lst_col_order[23])
+            _attributes['q_complete_1'] = _model.get_value(
+                _row, self._lst_col_order[24])
+            _attributes['q_complete_2'] = _model.get_value(
+                _row, self._lst_col_order[25])
+            _attributes['q_complete_3'] = _model.get_value(
+                _row, self._lst_col_order[26])
+            _attributes['q_complete_4'] = _model.get_value(
+                _row, self._lst_col_order[27])
+            _attributes['q_complete_5'] = _model.get_value(
+                _row, self._lst_col_order[28])
+            _attributes['q_complete_6'] = _model.get_value(
+                _row, self._lst_col_order[29])
+            _attributes['q_complete_7'] = _model.get_value(
+                _row, self._lst_col_order[30])
+            _attributes['q_complete_8'] = _model.get_value(
+                _row, self._lst_col_order[31])
+            _attributes['q_complete_9'] = _model.get_value(
+                _row, self._lst_col_order[32])
+            _attributes['q_consistent_0'] = _model.get_value(
+                _row, self._lst_col_order[33])
+            _attributes['q_consistent_1'] = _model.get_value(
+                _row, self._lst_col_order[34])
+            _attributes['q_consistent_2'] = _model.get_value(
+                _row, self._lst_col_order[35])
+            _attributes['q_consistent_3'] = _model.get_value(
+                _row, self._lst_col_order[36])
+            _attributes['q_consistent_4'] = _model.get_value(
+                _row, self._lst_col_order[37])
+            _attributes['q_consistent_5'] = _model.get_value(
+                _row, self._lst_col_order[38])
+            _attributes['q_consistent_6'] = _model.get_value(
+                _row, self._lst_col_order[39])
+            _attributes['q_consistent_7'] = _model.get_value(
+                _row, self._lst_col_order[40])
+            _attributes['q_consistent_8'] = _model.get_value(
+                _row, self._lst_col_order[41])
+            _attributes['q_verifiable_0'] = _model.get_value(
+                _row, self._lst_col_order[42])
+            _attributes['q_verifiable_1'] = _model.get_value(
+                _row, self._lst_col_order[43])
+            _attributes['q_verifiable_2'] = _model.get_value(
+                _row, self._lst_col_order[44])
+            _attributes['q_verifiable_3'] = _model.get_value(
+                _row, self._lst_col_order[45])
+            _attributes['q_verifiable_4'] = _model.get_value(
+                _row, self._lst_col_order[46])
+            _attributes['q_verifiable_5'] = _model.get_value(
+                _row, self._lst_col_order[47])
 
-        self._parent_id = _attributes['parent_id']
-        self._requirement_id = _attributes['requirement_id']
-        self._revision_id = _attributes['revision_id']
+            self._requirement_id = _attributes['requirement_id']
+
+            pub.sendMessage('selected_requirement', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selected_requirement', attributes=_attributes)
 
         return None

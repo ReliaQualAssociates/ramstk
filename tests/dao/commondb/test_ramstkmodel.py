@@ -15,9 +15,9 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'model_type': u'damage',
+    'model_type': 'damage',
     'model_id': 1,
-    'description': u'Adhesion Wear Model for Bearings'
+    'description': 'Adhesion Wear Model for Bearings'
 }
 
 

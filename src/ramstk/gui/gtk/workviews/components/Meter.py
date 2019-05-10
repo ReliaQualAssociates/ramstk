@@ -56,20 +56,20 @@ class MeterAssessmentInputs(AssessmentInputs):
     # Define private dict attributes.
     # Quality levels; key is the subcategory ID.
     _dic_quality = {
-        2: [["MIL-SPEC"], [_(u"Lower")]],
-        1: [["MIL-SPEC"], [_(u"Lower")]],
+        2: [["MIL-SPEC"], [_("Lower")]],
+        1: [["MIL-SPEC"], [_("Lower")]],
     }
     # Meter types; key is the subcategory ID.
     _dic_types = {
-        1: [[_(u"AC")], [_(u"Inverter Driver")], [_(u"Commutator DC")]],
-        2: [[_(u"Direct Current")], [_(u"Alternating Current")]]
+        1: [[_("AC")], [_("Inverter Driver")], [_("Commutator DC")]],
+        2: [[_("Direct Current")], [_("Alternating Current")]]
     }
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Meter Type:"),
-        _(u"Meter Function:")
+        _("Quality Level:"),
+        _("Meter Type:"),
+        _("Meter Function:")
     ]
 
     def __init__(self, **kwargs):
@@ -90,9 +90,9 @@ class MeterAssessmentInputs(AssessmentInputs):
         self.cmbApplication = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The appliction of the panel meter."))
+            tooltip=_("The appliction of the panel meter."))
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=False, tooltip=_(u"The type of meter."))
+            index=0, simple=True, tooltip=_("The type of meter."))
 
         self._make_page()
         self.show_all()
@@ -121,7 +121,7 @@ class MeterAssessmentInputs(AssessmentInputs):
         """
         # Load the quality level RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
-            _data = [["MIL-SPEC"], [_(u"Lower")]]
+            _data = [["MIL-SPEC"], [_("Lower")]]
         else:
             try:
                 _data = self._dic_quality[subcategory_id]
@@ -130,8 +130,8 @@ class MeterAssessmentInputs(AssessmentInputs):
         self.cmbQuality.do_load_combo(_data)
 
         # Load the meter appliction RAMSTKComboBox().
-        self.cmbApplication.do_load_combo([[_(u"Ammeter")], [_(u"Voltmeter")],
-                                           [_(u"Other")]])
+        self.cmbApplication.do_load_combo([[_("Ammeter")], [_("Voltmeter")],
+                                           [_("Other")]])
 
         # Load the meter type RAMSTKComboBox().
         try:
@@ -190,7 +190,7 @@ class MeterAssessmentInputs(AssessmentInputs):
 
     def _make_page(self):
         """
-        Make the Meter class gtk.Notebook() assessment input page.
+        Make the Meter class Gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -209,7 +209,7 @@ class MeterAssessmentInputs(AssessmentInputs):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
@@ -269,9 +269,9 @@ class MeterAssessmentResults(AssessmentResults):
     # Define private dict attributes.
     _dic_part_stress = {
         1:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>"
     }
 
     def __init__(self, **kwargs):
@@ -281,14 +281,14 @@ class MeterAssessmentResults(AssessmentResults):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_labels.append(u"\u03C0<sub>A</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>F</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>T</sub>:")
+        self._lst_labels.append("\u03C0<sub>A</sub>:")
+        self._lst_labels.append("\u03C0<sub>F</sub>:")
+        self._lst_labels.append("\u03C0<sub>T</sub>:")
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _(u"The assessment model used to calculate the meter failure "
-              u"rate."))
+            _("The assessment model used to calculate the meter failure "
+              "rate."))
 
         # Initialize public dictionary attributes.
 
@@ -299,17 +299,17 @@ class MeterAssessmentResults(AssessmentResults):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The application factor for the meter."))
+            tooltip=_("The application factor for the meter."))
         self.txtPiF = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The function factor for the meter."))
+            tooltip=_("The function factor for the meter."))
         self.txtPiT = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The temperature stress factor for the meter."))
+            tooltip=_("The temperature stress factor for the meter."))
 
         self._make_page()
         self.show_all()
@@ -366,7 +366,7 @@ class MeterAssessmentResults(AssessmentResults):
 
     def _make_page(self):
         """
-        Make the meter gtk.Notebook() assessment results page.
+        Make the meter Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None

@@ -18,9 +18,9 @@ __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'manufacturer_id': 1,
-    'cage_code': u'13606',
-    'description': u'Sprague',
-    'location': u'New Hampshire'
+    'cage_code': '13606',
+    'description': 'Sprague',
+    'location': 'New Hampshire'
 }
 
 
