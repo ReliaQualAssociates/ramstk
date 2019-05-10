@@ -208,7 +208,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
                 none_to_default(attributes['system_probability_f'], ''))
             self.system_hri_f = int(
                 none_to_default(attributes['system_hri_f'], 0))
-            self.remarks = str(none_to_default(attributes['remarks'], ''))
+            self.remarks = none_to_default(attributes['remarks'], '')
             self.function_1 = str(
                 none_to_default(attributes['function_1'], ''))
             self.function_2 = str(

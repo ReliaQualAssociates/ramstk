@@ -23,16 +23,16 @@ __copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 ATTRIBUTES = {
     'revision_id': 1,
     'hardware_id': 1,
-    'change_description_1': '',
-    'change_description_2': '',
-    'change_description_3': '',
-    'change_description_4': '',
-    'change_description_5': '',
-    'change_description_6': '',
-    'change_description_7': '',
-    'change_description_8': '',
-    'change_description_9': '',
-    'change_description_10': '',
+    'change_description_1': b'',
+    'change_description_2': b'',
+    'change_description_3': b'',
+    'change_description_4': b'',
+    'change_description_5': b'',
+    'change_description_6': b'',
+    'change_description_7': b'',
+    'change_description_8': b'',
+    'change_description_9': b'',
+    'change_description_10': b'',
     'change_factor_1': 1.0,
     'change_factor_2': 1.0,
     'change_factor_3': 1.0,
@@ -61,11 +61,11 @@ ATTRIBUTES = {
     'result_5': 0.0,
     'temperature_from': 30.0,
     'temperature_to': 30.0,
-    'user_blob_1': '',
-    'user_blob_2': '',
-    'user_blob_3': '',
-    'user_blob_4': '',
-    'user_blob_5': '',
+    'user_blob_1': b'',
+    'user_blob_2': b'',
+    'user_blob_3': b'',
+    'user_blob_4': b'',
+    'user_blob_5': b'',
     'user_float_1': 0.0,
     'user_float_2': 0.0,
     'user_float_3': 0.0,
@@ -109,7 +109,7 @@ def test_do_select(test_dao):
 
     assert isinstance(_similar_item, RAMSTKSimilarItem)
     assert _similar_item.hardware_id == 2
-    assert _similar_item.change_description_1 == ''
+    assert _similar_item.change_description_1 == b''
     assert _similar_item.parent_id == 1
 
 
@@ -269,17 +269,20 @@ def test_do_roll_up(test_dao):
 
     for _node in DUT.do_select_children(1):
         _attributes = _node.data.get_attributes()
-        _attributes['change_description_1'] = ('This is change description 1 '
-                                               'for Node ID: {0:d}').format(
-                                                   _attributes['hardware_id'])
+        _attributes['change_description_1'] = ((
+            'This is change description 1 '
+            'for Node ID: {0:d}').format(
+                _attributes['hardware_id'])).encode('utf-8')
         _node.data.set_attributes(_attributes)
+
     DUT.do_update_all()
+    DUT.do_select_all(revision_id=1)
 
     assert not DUT.do_roll_up(1)
     assert DUT.do_select(1).get_attributes()['change_description_1'] == (
-        'This is change description 1 for Node ID: 2\n\nThis is change '
-        'description 1 for Node ID: 3\n\nThis is change description 1 for '
-        'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n')
+        b'This is change description 1 for Node ID: 2\n\nThis is change '
+        b'description 1 for Node ID: 3\n\nThis is change description 1 for '
+        b'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n')
 
 
 @pytest.mark.integration
@@ -409,15 +412,18 @@ def test_request_do_roll_up(test_dao, test_configuration):
 
     for _node in DUT.request_do_select_children(1):
         _attributes = _node.data.get_attributes()
-        _attributes['change_description_1'] = ('This is change description 1 '
-                                               'for Node ID: {0:d}').format(
-                                                   _attributes['hardware_id'])
+        _attributes['change_description_1'] = ((
+            'This is change description 1 '
+            'for Node ID: {0:d}').format(
+                _attributes['hardware_id'])).encode('utf-8')
         _node.data.set_attributes(_attributes)
+
     DUT.request_do_update_all()
+    DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_roll_up(1)
-    assert DUT.request_do_select(
-        1).get_attributes()['change_description_1'] == (
-            'This is change description 1 for Node ID: 2\n\nThis is change '
-            'description 1 for Node ID: 3\n\nThis is change description 1 for '
-            'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n')
+    assert DUT.request_do_select(1).get_attributes(
+    )['change_description_1'] == (
+        b'This is change description 1 for Node ID: 2\n\nThis is change '
+        b'description 1 for Node ID: 3\n\nThis is change description 1 for '
+        b'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n')

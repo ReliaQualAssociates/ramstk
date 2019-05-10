@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.usage.test_profile.py is part of The RAMSTK Project
@@ -24,7 +24,7 @@ ATTRIBUTES = {
     'mission_id': 1,
     'revision_id': 1,
     'mission_time': 72.0,
-    'description': 'Test Mission',
+    'description': b'Test Mission',
     'time_units': 'minutes'
 }
 
@@ -75,7 +75,7 @@ def test_do_select(test_dao):
     _entity = DUT.do_select(1)
 
     assert isinstance(_entity, RAMSTKMission)
-    assert _entity.description == 'Test Mission'
+    assert _entity.description == b'Test Mission'
 
 
 @pytest.mark.integration

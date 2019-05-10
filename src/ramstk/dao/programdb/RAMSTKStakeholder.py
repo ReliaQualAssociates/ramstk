@@ -101,7 +101,12 @@ class RAMSTKStakeholder(RAMSTK_BASE):
         try:
             self.customer_rank = int(
                 none_to_default(float(attributes['customer_rank']), 1))
-            self.description = none_to_default(attributes['description'], b'')
+            try:
+                self.description = none_to_default(
+                    attributes['description'].encode('utf-8'), b'')
+            except AttributeError:
+                self.description = none_to_default(attributes['description'],
+                                                   b'')
             self.group = str(none_to_default(attributes['group'], ''))
             self.improvement = float(
                 none_to_default(attributes['improvement'], 0.0))
