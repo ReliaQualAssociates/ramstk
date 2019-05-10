@@ -52,11 +52,11 @@ class MiscAssessmentInputs(AssessmentInputs):
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Application:"),
-        _(u"Type:"),
-        _(u"Operating Frequency:"),
-        _(u"Utilization:")
+        _("Quality Level:"),
+        _("Application:"),
+        _("Type:"),
+        _("Operating Frequency:"),
+        _("Utilization:")
     ]
 
     def __init__(self, **kwargs):
@@ -75,16 +75,16 @@ class MiscAssessmentInputs(AssessmentInputs):
 
         # Initialize public scalar attributes.
         self.cmbApplication = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The application of the lamp."))
+            index=0, simple=True, tooltip=_("The application of the lamp."))
         self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_(u"The type of electronic filter."))
+            index=0, simple=True, tooltip=_("The type of electronic filter."))
 
         self.txtFrequency = ramstk.RAMSTKEntry(
-            width=125, tooltip=_(u"The operating frequency of the crystal."))
+            width=125, tooltip=_("The operating frequency of the crystal."))
         self.txtUtilization = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The utilization factor (illuminate hours / equipment "
-                      u"operate hours) of the lamp."))
+            tooltip=_("The utilization factor (illuminate hours / equipment "
+                      "operate hours) of the lamp."))
 
         self._make_page()
         self.show_all()
@@ -117,23 +117,23 @@ class MiscAssessmentInputs(AssessmentInputs):
         :rtype: None
         """
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_(u"Lower")]])
+        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]])
 
         # Load the application RAMSTKComboBox().
-        self.cmbApplication.do_load_combo([[_(u"Incandescent, AC")],
-                                           [_(u"Incandescent, DC")]])
+        self.cmbApplication.do_load_combo([[_("Incandescent, AC")],
+                                           [_("Incandescent, DC")]])
 
         # Load the type RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
             self.cmbType.do_load_combo(
-                [[_(u"Ceramic-Ferrite")], [_(u"Discrete LC Components")],
-                 [_(u"Discrete LC and Crystal Components")]])
+                [[_("Ceramic-Ferrite")], [_("Discrete LC Components")],
+                 [_("Discrete LC and Crystal Components")]])
         elif self._hazard_rate_method_id == 2:
             self.cmbType.do_load_combo(
-                [[_(u"MIL-F-15733 Ceramic-Ferrite")],
-                 [_(u"MIL-F-15733 Discrete LC Components")],
-                 [_(u"MIL-F-18327 Discrete LC Components")],
-                 [_(u"MIL-F-18327 Discrete LC and Crystal Components")]])
+                [[_("MIL-F-15733 Ceramic-Ferrite")],
+                 [_("MIL-F-15733 Discrete LC Components")],
+                 [_("MIL-F-18327 Discrete LC Components")],
+                 [_("MIL-F-18327 Discrete LC and Crystal Components")]])
 
         return None
 
@@ -214,7 +214,7 @@ class MiscAssessmentInputs(AssessmentInputs):
 
     def _make_page(self):
         """
-        Make the Misc hardware class gtk.Notebook() assessment input page.
+        Make the Misc hardware class Gtk.Notebook() assessment input page.
 
         :return: None
         :rtype: None
@@ -235,7 +235,7 @@ class MiscAssessmentInputs(AssessmentInputs):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
@@ -290,9 +290,9 @@ class MiscAssessmentInputs(AssessmentInputs):
         :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +---------+---------------------+
             |  Index  | Widget              |
@@ -348,13 +348,13 @@ class MiscAssessmentResults(AssessmentResults):
     # Define private dict attributes.
     _dic_part_stress = {
         1:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         3:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub></span>",
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub></span>",
         4:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>U</sub>\u03C0<sub>A</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>U</sub>\u03C0<sub>A</sub>\u03C0<sub>E</sub></span>"
     }
 
     def __init__(self, **kwargs):
@@ -364,13 +364,13 @@ class MiscAssessmentResults(AssessmentResults):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_labels.append(u"\u03C0<sub>U</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>A</sub>:")
+        self._lst_labels.append("\u03C0<sub>U</sub>:")
+        self._lst_labels.append("\u03C0<sub>A</sub>:")
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _(u"The assessment model used to calculate the hardware item "
-              u"failure rate."))
+            _("The assessment model used to calculate the hardware item "
+              "failure rate."))
 
         # Initialize public dictionary attributes.
 
@@ -381,12 +381,12 @@ class MiscAssessmentResults(AssessmentResults):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The utilization factor for the lamp."))
+            tooltip=_("The utilization factor for the lamp."))
         self.txtPiA = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The application factor for the lamp."))
+            tooltip=_("The application factor for the lamp."))
 
         self._make_page()
         self.show_all()
@@ -415,8 +415,8 @@ class MiscAssessmentResults(AssessmentResults):
         if (self._hazard_rate_method_id == 1
                 and self._subcategory_id in [3, 4]):
             self._lblModel.set_markup(
-                u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
-                u"\u03BB<sub>g</sub></span>")
+                "<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
+                "\u03BB<sub>g</sub></span>")
 
         self._do_set_sensitive()
 
@@ -451,7 +451,7 @@ class MiscAssessmentResults(AssessmentResults):
 
     def _make_page(self):
         """
-        Make the Misc hardware item gtk.Notebook() assessment results page.
+        Make the Misc hardware item Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None

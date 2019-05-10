@@ -18,7 +18,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKProgramStatus(RAMSTK_BASE):
     """
-    Class to represent the table ramstk_validation in the RAMSTK Program database.
+    Class to represent table ramstk_validation in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """

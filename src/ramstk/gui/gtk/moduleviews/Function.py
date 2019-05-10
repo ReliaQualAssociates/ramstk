@@ -11,7 +11,7 @@ from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .ModuleView import RAMSTKModuleView
 
 
@@ -39,14 +39,14 @@ class ModuleView(RAMSTKModuleView):
         RAMSTKModuleView.__init__(self, controller, module='function')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = \
+            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/function.png'
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self._function_id = None
-        self._parent_id = None
 
         # Initialize public dictionary attributes.
 
@@ -54,21 +54,7 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.make_treeview(editable=[5, 15, 17, 18])
-        self.treeview.set_tooltip_text(_(u"Displays the list of functions."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-        self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = ramstk.RAMSTKLabel(
-            _(u"Functions"),
-            width=-1,
-            height=-1,
-            tooltip=_(u"Displays the program functions."))
-
-        self.hbx_tab_label.pack_end(_label)
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_tree, 'deleted_function')
@@ -76,23 +62,47 @@ class ModuleView(RAMSTKModuleView):
         pub.subscribe(self.do_load_tree, 'retrieved_functions')
         pub.subscribe(self.do_refresh_tree, 'wvw_editing_function')
 
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKModuleView._make_ui(self)
+
+        self.make_treeview(editable=[5, 15, 17, 18])
+        self.treeview.set_tooltip_text(_("Displays the list of functions."))
+
+        _label = ramstk.RAMSTKLabel(
+            _("Functions"),
+            width=-1,
+            height=-1,
+            tooltip=_("Displays the list of functions."))
+
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
+
+        self.show_all()
+
+        return None
+
     def _do_request_delete(self, __button):
         """
         Request to delete the selected Function and it's children.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        _prompt = _(u"You are about to delete Function {0:d} and all "
-                    u"data associated with it.  Is this really what "
-                    u"you want to do?").format(self._function_id)
+        _prompt = _("You are about to delete Function {0:d} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._function_id)
         _dialog = ramstk.RAMSTKMessageDialog(
             _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
-        if _response == gtk.RESPONSE_YES:
+        if _response == Gtk.ResponseType.YES:
             pub.sendMessage(
                 'request_delete_function', node_id=self._function_id)
 
@@ -104,8 +114,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Launch the Export assistant.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -139,14 +149,14 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to save the currently selected Function.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_function', node_id=self._function_id)
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
@@ -154,33 +164,33 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to save all the Functions.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
-        self.do_set_cursor(gtk.gdk.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_functions')
-        self.do_set_cursor(gtk.gdk.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Function class Module View.
+        Make the Gtk.ButtonBox() for the Function class Module View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Function class Module
+        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Module
                  View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Adds a new Function at the same hierarchy level as "
-              u"the selected Function (i.e., a sibling Function)."),
-            _(u"Adds a new Function one level subordinate to the "
-              u"selected Function (i.e., a child function)."),
-            _(u"Remove the currently selected Function."),
-            _(u"Exports Functions to an external file (CSV, Excel, and "
-              u"text files are supported).")
+            _("Adds a new Function at the same hierarchy level as "
+              "the selected Function (i.e., a sibling Function)."),
+            _("Adds a new Function one level subordinate to the "
+              "selected Function (i.e., a child function)."),
+            _("Remove the currently selected Function."),
+            _("Exports Functions to an external file (CSV, Excel, and "
+              "text files are supported).")
         ]
         _callbacks = [
             self.do_request_insert_sibling, self.do_request_insert_child,
@@ -205,7 +215,7 @@ class ModuleView(RAMSTKModuleView):
 
         :param treeview: the Function Module View RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was
                       clicked).
 
@@ -217,7 +227,7 @@ class ModuleView(RAMSTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :class:`gtk.gdk.Event`
+        :type event: :class:`Gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -233,11 +243,11 @@ class ModuleView(RAMSTKModuleView):
                 'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
             ]
             _labels = [
-                _(u"Add Sibling Function"),
-                _(u"Add Child Function"),
-                _(u"Remove the Selected Function"),
-                _(u"Save Selected Function"),
-                _(u"Save All Functions")
+                _("Add Sibling Function"),
+                _("Add Child Function"),
+                _("Remove the Selected Function"),
+                _("Save Selected Function"),
+                _("Save All Functions")
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_insert_child,
@@ -259,17 +269,17 @@ class ModuleView(RAMSTKModuleView):
         """
         Handle edits of Function package Module View RAMSTKTreeview().
 
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :class:`gtk.CellRenderer`
-        :param str path: the gtk.TreeView() path of the
-                         gtk.CellRenderer() that was edited.
+        :param __cell: the Gtk.CellRenderer() that was edited.
+        :type __cell: :class:`Gtk.CellRenderer`
+        :param str path: the Gtk.TreeView() path of the
+                         Gtk.CellRenderer() that was edited.
         :param str new_text: the new text in the edited
-                             gtk.CellRenderer().
+                             Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs
+                             Gtk.CellRenderer().
+        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs
                       to.
-        :type model: :class:`gtk.TreeStore`
+        :type model: :class:`Gtk.TreeStore`
         :return: None
         :rtype: None
         """
@@ -313,50 +323,52 @@ class ModuleView(RAMSTKModuleView):
 
         (_model, _row) = treeview.get_selection().get_selected()
 
-        _attributes['revision_id'] = _model.get_value(_row,
-                                                      self._lst_col_order[0])
-        _attributes['function_id'] = _model.get_value(_row,
-                                                      self._lst_col_order[1])
-        _attributes['availability_logistics'] = _model.get_value(
-            _row, self._lst_col_order[2])
-        _attributes['availability_mission'] = _model.get_value(
-            _row, self._lst_col_order[3])
-        _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
-        _attributes['function_code'] = _model.get_value(
-            _row, self._lst_col_order[5])
-        _attributes['hazard_rate_logistics'] = _model.get_value(
-            _row, self._lst_col_order[6])
-        _attributes['hazard_rate_mission'] = _model.get_value(
-            _row, self._lst_col_order[7])
-        _attributes['level'] = _model.get_value(_row, self._lst_col_order[8])
-        _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
-        _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[10])
-        _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[11])
-        _attributes['mtbf_logistics'] = _model.get_value(
-            _row, self._lst_col_order[12])
-        _attributes['mtbf_mission'] = _model.get_value(_row,
-                                                       self._lst_col_order[13])
-        _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
-        _attributes['name'] = _model.get_value(_row, self._lst_col_order[15])
-        _attributes['parent_id'] = _model.get_value(_row,
-                                                    self._lst_col_order[16])
-        _attributes['remarks'] = _model.get_value(_row,
-                                                  self._lst_col_order[17])
-        _attributes['safety_critical'] = _model.get_value(
-            _row, self._lst_col_order[18])
-        _attributes['total_mode_count'] = _model.get_value(
-            _row, self._lst_col_order[19])
-        _attributes['total_part_count'] = _model.get_value(
-            _row, self._lst_col_order[20])
-        _attributes['type_id'] = _model.get_value(_row,
-                                                  self._lst_col_order[21])
+        if _row is not None:
+            _attributes['revision_id'] = _model.get_value(_row,
+                                                          self._lst_col_order[0])
+            _attributes['function_id'] = _model.get_value(_row,
+                                                          self._lst_col_order[1])
+            _attributes['availability_logistics'] = _model.get_value(
+                _row, self._lst_col_order[2])
+            _attributes['availability_mission'] = _model.get_value(
+                _row, self._lst_col_order[3])
+            _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
+            _attributes['function_code'] = _model.get_value(
+                _row, self._lst_col_order[5])
+            _attributes['hazard_rate_logistics'] = _model.get_value(
+                _row, self._lst_col_order[6])
+            _attributes['hazard_rate_mission'] = _model.get_value(
+                _row, self._lst_col_order[7])
+            _attributes['level'] = _model.get_value(_row, self._lst_col_order[8])
+            _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
+            _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[10])
+            _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[11])
+            _attributes['mtbf_logistics'] = _model.get_value(
+                _row, self._lst_col_order[12])
+            _attributes['mtbf_mission'] = _model.get_value(_row,
+                                                           self._lst_col_order[13])
+            _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
+            _attributes['name'] = _model.get_value(_row, self._lst_col_order[15])
+            _attributes['parent_id'] = _model.get_value(_row,
+                                                        self._lst_col_order[16])
+            _attributes['remarks'] = _model.get_value(_row,
+                                                      self._lst_col_order[17])
+            _attributes['safety_critical'] = _model.get_value(
+                _row, self._lst_col_order[18])
+            _attributes['total_mode_count'] = _model.get_value(
+                _row, self._lst_col_order[19])
+            _attributes['total_part_count'] = _model.get_value(
+                _row, self._lst_col_order[20])
+            _attributes['type_id'] = _model.get_value(_row,
+                                                      self._lst_col_order[21])
 
-        self._function_id = _attributes['function_id']
-        self._parent_id = _attributes['parent_id']
-        self._revision_id = _attributes['revision_id']
+            # pylint: disable=attribute-defined-outside-init
+            self._function_id = _attributes['function_id']
+            self._parent_id = _attributes['parent_id']
+            self._revision_id = _attributes['revision_id']
+
+            pub.sendMessage('selected_function', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selected_function', attributes=_attributes)
 
         return None

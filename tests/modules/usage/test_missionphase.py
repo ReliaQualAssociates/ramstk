@@ -64,7 +64,7 @@ def test_do_select(test_dao):
 
     assert isinstance(_phase, RAMSTKMissionPhase)
     assert _phase.phase_id == 1
-    assert _phase.description == 'Test Mission Phase 1'
+    assert _phase.description == b'Test Mission Phase 1'
 
 
 @pytest.mark.integration
@@ -85,8 +85,9 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(mission_id=1)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
+        'database.')
     assert DUT.last_id == 2
 
 
@@ -123,7 +124,7 @@ def test_do_update(test_dao):
     DUT.do_select_all(mission_id=1)
 
     _phase = DUT.do_select(1)
-    _phase.description = 'Test Mission Phase 1'
+    _phase.description = b'Test Mission Phase 1'
 
     _error_code, _msg = DUT.do_update(1)
 
@@ -140,8 +141,9 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Mission Phase '
-                    'ID 100.')
+    assert _msg == (
+        'RAMSTK ERROR: Attempted to save non-existent Mission Phase '
+        'ID 100.')
 
 
 @pytest.mark.integration
@@ -153,5 +155,6 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the usage profile "
-                    "mission phase table.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the usage profile "
+        "mission phase table.")

@@ -69,50 +69,50 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
     # Define private dict attributes.
     _dic_quality = {
-        1: [["MIL-SPEC"], [_(u"Lower")]],
-        2: [["M"], [_(u"Non-Established Reliability")], [_(u"Lower")]],
+        1: [["MIL-SPEC"], [_("Lower")]],
+        2: [["M"], [_("Non-Established Reliability")], [_("Lower")]],
         3: [
             "S", "R", "P", "M", "L",
-            [_(u"MIL-C-19978 Non-Established Reliability")], [_(u"Lower")]
+            [_("MIL-C-19978 Non-Established Reliability")], [_("Lower")]
         ],
         4: [
             "S", "R", "P", "M", "L",
-            [_(u"MIL-C-18312 Non-Established Reliability")], [_(u"Lower")]
+            [_("MIL-C-18312 Non-Established Reliability")], [_("Lower")]
         ],
-        5: ["S", "R", "P", "M", [_(u"Lower")]],
-        6: ["S", "R", "P", "M", [_(u"Lower")]],
+        5: ["S", "R", "P", "M", [_("Lower")]],
+        6: ["S", "R", "P", "M", [_("Lower")]],
         7: [
             "T", "S", "R", "P", "M", "L",
-            [_(u"MIL-C-5 Non-Established Reliability, Dipped")],
-            [_(u"MIL-C-5 Non-Established Reliability, Molded")], [_(u"Lower")]
+            [_("MIL-C-5 Non-Established Reliability, Dipped")],
+            [_("MIL-C-5 Non-Established Reliability, Molded")], [_("Lower")]
         ],
-        8: [["MIL-C-10950"], [_(u"Lower")]],
+        8: [["MIL-C-10950"], [_("Lower")]],
         9: [
             "S", "R", "P", "M", "L",
-            [_(u"MIL-C-11272 Non-Established Reliability")], [_(u"Lower")]
+            [_("MIL-C-11272 Non-Established Reliability")], [_("Lower")]
         ],
         10: [
             "S", "R", "P", "M", "L",
-            [_(u"MIL-C-11015 Non-Established Reliability")], [_(u"Lower")]
+            [_("MIL-C-11015 Non-Established Reliability")], [_("Lower")]
         ],
         11: [
-            "S", "R", "P", "M", [_(u"Non-Established Reliability")],
-            [_(u"Lower")]
+            "S", "R", "P", "M", [_("Non-Established Reliability")],
+            [_("Lower")]
         ],
-        12: ["D", "C", "S", "B", "R", "P", "M", "L", [_(u"Lower")]],
+        12: ["D", "C", "S", "B", "R", "P", "M", "L", [_("Lower")]],
         13: [
             "S", "R", "P", "M", "L",
-            [_(u"MIL-C-3965 Non-Established Reliability")], [_(u"Lower")]
+            [_("MIL-C-3965 Non-Established Reliability")], [_("Lower")]
         ],
         14: [
-            "S", "R", "P", "M", [_(u"Non-Established Reliability")],
-            [_(u"Lower")]
+            "S", "R", "P", "M", [_("Non-Established Reliability")],
+            [_("Lower")]
         ],
-        15: [["MIL-SPEC"], [_(u"Lower")]],
-        16: [["MIL-SPEC"], [_(u"Lower")]],
-        17: [["MIL-SPEC"], [_(u"Lower")]],
-        18: [["MIL-SPEC"], [_(u"Lower")]],
-        19: [["MIL-SPEC"], [_(u"Lower")]]
+        15: [["MIL-SPEC"], [_("Lower")]],
+        16: [["MIL-SPEC"], [_("Lower")]],
+        17: [["MIL-SPEC"], [_("Lower")]],
+        18: [["MIL-SPEC"], [_("Lower")]],
+        19: [["MIL-SPEC"], [_("Lower")]]
     }
 
     _dic_specifications = {
@@ -143,32 +143,32 @@ class CapacitorAssessmentInputs(AssessmentInputs):
              ["CP40"], ["CP41"], ["CP67"], ["CP69"], ["CP70"], ["CP72"],
              ["CP75"], ["CP76"], ["CP77"], ["CP78"], ["CP80"], ["CP81"],
              ["CP82"]], [["CA"]]],
-        2: [[_(u"Characteristic E")], [_(u"Characteristic K")],
-            [_(u"Characteristic P")], [_(u"Characteristic W")]],
+        2: [[_("Characteristic E")], [_("Characteristic K")],
+            [_("Characteristic P")], [_("Characteristic W")]],
         3: [[["CPV07"], ["CPV09"], ["CPV17"]],
-            [[_(u"Characteristic E")], [_(u"Characteristic F")],
-             [_(u"Characteristic G")], [_(u"Characteristic K")],
-             [_(u"Characteristic L")], [_(u"Characteristic M")],
-             [_(u"Characteristic P")], [_(u"Characteristic Q")],
-             [_(u"Characteristic S")], [_(u"Characteristic T")]]],
-        4: [[[_(u"Characteristic N")], [_(u"Characteristic R")]],
-            [[_(u"Characteristic 1")], [_(u"Characteristic 9")],
-             [_(u"Characteristic 10")], [_(u"Characteristic 12")],
-             [_(u"Characteristic 19")], [_(u"Characteristic 29")],
-             [_(u"Characteristic 49")], [_(u"Characteristic 59")]]],
-        5: [[_(u"Characteristic M")], [_(u"Characteristic N")],
-            [_(u"Characteristic Q")], [_(u"Characteristic R")],
-            [_(u"Characteristic S")]],
+            [[_("Characteristic E")], [_("Characteristic F")],
+             [_("Characteristic G")], [_("Characteristic K")],
+             [_("Characteristic L")], [_("Characteristic M")],
+             [_("Characteristic P")], [_("Characteristic Q")],
+             [_("Characteristic S")], [_("Characteristic T")]]],
+        4: [[[_("Characteristic N")], [_("Characteristic R")]],
+            [[_("Characteristic 1")], [_("Characteristic 9")],
+             [_("Characteristic 10")], [_("Characteristic 12")],
+             [_("Characteristic 19")], [_("Characteristic 29")],
+             [_("Characteristic 49")], [_("Characteristic 59")]]],
+        5: [[_("Characteristic M")], [_("Characteristic N")],
+            [_("Characteristic Q")], [_("Characteristic R")],
+            [_("Characteristic S")]],
         6: [["CRH"]],
-        7: [[[_(u"Temperature Range M")], [_(u"Temperature Range N")],
-             [_(u"Temperature Range O")], [_(u"Temperature Range P")]],
-            [[_(u"Temperature Range O")], [_(u"Temperature Range P")]]],
-        8: [["CB50"], [_(u"Other")]],
-        9: [[[_(u"Temperature Range C")], [_(u"Temperature Range D")]],
-            [[_(u"All")]]],
+        7: [[[_("Temperature Range M")], [_("Temperature Range N")],
+             [_("Temperature Range O")], [_("Temperature Range P")]],
+            [[_("Temperature Range O")], [_("Temperature Range P")]]],
+        8: [["CB50"], [_("Other")]],
+        9: [[[_("Temperature Range C")], [_("Temperature Range D")]],
+            [[_("All")]]],
         10:
-        [[[_(u"Type A Rated Temperature")], [_(u"Type B Rated Temperature")],
-          [_(u"Type C Rated Temperature")]],
+        [[[_("Type A Rated Temperature")], [_("Type B Rated Temperature")],
+          [_("Type C Rated Temperature")]],
          [["CKR05"], ["CKR06"], ["CKR07"], ["CKR08"], ["CKR09"], ["CKR10"],
           ["CKR11"], ["CKR12"], ["CKR13"], ["CKR14"], ["CKR15"], ["CKR16"],
           ["CKR17"], ["CKR18"], ["CKR19"], ["CKR48"], ["CKR64"], ["CKR72"],
@@ -194,13 +194,13 @@ class CapacitorAssessmentInputs(AssessmentInputs):
               ["CL48"], ["CL49"], ["CL50"], ["CL51"], ["CL52"], ["CL53"],
               ["CL54"], ["CL55"], ["CL56"], ["CL64"], ["CL65"], ["CL66"],
               ["CL67"], ["CL70"], ["CL71"], ["CL72"], ["CL73"]], [["CLR"]]],
-        14: [[_(u"Style 16")], [_(u"Style 17")], [_(u"Style 71")],
-             [_(u"All Others")]],
+        14: [[_("Style 16")], [_("Style 17")], [_("Style 71")],
+             [_("All Others")]],
         15: [["CE"]],
         16: [["CV11"], ["CV14"], ["CV21"], ["CV31"], ["CV32"], ["CV34"],
              ["CV35"], ["CV36"], ["CV40"], ["CV41"]],
-        17: [[_(u"Style G")], [_(u"Style H")], [_(u"Style J")],
-             [_(u"Style L")], [_(u"Style Q")], [_(u"Style T")]],
+        17: [[_("Style G")], [_("Style H")], [_("Style J")],
+             [_("Style L")], [_("Style Q")], [_("Style T")]],
         18: [["CT"]],
         19: [["CG20"], ["CG21"], ["CG30"], ["CG31"], ["CG32"], ["CG40"],
              ["CG41"], ["CG42"], ["CG43"], ["CG44"], ["CG50"], ["CG51"],
@@ -210,13 +210,13 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Capacitance (F):"),
-        _(u"Specification:"),
-        _(u"Style:"),
-        _(u"Configuration:"),
-        _(u"Construction:"),
-        _(u"Equivalent Series Resistance (\u03A9):")
+        _("Quality Level:"),
+        _("Capacitance (F):"),
+        _("Specification:"),
+        _("Style:"),
+        _("Configuration:"),
+        _("Construction:"),
+        _("Equivalent Series Resistance (\u03A9):")
     ]
 
     def __init__(self, **kwargs):
@@ -237,24 +237,24 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         self.cmbSpecification = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The governing specification for the capacitor."))
+            tooltip=_("The governing specification for the capacitor."))
         self.cmbStyle = ramstk.RAMSTKComboBox(
-            index=0, simple=False, tooltip=_(u"The style of the capacitor."))
+            index=0, simple=True, tooltip=_("The style of the capacitor."))
         self.cmbConfiguration = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The configuration of the capacitor."))
+            tooltip=_("The configuration of the capacitor."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The method of construction of the capacitor."))
+            tooltip=_("The method of construction of the capacitor."))
 
         self.txtCapacitance = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The capacitance rating (in farads) of the capacitor."))
+            tooltip=_("The capacitance rating (in farads) of the capacitor."))
         self.txtESR = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The equivalent series resistance of the capacitor."))
+            tooltip=_("The equivalent series resistance of the capacitor."))
 
         self._make_page()
         self.show_all()
@@ -289,7 +289,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         :rtype: None
         """
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
-            _data = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_(u"Lower")]]
+            _data = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
         else:
             try:
                 _data = self._dic_quality[subcategory_id]
@@ -303,13 +303,13 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbSpecification.do_load_combo(_data)
 
-        self.cmbConstruction.do_load_combo([[_(u"Slug, All Tantalum")],
-                                            [_(u"Foil, Hermetic")],
-                                            [_(u"Slug, Hermetic")],
-                                            [_(u"Foil, Non-Hermetic")],
-                                            [_(u"Slug, Non-Hermetic")]])
+        self.cmbConstruction.do_load_combo([[_("Slug, All Tantalum")],
+                                            [_("Foil, Hermetic")],
+                                            [_("Slug, Hermetic")],
+                                            [_("Foil, Non-Hermetic")],
+                                            [_("Slug, Non-Hermetic")]])
 
-        self.cmbConfiguration.do_load_combo([[_(u"Fixed")], [_(u"Variable")]])
+        self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]])
 
         _model = self.cmbStyle.get_model()
         _model.clear()
@@ -409,7 +409,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
     def _make_page(self):
         """
-        Make the Capacitor class gtk.Notebook() assessment input page.
+        Make the Capacitor class Gtk.Notebook() assessment input page.
 
         :return: None
         :rtype: None
@@ -432,7 +432,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
@@ -509,9 +509,9 @@ class CapacitorAssessmentInputs(AssessmentInputs):
                       method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +---------+---------------------+---------+---------------------+
             |  Index  | Widget              |  Index  | Widget              |
@@ -571,54 +571,54 @@ class CapacitorAssessmentResults(AssessmentResults):
         # Initialize private dictionary attributes.
         self._dic_part_stress = {
             1:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             2:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             3:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             4:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             5:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             6:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             7:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             8:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             9:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             10:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             11:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             12:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>SR</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>SR</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             13:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             14:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             15:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             16:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             17:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             18:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             19:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CF</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CF</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         }
 
         # Initialize private list attributes.
-        self._lst_labels.append(u"\u03C0<sub>CV</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>CF</sub>:")
-        self._lst_labels.append(u"\u03C0<sub>C</sub>:")
+        self._lst_labels.append("\u03C0<sub>CV</sub>:")
+        self._lst_labels.append("\u03C0<sub>CF</sub>:")
+        self._lst_labels.append("\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _(u"The assessment model used to calculate the capacitor failure "
-              u"rate."))
+            _("The assessment model used to calculate the capacitor failure "
+              "rate."))
 
         # Initialize public dictionary attributes.
 
@@ -629,17 +629,17 @@ class CapacitorAssessmentResults(AssessmentResults):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The capacitance factor for the capacitor."))
+            tooltip=_("The capacitance factor for the capacitor."))
         self.txtPiCF = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The configuration factor for the capacitor."))
+            tooltip=_("The configuration factor for the capacitor."))
         self.txtPiC = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The construction factor for the capacitor."))
+            tooltip=_("The construction factor for the capacitor."))
 
         self._make_page()
         self.show_all()
@@ -694,7 +694,7 @@ class CapacitorAssessmentResults(AssessmentResults):
 
     def _make_page(self):
         """
-        Make the capacitor gtk.Notebook() assessment results page.
+        Make the capacitor Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None

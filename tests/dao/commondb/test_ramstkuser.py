@@ -18,7 +18,7 @@ ATTRIBUTES = {
     'user_id': 1,
     'user_lname': 'Tester',
     'user_fname': 'Johnny',
-    'user_email': u'tester.johnny@reliaqual.com',
+    'user_email': 'tester.johnny@reliaqual.com',
     'user_phone': '+1.269.867.5309',
     'user_group_id': '1'
 }

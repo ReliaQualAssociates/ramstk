@@ -4,10 +4,10 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Open Project Assistant Module."""
+"""The RAMSTK Open Project Assistant Module."""
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk.Widget import _, gtk, set_cursor
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk, set_cursor
 from ramstk.gui.gtk import ramstk
 
 __author__ = 'Doyle Rowland'
@@ -17,20 +17,17 @@ __copyright__ = 'Copyright 2007 - 2018 Doyle "weibullguy" Rowland'
 
 
 class OpenProject(object):
-    """
-    This is the gtk.Assistant() that guides the user through the process of
-    creating a new RAMSTK Project database.
-    """
+    """Assistant to guide user through process of creating RAMSTK Project."""
 
     def __init__(self, __button, controller):
         """
-        Method to initialize an instance of the Create Project Assistant.
+        Initialize an instance of the Create Project Assistant.
 
-        :param gtk.ToolButton __button: the gtk.ToolButton() that launched this
+        :param Gtk.ToolButton __button: the Gtk.ToolButton() that launched this
                                         class.
-        :param controller: the :class:`ramstk.RAMSTK.RAMSTK` master data controller.
+        :param controller: the :class:`ramstk.RAMSTK.RAMSTK` master data
+                           controller.
         """
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -44,11 +41,11 @@ class OpenProject(object):
 
         # Initialize public scalar attributes.
 
-        set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
+        set_cursor(self._mdcRAMSTK, Gdk.CursorType.WATCH)
 
         self._do_request_open_project()
 
-        set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
+        set_cursor(self._mdcRAMSTK, Gdk.CursorType.LEFT_PTR)
 
     def _do_request_open_project(self):
         """
@@ -58,36 +55,36 @@ class OpenProject(object):
         :rtype: None
         """
         if self._mdcRAMSTK.loaded:
-            _prompt = _(u"A database is already open.  Only one database can "
-                        u"be open at a time in RAMSTK.  You must close the "
-                        u"currently open RAMSTK database before a new "
-                        u"database can be opened.")
+            _prompt = _("A database is already open.  Only one database can "
+                        "be open at a time in RAMSTK.  You must close the "
+                        "currently open RAMSTK database before a new "
+                        "database can be opened.")
             _icon = (self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
                      '/32x32/information.png')
             _dialog = ramstk.RAMSTKMessageDialog(_prompt, _icon, 'information')
-            if _dialog.run() == gtk.RESPONSE_OK:
+            if _dialog.run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
 
         else:
-            _dialog = gtk.FileChooserDialog(
-                title=_(u"RAMSTK - Open Program"),
-                buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
-                         gtk.RESPONSE_REJECT))
+            _dialog = Gtk.FileChooserDialog(
+                title=_("RAMSTK - Open Program"),
+                buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+                         Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
             _dialog.set_current_folder(
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 
             # Set some filters to select all files or only some text files.
-            _filter = gtk.FileFilter()
-            _filter.set_name(_(u"RAMSTK Program Databases"))
+            _filter = Gtk.FileFilter()
+            _filter.set_name(_("RAMSTK Program Databases"))
             _filter.add_pattern("*.rtk")
             _dialog.add_filter(_filter)
 
-            _filter = gtk.FileFilter()
-            _filter.set_name(_(u"All files"))
+            _filter = Gtk.FileFilter()
+            _filter.set_name(_("All files"))
             _filter.add_pattern("*")
             _dialog.add_filter(_filter)
 
-            if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            if _dialog.run() == Gtk.ResponseType.ACCEPT:
                 self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'] = \
                     _dialog.get_filename()
 

@@ -16,7 +16,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKRevision(RAMSTK_BASE):
     """
-    Class to represent the ramstk_revision table in the RAMSTK Program database.
+    Class to represent ramstk_revision table in the RAMSTK Program database.
 
     This table shares a:
         * One-to-Many relationship with ramstk_mission.
@@ -73,7 +73,7 @@ class RAMSTKRevision(RAMSTK_BASE):
         'fld_reliability_logistics', Float, nullable=False, default=1.0)
     reliability_mission = Column(
         'fld_reliability_mission', Float, nullable=False, default=1.0)
-    remarks = Column('fld_remarks', BLOB, nullable=False, default='')
+    remarks = Column('fld_remarks', BLOB, nullable=False, default=b'')
     total_part_count = Column(
         'fld_total_part_count', Integer, nullable=False, default=1)
     revision_code = Column(
@@ -197,7 +197,7 @@ class RAMSTKRevision(RAMSTK_BASE):
                 none_to_default(attributes['reliability_logistics'], 1.0))
             self.reliability_mission = float(
                 none_to_default(attributes['reliability_mission'], 1.0))
-            self.remarks = str(none_to_default(attributes['remarks'], ''))
+            self.remarks = none_to_default(attributes['remarks'], b'')
             self.total_part_count = int(
                 none_to_default(attributes['n_parts'], 0))
             self.revision_code = str(

@@ -147,7 +147,10 @@ class StakeholderDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
+            try:
+                self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
+            except TypeError:
+                self.last_id = _stakeholder.stakeholder_id
 
             # If we're not running a test, let anyone who cares know a new
             # Function was inserted.
@@ -180,7 +183,10 @@ class StakeholderDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
+            try:
+                self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
+            except TypeError:
+                self.last_id = _stakeholder.stakeholder_id
 
         _session.close()
 

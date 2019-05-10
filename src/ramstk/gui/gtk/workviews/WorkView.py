@@ -1,20 +1,21 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.workviews.WorkView.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKWorkView Meta-Class Module."""
+"""The RAMSTKWorkView Meta-Class Module."""
 
 # Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, GObject, Gtk
 from ramstk.gui.gtk import ramstk
 
 
-class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
+class RAMSTKWorkView(Gtk.HBox, ramstk.RAMSTKBaseView):
     """
     Class to display data in the RAMSTK Work Book.
 
@@ -79,7 +80,7 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         """
         _module = kwargs['module']
-        gtk.HBox.__init__(self)
+        GObject.GObject.__init__(self)
         ramstk.RAMSTKBaseView.__init__(self, controller, module=_module)
 
         self._module = None
@@ -91,9 +92,9 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
 
         # Initialize private list attributes.
         self._lst_gendata_labels = [
-            _(u"{0:s} Code:").format(self._module),
-            _(u"{0:s} Name:").format(self._module),
-            _(u"Remarks:")
+            _("{0:s} Code:").format(self._module),
+            _("{0:s} Name:").format(self._module),
+            _("Remarks:")
         ]
         """
         There are three labels that will appear on all General Data pages.
@@ -109,27 +110,27 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         """
         self._lst_assess_labels = [
             [
-                _(u"Active Failure Intensity [\u039B(t)]:"),
-                _(u"Dormant \u039B(t):"),
-                _(u"Software \u039B(t):"),
-                _(u"Predicted h(t):"),
-                _(u"Mission h(t):"),
-                _(u"MTBF:"),
-                _(u"Mission MTBF:"),
-                _(u"Reliability [R(t)]:"),
-                _(u"Mission R(t):"),
-                _(u"Total Parts:")
+                _("Active Failure Intensity [\u039B(t)]:"),
+                _("Dormant \u039B(t):"),
+                _("Software \u039B(t):"),
+                _("Predicted h(t):"),
+                _("Mission h(t):"),
+                _("MTBF:"),
+                _("Mission MTBF:"),
+                _("Reliability [R(t)]:"),
+                _("Mission R(t):"),
+                _("Total Parts:")
             ],
             [
-                _(u"Mean Preventive Maintenance Time [MPMT]:"),
-                _(u"Mean Corrective Maintenance Time [MCMT]:"),
-                _(u"Mean Time to Repair [MTTR]:"),
-                _(u"Mean Maintenance Time [MMT]:"),
-                _(u"Availability [A(t)]:"),
-                _(u"Mission A(t):"),
-                _(u"Total Cost:"),
-                _(u"Cost/Failure:"),
-                _(u"Cost/Hour:")
+                _("Mean Preventive Maintenance Time [MPMT]:"),
+                _("Mean Corrective Maintenance Time [MCMT]:"),
+                _("Mean Time to Repair [MTTR]:"),
+                _("Mean Maintenance Time [MMT]:"),
+                _("Availability [A(t)]:"),
+                _("Mission A(t):"),
+                _("Total Cost:"),
+                _("Cost/Failure:"),
+                _("Cost/Hour:")
             ]
         ]
         """
@@ -151,181 +152,181 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         # Initialize public scalar attributes.
         self.txtCode = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"A unique code for the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("A unique code for the "
+                      "selected {0:s}.").format(self._module))
         self.txtName = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The name of the selected "
-                      u"{0:s}.").format(self._module))
+            tooltip=_("The name of the selected "
+                      "{0:s}.").format(self._module))
         self.txtRemarks = ramstk.RAMSTKTextView(
-            gtk.TextBuffer(),
+            Gtk.TextBuffer(),
             width=400,
-            tooltip=_(u"Enter any remarks "
-                      u"associated with the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Enter any remarks "
+                      "associated with the "
+                      "selected {0:s}.").format(self._module))
 
         self.txtActiveHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the active "
-                      u"failure intensity for the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Displays the active "
+                      "failure intensity for the "
+                      "selected {0:s}.").format(self._module))
         self.txtDormantHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the dormant "
-                      u"failure intensity for "
-                      u"the selected {0:s}.").format(self._module))
+            tooltip=_("Displays the dormant "
+                      "failure intensity for "
+                      "the selected {0:s}.").format(self._module))
         self.txtSoftwareHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the software "
-                      u"failure intensity for "
-                      u"the selected {0:s}.").format(self._module))
+            tooltip=_("Displays the software "
+                      "failure intensity for "
+                      "the selected {0:s}.").format(self._module))
         self.txtPredictedHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics "
-                      u"failure intensity for "
-                      u"the selected {0:s}.  "
-                      u"This is the sum of the "
-                      u"active, dormant, and "
-                      u"software hazard "
-                      u"rates.").format(self._module))
+            tooltip=_("Displays the logistics "
+                      "failure intensity for "
+                      "the selected {0:s}.  "
+                      "This is the sum of the "
+                      "active, dormant, and "
+                      "software hazard "
+                      "rates.").format(self._module))
         self.txtMissionHt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission "
-                      u"failure intensity for "
-                      u"the selected {0:s}.").format(self._module))
+            tooltip=_("Displays the mission "
+                      "failure intensity for "
+                      "the selected {0:s}.").format(self._module))
         self.txtMTBF = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics mean "
-                      u"time between failure (MTBF) "
-                      u"for the selected {0:s}.").format(self._module))
+            tooltip=_("Displays the logistics mean "
+                      "time between failure (MTBF) "
+                      "for the selected {0:s}.").format(self._module))
         self.txtMissionMTBF = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission "
-                      u"mean time between "
-                      u"failure (MTBF) for the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Displays the mission "
+                      "mean time between "
+                      "failure (MTBF) for the "
+                      "selected {0:s}.").format(self._module))
         self.txtReliability = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics "
-                      u"reliability for the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Displays the logistics "
+                      "reliability for the "
+                      "selected {0:s}.").format(self._module))
         self.txtMissionRt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission "
-                      u"reliability for the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Displays the mission "
+                      "reliability for the "
+                      "selected {0:s}.").format(self._module))
 
         self.txtMPMT = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean preventive "
-                      u"maintenance time (MPMT) for "
-                      u"the selected {0:s}.").format(self._module))
+            tooltip=_("Displays the mean preventive "
+                      "maintenance time (MPMT) for "
+                      "the selected {0:s}.").format(self._module))
         self.txtMCMT = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean corrective "
-                      u"maintenance time (MCMT) for "
-                      u"the selected {0:s}.").format(self._module))
+            tooltip=_("Displays the mean corrective "
+                      "maintenance time (MCMT) for "
+                      "the selected {0:s}.").format(self._module))
         self.txtMTTR = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean time to "
-                      u"repair (MTTR) for the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Displays the mean time to "
+                      "repair (MTTR) for the "
+                      "selected {0:s}.").format(self._module))
         self.txtMMT = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean maintenance "
-                      u"time (MMT) for the selected "
-                      u"{0:s}.  This includes "
-                      u"preventive and corrective "
-                      u"maintenance.").format(self._module))
+            tooltip=_("Displays the mean maintenance "
+                      "time (MMT) for the selected "
+                      "{0:s}.  This includes "
+                      "preventive and corrective "
+                      "maintenance.").format(self._module))
         self.txtAvailability = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the "
-                      u"logistics "
-                      u"availability for the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Displays the "
+                      "logistics "
+                      "availability for the "
+                      "selected {0:s}.").format(self._module))
         self.txtMissionAt = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission "
-                      u"availability for the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Displays the mission "
+                      "availability for the "
+                      "selected {0:s}.").format(self._module))
         self.txtPartCount = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the total part "
-                      u"count for the selected "
-                      u"{0:s}.").format(self._module))
+            tooltip=_("Displays the total part "
+                      "count for the selected "
+                      "{0:s}.").format(self._module))
         self.txtTotalCost = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the total cost "
-                      u"of the selected "
-                      u"{0:s}.").format(self._module))
+            tooltip=_("Displays the total cost "
+                      "of the selected "
+                      "{0:s}.").format(self._module))
         self.txtCostFailure = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the cost per "
-                      u"failure of the "
-                      u"selected {0:s}.").format(self._module))
+            tooltip=_("Displays the cost per "
+                      "failure of the "
+                      "selected {0:s}.").format(self._module))
         self.txtCostHour = ramstk.RAMSTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the failure cost "
-                      u"per operating hour for "
-                      u"the selected {0:s}.").format(self._module))
+            tooltip=_("Displays the failure cost "
+                      "per operating hour for "
+                      "the selected {0:s}.").format(self._module))
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_select_revision, 'selectedRevision')
 
     def _make_assessment_results_page(self):
         """
-        Create the gtk.Notebook() page for displaying assessment results.
+        Create the Gtk.Notebook() page for displaying assessment results.
 
         :return: (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                   _y_pos_r)
         :rtype: tuple
         """
-        _hbox = gtk.HBox()
+        _hbox = Gtk.HBox()
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build the left half of the page.                                    #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fxd_left = gtk.Fixed()
+        _fxd_left = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fxd_left)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Reliability Results"))
+        _frame = ramstk.RAMSTKFrame(label=_("Reliability Results"))
         _frame.add(_scrollwindow)
 
-        _hbox.pack_start(_frame)
+        _hbox.pack_start(_frame, True, True, 0)
 
         _x_pos_l, _y_pos_l = ramstk.make_label_group(
             self._lst_assess_labels[0], _fxd_left, 5, 5)
@@ -347,13 +348,13 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build the right half of the page.                                   #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fxd_right = gtk.Fixed()
+        _fxd_right = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fxd_right)
-        _frame = ramstk.RAMSTKFrame(label=_(u"Maintainability Results"))
+        _frame = ramstk.RAMSTKFrame(label=_("Maintainability Results"))
         _frame.add(_scrollwindow)
 
-        _hbox.pack_end(_frame)
+        _hbox.pack_end(_frame, True, True, 0)
 
         _x_pos_r, _y_pos_r = ramstk.make_label_group(
             self._lst_assess_labels[1], _fxd_right, 5, 5)
@@ -372,31 +373,31 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         _fxd_right.show_all()
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Assessment\nResults"),
+            _("Assessment\nResults"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays reliability, "
-                      u"maintainability, and availability "
-                      u"assessment results for the selected "
-                      u"{0:s}.").format(self._module))
-        self.hbx_tab_label.pack_start(_label)
+            justify=Gtk.Justification.CENTER,
+            tooltip=_("Displays reliability, "
+                      "maintainability, and availability "
+                      "assessment results for the selected "
+                      "{0:s}.").format(self._module))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
 
     def make_general_data_page(self):
         """
-        Create the gtk.Notebook() page for displaying general data.
+        Create the Gtk.Notebook() page for displaying general data.
 
-        :return: (_frame, _fixed, _x_pos, _y_pos); the :class:`gtk.Frame` and
-                 :class:`gtk.Fixed` used to make the General Data page.
+        :return: (_frame, _fixed, _x_pos, _y_pos); the :class:`Gtk.Frame` and
+                 :class:`Gtk.Fixed` used to make the General Data page.
         :rtype: tuple
         """
-        _fixed = gtk.Fixed()
+        _fixed = Gtk.Fixed()
 
         _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_(u"General Information"))
+        _frame = ramstk.RAMSTKFrame(label=_("General Information"))
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
@@ -410,13 +411,13 @@ class RAMSTKWorkView(gtk.HBox, ramstk.RAMSTKBaseView):
         _fixed.show_all()
 
         _label = ramstk.RAMSTKLabel(
-            _(u"General\nData"),
+            _("General\nData"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays general information for the selected  "
-                      u"{0:s}.").format(self._module))
-        self.hbx_tab_label.pack_start(_label)
+            justify=Gtk.Justification.CENTER,
+            tooltip=_("Displays general information for the selected  "
+                      "{0:s}.").format(self._module))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         return (_frame, _fixed, _x_pos, _y_pos)
 

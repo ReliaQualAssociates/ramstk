@@ -48,7 +48,7 @@ class RAMSTKIncident(RAMSTK_BASE):
     accepted = Column('fld_accepted', Integer, default=0)
     approved = Column('fld_approved', Integer, default=0)
     approved_by = Column('fld_approved_by', Integer, default=0)
-    analysis = Column('fld_analysis', BLOB, default='')
+    analysis = Column('fld_analysis', BLOB, default=b'')
     category_id = Column('fld_category_id', Integer, default=0)
     chargeable = Column('fld_chargeable', Integer, default=-1)
     chargeable_1 = Column('fld_chargeable_1', Integer, default=-1)
@@ -72,7 +72,7 @@ class RAMSTKIncident(RAMSTK_BASE):
     date_requested = Column('fld_date_requested', Date, default=date.today())
     date_reviewed = Column(
         'fld_date_reviewed', Date, default=date.today() + timedelta(days=30))
-    description_long = Column('fld_description_long', BLOB, default='')
+    description_long = Column('fld_description_long', BLOB, default=b'')
     description_short = Column(
         'fld_description_short', String(512), default='')
     detection_method_id = Column('fld_detection_method_id', Integer, default=0)
@@ -101,7 +101,7 @@ class RAMSTKIncident(RAMSTK_BASE):
     relevant_18 = Column('fld_relevant_18', Integer, default=-1)
     relevant_19 = Column('fld_relevant_19', Integer, default=-1)
     relevant_20 = Column('fld_relevant_20', Integer, default=-1)
-    remarks = Column('fld_remarks', BLOB, default='')
+    remarks = Column('fld_remarks', BLOB, default=b'')
     request_by = Column('fld_request_by', Integer, default=0)
     reviewed = Column('fld_reviewed', Integer, default=0)
     reviewed_by = Column('fld_reviewed_by', Integer, default=0)
@@ -183,7 +183,7 @@ class RAMSTKIncident(RAMSTK_BASE):
             self.accepted = int(none_to_default(attributes[0], 0))
             self.approved = int(none_to_default(attributes[1], 0))
             self.approved_by = int(none_to_default(attributes[2], 0))
-            self.analysis = str(none_to_default(attributes[3], ''))
+            self.analysis = none_to_default(attributes[3], b'')
             self.category_id = int(none_to_default(attributes[4], 0))
             self.chargeable = int(none_to_default(attributes[5], -1))
             self.chargeable_1 = int(none_to_default(attributes[6], -1))
@@ -201,13 +201,16 @@ class RAMSTKIncident(RAMSTK_BASE):
             self.cost = float(none_to_default(attributes[18], 0.0))
             self.criticality_id = int(none_to_default(attributes[19], 0))
             self.date_approved = none_to_default(
-                attributes[20], date.today() + timedelta(days=30))
+                attributes[20],
+                date.today() + timedelta(days=30))
             self.date_complete = none_to_default(
-                attributes[21], date.today() + timedelta(days=30))
+                attributes[21],
+                date.today() + timedelta(days=30))
             self.date_requested = none_to_default(attributes[22], date.today())
             self.date_reviewed = none_to_default(
-                attributes[23], date.today() + timedelta(days=30))
-            self.description_long = str(none_to_default(attributes[24], ''))
+                attributes[23],
+                date.today() + timedelta(days=30))
+            self.description_long = none_to_default(attributes[24], b'')
             self.description_short = str(none_to_default(attributes[25], ''))
             self.detection_method_id = int(none_to_default(attributes[26], 0))
             self.execution_time = float(none_to_default(attributes[27], 0.0))
@@ -235,7 +238,7 @@ class RAMSTKIncident(RAMSTK_BASE):
             self.relevant_18 = int(none_to_default(attributes[49], -1))
             self.relevant_19 = int(none_to_default(attributes[50], -1))
             self.relevant_20 = int(none_to_default(attributes[51], -1))
-            self.remarks = str(none_to_default(attributes[52], ''))
+            self.remarks = none_to_default(attributes[52], b'')
             self.request_by = int(none_to_default(attributes[53], 0))
             self.reviewed = int(none_to_default(attributes[54], 0))
             self.reviewed_by = int(none_to_default(attributes[55], 0))

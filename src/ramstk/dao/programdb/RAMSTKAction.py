@@ -18,7 +18,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKAction(RAMSTK_BASE):
     """
-    Class to represent the table ramstk_action in the RAMSTK Program database.
+    Class to represent table ramstk_action in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_cause.
     """
@@ -38,13 +38,13 @@ class RAMSTKAction(RAMSTK_BASE):
         autoincrement=True,
         nullable=False)
 
-    action_recommended = Column('fld_action_recommended', BLOB, default='')
+    action_recommended = Column('fld_action_recommended', BLOB, default=b'')
     action_category = Column('fld_action_category', String(512), default='')
     action_owner = Column('fld_action_owner', String(512), default='')
     action_due_date = Column(
         'fld_action_due_date', Date, default=date.today() + timedelta(days=30))
     action_status = Column('fld_action_status', String(512), default='')
-    action_taken = Column('fld_action_taken', BLOB, default='')
+    action_taken = Column('fld_action_taken', BLOB, default=b'')
     action_approved = Column('fld_action_approved', Integer, default=0)
     action_approve_date = Column(
         'fld_action_approve_date',
@@ -107,8 +107,8 @@ class RAMSTKAction(RAMSTK_BASE):
         _date = date.today() + timedelta(days=30)
 
         try:
-            self.action_recommended = str(
-                none_to_default(attributes['action_recommended'], ''))
+            self.action_recommended = none_to_default(
+                attributes['action_recommended'], b'')
             self.action_category = str(
                 none_to_default(attributes['action_category'], ''))
             self.action_owner = str(
@@ -117,8 +117,8 @@ class RAMSTKAction(RAMSTK_BASE):
                 attributes['action_due_date'], _date)
             self.action_status = str(
                 none_to_default(attributes['action_status'], 0))
-            self.action_taken = str(
-                none_to_default(attributes['action_taken'], ''))
+            self.action_taken = none_to_default(attributes['action_taken'],
+                                                b'')
             self.action_approved = int(
                 none_to_default(attributes['action_approved'], 0))
             self.action_approve_date = none_to_default(

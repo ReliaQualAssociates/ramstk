@@ -84,7 +84,10 @@ class ModeDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _mode.mode_id)
+            try:
+                self.last_id = max(self.last_id, _mode.mode_id)
+            except TypeError:
+                self.last_id = _mode.mode_id
 
         _session.close()
 
@@ -240,7 +243,10 @@ class MechanismDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _mechanism.mechanism_id)
+            try:
+                self.last_id = max(self.last_id, _mechanism.mechanism_id)
+            except TypeError:
+                self.last_id = _mechanism.mechanism_id
 
         _session.close()
 
@@ -404,7 +410,10 @@ class CauseDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _cause.cause_id)
+            try:
+                self.last_id = max(self.last_id, _cause.cause_id)
+            except TypeError:
+                self.last_id = _cause.cause_id
 
         _session.close()
 
@@ -563,7 +572,10 @@ class ControlDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _control.control_id)
+            try:
+                self.last_id = max(self.last_id, _control.control_id)
+            except TypeError:
+                self.last_id = _control.control_id
 
         _session.close()
 
@@ -723,7 +735,10 @@ class ActionDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _action.action_id)
+            try:
+                self.last_id = max(self.last_id, _action.action_id)
+            except TypeError:
+                self.last_id = _action.action_id
 
         _session.close()
 

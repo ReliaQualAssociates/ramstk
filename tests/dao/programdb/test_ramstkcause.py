@@ -4,7 +4,7 @@
 #       tests.dao.programdb.test_ramstkcause.py is part of The RAMSTK Project
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKCause module algorithms and models. """
+"""Test class for testing the RAMSTKCause module algorithms and models."""
 
 import pytest
 

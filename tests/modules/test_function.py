@@ -35,7 +35,7 @@ ATTRIBUTES = {
     'remarks': '',
     'mtbf_mission': 0.0,
     'function_code': 'PRESS-001',
-    'name': u'Function Name',
+    'name': 'Function Name',
     'level': 0,
     'mttr': 0.0,
     'mcmt': 0.0,
@@ -218,16 +218,16 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
 
     assert isinstance(_matrix, pd.DataFrame)
     assert _column_hdrs == {
-        1: u'S1',
-        2: u'S1:SS1',
-        4: u'S1:SS3',
-        3: u'S1:SS2',
-        5: u'S1:SS4',
-        6: u'S1:SS1:A1',
-        7: u'S1:SS1:A2',
-        8: u'S1:SS1:A3'
+        1: 'S1',
+        2: 'S1:SS1',
+        4: 'S1:SS3',
+        3: 'S1:SS2',
+        5: 'S1:SS4',
+        6: 'S1:SS1:A1',
+        7: 'S1:SS1:A2',
+        8: 'S1:SS1:A3'
     }
-    assert _row_hdrs == {1: u'FUNC-0001', 2: u'FUNC-0002', 3: u'FUNC-0003'}
+    assert _row_hdrs == {1: 'FUNC-0001', 2: 'FUNC-0002', 3: 'FUNC-0003'}
 
 
 @pytest.mark.integration

@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.ramstk.Entry.py is part of the RAMSTK Project
@@ -7,10 +8,10 @@
 """RAMSTK Entry Module."""
 
 # Import the ramstk.Widget base class.
-from .Widget import gtk, pango  # pylint: disable=E0401
+from .Widget import Gdk, GObject, Gtk, Pango
 
 
-class RAMSTKEntry(gtk.Entry):
+class RAMSTKEntry(Gtk.Entry):
     """This is the RAMSTK Entry class."""
 
     # pylint: disable=R0913
@@ -21,22 +22,22 @@ class RAMSTKEntry(gtk.Entry):
         :param \**kwargs: See below
 
         :Keyword Arguments:
-            * *width* (int) -- width of the gtk.Entry() widget.
+            * *width* (int) -- width of the Gtk.Entry() widget.
                                Default is 200.
-            * *height* (int) -- height of the gtk.Entry() widget.
+            * *height* (int) -- height of the Gtk.Entry() widget.
                                 Default is 25.
-            * *editable* (bool) -- boolean indicating whether gtk.Entry()
+            * *editable* (bool) -- boolean indicating whether Gtk.Entry()
                                    should be editable.
                                    Defaults to True.
             * *bold* (bool) -- boolean indicating whether text should be bold.
                                Defaults to False.
             * *color* (str) -- the hexidecimal color to set the background when
-                               the gtk.Entry() is not editable.
+                               the Gtk.Entry() is not editable.
                                Default is #BBDDFF (light blue).
             * *tooltip* (str) -- the tooltip, if any, for the entry.
                                  Default is an empty string.
         """
-        gtk.Entry.__init__(self)
+        GObject.GObject.__init__(self)
 
         try:
             _bold = kwargs['bold']
@@ -68,71 +69,76 @@ class RAMSTKEntry(gtk.Entry):
         self.props.editable = _editable
 
         if _bold:
-            self.modify_font(pango.FontDescription('bold'))
+            self.modify_font(Pango.FontDescription('bold'))
 
         if not _editable:
-            _bg_color = gtk.gdk.Color(_color)
-            self.modify_base(gtk.STATE_NORMAL, _bg_color)
-            self.modify_base(gtk.STATE_ACTIVE, _bg_color)
-            self.modify_base(gtk.STATE_PRELIGHT, _bg_color)
-            self.modify_base(gtk.STATE_SELECTED, _bg_color)
-            self.modify_base(gtk.STATE_INSENSITIVE, gtk.gdk.Color('#BFBFBF'))
-            self.modify_font(pango.FontDescription('bold'))
+            _bg_color = Gdk.RGBA(
+                red=float(int(_color[1:3], 16)),
+                green=float(int(_color[3:5], 16)),
+                blue=float(int(_color[5:7], 16)),
+                alpha=1.0)
+            self.override_background_color(Gtk.StateFlags.NORMAL, _bg_color)
+            self.override_background_color(Gtk.StateFlags.ACTIVE, _bg_color)
+            self.override_background_color(Gtk.StateFlags.PRELIGHT, _bg_color)
+            self.override_background_color(Gtk.StateFlags.SELECTED, _bg_color)
+            self.override_background_color(Gtk.StateFlags.INSENSITIVE,
+                                           Gdk.RGBA(191.0, 191.0, 191.0, 1.0))
+            self.modify_font(Pango.FontDescription('bold'))
 
         self.set_tooltip_markup(_tooltip)
 
         self.show()
 
 
-class RAMSTKTextView(gtk.TextView):
+class RAMSTKTextView(Gtk.TextView):
     """This is the RAMSTK TextView class."""
 
     def __init__(self, txvbuffer=None, width=200, height=100, tooltip=''):
         """
         Create RAMSTK TextView() widgets.
 
-        Returns a gtk.TextView() embedded in a gtk.ScrolledWindow().
+        Returns a Gtk.TextView() embedded in a Gtk.ScrolledWindow().
 
-        :keyword txvbuffer: the gtk.TextBuffer() to associate with the
+        :keyword txvbuffer: the Gtk.TextBuffer() to associate with the
                             RAMSTK TextView().  Default is None.
-        :type txvbuffer: :py:class:`gtk.TextBuffer`
+        :type txvbuffer: :py:class:`Gtk.TextBuffer`
         :keyword int width: width of the  RAMSTK TextView() widget.
                             Default is 200.
         :keyword int height: height of the RAMSTK TextView() widget.
                              Default is 100.
         :return: _scrollwindow
-        :rtype: gtk.ScrolledWindow
+        :rtype: Gtk.ScrolledWindow
         """
-        gtk.TextView.__init__(self)
+        GObject.GObject.__init__(self)
 
         self.set_tooltip_markup(tooltip)
 
         self.set_buffer(txvbuffer)
-        self.set_wrap_mode(gtk.WRAP_WORD)
+        self.set_wrap_mode(Gtk.WrapMode.WORD)
 
-        self.scrollwindow = gtk.ScrolledWindow()
-        self.scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
-                                     gtk.POLICY_AUTOMATIC)
+        self.scrollwindow = Gtk.ScrolledWindow()
+        self.scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                     Gtk.PolicyType.AUTOMATIC)
         self.scrollwindow.props.width_request = width
         self.scrollwindow.props.height_request = height
         self.scrollwindow.add_with_viewport(self)
 
-        self.tag_bold = txvbuffer.create_tag('bold', weight=pango.WEIGHT_BOLD)
+        self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
 
     def do_get_buffer(self):
         """
-        Return the gtk.TextBuffer() emedded in the RAMSTK TextView.
+        Return the Gtk.TextBuffer() emedded in the RAMSTK TextView.
 
-        :return: buffer; the embedded gtk.TextBuffer()
-        :rtype: :py:class:`gtk.TextBuffer`
+        :return: buffer; the embedded Gtk.TextBuffer()
+        :rtype: :py:class:`Gtk.TextBuffer`
         """
         return self.get_buffer()
 
     def do_get_text(self):
         """
-        Retrieve the text from the embedded gtk.TextBuffer().
+        Retrieve the text from the embedded Gtk.TextBuffer().
 
-        :return: text; the text in the gtk.TextBuffer().
+        :return: text; the text in the Gtk.TextBuffer().
         :rtype: str
         """
         _buffer = self.do_get_buffer()

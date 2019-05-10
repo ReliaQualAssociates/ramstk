@@ -6,7 +6,7 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 
-import Widget
+from . import Widget
 
 from .Book import RAMSTKBook, destroy
 from .Button import (RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton,

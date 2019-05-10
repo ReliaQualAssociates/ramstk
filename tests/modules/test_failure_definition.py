@@ -23,7 +23,7 @@ __copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'definition_id': 1,
-    'definition': 'Test Failure Definition',
+    'definition': b'Test Failure Definition',
     'revision_id': 1
 }
 
@@ -57,7 +57,7 @@ def test_do_select(test_dao):
 
     assert isinstance(_definition, RAMSTKFailureDefinition)
     assert _definition.definition_id == 1
-    assert _definition.definition == 'Failure Definition'
+    assert _definition.definition == b'Failure Definition'
 
 
 @pytest.mark.integration
@@ -117,7 +117,7 @@ def test_do_update(test_dao):
     DUT.do_select_all(revision_id=1)
 
     _definition = DUT.do_select(1)
-    _definition.definition = 'Test Failure Definition'
+    _definition.definition = b'Test Failure Definition'
 
     _error_code, _msg = DUT.do_update(1)
 
@@ -196,7 +196,7 @@ def test_request_get_attributes(test_dao, test_configuration):
     _attributes = DUT.request_get_attributes(1)
 
     assert isinstance(_attributes, dict)
-    assert _attributes['definition'] == 'Test Failure Definition'
+    assert _attributes['definition'] == b'Test Failure Definition'
 
 
 @pytest.mark.integration
@@ -206,7 +206,7 @@ def test_request_set_attributes(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     _error_code, _msg = DUT.request_set_attributes(
-        module_id=1, key='definition', value='New Failure Definition')
+        module_id=1, key='definition', value=b'New Failure Definition')
 
     assert _error_code == 0
     assert _msg == (

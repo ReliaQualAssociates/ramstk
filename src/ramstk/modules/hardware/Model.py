@@ -600,7 +600,10 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
-                self.last_id = max(self.last_id, _hardware_id)
+                try:
+                    self.last_id = max(self.last_id, _hardware_id)
+                except TypeError:
+                    self.last_id = _hardware_id
             except DuplicatedNodeIdError:
                 pass
 
@@ -751,7 +754,10 @@ class HardwareDataModel(RAMSTKDataModel):
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
-                self.last_id = max(self.last_id, _hardware.hardware_id)
+                try:
+                    self.last_id = max(self.last_id, _hardware.hardware_id)
+                except TypeError:
+                    self.last_id = _hardware.hardware_id
             except (DuplicatedNodeIdError, NodeIDAbsentError):
                 pass
 
@@ -942,7 +948,10 @@ class DesignElectricDataModel(RAMSTKDataModel):
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
-                self.last_id = max(self.last_id, _design.hardware_id)
+                try:
+                    self.last_id = max(self.last_id, _design.hardware_id)
+                except TypeError:
+                    self.last_id = _design.hardware_id
             except DuplicatedNodeIdError:
                 pass
 
@@ -1105,7 +1114,10 @@ class DesignMechanicDataModel(RAMSTKDataModel):
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
-                self.last_id = max(self.last_id, _design.hardware_id)
+                try:
+                    self.last_id = max(self.last_id, _design.hardware_id)
+                except TypeError:
+                    self.last_id = _design.hardware_id
             except DuplicatedNodeIdError:
                 pass
 
@@ -1268,7 +1280,10 @@ class MilHdbkFDataModel(RAMSTKDataModel):
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
-                self.last_id = max(self.last_id, _milhdbkf.hardware_id)
+                try:
+                    self.last_id = max(self.last_id, _milhdbkf.hardware_id)
+                except TypeError:
+                    self.last_id = _milhdbkf.hardware_id
             except DuplicatedNodeIdError:
                 pass
 
@@ -1428,7 +1443,10 @@ class NSWCDataModel(RAMSTKDataModel):
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
-                self.last_id = max(self.last_id, _nswc.hardware_id)
+                try:
+                    self.last_id = max(self.last_id, _nswc.hardware_id)
+                except TypeError:
+                    self.last_id = _nswc.hardware_id
             except DuplicatedNodeIdError:
                 pass
 
@@ -1588,7 +1606,10 @@ class ReliabilityDataModel(RAMSTKDataModel):
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
-                self.last_id = max(self.last_id, _reliability.hardware_id)
+                try:
+                    self.last_id = max(self.last_id, _reliability.hardware_id)
+                except TypeError:
+                    self.last_id = _reliability.hardware_id
             except DuplicatedNodeIdError:
                 pass
 

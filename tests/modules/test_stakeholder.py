@@ -24,7 +24,7 @@ ATTRIBUTES = {
     'revision_id': 1,
     'stakeholder_id': 1,
     'customer_rank': 2,
-    'description': 'Stakeholder Input',
+    'description': b'Stakeholder Input',
     'group': '',
     'improvement': 0.0,
     'overall_weight': 0.0,
@@ -69,7 +69,7 @@ def test_do_select(test_dao):
 
     assert isinstance(_stakeholder, RAMSTKStakeholder)
     assert _stakeholder.stakeholder_id == 1
-    assert _stakeholder.description == 'Test Stakeholder Input'
+    assert _stakeholder.description == b'Test Stakeholder Input'
 
 
 @pytest.mark.integration
@@ -129,7 +129,7 @@ def test_do_update(test_dao):
     DUT.do_select_all(revision_id=1)
 
     _stakeholder = DUT.do_select(1)
-    _stakeholder.description = 'Be very reliable.'
+    _stakeholder.description = 'Be very reliable.'.encode('utf-8')
 
     _error_code, _msg = DUT.do_update(1)
 

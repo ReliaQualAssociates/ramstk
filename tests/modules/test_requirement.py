@@ -25,12 +25,12 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 - 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'owner': u'',
+    'owner': '',
     'priority': 0,
     'parent_id': 0,
     'requirement_code': 'REL-0001',
     'q_complete_4': 0,
-    'requirement_type': u'',
+    'requirement_type': '',
     'q_complete_5': 0,
     'validated_date': date.today(),
     'revision_id': 1,
@@ -44,13 +44,13 @@ ATTRIBUTES = {
     'q_consistent_2': 0,
     'q_consistent_1': 0,
     'q_clarity_3': 0,
-    'specification': u'',
+    'specification': '',
     'q_complete_0': 0,
     'q_complete_1': 0,
     'q_complete_2': 0,
     'q_complete_3': 0,
-    'page_number': u'',
-    'figure_number': u'',
+    'page_number': '',
+    'figure_number': '',
     'q_complete_6': 0,
     'q_complete_7': 0,
     'q_complete_8': 0,
@@ -248,16 +248,16 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
 
     assert isinstance(_matrix, pd.DataFrame)
     assert _column_hdrs == {
-        1: u'S1',
-        2: u'S1:SS1',
-        3: u'S1:SS2',
-        4: u'S1:SS3',
-        5: u'S1:SS4',
-        6: u'S1:SS1:A1',
-        7: u'S1:SS1:A2',
-        8: u'S1:SS1:A3'
+        1: 'S1',
+        2: 'S1:SS1',
+        3: 'S1:SS2',
+        4: 'S1:SS3',
+        5: 'S1:SS4',
+        6: 'S1:SS1:A1',
+        7: 'S1:SS1:A2',
+        8: 'S1:SS1:A3'
     }
-    assert _row_hdrs == {1: u'REL-0001', 2: u''}
+    assert _row_hdrs == {1: 'REL-0001', 2: ''}
 
 
 @pytest.mark.integration

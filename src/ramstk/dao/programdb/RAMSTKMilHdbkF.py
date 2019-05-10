@@ -17,7 +17,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE  # pragma: no cover
 
 class RAMSTKMilHdbkF(RAMSTK_BASE):
     """
-    Class to represent the ramstk_mil_hdbk_f table in the RAMSTK Program database.
+    Class to represent ramstk_mil_hdbk_f table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
