@@ -401,7 +401,7 @@ class Configuration(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        if sys.platform == 'linux2':
+        if(sys.platform == 'linux' or sys.platform=='linux2'):
             self.RAMSTK_OS = 'Linux'
             self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + '/share/RAMSTK'
             self.RAMSTK_HOME_DIR = environ['HOME']
