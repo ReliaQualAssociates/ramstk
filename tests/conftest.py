@@ -36,7 +36,7 @@ except KeyError:
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
         print(("The {0:s} system platform is not "
-              "supported.").format(platform.system()))
+               "supported.").format(platform.system()))
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -102,15 +102,18 @@ HEADERS = {
 }
 
 # Row data for the Function import test file.
-ROW_DATA = [[
-    1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
-    'This is a function that is about system pressure.  This remarks box also needs to be larger.',
-    1, 0
-], [
-    1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
-    'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
-    0, 0
-]]
+ROW_DATA = [
+    [
+        1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
+        'This is a function that is about system pressure.  This remarks box also needs to be larger.',
+        1, 0
+    ],
+    [
+        1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
+        'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
+        0, 0
+    ]
+]
 
 
 @pytest.fixture(scope='session')
@@ -250,7 +253,7 @@ def test_csv_file_function():
     """Create and populate a *.csv file for testing Function imports."""
     _test_file = TMP_DIR + '/test_inputs_functions.csv'
 
-    with open(_test_file, 'wb') as _csv_file:
+    with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
             _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Function'])
@@ -265,7 +268,7 @@ def test_csv_file_requirement():
     """Create and populate a *.csv file for testing Requirement import mapping."""
     _test_file = TMP_DIR + '/test_inputs_requirements.csv'
 
-    with open(_test_file, 'wb') as _csv_file:
+    with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
             _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Requirement'])
@@ -278,7 +281,7 @@ def test_csv_file_hardware():
     """Create and populate a *.csv file for testing Hardware import mapping."""
     _test_file = TMP_DIR + '/test_inputs_hardware.csv'
 
-    with open(_test_file, 'wb') as _csv_file:
+    with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
             _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Hardware'])
@@ -291,7 +294,7 @@ def test_csv_file_validation():
     """Create and populate a *.csv file for testing Validation import mapping."""
     _test_file = TMP_DIR + '/test_inputs_validation.csv'
 
-    with open(_test_file, 'wb') as _csv_file:
+    with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
             _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Validation'])
@@ -347,6 +350,7 @@ def test_format_file():
     _layout.write(_test_file)
 
     yield _test_file
+
 
 @pytest.fixture
 def test_export_file():
