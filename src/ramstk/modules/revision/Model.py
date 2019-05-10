@@ -134,7 +134,7 @@ class RevisionDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _revision.revision_id)
             except TypeError:
-                    self.last_id = _revision.revision_id
+                self.last_id = _revision.revision_id
 
         _session.close()
 

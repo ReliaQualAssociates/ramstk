@@ -134,7 +134,7 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _definition.definition_id)
             except TypeError:
-                    self.last_id = _definition.definition_id
+                self.last_id = _definition.definition_id
 
         _session.close()
 

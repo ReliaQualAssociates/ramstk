@@ -139,7 +139,7 @@ class FunctionDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _function.function_id)
             except TypeError:
-                    self.last_id = _function.function_id
+                self.last_id = _function.function_id
 
         _session.close()
 

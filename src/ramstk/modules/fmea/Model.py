@@ -87,7 +87,7 @@ class ModeDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _mode.mode_id)
             except TypeError:
-                    self.last_id = _mode.mode_id
+                self.last_id = _mode.mode_id
 
         _session.close()
 
@@ -246,7 +246,7 @@ class MechanismDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _mechanism.mechanism_id)
             except TypeError:
-                    self.last_id = _mechanism.mechanism_id
+                self.last_id = _mechanism.mechanism_id
 
         _session.close()
 
@@ -413,7 +413,7 @@ class CauseDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _cause.cause_id)
             except TypeError:
-                    self.last_id = _cause.cause_id
+                self.last_id = _cause.cause_id
 
         _session.close()
 
@@ -575,7 +575,7 @@ class ControlDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _control.control_id)
             except TypeError:
-                    self.last_id = _control.control_id
+                self.last_id = _control.control_id
 
         _session.close()
 
@@ -738,7 +738,7 @@ class ActionDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _action.action_id)
             except TypeError:
-                    self.last_id = _action.action_id
+                self.last_id = _action.action_id
 
         _session.close()
 

@@ -343,7 +343,7 @@ class MissionDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _mission.mission_id)
             except TypeError:
-                    self.last_id = _mission.mission_id
+                self.last_id = _mission.mission_id
 
         _session.close()
 
@@ -503,7 +503,7 @@ class MissionPhaseDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _phase.phase_id)
             except TypeError:
-                    self.last_id = _phase.phase_id
+                self.last_id = _phase.phase_id
 
         _session.close()
 
@@ -664,7 +664,7 @@ class EnvironmentDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _environment.environment_id)
             except TypeError:
-                    self.last_id = _environment.environment_id
+                self.last_id = _environment.environment_id
 
         _session.close()
 

@@ -80,7 +80,7 @@ class OpLoadDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _opload.load_id)
             except TypeError:
-                    self.last_id = _opload.load_id
+                self.last_id = _opload.load_id
 
         _session.close()
 
@@ -242,7 +242,7 @@ class OpStressDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _opstress.stress_id)
             except TypeError:
-                    self.last_id = _opstress.stress_id
+                self.last_id = _opstress.stress_id
 
         _session.close()
 
@@ -405,7 +405,7 @@ class TestMethodDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _testmethod.test_id)
             except TypeError:
-                    self.last_id = _testmethod.test_id
+                self.last_id = _testmethod.test_id
 
         _session.close()
 

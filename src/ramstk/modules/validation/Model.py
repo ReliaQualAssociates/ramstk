@@ -97,7 +97,7 @@ class ValidationDataModel(RAMSTKDataModel):
             try:
                 self.last_id = max(self.last_id, _validation.validation_id)
             except TypeError:
-                    self.last_id = _validation.validation_id
+                self.last_id = _validation.validation_id
 
         # Now select all the status updates.
         _today = False
