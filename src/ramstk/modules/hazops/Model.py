@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hazard Analysis Data Model."""
 
+# Import third party packages.
+from pubsub import pub
 from treelib import tree
 from treelib.exceptions import NodeIDAbsentError
 
@@ -19,7 +21,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
 
     _tag = 'HazardAnalysis'
 
-    def __init__(self, dao):
+    def __init__(self, dao, **kwargs):
         """
         Initialize a Hazard Analysis data model instance.
 
@@ -34,6 +36,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -45,9 +48,9 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
         """
         Retrieve all the Hazard Analysis from the RAMSTK Program database.
 
-        This method retrieves all the records from the RAMSTKHazardAnalysis table
-        in the connected RAMSTK Program database.  It then adds each to the
-        HazardAnalysis data model treelib.Tree().
+        This method retrieves all the records from the RAMSTKHazardAnalysis
+        table in the connected RAMSTK Program database.  It then adds each to
+        the HazardAnalysis data model treelib.Tree().
 
         :param int hardware_id: the Hardware ID the Hazards are associated
                                 with.
@@ -81,11 +84,19 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
+            try:
+                self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
+            except TypeError:
+                self.last_id = _hazard_analysis.hazard_id
 
         _session.close()
 
-        return self.tree
+        # If we're not running a test and there were hazards returned,
+        # let anyone who cares know the Hazards have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_hazards', tree=self.tree)
+
+        return None
 
     def do_select_children(self, node_id):
         """
@@ -138,7 +149,10 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
                 parent=_hazard_analysis.hardware_id,
                 data=_hazard_analysis)
 
-        self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
+        try:
+            self.last_id = max(self.last_id, _hazard_analysis.hazard_id)
+        except TypeError:
+            self.last_id = _hazard_analysis.hazard_id
 
         return _error_code, _msg
 
@@ -159,7 +173,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
             _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
                           'Hazard Analysis ID {0:d}.'.format(node_id)
         else:
-            self.last_id = max(self.tree.nodes.keys())
+            self.last_id = max(list(map(str, self.tree.nodes.keys())))
 
         return _error_code, _msg
 
@@ -173,7 +187,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
         :rtype: bool
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
-        print _error_code, _msg
+
         if _error_code != 0:
             _error_code = 2207
             _msg = 'RAMSTK ERROR: Attempted to save non-existent Hazard ' \

@@ -25,7 +25,7 @@ _ = gettext.gettext
 
 class RAMSTKMode(RAMSTK_BASE):
     """
-    Class to represent the table ramstk_mode in the RAMSTK Program database.
+    Class to represent table ramstk_mode in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_function.
     This table shares a Many-to-One relationship with ramstk_hardware.
@@ -56,7 +56,7 @@ class RAMSTKMode(RAMSTK_BASE):
 
     critical_item = Column('fld_critial_item', Integer, default=0)
     description = Column('fld_description', String(512), default='')
-    design_provisions = Column('fld_design_provisions', BLOB, default='')
+    design_provisions = Column('fld_design_provisions', BLOB, default=b'')
     detection_method = Column('fld_detection_method', String(512), default='')
     effect_end = Column('fld_effect_end', String(512), default='')
     effect_local = Column('fld_effect_local', String(512), default='')
@@ -72,10 +72,10 @@ class RAMSTKMode(RAMSTK_BASE):
     mode_op_time = Column('fld_mode_op_time', Float, default=0.0)
     mode_probability = Column('fld_mode_probability', String(64), default='')
     mode_ratio = Column('fld_mode_ratio', Float, default=0.0)
-    operator_actions = Column('fld_operator_actions', BLOB, default='')
+    operator_actions = Column('fld_operator_actions', BLOB, default=b'')
     other_indications = Column(
         'fld_other_indications', String(512), default='')
-    remarks = Column('fld_remarks', BLOB, default='')
+    remarks = Column('fld_remarks', BLOB, default=b'')
     rpn_severity = Column('fld_rpn_severity', Integer, default=1)
     rpn_severity_new = Column('fld_rpn_severity_new', Integer, default=1)
     severity_class = Column('fld_severity_class', String(64), default='')
@@ -164,8 +164,8 @@ class RAMSTKMode(RAMSTK_BASE):
             self.description = str(
                 none_to_default(attributes['description'],
                                 'Failure Mode Description'))
-            self.design_provisions = str(
-                none_to_default(attributes['design_provisions'], ''))
+            self.design_provisions = none_to_default(
+                attributes['design_provisions'], b'')
             self.detection_method = str(
                 none_to_default(attributes['detection_method'], ''))
             self.effect_end = str(
@@ -193,11 +193,11 @@ class RAMSTKMode(RAMSTK_BASE):
                 none_to_default(attributes['mode_probability'], ''))
             self.mode_ratio = float(
                 none_to_default(attributes['mode_ratio'], 0.0))
-            self.operator_actions = str(
-                none_to_default(attributes['operator_actions'], ''))
+            self.operator_actions = none_to_default(
+                attributes['operator_actions'], b'')
             self.other_indications = str(
                 none_to_default(attributes['other_indications'], ''))
-            self.remarks = str(none_to_default(attributes['remarks'], ''))
+            self.remarks = none_to_default(attributes['remarks'], b'')
             self.rpn_severity = int(
                 none_to_default(attributes['rpn_severity'], 1))
             self.rpn_severity_new = int(
@@ -211,7 +211,7 @@ class RAMSTKMode(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKMode.set_attributes().".format(_err)
+                   "RAMSTKMode.set_attributes().".format(str(_err))
 
         return _error_code, _msg
 
@@ -233,22 +233,22 @@ class RAMSTKMode(RAMSTK_BASE):
 
         if item_hr < 0.0:
             _error_code = 2010
-            _msg = _(u"RAMSTK ERROR: Item hazard rate has a negative value.")
+            _msg = _("RAMSTK ERROR: Item hazard rate has a negative value.")
             raise OutOfRangeError(_msg)
         if not 0.0 <= self.mode_ratio <= 1.0:
             _error_code = 2010
             _msg = _(
-                u"RAMSTK ERROR: Failure mode ratio is outside the range of "
-                u"[0.0, 1.0].")
+                "RAMSTK ERROR: Failure mode ratio is outside the range of "
+                "[0.0, 1.0].")
             raise OutOfRangeError(_msg)
         if self.mode_op_time < 0.0:
             _error_code = 2010
-            _msg = _(u"Failure mode operating time has a negative value.")
+            _msg = _("Failure mode operating time has a negative value.")
             raise OutOfRangeError(_msg)
         if not 0.0 <= self.effect_probability <= 1.0:
             _error_code = 2010
-            _msg = _(u"Failure effect probability is outside the range "
-                     u"[0.0, 1.0].")
+            _msg = _("Failure effect probability is outside the range "
+                     "[0.0, 1.0].")
             raise OutOfRangeError(_msg)
 
         self.mode_hazard_rate = item_hr * self.mode_ratio
@@ -257,11 +257,11 @@ class RAMSTKMode(RAMSTK_BASE):
 
         if self.mode_hazard_rate < 0.0:
             _error_code = 2010
-            _msg = _(u"Failure mode hazard rate has a negative value.")
+            _msg = _("Failure mode hazard rate has a negative value.")
             raise OutOfRangeError(_msg)
         if self.mode_criticality < 0.0:
             _error_code = 2010
-            _msg = _(u"Failure mode criticality has a negative value.")
+            _msg = _("Failure mode criticality has a negative value.")
             raise OutOfRangeError(_msg)
 
         return _error_code, _msg

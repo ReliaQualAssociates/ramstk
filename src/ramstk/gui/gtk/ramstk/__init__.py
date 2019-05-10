@@ -6,12 +6,14 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 
-import Widget
+from . import Widget
 
 from .Book import RAMSTKBook, destroy
-from .Button import RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton
+from .Button import (RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton,
+                     do_make_buttonbox)
 from .Combo import RAMSTKComboBox
-from .Dialog import RAMSTKDateSelect, RAMSTKDialog, RAMSTKFileChooser, RAMSTKMessageDialog
+from .Dialog import (RAMSTKDateSelect, RAMSTKDialog, RAMSTKFileChooser,
+                     RAMSTKMessageDialog)
 from .Entry import RAMSTKEntry, RAMSTKTextView
 from .Frame import RAMSTKFrame
 # from .Helpers import ramstk_file_select, ramstk_set_cursor

@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Physics of Failure Data Model."""
 
+# Import third party packages.
+from pubsub import pub
 from treelib import tree
 
 # Import other RAMSTK modules.
@@ -75,7 +77,10 @@ class OpLoadDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _opload.load_id)
+            try:
+                self.last_id = max(self.last_id, _opload.load_id)
+            except TypeError:
+                self.last_id = _opload.load_id
 
         _session.close()
 
@@ -234,7 +239,10 @@ class OpStressDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _opstress.stress_id)
+            try:
+                self.last_id = max(self.last_id, _opstress.stress_id)
+            except TypeError:
+                self.last_id = _opstress.stress_id
 
         _session.close()
 
@@ -394,7 +402,10 @@ class TestMethodDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _testmethod.test_id)
+            try:
+                self.last_id = max(self.last_id, _testmethod.test_id)
+            except TypeError:
+                self.last_id = _testmethod.test_id
 
         _session.close()
 
@@ -518,7 +529,7 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
 
     _tag = 'PhysicsOfFailure'
 
-    def __init__(self, dao):
+    def __init__(self, dao, **kwargs):
         """
         Initialize a PhysicsOfFailure data model instance.
 
@@ -533,6 +544,7 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
         self._functional = False
 
         # Initialize public dictionary attributes.
@@ -550,16 +562,16 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
         """
         Retrieve and build the Physics of Failure tree for Hardware ID.
 
-        :param str parent_id: the Hardware ID to retrieve the Physics of
-                              Failure information and build trees for.
+        :param str hardware_id: the Hardware ID to retrieve the Physics of
+                                Failure information and build trees for.
         :return: tree; the PhysicsOfFailure treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        _mode_id = kwargs['parent_id']
+        _hardware_id = kwargs['hardware_id']
         RAMSTKDataModel.do_select_all(self)
 
         _modes = self.dtm_mode.do_select_all(
-            parent_id=_mode_id, functional=False).nodes
+            parent_id=_hardware_id, functional=False).nodes
         for _key in _modes:
             _mode = _modes[_key].data
             if _mode is not None:
@@ -572,7 +584,12 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
 
                 self._do_add_mechanisms(_mode.mode_id, _node_id)
 
-        return self.tree
+        # If we're not running a test and there were requirements returned,
+        # let anyone who cares know the Requirements have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_pof', tree=self.tree)
+
+        return None
 
     def _do_add_mechanisms(self, mode_id, parent_id):
         """

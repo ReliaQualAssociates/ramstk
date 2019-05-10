@@ -36,7 +36,7 @@ class ValidationDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmValidation(dao),
+            model=dtmValidation(dao, **kwargs),
             ramstk_module='validation',
             **kwargs)
 
@@ -79,6 +79,17 @@ class ValidationDataController(RAMSTKDataController):
                 ckey='hardware_id')
 
         return
+
+    def request_do_select_all(self, attributes):
+        """
+        Retrieve the treelib Tree() from the Requirement Data Model.
+
+        :return: tree; the treelib Tree() of RAMSTKRequirement models in the
+                 Requirement tree.
+        :rtype: :class:`treelib.Tree`
+        """
+        return self._dtm_data_model.do_select_all(
+            revision_id=attributes['revision_id'])
 
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """

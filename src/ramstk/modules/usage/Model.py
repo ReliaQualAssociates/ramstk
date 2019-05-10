@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Usage Profile Package Data Models."""
 
+# Import third party packages.
+from pubsub import pub
+
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
 from ramstk.dao import RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
@@ -35,7 +38,7 @@ class UsageProfileDataModel(RAMSTKDataModel):
 
     _tag = 'Usage Profiles'
 
-    def __init__(self, dao):
+    def __init__(self, dao, **kwargs):
         """
         Initialize a Usage Profile data model instance.
 
@@ -50,6 +53,7 @@ class UsageProfileDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -59,6 +63,102 @@ class UsageProfileDataModel(RAMSTKDataModel):
         self.dtm_mission = MissionDataModel(dao)
         self.dtm_phase = MissionPhaseDataModel(dao)
         self.dtm_environment = EnvironmentDataModel(dao)
+
+    def do_delete(self, node_id):
+        """
+        Remove an entity from the Usage Profile and RAMSTK Program database.
+
+        :param int node_id: the Node ID of the entity to be removed.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RAMSTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = ("RAMSTK ERROR: Attempted to delete non-existent Mission, "
+                    "Mission Phase, or Environment ID "
+                    "{0:s}.").format(str(node_id))
+        else:
+            self.last_id = max(self.tree.nodes.keys())
+
+            # If we're not running a test, let anyone who cares know a Mission,
+            # Mission Phase, or Environment was deleted.
+            if not self._test:
+                pub.sendMessage('deleted_usage_profile', tree=self.tree)
+
+        return _error_code, _msg
+
+    def do_insert(self, **kwargs):
+        """
+        Add an entity to the Usage Profile and RAMSTK Program database..
+
+        :param int entity_id: the RAMSTK Program database Revision ID, Mission
+                              ID, Mission Phase ID to add the entity to.
+        :param int parent_id: the Node ID of the parent node in the treelib
+                              Tree().
+        :param str level: the type of entity to add to the Usage Profile.
+                          Levels are:
+
+                          * mission
+                          * phase
+                          * environment
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _tag = 'Tag'
+        _node_id = -1
+
+        _entity_id = kwargs['entity_id']
+        _parent_id = kwargs['parent_id']
+        _level = kwargs['level']
+
+        if _level == 'mission':
+            _entity = RAMSTKMission()
+            _entity.revision_id = _entity_id
+        elif _level == 'phase':
+            _entity = RAMSTKMissionPhase()
+            _entity.mission_id = _entity_id
+        elif _level == 'environment':
+            _entity = RAMSTKEnvironment()
+            _entity.phase_id = _entity_id
+        else:
+            _entity = None
+
+        _error_code, _msg = RAMSTKDataModel.do_insert(
+            self, entities=[
+                _entity,
+            ])
+
+        if _error_code == 0:
+            if _level == 'mission':
+                _tag = _entity.description
+                _node_id = _entity.mission_id
+            elif _level == 'phase':
+                _tag = _entity.name
+                _node_id = int(str(_parent_id) + str(_entity.phase_id))
+            elif _level == 'environment':
+                _tag = _entity.name
+                _node_id = int(str(_parent_id) + str(_entity.environment_id))
+
+            self.tree.create_node(
+                _tag, _node_id, parent=_parent_id, data=_entity)
+
+            # If we're not running a test, let anyone who cares know a Function
+            # was deleted.
+            if not self._test:
+                pub.sendMessage('inserted_usage_profile', tree=self.tree)
+        else:
+            _error_code = 2005
+            _msg = ("RAMSTK ERROR: Attempted to add an item to the Usage "
+                    "Profile with an undefined indenture level.  Level "
+                    "{0:s} was requested.  Must be one of mission, "
+                    "phase, or environment.").format(_level)
+
+        return _error_code, _msg
 
     def do_select_all(self, **kwargs):
         """
@@ -124,93 +224,12 @@ class UsageProfileDataModel(RAMSTKDataModel):
                                     parent=_phase_id,
                                     data=_environment)
 
-        return self.tree
+        # If we're not running a test and there were requirements returned,
+        # let anyone who cares know the Requirements have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_usage_profile', tree=self.tree)
 
-    def do_insert(self, **kwargs):
-        """
-        Add an entity to the Usage Profile and RAMSTK Program database..
-
-        :param int entity_id: the RAMSTK Program database Revision ID, Mission ID,
-                              Mission Phase ID to add the entity to.
-        :param int parent_id: the Node ID of the parent node in the treelib
-                              Tree().
-        :param str level: the type of entity to add to the Usage Profile.
-                          Levels are:
-
-                          * mission
-                          * phase
-                          * environment
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _tag = 'Tag'
-        _node_id = -1
-
-        _entity_id = kwargs['entity_id']
-        _parent_id = kwargs['parent_id']
-        _level = kwargs['level']
-
-        if _level == 'mission':
-            _entity = RAMSTKMission()
-            _entity.revision_id = _entity_id
-        elif _level == 'phase':
-            _entity = RAMSTKMissionPhase()
-            _entity.mission_id = _entity_id
-        elif _level == 'environment':
-            _entity = RAMSTKEnvironment()
-            _entity.phase_id = _entity_id
-        else:
-            _entity = None
-
-        _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
-                _entity,
-            ])
-
-        if _level == 'mission':
-            _tag = _entity.description
-            _node_id = _entity.mission_id
-        elif _level == 'phase':
-            _tag = _entity.name
-            _node_id = int(str(_parent_id) + str(_entity.phase_id))
-        elif _level == 'environment':
-            _tag = _entity.name
-            _node_id = int(str(_parent_id) + str(_entity.environment_id))
-
-        if _error_code == 0:
-            self.tree.create_node(
-                _tag, _node_id, parent=_parent_id, data=_entity)
-        else:
-            _error_code = 2105
-            _msg = 'RAMSTK ERROR: Attempted to add an item to the Usage ' \
-                   'Profile with an undefined indenture level.  Level {0:s} ' \
-                   'was requested.  Must be one of mission, phase, or ' \
-                   'environment.'.format(_level)
-
-        return _error_code, _msg
-
-    def do_delete(self, node_id):
-        """
-        Remove an entity from the Usage Profile and RAMSTK Program database.
-
-        :param int node_id: the Node ID of the entity to be removed.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
-            _error_code = 2005
-            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
-                          'Usage Profile entity with Node ID ' \
-                          '{0:d}.'.format(node_id)
-        else:
-            self.last_id = max(self.tree.nodes.keys())
-
-        return _error_code, _msg
+        return None
 
     def do_update(self, node_id):
         """
@@ -223,10 +242,15 @@ class UsageProfileDataModel(RAMSTKDataModel):
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
-        if _error_code != 0:
-            _error_code = 2006
-            _msg = 'RAMSTK ERROR: Attempted to save non-existent Usage Profile ' \
-                   'entity with Node ID {0:d}.'.format(node_id)
+        if _error_code == 0:
+            if not self._test:
+                _attributes = self.do_select(node_id).get_attributes()
+                pub.sendMessage(
+                    'updated_usage_profile', attributes=_attributes)
+        else:
+            _error_code = 2005
+            _msg = ("RAMSTK ERROR: Attempted to save non-existent Usage "
+                    "Profile entity with Node ID {0:d}.").format(node_id)
 
         return _error_code, _msg
 
@@ -316,7 +340,10 @@ class MissionDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _mission.mission_id)
+            try:
+                self.last_id = max(self.last_id, _mission.mission_id)
+            except TypeError:
+                self.last_id = _mission.mission_id
 
         _session.close()
 
@@ -473,7 +500,10 @@ class MissionPhaseDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _phase.phase_id)
+            try:
+                self.last_id = max(self.last_id, _phase.phase_id)
+            except TypeError:
+                self.last_id = _phase.phase_id
 
         _session.close()
 
@@ -631,7 +661,10 @@ class EnvironmentDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _environment.environment_id)
+            try:
+                self.last_id = max(self.last_id, _environment.environment_id)
+            except TypeError:
+                self.last_id = _environment.environment_id
 
         _session.close()
 

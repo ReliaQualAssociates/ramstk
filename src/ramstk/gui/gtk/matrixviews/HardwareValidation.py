@@ -1,3 +1,4 @@
+# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.matrixviews.HardwareValidation.py is part of the RAMSTK
@@ -10,11 +11,11 @@
 from pubsub import pub
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, GObject, Gtk
 from ramstk.gui.gtk import ramstk
 
 
-class MatrixView(gtk.HBox, ramstk.RAMSTKBaseMatrix):
+class MatrixView(Gtk.HBox, ramstk.RAMSTKBaseMatrix):
     """
     This is the Hardware:Validation RAMSTK Matrix View.
 
@@ -28,7 +29,7 @@ class MatrixView(gtk.HBox, ramstk.RAMSTKBaseMatrix):
         :param controller: the RAMSTK master data controller instance.
         :type controller: :py:class:`ramstk.RAMSTK.RAMSTK`
         """
-        gtk.HBox.__init__(self)
+        GObject.GObject.__init__(self)
         ramstk.RAMSTKBaseMatrix.__init__(self, controller, **kwargs)
 
         # Initialize private dictionary attributes.
@@ -45,38 +46,77 @@ class MatrixView(gtk.HBox, ramstk.RAMSTKBaseMatrix):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.hbx_tab_label = gtk.HBox()
+        self.hbx_tab_label = Gtk.HBox()
 
-        _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Hardware\nValidation") +
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._on_select_revision, 'selectedRevision')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Create the buttonbox for the Hardware:Validation Matrix View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Hardware:Validation
+                             Matrix View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _("Save the Hardware:Validation Matrix to the open RAMSTK "
+              "Program database."),
+            _("Create or refresh the Hardware:Validation Matrix.")
+        ]
+        _callbacks = [self._do_request_update, self._do_request_create]
+        _icons = ['save', 'view-refresh']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        _label = Gtk.Label()
+        _label.set_markup("<span weight='bold'>" + _("Hardware\nValidation") +
                           "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
+        _label.set_justify(Gtk.Justification.CENTER)
         _label.show_all()
         _label.set_tooltip_text(
-            _(u"Displays hardware/validation matrix for the "
-              u"selected revision."))
+            _("Displays hardware/validation matrix for the "
+              "selected revision."))
 
-        # self.hbx_tab_label.pack_start(_image)
-        self.hbx_tab_label.pack_end(_label)
+        # self.hbx_tab_label.pack_start(_image, True, True, 0)
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
         self.hbx_tab_label.show_all()
 
-        _scrolledwindow = gtk.ScrolledWindow()
+        _scrolledwindow = Gtk.ScrolledWindow()
         _scrolledwindow.add(self.matrix)
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
-        self.pack_end(_scrolledwindow, expand=True, fill=True)
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_end(_scrolledwindow, True, True, 0)
 
         self.show_all()
 
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
+        return None
 
     def _do_request_create(self, __button):
         """
         Save the currently selected Validation:Hardware Matrix row.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :py:class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -87,40 +127,13 @@ class MatrixView(gtk.HBox, ramstk.RAMSTKBaseMatrix):
         """
         Save the currently selected Hardware:Validation Matrix row.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :py:class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         return self._dtc_data_controller.request_do_update_matrix(
             self._revision_id, self._matrix_type)
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the buttonbox for the Hardware:Validation Matrix View.
-
-        :return: _buttonbox; the gtk.ButtonBox() for the Hardware:Validation
-                             Matrix View.
-        :rtype: :class:`gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Save the Hardware:Validation Matrix to the open RAMSTK "
-              u"Program database."),
-            _(u"Create or refresh the Hardware:Validation Matrix.")
-        ]
-        _callbacks = [self._do_request_update, self._do_request_create]
-        _icons = ['save', 'view-refresh']
-
-        _buttonbox = ramstk.RAMSTKBaseMatrix._make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def _on_select_revision(self, module_id):
         """
@@ -141,6 +154,6 @@ class MatrixView(gtk.HBox, ramstk.RAMSTKBaseMatrix):
             for _column in self.matrix.get_columns():
                 self.matrix.remove_column(_column)
             ramstk.RAMSTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
-                                                _row_hdrs, _(u"Hardware"))
+                                                   _row_hdrs, _("Hardware"))
 
         return None

@@ -6,8 +6,10 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKCommonDB File."""
 
+# Import standard library modules.
 import gettext
 
+# Import third party modules.
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -730,7 +732,7 @@ def create_common_db(**kwargs):
     _site_info.expire_on = _expire_date
     session.add(_site_info)
 
-    for __, _value in RAMSTK_CATEGORIES.items():
+    for __, _value in list(RAMSTK_CATEGORIES.items()):
         _record = RAMSTKCategory()
         _record.name = _value[0]
         _record.description = _value[1]
@@ -761,32 +763,32 @@ def create_common_db(**kwargs):
 
     # Environmental conditions, operating conditions and load histories for
     # PoF analysis.
-    for __, _value in RAMSTK_CONDITIONS.items():
+    for __, _value in list(RAMSTK_CONDITIONS.items()):
         _record = RAMSTKCondition()
         _record.description = _value[0]
         _record.cond_type = _value[1]
         session.add(_record)
-    for __, _value in RAMSTK_HISTORIES.items():
+    for __, _value in list(RAMSTK_HISTORIES.items()):
         _record = RAMSTKLoadHistory()
         _record.description = _value[0]
         session.add(_record)
 
     # Workgroups and affinity groups.
-    for __, _value in RAMSTK_GROUPS.items():
+    for __, _value in list(RAMSTK_GROUPS.items()):
         _record = RAMSTKGroup()
         _record.description = _value[0]
         _record.group_type = _value[1]
         session.add(_record)
 
     # Hazards for hazard analysis.
-    for __, _value in RAMSTK_HAZARDS.items():
+    for __, _value in list(RAMSTK_HAZARDS.items()):
         _record = RAMSTKHazards()
         _record.category = _value[0]
         _record.subcategory = _value[1]
         session.add(_record)
 
     # Manufacturers.
-    for __, _value in RAMSTK_MANUFACTURERS.items():
+    for __, _value in list(RAMSTK_MANUFACTURERS.items()):
         _record = RAMSTKManufacturer()
         _record.description = _value[0]
         _record.location = _value[1]
@@ -794,7 +796,7 @@ def create_common_db(**kwargs):
         session.add(_record)
 
     # Units of measure, damage measurements.
-    for __, _value in RAMSTK_MEASUREMENTS.items():
+    for __, _value in list(RAMSTK_MEASUREMENTS.items()):
         _record = RAMSTKMeasurement()
         _record.code = _value[0]
         _record.description = _value[1]
@@ -802,7 +804,7 @@ def create_common_db(**kwargs):
         session.add(_record)
 
     # Detection methods for incident reports.
-    for __, _value in RAMSTK_METHODS.items():
+    for __, _value in list(RAMSTK_METHODS.items()):
         _record = RAMSTKMethod()
         _record.name = _value[0]
         _record.description = _value[1]
@@ -810,14 +812,14 @@ def create_common_db(**kwargs):
         session.add(_record)
 
     # Damage models.
-    for __, _value in RAMSTK_MODELS.items():
+    for __, _value in list(RAMSTK_MODELS.items()):
         _record = RAMSTKModel()
         _record.description = _value[0]
         _record.model_type = _value[1]
         session.add(_record)
 
     # This table needs to be moved to the RAMSTK Program database.
-    for __, _value in RAMSTK_RPNS.items():
+    for __, _value in list(RAMSTK_RPNS.items()):
         _record = RAMSTKRPN()
         _record.name = _value[0]
         _record.description = _value[1]
@@ -826,13 +828,13 @@ def create_common_db(**kwargs):
         session.add(_record)
 
     # Stakeholders.
-    for __, _value in RAMSTK_STAKEHOLDERS.items():
+    for __, _value in list(RAMSTK_STAKEHOLDERS.items()):
         _record = RAMSTKStakeholders()
         _record.stakeholder = _value[0]
         session.add(_record)
 
     # Action and incident statuses.
-    for __, _value in RAMSTK_STATUSES.items():
+    for __, _value in list(RAMSTK_STATUSES.items()):
         _record = RAMSTKStatus()
         _record.name = _value[0]
         _record.description = _value[1]
@@ -840,7 +842,7 @@ def create_common_db(**kwargs):
         session.add(_record)
 
     # Incident, requirement, and validation types.
-    for __, _value in RAMSTK_TYPES.items():
+    for __, _value in list(RAMSTK_TYPES.items()):
         _record = RAMSTKType()
         _record.code = _value[0]
         _record.description = _value[1]
@@ -849,20 +851,20 @@ def create_common_db(**kwargs):
 
     _user = RAMSTKUser()
     if not __test:
-        _yn = raw_input(
-            _(u"Would you like to add an RAMSTK Administrator? ([y]/n): ")
+        _yn = input(
+            _("Would you like to add an RAMSTK Administrator? ([y]/n): ")
         ) or 'y'
 
         if _yn.lower() == 'y':
-            _user.user_lname = raw_input(
-                _(u"Enter the RAMSTK Administrator's last name (surname): "))
-            _user.user_fname = raw_input(
-                _(u"Enter the RAMSTK Administrator's first name (given name): "
+            _user.user_lname = input(
+                _("Enter the RAMSTK Administrator's last name (surname): "))
+            _user.user_fname = input(
+                _("Enter the RAMSTK Administrator's first name (given name): "
                   ))
-            _user.user_email = raw_input(
-                _(u"Enter the RAMSTK Administrator's e-mail address: "))
-            _user.user_phone = raw_input(
-                _(u"Enter the RAMSTK Administrator's phone number: "))
+            _user.user_email = input(
+                _("Enter the RAMSTK Administrator's e-mail address: "))
+            _user.user_phone = input(
+                _("Enter the RAMSTK Administrator's phone number: "))
             _user.user_group_id = '1'
     else:
         _user.user_lname = 'Tester'

@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Definition Package Data Model Module."""
 
+# Import third party packages.
+from pubsub import pub
+
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
 from ramstk.dao import RAMSTKFailureDefinition
@@ -22,7 +25,7 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
 
     _tag = 'Failure Definitions'
 
-    def __init__(self, dao):
+    def __init__(self, dao, **kwargs):
         """
         Initialize a Failure Definition data model instance.
 
@@ -37,6 +40,7 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -44,35 +48,32 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def do_select_all(self, **kwargs):
+    def do_delete(self, node_id):
         """
-        Retrieve all the Failure Definitions from the RAMSTK Program database.
+        Remove a record from the RAMSTKFailureDefinition table.
 
-        This method retrieves all the records from the RAMSTKFailureDefinition
-        table in the connected RAMSTK Program database.  It then add each to the
-        Failure Definition data model treelib.Tree().
-
-        :return: tree; the treelib Tree() of RAMSTKFailureDefinition data models.
-        :rtype: :py:class:`treelib.Tree`
+        :param int node_id: the ID of the Failure Definition to be
+                                  removed.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
-        _revision_id = kwargs['revision_id']
-        _session = RAMSTKDataModel.do_select_all(self)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
-        for _definition in _session.query(RAMSTKFailureDefinition).filter(
-                RAMSTKFailureDefinition.revision_id == _revision_id).all():
-            self.tree.create_node(
-                _definition.definition,
-                _definition.definition_id,
-                parent=0,
-                data=_definition)
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RAMSTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
+                          'Failure Definition ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _definition.definition_id)
+            # If we're not running a test, let anyone who cares know a Failure
+            # Definition was deleted.
+            if not self._test:
+                pub.sendMessage('deleted_definition', tree=self.tree)
 
-        _session.close()
-
-        return self.tree
+        return _error_code, _msg
 
     def do_insert(self, **kwargs):
         """
@@ -95,31 +96,55 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
                 _definition.definition_id,
                 parent=0,
                 data=_definition)
+
             self.last_id = _definition.definition_id
 
-        return _error_code, _msg
-
-    def do_delete(self, node_id):
-        """
-        Remove a record from the RAMSTKFailureDefinition table.
-
-        :param int node_id: the ID of the Failure Definition to be
-                                  removed.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
-            _error_code = 2005
-            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
-                          'Failure Definition ID {0:d}.'.format(node_id)
-        else:
-            self.last_id = max(self.tree.nodes.keys())
+            # If we're not running a test, let anyone who cares know a new
+            # Failure Definition was inserted.
+            if not self._test:
+                pub.sendMessage('inserted_definition', tree=self.tree)
 
         return _error_code, _msg
+
+    def do_select_all(self, **kwargs):
+        """
+        Retrieve all the Failure Definitions from the RAMSTK Program database.
+
+        This method retrieves all the records from the RAMSTKFailureDefinition
+        table in the connected RAMSTK Program database.  It then add each to
+        the Failure Definition data model treelib.Tree().
+
+        :return: tree; the treelib Tree() of RAMSTKFailureDefinition data
+                 models.
+        :rtype: :class:`treelib.Tree`
+        """
+        _revision_id = kwargs['revision_id']
+        _session = RAMSTKDataModel.do_select_all(self)
+
+        for _definition in _session.query(RAMSTKFailureDefinition).filter(
+                RAMSTKFailureDefinition.revision_id == _revision_id).all():
+            self.tree.create_node(
+                _definition.definition,
+                _definition.definition_id,
+                parent=0,
+                data=_definition)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RAMSTKDataModel.__init__
+            try:
+                self.last_id = max(self.last_id, _definition.definition_id)
+            except TypeError:
+                self.last_id = _definition.definition_id
+
+        _session.close()
+
+        # If we're not running a test and there were failure definitions
+        # returned, let anyone who cares know the Failure Definitions have been
+        # selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_definitions', tree=self.tree)
+
+        return None
 
     def do_update(self, node_id):
         """
@@ -132,16 +157,22 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
-        if _error_code != 0:
-            _error_code = 2207
-            _msg = 'RAMSTK ERROR: Attempted to save non-existent Failure ' \
-                   'Definition ID {0:d}.'.format(node_id)
+        # If there was no error and we're not running a test, let anyone
+        # who cares know a Function was updated.
+        if _error_code == 0:
+            if not self._test:
+                _attributes = self.do_select(node_id).get_attributes()
+                pub.sendMessage('updated_definition', attributes=_attributes)
+        else:
+            _error_code = 2005
+            _msg = ("RAMSTK ERROR: Attempted to save non-existent "
+                    "Failure Definition ID {0:d}.").format(node_id)
 
         return _error_code, _msg
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Upsate all RAMSTKFailureDefinition records.
+        Update all RAMSTKFailureDefinition records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)

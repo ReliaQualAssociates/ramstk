@@ -35,7 +35,7 @@ class AllocationDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmAllocation(dao),
+            model=dtmAllocation(dao, **kwargs),
             ramstk_module='allocation',
             **kwargs)
 
@@ -44,7 +44,7 @@ class AllocationDataController(RAMSTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtm_hardware_bom = dtmHardwareBoM(dao)
+        self._dtm_hardware_bom = dtmHardwareBoM(dao, **kwargs)
 
         # Initialize public dictionary attributes.
         self.dic_hardware_data = {}
@@ -144,20 +144,20 @@ class AllocationDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
 
-    def request_do_select_all(self, **kwargs):
+    def request_do_select_all(self, attributes):
         """
-        Retrieve the treelib Tree() from the Data Model.
+        Retrieve the treelib Tree() from the Allocation Data Model.
 
-        :return: tree; the treelib Tree() of RAMSTKAllocation models in the
-                 Allocation tree.
-        :rtype: dict
+        :return: None
+        :rtype: None
         """
         # Select the Hardware BoM tree and retrieve the system hazard rate.
-        _tree = self._dtm_hardware_bom.do_select_all(**kwargs)
-        self.system_hazard_rate = _tree.children(
-            _tree.root)[0].data['hazard_rate_logistics']
+        self._dtm_hardware_bom.do_select_all(
+            revision_id=attributes['revision_id'])
+        self.system_hazard_rate = self._dtm_hardware_bom.tree.children(
+            self._dtm_hardware_bom.tree.root)[0].data['hazard_rate_logistics']
 
-        for _node in _tree.all_nodes()[1:]:
+        for _node in self._dtm_hardware_bom.tree.all_nodes()[1:]:
             self.dic_hardware_data[_node.identifier] = [
                 _node.data['name'], _node.data['availability_logistics'],
                 _node.data['hazard_rate_logistics'],
@@ -165,8 +165,7 @@ class AllocationDataController(RAMSTKDataController):
                 _node.data['reliability_logistics']
             ]
 
-        # Select and return the Allocation treelib Tree().
-        return RAMSTKDataController.request_do_select_all(self, **kwargs)
+        return RAMSTKDataController.request_do_select_all(self, attributes)
 
     def request_do_select_children(self, node_id):
         """

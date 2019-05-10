@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Similar Item Analysis Data Model."""
 
+# Import third party packages.
+from pubsub import pub
 from treelib.exceptions import NodeIDAbsentError
 
 # Import other RAMSTK modules.
@@ -23,7 +25,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
 
     _tag = 'SimilarItems'
 
-    def __init__(self, dao):
+    def __init__(self, dao, **kwargs):
         """
         Initialize a SimilarItem data model instance.
 
@@ -38,6 +40,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -49,8 +52,8 @@ class SimilarItemDataModel(RAMSTKDataModel):
         """
         Retrieve all the SimilarItems from the RAMSTK Program database.
 
-        This method retrieves all the records from the RAMSTKSimilarItem table in
-        the connected RAMSTK Program database.  It then adds each to the
+        This method retrieves all the records from the RAMSTKSimilarItem table
+        in the connected RAMSTK Program database.  It then adds each to the
         SimilarItem data model treelib.Tree().
 
         :param int revision_id: the Revision ID the SimilarItems are associated
@@ -75,11 +78,19 @@ class SimilarItemDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _similar_item.hardware_id)
+            try:
+                self.last_id = max(self.last_id, _similar_item.hardware_id)
+            except TypeError:
+                self.last_id = _similar_item.hardware_id
 
         _session.close()
 
-        return self.tree
+        # If we're not running a test and there were requirements returned,
+        # let anyone who cares know the Requirements have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_similar_items', tree=self.tree)
+
+        return None
 
     def do_select_children(self, node_id):
         """
@@ -119,7 +130,10 @@ class SimilarItemDataModel(RAMSTKDataModel):
             parent=_similar_item.parent_id,
             data=_similar_item)
 
-        self.last_id = max(self.last_id, _similar_item.hardware_id)
+        try:
+            self.last_id = max(self.last_id, _similar_item.hardware_id)
+        except TypeError:
+            self.last_id = _similar_item.hardware_id
 
         return _error_code, _msg
 
@@ -239,7 +253,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
         :rtype: bool
         """
         _return = False
-        _description = ['', '', '', '', '', '', '', '', '', '']
+        _description = [b'', b'', b'', b'', b'', b'', b'', b'', b'', b'']
 
         # Retrieve the change descriptions from all the child elements and
         # concatenate them together to form the parent descriptions.
@@ -247,25 +261,25 @@ class SimilarItemDataModel(RAMSTKDataModel):
             _attributes = _child.data.get_attributes()
 
             _description[0] = _description[0] + \
-                              _attributes['change_description_1'] + '\n\n'
+                              _attributes['change_description_1'] + b'\n\n'
             _description[1] = _description[1] + \
-                              _attributes['change_description_2'] + '\n\n'
+                              _attributes['change_description_2'] + b'\n\n'
             _description[2] = _description[2] + \
-                              _attributes['change_description_3'] + '\n\n'
+                              _attributes['change_description_3'] + b'\n\n'
             _description[3] = _description[3] + \
-                              _attributes['change_description_4'] + '\n\n'
+                              _attributes['change_description_4'] + b'\n\n'
             _description[4] = _description[4] + \
-                              _attributes['change_description_5'] + '\n\n'
+                              _attributes['change_description_5'] + b'\n\n'
             _description[5] = _description[5] + \
-                              _attributes['change_description_6'] + '\n\n'
+                              _attributes['change_description_6'] + b'\n\n'
             _description[6] = _description[6] + \
-                              _attributes['change_description_7'] + '\n\n'
+                              _attributes['change_description_7'] + b'\n\n'
             _description[7] = _description[7] + \
-                              _attributes['change_description_8'] + '\n\n'
+                              _attributes['change_description_8'] + b'\n\n'
             _description[8] = _description[8] + \
-                              _attributes['change_description_9'] + '\n\n'
+                              _attributes['change_description_9'] + b'\n\n'
             _description[9] = _description[9] + \
-                              _attributes['change_description_10'] + '\n\n'
+                              _attributes['change_description_10'] + b'\n\n'
 
         # Now set the parent change descriptions to the concatenated versions
         # created above.

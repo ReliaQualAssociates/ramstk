@@ -16,11 +16,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'category_type': u'hardware',
+    'category_type': 'hardware',
     'category_id': 1,
-    'name': u'IC',
+    'name': 'IC',
     'value': 1,
-    'description': u'Integrated Circuit'
+    'description': 'Integrated Circuit'
 }
 
 

@@ -4,13 +4,13 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Allocation Work View."""
+"""The RAMSTK Allocation Work View."""
 
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
 
@@ -18,12 +18,12 @@ class Allocation(RAMSTKWorkView):
     """
     Display Allocation attribute data in the Work Book.
 
-    The WorkView displays all the attributes for the Failure Mode and Effects
-    Analysis (Allocation). The attributes of a Allocation Work View are:
+    The WorkView displays all the attributes for the Allocation. The
+    attributes of a Allocation Work View are:
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
-                           Functional Allocation attribute.
+    :ivar _lst_handler_id: list containing the ID's of the callback
+                           signals for each Gtk.Widget() associated with
+                           an editable Allocation attribute.
 
     +-------+-------------------------------------------+
     | Index | Widget - Signal                           |
@@ -64,8 +64,8 @@ class Allocation(RAMSTKWorkView):
             controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
             controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['allocation'])
         _fmt_path = "/root/tree[@name='Allocation']/column"
-        _tooltip = _(u"Displays the Allocation Analysis for the currently "
-                     u"selected Hardware item.")
+        _tooltip = _("Displays the Allocation Analysis for the "
+                     "currently selected Hardware item.")
 
         self.treeview = ramstk.RAMSTKTreeView(
             _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
@@ -74,26 +74,119 @@ class Allocation(RAMSTKWorkView):
 
         self.cmbAllocationGoal = ramstk.RAMSTKComboBox(
             tooltip=_(
-                u"Selects the goal measure for the selected hardware assembly."
+                "Selects the goal measure for the selected hardware assembly."
             ))
         self.cmbAllocationMethod = ramstk.RAMSTKComboBox(
             tooltip=_(
-                u"Selects the method for allocating the reliability goal for "
-                u"the selected hardware assembly."))
+                "Selects the method for allocating the reliability goal for "
+                "the selected hardware assembly."))
         self.txtHazardRateGoal = ramstk.RAMSTKEntry(
             width=125,
             tooltip=(
-                u"Displays the hazard rate goal for the selected hardware "
-                u"item."))
+                "Displays the hazard rate goal for the selected hardware "
+                "item."))
         self.txtMTBFGoal = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"Displays the MTBF goal for the selected hardware item."))
+                "Displays the MTBF goal for the selected hardware item."))
         self.txtReliabilityGoal = ramstk.RAMSTKEntry(
             width=125,
             tooltip=_(
-                u"Displays the reliability goal for the selected hardware "
-                u"item."))
+                "Displays the reliability goal for the selected hardware "
+                "item."))
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._on_select, 'selectedHardware')
+        pub.subscribe(self._do_clear_page, 'closedProgram')
+
+    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Make the Gtk.ButtonBox() for the Allocation class Work View.
+
+        :return: _buttonbox; the Gtk.ButtonBox() for the Allocation Work View.
+        :rtype: :class:`Gtk.ButtonBox`
+        """
+        _tooltips = [
+            _("Calculate the currently selected child hardware item.")
+        ]
+
+        _callbacks = [self._do_request_calculate]
+
+        _icons = ['calculate']
+
+        _buttonbox = ramstk.do_make_buttonbox(
+            self,
+            icons=_icons,
+            tooltips=_tooltips,
+            callbacks=_callbacks,
+            orientation='vertical',
+            height=-1,
+            width=-1)
+
+        return _buttonbox
+
+    def __make_goalbox(self):
+        """
+        Make the Allocation methods and goal-setting container.
+
+        :return: a Gtk.Frame() containing the widgets used to select the
+                 allocation method and goals.
+        :rtype: :class:`Gtk.Frame`
+        """
+        # Load the method and goal comboboxes.
+        self.cmbAllocationGoal.do_load_combo([[_("Reliability"), 0],
+                                              [_("Hazard Rate"), 1],
+                                              [_("MTBF"), 2]])
+        self.cmbAllocationMethod.do_load_combo(
+            [[_("Equal Apportionment"), 0], [_("AGREE Apportionment"), 1],
+             [_("ARINC Apportionment"), 2],
+             [_("Feasibility of Objectives"), 3]])
+
+        _fixed = Gtk.Fixed()
+
+        _fixed.put(ramstk.RAMSTKLabel(_("Select Allocation Method")), 5, 5)
+        _fixed.put(self.cmbAllocationMethod, 5, 30)
+        _fixed.put(ramstk.RAMSTKLabel(_("Select Goal Metric")), 5, 70)
+        _fixed.put(self.cmbAllocationGoal, 5, 95)
+        _fixed.put(ramstk.RAMSTKLabel(_("R(t) Goal")), 5, 135)
+        _fixed.put(self.txtReliabilityGoal, 5, 160)
+        _fixed.put(ramstk.RAMSTKLabel(_("h(t) Goal")), 5, 200)
+        _fixed.put(self.txtHazardRateGoal, 5, 225)
+        _fixed.put(ramstk.RAMSTKLabel(_("MTBF Goal")), 5, 265)
+        _fixed.put(self.txtMTBFGoal, 5, 290)
+
+        _frame = ramstk.RAMSTKFrame(label=_("Allocation Goals and Method"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_fixed)
+
+        self.txtHazardRateGoal.props.editable = 0
+        self.txtHazardRateGoal.set_sensitive(0)
+        self.txtMTBFGoal.props.editable = 0
+        self.txtMTBFGoal.set_sensitive(0)
+        self.txtReliabilityGoal.props.editable = 0
+        self.txtReliabilityGoal.set_sensitive(0)
+
+        return _frame
+
+    def __make_ui(self):
+        """
+        Make the Allocation RAMSTKTreeview().
+
+        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
+        :rtype: :class:`Gtk.Frame`
+        """
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                 Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.add(self.treeview)
+
+        _frame = ramstk.RAMSTKFrame(label=_("Allocation Analysis"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
 
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))
@@ -106,9 +199,11 @@ class Allocation(RAMSTKWorkView):
             self.cmbAllocationGoal.connect('changed', self._on_combo_changed,
                                            3))
         self._lst_handler_id.append(
-            self.txtReliabilityGoal.connect('focus_out_event', self._on_focus_out, 4))
+            self.txtReliabilityGoal.connect('focus_out_event',
+                                            self._on_focus_out, 4))
         self._lst_handler_id.append(
-            self.txtHazardRateGoal.connect('focus_out_event', self._on_focus_out, 5))
+            self.txtHazardRateGoal.connect('focus_out_event',
+                                           self._on_focus_out, 5))
         self._lst_handler_id.append(
             self.txtMTBFGoal.connect('focus_out_event', self._on_focus_out, 6))
 
@@ -119,7 +214,7 @@ class Allocation(RAMSTKWorkView):
                 self._lst_col_order[10], self._lst_col_order[11]
         ]:
             _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cell_renderers()
+                self._lst_col_order[i]).get_cells()
             try:
                 _cell[0].connect('edited', self._do_edit_cell, i,
                                  self.treeview.get_model())
@@ -128,23 +223,24 @@ class Allocation(RAMSTKWorkView):
                                  self.treeview.get_model())
 
         _label = ramstk.RAMSTKLabel(
-            _(u"Allocation"),
+            _("Allocation"),
             height=30,
             width=-1,
-            justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays the Allocation analysis for the selected "
-                      u"hardware item."))
-        self.hbx_tab_label.pack_start(_label)
+            justify=Gtk.Justification.CENTER,
+            tooltip=_("Displays the Allocation analysis for the selected "
+                      "hardware item."))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self._make_buttonbox(), False, True)
-        _hbox = gtk.HBox()
-        _hbox.pack_start(self._make_goalbox(), False, True)
-        _hbox.pack_end(self._make_page(), True, True)
-        self.pack_end(_hbox, True, True)
+        self.pack_start(self.__make_buttonbox(), False, True, 0)
+
+        _hbox = Gtk.HBox()
+        _hbox.pack_start(self.__make_goalbox(), False, True, 0)
+        _hbox.pack_end(_frame, True, True, 0)
+        self.pack_end(_hbox, True, True, 0)
+
         self.show_all()
 
-        pub.subscribe(self._on_select, 'selectedHardware')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
+        return None
 
     def _do_clear_page(self):
         """
@@ -197,13 +293,13 @@ class Allocation(RAMSTKWorkView):
         """
         Handle edits of the Allocation Work View RAMSTKTreeview().
 
-        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the gtk.CellRenderer()
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
                          that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
         :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                             Gtk.CellRenderer().
+        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
                                     belongs to.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -302,10 +398,10 @@ class Allocation(RAMSTKWorkView):
                         _model.append(None, _data)
                     except TypeError:
                         _error_code = 1
-                        _user_msg = _(u"One or more Allocation line items had "
-                                      u"the wrong data type in it's data "
-                                      u"package and is not displayed in the "
-                                      u"Allocation.")
+                        _user_msg = _("One or more Allocation line items had "
+                                      "the wrong data type in it's data "
+                                      "package and is not displayed in the "
+                                      "Allocation.")
                         _debug_msg = ("RAMSTK ERROR: Data for Allocation ID "
                                       "{0:s} for Hardware ID {1:s} is the "
                                       "wrong type for one or more "
@@ -313,9 +409,9 @@ class Allocation(RAMSTKWorkView):
                                           str(_node_id), str(self._parent_id)))
                     except ValueError:
                         _error_code = 1
-                        _user_msg = _(u"One or more Allocation line items was "
-                                      u"missing some of it's data and is not "
-                                      u"displayed in the Allocation.")
+                        _user_msg = _("One or more Allocation line items was "
+                                      "missing some of it's data and is not "
+                                      "displayed in the Allocation.")
                         _debug_msg = ("RAMSTK ERROR: Too few fields for "
                                       "Allocation ID {0:s} for Hardware ID "
                                       "{1:s}.".format(
@@ -323,9 +419,9 @@ class Allocation(RAMSTKWorkView):
                 except AttributeError:
                     if _node_id != 0:
                         _error_code = 1
-                        _user_msg = _(u"One or more Allocation line items was "
-                                      u"missing it's data package and is not "
-                                      u"displayed in the Allocation.")
+                        _user_msg = _("One or more Allocation line items was "
+                                      "missing it's data package and is not "
+                                      "displayed in the Allocation.")
                         _debug_msg = ("RAMSTK ERROR: There is no data package "
                                       "for Allocation ID {0:s} for Hardware "
                                       "ID {1:s}.".format(
@@ -337,7 +433,7 @@ class Allocation(RAMSTKWorkView):
         """
         Calculate the Allocation RPN or criticality.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -350,7 +446,7 @@ class Allocation(RAMSTKWorkView):
         """
         Calculate the Allocation RPN or criticality for all items.
 
-        :param __button: the gtk.ToolButton() that called this method.
+        :param __button: the Gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
         :rtype: bool
         """
@@ -363,14 +459,14 @@ class Allocation(RAMSTKWorkView):
         """
         Request to save the currently selected entity in the Allocation.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update(self._parent_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
@@ -378,146 +474,25 @@ class Allocation(RAMSTKWorkView):
         """
         Request to save all the entities in the Allocation.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`.
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(gtk.gdk.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
         _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         return _return
 
     def _do_set_visible(self, **kwargs):
         """
-        Set the Allocation treeview columns visible and hidden.
+        Set the Allocation treeview columns visible, hidden, and/or editable.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _visible = kwargs['visible']
-        _hidden = kwargs['hidden']
-        _editable = kwargs['editable']
-        _return = False
-
-        for _col in _hidden:
-            self.treeview.get_column(_col).set_visible(0)
-        for _col in _visible:
-            self.treeview.get_column(_col).set_visible(1)
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'light gray')
-                    _cell.set_property('editable', 0)
-                except TypeError:
-                    _cell.set_property('cell-background', 'light gray')
-
-        for _col in _editable:
-            _column = self.treeview.get_column(_col)
-            _cells = _column.get_cell_renderers()
-            for __, _cell in enumerate(_cells):
-                try:
-                    _cell.set_property('background', 'white')
-                    _cell.set_property('editable', 1)
-                except TypeError:
-                    _cell.set_property('cell-background', 'white')
-
-        return _return
-
-    def _make_buttonbox(self, **kwargs):  # pylin: disable=unused-argument
-        """
-        Make the gtk.ButtonBox() for the Allocation class Work View.
-
-        :return: _buttonbox; the gtk.ButtonBox() for the Allocation Work View.
-        :rtype: :class:`gtk.ButtonBox`
-        """
-        _tooltips = [
-            _(u"Calculate the currently selected child hardware item."),
-            _(u"Save the currently selected line in the Allocation to the "
-              u"open RAMSTK Program database."),
-            _(u"Save the Allocation to the open RAMSTK Program database.")
-        ]
-
-        _callbacks = [
-            self._do_request_calculate, self._do_request_update,
-            self._do_request_update_all
-        ]
-
-        _icons = ['calculate', 'save', 'save-all']
-
-        _buttonbox = RAMSTKWorkView._make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def _make_goalbox(self):
-        """
-        Make the Allocation methods and goal-setting container.
-
-        :return: a gtk.Frame() containing the widgets used to select the
-                 allocation method and goals.
-        :rtype: :class:`gtk.Frame`
-        """
-        # Load the method and goal comboboxes.
-        self.cmbAllocationGoal.do_load_combo(
-            [[_(u"Reliability"), 0], [_(u"Hazard Rate"), 1], [_(u"MTBF"), 2]])
-        self.cmbAllocationMethod.do_load_combo(
-            [[_(u"Equal Apportionment"), 0], [_(u"AGREE Apportionment"), 1],
-             [_(u"ARINC Apportionment"),
-              2], [_(u"Feasibility of Objectives"), 3]])
-
-        _fixed = gtk.Fixed()
-
-        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Allocation Method")), 5, 5)
-        _fixed.put(self.cmbAllocationMethod, 5, 30)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"Select Goal Metric")), 5, 70)
-        _fixed.put(self.cmbAllocationGoal, 5, 95)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"R(t) Goal")), 5, 135)
-        _fixed.put(self.txtReliabilityGoal, 5, 160)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"h(t) Goal")), 5, 200)
-        _fixed.put(self.txtHazardRateGoal, 5, 225)
-        _fixed.put(ramstk.RAMSTKLabel(_(u"MTBF Goal")), 5, 265)
-        _fixed.put(self.txtMTBFGoal, 5, 290)
-
-        _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Goals and Method"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_fixed)
-
-        self.txtHazardRateGoal.props.editable = 0
-        self.txtHazardRateGoal.set_sensitive(0)
-        self.txtMTBFGoal.props.editable = 0
-        self.txtMTBFGoal.set_sensitive(0)
-        self.txtReliabilityGoal.props.editable = 0
-        self.txtReliabilityGoal.set_sensitive(0)
-
-        return _frame
-
-    def _make_page(self):
-        """
-        Make the Allocation RAMSTKTreeview().
-
-        :return: a gtk.Frame() containing the instance of gtk.Treeview().
-        :rtype: :class:`gtk.Frame`
-        """
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = ramstk.RAMSTKFrame(label=_(u"Allocation Analysis"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        self.treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-        return _frame
+        return self.treeview.do_set_visible_columns(**kwargs)
 
     def _on_button_press(self, treeview, event):
         """
@@ -525,7 +500,7 @@ class Allocation(RAMSTKWorkView):
 
         :param treeview: the Allocation TreeView RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`.
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                       * 1 = left
@@ -536,7 +511,7 @@ class Allocation(RAMSTKWorkView):
                       * 8 =
                       * 9 =
 
-        :type event: :class:`gtk.gdk.Event`.
+        :type event: :class:`Gdk.Event`.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -549,38 +524,18 @@ class Allocation(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['calculate'])
-            _menu_item.set_label(_(u"Calculate"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_calculate)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save Allocation"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = ['calculate', 'save', 'save-all']
+            _labels = [_("Calculate"), _("Save"), _("Save All")]
+            _callbacks = [
+                self._do_request_calculate, self._do_request_update,
+                self._do_request_update_all
+            ]
+            RAMSTKWorkView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -588,11 +543,11 @@ class Allocation(RAMSTKWorkView):
 
     def _on_combo_changed(self, combo, index):
         """
-        Respond to gtk.ComboBox() 'changed' signals.
+        Respond to Gtk.ComboBox() 'changed' signals.
 
-        :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
+        :param Gtk.ComboBox combo: the Gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list oc the callback
-                          signal associated with the gtk.ComboBox() that
+                          signal associated with the Gtk.ComboBox() that
                           called this method.
         :return: None
         :rtype: None
@@ -631,8 +586,8 @@ class Allocation(RAMSTKWorkView):
                     _hidden = [0, 1, 4, 5, 6, 7, 20, 21]
                     _editable = [3, 8, 9, 10, 11]
 
-                self._do_set_visible(visible=_visible, hidden=_hidden,
-                                     editable=_editable)
+                self._do_set_visible(
+                    visible=_visible, hidden=_hidden, editable=_editable)
 
             elif index == 3:
                 _parent.goal_measure_id = combo.get_active()
@@ -689,13 +644,13 @@ class Allocation(RAMSTKWorkView):
 
     def _on_focus_out(self, entry, __event, index):
         """
-        Respond to gtk.Entry() 'changed' signals.
+        Respond to Gtk.Entry() 'changed' signals.
 
-        :param gtk.Entry entry: the gtk.Entry() that called this method.
-        :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
+        :param Gtk.Entry entry: the Gtk.Entry() that called this method.
+        :param Gdk.Event __event: the Gdk.Event() that called this
                                       method.
         :param int index: the index in the handler ID list oc the callback
-                          signal associated with the gtk.Entry() that
+                          signal associated with the Gtk.Entry() that
                           called this method.
         :return: False if successful or True is an error is encountered.
         :rtype: bool
@@ -705,7 +660,7 @@ class Allocation(RAMSTKWorkView):
         _parent = self._dtc_data_controller.request_do_select(self._parent_id)
         if _parent is not None:
             if index == 4:  # Reliability goal
-                print entry.get_text()
+                print(entry.get_text())
                 _parent.reliability_goal = float(entry.get_text())
                 _parent.calculate_goals()
 
@@ -770,8 +725,8 @@ class Allocation(RAMSTKWorkView):
 
         RAMSTKWorkView.on_select(
             self,
-            title=_(u"Allocating Reliability Requirement for Hardware ID "
-                    u"{0:d}").format(self._parent_id),
+            title=_("Allocating Reliability Requirement for Hardware ID "
+                    "{0:d}").format(self._parent_id),
             error_code=_error_code,
             user_msg=_user_msg,
             debug_msg=_debug_msg)

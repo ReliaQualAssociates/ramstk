@@ -1,29 +1,17 @@
-graft src
+include *
 
-global-exclude *.pyc
-global-exclude *.fuse*
-
-include *.md
-include *.py
-include *.rc
-include *.txt
-include *.yml
-include .coveragerc
-include .pylintrc
-include pytest.ini
-include LICENSE
-
-exclude requirements.txt
 exclude .bandit
-exclude tests
+exclude .commitmessage.git
+exclude .coverage
 
-recursive-include .circleci *.yml
-recursive-include data *.conf *.desktop *.ico *.png *.xml
-recursive-include docs *.md
-recursive-include docs *.py
-recursive-include docs *.rst
-recursive-include docs *.tex
-recursive-include locale *.pot
-recursive-include src/ramstk *.py
+graft src
+graft data
+graft docs
+graft locale
 
-recursive-exclude tests *
+global-exclude *.py[co]
+global-exclude *.aux
+global-exclude *.log
+global-exclude *.synctex.gz
+
+prune docs/api/build

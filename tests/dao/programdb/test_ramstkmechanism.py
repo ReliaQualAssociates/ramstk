@@ -21,7 +21,7 @@ ATTRIBUTES = {
     'rpn_occurrence_new': 0,
     'rpn_occurrence': 0,
     'mode_id': 1,
-    'description': u'Test Failure Mechanism #1',
+    'description': 'Test Failure Mechanism #1',
     'rpn_detection_new': 0,
     'rpn_detection': 0,
     'rpn': 0,

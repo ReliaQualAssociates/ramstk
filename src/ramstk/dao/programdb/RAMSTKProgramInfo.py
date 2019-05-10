@@ -17,7 +17,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKProgramInfo(RAMSTK_BASE):
     """
-    Class to represent the table ramstk_program_info in the RAMSTK Program database.
+    Class to represent table ramstk_program_info in the RAMSTK Program database.
 
     This table has a one-to-one relationship with RAMSTKProgramStatus.
     """
@@ -130,6 +130,6 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
             _error_code = 1
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKProgramInfo.set_attributes().".format(_err)
+                   "RAMSTKProgramInfo.set_attributes().".format(str(_err))
 
         return _error_code, _msg

@@ -1,13 +1,13 @@
-import Capacitor
-import Connection
-import Crystal
-import Filter
-import Fuse
-import Inductor
-import IntegratedCircuit
-import Lamp
-import Meter
-import Relay
-import Resistor
-import Semiconductor
-import Switch
+from . import Capacitor
+from . import Connection
+from . import Crystal
+from . import Filter
+from . import Fuse
+from . import Inductor
+from . import IntegratedCircuit
+from . import Lamp
+from . import Meter
+from . import Relay
+from . import Resistor
+from . import Semiconductor
+from . import Switch

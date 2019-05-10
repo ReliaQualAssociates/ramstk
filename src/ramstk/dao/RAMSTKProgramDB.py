@@ -6,6 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKProgramDB File."""
 
+# Import third party modules.
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -13,8 +14,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 RAMSTK_BASE = declarative_base()
 
 
-def create_program_db(**kwargs):
-    """Create and populate a RAMSTK Program database."""
+def do_make_tables(engine):
+    """Make all the tables in the RAMSTK Program database."""
     from ramstk.dao import (
         RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl,
         RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,
@@ -30,16 +31,6 @@ def create_program_db(**kwargs):
         RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest, RAMSTKTestMethod,
         RAMSTKUnits, RAMSTKValidation)
 
-    uri = kwargs['database']
-
-    # Create and populate the RAMSTK Program test database.
-    engine = create_engine(uri, echo=False)
-    session = scoped_session(sessionmaker())
-
-    session.remove()
-    session.configure(bind=engine, autoflush=False, expire_on_commit=False)
-
-    # Create all the tables in the RAMSTK Program database.
     RAMSTKAction.__table__.create(bind=engine)
     RAMSTKAllocation.__table__.create(bind=engine)
     RAMSTKCause.__table__.create(bind=engine)
@@ -82,6 +73,26 @@ def create_program_db(**kwargs):
     RAMSTKTestMethod.__table__.create(bind=engine)
     RAMSTKUnits.__table__.create(bind=engine)
     RAMSTKValidation.__table__.create(bind=engine)
+
+    return None
+
+
+def create_program_db(**kwargs):
+    """Create and populate a RAMSTK Program database."""
+    from ramstk.dao import (RAMSTKMission, RAMSTKProgramInfo,
+                            RAMSTKProgramStatus, RAMSTKRevision)
+
+    uri = kwargs['database']
+
+    # Create and populate the RAMSTK Program test database.
+    engine = create_engine(uri, echo=False)
+    session = scoped_session(sessionmaker())
+
+    session.remove()
+    session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+
+    # Create all the tables in the RAMSTK Program database.
+    do_make_tables(engine)
 
     # Add an entry for the Program Information.
     _record = RAMSTKProgramInfo()
@@ -137,48 +148,7 @@ def do_create_test_database(database):
     session.configure(bind=engine, autoflush=False, expire_on_commit=False)
 
     # Create all the tables in the RAMSTK Program database.
-    RAMSTKAction.__table__.create(bind=engine)
-    RAMSTKAllocation.__table__.create(bind=engine)
-    RAMSTKCause.__table__.create(bind=engine)
-    RAMSTKControl.__table__.create(bind=engine)
-    RAMSTKDesignElectric.__table__.create(bind=engine)
-    RAMSTKDesignMechanic.__table__.create(bind=engine)
-    RAMSTKEnvironment.__table__.create(bind=engine)
-    RAMSTKFailureDefinition.__table__.create(bind=engine)
-    RAMSTKFunction.__table__.create(bind=engine)
-    RAMSTKGrowthTest.__table__.create(bind=engine)
-    RAMSTKHardware.__table__.create(bind=engine)
-    RAMSTKHazardAnalysis.__table__.create(bind=engine)
-    RAMSTKIncident.__table__.create(bind=engine)
-    RAMSTKIncidentAction.__table__.create(bind=engine)
-    RAMSTKIncidentDetail.__table__.create(bind=engine)
-    RAMSTKLoadHistory.__table__.create(bind=engine)
-    RAMSTKMatrix.__table__.create(bind=engine)
-    RAMSTKMechanism.__table__.create(bind=engine)
-    RAMSTKMilHdbkF.__table__.create(bind=engine)
-    RAMSTKMission.__table__.create(bind=engine)
-    RAMSTKMissionPhase.__table__.create(bind=engine)
-    RAMSTKMode.__table__.create(bind=engine)
-    RAMSTKNSWC.__table__.create(bind=engine)
-    RAMSTKOpLoad.__table__.create(bind=engine)
-    RAMSTKOpStress.__table__.create(bind=engine)
-    RAMSTKProgramInfo.__table__.create(bind=engine)
-    RAMSTKProgramStatus.__table__.create(bind=engine)
-    RAMSTKReliability.__table__.create(bind=engine)
-    RAMSTKRequirement.__table__.create(bind=engine)
-    RAMSTKRevision.__table__.create(bind=engine)
-    RAMSTKSimilarItem.__table__.create(bind=engine)
-    RAMSTKSoftware.__table__.create(bind=engine)
-    RAMSTKSoftwareDevelopment.__table__.create(bind=engine)
-    RAMSTKSoftwareReview.__table__.create(bind=engine)
-    RAMSTKSoftwareTest.__table__.create(bind=engine)
-    RAMSTKStakeholder.__table__.create(bind=engine)
-    RAMSTKSurvival.__table__.create(bind=engine)
-    RAMSTKSurvivalData.__table__.create(bind=engine)
-    RAMSTKTest.__table__.create(bind=engine)
-    RAMSTKTestMethod.__table__.create(bind=engine)
-    RAMSTKUnits.__table__.create(bind=engine)
-    RAMSTKValidation.__table__.create(bind=engine)
+    do_make_tables(engine)
 
     _program_info = RAMSTKProgramInfo()
     _program_info.revision_prefix = "REV"
@@ -193,12 +163,12 @@ def do_create_test_database(database):
 
     _definition = RAMSTKFailureDefinition()
     _definition.revision_id = _revision.revision_id
-    _definition.definition = 'Failure Definition'
+    _definition.definition = b'Failure Definition'
 
     _mission = RAMSTKMission()
     _mission.revision_id = _revision.revision_id
     _mission.mission_id = 1
-    _mission.description = "Test Mission"
+    _mission.description = b'Test Mission'
     session.add(_definition)
     session.add(_mission)
     session.commit()
@@ -206,7 +176,7 @@ def do_create_test_database(database):
     _phase = RAMSTKMissionPhase()
     _phase.mission_id = _mission.mission_id
     _phase.phase_id = 1
-    _phase.description = "Test Mission Phase 1"
+    _phase.description = b'Test Mission Phase 1'
     session.add(_phase)
     session.commit()
 
@@ -249,9 +219,9 @@ def do_create_test_database(database):
                 i, _cause.cause_id)
         _action = RAMSTKAction()
         _action.cause_id = _cause.cause_id
-        _action.action_recommended = (
+        _action.action_recommended = bytes((
             "Test Functional FMEA Recommended "
-            "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id)
+            "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id), 'utf-8')
         session.add(_control)
         session.add(_action)
         _dic_rows[i] = _function.function_id
@@ -262,7 +232,7 @@ def do_create_test_database(database):
     _requirement.requirement_code = 'REL-0001'
     _stakeholder = RAMSTKStakeholder()
     _stakeholder.revision_id = _revision.revision_id
-    _stakeholder.description = 'Test Stakeholder Input'
+    _stakeholder.description = b'Test Stakeholder Input'
     session.add(_requirement)
     session.add(_stakeholder)
     session.commit()
@@ -332,8 +302,8 @@ def do_create_test_database(database):
         _cause.cause_id)
     _action = RAMSTKAction()
     _action.cause_id = _cause.cause_id
-    _action.action_recommended = 'Test FMEA Recommended Action #1 for Cause ID {0:d}'.format(
-        _cause.cause_id)
+    _action.action_recommended = bytes('Test FMEA Recommended Action #1 for Cause ID {0:d}'.format(
+        _cause.cause_id), 'utf-8')
 
     # Build the PoF for the system.
     _opload = RAMSTKOpLoad()
@@ -469,7 +439,7 @@ def do_create_test_database(database):
 
     _validation = RAMSTKValidation()
     _validation.revision_id = _revision.revision_id
-    _validation.description = 'Test Validation'
+    _validation.description = b'Test Validation'
     session.add(_validation)
     session.commit()
 

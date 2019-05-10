@@ -37,7 +37,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
         autoincrement=True,
         nullable=False)
 
-    description = Column('fld_description', BLOB, default='')
+    description = Column('fld_description', BLOB, default=b'')
     name = Column('fld_name', String(256), default='')
     phase_start = Column('fld_phase_start', Float, default=0.0)
     phase_end = Column('fld_phase_end', Float, default=0.0)
@@ -81,8 +81,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
             format(self.phase_id)
 
         try:
-            self.description = str(
-                none_to_default(attributes['description'], ''))
+            self.description = none_to_default(attributes['description'], b'')
             self.name = str(none_to_default(attributes['name'], ''))
             self.phase_start = float(
                 none_to_default(attributes['phase_start'], 0.0))
@@ -92,6 +91,6 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKMissionPhase.set_attributes().".format(_err)
+                   "RAMSTKMissionPhase.set_attributes().".format(str(_err))
 
         return _error_code, _msg

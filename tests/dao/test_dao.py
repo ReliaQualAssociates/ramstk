@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing Data Access Object (DAO) module algorithms and models."""
+"""Test class for Data Access Object (DAO) module algorithms and models."""
 
 import os
 import tempfile

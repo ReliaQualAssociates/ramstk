@@ -99,16 +99,16 @@ class TestKaplanMeier(unittest.TestCase):
         """
 
         # Data is from Lee and Wang, page 69, example 4.2.
-        _data = [('', 3.0, 3.0, 0.0, u'Event',
-                  1), ('', 4.0, 4.0, 0.0, u'Right Censored',
-                       1), ('', 5.7, 5.7, 0.0, u'Right Censored',
-                            1), ('', 6.5, 6.5, 0.0, u'Event',
-                                 1), ('', 6.5, 6.5, 0.0, u'Event', 1),
-                 ('', 8.4, 8.4, 0.0, u'Right Censored',
-                  1), ('', 10.0, 10.0, 0.0, u'Event',
-                       1), ('', 10.0, 10.0, 0.0, u'Right Censored',
-                            1), ('', 12.0, 12.0, 0.0, u'Event',
-                                 1), ('', 15.0, 15.0, 0.0, u'Event', 1)]
+        _data = [('', 3.0, 3.0, 0.0, 'Event',
+                  1), ('', 4.0, 4.0, 0.0, 'Right Censored',
+                       1), ('', 5.7, 5.7, 0.0, 'Right Censored',
+                            1), ('', 6.5, 6.5, 0.0, 'Event',
+                                 1), ('', 6.5, 6.5, 0.0, 'Event', 1),
+                 ('', 8.4, 8.4, 0.0, 'Right Censored',
+                  1), ('', 10.0, 10.0, 0.0, 'Event',
+                       1), ('', 10.0, 10.0, 0.0, 'Right Censored',
+                            1), ('', 12.0, 12.0, 0.0, 'Event',
+                                 1), ('', 15.0, 15.0, 0.0, 'Event', 1)]
 
         _km = kaplan_meier(_data, 0.0, 100000.0)
         self.assertTrue(

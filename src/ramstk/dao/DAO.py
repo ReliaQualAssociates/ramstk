@@ -123,7 +123,7 @@ class DAO(object):
                 exc.OperationalError):
             return True
         except ArgumentError:  # pylint: disable=undefined-variable # noqa
-            print "Bad common database URI: {0:s}".format(database)
+            print("Bad common database URI: {0:s}".format(database))
             return True
 
     @staticmethod
@@ -138,11 +138,20 @@ class DAO(object):
         """
         try:
             return create_program_db(database=database)
-        except (IOError, exc.SQLAlchemyError, exc.DBAPIError,
-                exc.OperationalError):
+        except IOError:
+            print("IOError")
+            return True
+        except exc.SQLAlchemyError:
+            print("SQLAlchemyError")
+            return True
+        except exc.DBAPIError:
+            print("DBAPIError")
+            return True
+        except exc.OperationalError:
+            print("OperationalError")
             return True
         except ArgumentError:  # pylint: disable=undefined-variable  # noqa
-            print "Bad program database URI: {0:s}".format(database)
+            print("Bad program database URI: {0:s}".format(database))
             return True
 
     @staticmethod
@@ -167,7 +176,7 @@ class DAO(object):
                 session.add(_item)
                 session.commit()
             except (exc.SQLAlchemyError, exc.DBAPIError) as error:
-                _error = '{0:s}'.format(error)
+                _error = '{0:s}'.format(str(error))
                 session.rollback()
                 if 'Could not locate a bind' in _error:
                     _error_code = 2
@@ -183,7 +192,7 @@ class DAO(object):
                     _msg = ('RAMSTK ERROR: Date field did not contain Python '
                             'date object: {0:s}').format(_error)
                 else:
-                    print _error
+                    print(_error)
                     _error_code = 1
                     _msg = (
                         'RAMSTK ERROR: Adding one or more items to the RAMSTK '
@@ -213,7 +222,7 @@ class DAO(object):
         try:
             session.commit()
         except (exc.SQLAlchemyError, exc.DBAPIError) as error:
-            print error
+            print(error)
             session.rollback()
             _error_code = 1
             _msg = "RAMSTK ERROR: Updating the RAMSTK Program database."
@@ -241,7 +250,7 @@ class DAO(object):
             session.delete(item)
             session.commit()
         except (exc.SQLAlchemyError, exc.DBAPIError) as error:
-            print error
+            print(error)
             session.rollback()
             _error_code = 1
             _msg = "RAMSTK ERROR: Deleting an item from the RAMSTK Program database."

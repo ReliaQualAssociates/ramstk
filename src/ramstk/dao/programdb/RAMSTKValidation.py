@@ -19,7 +19,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKValidation(RAMSTK_BASE):
     """
-    Class to represent the table ramstk_validation in the RAMSTK Program database.
+    Class to represent table ramstk_validation in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -54,7 +54,7 @@ class RAMSTKValidation(RAMSTK_BASE):
     date_end = Column(
         'fld_date_end', Date, default=date.today() + timedelta(days=30))
     date_start = Column('fld_date_start', Date, default=date.today())
-    description = Column('fld_description', BLOB, default='')
+    description = Column('fld_description', BLOB, default=b'')
     measurement_unit = Column('fld_measurement_unit', String(256), default='')
     name = Column('fld_name', String(256), default='')
     status = Column('fld_status', Float, default=0.0)
@@ -155,12 +155,11 @@ class RAMSTKValidation(RAMSTK_BASE):
             self.cost_ul = float(none_to_default(attributes['cost_ul'], 0.0))
             self.cost_variance = float(
                 none_to_default(attributes['cost_variance'], 0.0))
-            self.date_end = none_to_default(
-                attributes['date_end'], date.today() + timedelta(days=30))
+            self.date_end = none_to_default(attributes['date_end'],
+                                            date.today() + timedelta(days=30))
             self.date_start = none_to_default(attributes['date_start'],
                                               date.today())
-            self.description = str(
-                none_to_default(attributes['description'], ''))
+            self.description = none_to_default(attributes['description'], b'')
             self.measurement_unit = str(
                 none_to_default(attributes['measurement_unit'], ''))
             self.name = str(none_to_default(attributes['name'], ''))
@@ -184,7 +183,7 @@ class RAMSTKValidation(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKValidation.set_attributes().".format(_err)
+                   "RAMSTKValidation.set_attributes().".format(str(_err))
 
         return _error_code, _msg
 

@@ -1,2 +1,2 @@
-import data
-import prediction
+from . import data
+from . import prediction

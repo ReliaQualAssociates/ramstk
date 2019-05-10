@@ -274,34 +274,34 @@ def overstressed(**attributes):
         if attributes['voltage_ratio'] > 0.5:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating voltage > 50% rated voltage in harsh "
-                  u"environment.\n")
+                _(". Operating voltage > 50% rated voltage in harsh "
+                  "environment.\n")
             _reason_num += 1
         if attributes['current_ratio'] > 0.6:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 60% rated current in harsh "
-                  u"environment.\n")
+                _(". Operating current > 60% rated current in harsh "
+                  "environment.\n")
             _reason_num += 1
         if (attributes['temperature_rated_max'] -
                 attributes['temperature_hot_spot'] < 15.0):
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating temperature within 15.0C of maximum rated "
-                  u"temperature.\n")
+                _(". Operating temperature within 15.0C of maximum rated "
+                  "temperature.\n")
             _reason_num += 1
     else:
         if attributes['voltage_ratio'] > 0.9:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating voltage > 90% rated voltage in mild "
-                  u"environment.\n")
+                _(". Operating voltage > 90% rated voltage in mild "
+                  "environment.\n")
             _reason_num += 1
         if attributes['current_ratio'] > 0.9:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 90% rated current in mild "
-                  u"environment.\n")
+                _(". Operating current > 90% rated current in mild "
+                  "environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason

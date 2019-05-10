@@ -45,7 +45,7 @@ Invocation:
     and [FILE(s)] is a comma-separated list of files to check
 """
 
-from __future__ import print_function
+
 
 import os
 import sys
@@ -479,7 +479,7 @@ def _do_flake8(flake8, files, options):
     :return:
     :rtype:
     """
-    _flake8 = "{0:s} --statistics ".format(flake8)
+    _flake8 = "{0:s} --statistics --max-complexity=9 ".format(flake8)
 
     # Build up the options for flake8.
     if options.verbose:

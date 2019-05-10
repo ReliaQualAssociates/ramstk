@@ -177,7 +177,7 @@ experience. -->
         <column>
             <defaulttitle>Parent</defaulttitle>
             <usertitle>Parent</usertitle>
-            <datatype>gchararray</datatype>
+            <datatype>gint</datatype>
             <position>16</position>
             <widget>text</widget>
             <editable>0</editable>

@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Module View."""
 
+# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, gtk
+from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .ModuleView import RAMSTKModuleView
 
 
@@ -43,7 +44,6 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize private scalar attributes.
         self._requirement_id = None
-        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -51,209 +51,97 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self._make_treeview()
-        self.treeview.set_tooltip_text(
-            _(u"Displays the hierarchical list of "
-              u"requirements."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
+        self.__make_ui()
 
-        self._img_tab.set_from_file(self._dic_icons['tab'])
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_load_tree, 'deleted_requirement')
+        pub.subscribe(self.do_load_tree, 'inserted_requirement')
+        pub.subscribe(self.do_load_tree, 'retrieved_requirements')
+        pub.subscribe(self._do_load_code, 'created_requirement_code')
+        pub.subscribe(self._do_refresh_tree, 'wvw_editing_requirement')
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKModuleView._make_ui(self)
+
+        self.make_treeview()
+        self.treeview.set_tooltip_text(
+            _("Displays the hierarchical list of requirements."))
+
         _label = ramstk.RAMSTKLabel(
-            _(u"Requirements"),
+            _("Requirements"),
             width=-1,
             height=-1,
-            tooltip=_(u"Displays the program requirements."))
+            tooltip=_("Displays the hierarchical list of requirements."))
 
-        self.hbx_tab_label.pack_start(self._img_tab)
-        self.hbx_tab_label.pack_end(_label)
-        self.hbx_tab_label.show_all()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(self._make_buttonbox())
-        self.pack_start(_scrollwindow, expand=False, fill=False)
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
 
-        pub.subscribe(self._on_select_revision, 'selectedRevision')
-        pub.subscribe(self._on_edit, 'wvwEditedRequirement')
+        return None
 
-    def _do_change_cell(self, cell, __path, new_iter, position):
+    def _do_load_code(self, code):
         """
-        Handle edits of the Requirement Module View gtk.CellRendererCombo()s.
+        Refresh the Requirement Code Gtk.Entry().
 
-        :param __cell: the gtk.CellRendererCombo() that was edited.
-        :type __cell: :class:`gtk.CellRendererCombo`
-        :param str __path: the gtk.TreeView() path of the
-                           gtk.CellRendererCombo() that was edited.
-        :param str new_iter: the new gtk.TreeITer() selected in the changed
-                             gtk.CellRendererCombo().
-        :param int position: the column position of the edited
-                             gtk.CellRendererConbo().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param str code: the new Requirement code.
+        :return: None
+        :rtype: None
         """
-        _return = False
+        (_model, _row) = self.treeview.get_selection().get_selected()
+        _path = _model.get_path(_row)
 
-        _model = cell.get_property('model')
-        _new_value = _model.get_value(new_iter, 0)
+        _model[_path][self._lst_col_order[9]] = code
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._requirement_id)
+        return None
 
-        if self._lst_col_order[position] == 5:
-            _attributes['owner'] = str(_new_value)
-        elif self._lst_col_order[position] == 8:
-            _attributes['priority'] = str(_new_value)
-        elif self._lst_col_order[position] == 11:
-            _attributes['requirement_type'] = str(_new_value)
-
-        self._dtc_data_controller.request_set_attributes(
-            self._requirement_id, _attributes)
-
-        pub.sendMessage(
-            'mvwEditedRequirement',
-            index=self._lst_col_order[position],
-            new_text=_new_value)
-
-        return _return
-
-    def _do_change_row(self, treeview):
+    def _do_refresh_tree(self, module_id, key, value):
         """
-        Handle events for the Requirement Module View RAMSTKTreeView().
+        Refresh the data in the Requirement RAMSTKTreeView().
 
-        This method is called whenever a Module View RAMSTKTreeView() row is
-        activated or changed.
-
-        :param treeview: the Requirement class RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        if key == 'requirement_type':
+            value = value[1]
 
-        treeview.handler_block(self._lst_handler_id[0])
-
-        _model, _row = treeview.get_selection().get_selected()
-
-        self._requirement_id = _model.get_value(_row, 1)
-
-        treeview.handler_unblock(self._lst_handler_id[0])
-
-        pub.sendMessage('selectedRequirement', module_id=self._requirement_id)
-
-        return _return
-
-    def _do_edit_cell(self, __cell, path, new_text, position, model):
-        """
-        Handle edits of the Requirement package Module View RAMSTKTreeView().
-
-        :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :class:`gtk.CellRenderer`
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             gtk.CellRenderer().
-        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :class:`gtk.TreeModel`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
-
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._requirement_id)
-
-            if self._lst_col_order[position] == 2:
-                _attributes['derived'] = str(new_text)
-            elif self._lst_col_order[position] == 3:
-                _attributes['description'] = str(new_text)
-            elif self._lst_col_order[position] == 4:
-                _attributes['figure_number'] = str(new_text)
-            elif self._lst_col_order[position] == 6:
-                _attributes['page_number'] = str(new_text)
-            elif self._lst_col_order[position] == 10:
-                _attributes['specification'] = str(new_text)
-            elif self._lst_col_order[position] == 12:
-                _attributes['validated'] = str(new_text)
-            elif self._lst_col_order[position] == 13:
-                _attributes['validated_date'] = str(new_text)
-
-            _error_code, \
-                _msg = self._dtc_data_controller.request_set_attributes(
-                    self._requirement_id, _attributes)
-
-            if _error_code == 0:
-                pub.sendMessage(
-                    'mvwEditedRequirement',
-                    index=self._lst_col_order[position],
-                    new_text=new_text)
-            else:
-                _return = True
-        else:
-            _return = True
-
-        return _return
+        return self.do_refresh_tree(module_id, key, value)
 
     def _do_request_delete(self, __button):
         """
         Request to delete the selected Requirement and it's children.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _prompt = _(u"You are about to delete Requirement {0:d} and all data "
-                    u"associated with it.  Is this really what you want "
-                    u"to do?").format(self._requirement_id)
-        _dialog = ramstk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
-                                          'question')
+        _prompt = _("You are about to delete Requirement {0:d} and all "
+                    "data associated with it.  Is this really what "
+                    "you want to do?").format(self._requirement_id)
+        _dialog = ramstk.RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question')
         _response = _dialog.do_run()
 
-        if _response == gtk.RESPONSE_YES:
-            _dialog.do_destroy()
-            if self._dtc_data_controller.request_do_delete(
-                    self._requirement_id):
-                _prompt = _(u"An error occurred when attempting to delete "
-                            u"Requirement {0:d}.").format(self._requirement_id)
-                _error_dialog = ramstk.RAMSTKMessageDialog(
-                    _prompt, self._dic_icons['error'], 'error')
-                if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                    _error_dialog.do_destroy()
+        if _response == Gtk.ResponseType.YES:
+            pub.sendMessage(
+                'request_delete_requirement', node_id=self._requirement_id)
 
-                _return = True
-            else:
-                _model, _row = self.treeview.get_selection().get_selected()
-                _prow = _model.iter_parent(_row)
-                _model.remove(_row)
+        _dialog.do_destroy()
 
-                if _prow is not None:
-                    _path = _model.get_path(_prow)
-                    _column = self.treeview.get_column(0)
-                    self.treeview.set_cursor(_path, None, False)
-                    self.treeview.row_activated(_path, _column)
-
-        else:
-            _dialog.do_destroy()
-
-        return _return
+        return None
 
     def _do_request_export(self, __button):
         """
         Launch the Export assistant.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -265,133 +153,81 @@ class ModuleView(RAMSTKModuleView):
 
         :param bool sibling: indicates whether to insert a sibling (default)
                              Requirement or a child Requirement.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         _sibling = kwargs['sibling']
-        _return = False
-
-        _requirement = self._dtc_data_controller.request_do_select(
-            self._requirement_id)
 
         if _sibling:
             try:
-                _parent_id = _requirement.parent_id
+                _parent_id = self._parent_id
             except AttributeError:
                 _parent_id = 0
         else:
-            _parent_id = _requirement.requirement_id
+            _parent_id = self._requirement_id
 
-        # By default we add the new requirement as a top-level requirement.
-        if _parent_id is None:
-            _parent_id = 0
+        pub.sendMessage(
+            'request_insert_requirement',
+            revision_id=self._revision_id,
+            parent_id=_parent_id)
 
-        if not self._dtc_data_controller.request_do_insert(
-                revision_id=self._revision_id,
-                parent_id=_parent_id,
-                sibling=_sibling):
-            # TODO: Add code to the Matrix Class to respond to the 'insertedRequirement' pubsub message and insert a record into each of the Requirement-X matrices.
-
-            self._on_select_revision(self._revision_id)
-        else:
-            _prompt = _(u"An error occurred while attempting to add a "
-                        u"requirement to Revision "
-                        u"{0:d}.").format(self._revision_id)
-            _error_dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            self._mdcRAMSTK.debug_log.error(_prompt)
-
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-
-        return _return
-
-    def _do_request_insert_child(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to insert a child Requirement of the selected Requirement.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=False)
-
-    def _do_request_insert_sibling(self, __button, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request to insert a sibling Requirement of the selected Requirement.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(sibling=True)
+        return None
 
     def _do_request_update(self, __button):
         """
         Request to save the currently selected Requirement.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update(
-            self._requirement_id)
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage(
+            'request_update_requirement', node_id=self._requirement_id)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        return _return
+        return None
 
     def _do_request_update_all(self, __button):
         """
         Request to save all the Requirements.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
         """
-        self.set_cursor(gtk.gdk.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(gtk.gdk.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_all_requirements')
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        return _return
+        return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Make the gtk.ButtonBox() for the Requirement Module View.
+        Make the Gtk.ButtonBox() for the Requirement Module View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Requirement class
+        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement class
                  Module View.
-        :rtype: :class:`gtk.ButtonBox`
+        :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Adds a new Requirement at the same hierarchy level as the "
-              u"selected Requirement (i.e., a sibling Requirement)."),
-            _(u"Adds a new Requirement one level subordinate to the selected "
-              u"Requirement (i.e., a derived requirement)."),
-            _(u"Remove the currently selected Requirement."),
-            _(u"Save the currently selected Requirement to the open RAMSTK "
-              u"Program database."),
-            _(u"Saves all Requirements to the open RAMSTK Program database."),
-            _(u"Exports Requirementss to an external file (CSV, Excel, and "
-              u"text files are supported).")
+            _("Adds a new Requirement at the same hierarchy level as the "
+              "selected Requirement (i.e., a sibling Requirement)."),
+            _("Adds a new Requirement one level subordinate to the selected "
+              "Requirement (i.e., a derived requirement)."),
+            _("Remove the currently selected Requirement."),
+            _("Exports Requirementss to an external file (CSV, Excel, and "
+              "text files are supported).")
         ]
         _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all, self._do_request_export
+            self.do_request_insert_sibling, self.do_request_insert_child,
+            self._do_request_delete, self._do_request_export
         ]
-        _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all',
-            'export'
-        ]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
 
-        _buttonbox = RAMSTKModuleView._make_buttonbox(
+        _buttonbox = ramstk.do_make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -402,33 +238,13 @@ class ModuleView(RAMSTKModuleView):
 
         return _buttonbox
 
-    def _make_treeview(self):
-        """
-        Set up the Requirement Module View RAMSTKTreeView().
-
-        This method sets all cells as non-editable to make the Requirement
-        Module View read-only.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _color = gtk.gdk.color_parse('#EEEEEE')
-        for _column in self.treeview.get_columns():
-            _cell = _column.get_cell_renderers()[0]
-            _cell.set_property('editable', False)
-            _cell.set_property('cell-background-gdk', _color)
-
-        return _return
-
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the Requirement Module View RAMSTKTreeView().
 
         :param treeview: the Requirement class RAMSTKTreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the gtk.gdk.Event() that called this method (the
+        :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                                     * 1 = left
@@ -439,7 +255,7 @@ class ModuleView(RAMSTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :class:`gtk.gdk.Event`
+        :type event: :class:`Gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -450,111 +266,195 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Sibling Requirement"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_(u"Add Child Requirement"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Requirement"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Requirement"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = gtk.ImageMenuItem()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All Requirements"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            _icons = [
+                'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+            ]
+            _labels = [
+                _("Add Sibling Requirement"),
+                _("Add Child Requirement"),
+                _("Remove the Selected Requirement"),
+                _("Save Selected Requirement"),
+                _("Save All Requirements")
+            ]
+            _callbacks = [
+                self._do_request_insert_sibling, self._do_request_insert_child,
+                self._do_request_delete, self._do_request_update,
+                self._do_request_update_all
+            ]
+            RAMSTKModuleView.on_button_press(
+                self,
+                event,
+                icons=_icons,
+                labels=_labels,
+                callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
         return False
 
-    def _on_edit(self, position, new_text):
+    def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
-        Update the Requirement Module View RAMSTKTreeView.
+        Handle edits of Requirement package Module View RAMSTKTreeview().
 
-        This method updates the Module View RAMSTKTreeView with changes to the
-        Requirement data model attributes.  It is called when Requirement
-        attributes are changed in other views.
-
-        :ivar int position: the ordinal position in the Module Book
-                            gtk.TreeView() of the data being updated.
-        :ivar new_text: the new value of the attribute to be updated.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param __cell: the Gtk.CellRenderer() that was edited.
+        :type __cell: :class:`Gtk.CellRenderer`
+        :param str path: the Gtk.TreeView() path of the
+                         Gtk.CellRenderer() that was edited.
+        :param str new_text: the new text in the edited
+                             Gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             Gtk.CellRenderer().
+        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs
+                      to.
+        :type model: :class:`Gtk.TreeStore`
+        :return: None
+        :rtype: None
         """
-        _model, _row = self.treeview.get_selection().get_selected()
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
+                                          model):
+            if self._lst_col_order[position] == 2:
+                _key = 'derived'
+            elif self._lst_col_order[position] == 3:
+                _key = 'description'
+            elif self._lst_col_order[position] == 4:
+                _key = 'figure_number'
+            elif self._lst_col_order[position] == 6:
+                _key = 'page_number'
+            elif self._lst_col_order[position] == 10:
+                _key = 'specification'
+            elif self._lst_col_order[position] == 12:
+                _key = 'validated'
+            elif self._lst_col_order[position] == 13:
+                _key = 'validated_date'
 
-        _model.set_value(_row, self._lst_col_order[position], new_text)
+            pub.sendMessage(
+                'editing_requirement',
+                module_id=self._requirement_id,
+                key=_key,
+                value=new_text)
 
-        return False
+        return None
 
-    def _on_select_revision(self, module_id):
+    def _on_row_change(self, treeview):
         """
-        Load the Requirement Module View gtk.TreeModel().
+        Handle events for the Requrement package Module Book RAMSTKTreeView().
 
-        This method is called whenever an RAMSTK Program database is opened or a
-        Revision is selected in the Module Book.
+        This method is called whenever a Module Book RAMSTKTreeView() row is
+        activated.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param treeview: the Requirement Module View RAMSTKTreeView().
+        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
+        :return: None
+        :rtype: None
         """
-        self._revision_id = module_id
+        _attributes = {}
 
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-                'requirement']
+        treeview.handler_block(self._lst_handler_id[0])
 
-        _requirements = self._dtc_data_controller.request_do_select_all(
-            revision_id=self._revision_id)
-        _return = RAMSTKModuleView.on_select_revision(self, tree=_requirements)
-        if _return:
-            _prompt = _(u"An error occured while loading the Requirements for "
-                        u"Revision ID {0:d} into the Module "
-                        u"View.").format(self._revision_id)
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == self._response_ok:
-                _dialog.do_destroy()
+        _model, _row = treeview.get_selection().get_selected()
 
-        return _return
+        if _row is not None:
+            _attributes['revision_id'] = _model.get_value(
+                _row, self._lst_col_order[0])
+            _attributes['requirement_id'] = _model.get_value(
+                _row, self._lst_col_order[1])
+            _attributes['derived'] = _model.get_value(_row,
+                                                      self._lst_col_order[2])
+            _attributes['description'] = _model.get_value(
+                _row, self._lst_col_order[3])
+            _attributes['figure_number'] = _model.get_value(
+                _row, self._lst_col_order[4])
+            _attributes['owner'] = _model.get_value(_row,
+                                                    self._lst_col_order[5])
+            _attributes['page_number'] = _model.get_value(
+                _row, self._lst_col_order[6])
+            _attributes['parent_id'] = _model.get_value(
+                _row, self._lst_col_order[7])
+            _attributes['priority'] = _model.get_value(_row,
+                                                       self._lst_col_order[8])
+            _attributes['requirement_code'] = _model.get_value(
+                _row, self._lst_col_order[9])
+            _attributes['specification'] = _model.get_value(
+                _row, self._lst_col_order[10])
+            _attributes['requirement_type'] = _model.get_value(
+                _row, self._lst_col_order[11])
+            _attributes['validated'] = _model.get_value(
+                _row, self._lst_col_order[12])
+            _attributes['validated_date'] = _model.get_value(
+                _row, self._lst_col_order[13])
+            _attributes['q_clarity_0'] = _model.get_value(
+                _row, self._lst_col_order[14])
+            _attributes['q_clarity_1'] = _model.get_value(
+                _row, self._lst_col_order[15])
+            _attributes['q_clarity_2'] = _model.get_value(
+                _row, self._lst_col_order[16])
+            _attributes['q_clarity_3'] = _model.get_value(
+                _row, self._lst_col_order[17])
+            _attributes['q_clarity_4'] = _model.get_value(
+                _row, self._lst_col_order[18])
+            _attributes['q_clarity_5'] = _model.get_value(
+                _row, self._lst_col_order[19])
+            _attributes['q_clarity_6'] = _model.get_value(
+                _row, self._lst_col_order[20])
+            _attributes['q_clarity_7'] = _model.get_value(
+                _row, self._lst_col_order[21])
+            _attributes['q_clarity_8'] = _model.get_value(
+                _row, self._lst_col_order[22])
+            _attributes['q_complete_0'] = _model.get_value(
+                _row, self._lst_col_order[23])
+            _attributes['q_complete_1'] = _model.get_value(
+                _row, self._lst_col_order[24])
+            _attributes['q_complete_2'] = _model.get_value(
+                _row, self._lst_col_order[25])
+            _attributes['q_complete_3'] = _model.get_value(
+                _row, self._lst_col_order[26])
+            _attributes['q_complete_4'] = _model.get_value(
+                _row, self._lst_col_order[27])
+            _attributes['q_complete_5'] = _model.get_value(
+                _row, self._lst_col_order[28])
+            _attributes['q_complete_6'] = _model.get_value(
+                _row, self._lst_col_order[29])
+            _attributes['q_complete_7'] = _model.get_value(
+                _row, self._lst_col_order[30])
+            _attributes['q_complete_8'] = _model.get_value(
+                _row, self._lst_col_order[31])
+            _attributes['q_complete_9'] = _model.get_value(
+                _row, self._lst_col_order[32])
+            _attributes['q_consistent_0'] = _model.get_value(
+                _row, self._lst_col_order[33])
+            _attributes['q_consistent_1'] = _model.get_value(
+                _row, self._lst_col_order[34])
+            _attributes['q_consistent_2'] = _model.get_value(
+                _row, self._lst_col_order[35])
+            _attributes['q_consistent_3'] = _model.get_value(
+                _row, self._lst_col_order[36])
+            _attributes['q_consistent_4'] = _model.get_value(
+                _row, self._lst_col_order[37])
+            _attributes['q_consistent_5'] = _model.get_value(
+                _row, self._lst_col_order[38])
+            _attributes['q_consistent_6'] = _model.get_value(
+                _row, self._lst_col_order[39])
+            _attributes['q_consistent_7'] = _model.get_value(
+                _row, self._lst_col_order[40])
+            _attributes['q_consistent_8'] = _model.get_value(
+                _row, self._lst_col_order[41])
+            _attributes['q_verifiable_0'] = _model.get_value(
+                _row, self._lst_col_order[42])
+            _attributes['q_verifiable_1'] = _model.get_value(
+                _row, self._lst_col_order[43])
+            _attributes['q_verifiable_2'] = _model.get_value(
+                _row, self._lst_col_order[44])
+            _attributes['q_verifiable_3'] = _model.get_value(
+                _row, self._lst_col_order[45])
+            _attributes['q_verifiable_4'] = _model.get_value(
+                _row, self._lst_col_order[46])
+            _attributes['q_verifiable_5'] = _model.get_value(
+                _row, self._lst_col_order[47])
+
+            self._requirement_id = _attributes['requirement_id']
+
+            pub.sendMessage('selected_requirement', attributes=_attributes)
+
+        treeview.handler_unblock(self._lst_handler_id[0])
+
+        return None

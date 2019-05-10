@@ -6,12 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Models."""
 
+# Import third party packages.
+from pubsub import pub
 from treelib import tree
 
 # Import other RAMSTK modules.
 from ramstk.Utilities import OutOfRangeError
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
+from ramstk.dao import (RAMSTKAction, RAMSTKCause, RAMSTKControl,
+                        RAMSTKMechanism, RAMSTKMode)
 
 
 class ModeDataModel(RAMSTKDataModel):
@@ -81,7 +84,10 @@ class ModeDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _mode.mode_id)
+            try:
+                self.last_id = max(self.last_id, _mode.mode_id)
+            except TypeError:
+                self.last_id = _mode.mode_id
 
         _session.close()
 
@@ -237,7 +243,10 @@ class MechanismDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _mechanism.mechanism_id)
+            try:
+                self.last_id = max(self.last_id, _mechanism.mechanism_id)
+            except TypeError:
+                self.last_id = _mechanism.mechanism_id
 
         _session.close()
 
@@ -401,7 +410,10 @@ class CauseDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _cause.cause_id)
+            try:
+                self.last_id = max(self.last_id, _cause.cause_id)
+            except TypeError:
+                self.last_id = _cause.cause_id
 
         _session.close()
 
@@ -560,7 +572,10 @@ class ControlDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _control.control_id)
+            try:
+                self.last_id = max(self.last_id, _control.control_id)
+            except TypeError:
+                self.last_id = _control.control_id
 
         _session.close()
 
@@ -720,7 +735,10 @@ class ActionDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _action.action_id)
+            try:
+                self.last_id = max(self.last_id, _action.action_id)
+            except TypeError:
+                self.last_id = _action.action_id
 
         _session.close()
 
@@ -851,7 +869,7 @@ class FMEADataModel(RAMSTKDataModel):
 
     _tag = 'FMEA'
 
-    def __init__(self, dao):
+    def __init__(self, dao, **kwargs):
         """
         Initialize a FMEA data model instance.
 
@@ -866,6 +884,7 @@ class FMEADataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
         self._functional = False
 
         # Initialize public dictionary attributes.
@@ -912,7 +931,12 @@ class FMEADataModel(RAMSTKDataModel):
                 else:
                     self._do_add_mechanisms(_mode.mode_id, _node_id)
 
-        return self.tree
+        # If we're not running a test and there were allocations returned,
+        # let anyone who cares know the Allocations have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_fmea', tree=self.tree)
+
+        return None
 
     def _do_add_mechanisms(self, mode_id, parent_id):
         """
