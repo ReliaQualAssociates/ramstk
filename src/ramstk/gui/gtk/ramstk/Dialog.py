@@ -41,11 +41,6 @@ class RAMSTKDialog(Gtk.Dialog):
         :rtype: Gtk.Dialog
         """
         try:
-            _dlgflags = kwargs['dlgflags']
-        except KeyError:
-            _dlgflags = (Gtk.DialogFlags.MODAL
-                         | Gtk.DialogFlags.DESTROY_WITH_PARENT)
-        try:
             _dlgbuttons = kwargs['dlgbuttons']
         except KeyError:
             _dlgbuttons = (Gtk.STOCK_OK, Gtk.ResponseType.OK, Gtk.STOCK_CANCEL,
@@ -55,14 +50,14 @@ class RAMSTKDialog(Gtk.Dialog):
         except KeyError:
             _dlgparent = None
 
-        GObject.GObject.__init__(
-            self,
-            title=dlgtitle,
-            parent=_dlgparent,
-            flags=_dlgflags,
-            buttons=_dlgbuttons)
+        GObject.GObject.__init__(self)
 
+        self.add_buttons(_dlgbuttons)
+        self.set_destroy_with_parent(True)
         self.set_has_separator(True)
+        self.set_modal(True)
+        self.set_parent(_dlgparent)
+        self.set_title(dlgtitle)
 
     def do_run(self):
         """Run the RAMSTK Message Dialog."""
@@ -100,6 +95,8 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         _image = Gtk.Image()
         _image.set_from_file(icon)
 
+        GObject.GObject.__init__(self)
+
         if criticality == 'error':
             # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
             # e-mail address.
@@ -121,23 +118,25 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
                          "using and the error log attached if the problem "
                          "persists.</b>")
             _criticality = Gtk.MessageType.ERROR
-            _buttons = Gtk.ButtonsType.OK
+            self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif criticality == 'warning':
             _criticality = Gtk.MessageType.WARNING
-            _buttons = Gtk.ButtonsType.OK
+            self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif criticality == 'information':
             _criticality = Gtk.MessageType.INFO
-            _buttons = Gtk.ButtonsType.OK
+            self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif criticality == 'question':
             _criticality = Gtk.MessageType.QUESTION
-            _buttons = Gtk.ButtonsType.YES_NO
+            self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No", Gtk.ResponseType.NO)
 
-        GObject.GObject.__init__(self, parent,
-                                 Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                                 _criticality, _buttons)
-
-        self.set_markup(prompt)
+        self.props.message_type = _criticality
+        self.set_destroy_with_parent(True)
         self.set_image(_image)
+        self.set_markup(prompt)
+
+        if parent is not None:
+            self.set_parent(parent)
+
         self.show_all()
 
     def do_run(self):
@@ -154,10 +153,10 @@ class RAMSTKDateSelect(Gtk.Dialog):
 
     def __init__(self):
         """Initialize an instance of the RAMSTKDateSelect class."""
-        GObject.GObject.__init__(
-            self,
-            _("Select Date"),
-            buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
+        GObject.GObject.__init__()
+
+        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
+        self.set_title(_("Select Date"))
 
         self._calendar = Gtk.Calendar()
         self.vbox.pack_start(self._calendar, True, True, 0)  # pylint: disable=E1101
@@ -189,11 +188,14 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         :param str title: the title of the dialog.
         :param str cwd: the absolute path to the file to open.
         """
-        GObject.GObject.__init__(
-            self, title, None,
-            Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-            (Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL,
-             Gtk.ResponseType.REJECT))
+        GObject.GObject.__init__()
+
+        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+                         Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
+        self.set_destroy_with_parent(True)
+        self.set_modal(True)
+        self.set_parent(None)
+        self.set_title(title)
 
         self.set_action(Gtk.FileChooserAction.SAVE)
         self.set_current_folder(cwd)
