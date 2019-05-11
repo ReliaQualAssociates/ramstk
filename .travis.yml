@@ -10,12 +10,10 @@ env:
 
 install:
     - sudo apt-get update
-    - sudo apt-get install -y libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest xauth xvfb
+    - sudo apt-get install -y libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest python3-numpy python3-scipy python3-matplotlib
     - pip install -U pip
     - pip install -U setuptools>12.0
     - pip install -U urllib3
-    - pip install --only-binary=numpy numpy==1.16.3
-    - pip install --only-binary=scipy scipy==1.2.1
     - pip install -r requirements_run.txt
     - pip install -r requirements_dev.txt
     - python setup.py install
