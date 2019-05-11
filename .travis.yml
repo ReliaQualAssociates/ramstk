@@ -16,6 +16,7 @@ install:
     - pip install -U urllib3
     - pip install -r requirements_run.txt
     - pip install -r requirements_dev.txt
+    - pip uninstall -y matplotlib
     - python setup.py install
 
 # Command to run tests.
