@@ -36,8 +36,6 @@ build_script:
 
     python -m pip install --only-binary=scipy scipy==1.2.1
 
-    python -m pip install --only-binary=pycairo pycairo
-
     python -m pip install coverage==4.5.3
 
     python -m pip install -r requirements_run.txt
@@ -67,6 +65,8 @@ test_script:
     python -m pip install --only-binary=numpy numpy==1.16.3
 
     python -m pip install --only-binary=scipy scipy==1.2.1
+
+    python -m pip install --only-binary=pycairo pycairo
 
     python -m pip install coverage==4.5.3
 
