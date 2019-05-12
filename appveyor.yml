@@ -34,6 +34,8 @@ build_script:
 
     python -m pip install --only-binary=scipy scipy==1.2.1
 
+    python -m pip install --only-binary=pycairo pycairo==1.18.1
+
     python -m pip install coverage==4.5.3
 
     python -m pip install -r requirements_run.txt
@@ -51,6 +53,7 @@ build_script:
     %VENV_BUILD_DIR%\\Scripts\\deactivate.bat
 
     rmdir %VENV_BUILD_DIR% /s /q
+
 test_script:
 - cmd: >-
     virtualenv --system-site-packages --clear %VENV_TEST_DIR%
@@ -76,5 +79,6 @@ test_script:
     %VENV_TEST_DIR%\\Scripts\\deactivate.bat
 
     rmdir %VENV_TEST_DIR% /s /q
+
 artifacts:
 - path: dist\*
