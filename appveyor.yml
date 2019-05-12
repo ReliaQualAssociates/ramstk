@@ -13,6 +13,7 @@ environment:
   PYTHON_VERSION: 3.7
   VENV_BUILD_DIR: venv_build
   VENV_TEST_DIR: venv_test
+
 install:
 - cmd: >-
     set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
@@ -22,6 +23,7 @@ install:
     %PYTHON%\python.exe -m pip install -U virtualenv
 
     virtualenv --version
+
 build_script:
 - cmd: >-
     virtualenv --system-site-packages --clear %VENV_BUILD_DIR%
@@ -34,7 +36,7 @@ build_script:
 
     python -m pip install --only-binary=scipy scipy==1.2.1
 
-    python -m pip install --only-binary=pycairo pycairo==1.18.1
+    python -m pip install --only-binary=pycairo pycairo
 
     python -m pip install coverage==4.5.3
 
