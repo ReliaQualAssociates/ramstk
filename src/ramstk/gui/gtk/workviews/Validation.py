@@ -119,7 +119,6 @@ class GeneralData(RAMSTKWorkView):
                                     ]]
 
         # Initialize private scalar attributes.
-        self._revision_id = None
         self._validation_id = None
 
         # Initialize public dictionary attributes.
@@ -127,8 +126,6 @@ class GeneralData(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-
-        # General data page widgets.
         self.btnEndDate = ramstk.RAMSTKButton(height=25, width=25, label="...")
         self.btnStartDate = ramstk.RAMSTKButton(
             height=25, width=25, label="...")
@@ -136,8 +133,8 @@ class GeneralData(RAMSTKWorkView):
             _("Launches the calendar to select the date the task was "
               "completed."))
         self.btnStartDate.set_tooltip_text(
-            _("Launches the calendar to select the date the task was started."
-             ))
+            _("Launches the calendar to select the date the task was started.")
+        )
 
         self.cmbTaskType = ramstk.RAMSTKComboBox(
             tooltip=_("Selects and displays the type of task for the "
@@ -157,9 +154,8 @@ class GeneralData(RAMSTKWorkView):
             tooltip=_("Displays the ID of the selected V&amp;V activity."))
         self.txtMaxAcceptable = ramstk.RAMSTKEntry(
             width=100,
-            tooltip=_(
-                "Displays the maximum acceptable value for the selected "
-                "V&amp;V activity."))
+            tooltip=_("Displays the maximum acceptable value for the selected "
+                      "V&amp;V activity."))
         self.txtMeanAcceptable = ramstk.RAMSTKEntry(
             width=100,
             tooltip=_(
@@ -167,9 +163,8 @@ class GeneralData(RAMSTKWorkView):
                 "activity."))
         self.txtMinAcceptable = ramstk.RAMSTKEntry(
             width=100,
-            tooltip=_(
-                "Displays the minimum acceptable value for the selected "
-                "V&amp;V activity."))
+            tooltip=_("Displays the minimum acceptable value for the selected "
+                      "V&amp;V activity."))
         self.txtVarAcceptable = ramstk.RAMSTKEntry(
             width=100,
             tooltip=_("Displays the acceptable variance for the selected "
@@ -256,7 +251,7 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtEndDate.connect('focus-out-event', self._on_focus_out, 9))
         self._lst_handler_id.append(
-            self.spnStatus.connect('value-changed', self._on_value_changed,
+            self.spnStatus.connect('focus-out-event', self._on_value_changed,
                                    10))
         self._lst_handler_id.append(
             self.txtMinTime.connect('focus-out-event', self._on_focus_out, 11))
@@ -271,20 +266,16 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
 
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_start(self.__make_page(), True, True, 0)
-        self.show_all()
+        self.__make_ui()
 
         self.txtCode.hide()
         self.txtName.hide()
         self.txtRemarks.scrollwindow.hide()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_revision, 'selectedRevision')
-        pub.subscribe(self._on_select, 'selectedValidation')
-        pub.subscribe(self._on_select, 'calculatedValidation')
-        pub.subscribe(self._on_edit, 'mvwEditedValidation')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._on_edit, 'mvw_editing_validation')
+        pub.subscribe(self._do_load_page, 'selected_validation')
 
     def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -295,15 +286,11 @@ class GeneralData(RAMSTKWorkView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _("Calculate the cost and time of the currently selected "
-              "Validation task only."),
             _("Calculate the cost and time of the program (i.e., all "
               "Validation tasks).")
         ]
-        _callbacks = [
-            self._do_request_calculate, self._do_request_calculate_all
-        ]
-        _icons = ['calculate', 'calculate-all']
+        _callbacks = [self._do_request_calculate_all]
+        _icons = ['calculate-all']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
@@ -316,12 +303,12 @@ class GeneralData(RAMSTKWorkView):
 
         return _buttonbox
 
-    def __make_page(self):
+    def __make_ui(self):
         """
         Make the Validation class Gtk.Notebook() general data page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         # Load the Gtk.ComboBox() widgets.
         _model = self.cmbTaskType.get_model()
@@ -456,7 +443,9 @@ class GeneralData(RAMSTKWorkView):
                       "validation."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        return _hbox
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(_hbox, True, True, 0)
+        self.show_all()
 
     def _do_clear_page(self):
         """
@@ -543,25 +532,32 @@ class GeneralData(RAMSTKWorkView):
         self.txtMeanCost.set_text('')
         self.txtMeanCostUL.set_text('')
 
-        return None
-
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+    def _do_load_page(self, attributes):
         """
         Load the Validation General Data page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param tuple attributes: a dict of attribute key:value pairs for
+                                 the selected Validation.
+        :return: None
+        :rtype: None
         """
-        _return = False
+        self._revision_id = attributes['revision_id']
+        self._validation_id = attributes['validation_id']
 
-        _validation = self._dtc_data_controller.request_do_select(
-            self._validation_id)
+        _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE
+        for _key, _type in _types.items():
+            if _type[1] == attributes['task_type']:
+                _name = '{0:s}-{1:04d}'.format(_type[0],
+                                               int(self._validation_id))
+        RAMSTKWorkView.on_select(
+            self,
+            title=_("Analyzing Validation Task {0:s}").format(str(_name)))
 
-        self.txtID.set_text(str(_validation.validation_id))
+        self.txtID.set_text(str(attributes['validation_id']))
 
         _buffer = self.txtTask.do_get_buffer()
         _buffer.handler_block(self._lst_handler_id[0])
-        _buffer.set_text(_validation.description)
+        _buffer.set_text(attributes['description'])
         _buffer.handler_unblock(self._lst_handler_id[0])
 
         self.cmbTaskType.handler_block(self._lst_handler_id[1])
@@ -569,130 +565,107 @@ class GeneralData(RAMSTKWorkView):
         _index = 1
         self.cmbTaskType.set_active(0)
         for _key, _type in _types.items():
-            if _type[1] == _validation.task_type:
+            if _type[1] == attributes['task_type']:
                 self.cmbTaskType.set_active(_index)
             else:
                 _index += 1
         self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
 
         self.txtSpecification.handler_block(self._lst_handler_id[2])
-        self.txtSpecification.set_text(str(_validation.task_specification))
+        self.txtSpecification.set_text(str(attributes['task_specification']))
         self.txtSpecification.handler_unblock(self._lst_handler_id[2])
 
         self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
         _units = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
         self.cmbMeasurementUnit.set_active(0)
         for _key, _unit in _units.items():
-            if _unit[1] == _validation.measurement_unit:
+            if _unit[1] == attributes['measurement_unit']:
                 self.cmbMeasurementUnit.set_active(int(_key))
         self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
 
         self.txtMinAcceptable.handler_block(self._lst_handler_id[4])
         self.txtMinAcceptable.set_text(
-            str(self.fmt.format(_validation.acceptable_minimum)))
+            str(self.fmt.format(attributes['acceptable_minimum'])))
         self.txtMinAcceptable.handler_unblock(self._lst_handler_id[4])
 
         self.txtMeanAcceptable.handler_block(self._lst_handler_id[5])
         self.txtMeanAcceptable.set_text(
-            str(self.fmt.format(_validation.acceptable_mean)))
+            str(self.fmt.format(attributes['acceptable_mean'])))
         self.txtMeanAcceptable.handler_unblock(self._lst_handler_id[5])
 
         self.txtMaxAcceptable.handler_block(self._lst_handler_id[6])
         self.txtMaxAcceptable.set_text(
-            str(self.fmt.format(_validation.acceptable_maximum)))
+            str(self.fmt.format(attributes['acceptable_maximum'])))
         self.txtMaxAcceptable.handler_unblock(self._lst_handler_id[6])
 
         self.txtVarAcceptable.handler_block(self._lst_handler_id[7])
         self.txtVarAcceptable.set_text(
-            str(self.fmt.format(_validation.acceptable_variance)))
+            str(self.fmt.format(attributes['acceptable_variance'])))
         self.txtVarAcceptable.handler_unblock(self._lst_handler_id[7])
 
         self.txtStartDate.handler_block(self._lst_handler_id[8])
-        _date_start = datetime.strftime(_validation.date_start, '%Y-%m-%d')
+        try:
+            _date_start = datetime.strftime(attributes['date_start'],
+                                            '%Y-%m-%d')
+        except TypeError:
+            _date_start = attributes['date_start']
         self.txtStartDate.set_text(_date_start)
         self.txtStartDate.handler_unblock(self._lst_handler_id[8])
 
         self.txtEndDate.handler_block(self._lst_handler_id[9])
-        _date_end = datetime.strftime(_validation.date_end, '%Y-%m-%d')
+        try:
+            _date_end = datetime.strftime(attributes['date_end'], '%Y-%m-%d')
+        except TypeError:
+            _date_end = attributes['date_end']
         self.txtEndDate.set_text(_date_end)
         self.txtEndDate.handler_unblock(self._lst_handler_id[9])
 
         self.spnStatus.handler_block(self._lst_handler_id[10])
-        self.spnStatus.set_value(_validation.status)
+        self.spnStatus.set_value(attributes['status'])
         self.spnStatus.handler_unblock(self._lst_handler_id[10])
 
         self.txtMinTime.handler_block(self._lst_handler_id[11])
         self.txtMinTime.set_text(
-            str(self.fmt.format(_validation.time_minimum)))
+            str(self.fmt.format(attributes['time_minimum'])))
         self.txtMinTime.handler_unblock(self._lst_handler_id[11])
 
         self.txtExpTime.handler_block(self._lst_handler_id[12])
         self.txtExpTime.set_text(
-            str(self.fmt.format(_validation.time_average)))
+            str(self.fmt.format(attributes['time_average'])))
         self.txtExpTime.handler_unblock(self._lst_handler_id[12])
 
         self.txtMaxTime.handler_block(self._lst_handler_id[13])
         self.txtMaxTime.set_text(
-            str(self.fmt.format(_validation.time_maximum)))
+            str(self.fmt.format(attributes['time_maximum'])))
         self.txtMaxTime.handler_unblock(self._lst_handler_id[13])
 
         self.txtMinCost.handler_block(self._lst_handler_id[14])
         self.txtMinCost.set_text(
-            str(self.fmt.format(_validation.cost_minimum)))
+            str(self.fmt.format(attributes['cost_minimum'])))
         self.txtMinCost.handler_unblock(self._lst_handler_id[14])
 
         self.txtExpCost.handler_block(self._lst_handler_id[15])
         self.txtExpCost.set_text(
-            str(self.fmt.format(_validation.cost_average)))
+            str(self.fmt.format(attributes['cost_average'])))
         self.txtExpCost.handler_unblock(self._lst_handler_id[15])
 
         self.txtMaxCost.handler_block(self._lst_handler_id[16])
         self.txtMaxCost.set_text(
-            str(self.fmt.format(_validation.cost_maximum)))
+            str(self.fmt.format(attributes['cost_maximum'])))
         self.txtMaxCost.handler_unblock(self._lst_handler_id[16])
 
-        self.txtMeanTimeLL.set_text(str(self.fmt.format(_validation.time_ll)))
-        self.txtMeanTime.set_text(str(self.fmt.format(_validation.time_mean)))
-        self.txtMeanTimeUL.set_text(str(self.fmt.format(_validation.time_ul)))
-        self.txtMeanCostLL.set_text(str(self.fmt.format(_validation.cost_ll)))
-        self.txtMeanCost.set_text(str(self.fmt.format(_validation.cost_mean)))
-        self.txtMeanCostUL.set_text(str(self.fmt.format(_validation.cost_ul)))
-
-        return _return
-
-    def _do_request_calculate(self, __button):
-        """
-        Request to calculate the selected Validation task.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _error_code = 0
-        _msg = ''
-
-        if self._dtc_data_controller.request_do_calculate(self._validation_id):
-            _error_code = 1
-            _msg = 'Error calculating Validation activity cost and time.'
-
-        if _error_code != 0:
-            _prompt = _("An error occurred when attempting to calculate "
-                        "Validation {0:d}. \n\n\t" + _msg + "\n\n").format(
-                            self._validation_id)
-            _error_dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _error_dialog.do_run() == Gtk.ResponseType.OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-        else:
-            pub.sendMessage(
-                'calculatedValidation', module_id=self._validation_id)
-
-        return _return
+        self.txtMeanTimeLL.set_text(
+            str(self.fmt.format(attributes['time_ll'])))
+        self.txtMeanTime.set_text(
+            str(self.fmt.format(attributes['time_mean'])))
+        self.txtMeanTimeUL.set_text(
+            str(self.fmt.format(attributes['time_ul'])))
+        self.txtMeanCostLL.set_text(
+            str(self.fmt.format(attributes['cost_ll'])))
+        self.txtMeanCost.set_text(
+            str(self.fmt.format(attributes['cost_mean'])))
+        self.txtMeanCostUL.set_text(
+            str(self.fmt.format(attributes['cost_ul'])))
 
     def _do_request_calculate_all(self, __button):
         """
@@ -700,22 +673,12 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean,
-         _time_ul) = self._dtc_data_controller.request_do_calculate_all()
-
-        self.txtProjectCostLL.set_text(str(self.fmt.format(_cost_ll)))
-        self.txtProjectCost.set_text(str(self.fmt.format(_cost_mean)))
-        self.txtProjectCostUL.set_text(str(self.fmt.format(_cost_ul)))
-        self.txtProjectTimeLL.set_text(str(self.fmt.format(_time_ll)))
-        self.txtProjectTime.set_text(str(self.fmt.format(_time_mean)))
-        self.txtProjectTimeUL.set_text(str(self.fmt.format(_time_ul)))
-
-        return _return
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_calculate_all_validations')
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button):
         """
@@ -723,15 +686,13 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self.set_cursor(Gdk.CursorType.WATCH)
-        _return = self._dtc_data_controller.request_do_update(
-            self._validation_id)
+        pub.sendMessage(
+            'request_update_validation', node_id=self._validation_id)
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -739,16 +700,12 @@ class GeneralData(RAMSTKWorkView):
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self.set_cursor(Gdk.CursorType.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all()
-        if not _return:
-            _return = self._dtc_data_controller.request_do_update_status()
+        pub.sendMessage('request_update_all_validations')
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return _return
 
     @staticmethod
     def _do_select_date(__button, __event, entry):
@@ -765,32 +722,15 @@ class GeneralData(RAMSTKWorkView):
         :type __event: :class:`Gdk.Event`
         :param entry: the RAMSTKEntry() to place the date in.
         :type entry: :class:`ramstk.gui.gtk.ramstk.Entry.RAMSTKEntry`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _calendar = ramstk.RAMSTKDateSelect()
-
-        _date = _calendar.do_run()
-
-        entry.set_text(_date)
-
-        _calendar.do_destroy()
-
-        return _return
-
-    def _do_set_revision(self, module_id):
-        """
-        Set the revision ID attribute when a Revision is selected.
-
-        :param int module_id: the ID of the selected Revision.
         :return: None
         :rtype: None
         """
-        self._revision_id = module_id
+        _calendar = ramstk.RAMSTKDateSelect()
 
-        return None
+        _date = _calendar.do_run()
+        entry.set_text(_date)
+
+        _calendar.do_destroy()
 
     def _on_combo_changed(self, combo, index):
         """
@@ -800,144 +740,152 @@ class GeneralData(RAMSTKWorkView):
 
             * RAMSTKComboBox() 'changed' signal
 
-        This method sends the 'wvwEditedValidation' message.
+        This method sends the 'wvw_edited_validation' message.
 
         :param combo: the RAMSTKComboBox() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.Combo.RAMSTKComboBox`
         :param int index: the index in the handler ID list of the callback
                           signal associated with the Gtk.ComboBox() that
                           called this method.
-        :return: False if successful or True is an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
+        _dic_keys = {1: 'task_type', 3: 'measurement_unit'}
+        try:
+            _key = _dic_keys[self._lst_col_order[index]]
+        except KeyError:
+            _key = None
+
         combo.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_data_controller is not None:
-            _validation = self._dtc_data_controller.request_do_select(
-                self._validation_id)
+        _model = combo.get_model()
+        _row = combo.get_active_iter()
 
-            if index == 1:
-                _index = 3
-                _new_text = combo.get_active_text()
-                _validation.task_type = _new_text
+        if _key == 'task_type':
+            _new_text = _model.get_value(_row, 0)
 
-                # Update the Validation task name for the selected Validation
-                # task.
-                _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE
-                for _key, _type in _types.items():
-                    if _type[1] == _validation.task_type:
-                        _validation.name = '{0:s}-{1:04d}'.format(
-                            _type[0], int(self._validation_id))
-                print(_validation.name)
-            elif index == 3:
-                _index = 5
-                _new_text = combo.get_active_text()
-                _validation.measurement_unit = _new_text
+            # Update the Validation task name for the selected Validation task.
+            _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE
+            for _key, _type in _types.items():
+                if _type[1] == _new_text:
+                    _name = '{0:s}-{1:04d}'.format(_type[0],
+                                                   int(self._validation_id))
 
             pub.sendMessage(
-                'wvwEditedValidation', position=_index, new_text=_new_text)
+                'wvw_editing_requirement',
+                module_id=self._validation_id,
+                key='name',
+                value=_name)
+
+        elif _key == 'measurement_unit':
+            _new_text = _model.get_value(_row, 0)
+        else:
+            _new_text = ''
+
+        pub.sendMessage(
+            'wvw_editing_validation',
+            module_id=self._validation_id,
+            key=_key,
+            value=_new_text)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
-        return False
-
-    def _on_edit(self, index, new_text):
+    def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
         """
         Update the Work View Gtk.Widgets() when Validation attributes change.
 
-        This method is called whenever an attribute is edited in a different
-        view.
+        This method updates the function Work View Gtk.Widgets() with changes
+        to the Validation data model attributes.  This method is called
+        whenever an attribute is edited in a different RAMSTK View.
 
-        :param int index: the index in the Validation attributes list of the
-                          attribute that was edited.
-        :param str new_text: the new text to update the Gtk.Widget() with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param int module_id: the ID of the Validation being edited.  This
+                              parameter is required to allow the PyPubSub
+                              signals to call this method and the
+                              request_set_attributes() method in the
+                              RAMSTKDataController.
+        :param str key: the key in the Validation attributes list of the
+                        attribute that was edited.
+        :param str value: the new text to update the Gtk.Widget() with.
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        _validation = self._dtc_data_controller.request_do_select(
-            self._validation_id)
-
-        if index == 2:
+        if key == 'description':
             _buffer = self.txtTask.do_get_buffer()
             _buffer.handler_block(self._lst_handler_id[0])
-            _buffer.set_text(str(new_text))
+            _buffer.set_text(str(value))
             _buffer.handler_unblock(self._lst_handler_id[0])
-        elif index == 3:
+        elif key == 'task_type':
             self.cmbTaskType.handler_block(self._lst_handler_id[1])
             _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE
             self.cmbTaskType.set_active(0)
             for _key, _type in _types.items():
-                if _type[1] == _validation.task_type:
+                if _type[1] == value:
                     self.cmbTaskType.set_active(int(_key))
             self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
-        elif index == 4:
+        elif key == 'specification':
             self.txtSpecification.handler_block(self._lst_handler_id[2])
-            self.txtSpecification.set_text(new_text)
+            self.txtSpecification.set_text(str(value))
             self.txtSpecification.handler_unblock(self._lst_handler_id[2])
-        elif index == 5:
+        elif key == 'measurement_unit':
             self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
             _units = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
             self.cmbMeasurementUnit.set_active(0)
             for _key, _unit in _units.items():
-                if _unit[1] == _validation.measurement_unit:
+                if _unit[1] == value:
                     self.cmbMeasurementUnit.set_active(int(_key))
             self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
-        elif index == 6:
+        elif key == 'acceptable_minimum':
             self.txtMinAcceptable.handler_block(self._lst_handler_id[4])
-            self.txtMinAcceptable.set_text(str(new_text))
+            self.txtMinAcceptable.set_text(str(value))
             self.txtMinAcceptable.handler_unblock(self._lst_handler_id[4])
-        elif index == 7:
+        elif key == 'acceptable_mean':
             self.txtMeanAcceptable.handler_block(self._lst_handler_id[5])
-            self.txtMeanAcceptable.set_text(str(new_text))
+            self.txtMeanAcceptable.set_text(str(value))
             self.txtMeanAcceptable.handler_unblock(self._lst_handler_id[5])
-        elif index == 8:
+        elif key == 'acceptable_maximum':
             self.txtMaxAcceptable.handler_block(self._lst_handler_id[6])
-            self.txtMaxAcceptable.set_text(str(new_text))
+            self.txtMaxAcceptable.set_text(str(value))
             self.txtMaxAcceptable.handler_unblock(self._lst_handler_id[6])
-        elif index == 9:
+        elif key == 'acceptable_variance':
             self.txtVarAcceptable.handler_block(self._lst_handler_id[7])
-            self.txtVarAcceptable.set_text(str(new_text))
+            self.txtVarAcceptable.set_text(str(value))
             self.txtVarAcceptable.handler_unblock(self._lst_handler_id[7])
-        elif index == 10:
+        elif key == 'date_start':
             self.txtStartDate.handler_block(self._lst_handler_id[8])
-            self.txtStartDate.set_text(str(ordinal_to_date(new_text)))
+            self.txtStartDate.set_text(str(ordinal_to_date(value)))
             self.txtStartDate.handler_unblock(self._lst_handler_id[8])
-        elif index == 11:
+        elif key == 'date_end':
             self.txtEndDate.handler_block(self._lst_handler_id[9])
-            self.txtEndDate.set_text(str(ordinal_to_date(new_text)))
+            self.txtEndDate.set_text(str(ordinal_to_date(value)))
             self.txtEndDate.handler_unblock(self._lst_handler_id[9])
-        elif index == 12:
+        elif key == 'status':
             self.spnStatus.handler_block(self._lst_handler_id[10])
-            self.spnStatus.set_value(new_text)
+            self.spnStatus.set_value(value)
             self.spnStatus.handler_unblock(self._lst_handler_id[10])
-        elif index == 13:
+        elif key == 'time_minimum':
             self.txtMinTime.handler_block(self._lst_handler_id[11])
-            self.txtMinTime.set_text(str(new_text))
+            self.txtMinTime.set_text(str(value))
             self.txtMinTime.handler_unblock(self._lst_handler_id[11])
-        elif index == 14:
+        elif key == 'time_average':
             self.txtExpTime.handler_block(self._lst_handler_id[12])
-            self.txtExpTime.set_text(str(new_text))
+            self.txtExpTime.set_text(str(value))
             self.txtExpTime.handler_unblock(self._lst_handler_id[12])
-        elif index == 15:
+        elif key == 'time_maximum':
             self.txtMaxTime.handler_block(self._lst_handler_id[13])
-            self.txtMaxTime.set_text(str(new_text))
+            self.txtMaxTime.set_text(str(value))
             self.txtMaxTime.handler_unblock(self._lst_handler_id[13])
-        elif index == 16:
+        elif key == 'cost_minimum':
             self.txtMinCost.handler_block(self._lst_handler_id[14])
-            self.txtMinCost.set_text(str(new_text))
+            self.txtMinCost.set_text(str(value))
             self.txtMinCost.handler_unblock(self._lst_handler_id[14])
-        elif index == 17:
+        elif key == 'time_average':
             self.txtExpCost.handler_block(self._lst_handler_id[15])
-            self.txtExpCost.set_text(str(new_text))
+            self.txtExpCost.set_text(str(value))
             self.txtExpCost.handler_unblock(self._lst_handler_id[15])
-        elif index == 18:
+        elif key == 'time_maximum':
             self.txtMaxCost.handler_block(self._lst_handler_id[16])
-            self.txtMaxCost.set_text(str(new_text))
+            self.txtMaxCost.set_text(str(value))
             self.txtMaxCost.handler_unblock(self._lst_handler_id[16])
-
-        return _return
 
     def _on_focus_out(self, entry, __event, index):
         """
@@ -945,113 +893,65 @@ class GeneralData(RAMSTKWorkView):
 
         This method is called by:
 
-            * RAMSTKEntry() 'changed' signal
+            * RAMSTKEntry() 'focus-out' signal
             * RAMSTKTextView() 'changed' signal
 
-        This method sends the 'wvwEditedValidation' message.
+        This method sends the 'wvw_edited_validation' message.
 
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called this method.
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called this
+                      method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.Entry`
-        :param __event: the Gdk.Event() that called this method.
-        :type __event: :class:`Gdk.Event`
+        :param __event: the Gdk.EventFocus that triggerd the signal.
+        :type __event: :class:`Gdk.EventFocus`
         :param int index: the position in the Validation class Gtk.TreeModel()
                           associated with the data from the calling
                           RAMSTK widget.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _index = -1
-        _return = False
-        _text = ''
+        _dic_keys = {
+            0: 'description',
+            2: 'specification',
+            4: 'acceptable_minimum',
+            5: 'acceptable_mean',
+            6: 'acceptable_maximum',
+            7: 'acceptable_variance',
+            8: 'date_start',
+            9: 'date_end',
+            11: 'time_minimum',
+            12: 'time_average',
+            13: 'time_maximum',
+            14: 'cost_minimum',
+            15: 'cost_average',
+            16: 'cost_maximum'
+        }
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_data_controller is not None:
-            _validation = self._dtc_data_controller.request_do_select(
-                self._validation_id)
+        if index in [0, 2, 8, 9]:
+            try:
+                _new_text = str(entry.get_text())
+            except ValueError:
+                _new_text = ''
+        else:
+            try:
+                _new_text = float(entry.get_text())
+            except ValueError:
+                _new_text = 0.0
 
-            if index == 0:
-                _index = 2
-                _text = self.txtTask.do_get_text()
-                _validation.description = _text
-            elif index == 2:
-                _index = 4
-                _text = str(entry.get_text())
-                _validation.task_specification = _text
-            elif index == 4:
-                _index = 6
-                _text = float(entry.get_text())
-                _validation.acceptable_minimum = _text
-            elif index == 5:
-                _index = 7
-                _text = float(entry.get_text())
-                _validation.acceptable_mean = _text
-            elif index == 6:
-                _index = 8
-                _text = float(entry.get_text())
-                _validation.acceptable_maximum = _text
-            elif index == 7:
-                _index = 9
-                _text = float(entry.get_text())
-                _validation.acceptable_variance = _text
-            elif index == 8:
-                _index = 10
-                _text = str(entry.get_text())
-                _validation.date_start = datetime.strptime(_text, '%Y-%m-%d')
-            elif index == 9:
-                _index = 11
-                _text = str(entry.get_text())
-                _validation.date_end = datetime.strptime(_text, '%Y-%m-%d')
-            elif index == 11:
-                _index = 13
-                _text = float(entry.get_text())
-                _validation.time_minimum = _text
-            elif index == 12:
-                _index = 14
-                _text = float(entry.get_text())
-                _validation.time_average = _text
-            elif index == 13:
-                _index = 15
-                _text = float(entry.get_text())
-                _validation.time_maximum = _text
-            elif index == 14:
-                _index = 18
-                _text = float(entry.get_text())
-                _validation.cost_minimum = _text
-            elif index == 15:
-                _index = 19
-                _text = float(entry.get_text())
-                _validation.cost_average = _text
-            elif index == 16:
-                _index = 20
-                _text = float(entry.get_text())
-                _validation.cost_maximum = _text
-
-            pub.sendMessage(
-                'wvwEditedValidation', position=_index, new_text=_text)
+        pub.sendMessage(
+            'wvw_editing_validation',
+            module_id=self._validation_id,
+            key=_key,
+            value=_new_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-        return _return
-
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
-        """
-        Load the Validation Work View class Gtk.Notebook() widgets.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._validation_id = module_id
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-                'validation']
-
-        return self._do_load_page()
-
-    def _on_value_changed(self, spinbutton, index):
+    def _on_value_changed(self, spinbutton, __event, index):
         """
         Handle changes made in Gtk.SpinButton() widgets.
 
@@ -1063,28 +963,23 @@ class GeneralData(RAMSTKWorkView):
 
         :param spinbutton: the Gtk.SpinButton() that called this method.
         :type spinbutton: :class:`Gtk.SpinButton`
+        :param __event: the Gdk.EventFocus that triggerd the signal.
+        :type __event: :class:`Gdk.EventFocus`
         :param int index: the position in the Validation class attribute list
                           associated with the data from the calling
                           spinbutton.
+        :return: None
+        :rtype: None
         """
         spinbutton.handler_block(self._lst_handler_id[index])
 
-        try:
-            _validation = self._dtc_data_controller.request_do_select(
-                self._validation_id)
-
-            if index == 10:
-                _index = 12
-                _text = spinbutton.get_value()
-                _validation.status = float(_text)
-
-            pub.sendMessage('wvwEditedValidation', position=_index, new_text=_text)
-        except AttributeError:
-            pass
+        pub.sendMessage(
+            'wvw_editing_validation',
+            module_id=self._validation_id,
+            key='status',
+            value=float(spinbutton.get_value()))
 
         spinbutton.handler_unblock(self._lst_handler_id[index])
-
-        return False
 
 
 class BurndownCurve(RAMSTKWorkView):
@@ -1130,14 +1025,12 @@ class BurndownCurve(RAMSTKWorkView):
         # Initialize public scalar attributes.
         self.burndown = ramstk.RAMSTKPlot()
 
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_start(self.__make_page(), True, True, 0)
-        self.show_all()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_select, 'selectedValidation')
-        pub.subscribe(self._do_request_plot, 'calculatedProgram')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        #pub.subscribe(self._do_load_page, 'selected_validation')
+        pub.subscribe(self._do_load_page, 'calculated_validation')
 
     def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -1149,11 +1042,10 @@ class BurndownCurve(RAMSTKWorkView):
         """
         _tooltips = [
             _("Calculate the cost and time of the program (i.e., all "
-              "Validation tasks)."),
-            _("Load the planned and actual burndown curves."),
+              "Validation tasks).")
         ]
-        _callbacks = [self._do_request_calculate_all, self._do_request_plot]
-        _icons = ['calculate-all', 'plot']
+        _callbacks = [self._do_request_calculate_all]
+        _icons = ['calculate-all']
 
         _buttonbox = ramstk.do_make_buttonbox(
             self,
@@ -1166,12 +1058,12 @@ class BurndownCurve(RAMSTKWorkView):
 
         return _buttonbox
 
-    def __make_page(self):
+    def __make_ui(self):
         """
         Make the Validation class Gtk.Notebook() burndown curve page.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         _frame = ramstk.RAMSTKFrame(label=_("Program Validation Effort"))
         _frame.add(self.burndown.plot)
@@ -1190,7 +1082,9 @@ class BurndownCurve(RAMSTKWorkView):
               "to complete all V&amp;V tasks and the "
               "current progress."))
 
-        return _frame
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        self.pack_start(_frame, True, True, 0)
+        self.show_all()
 
     def _do_clear_page(self):
         """
@@ -1203,21 +1097,25 @@ class BurndownCurve(RAMSTKWorkView):
         self.burndown.figure.clf()
         self.burndown.plot.draw()
 
-        return None
-
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
+    def _do_load_page(self, attributes):
         """
         Load the actual burndown progress.
 
-        :param int module_id: unused; needed for compatibility with pubsub
-                              message.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param dict attributes: a dict of attribute key:value pairs for the
+                                Validation program status.
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        (_y_minimum, _y_average, _y_maximum
-        ) = self._dtc_data_controller.request_get_planned_burndown()
+        _y_minimum = attributes['y_minimum']
+        _y_average = attributes['y_average']
+        _y_maximum = attributes['y_maximum']
+        _assessment_dates = attributes['assessment_dates']
+        _targets = attributes['targets']
+        _y_actual = attributes['y_actual']
+        _y_actual = {
+            _key: _value
+            for _key, _value in _y_actual.items() if _value != 0
+        }
 
         self.burndown.axis.cla()
         self.burndown.axis.grid(True, which='both')
@@ -1245,9 +1143,6 @@ class BurndownCurve(RAMSTKWorkView):
                 y_values=_time_minimum,
                 plot_type='date',
                 marker='g--')
-
-        (_assessment_dates,
-         _targets) = self._dtc_data_controller.request_get_assessment_points()
 
         # Add a vertical line at the scheduled end-date for each task
         # identified as a Reliability Assessment.  Add an annotation box
@@ -1284,8 +1179,6 @@ class BurndownCurve(RAMSTKWorkView):
                         patchB=Ellipse((2, -1), 0.5, 0.5),
                         relpos=(0.2, 0.5)))
 
-        _y_actual = self._dtc_data_controller.request_get_actual_burndown()
-
         if _y_actual:
             self.burndown.do_add_line(
                 x_values=list(_y_actual.keys()),
@@ -1303,39 +1196,6 @@ class BurndownCurve(RAMSTKWorkView):
             if _response == Gtk.ResponseType.OK:
                 _dialog.do_destroy()
 
-            _return = True
-
-        return _return
-
-    def _do_request_calculate_all(self, __button):
-        """
-        Request to calculate program cost and time.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean,
-         _time_ul) = self._dtc_data_controller.request_do_calculate_all()
-
-        return _return
-
-    def _do_request_plot(self, __button=None):
-        """
-        Request to load planned and actual burndown curves.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._do_load_page()
-
         self.burndown.do_make_title(_("Total Validation Effort"))
         self.burndown.do_make_labels(
             _("Total Time [hours]"), -0.5, 0, set_x=False)
@@ -1344,7 +1204,18 @@ class BurndownCurve(RAMSTKWorkView):
         self.burndown.do_make_legend(_text)
         self.burndown.figure.canvas.draw()
 
-        return _return
+    def _do_request_calculate_all(self, __button):
+        """
+        Request to calculate program cost and time.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_calculate_all_validations')
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -1352,29 +1223,9 @@ class BurndownCurve(RAMSTKWorkView):
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = self._dtc_data_controller.request_do_update_all()
-
-        if not _return:
-            _return = self._dtc_data_controller.request_do_update_status()
-
-        return _return
-
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
-        """
-        Load the Validation Work View class Gtk.Notebook() widgets.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self._validation_id = module_id
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKBaseView.__init__
-        if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-                'validation']
-
-        return self._do_load_page()
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_all_validations')
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)

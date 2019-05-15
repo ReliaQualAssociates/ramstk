@@ -253,5 +253,85 @@ experience. -->
             <visible>0</visible>
             <key>confidence</key>
         </column>
+        <column>
+            <defaulttitle>Time LCL</defaulttitle>
+            <usertitle>Time LCL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>time_ll</key>
+        </column>
+        <column>
+            <defaulttitle>Mean Time</defaulttitle>
+            <usertitle>Mean Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>time_mean</key>
+        </column>
+        <column>
+            <defaulttitle>Time UCL</defaulttitle>
+            <usertitle>Time UCL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>26</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>time_ul</key>
+        </column>
+        <column>
+            <defaulttitle>Time Var</defaulttitle>
+            <usertitle>Time Var</usertitle>
+            <datatype>gfloat</datatype>
+            <position>27</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>time_variance</key>
+        </column>
+        <column>
+            <defaulttitle>Cost LCL</defaulttitle>
+            <usertitle>Cost LCL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>28</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>cost_ll</key>
+        </column>
+        <column>
+            <defaulttitle>Mean Cost</defaulttitle>
+            <usertitle>Mean Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>29</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>cost_mean</key>
+        </column>
+        <column>
+            <defaulttitle>Cost UCL</defaulttitle>
+            <usertitle>Cost UCL</usertitle>
+            <datatype>gfloat</datatype>
+            <position>30</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>cost_ul</key>
+        </column>
+        <column>
+            <defaulttitle>Cost Var</defaulttitle>
+            <usertitle>Cost Var</usertitle>
+            <datatype>gfloat</datatype>
+            <position>31</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>cost_variance</key>
+        </column>
     </tree>
 </root>

@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.test_validation.py is part of The RAMSTK Project
@@ -14,7 +14,7 @@ from treelib import Tree
 import pytest
 
 from ramstk.dao import DAO
-from ramstk.dao import RAMSTKValidation
+from ramstk.dao import RAMSTKProgramStatus, RAMSTKValidation
 from ramstk.modules.validation import dtmValidation, dtcValidation
 
 __author__ = 'Doyle Rowland'
@@ -62,7 +62,9 @@ def test_data_model_create(test_dao):
 
     assert isinstance(DUT, dtmValidation)
     assert isinstance(DUT.tree, Tree)
+    assert isinstance(DUT.status_tree, Tree)
     assert isinstance(DUT.dao, DAO)
+    assert DUT.status_tree.get_node(0).tag == 'Program Status'
 
 
 @pytest.mark.integration
@@ -226,7 +228,7 @@ def test_do_update_non_existent_id(test_dao):
 
     _error_code, _msg = DUT.do_update(100)
 
-    assert _error_code == 2006
+    assert _error_code == 2005
     assert _msg == (
         'RAMSTK ERROR: Attempted to save non-existent Validation ID '
         '100.')
@@ -258,6 +260,22 @@ def test_do_update_all(test_dao):
 
 
 @pytest.mark.integration
+def test_do_calculate_cost(test_dao):
+    """ do_calculate() returns False on successfully calculating tasks costs. """
+    DUT = dtmValidation(test_dao, test=True)
+    DUT.do_select_all(revision_id=1)
+    _validation = DUT.do_select(1)
+    _validation.cost_minimum = 252.00
+    _validation.cost_average = 368.00
+    _validation.cost_maximum = 441.00
+    _validation.confidence = 0.95
+
+    assert not DUT.do_calculate(1, metric='cost')
+    assert _validation.cost_mean == pytest.approx(360.83333333)
+    assert _validation.cost_variance == pytest.approx(992.25)
+
+
+@pytest.mark.integration
 def test_do_calculate_time(test_dao):
     """ do_calculate() returns False on successfully calculating tasks times. """
     DUT = dtmValidation(test_dao, test=True)
@@ -274,19 +292,30 @@ def test_do_calculate_time(test_dao):
 
 
 @pytest.mark.integration
-def test_do_calculate_cost(test_dao):
-    """ do_calculate() returns False on successfully calculating tasks costs. """
+def test_do_calculate_all(test_dao):
+    """ do_calculate_all() returns False on successfully calculating tasks times. """
     DUT = dtmValidation(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
     _validation = DUT.do_select(1)
     _validation.cost_minimum = 252.00
     _validation.cost_average = 368.00
     _validation.cost_maximum = 441.00
+    _validation.time_minimum = 25.2
+    _validation.time_average = 36.8
+    _validation.time_maximum = 44.1
     _validation.confidence = 0.95
 
-    assert not DUT.do_calculate(1, metric='cost')
-    assert _validation.cost_mean == pytest.approx(360.83333333)
-    assert _validation.cost_variance == pytest.approx(992.25)
+    _attributes = DUT.do_calculate_all()
+    assert _attributes['cost_ll'] == pytest.approx(299.0944678203216)
+    assert _attributes['cost_mean'] == pytest.approx(360.833)
+    assert _attributes['cost_ul'] == pytest.approx(422.572)
+    assert _attributes['cost_variance'] == pytest.approx(0.0)
+    assert _attributes['time_ll'] == pytest.approx(29.909446782032155)
+    assert _attributes['time_mean'] == pytest.approx(36.08333333333333)
+    assert _attributes['time_ul'] == pytest.approx(42.2572198846345)
+    assert _attributes['time_variance'] == pytest.approx(992.25)
+    assert _attributes['time_remaining'] == pytest.approx(36.8)
+    assert isinstance(_attributes['status'], RAMSTKProgramStatus)
 
 
 @pytest.mark.integration
@@ -380,7 +409,7 @@ def test_request_do_update_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_request_do_calculate(test_dao, test_configuration):
+def test_request_do_calculate_cost(test_dao, test_configuration):
     """ request_do_calculate() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
@@ -388,13 +417,24 @@ def test_request_do_calculate(test_dao, test_configuration):
     _validation.cost_minimum = 252.00
     _validation.cost_average = 368.00
     _validation.cost_maximum = 441.00
+    _validation.confidence = 0.95
+
+    assert not DUT._request_do_calculate(1, metric='cost')
+    assert _validation.cost_mean == pytest.approx(360.83333333)
+    assert _validation.cost_variance == pytest.approx(992.25)
+
+
+@pytest.mark.integration
+def test_request_do_calculate_time(test_dao, test_configuration):
+    """ request_do_calculate() should return False on success. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    DUT.request_do_select_all(ATTRIBUTES)
+    _validation = DUT.request_do_select(1)
     _validation.time_minimum = 25.2
     _validation.time_average = 36.8
     _validation.time_maximum = 44.1
     _validation.confidence = 0.95
 
-    assert not DUT.request_do_calculate(1)
+    assert not DUT._request_do_calculate(1, metric='time')
     assert _validation.time_mean == pytest.approx(36.08333333)
     assert _validation.time_variance == pytest.approx(9.9225)
-    assert _validation.cost_mean == pytest.approx(360.83333333)
-    assert _validation.cost_variance == pytest.approx(992.25)

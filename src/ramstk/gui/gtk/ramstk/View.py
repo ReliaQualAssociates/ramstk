@@ -164,8 +164,6 @@ class RAMSTKBaseView(object):
         """Set the Revision ID when a new Revision is selected."""
         self._revision_id = attributes['revision_id']
 
-        return None
-
     def do_load_tree(self, tree):
         """
         Load the RAMSTK View RAMSTKTreeView().
@@ -198,8 +196,6 @@ class RAMSTKBaseView(object):
             _column = self.treeview.get_column(0)
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
-
-        return None
 
     def do_raise_dialog(self, **kwargs):
         """
@@ -238,8 +234,6 @@ class RAMSTKBaseView(object):
             if _dialog.do_run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
 
-        return None
-
     def do_refresh_tree(self, module_id, key, value):
         """
         Refresh the data in the RAMSTKTreeView().
@@ -273,8 +267,6 @@ class RAMSTKBaseView(object):
                              _model.get_n_columns() - 1))
         _attributes[key] = value
         _model.set_value(_row, _model.get_n_columns() - 1, str(_attributes))
-
-        return None
 
     def do_request_insert_child(self, __button, **kwargs):
         """

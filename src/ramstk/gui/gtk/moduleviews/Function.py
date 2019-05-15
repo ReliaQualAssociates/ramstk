@@ -20,8 +20,8 @@ class ModuleView(RAMSTKModuleView):
     Display Function attribute data in the RAMSTK Module Book.
 
     The Function Module Book view displays all the Functions associated with
-    the RAMSTK Program in a flat list.  The attributes of the Function Module
-    View are:
+    the RAMSTK Program in a hierarchical list.  The attributes of the Function
+    Module View are:
 
     :ivar int _function_id: the ID of the currently selected Function.
     :ivar int _parent_id: the ID of the parent Function for the currently
@@ -84,8 +84,6 @@ class ModuleView(RAMSTKModuleView):
 
         self.show_all()
 
-        return None
-
     def _do_request_delete(self, __button):
         """
         Request to delete the selected Function and it's children.
@@ -107,8 +105,6 @@ class ModuleView(RAMSTKModuleView):
                 'request_delete_function', node_id=self._function_id)
 
         _dialog.do_destroy()
-
-        return None
 
     def _do_request_export(self, __button):
         """
@@ -143,8 +139,6 @@ class ModuleView(RAMSTKModuleView):
             revision_id=self._revision_id,
             parent_id=_parent_id)
 
-        return None
-
     def _do_request_update(self, __button):
         """
         Request to save the currently selected Function.
@@ -158,8 +152,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_update_function', node_id=self._function_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        return None
-
     def _do_request_update_all(self, __button):
         """
         Request to save all the Functions.
@@ -172,8 +164,6 @@ class ModuleView(RAMSTKModuleView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_functions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -228,8 +218,8 @@ class ModuleView(RAMSTKModuleView):
                                     * 9 =
 
         :type event: :class:`Gdk.Event`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         treeview.handler_block(self._lst_handler_id[1])
 
@@ -250,7 +240,7 @@ class ModuleView(RAMSTKModuleView):
                 _("Save All Functions")
             ]
             _callbacks = [
-                self._do_request_insert_sibling, self._do_request_insert_child,
+                self.do_request_insert_sibling, self.do_request_insert_child,
                 self._do_request_delete, self._do_request_update,
                 self._do_request_update_all
             ]
@@ -262,8 +252,6 @@ class ModuleView(RAMSTKModuleView):
                 callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
-
-        return False
 
     def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
@@ -303,8 +291,6 @@ class ModuleView(RAMSTKModuleView):
                 key=_key,
                 value=new_text)
 
-        return None
-
     def _on_row_change(self, treeview):
         """
         Handle events for the Function package Module Book RAMSTKTreeView().
@@ -324,33 +310,39 @@ class ModuleView(RAMSTKModuleView):
         (_model, _row) = treeview.get_selection().get_selected()
 
         if _row is not None:
-            _attributes['revision_id'] = _model.get_value(_row,
-                                                          self._lst_col_order[0])
-            _attributes['function_id'] = _model.get_value(_row,
-                                                          self._lst_col_order[1])
+            _attributes['revision_id'] = _model.get_value(
+                _row, self._lst_col_order[0])
+            _attributes['function_id'] = _model.get_value(
+                _row, self._lst_col_order[1])
             _attributes['availability_logistics'] = _model.get_value(
                 _row, self._lst_col_order[2])
             _attributes['availability_mission'] = _model.get_value(
                 _row, self._lst_col_order[3])
-            _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
+            _attributes['cost'] = _model.get_value(_row,
+                                                   self._lst_col_order[4])
             _attributes['function_code'] = _model.get_value(
                 _row, self._lst_col_order[5])
             _attributes['hazard_rate_logistics'] = _model.get_value(
                 _row, self._lst_col_order[6])
             _attributes['hazard_rate_mission'] = _model.get_value(
                 _row, self._lst_col_order[7])
-            _attributes['level'] = _model.get_value(_row, self._lst_col_order[8])
+            _attributes['level'] = _model.get_value(_row,
+                                                    self._lst_col_order[8])
             _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
-            _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[10])
-            _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[11])
+            _attributes['mcmt'] = _model.get_value(_row,
+                                                   self._lst_col_order[10])
+            _attributes['mpmt'] = _model.get_value(_row,
+                                                   self._lst_col_order[11])
             _attributes['mtbf_logistics'] = _model.get_value(
                 _row, self._lst_col_order[12])
-            _attributes['mtbf_mission'] = _model.get_value(_row,
-                                                           self._lst_col_order[13])
-            _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
-            _attributes['name'] = _model.get_value(_row, self._lst_col_order[15])
-            _attributes['parent_id'] = _model.get_value(_row,
-                                                        self._lst_col_order[16])
+            _attributes['mtbf_mission'] = _model.get_value(
+                _row, self._lst_col_order[13])
+            _attributes['mttr'] = _model.get_value(_row,
+                                                   self._lst_col_order[14])
+            _attributes['name'] = _model.get_value(_row,
+                                                   self._lst_col_order[15])
+            _attributes['parent_id'] = _model.get_value(
+                _row, self._lst_col_order[16])
             _attributes['remarks'] = _model.get_value(_row,
                                                       self._lst_col_order[17])
             _attributes['safety_critical'] = _model.get_value(
@@ -370,5 +362,3 @@ class ModuleView(RAMSTKModuleView):
             pub.sendMessage('selected_function', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        return None

@@ -173,8 +173,6 @@ class GeneralData(RAMSTKWorkView):
         self.chkSafetyCritical.set_active(False)
         self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Function General Data page.
@@ -208,8 +206,6 @@ class GeneralData(RAMSTKWorkView):
         self.chkSafetyCritical.set_active(int(attributes['safety_critical']))
         self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
 
-        return None
-
     def _do_request_update(self, __button):
         """
         Send request to save the currently selected Function.
@@ -222,8 +218,6 @@ class GeneralData(RAMSTKWorkView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_function', node_id=self._function_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
 
     def _do_request_update_all(self, __button):
         """
@@ -276,8 +270,6 @@ class GeneralData(RAMSTKWorkView):
             self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
             self.chkSafetyCritical.set_active(int(value))
             self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
-
-        return None
 
     def _on_focus_out(self, entry, index):
         """
