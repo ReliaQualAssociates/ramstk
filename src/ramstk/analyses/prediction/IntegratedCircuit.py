@@ -659,31 +659,31 @@ def overstressed(**attributes):
     if attributes['voltage_ratio'] > 1.05:
         attributes['overstress'] = True
         _reason = _reason + str(_reason_num) + \
-            _(u". Operating voltage > 105% rated voltage.\n")
+            _(". Operating voltage > 105% rated voltage.\n")
         _reason_num += 1
     if attributes['voltage_ratio'] < 0.95:
         attributes['overstress'] = True
         _reason = _reason + str(_reason_num) + \
-            _(u". Operating voltage < 95% rated voltage.\n")
+            _(". Operating voltage < 95% rated voltage.\n")
         _reason_num += 1
 
     if _harsh:
         if attributes['current_ratio'] > 0.80:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 80% rated current.\n")
+                _(". Operating current > 80% rated current.\n")
             _reason_num += 1
         if attributes['temperature_junction'] > _max_junction_temperature:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Junction temperature > "
-                  u"{0:f}C.\n").format(_max_junction_temperature)
+                _(". Junction temperature > "
+                  "{0:f}C.\n").format(_max_junction_temperature)
             _reason_num += 1
     else:
         if attributes['current_ratio'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 90% rated current.\n")
+                _(". Operating current > 90% rated current.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason

@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access,superfluous-parens
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.fmea.test_fmea.py is part of The RAMSTK Project
@@ -148,8 +148,8 @@ def test_do_select_action_functional(test_dao):
     _entity = DUT.do_select('0.1.1.1a')
 
     assert isinstance(_entity, RAMSTKAction)
-    assert _entity.action_recommended == ("Test Functional FMEA Recommended "
-                                          "Action #1 for Cause ID 1")
+    assert _entity.action_recommended == (b"Test Functional FMEA Recommended "
+                                          b"Action #1 for Cause ID 1")
 
 
 @pytest.mark.integration
@@ -159,10 +159,10 @@ def test_do_select_action_hardware(test_dao):
     DUT.do_select_all(parent_id=1, functional=False)
 
     _entity = DUT.do_select('0.4.1.4.4a')
-    print DUT.tree.nodes
+    print(DUT.tree.nodes)
     assert isinstance(_entity, RAMSTKAction)
-    assert _entity.action_recommended == ("Test FMEA Recommended Action #1 "
-                                          "for Cause ID 4")
+    assert _entity.action_recommended == (b"Test FMEA Recommended Action #1 "
+                                          b"for Cause ID 4")
 
 
 @pytest.mark.integration

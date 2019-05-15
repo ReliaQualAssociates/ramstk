@@ -64,8 +64,8 @@ class InductorAssessmentInputs(AssessmentInputs):
 
     # Define private dict attributes.
     _dic_quality = {
-        1: [["MIL-SPEC"], [_(u"Lower")]],
-        2: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_(u"Lower")]]
+        1: [["MIL-SPEC"], [_("Lower")]],
+        2: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]]
     }
 
     _dic_specifications = {
@@ -74,25 +74,25 @@ class InductorAssessmentInputs(AssessmentInputs):
     }
 
     _dic_insulation = {
-        1: [[_(u"Insulation Class A")], [_(u"Insulation Class B")],
-            [_(u"Insulation Class C")], [_(u"Insulation Class O")],
-            [_(u"Insulation Class Q")], [_(u"Insulation Class R")],
-            [_(u"Insulation Class S")], [_(u"Insulation Class T")],
-            [_(u"Insulation Class U")], [_(u"Insulation Class V")]],
-        2: [[_(u"Insulation Class A")], [_(u"Insulation Class B")],
-            [_(u"Insulation Class C")], [_(u"Insulation Class F")],
-            [_(u"Insulation Class O")]]
+        1: [[_("Insulation Class A")], [_("Insulation Class B")],
+            [_("Insulation Class C")], [_("Insulation Class O")],
+            [_("Insulation Class Q")], [_("Insulation Class R")],
+            [_("Insulation Class S")], [_("Insulation Class T")],
+            [_("Insulation Class U")], [_("Insulation Class V")]],
+        2: [[_("Insulation Class A")], [_("Insulation Class B")],
+            [_("Insulation Class C")], [_("Insulation Class F")],
+            [_("Insulation Class O")]]
     }
 
     # Define private list attributes.
     _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Specification:"),
-        _(u"Insulation Class:"),
-        _(u"Area:"),
-        _(u"Weight:"),
-        _(u"Family:"),
-        _(u"Construction:")
+        _("Quality Level:"),
+        _("Specification:"),
+        _("Insulation Class:"),
+        _("Area:"),
+        _("Weight:"),
+        _("Family:"),
+        _("Construction:")
     ]
 
     def __init__(self, **kwargs):
@@ -113,27 +113,27 @@ class InductorAssessmentInputs(AssessmentInputs):
         self.cmbInsulation = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The insulation class of the inductive device."))
+            tooltip=_("The insulation class of the inductive device."))
         self.cmbSpecification = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The governing specification for the inductive "
-                      u"device."))
+            tooltip=_("The governing specification for the inductive "
+                      "device."))
         self.cmbFamily = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The application family of the transformer."))
+            tooltip=_("The application family of the transformer."))
         self.cmbConstruction = ramstk.RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The method of construction of the coil."))
+            tooltip=_("The method of construction of the coil."))
 
         self.txtArea = ramstk.RAMSTKEntry(
             width=125,
-            tooltip=_(u"The case radiating surface (in square inches) of the "
-                      u"inductive device."))
+            tooltip=_("The case radiating surface (in square inches) of the "
+                      "inductive device."))
         self.txtWeight = ramstk.RAMSTKEntry(
-            width=125, tooltip=_(u"The transformer weight (in lbf)."))
+            width=125, tooltip=_("The transformer weight (in lbf)."))
 
         self._make_page()
         self.show_all()
@@ -168,8 +168,8 @@ class InductorAssessmentInputs(AssessmentInputs):
         """
         # Load the quality level RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
-            _data = [[_(u"Established Reliability")], ["MIL-SPEC"],
-                     [_(u"Lower")]]
+            _data = [[_("Established Reliability")], ["MIL-SPEC"],
+                     [_("Lower")]]
         else:
             try:
                 _data = self._dic_quality[subcategory_id]
@@ -195,22 +195,22 @@ class InductorAssessmentInputs(AssessmentInputs):
         if self._hazard_rate_method_id == 1:
             if self._subcategory_id == 1:
                 _data = [
-                    [_(u"Low Power Pulse Transformer")],
-                    [_(u"Audio Transformer")],
-                    [_(u"High Power Pulse and Power Transformer, Filter")],
-                    [_(u"RF Transformer")]
+                    [_("Low Power Pulse Transformer")],
+                    [_("Audio Transformer")],
+                    [_("High Power Pulse and Power Transformer, Filter")],
+                    [_("RF Transformer")]
                 ]
             else:
-                _data = [[_(u"RF Coils, Fixed or Molded")],
-                         [_(u"RF Coils, Variable")]]
+                _data = [[_("RF Coils, Fixed or Molded")],
+                         [_("RF Coils, Variable")]]
         else:
-            _data = [[_(u"Pulse Transformer")], [_("Audio Transformer")],
-                     [_(u"Power Transformer or Filter")],
-                     [_(u"RF Transformer")]]
+            _data = [[_("Pulse Transformer")], [_("Audio Transformer")],
+                     [_("Power Transformer or Filter")],
+                     [_("RF Transformer")]]
         self.cmbFamily.do_load_combo(_data)
 
         # load the coil construction RAMSTKComboBox().
-        self.cmbConstruction.do_load_combo([[_(u"Fixed")], [_(u"Variable")]])
+        self.cmbConstruction.do_load_combo([[_("Fixed")], [_("Variable")]])
 
         return None
 
@@ -294,7 +294,7 @@ class InductorAssessmentInputs(AssessmentInputs):
 
     def _make_page(self):
         """
-        Make the Inductor gtk.Notebook() assessment input page.
+        Make the Inductor Gtk.Notebook() assessment input page.
 
         :return: None
         :rtype: None
@@ -317,7 +317,7 @@ class InductorAssessmentInputs(AssessmentInputs):
 
         This method is called by:
 
-            * gtk.Combo() 'changed' signal
+            * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
         :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
@@ -379,9 +379,9 @@ class InductorAssessmentInputs(AssessmentInputs):
                       method.
         :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
                      :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
+        :param int index: the position in the Hardware class Gtk.TreeModel()
                           associated with the data from the calling
-                          gtk.Widget().  Indices are:
+                          Gtk.Widget().  Indices are:
 
             +---------+---------+---------+-----------+
             |  Index  | Widget  |  Index  | Widget    |
@@ -435,18 +435,18 @@ class InductorAssessmentResults(AssessmentResults):
         # Initialize private dictionary attributes.
         self._dic_part_stress = {
             1:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
             2:
-            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+            "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
         }
 
         # Initialize private list attributes.
-        self._lst_labels.append(u"\u03C0<sub>C</sub>:")
+        self._lst_labels.append("\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _(u"The assessment model used to calculate the inductive device's "
-              u"failure rate."))
+            _("The assessment model used to calculate the inductive device's "
+              "failure rate."))
 
         # Initialize public dictionary attributes.
 
@@ -457,7 +457,7 @@ class InductorAssessmentResults(AssessmentResults):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The construction factor for the coil."))
+            tooltip=_("The construction factor for the coil."))
 
         self._make_page()
         self.show_all()
@@ -509,7 +509,7 @@ class InductorAssessmentResults(AssessmentResults):
 
     def _make_page(self):
         """
-        Make the inductor gtk.Notebook() assessment results page.
+        Make the inductor Gtk.Notebook() assessment results page.
 
         :return: None
         :rtype: None

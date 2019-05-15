@@ -23,7 +23,7 @@ ATTRIBUTES = {
     'high_dwell_time': 0.0,
     'name': 'Condition Name',
     'maximum': 0.0,
-    'units': u'Units',
+    'units': 'Units',
     'variance': 0.0,
     'phase_id': 1,
     'mean': 0.0

@@ -1,11 +1,10 @@
-# pylint: disable=C0111,W0611
+# pylint: disable=unused-import, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.workviews.__init__.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-
 from .WorkView import RAMSTKWorkView
 
 from .Allocation import Allocation as wvwAllocation

@@ -81,8 +81,9 @@ def test_do_insert_functional_mode(test_dao):
     _error_code, _msg = DUT.do_insert(mode_id=1, cause_id=-1)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
 
 
 @pytest.mark.integration
@@ -94,8 +95,9 @@ def test_do_insert_hardware_mode(test_dao):
     _error_code, _msg = DUT.do_insert(mode_id=-1, cause_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database.")
 
 
 @pytest.mark.integration
@@ -120,8 +122,8 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Action ID "
-                    "300.")
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Action "
+                    "ID 300.")
 
 
 @pytest.mark.integration
@@ -131,8 +133,8 @@ def test_do_update(test_dao):
     DUT.do_select_all(parent_id=1)
 
     _action = DUT.tree.get_node(1).data
-    _action.action_recommended = ("Test Functional FMEA Recommended Action #1 "
-                                  "for Cause ID 1")
+    _action.action_recommended = (b"Test Functional FMEA Recommended Action "
+                                  b"#1 for Cause ID 1")
 
     _error_code, _msg = DUT.do_update(1)
 
@@ -149,7 +151,8 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Action ID 100.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to save non-existent Action ID 100.")
 
 
 @pytest.mark.integration

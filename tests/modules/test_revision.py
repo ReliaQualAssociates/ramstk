@@ -41,7 +41,7 @@ ATTRIBUTES = {
     'name': 'Original Revision',
     'reliability_logistics': 0.99986,
     'reliability_mission': 0.99992,
-    'remarks': 'This is the original revision.',
+    'remarks': b'This is the original revision.',
     'n_parts': 128,
     'revision_code': 'Rev. -',
     'program_time': 2562,

@@ -70,7 +70,7 @@ class RAMSTKHardware(RAMSTK_BASE):
     part_number = Column('fld_part_number', String(256), default='')
     quantity = Column('fld_quantity', Integer, default=1)
     ref_des = Column('fld_ref_des', String(256), default='')
-    remarks = Column('fld_remarks', BLOB, default='')
+    remarks = Column('fld_remarks', BLOB, default=b'')
     repairable = Column('fld_repairable', Integer, default=0)
     specification_number = Column(
         'fld_specification_number', String(256), default='')
@@ -230,7 +230,7 @@ class RAMSTKHardware(RAMSTK_BASE):
                 none_to_default(attributes['part_number'], ''))
             self.quantity = int(none_to_default(attributes['quantity'], 1))
             self.ref_des = str(none_to_default(attributes['ref_des'], ''))
-            self.remarks = str(none_to_default(attributes['remarks'], ''))
+            self.remarks = none_to_default(attributes['remarks'], b'')
             self.repairable = int(none_to_default(attributes['repairable'], 0))
             self.specification_number = str(
                 none_to_default(attributes['specification_number'], ''))

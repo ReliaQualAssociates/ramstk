@@ -19,7 +19,7 @@ __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 ATTRIBUTES = {
     'revision_id': 1,
     'definition_id': 1,
-    'definition': 'Failure Definition'
+    'definition': b'Failure Definition'
 }
 
 
@@ -36,7 +36,7 @@ def test_ramstkfailuredefinition_create(test_dao):
     assert DUT.__tablename__ == 'ramstk_failure_definition'
     assert DUT.revision_id == 1
     assert DUT.definition_id == 1
-    assert DUT.definition == 'Failure Definition'
+    assert DUT.definition == b'Failure Definition'
 
 
 @pytest.mark.integration

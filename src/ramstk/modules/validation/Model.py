@@ -66,6 +66,180 @@ class ValidationDataModel(RAMSTKDataModel):
                 tree.DuplicatedNodeIdError):
             pass
 
+    def do_calculate(self, node_id, **kwargs):
+        """
+        Calculate task cost metrics.
+
+        This method calculate mean, lower bound, upper bound, and standard
+        error on task costs.
+
+        :param int node_id: the PyPubSub Tree() ID of the Validation to
+                            calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _metric = kwargs['metric']
+        _validation = self.tree.get_node(node_id).data
+
+        if _metric == 'cost':
+            _return = _validation.calculate_task_cost()
+        elif _metric == 'time':
+            _return = _validation.calculate_task_time()
+
+        return _return
+
+    def do_calculate_all(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Calculate the overall cost and time of all validation tasks.
+
+        :param int revision_id: the Revision ID to calculate program costs for.
+        :return: _attributes; a dictionary of program status results.
+        :rtype: dict
+        """
+        _attributes = {
+            'cost_minimum':
+            0.0,
+            'cost_average':
+            0.0,
+            'cost_maximum':
+            0.0,
+            'time_minimum':
+            0.0,
+            'time_average':
+            0.0,
+            'time_maximum':
+            0.0,
+            'time_remaining':
+            0.0,
+            'status':
+            self.status_tree.get_node(date_to_ordinal(date.today())).data,
+            'cost_ll':
+            0.0,
+            'cost_mean':
+            0.0,
+            'cost_ul':
+            0.0,
+            'cost_variance':
+            0.0,
+            'time_ll':
+            0.0,
+            'time_mean':
+            0.0,
+            'time_ul':
+            0.0,
+            'time_variance':
+            0.0,
+            'y_minimum':
+            None,
+            'y_average':
+            None,
+            'y_maximum':
+            None,
+            'assessment_dates':
+            None,
+            'targets':
+            None,
+            'y_actual':
+            None
+        }
+
+        for _node in self.tree.children(0):
+            self.do_calculate(_node.data.validation_id, metric='cost')
+            _attributes['cost_minimum'] += _node.data.cost_minimum
+            _attributes['cost_average'] += _node.data.cost_average
+            _attributes['cost_maximum'] += _node.data.cost_maximum
+            self.do_calculate(_node.data.validation_id, metric='time')
+            _attributes['time_minimum'] += _node.data.time_minimum
+            _attributes['time_average'] += _node.data.time_average
+            _attributes['time_maximum'] += _node.data.time_maximum
+            _attributes['time_remaining'] += _node.data.time_average * (
+                1.0 - _node.data.status / 100.0)
+
+        _attributes['status'].time_remaining = _attributes['time_remaining']
+
+        (_attributes['cost_ll'], _attributes['cost_mean'],
+         _attributes['cost_ul'],
+         _attributes['time_variance']) = calculate_beta_bounds(
+             _attributes['cost_minimum'], _attributes['cost_average'],
+             _attributes['cost_maximum'], 0.95)
+        (_attributes['time_ll'], _attributes['time_mean'],
+         _attributes['time_ul'], __) = calculate_beta_bounds(
+             _attributes['time_minimum'], _attributes['time_average'],
+             _attributes['time_maximum'], 0.95)
+
+        _attributes['time_variance'] = _attributes['time_variance']**2
+        _attributes['cost_variance'] = _attributes['cost_variance']**2
+
+        (_attributes['y_minimum'], _attributes['y_average'],
+         _attributes['y_maximum']) = self.get_planned_burndown()
+        (_attributes['assessment_dates'],
+         _attributes['targets']) = self.get_assessment_points()
+        _attributes['y_actual'] = self.get_actual_burndown()
+
+        if not self._test:
+            pub.sendMessage('calculated_validation', attributes=_attributes)
+
+        return _attributes
+
+    def do_delete(self, node_id):
+        """
+        Remove a record from the RAMSTKValidation table.
+
+        :param int node_id entity: the ID of the RAMSTKValidation record to be
+                                   removed from the RAMSTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RAMSTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
+                          'Validation ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
+
+            # If we're not running a test, let anyone who cares know a Function
+            # was deleted.
+            if not self._test:
+                pub.sendMessage('deleted_validation', tree=self.tree)
+
+        return _error_code, _msg
+
+    def do_insert(self, **kwargs):
+        """
+        Add a record to the RAMSTKValidation table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _validation = RAMSTKValidation()
+        _validation.revision_id = kwargs['revision_id']
+        _error_code, _msg = RAMSTKDataModel.do_insert(
+            self, entities=[
+                _validation,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _validation.description,
+                _validation.validation_id,
+                parent=0,
+                data=_validation)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RAMSTKDataModel.__init__
+            self.last_id = _validation.validation_id
+
+            # If we're not running a test, let anyone who cares know a new
+            # Function was inserted.
+            if not self._test:
+                pub.sendMessage('inserted_validation', tree=self.tree)
+
+        return _error_code, _msg
+
     def do_select_all(self, **kwargs):
         """
         Retrieve all the Validations from the RAMSTK Program database.
@@ -94,7 +268,10 @@ class ValidationDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _validation.validation_id)
+            try:
+                self.last_id = max(self.last_id, _validation.validation_id)
+            except TypeError:
+                self.last_id = _validation.validation_id
 
         # Now select all the status updates.
         _today = False
@@ -138,58 +315,9 @@ class ValidationDataModel(RAMSTKDataModel):
 
         return None
 
-    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Add a record to the RAMSTKValidation table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _validation = RAMSTKValidation()
-        _validation.revision_id = kwargs['revision_id']
-        _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
-                _validation,
-            ])
-
-        if _error_code == 0:
-            self.tree.create_node(
-                _validation.description,
-                _validation.validation_id,
-                parent=0,
-                data=_validation)
-
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
-            self.last_id = _validation.validation_id
-
-        return _error_code, _msg
-
-    def do_delete(self, node_id):
-        """
-        Remove a record from the RAMSTKValidation table.
-
-        :param int node_id entity: the ID of the RAMSTKValidation record to be
-                                   removed from the RAMSTK Program database.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
-            _error_code = 2005
-            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
-                          'Validation ID {0:d}.'.format(node_id)
-        else:
-            self.last_id = max(self.tree.nodes.keys())
-
-        return _error_code, _msg
-
     def do_update(self, node_id):
         """
-        Update the record associated with Node ID to the RAMSTK Program database.
+        Update record associated with Node ID in the RAMSTK Program database.
 
         :param int node_id: the Validation ID of the Validation to save.
         :return: (_error_code, _msg); the error code and associated message.
@@ -197,10 +325,16 @@ class ValidationDataModel(RAMSTKDataModel):
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
-        if _error_code != 0:
-            _error_code = 2006
-            _msg = 'RAMSTK ERROR: Attempted to save non-existent Validation ' \
-                   'ID {0:d}.'.format(node_id)
+        # If there was no error and we're not running a test, let anyone
+        # who cares know a Function was updated.
+        if _error_code == 0:
+            if not self._test:
+                _attributes = self.do_select(node_id).get_attributes()
+                pub.sendMessage('updated_validation', attributes=_attributes)
+        else:
+            _error_code = 2005
+            _msg = ("RAMSTK ERROR: Attempted to save non-existent "
+                    "Validation ID {0:d}.").format(node_id)
 
         return _error_code, _msg
 
@@ -263,67 +397,29 @@ class ValidationDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_calculate(self, node_id, **kwargs):
+    def get_actual_burndown(self):
         """
-        Calculate task cost metrics.
+        Get the actual burndown curve dates and task times.
 
-        This method calculate mean, lower bound, upper bound, and standard
-        error on task costs.
+        This method creates and returns a SortedDict with remaining task times
+        for each date.  The key is the ordinal date and the value is the sum of
+        the remaining time for tasks due on that date.  The remaining times are
+        calculated using the average expected time to complete the task.
 
-        :param int node_id: the PyPubSub Tree() ID of the Validation to
-                            calculate.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
+        :return: _time_remaining; dictionary of remaining program time by date.
+        :rtype: dict
         """
-        _metric = kwargs['metric']
-        _validation = self.tree.get_node(node_id).data
+        _time_remaining = {}
 
-        if _metric == 'cost':
-            _return = _validation.calculate_task_cost()
-        elif _metric == 'time':
-            _return = _validation.calculate_task_time()
+        _dates = list(SortedDict(self.status_tree.nodes).keys())
+        _dates.pop(0)
 
-        return _return
+        for _key in _dates:
+            _entity = self.status_tree.get_node(_key).data
+            _time_remaining[date_to_ordinal(
+                _entity.date_status)] = _entity.time_remaining
 
-    def do_calculate_all(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Calculate the overall cost and time of all validation tasks.
-
-        :param int revision_id: the Revision ID to calculate program costs for.
-        :return: (_cost_ll, _cost_mean, _cost_ul,
-                  _time_ll, _time_mean, _time_ul); the lower bound, mean,
-                 and upper bound for program cost and time.
-        :rtype: tuple
-        """
-        _cost_minimum = 0.0
-        _cost_average = 0.0
-        _cost_maximum = 0.0
-        _time_minimum = 0.0
-        _time_average = 0.0
-        _time_maximum = 0.0
-        _time_remaining = 0.0
-        _status = self.status_tree.get_node(date_to_ordinal(date.today())).data
-
-        for _node in self.tree.children(0):
-            self.do_calculate(_node.data.validation_id, metric='cost')
-            _cost_minimum += _node.data.cost_minimum
-            _cost_average += _node.data.cost_average
-            _cost_maximum += _node.data.cost_maximum
-            self.do_calculate(_node.data.validation_id, metric='time')
-            _time_minimum += _node.data.time_minimum
-            _time_average += _node.data.time_average
-            _time_maximum += _node.data.time_maximum
-            _time_remaining += _node.data.time_average * (
-                1.0 - _node.data.status / 100.0)
-
-        _status.time_remaining = _time_remaining
-
-        (_cost_ll, _cost_mean, _cost_ul, __) = calculate_beta_bounds(
-            _cost_minimum, _cost_average, _cost_maximum, 0.95)
-        (_time_ll, _time_mean, _time_ul, __) = calculate_beta_bounds(
-            _time_minimum, _time_average, _time_maximum, 0.95)
-
-        return (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean, _time_ul)
+        return _time_remaining
 
     def get_assessment_points(self):
         """
@@ -398,27 +494,3 @@ class ValidationDataModel(RAMSTKDataModel):
 
         return SortedDict(_y_minimum), SortedDict(_y_average), SortedDict(
             _y_maximum)
-
-    def get_actual_burndown(self):
-        """
-        Get the actual burndown curve dates and task times.
-
-        This method creates and returns a SortedDict with remaining task times
-        for each date.  The key is the ordinal date and the value is the sum of
-        the remaining time for tasks due on that date.  The remaining times are
-        calculated using the average expected time to complete the task.
-
-        :return: _time_remaining; dictionary of remaining program time by date.
-        :rtype: dict
-        """
-        _time_remaining = {}
-
-        _dates = SortedDict(self.status_tree.nodes).keys()
-        _dates.pop(0)
-
-        for _key in _dates:
-            _entity = self.status_tree.get_node(_key).data
-            _time_remaining[date_to_ordinal(
-                _entity.date_status)] = _entity.time_remaining
-
-        return _time_remaining

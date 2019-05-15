@@ -302,15 +302,15 @@ def overstressed(**attributes):
         if attributes['current_ratio'] > 0.75:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 75% rated current in harsh "
-                  u"environment.\n")
+                _(". Operating current > 75% rated current in harsh "
+                  "environment.\n")
             _reason_num += 1
     else:
         if attributes['current_ratio'] > 0.9:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 90% rated current in mild "
-                  u"environment.\n")
+                _(". Operating current > 90% rated current in mild "
+                  "environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason

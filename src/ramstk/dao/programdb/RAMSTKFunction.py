@@ -21,7 +21,7 @@ __copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
 
 class RAMSTKFunction(RAMSTK_BASE):
     """
-    Class to represent the ramstk_function table in the RAMSTK Program database.
+    Class to represent ramstk_function table in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     This table shares a One-to-Many relationship with ramstk_mode.
@@ -61,7 +61,7 @@ class RAMSTKFunction(RAMSTK_BASE):
     mttr = Column('fld_mttr', Float, default=0.0)
     name = Column('fld_name', String(256), default='Function Name')
     parent_id = Column('fld_parent_id', Integer, default=0)
-    remarks = Column('fld_remarks', BLOB, default='')
+    remarks = Column('fld_remarks', BLOB, default=b'')
     safety_critical = Column('fld_safety_critical', Integer, default=0)
     total_mode_count = Column('fld_mode_count', Integer, default=0)
     total_part_count = Column('fld_part_count', Integer, default=0)
@@ -146,7 +146,7 @@ class RAMSTKFunction(RAMSTK_BASE):
             self.mttr = float(none_to_default(values['mttr'], 0.0))
             self.name = str(none_to_default(values['name'], 'Function Name'))
             self.parent_id = int(none_to_default(values['parent_id'], 0))
-            self.remarks = str(none_to_default(values['remarks'], ''))
+            self.remarks = none_to_default(values['remarks'], b'')
             self.safety_critical = int(
                 none_to_default(values['safety_critical'], 0))
             self.total_mode_count = int(

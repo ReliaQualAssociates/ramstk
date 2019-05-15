@@ -14,36 +14,35 @@ __email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
-
 ATTRIBUTES = {
-            'revision_id': 1,
-            'availability_logistics': 1.0,
-            'availability_mission': 1.0,
-            'cost': 0.0,
-            'cost_per_failure': 0.0,
-            'cost_per_hour': 0.0,
-            'hazard_rate_active': 0.0,
-            'hazard_rate_dormant': 0.0,
-            'hazard_rate_logistics': 0.0,
-            'hazard_rate_mission': 0.0,
-            'hazard_rate_software': 0.0,
-            'mmt': 0.0,
-            'mcmt': 0.0,
-            'mpmt': 0.0,
-            'mtbf_logistics': 0.0,
-            'mtbf_mission': 0.0,
-            'mttr': 0.0,
-            'name': 'Test Revision',
-            'reliability_logistics': 1.0,
-            'reliability_mission': 1.0,
-            'remarks': '',
-            'n_parts': 0,
-            'revision_code': '',
-            'program_time': 0.0,
-            'program_time_sd': 0.0,
-            'program_cost': 0.0,
-            'program_cost_sd': 0.0
-        }
+    'revision_id': 1,
+    'availability_logistics': 1.0,
+    'availability_mission': 1.0,
+    'cost': 0.0,
+    'cost_per_failure': 0.0,
+    'cost_per_hour': 0.0,
+    'hazard_rate_active': 0.0,
+    'hazard_rate_dormant': 0.0,
+    'hazard_rate_logistics': 0.0,
+    'hazard_rate_mission': 0.0,
+    'hazard_rate_software': 0.0,
+    'mmt': 0.0,
+    'mcmt': 0.0,
+    'mpmt': 0.0,
+    'mtbf_logistics': 0.0,
+    'mtbf_mission': 0.0,
+    'mttr': 0.0,
+    'name': 'Test Revision',
+    'reliability_logistics': 1.0,
+    'reliability_mission': 1.0,
+    'remarks': b'',
+    'n_parts': 0,
+    'revision_code': '',
+    'program_time': 0.0,
+    'program_time_sd': 0.0,
+    'program_cost': 0.0,
+    'program_cost_sd': 0.0
+}
 
 
 @pytest.mark.integration
@@ -77,7 +76,7 @@ def test_ramstkrevision_create(test_dao):
     assert DUT.name == 'Test Revision'
     assert DUT.reliability_logistics == 1.0
     assert DUT.reliability_mission == 1.0
-    assert DUT.remarks == ''
+    assert DUT.remarks == b''
     assert DUT.total_part_count == 1
     assert DUT.revision_code == ''
     assert DUT.program_time == 0.0
@@ -95,7 +94,8 @@ def test_get_attributes(test_dao):
 
     _values = DUT.get_attributes()
 
-    assert _values['availability_logistics'] == ATTRIBUTES['availability_logistics']
+    assert _values['availability_logistics'] == \
+        ATTRIBUTES['availability_logistics']
 
 
 @pytest.mark.integration

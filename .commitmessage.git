@@ -20,6 +20,7 @@
 #    * Function
 #    * Hardware
 #    * Validation
+#    * GUI
 # <secondary scope> is one of:
 #    * Usage
 #    * FailureDefinition
