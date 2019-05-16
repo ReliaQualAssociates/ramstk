@@ -68,7 +68,7 @@ class ModuleView(RAMSTKModuleView):
         """
         RAMSTKModuleView._make_ui(self)
 
-        self.make_treeview()
+        self.make_treeview(editable=[2, 4])
         self.treeview.set_tooltip_text(
             _("Displays the list of validation tasks."))
 
@@ -77,7 +77,7 @@ class ModuleView(RAMSTKModuleView):
             _cell = _column.get_cells()[0]
             try:
                 if _cell.get_property('editable'):
-                    _cell.connect('edited', self._do_edit_cell, i,
+                    _cell.connect('edited', self._on_cell_edit, i,
                                   self.treeview.get_model())
             except TypeError:
                 pass

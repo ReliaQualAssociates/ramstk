@@ -19,7 +19,7 @@ from ramstk.gui.gtk.workviews import wvwSimilarItem
 from ramstk.gui.gtk.workviews import wvwFunctionGD
 from ramstk.gui.gtk.workviews import wvwRevisionGD
 from ramstk.gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
-from ramstk.gui.gtk.workviews import wvwHardwareGD, wvwHardwareAI, wvwHardwareAR
+from ramstk.gui.gtk.workviews import (wvwHardwareGD, wvwHardwareAI, wvwHardwareAR)
 from ramstk.gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
 from ramstk.gui.gtk.ramstk.Widget import _, Gdk
 
@@ -27,7 +27,7 @@ from ramstk.gui.gtk.ramstk.Widget import _, Gdk
 class WorkBook(RAMSTKBook):
     """This is the Work Book for the pyGTK multiple window interface."""
 
-    def __init__(self, controller):
+    def __init__(self, controller, configuration):
         """
         Initialize an instance of the Work View class.
 
@@ -35,6 +35,7 @@ class WorkBook(RAMSTKBook):
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         """
         RAMSTKBook.__init__(self, controller)
+        self.RAMSTK_CONFIGURATION = configuration
 
         # Initialize private dictionary attributes.
 
@@ -65,8 +66,8 @@ class WorkBook(RAMSTKBook):
                 wvwPoF(controller)
             ],
             'validation':
-            [wvwValidationGD(controller),
-             wvwBurndownCurve(controller)]
+            [wvwValidationGD(controller, configuration),
+             wvwBurndownCurve(controller, configuration)]
         }
 
         # Initialize public list attributes.
@@ -97,13 +98,13 @@ class WorkBook(RAMSTKBook):
         self.set_default_size(_width, _height)
         self.move((_width / 1), (_height / 2))
 
-        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+        if self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'left':
             self.notebook.set_tab_pos(self._left_tab)
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+        elif self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'right':
             self.notebook.set_tab_pos(self._right_tab)
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+        elif self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'top':
             self.notebook.set_tab_pos(self._top_tab)
         else:

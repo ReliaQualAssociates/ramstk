@@ -80,7 +80,7 @@ def do_make_buttonbox(self, **kwargs):
 class RAMSTKButton(Gtk.Button):
     """This is the RAMSTK Button class."""
 
-    def __init__(self, height=40, width=200, label="", icon=None):
+    def __init__(self, height=40, width=200, label="...", icon=None, **kwargs):
         """
         Initialize an instance of the RAMSTK Button.
 
@@ -89,26 +89,67 @@ class RAMSTKButton(Gtk.Button):
         :keyword int  width: the width of the Gtk.Button().
                              Default is 200.
         :keyword str label: the text to display on the Gtk.Button().
-                            Default is an empty string.
+                            Default is an ellipsis (...).
         :keyword str icon: the image to display on the Gtk.Button().
         :return: None
         :rtype: None
         """
         GObject.GObject.__init__(self, label=label)
+        self.show_all()
 
-        if width == 0:
-            width = 200
+        # TODO: Remove this when all RAMSTK Entrys are refactored.
+        self.do_set_properties(
+            height=height, width=width, tooltip=label, icon=icon)
 
-        if icon is not None:
+    def do_set_properties(self, **kwargs):
+        """
+        Set the properties of the RAMSTK button.
+
+        :param \**kwargs: See below
+
+        :Keyword Arguments:
+            * *height* (int) -- height of the Gtk.Button() widget.
+                                Default is 30.
+            * *icon* (str) -- the icon to display on the button.  Default is
+                              None.
+            * *tooltip* (str) -- the tooltip, if any, for the button.
+                                 Default is an empty string.
+            * *width* (int) -- width of the Gtk.Button() widget.
+                               Default is 200.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _height = kwargs['height']
+        except KeyError:
+            _height = 40
+        try:
+            _icon = kwargs['icon']
+        except KeyError:
+            _icon = None
+        try:
+            _tooltip = kwargs['tooltip']
+        except KeyError:
+            _tooltip = ""
+        try:
+            _width = kwargs['width']
+        except KeyError:
+            _width = 200
+
+        if _width == 0:
+            _width = 200
+
+        if _icon is not None:
             _image = Gtk.Image()
-            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(icon, height, width)
+            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                _icon, _height, _width)
             _image.set_from_pixbuf(_icon)
             self.set_image(_image)
 
-        self.props.width_request = width
-        self.props.height_request = height
+        self.props.width_request = _width
+        self.props.height_request = _height
 
-        self.show_all()
+        self.set_tooltip_text(_tooltip)
 
 
 class RAMSTKCheckButton(Gtk.CheckButton):

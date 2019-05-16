@@ -36,6 +36,7 @@ class RAMSTKBaseView(object):
                      information to be displayed.
     :ivar str fmt: the formatting code for numerical displays.
     """
+    RAMSTK_CONFIGURATION = None
 
     _response_ok = Gtk.ResponseType.OK
 

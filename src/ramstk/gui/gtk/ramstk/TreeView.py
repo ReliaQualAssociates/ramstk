@@ -13,6 +13,7 @@ from sortedcontainers import SortedDict
 import defusedxml.lxml as lxml
 
 # Import other RAMSTK Widget classes.
+from ramstk.Utilities import integer_to_boolean
 from .Widget import Gdk, GdkPixbuf, GObject, Gtk, Pango
 from .Label import RAMSTKLabel
 
@@ -119,10 +120,10 @@ class RAMSTKTreeView(Gtk.TreeView):
         # Create a list of GObject datatypes to pass to the model.
         for i in range(len(self.datatypes)):  # pylint: disable=C0200
             self.datatypes[i] = self.datatypes[i].text
-            self.editable[i] = int(self.editable[i].text)
+            self.editable[i] = integer_to_boolean(int(self.editable[i].text))
             self.headings[i] = self.headings[i].text.replace("  ", "\n")
             self.order.append(int(_position[i].text))
-            self.visible[i] = int(self.visible[i].text)
+            self.visible[i] = integer_to_boolean(int(self.visible[i].text))
             self.widgets[i] = self.widgets[i].text
             _position[i] = int(_position[i].text)
             # Not all format files will have keys.
@@ -176,8 +177,6 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.visible.append(0)
         self.widgets.append('text')
 
-        return None
-
     def do_set_visible_columns(self, **kwargs):
         """
         Set the treeview columns visible, hidden, and/or editable.
@@ -190,21 +189,19 @@ class RAMSTKTreeView(Gtk.TreeView):
         except KeyError:
             _visible = []
         try:
-            _hidden = kwargs['hidden']
-        except KeyError:
-            _hidden = []
-        try:
             _editable = kwargs['editable']
         except KeyError:
             _editable = []
         _return = False
 
-        for _col in _hidden:
-            self.get_column(_col).set_visible(0)
         for _col in _visible:
-            self.get_column(_col).set_visible(1)
-            _column = self.get_column(_col)
-            _cells = _column.get_cells()
+            try:
+                self.get_column(_col).set_visible(1)
+                _column = self.get_column(_col)
+                _cells = _column.get_cells()
+            except AttributeError:
+                _cells = []
+
             for __, _cell in enumerate(_cells):
                 try:
                     _cell.set_property('background', 'light gray')
@@ -213,8 +210,12 @@ class RAMSTKTreeView(Gtk.TreeView):
                     _cell.set_property('cell-background', 'light gray')
 
         for _col in _editable:
-            _column = self.get_column(_col)
-            _cells = _column.get_cells()
+            try:
+                _column = self.get_column(_col)
+                _cells = _column.get_cells()
+            except AttributeError:
+                _cells = []
+
             for __, _cell in enumerate(_cells):
                 try:
                     _cell.set_property('background', 'white')
@@ -403,6 +404,8 @@ class RAMSTKTreeView(Gtk.TreeView):
         :param str bg_color: the cell background color.
         :param str fg_color: the cell foreground color.
         :param int editable: indicates whether the cell is editable.
+        :return: None
+        :rtype: None
         """
         if editable == 0:
             cell.set_property('cell-background', 'light gray')

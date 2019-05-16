@@ -676,7 +676,7 @@ class RAMSTK(object):
         else:  # Multiple windows.
             self.dic_books['listbook'] = ListBook(self)
             self.dic_books['modulebook'] = ModuleBook(self)
-            self.dic_books['workbook'] = WorkBook(self)
+            self.dic_books['workbook'] = WorkBook(self, self.RAMSTK_CONFIGURATION)
 
         _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
