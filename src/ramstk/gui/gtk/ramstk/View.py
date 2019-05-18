@@ -19,92 +19,96 @@ from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, Gtk
 from ramstk.gui.gtk.ramstk import (RAMSTKMessageDialog, RAMSTKTreeView)
 
 
-class RAMSTKBaseView(object):
+class RAMSTKBaseView():     # pylint: disable=bad-option-value
     """
     Meta class for all RAMSTK ListView, ModuleView, and WorkView classes.
 
     Attributes of the RAMSTKBaseView are:
 
+    :cvar RAMSTK_CONFIGURATION: the instance of the RAMSTK Configuration class.
+    :type RAMSTK_CONFIGURATION: :class:`ramstk.Configuration.Configuration`
+    :cvar dict dic_tab_pos: dictionary holding the Gtk.PositionType()s for each
+                            of left, right, top, and botton.
+
     :ivar dict _dic_icons: dictionary containing icon name and absolute path
                            key:value pairs.
+    :ivar list _lst_col_order: list containing the order of the columns in the
+                               List View RAMSTKTreeView().
     :ivar list _lst_handler_id: list containing the ID's of the callback
                                 signals for each Gtk.Widget() associated with
                                 an editable attribute.
-    :ivar _mdcRAMSTK: the :py:class:`ramstk.RAMSTK.RAMSTK` master data controller.
     :ivar float _mission_time: the mission time for the open RAMSTK Program.
-    :ivar _notebook: the :py:class:`Gtk.Notebook` to hold all the pages of
-                     information to be displayed.
+    :ivar _notebook: the Gtk.Notebook() to hold all the pages of information to
+                     be displayed.
+    :type _notebook: :class:`Gtk.Notebook`
+    :ivar int _revision_id: the ID of the Revision associated with the
+                            information being displayed in the View.
+    :ivar int _parent_id: the ID of the parent object associated with the
+                          information being displayed in the View.
+    :ivar treeview: the Gtk.TreeView() to display the information for the View.
+    :type treeview: :class:`Gtk.TreeView`
     :ivar str fmt: the formatting code for numerical displays.
+    :ivar hbox_tab_label: the Gtk.HBox() containing the View's Gtk.Notebook()
+                          tab Gtk.Label().
+    :type hbox_tab_label: :class:`Gtk.HBox`
     """
+
     RAMSTK_CONFIGURATION = None
 
-    _response_ok = Gtk.ResponseType.OK
+    dic_tab_position = {
+        'left': Gtk.PositionType.LEFT,
+        'right': Gtk.PositionType.RIGHT,
+        'top': Gtk.PositionType.TOP,
+        'bottom': Gtk.PositionType.BOTTOM
+    }
 
-    _left_tab = Gtk.PositionType.LEFT
-    _right_tab = Gtk.PositionType.RIGHT
-    _top_tab = Gtk.PositionType.TOP
-    _bottom_tab = Gtk.PositionType.BOTTOM
-
-    def __init__(self, controller, **kwargs):
+    def __init__(self, configuration, **kwargs):
         """
         Initialize the RAMSTK Base View.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        self._mdcRAMSTK = controller
         _module = kwargs['module']
+        self.RAMSTK_CONFIGURATION = configuration
 
         # Initialize private dictionary attributes.
         self._dic_icons = {
             'calculate':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/calculate.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/calculate.png',
             'calculate_all':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/calculate-all.png',
             'add':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/add.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/add.png',
             'remove':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/remove.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/remove.png',
             'reports':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/reports.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/reports.png',
             'save':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/save.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save.png',
             'save-all':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/save-all.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/save-all.png',
             'important':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/important.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/important.png',
             'error':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/error.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/error.png',
             'question':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/question.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/question.png',
             'insert_sibling':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/insert_sibling.png',
             'insert_child':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
             '/32x32/insert_child.png',
             'cancel':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/cancel.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/cancel.png',
             'export':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/export.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/export.png',
             'warning':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/warning.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/warning.png',
             'rollup':
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/rollup.png',
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/rollup.png',
         }
 
         # Initialize private list attributes.
@@ -112,9 +116,7 @@ class RAMSTKBaseView(object):
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = None
-        self._mission_time = float(
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
+        self._mission_time = float(self.RAMSTK_CONFIGURATION.RAMSTK_MTIME)
         self._notebook = Gtk.Notebook()
         self._revision_id = None
         self._parent_id = None
@@ -128,14 +130,13 @@ class RAMSTKBaseView(object):
             self.treeview = None
         else:
             try:
-                _bg_color = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
-                    _module + 'bg']
-                _fg_color = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
-                    _module + 'fg']
+                _bg_color = self.RAMSTK_CONFIGURATION.RAMSTK_COLORS[_module +
+                                                                    'bg']
+                _fg_color = self.RAMSTK_CONFIGURATION.RAMSTK_COLORS[_module +
+                                                                    'fg']
                 _fmt_file = (
-                    self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR +
-                    '/layouts/' + self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                    RAMSTK_FORMAT_FILE[_module])
+                    self.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+                    self.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
                 _fmt_path = "/root/tree[@name='" + _module.title(
                 ) + "']/column"
 
@@ -146,14 +147,13 @@ class RAMSTKBaseView(object):
                 self.treeview = Gtk.TreeView()
 
         self.fmt = '{0:0.' + \
-                   str(self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEC_PLACES) + \
+                   str(self.RAMSTK_CONFIGURATION.RAMSTK_DEC_PLACES) + \
                    'G}'
         self.hbx_tab_label = Gtk.HBox()
 
         try:
-            locale.setlocale(
-                locale.LC_ALL,
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
+            locale.setlocale(locale.LC_ALL,
+                             self.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
@@ -228,8 +228,7 @@ class RAMSTKBaseView(object):
             _debug_msg = ''
 
         if _error_code != 0:
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
-                _debug_msg)
+            self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_debug_msg)
             _dialog = RAMSTKMessageDialog(
                 _user_msg, self._dic_icons[_severity], _severity)
             if _dialog.do_run() == Gtk.ResponseType.OK:
@@ -382,8 +381,6 @@ class RAMSTKBaseView(object):
             _cell.set_property('cell-background-rgba', _color)
             _index += 1
 
-        return None
-
     def on_button_press(self, event, icons=None, labels=None, callbacks=None):
         """
         Handle mouse clicks on the View's RTKTreeView().
@@ -405,10 +402,9 @@ class RAMSTKBaseView(object):
                               menu.
         :keyword list callbacks: the list of callback functions/methods to
                                  attach to the pop-up menu items.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
         _menu = Gtk.Menu()
         _menu.popup(None, None, None, event.button, event.time)
 
@@ -422,8 +418,6 @@ class RAMSTKBaseView(object):
             _menu_item.connect('activate', callbacks[_idx])
             _menu_item.show()
             _menu.append(_menu_item)
-
-        return _return
 
     def on_focus_out(self, entry, index, **kwargs):
         """
@@ -508,7 +502,6 @@ class RAMSTKBaseView(object):
         :rtype: bool
         """
         _tree = kwargs['tree']
-        _return = False
 
         _model = self.treeview.get_model()
         _model.clear()
@@ -530,7 +523,6 @@ class RAMSTKBaseView(object):
                     _row = _model.append(_attributes[:2])
                 except ValueError:
                     _row = None
-                    _return = True
 
         _row = _model.get_iter_first()
         self.treeview.expand_all()
@@ -539,8 +531,6 @@ class RAMSTKBaseView(object):
             _column = self.treeview.get_column(0)
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
-
-        return _return
 
     def set_cursor(self, cursor):
         """
@@ -591,5 +581,3 @@ class RAMSTKBaseView(object):
             Gdk.Cursor.new(cursor))
 
         Gdk.flush()
-
-        return None

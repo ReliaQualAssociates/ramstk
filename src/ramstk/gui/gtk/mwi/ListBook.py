@@ -34,7 +34,7 @@ class ListBook(RAMSTKBook):
                               that RAMSTK module.
     """
 
-    def __init__(self, controller, configuration):
+    def __init__(self, configuration):
         """
         Initialize an instance of the RAMSTK List View class.
 
@@ -53,22 +53,22 @@ class ListBook(RAMSTKBook):
         # Initialize public dictionary attributes.
         self.dic_list_view = {
             'revision':
-            [lvwUsageProfile(controller),
-             lvwFailureDefinition(controller)],
+            [lvwUsageProfile(configuration),
+             lvwFailureDefinition(configuration)],
             'function':
-            [FunctionHardware(controller, matrix_type='fnctn_hrdwr')],
+            [FunctionHardware(configuration, matrix_type='fnctn_hrdwr')],
             'requirement': [
-                lvwStakeholder(controller),
-                RequirementHardware(controller, matrix_type='rqrmnt_hrdwr'),
-                RequirementValidation(controller, matrix_type='rqrmnt_vldtn')
+                lvwStakeholder(configuration),
+                RequirementHardware(configuration, matrix_type='rqrmnt_hrdwr'),
+                RequirementValidation(configuration, matrix_type='rqrmnt_vldtn')
             ],
             'hardware': [
-                HardwareRequirement(controller, matrix_type='hrdwr_rqrmnt'),
-                HardwareValidation(controller, matrix_type='hrdwr_vldtn')
+                HardwareRequirement(configuration, matrix_type='hrdwr_rqrmnt'),
+                HardwareValidation(configuration, matrix_type='hrdwr_vldtn')
             ],
             'validation': [
-                ValidationRequirement(controller, matrix_type='vldtn_rqrmnt'),
-                ValidationHardware(controller, matrix_type='vldtn_hrdwr')
+                ValidationRequirement(configuration, matrix_type='vldtn_rqrmnt'),
+                ValidationHardware(configuration, matrix_type='vldtn_hrdwr')
             ]
         }
 

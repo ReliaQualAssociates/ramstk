@@ -85,9 +85,9 @@ def main():
     if _app.RAMSTK_CONFIGURATION.RAMSTK_GUI_LAYOUT == 'basic':  # Single window.
         pass
     else:  # Multiple windows.
-        ListBook(_app, _app.RAMSTK_CONFIGURATION)
-        ModuleBook(_app, _app.RAMSTK_CONFIGURATION)
-        WorkBook(_app, _app.RAMSTK_CONFIGURATION)
+        ListBook(_app.RAMSTK_CONFIGURATION)
+        ModuleBook(_app.RAMSTK_CONFIGURATION)
+        WorkBook(_app.RAMSTK_CONFIGURATION)
 
     Gtk.main()
 

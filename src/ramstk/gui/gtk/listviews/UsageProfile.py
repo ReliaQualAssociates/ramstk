@@ -20,28 +20,25 @@ class ListView(RAMSTKListView):
     """
     Display all the Usage Profiles associated with the selected Revision.
 
-    The attributes of a Usage Profile List View are:
-
-    :ivar _revision_id: the Revision ID whose Usage Profiles are being
-                        displayed in the List View.
+    All attributes of a Usage Profile List View are inherited.
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the List View for the Usage Profile.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :py:class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKListView.__init__(self, controller, module='usage_profile')
+        RAMSTKListView.__init__(self, configuration, module='usage_profile')
 
         # Initialize private dictionary attributes.
         self._dic_icons['mission'] = \
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mission.png'
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/mission.png'
         self._dic_icons['phase'] = \
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/phase.png'
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/phase.png'
         self._dic_icons['environment'] = \
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/environment.png'
 
         # Initialize private list attributes.
@@ -55,262 +52,14 @@ class ListView(RAMSTKListView):
         # Initialize public scalar attributes.
 
         self.__make_treeview()
-        self.treeview.set_rubber_banding(True)
-        self.treeview.set_tooltip_text(
-            _("Displays the list of usage profiles for the selected "
-              "revision."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-        # _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self._dic_icons['tab'],
-        #                                          22, 22)
-        # _image = Image()
-        # _image.set_from_pixbuf(_icon)
-
-        _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _("Usage\nProfiles") +
-                          "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(Gtk.Justification.CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(
-            _("Displays usage profiles for the selected "
-              "revision."))
-
-        # self.hbx_tab_label.pack_start(_image, True, True, 0)
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
-        self.hbx_tab_label.show_all()
-
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.add(self.treeview)
-
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_end(_scrolledwindow, True, True, 0)
-
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_tree, 'deleted_usage_profile')
         pub.subscribe(self._do_load_tree, 'inserted_usage_profile')
         pub.subscribe(self._do_load_tree, 'retrieved_usage_profile')
-
-    def _do_load_tree(self, tree, row=None):
-        """
-        Recursively load the Usage Profile List View's Gtk.TreeModel.
-
-        :param tree: the Usage Profile treelib Tree().
-        :type tree: :class:`treelib.Tree`
-        :param row: the parent row in the Usage Profile Gtk.TreeView() to
-                    add the new item.
-        :type row: :class:`Gtk.TreeIter`
-
-        :return: (_error_code, _user_msg, _debug_msg); the error code, message
-                 to be displayed to the user, and the message to be written to
-                 the debug log.
-        :rtype: (int, str, str)
-        """
-        _return = False
-        _row = None
-        _model = self.treeview.get_model()
-
-        _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
-        _entity = _node.data
-        if _entity is None:
-            _model.clear()
-
-        _attributes = []
-        try:
-            if _entity.is_mission:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons['mission'], 22, 22)
-                _attributes = [
-                    _icon, _entity.mission_id, _entity.description, '',
-                    _entity.time_units, 0.0, _entity.mission_time, 0.0, 0.0,
-                    _node.identifier, 0, 'mission'
-                ]
-                _new_row = None
-
-            elif _entity.is_phase:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons['phase'], 22, 22)
-                _attributes = [
-                    _icon, _entity.phase_id, _entity.name, _entity.description,
-                    '', _entity.phase_start, _entity.phase_end, 0.0, 0.0,
-                    _node.identifier, 0, 'phase'
-                ]
-
-            elif _entity.is_env:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons['environment'], 22, 22)
-                _attributes = [
-                    _icon, _entity.environment_id, _entity.name, '',
-                    _entity.units, _entity.minimum, _entity.maximum,
-                    _entity.mean, _entity.variance, _node.identifier, 1,
-                    'environment'
-                ]
-
-            try:
-                _new_row = _model.append(row, _attributes)
-            except TypeError:
-                _error_code = 1
-                _user_msg = _("One or more Usage Profile line items had the "
-                              "wrong data type in it's data package and is "
-                              "not displayed in the Usage Profile.")
-                _debug_msg = (
-                    "RAMSTK ERROR: Data for Usage Profile ID {0:s} for "
-                    "Revision ID {1:s} is the wrong type for one or "
-                    "more columns.".format(
-                        str(_node.identifier), str(self._revision_id)))
-                _new_row = None
-            except ValueError:
-                _error_code = 1
-                _user_msg = _("One or more Usage Profile line items was "
-                              "missing some of it's data and is not "
-                              "displayed in the Usage Profile.")
-                _debug_msg = (
-                    "RAMSTK ERROR: Too few fields for Usage Profile ID "
-                    "{0:s} for Revision ID {1:s}.".format(
-                        str(_node.identifier), str(self._revision_id)))
-                _new_row = None
-        except AttributeError:
-            if _node.identifier != 0:
-                _error_code = 1
-                _user_msg = _("One or more Usage Profile line items was "
-                              "missing it's data package and is not "
-                              "displayed in the Usage Profile.")
-                _debug_msg = (
-                    "RAMSTK ERROR: There is no data package for Usage "
-                    "Profile ID {0:s} for Revision ID {1:s}.".format(
-                        str(_node.identifier), str(self._revision_id)))
-            _new_row = None
-
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(tree=_child_tree, row=_new_row)
-
-        _row = _model.get_iter_first()
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
-
-        return _return
-
-    def _do_request_delete(self, __button):
-        """
-        Request to delete the selected Usage Profile record.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        _model, _row = self.treeview.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 9)
-
-        _prompt = _("You are about to delete Mission, Mission Phase, or "
-                    "Environment {0:d} and all data associated with it.  Is "
-                    "this really what you want to do?").format(_node_id)
-        _dialog = ramstk.RAMSTKMessageDialog(
-            _prompt, self._dic_icons['question'], 'question')
-        _response = _dialog.do_run()
-
-        if _response == Gtk.ResponseType.YES:
-            pub.sendMessage('request_delete_profile', node_id=_node_id)
-
-        _dialog.do_destroy()
-
-        return None
-
-    def _do_request_insert(self, **kwargs):
-        """
-        Request to add an entity to the Usage Profile.
-
-        :return: None
-        :rtype: None
-        """
-        _sibling = kwargs['sibling']
-
-        # Get the currently selected row, the level of the currently selected
-        # item, and it's parent row in the Usage Profile.
-        _model, _row = self.treeview.get_selection().get_selected()
-        try:
-            _level = _model.get_value(_row, 11)
-            _prow = _model.iter_parent(_row)
-        except TypeError:
-            _level = ''
-            _prow = None
-
-        if _sibling:
-            if _level == 'mission':
-                _entity_id = self._revision_id
-                _parent_id = 0
-            else:
-                _entity_id = _model.get_value(_prow, 1)
-                _parent_id = _model.get_value(_prow, 9)
-        else:
-            _entity_id = _model.get_value(_row, 1)
-            _parent_id = _model.get_value(_row, 9)
-
-        if _level == 'mission' and not _sibling:
-            _level = 'phase'
-
-        elif _level == 'phase' and not _sibling:
-            _level = 'environment'
-
-        elif _level == 'environment' and not _sibling:
-            _prompt = _("An environmental condition cannot have a child.")
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, self._dic_icons['error'], 'error')
-            if _dialog.do_run() == Gtk.ResponseType.OK:
-                _dialog.do_destroy()
-            else:
-                _dialog.do_destroy()
-
-        pub.sendMessage(
-            'request_insert_profile',
-            entity_id=_entity_id,
-            parent_id=_parent_id,
-            level=_level)
-
-        return None
-
-    def _do_request_update(self, __button):
-        """
-        Request to update the currently selected Usage Profile record.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        _model, _row = self.treeview.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 9)
-
-        self.set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_profile', node_id=_node_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
-
-    def _do_request_update_all(self, __button):
-        """
-        Request to update all the Usage Profile records.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_all_profiles')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
 
     def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -385,11 +134,9 @@ class ListView(RAMSTKListView):
         """
         Set up the RAMSTKTreeView() for the Usage Profile.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         _model = Gtk.TreeStore(
             GdkPixbuf.Pixbuf, GObject.TYPE_INT, GObject.TYPE_STRING,
             GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_FLOAT,
@@ -445,7 +192,323 @@ class ListView(RAMSTKListView):
             _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
             self.treeview.append_column(_column)
 
-        return _return
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.tab_label.set_markup("<span weight='bold'>" +
+                                  _("Usage\nProfiles") + "</span>")
+        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
+        self.tab_label.set_justify(Gtk.Justification.CENTER)
+        self.tab_label.show_all()
+        self.tab_label.set_tooltip_text(
+            _("Displays usage profiles for the selected revision."))
+
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        RAMSTKListView._make_ui(self)
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for the Failure Definition ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKListView._set_callbacks(self)
+
+    def __set_properties(self):
+        """
+        Set properties of the Failure Definition ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKListView._set_properties(self)
+        self.treeview.set_tooltip_text(
+            _("Displays the list of usage profiles for the selected "
+              "revision."))
+
+    def _do_load_environment(self, entity, identifier, row):
+        """
+        Load an environmental condition into the RAMSTK TreeView.
+
+        :param entity: the record from the RAMSTKEnvironment table to load.
+        :type entity: :class:`ramstk.dao.programdb.RAMSTKEnvironment`
+        :param int identifier: the ID of the Usage Profile being loaded.
+        :param row: the Gtk.Iter() to load the entity data into.
+        :return: _new_row; the Gtk.Iter() pointing to the next row to load.
+        :rtype: :class:`Gtk.Iter`
+        """
+        _model = self.treeview.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons['environment'], 22, 22)
+        _attributes = [
+            _icon, entity.environment_id, entity.name, '', entity.units,
+            entity.minimum, entity.maximum, entity.mean, entity.variance,
+            identifier, 1, 'environment'
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except TypeError:
+            _user_msg = _("One or more Environments had the wrong data type "
+                          "in it's data package and is not displayed in the "
+                          "Usage Profile.")
+            _debug_msg = (
+                "RAMSTK ERROR: Data for Environment ID {0:s} for Revision ID "
+                "{1:s} is the wrong type for one or more columns.".format(
+                    str(entity.environment_id), str(self._revision_id)))
+            _new_row = None
+        except ValueError:
+            _user_msg = _("One or more Missions was missing some of it's data "
+                          "and is not displayed in the Usage Profile.")
+            _debug_msg = (
+                "RAMSTK ERROR: Too few fields for Environment ID {0:s} for "
+                "Revision ID {1:s}.".format(
+                    str(entity.environment_id), str(self._revision_id)))
+            _new_row = None
+
+        return _new_row
+
+    def _do_load_mission(self, entity, identifier, row):
+        """
+        Load a mission into the RAMSTK TreeView.
+
+        :param entity: the record from the RAMSTKMission table to load.
+        :type entity: :class:`ramstk.dao.programdb.RAMSTKMission`
+        :param int identifier: the ID of the Usage Profile being loaded.
+        :return: _new_row; the Gtk.Iter() pointing to the next row to load.
+        :rtype: :class:`Gtk.Iter`
+        """
+        _model = self.treeview.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons['mission'], 22, 22)
+        _attributes = [
+            _icon, entity.mission_id, entity.description, '',
+            entity.time_units, 0.0, entity.mission_time, 0.0, 0.0, identifier,
+            0, 'mission'
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except TypeError:
+            _user_msg = _("One or more Missions had the wrong data type in "
+                          "it's data package and is not displayed in the "
+                          "Usage Profile.")
+            _debug_msg = (
+                "RAMSTK ERROR: Data for Mission ID {0:s} for Revision ID "
+                "{1:s} is the wrong type for one or more columns.".format(
+                    str(entity.mission_id), str(self._revision_id)))
+            _new_row = None
+        except ValueError:
+            _user_msg = _("One or more Missions was missing some of it's data "
+                          "and is not displayed in the Usage Profile.")
+            _debug_msg = (
+                "RAMSTK ERROR: Too few fields for Mission ID {0:s} for "
+                "Revision ID {1:s}.".format(
+                    str(entity.mission_id), str(self._revision_id)))
+            _new_row = None
+
+        return _new_row
+
+    def _do_load_phase(self, entity, identifier, row):
+        """
+        Load a mission phase into the RAMSTK TreeView.
+
+        :param entity: the record from the RAMSTKMissionPhase table to load.
+        :type entity: :class:`ramstk.dao.programdb.RAMSTKMissionPhase`
+        :param int identifier: the ID of the Usage Profile being loaded.
+        :param row: the Gtk.Iter() to load the entity data into.
+        :return: _new_row; the Gtk.Iter() pointing to the next row to load.
+        :rtype: :class:`Gtk.Iter`
+        """
+        _model = self.treeview.get_model()
+
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons['phase'], 22, 22)
+        _attributes = [
+            _icon, entity.phase_id, entity.name, entity.description, '',
+            entity.phase_start, entity.phase_end, 0.0, 0.0, identifier, 0,
+            'phase'
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except TypeError:
+            _user_msg = _("One or more Mission Phases had the wrong data type "
+                          "in it's data package and is not displayed in the "
+                          "Usage Profile.")
+            _debug_msg = (
+                "RAMSTK ERROR: Data for Mission Phase ID {0:s} for Revision "
+                "ID {1:s} is the wrong type for one or more columns.".format(
+                    str(entity.phase_id), str(self._revision_id)))
+            _new_row = None
+        except ValueError:
+            _user_msg = _("One or more Mission Phases was missing some of "
+                          "it's data and is not displayed in the Usage "
+                          "Profile.")
+            _debug_msg = (
+                "RAMSTK ERROR: Too few fields for Mission Phase ID {0:s} for "
+                "Revision ID {1:s}.".format(
+                    str(entity.phase_id), str(self._revision_id)))
+            _new_row = None
+
+        return _new_row
+
+    def _do_load_tree(self, tree, row=None):
+        """
+        Recursively load the Usage Profile List View's Gtk.TreeModel.
+
+        :param tree: the Usage Profile treelib Tree().
+        :type tree: :class:`treelib.Tree`
+        :param row: the parent row in the Usage Profile Gtk.TreeView() to
+                    add the new item.
+        :type row: :class:`Gtk.TreeIter`
+
+        :return: None
+        :rtype: None
+        """
+        _row = None
+        _model = self.treeview.get_model()
+
+        _node = tree.nodes[list(SortedDict(tree.nodes).keys())[0]]
+        _entity = _node.data
+        if _entity is None:
+            _model.clear()
+
+        try:
+            if _entity.is_mission:
+                _new_row = self._do_load_mission(_entity, _node.identifier,
+                                                 row)
+
+            elif _entity.is_phase:
+                _new_row = self._do_load_phase(_entity, _node.identifier, row)
+
+            elif _entity.is_env:
+                _new_row = self._do_load_environment(_entity, _node.identifier,
+                                                     row)
+        except AttributeError:
+            if _node.identifier != 0:
+                _user_msg = _("One or more Usage Profile line items was "
+                              "missing it's data package and is not "
+                              "displayed in the Usage Profile.")
+                _debug_msg = (
+                    "RAMSTK ERROR: There is no data package for Usage "
+                    "Profile ID {0:s} for Revision ID {1:s}.".format(
+                        str(_node.identifier), str(self._revision_id)))
+            _new_row = None
+
+        for _n in tree.children(_node.identifier):
+            _child_tree = tree.subtree(_n.identifier)
+            self._do_load_tree(tree=_child_tree, row=_new_row)
+
+        _row = _model.get_iter_first()
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
+
+    def _do_request_delete(self, __button):
+        """
+        Request to delete the selected Usage Profile record.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        _model, _row = self.treeview.get_selection().get_selected()
+        _node_id = _model.get_value(_row, 9)
+
+        _prompt = _("You are about to delete Mission, Mission Phase, or "
+                    "Environment {0:d} and all data associated with it.  Is "
+                    "this really what you want to do?").format(_node_id)
+        _dialog = ramstk.RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question')
+        _response = _dialog.do_run()
+
+        if _response == Gtk.ResponseType.YES:
+            pub.sendMessage('request_delete_profile', node_id=_node_id)
+
+        _dialog.do_destroy()
+
+    def _do_request_insert(self, **kwargs):
+        """
+        Request to add an entity to the Usage Profile.
+
+        :return: None
+        :rtype: None
+        """
+        _sibling = kwargs['sibling']
+
+        # Get the currently selected row, the level of the currently selected
+        # item, and it's parent row in the Usage Profile.
+        _model, _row = self.treeview.get_selection().get_selected()
+        try:
+            _level = _model.get_value(_row, 11)
+            _prow = _model.iter_parent(_row)
+        except TypeError:
+            _level = ''
+            _prow = None
+
+        if _sibling and _level == 'mission':
+            _entity_id = self._revision_id
+            _parent_id = 0
+        else:
+            _entity_id = _model.get_value(_prow, 1)
+            _parent_id = _model.get_value(_prow, 9)
+
+        _dic_level = {'mission': 'phase', 'phase': 'environment'}
+        if not _sibling:
+            try:
+                _level = _dic_level[_level]
+            except KeyError:
+                _prompt = _("An environmental condition cannot have a child.")
+                _dialog = ramstk.RAMSTKMessageDialog(
+                    _prompt, self._dic_icons['error'], 'error')
+                _dialog.do_destroy()
+
+        pub.sendMessage(
+            'request_insert_profile',
+            entity_id=_entity_id,
+            parent_id=_parent_id,
+            level=_level)
+
+    def _do_request_update(self, __button):
+        """
+        Request to update the currently selected Usage Profile record.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        _model, _row = self.treeview.get_selection().get_selected()
+        _node_id = _model.get_value(_row, 9)
+
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_profile', node_id=_node_id)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _do_request_update_all(self, __button):
+        """
+        Request to update all the Usage Profile records.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_all_profiles')
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview, event):
         """
@@ -465,8 +528,8 @@ class ListView(RAMSTKListView):
                       * 9 =
 
         :type event: :class:`Gdk.Event`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         treeview.handler_block(self._lst_handler_id[1])
 
@@ -475,52 +538,22 @@ class ListView(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = Gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
+            _icons = ['insert_sibling', 'insert_child', 'remove', 'save-all']
+            _labels = [
+                _("Add Sibling Entity"),
+                _("Add Child Entity"),
+                _("Remove Selected Entity"),
+                _("Save Usage Profile")
+            ]
+            _callbacks = [
+                self.do_request_insert_sibling, self.do_request_insert_child,
+                self._do_request_delete, self._do_request_update_all
+            ]
 
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_("Add Sibling Entity"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_("Add Child Entity"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_("Remove Selected Entity"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_("Save Usage Profile"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            self.on_button_press(
+                event, icons=_icons, labels=_labels, callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
-
-        return False
 
     @staticmethod
     def _on_cell_edit(__cell, path, new_text, position, model):
@@ -538,6 +571,28 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        _dic_keys = {
+            'mission': {
+                2: 'description',
+                4: 'time_units',
+                6: 'mission_time'
+            },
+            'phase': {
+                2: 'name',
+                3: 'descriptino',
+                5: 'phase_start',
+                6: 'phase_end'
+            },
+            'environment': {
+                2: 'name',
+                4: 'units',
+                5: 'minimum',
+                6: 'maximum',
+                7: 'mean',
+                8: 'variance'
+            }
+        }
+
         if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
                                             model):
 
@@ -545,47 +600,13 @@ class ListView(RAMSTKListView):
             _node_id = model[path][9]
             _level = model[path][11]
 
-            # Build a list of attributes based on the type of data package.
-            _attributes = {}
-            if _level == 'mission':
-                if position == 2:
-                    _key = 'description'
-                elif position == 4:
-                    _key = 'time_units'
-                elif position == 6:
-                    _key = 'mission_time'
-
-            elif _level == 'phase':
-                if position == 2:
-                    _key = 'name'
-                elif position == 3:
-                    _key = 'description'
-                elif position == 5:
-                    _key = 'phase_start'
-                elif position == 6:
-                    _key = 'phase_end'
-
-            elif _level == 'environment':
-                if position == 2:
-                    _key = 'name'
-                elif position == 4:
-                    _key = 'units'
-                elif position == 5:
-                    _key = 'minimum'
-                elif position == 6:
-                    _key = 'maximum'
-                elif position == 7:
-                    _key = 'mean'
-                elif position == 8:
-                    _key = 'variance'
+            _key = _dic_keys[_level][position]
 
             pub.sendMessage(
                 'lvw_editing_profile',
                 module_id=_node_id,
                 key=_key,
                 value=new_text)
-
-        return None
 
     def _on_row_change(self, treeview):
         """
@@ -604,83 +625,84 @@ class ListView(RAMSTKListView):
         treeview.handler_block(self._lst_handler_id[0])
 
         (_model, _row) = treeview.get_selection().get_selected()
-        try:
-            _level = _model.get_value(_row, 11)
-        except TypeError:
-            _level = None
 
-        # Change the column headings depending on what is being selected.
-        if _level == 'mission':
-            _headings = [
-                _("Mission ID"),
-                _("Description"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _("")
-            ]
-            _attributes['mission_id'] = _model.get_value(_row, 0)
-            _attributes['description'] = _model.get_value(_row, 2)
-            _attributes['time_units'] = _model.get_value(_row, 4)
-            _attributes['mission_time'] = _model.get_value(_row, 6)
+        if _row is not None:
+            try:
+                _level = _model.get_value(_row, 11)
+            except TypeError:
+                _level = None
 
-        elif _level == 'phase':
-            _headings = [
-                _("Phase ID"),
-                _("  Code\t\tDescription"),
-                _("Units"),
-                _("Start Time"),
-                _("End Time"),
-                _(""),
-                _(""),
-                _("")
-            ]
-            _attributes['phase_id'] = _model.get_value(_row, 0)
-            _attributes['name'] = _model.get_value(_row, 2)
-            _attributes['description'] = _model.get_value(_row, 3)
-            _attributes['phase_start'] = _model.get_value(_row, 5)
-            _attributes['phase_end'] = _model.get_value(_row, 6)
+            # Change the column headings depending on what is being selected.
+            if _level == 'mission':
+                _headings = [
+                    _("Mission ID"),
+                    _("Description"),
+                    _("Units"),
+                    _("Start Time"),
+                    _("End Time"),
+                    _(""),
+                    _(""),
+                    _("")
+                ]
+                _attributes['mission_id'] = _model.get_value(_row, 0)
+                _attributes['description'] = _model.get_value(_row, 2)
+                _attributes['time_units'] = _model.get_value(_row, 4)
+                _attributes['mission_time'] = _model.get_value(_row, 6)
 
-        elif _level == 'environment':
-            _headings = [
-                _("Environment ID"),
-                _("Condition"),
-                _("Units"),
-                _("Minimum Value"),
-                _("Maximum Value"),
-                _("Mean Value"),
-                _("Variance"),
-                _("")
-            ]
-            _attributes['environment_id'] = _model.get_value(_row, 0)
-            _attributes['name'] = _model.get_value(_row, 2)
-            _attributes['units'] = _model.get_value(_row, 4)
-            _attributes['minimum'] = _model.get_value(_row, 5)
-            _attributes['maximum'] = _model.get_value(_row, 6)
-            _attributes['mean'] = _model.get_value(_row, 7)
-            _attributes['variance'] = _model.get_value(_row, 8)
+            elif _level == 'phase':
+                _headings = [
+                    _("Phase ID"),
+                    _("  Code\t\tDescription"),
+                    _("Units"),
+                    _("Start Time"),
+                    _("End Time"),
+                    _(""),
+                    _(""),
+                    _("")
+                ]
+                _attributes['phase_id'] = _model.get_value(_row, 0)
+                _attributes['name'] = _model.get_value(_row, 2)
+                _attributes['description'] = _model.get_value(_row, 3)
+                _attributes['phase_start'] = _model.get_value(_row, 5)
+                _attributes['phase_end'] = _model.get_value(_row, 6)
 
-        else:
-            _headings = []
+            elif _level == 'environment':
+                _headings = [
+                    _("Environment ID"),
+                    _("Condition"),
+                    _("Units"),
+                    _("Minimum Value"),
+                    _("Maximum Value"),
+                    _("Mean Value"),
+                    _("Variance"),
+                    _("")
+                ]
+                _attributes['environment_id'] = _model.get_value(_row, 0)
+                _attributes['name'] = _model.get_value(_row, 2)
+                _attributes['units'] = _model.get_value(_row, 4)
+                _attributes['minimum'] = _model.get_value(_row, 5)
+                _attributes['maximum'] = _model.get_value(_row, 6)
+                _attributes['mean'] = _model.get_value(_row, 7)
+                _attributes['variance'] = _model.get_value(_row, 8)
 
-        i = 0
-        _columns = treeview.get_columns()
-        for _heading in _headings:
-            _label = Gtk.Label()
-            _label.set_line_wrap(True)
-            _label.set_alignment(xalign=0.5, yalign=0.5)
-            _label.set_justify(Gtk.Justification.CENTER)
-            _label.set_markup("<span weight='bold'>" + _heading + "</span>")
-            _label.set_use_markup(True)
-            _label.show_all()
-            _columns[i].set_widget(_label)
+            else:
+                _headings = []
 
-            i += 1
+            i = 0
+            _columns = treeview.get_columns()
+            for _heading in _headings:
+                _label = Gtk.Label()
+                _label.set_line_wrap(True)
+                _label.set_alignment(xalign=0.5, yalign=0.5)
+                _label.set_justify(Gtk.Justification.CENTER)
+                _label.set_markup("<span weight='bold'>" + _heading +
+                                  "</span>")
+                _label.set_use_markup(True)
+                _label.show_all()
+                _columns[i].set_widget(_label)
+
+                i += 1
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
         pub.sendMessage('selected_usage_profile', attributes=_attributes)
-
-        return None
