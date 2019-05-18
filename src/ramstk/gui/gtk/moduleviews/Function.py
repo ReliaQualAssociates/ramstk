@@ -24,24 +24,20 @@ class ModuleView(RAMSTKModuleView):
     Module View are:
 
     :ivar int _function_id: the ID of the currently selected Function.
-    :ivar int _parent_id: the ID of the parent Function for the currently
-                          selected Function.
-    :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Module View for the Function package.
 
-        :param controller: the RAMSTK Master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKModuleView.__init__(self, controller, module='function')
+        RAMSTKModuleView.__init__(self, configuration, module='function')
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = \
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
-            '/32x32/function.png'
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/function.png'
 
         # Initialize private list attributes.
 
@@ -69,10 +65,33 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        RAMSTKModuleView._make_ui(self)
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            RAMSTKModuleView._make_buttonbox(
+                self,
+                icons=['insert_sibling', 'insert_child', 'remove', 'export'],
+                tooltips=[
+                    _("Adds a new Function at the same hierarchy level as "
+                      "the selected Function (i.e., a sibling Function)."),
+                    _("Adds a new Function one level subordinate to the "
+                      "selected Function (i.e., a child function)."),
+                    _("Remove the currently selected Function."),
+                    _("Exports Functions to an external file (CSV, Excel, and "
+                      "text files are supported).")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling,
+                    self.do_request_insert_child, self._do_request_delete,
+                    self._do_request_export
+                ]))
+        self.pack_start(_scrolledwindow, False, False, 0)
 
         self.make_treeview(editable=[5, 15, 17, 18])
         self.treeview.set_tooltip_text(_("Displays the list of functions."))
+
+        RAMSTKModuleView._make_ui(self)
 
         _label = ramstk.RAMSTKLabel(
             _("Functions"),
@@ -124,7 +143,10 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _sibling = kwargs['sibling']
+        try:
+            _sibling = kwargs['sibling']
+        except KeyError:
+            _sibling = True
 
         if _sibling:
             try:
@@ -165,40 +187,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_update_all_functions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Function class Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Module
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Adds a new Function at the same hierarchy level as "
-              "the selected Function (i.e., a sibling Function)."),
-            _("Adds a new Function one level subordinate to the "
-              "selected Function (i.e., a child function)."),
-            _("Remove the currently selected Function."),
-            _("Exports Functions to an external file (CSV, Excel, and "
-              "text files are supported).")
-        ]
-        _callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
-            self._do_request_delete, self._do_request_export
-        ]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the Function Module View RAMSTKTreeView().
@@ -208,7 +196,6 @@ class ModuleView(RAMSTKModuleView):
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was
                       clicked).
-
                                     * 1 = left
                                     * 2 = scrollwheel
                                     * 3 = right
@@ -216,7 +203,6 @@ class ModuleView(RAMSTKModuleView):
                                     * 5 = backward
                                     * 8 =
                                     * 9 =
-
         :type event: :class:`Gdk.Event`
         :return: None
         :rtype: None
@@ -229,9 +215,7 @@ class ModuleView(RAMSTKModuleView):
         # selected row.  Thus, we don't need (or want) to respond to
         # left button clicks.
         if event.button == 3:
-            _icons = [
-                'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
-            ]
+            _icons = ['insert_sibling', 'insert_child']
             _labels = [
                 _("Add Sibling Function"),
                 _("Add Child Function"),
@@ -240,10 +224,9 @@ class ModuleView(RAMSTKModuleView):
                 _("Save All Functions")
             ]
             _callbacks = [
-                self.do_request_insert_sibling, self.do_request_insert_child,
-                self._do_request_delete, self._do_request_update,
-                self._do_request_update_all
+                self.do_request_insert_sibling, self.do_request_insert_child
             ]
+
             RAMSTKModuleView.on_button_press(
                 self,
                 event,

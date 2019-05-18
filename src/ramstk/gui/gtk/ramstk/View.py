@@ -19,7 +19,7 @@ from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, Gtk
 from ramstk.gui.gtk.ramstk import (RAMSTKMessageDialog, RAMSTKTreeView)
 
 
-class RAMSTKBaseView():     # pylint: disable=bad-option-value
+class RAMSTKBaseView():  # pylint: disable=old-style-class
     """
     Meta class for all RAMSTK ListView, ModuleView, and WorkView classes.
 
@@ -27,8 +27,8 @@ class RAMSTKBaseView():     # pylint: disable=bad-option-value
 
     :cvar RAMSTK_CONFIGURATION: the instance of the RAMSTK Configuration class.
     :type RAMSTK_CONFIGURATION: :class:`ramstk.Configuration.Configuration`
-    :cvar dict dic_tab_pos: dictionary holding the Gtk.PositionType()s for each
-                            of left, right, top, and botton.
+    :cvar dict dic_tab_position: dictionary holding the Gtk.PositionType()s for
+                                 each of left, right, top, and botton.
 
     :ivar dict _dic_icons: dictionary containing icon name and absolute path
                            key:value pairs.
@@ -381,7 +381,7 @@ class RAMSTKBaseView():     # pylint: disable=bad-option-value
             _cell.set_property('cell-background-rgba', _color)
             _index += 1
 
-    def on_button_press(self, event, icons=None, labels=None, callbacks=None):
+    def on_button_press(self, event, **kwargs):
         """
         Handle mouse clicks on the View's RTKTreeView().
 
@@ -397,25 +397,24 @@ class RAMSTKBaseView():     # pylint: disable=bad-option-value
                       * 9 =
 
         :type event: :class:`Gdk.Event`.
-        :keyword list icons: the list of icon names to use in the pop-up menu.
-        :keyword list labels: the list of test lables to use in the pop-up
-                              menu.
-        :keyword list callbacks: the list of callback functions/methods to
-                                 attach to the pop-up menu items.
         :return: None
         :rtype: None
         """
+        _icons = kwargs['icons']
+        _labels = kwargs['labels']
+        _callbacks = kwargs['callbacks']
+
         _menu = Gtk.Menu()
         _menu.popup(None, None, None, event.button, event.time)
 
-        for _idx, __ in enumerate(icons):
+        for _idx, __ in enumerate(_icons):
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons[icons[_idx]])
-            _menu_item.set_label(labels[_idx])
+            _image.set_from_file(self._dic_icons[_icons[_idx]])
+            _menu_item.set_label(_labels[_idx])
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', callbacks[_idx])
+            _menu_item.connect('activate', _callbacks[_idx])
             _menu_item.show()
             _menu.append(_menu_item)
 

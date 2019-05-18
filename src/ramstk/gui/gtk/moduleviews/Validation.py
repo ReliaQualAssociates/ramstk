@@ -25,18 +25,18 @@ class ModuleView(RAMSTKModuleView):
     :ivar int _validation_id: the ID of the currently selected Validation.
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Validation Module View.
 
-        :param controller: the RAMSTK Master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKModuleView.__init__(self, controller, module='validation')
+        RAMSTKModuleView.__init__(self, configuration, module='validation')
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = \
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/validation.png'
 
         # Initialize private list attributes.
@@ -66,11 +66,31 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        RAMSTKModuleView._make_ui(self)
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            RAMSTKModuleView._make_buttonbox(
+                self,
+                icons=['add', 'remove', 'calculate_all', 'export'],
+                tooltips=[
+                    _("Add a new Validation task."),
+                    _("Remove the currently selected Validation task."),
+                    _("Calculate the entire validation program."),
+                    _("Exports Verification tasks to an external file (CSV, "
+                      "Excel, and text files are supported).")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling, self._do_request_delete,
+                    self._do_request_calculate_all, self._do_request_export
+                ]))
+        self.pack_start(_scrolledwindow, False, False, 0)
 
         self.make_treeview(editable=[2, 4])
         self.treeview.set_tooltip_text(
             _("Displays the list of validation tasks."))
+
+        RAMSTKModuleView._make_ui(self)
 
         i = 0
         for _column in self.treeview.get_columns():
@@ -203,38 +223,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_update_all_validations')
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the Gtk.ButtonBox() for the Validation Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class
-                 Module View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Add a new Validation task."),
-            _("Remove the currently selected Validation task."),
-            _("Calculate the entire validation program."),
-            _("Exports Verification tasks to an external file (CSV, Excel, "
-              "and text files are supported).")
-        ]
-        _callbacks = [
-            self.do_request_insert_sibling, self._do_request_delete,
-            self._do_request_calculate_all, self._do_request_export
-        ]
-        _icons = ['add', 'remove', 'calculate_all', 'export']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the Validation Module View RAMSTKTreeView().
@@ -243,7 +231,6 @@ class ModuleView(RAMSTKModuleView):
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
-
                                     * 1 = left
                                     * 2 = scrollwheel
                                     * 3 = right
@@ -251,7 +238,6 @@ class ModuleView(RAMSTKModuleView):
                                     * 5 = backward
                                     * 8 =
                                     * 9 =
-
         :type event: :class:`Gdk.Event`
         :return: None
         :rtype: None
@@ -263,7 +249,7 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add', 'remove', 'calculate_all', 'save', 'save-all']
+            _icons = ['add', 'calculate_all']
             _labels = [
                 _("Add Validation Task"),
                 _("Remove the Selected Validation Task"),
@@ -272,10 +258,9 @@ class ModuleView(RAMSTKModuleView):
                 _("Save All Validation Tasks")
             ]
             _callbacks = [
-                self.do_request_insert_sibling, self._do_request_delete,
-                self._do_request_calculate_all, self._do_request_update,
-                self._do_request_update_all
+                self.do_request_insert_sibling, self._do_request_calculate_all
             ]
+
             RAMSTKModuleView.on_button_press(
                 self,
                 event,

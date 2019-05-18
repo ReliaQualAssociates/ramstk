@@ -30,7 +30,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
                                   that RAMSTK module.
     """
 
-    def __init__(self, controller, configuration):
+    def __init__(self, configuration):
         """
         Initialize an instance of the Module Book class.
 
@@ -42,11 +42,11 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
 
         # Initialize private dictionary attributes.
         self._dic_module_views = {
-            'revision': mvwRevision(controller),
-            'requirement': mvwRequirement(controller),
-            'function': mvwFunction(controller),
-            'hardware': mvwHardware(controller),
-            'validation': mvwValidation(controller)
+            'revision': mvwRevision(configuration),
+            'requirement': mvwRequirement(configuration),
+            'function': mvwFunction(configuration),
+            'hardware': mvwHardware(configuration),
+            'validation': mvwValidation(configuration)
         }
 
         # Initialize private list attributes.
