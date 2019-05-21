@@ -300,7 +300,7 @@ class ModuleView(RAMSTKModuleView):
                                           model):
 
             pub.sendMessage(
-                'editing_requirement',
+                'mvw_editing_requirement',
                 module_id=self._requirement_id,
                 key=_key,
                 value=new_text)

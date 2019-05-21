@@ -11,12 +11,11 @@ import logging
 import os
 from datetime import date
 
-from sqlalchemy.orm import scoped_session  # pylint: disable=E0401
-from pubsub import pub  # pylint: disable=E0401
-from treelib import Tree  # pylint: disable=E0401
+from sqlalchemy.orm import scoped_session
+from pubsub import pub
+from treelib import Tree
 
 # Import other RAMSTK modules.
-# pylint: disable=E0401
 from .Configuration import Configuration
 from . import Utilities
 from ramstk.dao.DAO import DAO

@@ -101,10 +101,10 @@ def test_do_select_non_existent_id(test_dao):
 def test_request_do_delete_matrix_row(test_dao, test_configuration):
     """ request_do_delete_matrix() should return False on successfully deleting a row. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all_matrix(1, 'vldtn_hrdwr')
-    DUT.request_do_insert_matrix('vldtn_hrdwr', 5, 'Validation task from test')
+    DUT._request_do_select_all_matrix(1, 'vldtn_hrdwr')
+    DUT._request_do_insert_matrix('vldtn_hrdwr', 5, 'Validation task from test')
 
-    assert not DUT.request_do_delete_matrix('vldtn_hrdwr', 5)
+    assert not DUT._request_do_delete_matrix('vldtn_hrdwr', 5)
 
 
 @pytest.mark.integration
@@ -112,19 +112,19 @@ def test_request_do_delete_matrix_non_existent_row(test_dao,
                                                    test_configuration):
     """ request_do_delete_matrix() should return True when attempting to delete a non-existent row. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all_matrix(1, 'vldtn_hrdwr')
+    DUT._request_do_select_all_matrix(1, 'vldtn_hrdwr')
 
-    assert DUT.request_do_delete_matrix('vldtn_hrdwr', 5)
+    assert DUT._request_do_delete_matrix('vldtn_hrdwr', 5)
 
 
 @pytest.mark.integration
 def test_request_do_delete_matrix_column(test_dao, test_configuration):
     """ request_do_delete_matrix() should return False on successfully deleting a column. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all_matrix(1, 'vldtn_hrdwr')
-    DUT.request_do_insert_matrix('vldtn_hrdwr', 5, 'S1:SS1:A1', row=False)
+    DUT._request_do_select_all_matrix(1, 'vldtn_hrdwr')
+    DUT._request_do_insert_matrix('vldtn_hrdwr', 5, 'S1:SS1:A1', row=False)
 
-    assert not DUT.request_do_delete_matrix('vldtn_hrdwr', 5, row=False)
+    assert not DUT._request_do_delete_matrix('vldtn_hrdwr', 5, row=False)
 
 
 @pytest.mark.integration
@@ -146,10 +146,10 @@ def test_do_insert(test_dao):
 def test_request_do_insert_matrix_row(test_dao, test_configuration):
     """ request_do_insert_matrix() should return False on successfully inserting a row. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'vldtn_hrdwr')
 
-    assert not DUT.request_do_insert_matrix('vldtn_hrdwr', 5,
+    assert not DUT._request_do_insert_matrix('vldtn_hrdwr', 5,
                                             'Validation task from test')
     assert DUT._dmx_vldtn_hw_matrix.dic_row_hdrs[
         5] == 'Validation task from test'
@@ -159,10 +159,10 @@ def test_request_do_insert_matrix_row(test_dao, test_configuration):
 def test_request_do_insert_matrix_duplicate_row(test_dao, test_configuration):
     """ request_do_insert_matrix() should return True when attempting to insert a duplicate row. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'vldtn_hrdwr')
 
-    assert DUT.request_do_insert_matrix('vldtn_hrdwr', 1,
+    assert DUT._request_do_insert_matrix('vldtn_hrdwr', 1,
                                         'Validation task from test')
 
 
@@ -170,10 +170,10 @@ def test_request_do_insert_matrix_duplicate_row(test_dao, test_configuration):
 def test_request_do_insert_matrix_column(test_dao, test_configuration):
     """ request_do_insert_matrix() should return False on successfully inserting a column. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         5, 'vldtn_hrdwr')
 
-    assert not DUT.request_do_insert_matrix(
+    assert not DUT._request_do_insert_matrix(
         'vldtn_hrdwr', 9, 'S1:SS1:A11', row=False)
     assert DUT._dmx_vldtn_hw_matrix.dic_column_hdrs[9] == 'S1:SS1:A11'
 
@@ -347,6 +347,15 @@ def test_request_do_select(test_dao, test_configuration):
 
 
 @pytest.mark.integration
+def test_request_do_create_matrix(test_dao, test_configuration):
+    """ request_do_create_matrix should return None. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    DUT.request_do_select_all(ATTRIBUTES)
+
+    assert DUT._request_do_create_matrix(1, 'vldtn_hrdwr') is None
+
+
+@pytest.mark.integration
 def test_request_do_select_non_existent_id(test_dao, test_configuration):
     """ request_do_select() should return None when requesting a Validation that doesn't exist. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -400,6 +409,25 @@ def test_request_do_update_non_existent_id(test_dao, test_configuration):
 
 
 @pytest.mark.integration
+def test_request_do_update_matrix(test_dao, test_configuration):
+    """ request_do_update_matrix() should return False on success. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
+        1, 'vldtn_hrdwr')
+
+    assert not DUT._request_do_update_matrix(1, 'vldtn_hrdwr')
+
+
+@pytest.mark.integration
+def test_request_do_update_non_existent_matrix(test_dao, test_configuration):
+    """ request_do_update_matrix() should return True when attempting to update a non-existent matrix. """
+    DUT = dtcValidation(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
+        1, 'vldtn_hrdwr')
+
+    assert DUT._request_do_update_matrix(1, 'vldtn_rvsn')
+
+@pytest.mark.integration
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
@@ -419,7 +447,7 @@ def test_request_do_calculate_cost(test_dao, test_configuration):
     _validation.cost_maximum = 441.00
     _validation.confidence = 0.95
 
-    assert not DUT._request_do_calculate(1, metric='cost')
+    assert not DUT.request_do_calculate(1, metric='cost')
     assert _validation.cost_mean == pytest.approx(360.83333333)
     assert _validation.cost_variance == pytest.approx(992.25)
 
@@ -435,6 +463,6 @@ def test_request_do_calculate_time(test_dao, test_configuration):
     _validation.time_maximum = 44.1
     _validation.confidence = 0.95
 
-    assert not DUT._request_do_calculate(1, metric='time')
+    assert not DUT.request_do_calculate(1, metric='time')
     assert _validation.time_mean == pytest.approx(36.08333333)
     assert _validation.time_variance == pytest.approx(9.9225)
