@@ -327,6 +327,7 @@ class HardwareBoMDataController(RAMSTKDataController):
                                                      RAMSTKTest)
         self._dmx_hw_vldtn_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
                                                      RAMSTKValidation)
+        self._hr_multiplier = configuration.RAMSTK_HR_MULTIPLIER
 
         # Initialize public dictionary attributes.
 
@@ -338,14 +339,24 @@ class HardwareBoMDataController(RAMSTKDataController):
         pub.subscribe(self._request_do_calculate, 'request_calculate_hardware')
         pub.subscribe(self.request_do_calculate_all,
                       'request_calculate_all_hardware')
+        pub.subscribe(self._request_do_create_matrix,
+                      'request_create_hardware_matrix')
         pub.subscribe(self.request_do_delete, 'request_delete_hardware')
+        pub.subscribe(self._request_do_delete_matrix,
+                      'request_delete_hardware_matrix')
         pub.subscribe(self._request_do_insert, 'request_insert_hardware')
+        pub.subscribe(self._request_do_insert_matrix,
+                      'request_insert_hardware_matrix')
         pub.subscribe(self.request_do_make_composite_reference_designator,
                       'request_make_comp_ref_des')
         pub.subscribe(self.request_do_select_all, 'selected_revision')
+        pub.subscribe(self._request_do_select_all_matrix,
+                      'request_select_hardware_matrix')
         pub.subscribe(self.request_do_update, 'request_update_hardware')
         pub.subscribe(self.request_do_update_all,
                       'request_update_all_hardware')
+        pub.subscribe(self._request_do_update_matrix,
+                      'request_update_hardware_matrix')
         pub.subscribe(self._request_set_attributes, 'mvw_editing_hardware')
         pub.subscribe(self._request_set_attributes, 'wvw_editing_hardware')
 
@@ -394,7 +405,7 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         return _attributes
 
-    def request_do_calculate_all(self, node_id, hr_multiplier, **kwargs):
+    def request_do_calculate_all(self, node_id, **kwargs):  # pylint: disable=arguments-differ
         """
         Request to calculate all hardware items.
 
@@ -402,9 +413,9 @@ class HardwareBoMDataController(RAMSTKDataController):
         :rtype: list
         """
         return self._dtm_data_model.do_calculate_all(
-            node_id=node_id, hr_multiplier=hr_multiplier, **kwargs)
+            node_id=node_id, hr_multiplier=self._hr_multiplier, **kwargs)
 
-    def request_do_create(self, revision_id, matrix_type):
+    def _request_do_create_matrix(self, revision_id, matrix_type):
         """
         Request to create or refresh a Hardware matrix.
 
@@ -414,22 +425,32 @@ class HardwareBoMDataController(RAMSTKDataController):
         :return: None
         :rtype: None
         """
-        if matrix_type == 'hrdwr_rqrmnt':
-            self._dmx_hw_rqrmnt_matrix.do_create(
-                revision_id,
-                matrix_type,
-                rkey='hardware_id',
-                ckey='requirement_id')
-        elif matrix_type == 'hrdwr_vldtn':
-            self._dmx_hw_vldtn_matrix.do_create(
-                revision_id,
-                matrix_type,
-                rkey='hardware_id',
-                ckey='validation_id')
+        _dic_creates = {
+            'hrdwr_rqrmnt':
+            [self._dmx_hw_rqrmnt_matrix.do_create, 'requirement_id'],
+            'hrdwr_vldtn':
+            [self._dmx_hw_vldtn_matrix.do_create, 'validation_id'],
+            'hrdwr_tstng': [self._dmx_hw_tstng_matrix.do_create, 'test_id']
+        }
 
-        return None
+        try:
+            _create_method = _dic_creates[matrix_type][0]
+            _col_id = _dic_creates[matrix_type][1]
+        except KeyError:
+            _create_method = None
 
-    def request_do_delete_matrix(self, matrix_type, item_id, row=True):
+        try:
+            _create_method(
+                revision_id, matrix_type, rkey='hardware_id', ckey=_col_id)
+        except TypeError:
+            _error_code = 6
+            _msg = 'RAMSTK ERROR: Failed to create matrix ' \
+                   '{0:s}.'.format(matrix_type)
+
+            RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                   None)
+
+    def _request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
         Request to remove a row or column from the selected Data Matrix.
 
@@ -446,20 +467,19 @@ class HardwareBoMDataController(RAMSTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if matrix_type == 'hrdwr_rqrmnt':
-            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_delete(
-                item_id, row=row)
+        _dic_deletes = {
+            'hrdwr_rqrmnt': self._dmx_hw_rqrmnt_matrix.do_delete,
+            'hrdwr_vldtn': self._dmx_hw_vldtn_matrix.do_delete,
+            'hrdwr_tstng': self._dmx_hw_tstng_matrix.do_delete
+        }
 
-        if matrix_type == 'hrdwr_tstng':
-            _error_code, _msg = self._dmx_hw_tstng_matrix.do_delete(
-                item_id, row=row)
+        try:
+            self._matrix_delete_method = _dic_deletes[matrix_type]
+        except KeyError:
+            self._matrix_delete_method = None
 
-        if matrix_type == 'hrdwr_vldtn':
-            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_delete(
-                item_id, row=row)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'deletedMatrix')
+        return RAMSTKDataController.request_do_delete_matrix(
+            self, matrix_type, item_id, row=row)
 
     def _request_do_insert(self, revision_id, parent_id, part):
         """
@@ -486,14 +506,18 @@ class HardwareBoMDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
 
-    def request_do_insert_matrix(self, matrix_type, item_id, heading,
-                                 row=True):
+    def _request_do_insert_matrix(self,
+                                  matrix_type,
+                                  item_id,
+                                  heading,
+                                  row=True):
         """
         Request the to add a new row or column to the Data Matrix.
 
-        :param str matrix_type: the type of the Matrix to retrieve.  Current
+        :param str matrix_type: the type of the Matrix to insert into.  Current
                                 Hardware matrix types are:
 
+                                hrdwr_rqrmnt = Hardware:Requirement
                                 hrdwr_tstng = Hardware:Testing
                                 hrdwr_vldtn = Hardware:Validation
 
@@ -505,27 +529,19 @@ class HardwareBoMDataController(RAMSTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if matrix_type == 'hrdwr_rqrmnt':
-            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_insert(
-                item_id, heading, row=row)
+        _dic_inserts = {
+            'hrdwr_rqrmnt': self._dmx_hw_rqrmnt_matrix.do_insert,
+            'hrdwr_tstng': self._dmx_hw_tstng_matrix.do_insert,
+            'hrdwr_vldtn': self._dmx_hw_vldtn_matrix.do_insert
+        }
 
-        if matrix_type == 'hrdwr_tstng':
-            _error_code, _msg = self._dmx_hw_tstng_matrix.do_insert(
-                item_id, heading, row=row)
+        try:
+            self._matrix_insert_method = _dic_inserts[matrix_type]
+        except KeyError:
+            self._matrix_insert_method = None
 
-        if matrix_type == 'hrdwr_vldtn':
-            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_insert(
-                item_id, heading, row=row)
-
-        if _error_code == 0 and not self._test:
-            pub.sendMessage(
-                'insertedMatrix',
-                matrix_type=matrix_type,
-                item_id=item_id,
-                row=row)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
+        return RAMSTKDataController.request_do_insert_matrix(
+            self, matrix_type, item_id, heading, row=row)
 
     def request_do_make_composite_reference_designator(self, node_id=1):
         """
@@ -559,7 +575,7 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         return _error_code, _msg
 
-    def request_do_select_all_matrix(self, revision_id, matrix_type):
+    def _request_do_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Hardware.
 
@@ -618,7 +634,7 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_do_update_matrix(self, revision_id, matrix_type):
+    def _request_do_update_matrix(self, revision_id, matrix_type):
         """
         Request to update the selected Data Matrix.
 
@@ -633,24 +649,19 @@ class HardwareBoMDataController(RAMSTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        if matrix_type == 'hrdwr_rqrmnt':
-            _error_code, _msg = self._dmx_hw_rqrmnt_matrix.do_update(
-                revision_id, matrix_type)
+        _dic_updates = {
+            'hrdwr_rqrmnt': self._dmx_hw_rqrmnt_matrix.do_update,
+            'hrdwr_tstng': self._dmx_hw_tstng_matrix.do_update,
+            'hrdwr_vldtn': self._dmx_hw_vldtn_matrix.do_update
+        }
 
-        elif matrix_type == 'hrdwr_tstng':
-            _error_code, _msg = self._dmx_hw_tstng_matrix.do_update(
-                revision_id, matrix_type)
+        try:
+            self._matrix_update_method = _dic_updates[matrix_type]
+        except KeyError:
+            self._matrix_update_method = None
 
-        elif matrix_type == 'hrdwr_vldtn':
-            _error_code, _msg = self._dmx_hw_vldtn_matrix.do_update(
-                revision_id, matrix_type)
-        else:
-            _error_code = 6
-            _msg = 'RAMSTK ERROR: Attempted to update non-existent matrix ' \
-                   '{0:s}.'.format(matrix_type)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'savedMatrix')
+        return RAMSTKDataController.request_do_update_matrix(
+            self, revision_id, matrix_type)
 
     def _request_get_attributes(self, node_id):
         """

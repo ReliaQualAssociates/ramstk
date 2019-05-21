@@ -169,8 +169,7 @@ class ModuleView(RAMSTKModuleView):
         """
         pub.sendMessage(
             'request_calculate_all_hardware',
-            node_id=self._hardware_id,
-            hr_multiplier=self.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER)
+            node_id=self._hardware_id)
 
     def _do_request_delete(self, __button):
         """

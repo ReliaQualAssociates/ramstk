@@ -344,6 +344,15 @@ def test_do_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
+def test_request_do_create_matrix(test_dao, test_configuration):
+    """ request_do_create_matrix should return None. """
+    DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
+    DUT.request_do_select_all(ATTRIBUTES)
+
+    assert DUT._request_do_create_matrix(1, 'hrdwr_vldtn') is None
+
+
+@pytest.mark.integration
 def test_do_insert_sibling_assembly(test_dao):
     """ do_insert() should return a zero error code on success when inserting a sibling Hardware assembly. """
     DUT = dtmHardwareBoM(test_dao, test=True)
@@ -483,7 +492,7 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
     """ request_do_select_all_matrix() should return a tuple containing the matrix, column headings, and row headings. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
 
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'hrdwr_vldtn')
 
     assert isinstance(_matrix, pd.DataFrame)
@@ -499,9 +508,9 @@ def test_request_do_update_matrix(test_dao, test_configuration):
     """ request_do_update_matrix() should return False on success. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
-    DUT.request_do_select_all_matrix(1, 'hrdwr_vldtn')
+    DUT._request_do_select_all_matrix(1, 'hrdwr_vldtn')
 
-    assert not DUT.request_do_update_matrix(1, 'hrdwr_vldtn')
+    assert not DUT._request_do_update_matrix(1, 'hrdwr_vldtn')
 
 
 @pytest.mark.integration
@@ -530,8 +539,8 @@ def test_request_do_insert_sibling(test_dao, test_configuration):
     """ request_do_insert() should return False on success when inserting a sibling Hardware item. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
-    DUT.request_do_select_all_matrix(1, 'hrdwr_rqrmnt')
-    DUT.request_do_select_all_matrix(1, 'hrdwr_vldtn')
+    DUT._request_do_select_all_matrix(1, 'hrdwr_rqrmnt')
+    DUT._request_do_select_all_matrix(1, 'hrdwr_vldtn')
 
     assert not DUT._request_do_insert(revision_id=1, parent_id=0, part=0)
 
@@ -541,8 +550,8 @@ def test_request_do_insert_child(test_dao, test_configuration):
     """ request_do_insert() should return False on success when inserting a child Hardware item. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
-    DUT.request_do_select_all_matrix(1, 'hrdwr_rqrmnt')
-    DUT.request_do_select_all_matrix(1, 'hrdwr_vldtn')
+    DUT._request_do_select_all_matrix(1, 'hrdwr_rqrmnt')
+    DUT._request_do_select_all_matrix(1, 'hrdwr_vldtn')
 
     assert not DUT._request_do_insert(revision_id=1, parent_id=1, part=0)
 
@@ -552,11 +561,12 @@ def test_request_do_insert_matrix_row(test_dao, test_configuration):
     """ request_do_insert_matrix() should return False on successfully inserting a row. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
+    DUT._request_do_create_matrix(1, 'hrdwr_vldtn')
 
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'hrdwr_vldtn')
 
-    assert not DUT.request_do_insert_matrix('hrdwr_vldtn', 13, 'S1:SS1:A13')
+    assert not DUT._request_do_insert_matrix('hrdwr_vldtn', 13, 'S1:SS1:A13')
     assert DUT._dmx_hw_vldtn_matrix.dic_row_hdrs[13] == 'S1:SS1:A13'
 
 
@@ -564,10 +574,10 @@ def test_request_do_insert_matrix_row(test_dao, test_configuration):
 def test_request_do_insert_matrix_duplicate_row(test_dao, test_configuration):
     """ request_insert_matrix() should return True when attempting to insert a duplicate row. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'hrdwr_vldtn')
 
-    assert DUT.request_do_insert_matrix('hrdwr_vldtn', 2, 'S1:SS1:A2')
+    assert DUT._request_do_insert_matrix('hrdwr_vldtn', 2, 'S1:SS1:A2')
 
 
 @pytest.mark.integration
@@ -575,7 +585,7 @@ def test_request_do_insert_matrix_column(test_dao, test_configuration):
     """ request_do_insert_matrix() should return False on successfully inserting a column. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'hrdwr_vldtn')
 
     if pytest.mark.name == 'integration':
@@ -606,6 +616,48 @@ def test_request_do_delete_non_existent_id(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert DUT.request_do_delete(222)
+
+@pytest.mark.integration
+def test_request_do_delete_matrix_row(test_dao, test_configuration):
+    """ _request_do_delete_matrix() should return False on successfully deleting a row. """
+    DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
+        1, 'hrdwr_vldtn')
+    DUT._request_do_insert_matrix('hrdwr_vldtn', 4, 'Function Code')
+
+    assert not DUT._request_do_delete_matrix('hrdwr_vldtn', 4)
+
+
+@pytest.mark.integration
+def test_request_do_delete_nonexistent_matrix(test_dao, test_configuration):
+    """ _request_do_delete_matrix() should return True when attempting to deletie from a non-existent matrix. """
+    DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
+    DUT._request_do_select_all_matrix(1, 'hrdwr_vldtn')
+    DUT._request_do_insert_matrix('hrdwr_vldtn', 44, 'Function Code')
+
+    assert DUT._request_do_delete_matrix('hrdwr_rvsn', 44)
+
+
+@pytest.mark.integration
+def test_request_do_delete_matrix_non_existent_row(test_dao,
+                                                   test_configuration):
+    """ _request_do_delete_matrix() should return True when attempting to delete a non-existent row. """
+    DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
+        1, 'hrdwr_vldtn')
+
+    assert DUT._request_do_delete_matrix('hrdwr_vldtn', 44)
+
+
+@pytest.mark.integration
+def test_request_do_delete_matrix_column(test_dao, test_configuration):
+    """ _request_do_delete_matrix() should return False on successfully deleting a column. """
+    DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
+        1, 'hrdwr_vldtn')
+    DUT._request_do_insert_matrix('hrdwr_vldtn', 2, 'S1:SS1:A1', row=False)
+
+    assert not DUT._request_do_delete_matrix('hrdwr_vldtn', 2, row=False)
 
 
 @pytest.mark.integration
