@@ -19,23 +19,22 @@ class ModuleView(RAMSTKModuleView):
     Display Revision attribute data in the RAMSTK Module Book.
 
     The Revision Module View displays all the Revisions associated with the
-    connected RAMSTK Program in a flat list.  The attributes of a Revision Module
-    View are:
+    connected RAMSTK Program in a flat list.  All attributes of a Revision
+    Module View are inherited.
 
-    :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, configuration, **kwargs):
         """
         Initialize the Revision Module View.
 
-        :param controller: the RAMSTK Master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKModuleView.__init__(self, controller, module='revision')
+        RAMSTKModuleView.__init__(self, configuration, module='revision')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/revision.png'
 
         # Initialize private list attributes.
@@ -63,22 +62,35 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        RAMSTKModuleView._make_ui(self)
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            RAMSTKModuleView._make_buttonbox(
+                self,
+                icons=['add', 'remove'],
+                tooltips=[
+                    _("Add a new Revision."),
+                    _("Remove the currently selected Revision.")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling, self._do_request_delete
+                ]))
+        self.pack_start(_scrolledwindow, False, False, 0)
 
         self.make_treeview()
         self.treeview.set_tooltip_text(_("Displays the list of revisions."))
+
+        RAMSTKModuleView._make_ui(self)
 
         _label = ramstk.RAMSTKLabel(
             _("Revisions"),
             width=-1,
             height=-1,
             tooltip=_("Displays the program revisions."))
-
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
-
-        return None
 
     def _do_request_delete(self, __button):
         """
@@ -102,8 +114,6 @@ class ModuleView(RAMSTKModuleView):
 
         _dialog.do_destroy()
 
-        return None
-
     def _do_request_insert(self, **kwargs):
         """
         Request insert a new Revision into the RAMSTK Program database.
@@ -116,8 +126,6 @@ class ModuleView(RAMSTKModuleView):
         if _sibling:
             pub.sendMessage(
                 'request_insert_revision', revision_id=self._revision_id)
-
-        return None
 
     def _do_request_update(self, __button):
         """
@@ -132,8 +140,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_update_revision', node_id=self._revision_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        return None
-
     def _do_request_update_all(self, __button):
         """
         Send request to save all the records to the RAMSTKRevision table.
@@ -146,34 +152,6 @@ class ModuleView(RAMSTKModuleView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_revisions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the Gtk.ButtonBox() for the Revision Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Revision class Module
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Add a new Revision."),
-            _("Remove the currently selected Revision.")
-        ]
-        _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
-        _icons = ['add', 'remove']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def _on_button_press(self, treeview, event):
         """
@@ -193,8 +171,8 @@ class ModuleView(RAMSTKModuleView):
                                     * 9 =
 
         :type event: :class:`Gdk.Event`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         treeview.handler_block(self._lst_handler_id[1])
 
@@ -203,17 +181,15 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add', 'remove', 'save', 'save-all']
+            _icons = ['add']
             _labels = [
                 _("Add Revision"),
                 _("Remove the Selected Revision"),
                 _("Save Selected Revision"),
                 _("Save All Revisions")
             ]
-            _callbacks = [
-                self._do_request_insert_sibling, self._do_request_delete,
-                self._do_request_update, self._do_request_update_all
-            ]
+            _callbacks = [self._do_request_insert_sibling]
+
             RAMSTKModuleView.on_button_press(
                 self,
                 event,
@@ -222,8 +198,6 @@ class ModuleView(RAMSTKModuleView):
                 callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
-
-        return False
 
     def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
@@ -242,22 +216,20 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        _dic_keys = {17: 'name', 20: 'remarks', 22: 'revision_code'}
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
+
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
-            if self._lst_col_order[position] == 17:
-                _key = 'name'
-            elif self._lst_col_order[position] == 20:
-                _key = 'remarks'
-            elif self._lst_col_order[position] == 22:
-                _key = 'revision_code'
 
             pub.sendMessage(
                 'mvw_editing_revision',
                 module_id=self._revision_id,
                 key=_key,
                 value=new_text)
-
-        return None
 
     def _on_row_change(self, treeview):
         """
@@ -331,5 +303,3 @@ class ModuleView(RAMSTKModuleView):
         treeview.handler_unblock(self._lst_handler_id[0])
 
         pub.sendMessage('selected_revision', attributes=_attributes)
-
-        return None

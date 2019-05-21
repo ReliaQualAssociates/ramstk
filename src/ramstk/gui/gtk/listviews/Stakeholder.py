@@ -23,20 +23,18 @@ class ListView(RAMSTKListView):
     with the selected Stakeholder.  The attributes of the Stakeholder List View
     are:
 
-    :ivar int _revision_id: the Revision ID whose stakeholder inputs are being
-                            displayed in the List View.
     :ivar int _stakeholder_id: the Stakeholder ID of the input being displayed
                                in the List View.
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, configuration, **kwargs):
         """
         Initialize the List View for the Stakeholder package.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :py:class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKListView.__init__(self, controller, module='stakeholder')
+        RAMSTKListView.__init__(self, configuration, module='stakeholder')
 
         # Initialize private dictionary attributes.
 
@@ -52,34 +50,9 @@ class ListView(RAMSTKListView):
         # Initialize public scalar attributes.
 
         self.__make_treeview()
-        self.treeview.set_tooltip_text(
-            _("Displays the list of stakeholder inputs for the selected "
-              "revision."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-        _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _("Stakeholder\nInputs") +
-                          "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(Gtk.Justification.CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(
-            _("Displays stakeholder inputs for the "
-              "selected revision."))
-
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
-        self.hbx_tab_label.show_all()
-
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.add(self.treeview)
-
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_end(_scrolledwindow, True, True, 0)
-
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_requirements, 'retrieved_requirements')
@@ -132,17 +105,15 @@ class ListView(RAMSTKListView):
         :rtype: None
         """
         # Load the Affinity Group Gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(
-            self._lst_col_order[4]).get_cells()[0]
+        _cell = self.treeview.get_column(self._lst_col_order[4]).get_cells()[0]
         _cell.set_property('has-entry', True)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
         _cellmodel.append([""])
         # Each _group is (Description, Group Type).
         for _index, _key in enumerate(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS):
-            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
-                _key]
+                self.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS):
+            _group = self.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_key]
             _cellmodel.append([_group[0]])
 
         # Load the Stakeholders Gtk.CellRendererCombo()
@@ -154,9 +125,8 @@ class ListView(RAMSTKListView):
         _cellmodel.append([""])
         # Each _owner is (Description, Group Type).
         for _index, _key in enumerate(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS):
-            _group = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS[
-                _key]
+                self.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS):
+            _group = self.RAMSTK_CONFIGURATION.RAMSTK_STAKEHOLDERS[_key]
             _cellmodel.append([_group[0]])
 
         # Set the CellRendererSpin() columns to [1, 5] step 1.
@@ -184,7 +154,44 @@ class ListView(RAMSTKListView):
 
         self.treeview.set_rubber_banding(True)
 
-        return None
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.tab_label.set_markup("<span weight='bold'>" +
+                                  _("Stakeholder\nInputs") + "</span>")
+        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
+        self.tab_label.set_justify(Gtk.Justification.CENTER)
+        self.tab_label.show_all()
+        self.tab_label.set_tooltip_text(
+            _("Displays stakeholder inputs for the selected revision."))
+
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        RAMSTKListView._make_ui(self)
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for the Failure Definition ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKListView._set_callbacks(self)
+
+    def __set_properties(self):
+        """
+        Set properties of the Failure Definition ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKListView._set_properties(self)
+        self.treeview.set_tooltip_text(
+            _("Displays the list of stakeholder inputs for the selected "
+              "revision."))
 
     def _do_load_requirements(self, tree):
         """
@@ -193,8 +200,7 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _cell = self.treeview.get_column(
-            self._lst_col_order[9]).get_cells()[0]
+        _cell = self.treeview.get_column(self._lst_col_order[9]).get_cells()[0]
         _model = _cell.get_property('model')
         _model.clear()
 
@@ -203,8 +209,6 @@ class ListView(RAMSTKListView):
                 _model.append([str(tree.nodes[_key].data.requirement_id)])
             except AttributeError:
                 pass
-
-        return None
 
     def _do_refresh_tree(self, node_id, results):
         """
@@ -220,8 +224,6 @@ class ListView(RAMSTKListView):
         self.do_refresh_tree(node_id, 'improvement', results[0])
         self.do_refresh_tree(node_id, 'overall_weight', results[1])
 
-        return None
-
     def _do_request_calculate(self, __button):
         """
         Request to calculate the selected Stakeholder input.
@@ -234,8 +236,6 @@ class ListView(RAMSTKListView):
         pub.sendMessage(
             'request_calculate_stakeholder', node_id=self._stakeholder_id)
 
-        return None
-
     @staticmethod
     def _do_request_calculate_all(__button):
         """
@@ -247,8 +247,6 @@ class ListView(RAMSTKListView):
         :rtype: None
         """
         pub.sendMessage('request_calculate_all_stakeholders')
-
-        return None
 
     def _do_request_delete(self, __button):
         """
@@ -272,8 +270,6 @@ class ListView(RAMSTKListView):
 
         _dialog.do_destroy()
 
-        return None
-
     def _do_request_insert(self, **kwargs):
         """
         Request to add a Stakeholder.
@@ -285,8 +281,6 @@ class ListView(RAMSTKListView):
 
         pub.sendMessage(
             'request_insert_stakeholder', revision_id=self._revision_id)
-
-        return None
 
     def _do_request_update(self, __button):
         """
@@ -302,8 +296,6 @@ class ListView(RAMSTKListView):
             'request_update_stakeholder', node_id=self._stakeholder_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        return None
-
     def _do_request_update_all(self, __button):
         """
         Save all the Stakeholder Inputs.
@@ -316,8 +308,6 @@ class ListView(RAMSTKListView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_stakeholders')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
 
     def _on_button_press(self, treeview, event):
         """
@@ -337,8 +327,8 @@ class ListView(RAMSTKListView):
                       * 9 =
 
         :type event: :class:`Gdk.Event`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         treeview.handler_block(self._lst_handler_id[1])
 
@@ -347,52 +337,22 @@ class ListView(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = Gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
+            _icons = ['add', 'remove', 'save', 'save-all']
+            _labels = [
+                _("Add New Stakeholder Input"),
+                _("Remove Selected Stakeholder Input"),
+                _("Save Selected Stakeholder Input"),
+                _("Save All Stakeholder Inputs")
+            ]
+            _callbacks = [
+                self._do_request_insert, self._do_request_delete,
+                self._do_request_update, self._do_request_update_all
+            ]
 
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['add'])
-            _menu_item.set_label(_("Add New Stakeholder Input"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_("Remove Selected Stakeholder Input"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_("Save Selected Stakeholder Input"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_("Save All Stakeholder Inputs"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            self.on_button_press(
+                event, icons=_icons, labels=_labels, callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
-
-        return False
 
     def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
@@ -409,48 +369,42 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        _dic_keys = {
+            2: 'customer_rank',
+            3: 'description',
+            4: 'group',
+            7: 'planned_rank',
+            8: 'priority',
+            9: 'requirement_id',
+            10: 'stakeholder',
+            11: 'user_float_1',
+            12: 'user_float_2',
+            13: 'user_float_3',
+            14: 'user_float_4',
+            15: 'user_float_5'
+        }
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
+
         if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
                                             model):
-
-            if position == self._lst_col_order[2]:
-                _key = 'customer_rank'
-            elif position == self._lst_col_order[3]:
-                _key = 'description'
-            elif position == self._lst_col_order[4]:
-                _key = 'group'
+            if _key == 'group':
                 # FIXME: See issue #60.
                 try:
-                    _new_key = max(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
+                    _new_key = max(self.RAMSTK_CONFIGURATION.
                                    RAMSTK_AFFINITY_GROUPS.keys()) + 1
                 except ValueError:
                     _new_key = 1
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
+                self.RAMSTK_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[
                     _new_key] = str(new_text)
-            elif position == self._lst_col_order[7]:
-                _key = 'planned_rank'
-            elif position == self._lst_col_order[8]:
-                _key = 'priority'
-            elif position == self._lst_col_order[9]:
-                _key = 'requirement_id'
-            elif position == self._lst_col_order[10]:
-                _key = 'stakeholder'
-            elif position == self._lst_col_order[11]:
-                _key = 'user_float_1'
-            elif position == self._lst_col_order[12]:
-                _key = 'user_float_2'
-            elif position == self._lst_col_order[13]:
-                _key = 'user_float_3'
-            elif position == self._lst_col_order[14]:
-                _key = 'user_float_4'
-            elif position == self._lst_col_order[15]:
-                _key = 'user_float_5'
 
             pub.sendMessage(
                 'lvw_editing_stakeholder',
                 module_id=self._stakeholder_id,
                 key=_key,
                 value=new_text)
-        return None
 
     def _on_row_change(self, treeview):
         """
@@ -471,42 +425,41 @@ class ListView(RAMSTKListView):
         _model, _row = treeview.get_selection().get_selected()
 
         if _row is not None:
-            _attributes['revision_id'] = _model.get_value(_row,
-                                                      self._lst_col_order[0])
+            _attributes['revision_id'] = _model.get_value(
+                _row, self._lst_col_order[0])
             _attributes['stakeholder_id'] = _model.get_value(
-            _row, self._lst_col_order[1])
+                _row, self._lst_col_order[1])
             _attributes['customer_rank'] = _model.get_value(
-            _row, self._lst_col_order[2])
-            _attributes['description'] = _model.get_value(_row,
-                                                      self._lst_col_order[3])
-            _attributes['group'] = _model.get_value(_row, self._lst_col_order[4])
-            _attributes['improvement'] = _model.get_value(_row,
-                                                          self._lst_col_order[5])
+                _row, self._lst_col_order[2])
+            _attributes['description'] = _model.get_value(
+                _row, self._lst_col_order[3])
+            _attributes['group'] = _model.get_value(_row,
+                                                    self._lst_col_order[4])
+            _attributes['improvement'] = _model.get_value(
+                _row, self._lst_col_order[5])
             _attributes['overall_weight'] = _model.get_value(
                 _row, self._lst_col_order[6])
-            _attributes['planned_rank'] = _model.get_value(_row,
-                                                           self._lst_col_order[7])
+            _attributes['planned_rank'] = _model.get_value(
+                _row, self._lst_col_order[7])
             _attributes['priority'] = _model.get_value(_row,
                                                        self._lst_col_order[8])
             _attributes['requirement_id'] = _model.get_value(
                 _row, self._lst_col_order[9])
-            _attributes['stakeholder'] = _model.get_value(_row,
-                                                          self._lst_col_order[10])
-            _attributes['user_float_1'] = _model.get_value(_row,
-                                                           self._lst_col_order[11])
-            _attributes['user_float_2'] = _model.get_value(_row,
-                                                           self._lst_col_order[12])
-            _attributes['user_float_3'] = _model.get_value(_row,
-                                                           self._lst_col_order[13])
-            _attributes['user_float_4'] = _model.get_value(_row,
-                                                           self._lst_col_order[14])
-            _attributes['user_float_5'] = _model.get_value(_row,
-                                                           self._lst_col_order[15])
+            _attributes['stakeholder'] = _model.get_value(
+                _row, self._lst_col_order[10])
+            _attributes['user_float_1'] = _model.get_value(
+                _row, self._lst_col_order[11])
+            _attributes['user_float_2'] = _model.get_value(
+                _row, self._lst_col_order[12])
+            _attributes['user_float_3'] = _model.get_value(
+                _row, self._lst_col_order[13])
+            _attributes['user_float_4'] = _model.get_value(
+                _row, self._lst_col_order[14])
+            _attributes['user_float_5'] = _model.get_value(
+                _row, self._lst_col_order[15])
 
             self._stakeholder_id = _attributes['stakeholder_id']
 
             pub.sendMessage('selected_stakeholder', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        return None

@@ -155,11 +155,7 @@ class RAMSTKButton(Gtk.Button):
 class RAMSTKCheckButton(Gtk.CheckButton):
     """This is the RAMSTK Check Button class."""
 
-    def __init__(self,
-                 label="",
-                 width=-1,
-                 tooltip='RAMSTK WARNING: Missing tooltip.  '
-                 'Please register an Enhancement type bug.'):
+    def __init__(self, label=""):
         """
         Initialize an instance of the RAMSTK CheckButton.
 
@@ -174,12 +170,60 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         """
         GObject.GObject.__init__(self, label=label, use_underline=True)
 
-        self.set_tooltip_markup(tooltip)
+    def do_set_properties(self, **kwargs):
+        """
+        Set the properties of the RAMSTK button.
+
+        :param \**kwargs: See below
+
+        :Keyword Arguments:
+            * *height* (int) -- height of the Gtk.Button() widget.
+                                Default is 40.
+            * *tooltip* (str) -- the tooltip, if any, for the button.
+                                 Default is an empty string.
+            * *width* (int) -- width of the Gtk.Button() widget.
+                               Default is 200.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _height = kwargs['height']
+        except KeyError:
+            _height = 40
+        try:
+            _tooltip = kwargs['tooltip']
+        except KeyError:
+            _tooltip = ("RAMSTK WARNING: Missing tooltip.  Please register "
+                        "an Enhancement type bug.")
+        try:
+            _width = kwargs['width']
+        except KeyError:
+            _width = 200
+
+        if _width == 0:
+            _width = 200
 
         self.get_child().set_use_markup(True)
         self.get_child().set_line_wrap(True)
+        self.get_child().props.height_request = _height
         self.get_child().props.width_request = width
 
+        self.set_tooltip_markup(tooltip)
+
+    def do_update(self, value, handler_id):
+        """
+        Update the RAMSTK CheckButton with a new value.
+
+        :param str value: the information to update the RAMSTKCheckButton() to
+                          display.
+        :param int handler_id: the handler ID associated with the
+                               RAMSTKCheckButton().
+        :return: None
+        :rtype: None
+        """
+        with self.handler_block(handler_id):
+            self.set_active(int(value))
+            self.handler_unblock(handler_id)
 
 class RAMSTKOptionButton(Gtk.RadioButton):
     """This is the RAMSTK Option Button class."""

@@ -13,11 +13,10 @@ from pubsub import pub
 from matplotlib.patches import Ellipse
 
 # Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.ramstk import (
     RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
     RAMSTKLabel, RAMSTKMessageDialog, RAMSTKPlot, RAMSTKScrolledWindow,
-    RAMSTKTextView)
+    RAMSTKTextView, do_make_label_group)
 from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
 from .WorkView import RAMSTKWorkView
 
@@ -77,15 +76,44 @@ class GeneralData(RAMSTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller, configuration, **kwargs):  # pylint: disable=unused-argument
+    # Define private list attributes.
+    _lst_labels = [[
+        _("Task ID:"),
+        _("Task Description:"),
+        _("Task Type:"),
+        _("Specification:"),
+        _("Measurement Unit:"),
+        _("Minimum Acceptable:"),
+        _("Maximum Acceptable:"),
+        _("Mean Acceptable:"),
+        _("Variance:")
+    ],
+                   [
+                       _("Start Date:"),
+                       _("End Date:"),
+                       _("% Complete:"),
+                       _("Minimum Task Time:"),
+                       _("Most Likely Task Time:"),
+                       _("Maximum Task Time:"),
+                       _("Task Time (95% Confidence):"),
+                       _("Minimum Task Cost:"),
+                       _("Most Likely Task Cost:"),
+                       _("Maximum Task Cost:"),
+                       _("Task Cost (95% Confidence):")
+                   ],
+                   [
+                       _("Project Time (95% Confidence):"),
+                       _("Project Cost (95% Confidence):")
+                   ]]
+
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Validation package.
 
         :param configuration: the RAMSTK configuration instance.
         :type configuration: :class:`ramstk.RAMSTK.Configuration`
         """
-        RAMSTKWorkView.__init__(self, controller, module='Validation')
-        self.RAMSTK_CONFIGURATION = configuration
+        RAMSTKWorkView.__init__(self, configuration, module='Validation')
 
         # Initialize private dictionary attributes.
         self._dic_icons['calculate-all'] = \
@@ -93,34 +121,6 @@ class GeneralData(RAMSTKWorkView):
             '/32x32/calculate-all.png'
 
         # Initialize private list attributes.
-        self._lst_gendata_labels = [[
-            _("Task ID:"),
-            _("Task Description:"),
-            _("Task Type:"),
-            _("Specification:"),
-            _("Measurement Unit:"),
-            _("Minimum Acceptable:"),
-            _("Maximum Acceptable:"),
-            _("Mean Acceptable:"),
-            _("Variance:")
-        ],
-                                    [
-                                        _("Start Date:"),
-                                        _("End Date:"),
-                                        _("% Complete:"),
-                                        _("Minimum Task Time:"),
-                                        _("Most Likely Task Time:"),
-                                        _("Maximum Task Time:"),
-                                        _("Task Time (95% Confidence):"),
-                                        _("Minimum Task Cost:"),
-                                        _("Most Likely Task Cost:"),
-                                        _("Maximum Task Cost:"),
-                                        _("Task Cost (95% Confidence):")
-                                    ],
-                                    [
-                                        _("Project Time (95% Confidence):"),
-                                        _("Project Cost (95% Confidence):")
-                                    ]]
 
         # Initialize private scalar attributes.
         self._validation_id = None
@@ -171,10 +171,6 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
         self.__set_callbacks()
 
-        self.txtCode.hide()
-        self.txtName.hide()
-        self.txtRemarks.scrollwindow.hide()
-
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._on_edit, 'mvw_editing_validation')
@@ -205,32 +201,6 @@ class GeneralData(RAMSTKWorkView):
                 [self.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS[_key][1]])
         self.cmbMeasurementUnit.do_load_combo(_data)
 
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Validation class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class Work
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Calculate the cost and time of the program (i.e., all "
-              "Validation tasks).")
-        ]
-        _callbacks = [self._do_request_calculate_all]
-        _icons = ['calculate-all']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
     def __make_ui(self):
         """
         Make the Validation class Gtk.Notebook() general data page.
@@ -238,6 +208,20 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            RAMSTKWorkView._make_buttonbox(
+                self,
+                icons=['calculate-all'],
+                tooltips=[
+                    _("Calculate the cost and time of the program (i.e., all "
+                      "Validation tasks).")
+                ],
+                callbacks=[self._do_request_calculate_all]))
+        self.pack_start(_scrolledwindow, False, False, 0)
+
         _hbox = Gtk.HBox()
 
         _fixed = Gtk.Fixed()
@@ -246,8 +230,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = RAMSTKFrame(label=_("Task Description"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(
-            self._lst_gendata_labels[0][:2], _fixed, 5, 5)
+        _x_pos, _y_pos = do_make_label_group(self._lst_gendata_labels[0][:2],
+                                             _fixed, 5, 5)
         _x_pos += 50
 
         _hbox.pack_start(_frame, True, True, 0)
@@ -255,7 +239,7 @@ class GeneralData(RAMSTKWorkView):
         _fixed.put(self.txtID, _x_pos, _y_pos[0])
         _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1])
 
-        _x_pos, _y_pos = ramstk.make_label_group(
+        _x_pos, _y_pos = do_make_label_group(
             self._lst_gendata_labels[0][2:],
             _fixed,
             5,
@@ -281,8 +265,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = RAMSTKFrame(label=_("Task Effort"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[1],
-                                                 _fixed, 5, 5)
+        _x_pos, _y_pos = do_make_label_group(self._lst_gendata_labels[1],
+                                             _fixed, 5, 5)
         _x_pos += 50
 
         _vpaned.pack1(_frame, True, True)
@@ -321,8 +305,8 @@ class GeneralData(RAMSTKWorkView):
         _frame = RAMSTKFrame(label=_("Project Effort"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels[2],
-                                                 _fixed, 5, 5)
+        _x_pos, _y_pos = do_make_label_group(self._lst_gendata_labels[2],
+                                             _fixed, 5, 5)
         _x_pos += 50
 
         _vpaned.pack2(_frame, True, True)
@@ -338,6 +322,8 @@ class GeneralData(RAMSTKWorkView):
 
         _hbox.pack_end(_vpaned, True, True, 0)
 
+        self.pack_start(_hbox, True, True, 0)
+
         _label = RAMSTKLabel(
             _("General\nData"),
             height=30,
@@ -347,8 +333,6 @@ class GeneralData(RAMSTKWorkView):
                       "validation."))
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_start(_hbox, True, True, 0)
         self.show_all()
 
     def __set_callbacks(self):
@@ -407,7 +391,7 @@ class GeneralData(RAMSTKWorkView):
 
     def __set_properties(self):
         """
-        Set the properties of the General Data RAMSTK widgets.
+        Set the properties of the Validation General Data RAMSTK widgets.
 
         :return: None
         :rtype: None
@@ -436,7 +420,7 @@ class GeneralData(RAMSTKWorkView):
         # ----- ENTRIES
         self.txtTask.do_set_properties(
             height=100,
-            width=600,
+            width=800,
             tooltip=_(
                 "Displays the description of the selected V&amp;V activity."))
         self.txtID.do_set_properties(
@@ -516,75 +500,35 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self.txtID.set_text('')
-
-        _buffer = self.txtTask.do_get_buffer()
-        _buffer.handler_block(self._lst_handler_id[0])
-        _buffer.set_text('')
-        _buffer.handler_unblock(self._lst_handler_id[0])
+        self.txtTask.do_update('', self._lst_handler_id[0])
 
         self.cmbTaskType.handler_block(self._lst_handler_id[1])
         self.cmbTaskType.set_active(0)
         self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
 
-        self.txtSpecification.handler_block(self._lst_handler_id[2])
-        self.txtSpecification.set_text('')
-        self.txtSpecification.handler_unblock(self._lst_handler_id[2])
+        self.txtSpecification.do_update('', self._lst_handler_id[2])
 
         self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
         self.cmbMeasurementUnit.set_active(0)
         self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
 
-        self.txtMinAcceptable.handler_block(self._lst_handler_id[4])
-        self.txtMinAcceptable.set_text('')
-        self.txtMinAcceptable.handler_unblock(self._lst_handler_id[4])
-
-        self.txtMeanAcceptable.handler_block(self._lst_handler_id[5])
-        self.txtMeanAcceptable.set_text('')
-        self.txtMeanAcceptable.handler_unblock(self._lst_handler_id[5])
-
-        self.txtMaxAcceptable.handler_block(self._lst_handler_id[6])
-        self.txtMaxAcceptable.set_text('')
-        self.txtMaxAcceptable.handler_unblock(self._lst_handler_id[6])
-
-        self.txtVarAcceptable.handler_block(self._lst_handler_id[7])
-        self.txtVarAcceptable.set_text('')
-        self.txtVarAcceptable.handler_unblock(self._lst_handler_id[7])
-
-        self.txtStartDate.handler_block(self._lst_handler_id[8])
-        self.txtStartDate.set_text('')
-        self.txtStartDate.handler_unblock(self._lst_handler_id[8])
-
-        self.txtEndDate.handler_block(self._lst_handler_id[9])
-        self.txtEndDate.set_text('')
-        self.txtEndDate.handler_unblock(self._lst_handler_id[9])
+        self.txtMinAcceptable.do_update('', self._lst_handler_id[4])
+        self.txtMeanAcceptable.do_update('', self._lst_handler_id[5])
+        self.txtMaxAcceptable.do_update('', self._lst_handler_id[6])
+        self.txtVarAcceptable.do_update('', self._lst_handler_id[7])
+        self.txtStartDate.do_update('', self._lst_handler_id[8])
+        self.txtEndDate.do_update('', self._lst_handler_id[9])
 
         self.spnStatus.handler_block(self._lst_handler_id[10])
         self.spnStatus.set_value(0.0)
         self.spnStatus.handler_unblock(self._lst_handler_id[10])
 
-        self.txtMinTime.handler_block(self._lst_handler_id[11])
-        self.txtMinTime.set_text('')
-        self.txtMinTime.handler_unblock(self._lst_handler_id[11])
-
-        self.txtExpTime.handler_block(self._lst_handler_id[12])
-        self.txtExpTime.set_text('')
-        self.txtExpTime.handler_unblock(self._lst_handler_id[12])
-
-        self.txtMaxTime.handler_block(self._lst_handler_id[13])
-        self.txtMaxTime.set_text('')
-        self.txtMaxTime.handler_unblock(self._lst_handler_id[13])
-
-        self.txtMinCost.handler_block(self._lst_handler_id[14])
-        self.txtMinCost.set_text('')
-        self.txtMinCost.handler_unblock(self._lst_handler_id[14])
-
-        self.txtExpCost.handler_block(self._lst_handler_id[15])
-        self.txtExpCost.set_text('')
-        self.txtExpCost.handler_unblock(self._lst_handler_id[15])
-
-        self.txtMaxCost.handler_block(self._lst_handler_id[16])
-        self.txtMaxCost.set_text('')
-        self.txtMaxCost.handler_unblock(self._lst_handler_id[16])
+        self.txtMinTime.do_update('', self._lst_handler_id[11])
+        self.txtExpTime.do_update('', self._lst_handler_id[12])
+        self.txtMaxTime.do_update('', self._lst_handler_id[13])
+        self.txtMinCost.do_update('', self._lst_handler_id[14])
+        self.txtExpCost.do_update('', self._lst_handler_id[15])
+        self.txtMaxCost.do_update('', self._lst_handler_id[16])
 
         self.txtMeanTimeLL.set_text('')
         self.txtMeanTime.set_text('')
@@ -616,10 +560,8 @@ class GeneralData(RAMSTKWorkView):
 
         self.txtID.set_text(str(attributes['validation_id']))
 
-        _buffer = self.txtTask.do_get_buffer()
-        _buffer.handler_block(self._lst_handler_id[0])
-        _buffer.set_text(attributes['description'])
-        _buffer.handler_unblock(self._lst_handler_id[0])
+        self.txtTask.do_update(attributes['description'],
+                               self._lst_handler_id[0])
 
         self.cmbTaskType.handler_block(self._lst_handler_id[1])
         _types = self.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE
@@ -632,9 +574,8 @@ class GeneralData(RAMSTKWorkView):
                 _index += 1
         self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
 
-        self.txtSpecification.handler_block(self._lst_handler_id[2])
-        self.txtSpecification.set_text(str(attributes['task_specification']))
-        self.txtSpecification.handler_unblock(self._lst_handler_id[2])
+        self.txtSpecification.do_update(
+            str(attributes['task_specification']), self._lst_handler_id[2])
 
         self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
         _units = self.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
@@ -644,77 +585,52 @@ class GeneralData(RAMSTKWorkView):
                 self.cmbMeasurementUnit.set_active(int(_key))
         self.cmbMeasurementUnit.handler_unblock(self._lst_handler_id[3])
 
-        self.txtMinAcceptable.handler_block(self._lst_handler_id[4])
-        self.txtMinAcceptable.set_text(
-            str(self.fmt.format(attributes['acceptable_minimum'])))
-        self.txtMinAcceptable.handler_unblock(self._lst_handler_id[4])
-
-        self.txtMeanAcceptable.handler_block(self._lst_handler_id[5])
-        self.txtMeanAcceptable.set_text(
-            str(self.fmt.format(attributes['acceptable_mean'])))
-        self.txtMeanAcceptable.handler_unblock(self._lst_handler_id[5])
-
-        self.txtMaxAcceptable.handler_block(self._lst_handler_id[6])
-        self.txtMaxAcceptable.set_text(
-            str(self.fmt.format(attributes['acceptable_maximum'])))
-        self.txtMaxAcceptable.handler_unblock(self._lst_handler_id[6])
-
-        self.txtVarAcceptable.handler_block(self._lst_handler_id[7])
-        self.txtVarAcceptable.set_text(
-            str(self.fmt.format(attributes['acceptable_variance'])))
-        self.txtVarAcceptable.handler_unblock(self._lst_handler_id[7])
-
-        self.txtStartDate.handler_block(self._lst_handler_id[8])
+        self.txtMinAcceptable.do_update(
+            str(self.fmt.format(attributes['acceptable_minimum'])),
+            self._lst_handler_id[4])
+        self.txtMeanAcceptable.do_update(
+            str(self.fmt.format(attributes['acceptable_mean'])),
+            self._lst_handler_id[5])
+        self.txtMaxAcceptable.do_update(
+            str(self.fmt.format(attributes['acceptable_maximum'])),
+            self._lst_handler_id[6])
+        self.txtVarAcceptable.do_update(
+            str(self.fmt.format(attributes['acceptable_variance'])),
+            self._lst_handler_id[7])
         try:
             _date_start = datetime.strftime(attributes['date_start'],
                                             '%Y-%m-%d')
         except TypeError:
             _date_start = attributes['date_start']
-        self.txtStartDate.set_text(_date_start)
-        self.txtStartDate.handler_unblock(self._lst_handler_id[8])
-
-        self.txtEndDate.handler_block(self._lst_handler_id[9])
+        self.txtStartDate.do_update(_date_start, self._lst_handler_id[8])
         try:
             _date_end = datetime.strftime(attributes['date_end'], '%Y-%m-%d')
         except TypeError:
             _date_end = attributes['date_end']
-        self.txtEndDate.set_text(_date_end)
-        self.txtEndDate.handler_unblock(self._lst_handler_id[9])
+        self.txtEndDate.do_update(_date_end, self._lst_handler_id[9])
 
         self.spnStatus.handler_block(self._lst_handler_id[10])
         self.spnStatus.set_value(attributes['status'])
         self.spnStatus.handler_unblock(self._lst_handler_id[10])
 
-        self.txtMinTime.handler_block(self._lst_handler_id[11])
-        self.txtMinTime.set_text(
-            str(self.fmt.format(attributes['time_minimum'])))
-        self.txtMinTime.handler_unblock(self._lst_handler_id[11])
-
-        self.txtExpTime.handler_block(self._lst_handler_id[12])
-        self.txtExpTime.set_text(
-            str(self.fmt.format(attributes['time_average'])))
-        self.txtExpTime.handler_unblock(self._lst_handler_id[12])
-
-        self.txtMaxTime.handler_block(self._lst_handler_id[13])
-        self.txtMaxTime.set_text(
-            str(self.fmt.format(attributes['time_maximum'])))
-        self.txtMaxTime.handler_unblock(self._lst_handler_id[13])
-
-        self.txtMinCost.handler_block(self._lst_handler_id[14])
-        self.txtMinCost.set_text(
-            str(self.fmt.format(attributes['cost_minimum'])))
-        self.txtMinCost.handler_unblock(self._lst_handler_id[14])
-
-        self.txtExpCost.handler_block(self._lst_handler_id[15])
-        self.txtExpCost.set_text(
-            str(self.fmt.format(attributes['cost_average'])))
-        self.txtExpCost.handler_unblock(self._lst_handler_id[15])
-
-        self.txtMaxCost.handler_block(self._lst_handler_id[16])
-        self.txtMaxCost.set_text(
-            str(self.fmt.format(attributes['cost_maximum'])))
-        self.txtMaxCost.handler_unblock(self._lst_handler_id[16])
-
+        self.txtMinTime.do_update(
+            str(self.fmt.format(attributes['time_minimum'])),
+            self._lst_handler_id[11])
+        self.txtExpTime.do_update(
+            str(self.fmt.format(attributes['time_average'])),
+            self._lst_handler_id[12])
+        self.txtMaxTime.do_update(
+            str(self.fmt.format(attributes['time_maximum'])),
+            self._lst_handler_id[13])
+        self.txtMinCost.do_update(
+            str(self.fmt.format(attributes['cost_minimum'])),
+            self._lst_handler_id[14])
+        self.txtExpCost.do_update(
+            str(self.fmt.format(attributes['cost_average'])),
+            self._lst_handler_id[15])
+        self.txtMaxCost.do_update(
+            str(self.fmt.format(attributes['cost_maximum'])),
+            self._lst_handler_id[16])
         self.txtMeanTimeLL.set_text(
             str(self.fmt.format(attributes['time_ll'])))
         self.txtMeanTime.set_text(
@@ -737,9 +653,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_calculate_all_validations')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button):
         """
@@ -750,10 +666,10 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
             'request_update_validation', node_id=self._validation_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -906,7 +822,7 @@ class GeneralData(RAMSTKWorkView):
             * RAMSTKEntry() 'focus-out' signal
             * RAMSTKTextView() 'changed' signal
 
-        This method sends the 'wvw_edited_validation' message.
+        This method sends the 'wvw_editing_validation' message.
 
         :param entry: the RAMSTKEntry() or RAMSTKTextView() that called this
                       method.
@@ -1006,15 +922,14 @@ class BurndownCurve(RAMSTKWorkView):
                     program V&V task effort.
     """
 
-    def __init__(self, controller, configuration, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Validation package.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK configuration instance.
+        :type configuration: :class:`ramstk.RAMSTK.Configuration`
         """
-        RAMSTKWorkView.__init__(self, controller, module='Validation')
-        self.RAMSTK_CONFIGURATION = configuration
+        RAMSTKWorkView.__init__(self, configuration, module='Validation')
 
         # Initialize private dictionary attributes.
         self._dic_icons['calculate-all'] = \
@@ -1043,32 +958,6 @@ class BurndownCurve(RAMSTKWorkView):
         #pub.subscribe(self._do_load_page, 'selected_validation')
         pub.subscribe(self._do_load_page, 'calculated_validation')
 
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Validation class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class Work
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Calculate the cost and time of the program (i.e., all "
-              "Validation tasks).")
-        ]
-        _callbacks = [self._do_request_calculate_all]
-        _icons = ['calculate-all']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
     def __make_ui(self):
         """
         Make the Validation class Gtk.Notebook() burndown curve page.
@@ -1076,25 +965,37 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            RAMSTKWorkView._make_buttonbox(
+                self,
+                icons=['calculate-all'],
+                tooltips=[
+                    _("Calculate the cost and time of the program (i.e., all "
+                      "Validation tasks).")
+                ],
+                callbacks=[self._do_request_calculate_all]))
+        self.pack_start(_scrolledwindow, False, False, 0)
+
         _frame = RAMSTKFrame(label=_("Program Validation Effort"))
         _frame.add(self.burndown.plot)
         _frame.show_all()
 
-        # Insert the tab.
-        self.hbx_tab_label = Gtk.Label()
-        self.hbx_tab_label.set_markup("<span weight='bold'>" +
-                                      _("Program\nValidation\nProgress") +
-                                      "</span>")
-        self.hbx_tab_label.set_alignment(xalign=0.5, yalign=0.5)
-        self.hbx_tab_label.set_justify(Gtk.Justification.CENTER)
-        self.hbx_tab_label.show_all()
-        self.hbx_tab_label.set_tooltip_text(
-            _("Shows a plot of the total expected time "
-              "to complete all V&amp;V tasks and the "
-              "current progress."))
-
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
         self.pack_start(_frame, True, True, 0)
+
+        # Insert the tab.
+        _label = RAMSTKLabel(
+            _("<span weight='bold'>" + _("Program\nValidation\nProgress") +
+              "</span>"),
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_("Shows a plot of the total expected time to complete "
+                      "all V&amp;V tasks and the current progress."))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
         self.show_all()
 
     def _do_clear_page(self):
@@ -1238,9 +1139,9 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_calculate_all_validations')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -1251,6 +1152,6 @@ class BurndownCurve(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_validations')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)

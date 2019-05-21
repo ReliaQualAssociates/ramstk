@@ -22,27 +22,25 @@ class ListView(RAMSTKListView):
 
     The attributes of the Failure Definition List View are:
 
-    :ivar int _revision_id: the Revision ID whose failure definitions are being
-                            displayed in the List View.
-    :ivar int _definition_id: the Failure Definition ID of the definition being
-                              displayed in the List View.
+    :ivar int _definition_id: the Failure Definition ID of the definition
+                              selected in the List View.
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the List View for the Failure Definition package.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :py:class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKListView.__init__(self, controller, module='failure_definition')
+        RAMSTKListView.__init__(
+            self, configuration, module='failure_definition')
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._revision_id = None
         self._definition_id = None
 
         # Initialize public dictionary attributes.
@@ -52,145 +50,14 @@ class ListView(RAMSTKListView):
         # Initialize public scalar attributes.
 
         self.__make_treeview()
-        self.treeview.set_rubber_banding(True)
-        self.treeview.set_tooltip_text(
-            _("Displays the list of failure definitions for the selected "
-              "revision."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-        _label = Gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _("Failure\nDefinitions") +
-                          "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(Gtk.Justification.CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(
-            _("Displays failure definitions for the "
-              "selected revision."))
-
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
-        self.hbx_tab_label.show_all()
-
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.add(self.treeview)
-
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_end(_scrolledwindow, True, True, 0)
-
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_tree, 'deleted_definition')
         pub.subscribe(self._do_load_tree, 'inserted_definition')
         pub.subscribe(self._do_load_tree, 'retrieved_definitions')
-
-    def _do_load_tree(self, tree):
-        """
-        Load the Failure Defintion List View's Gtk.TreeModel.
-
-        :param tree: the Failure Definition treelib Tree().
-        :type tree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        for _node in list(tree.nodes.values())[1:]:
-            _entity = _node.data
-
-            _attributes = []
-            if _entity is not None:
-                _attributes = [
-                    _entity.revision_id, _entity.definition_id,
-                    _entity.definition
-                ]
-
-            try:
-                _row = _model.append(_attributes)
-            except ValueError:
-                _row = None
-
-        _row = _model.get_iter_first()
-        self.treeview.expand_all()
-        if _row is not None:
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_model.get_path(_row), None, False)
-            self.treeview.row_activated(_model.get_path(_row), _column)
-
-        return None
-
-    def _do_request_delete(self, __button):
-        """
-        Request to delete the selected Failure Definition record.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        _prompt = _("You are about to delete Failure Definition {0:d} and "
-                    "all data associated with it.  Is this really what you "
-                    "want to do?").format(self._definition_id)
-        _dialog = ramstk.RAMSTKMessageDialog(
-            _prompt, self._dic_icons['question'], 'question')
-        _response = _dialog.do_run()
-
-        if _response == Gtk.ResponseType.YES:
-            pub.sendMessage(
-                'request_delete_definition', node_id=self._definition_id)
-
-        _dialog.do_destroy()
-
-        return None
-
-    def _do_request_insert(self, **kwargs):
-        """
-        Request to add a Failure Definition record.
-
-        :return: None
-        :rtype: None
-        """
-        _sibling = kwargs['sibling']
-
-        pub.sendMessage(
-            'request_insert_definition', revision_id=self._revision_id)
-
-        return None
-
-    def _do_request_update(self, __button):
-        """
-        Request to update the currently selected Failure Definition record.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        self.set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage(
-            'request_update_definition', node_id=self._definition_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
-
-    def _do_request_update_all(self, __button):
-        """
-        Request to update all Failure Definitions records.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :py:class:`Gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        self.set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage('request_update_all_definitions')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
 
     def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -222,11 +89,9 @@ class ListView(RAMSTKListView):
         """
         Set up the RAMSTKTreeView() for Failure Definitions.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         _model = Gtk.ListStore(GObject.TYPE_INT, GObject.TYPE_INT,
                                GObject.TYPE_STRING)
         self.treeview.set_model(_model)
@@ -292,7 +157,140 @@ class ListView(RAMSTKListView):
         _column.set_attributes(_cell, text=2)
         self.treeview.append_column(_column)
 
-        return _return
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.tab_label.set_markup("<span weight='bold'>" +
+                                  _("Failure\nDefinitions") + "</span>")
+        self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
+        self.tab_label.set_justify(Gtk.Justification.CENTER)
+        self.tab_label.show_all()
+        self.tab_label.set_tooltip_text(
+            _("Displays failure definitions for the "
+              "selected revision."))
+
+        self.pack_start(self.__make_buttonbox(), False, False, 0)
+        RAMSTKListView._make_ui(self)
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for the Failure Definition ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKListView._set_callbacks(self)
+
+    def __set_properties(self):
+        """
+        Set properties of the Failure Definition ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        RAMSTKListView._set_properties(self)
+        self.treeview.set_tooltip_text(
+            _("Displays the list of failure definitions for the selected "
+              "revision."))
+
+    def _do_load_tree(self, tree):
+        """
+        Load the Failure Defintion List View's Gtk.TreeModel.
+
+        :param tree: the Failure Definition treelib Tree().
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        _model = self.treeview.get_model()
+        _model.clear()
+
+        for _node in list(tree.nodes.values())[1:]:
+            _entity = _node.data
+
+            _attributes = []
+            if _entity is not None:
+                _attributes = [
+                    _entity.revision_id, _entity.definition_id,
+                    _entity.definition
+                ]
+
+            try:
+                _row = _model.append(_attributes)
+            except ValueError:
+                _row = None
+
+        _row = _model.get_iter_first()
+        self.treeview.expand_all()
+        if _row is not None:
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_model.get_path(_row), None, False)
+            self.treeview.row_activated(_model.get_path(_row), _column)
+
+    def _do_request_delete(self, __button):
+        """
+        Request to delete the selected Failure Definition record.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        _prompt = _("You are about to delete Failure Definition {0:d} and "
+                    "all data associated with it.  Is this really what you "
+                    "want to do?").format(self._definition_id)
+        _dialog = ramstk.RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question')
+        _response = _dialog.do_run()
+
+        if _response == Gtk.ResponseType.YES:
+            pub.sendMessage(
+                'request_delete_definition', node_id=self._definition_id)
+
+        _dialog.do_destroy()
+
+    def _do_request_insert(self, **kwargs):
+        """
+        Request to add a Failure Definition record.
+
+        :return: None
+        :rtype: None
+        """
+        _sibling = kwargs['sibling']
+
+        pub.sendMessage(
+            'request_insert_definition', revision_id=self._revision_id)
+
+    def _do_request_update(self, __button):
+        """
+        Request to update the currently selected Failure Definition record.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :py:class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        self.do_set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage(
+            'request_update_definition', node_id=self._definition_id)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
+    def _do_request_update_all(self, __button):
+        """
+        Request to update all Failure Definitions records.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :py:class:`Gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        self.do_set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_update_all_definitions')
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview, event):
         """
@@ -321,52 +319,22 @@ class ListView(RAMSTKListView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _menu = Gtk.Menu()
-            _menu.popup(None, None, None, event.button, event.time)
+            _icons = ['add', 'remove', 'save', 'save-all']
+            _labels = [
+                _("Add New Definition"),
+                _("Remove Selected Definition"),
+                _("Save Selected Definition"),
+                _("Save All Definitions")
+            ]
+            _callbacks = [
+                self._do_request_insert, self._do_request_delete,
+                self._do_request_update, self._do_request_update_all
+            ]
 
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['add'])
-            _menu_item.set_label(_("Add New Definition"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_("Remove Selected Definition"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_delete)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_("Save Selected Definition"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update)
-            _menu_item.show()
-            _menu.append(_menu_item)
-
-            _menu_item = Gtk.ImageMenuItem()
-            _image = Gtk.Image()
-            _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_("Save All Definitions"))
-            _menu_item.set_image(_image)
-            _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_update_all)
-            _menu_item.show()
-            _menu.append(_menu_item)
+            self.on_button_press(
+                event, icons=_icons, labels=_labels, callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
-
-        return False
 
     def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
@@ -388,12 +356,10 @@ class ListView(RAMSTKListView):
                                             model):
 
             pub.sendMessage(
-                'editing_definition',
+                'lvw_editing_definition',
                 module_id=self._definition_id,
                 key='definition',
                 value=new_text)
-
-        return None
 
     def _on_row_change(self, treeview):
         """
@@ -423,5 +389,3 @@ class ListView(RAMSTKListView):
             pub.sendMessage('selected_definition', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        return None

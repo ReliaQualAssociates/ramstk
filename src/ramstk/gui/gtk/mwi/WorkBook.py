@@ -28,7 +28,7 @@ from ramstk.gui.gtk.ramstk.Widget import _
 class WorkBook(RAMSTKBook):
     """This is the Work Book for the pyGTK multiple window interface."""
 
-    def __init__(self, controller, configuration):
+    def __init__(self, configuration):
         """
         Initialize an instance of the Work View class.
 
@@ -67,8 +67,8 @@ class WorkBook(RAMSTKBook):
                 wvwPoF(controller)
             ],
             'validation': [
-                wvwValidationGD(controller, configuration),
-                wvwBurndownCurve(controller, configuration)
+                wvwValidationGD(configuration),
+                wvwBurndownCurve(configuration)
             ]
         }
 
