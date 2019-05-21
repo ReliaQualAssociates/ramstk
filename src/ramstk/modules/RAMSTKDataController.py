@@ -15,7 +15,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
-class RAMSTKDataController(object):
+class RAMSTKDataController():
     """
     Provide an interface between data models and RAMSTK views.
 
@@ -145,6 +145,7 @@ class RAMSTKDataController(object):
         :rtype: bool
         """
         try:
+            # pylint: disable=not-callable
             _error_code, _msg = self._matrix_delete_method(item_id, row=row)
         except TypeError:
             _error_code = 6
@@ -171,7 +172,8 @@ class RAMSTKDataController(object):
 
         return self.do_handle_results(_error_code, _msg, None)
 
-    def request_do_insert_matrix(self, matrix_type, item_id, heading, row=True):
+    def request_do_insert_matrix(self, matrix_type, item_id, heading,
+                                 row=True):
         """
         Request the to add a new row or column to the Data Matrix.
 
@@ -185,7 +187,9 @@ class RAMSTKDataController(object):
         :rtype: bool
         """
         try:
-            _error_code, _msg = self._matrix_insert_method(item_id, heading, row=row)
+            # pylint: disable=not-callable
+            _error_code, _msg = self._matrix_insert_method(
+                item_id, heading, row=row)
         except TypeError:
             _error_code = 6
             _msg = 'RAMSTK ERROR: Attempted to insert into non-existent ' \
@@ -256,7 +260,9 @@ class RAMSTKDataController(object):
         :rtype: bool
         """
         try:
-            _error_code, _msg = self._matrix_update_method(revision_id, matrix_type)
+            # pylint: disable=not-callable
+            _error_code, _msg = self._matrix_update_method(
+                revision_id, matrix_type)
         except TypeError:
             _error_code = 6
             _msg = 'RAMSTK ERROR: Attempted to update non-existent matrix ' \

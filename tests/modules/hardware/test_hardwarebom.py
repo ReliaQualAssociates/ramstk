@@ -566,8 +566,8 @@ def test_request_do_insert_matrix_row(test_dao, test_configuration):
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'hrdwr_vldtn')
 
-    assert not DUT._request_do_insert_matrix('hrdwr_vldtn', 13, 'S1:SS1:A13')
-    assert DUT._dmx_hw_vldtn_matrix.dic_row_hdrs[13] == 'S1:SS1:A13'
+    assert not DUT._request_do_insert_matrix('hrdwr_vldtn', 14, 'S1:SS1:A13')
+    assert DUT._dmx_hw_vldtn_matrix.dic_row_hdrs[14] == 'S1:SS1:A13'
 
 
 @pytest.mark.integration
