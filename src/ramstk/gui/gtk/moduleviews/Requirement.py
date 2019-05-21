@@ -198,10 +198,10 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
             'request_update_requirement', node_id=self._requirement_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -212,9 +212,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_requirements')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview, event):
         """

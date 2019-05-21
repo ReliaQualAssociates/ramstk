@@ -291,9 +291,54 @@ class RAMSTKBaseView():  # pylint: disable=old-style-class
         return self._do_request_insert(sibling=True, **kwargs)
 
     def do_set_cursor(self, cursor):
-        """Set the cursor for the view."""
-        # TODO: Move set_cursor code from Widgets.py here after everthing has been updated.
-        return self.set_cursor(cursor)
+        """
+        Set the cursor for the Module, List, and Work Book Gdk.Window().
+
+        :param cursor: the Gdk.Cursor.new() to set.  Only handles one of the
+                       following:
+                       - Gdk.CursorType.X_CURSOR
+                       - Gdk.CursorType.ARROW
+                       - Gdk.CursorType.CENTER_PTR
+                       - Gdk.CIRCLE
+                       - Gdk.CROSS
+                       - Gdk.CROSS_REVERSE
+                       - Gdk.CursorType.CROSSHAIR
+                       - Gdk.DIAMOND_CROSS
+                       - Gdk.DOUBLE_ARROW
+                       - Gdk.DRAFT_LARGE
+                       - Gdk.DRAFT_SMALL
+                       - Gdk.EXCHANGE
+                       - Gdk.FLEUR
+                       - Gdk.GUMBY
+                       - Gdk.HAND1
+                       - Gdk.HAND2
+                       - Gdk.CursorType.LEFT_PTR - non-busy cursor
+                       - Gdk.PENCIL
+                       - Gdk.PLUS
+                       - Gdk.QUESTION_ARROW
+                       - Gdk.CursorType.RIGHT_PTR
+                       - Gdk.SB_DOWN_ARROW
+                       - Gdk.SB_H_DOUBLE_ARROW
+                       - Gdk.SB_LEFT_ARROW
+                       - Gdk.SB_RIGHT_ARROW
+                       - Gdk.SB_UP_ARROW
+                       - Gdk.SB_V_DOUBLE_ARROW
+                       - Gdk.TCROSS
+                       - Gdk.TOP_LEFT_ARROW
+                       - Gdk.CursorType.WATCH - when application is busy
+                       - Gdk.XTERM - selection bar
+        :type cursor: :class:`Gdk.Cursor`
+        :return: None
+        :rtype: None
+        """
+        self._mdcRAMSTK.dic_books['listbook'].get_window().set_cursor(
+            Gdk.Cursor.new(cursor))
+        self._mdcRAMSTK.dic_books['modulebook'].get_window().set_cursor(
+            Gdk.Cursor.new(cursor))
+        self._mdcRAMSTK.dic_books['workbook'].get_window().set_cursor(
+            Gdk.Cursor.new(cursor))
+
+        Gdk.flush()
 
     def _make_toolbar(self,
                       icons,
@@ -530,53 +575,3 @@ class RAMSTKBaseView():  # pylint: disable=old-style-class
             _column = self.treeview.get_column(0)
             self.treeview.set_cursor(_path, None, False)
             self.treeview.row_activated(_path, _column)
-
-    def set_cursor(self, cursor):
-        """
-        Set the cursor for the Module, List, and Work Book Gdk.Window().
-
-        :param cursor: the Gdk.Cursor.new() to set.  Only handles one of the
-                       following:
-                       - Gdk.CursorType.X_CURSOR
-                       - Gdk.CursorType.ARROW
-                       - Gdk.CursorType.CENTER_PTR
-                       - Gdk.CIRCLE
-                       - Gdk.CROSS
-                       - Gdk.CROSS_REVERSE
-                       - Gdk.CursorType.CROSSHAIR
-                       - Gdk.DIAMOND_CROSS
-                       - Gdk.DOUBLE_ARROW
-                       - Gdk.DRAFT_LARGE
-                       - Gdk.DRAFT_SMALL
-                       - Gdk.EXCHANGE
-                       - Gdk.FLEUR
-                       - Gdk.GUMBY
-                       - Gdk.HAND1
-                       - Gdk.HAND2
-                       - Gdk.CursorType.LEFT_PTR - non-busy cursor
-                       - Gdk.PENCIL
-                       - Gdk.PLUS
-                       - Gdk.QUESTION_ARROW
-                       - Gdk.CursorType.RIGHT_PTR
-                       - Gdk.SB_DOWN_ARROW
-                       - Gdk.SB_H_DOUBLE_ARROW
-                       - Gdk.SB_LEFT_ARROW
-                       - Gdk.SB_RIGHT_ARROW
-                       - Gdk.SB_UP_ARROW
-                       - Gdk.SB_V_DOUBLE_ARROW
-                       - Gdk.TCROSS
-                       - Gdk.TOP_LEFT_ARROW
-                       - Gdk.CursorType.WATCH - when application is busy
-                       - Gdk.XTERM - selection bar
-        :type cursor: :class:`Gdk.Cursor`
-        :return: None
-        :rtype: None
-        """
-        self._mdcRAMSTK.dic_books['listbook'].get_window().set_cursor(
-            Gdk.Cursor.new(cursor))
-        self._mdcRAMSTK.dic_books['modulebook'].get_window().set_cursor(
-            Gdk.Cursor.new(cursor))
-        self._mdcRAMSTK.dic_books['workbook'].get_window().set_cursor(
-            Gdk.Cursor.new(cursor))
-
-        Gdk.flush()

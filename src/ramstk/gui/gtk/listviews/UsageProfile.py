@@ -493,9 +493,9 @@ class ListView(RAMSTKListView):
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 9)
 
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_profile', node_id=_node_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -506,9 +506,9 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_profiles')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview, event):
         """
