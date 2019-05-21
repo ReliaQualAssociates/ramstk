@@ -55,8 +55,7 @@ class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
         """
         Create the Gtk.ButtonBox() for the Module Views.
 
-        :return: _buttonbox; the Gtk.ButtonBox() for the Revision class Module
-                 View.
+        :return: _buttonbox; the Gtk.ButtonBox() for the Module View.
         :rtype: :class:`Gtk.ButtonBox`
         """
         _icons = kwargs['icons']
