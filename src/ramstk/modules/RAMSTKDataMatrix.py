@@ -13,7 +13,7 @@ from sqlalchemy import and_, func
 from ramstk.dao import RAMSTKMatrix
 
 
-class RAMSTKDataMatrix(object):
+class RAMSTKDataMatrix():
     """
     The RAMSTK Data Matrix model.
 

@@ -18,8 +18,8 @@ class RequirementDataModel(RAMSTKDataModel):
     """
     Contains the attributes and methods of a Requirement.
 
-    An RAMSTK Project will consist of one or more Requirements.  The attributes of
-    a Requirement are:
+    An RAMSTK Project will consist of one or more Requirements.  The attributes
+    of a Requirement are inherited from the meta-class.
     """
 
     _tag = 'Requirements'
