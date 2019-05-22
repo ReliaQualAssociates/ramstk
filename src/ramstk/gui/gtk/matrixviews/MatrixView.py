@@ -23,15 +23,15 @@ class RAMSTKMatrixView(Gtk.HBox, RAMSTKBaseMatrix):
     :type hbx_tab_label: :class:`Gtk.HBox`
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, configuration, **kwargs):
         """
         Initialize an instance of the RAMSTK Matrix View.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :py:class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
         GObject.GObject.__init__(self)
-        RAMSTKBaseMatrix.__init__(self, controller, **kwargs)
+        RAMSTKBaseMatrix.__init__(self, configuration**kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -42,6 +42,3 @@ class RAMSTKMatrixView(Gtk.HBox, RAMSTKBaseMatrix):
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.hbx_tab_label = Gtk.HBox()

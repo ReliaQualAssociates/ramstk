@@ -48,12 +48,21 @@ class RequirementDataController(RAMSTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_rqmt_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKRequirement,
-                                                    RAMSTKHardware)
-        self._dmx_rqmt_sw_matrix = RAMSTKDataMatrix(dao, RAMSTKRequirement,
-                                                    RAMSTKSoftware)
-        self._dmx_rqmt_val_matrix = RAMSTKDataMatrix(dao, RAMSTKRequirement,
-                                                     RAMSTKValidation)
+        self._dmx_rqmt_hw_matrix = RAMSTKDataMatrix(
+            dao,
+            row_table=RAMSTKRequirement,
+            column_table=RAMSTKHardware,
+            **kwargs)
+        self._dmx_rqmt_sw_matrix = RAMSTKDataMatrix(
+            dao,
+            row_table=RAMSTKRequirement,
+            column_table=RAMSTKSoftware,
+            **kwargs)
+        self._dmx_rqmt_val_matrix = RAMSTKDataMatrix(
+            dao,
+            row_table=RAMSTKRequirement,
+            column_table=RAMSTKValidation,
+            **kwargs)
 
         # Initialize public dictionary attributes.
 

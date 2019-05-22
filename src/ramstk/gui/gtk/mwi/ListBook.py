@@ -52,22 +52,25 @@ class ListBook(RAMSTKBook):
 
         # Initialize public dictionary attributes.
         self.dic_list_view = {
-            'revision':
-            [lvwUsageProfile(configuration),
-             lvwFailureDefinition(configuration)],
+            'revision': [
+                lvwUsageProfile(configuration),
+                lvwFailureDefinition(configuration)
+            ],
             'function':
             [FunctionHardware(configuration, matrix_type='fnctn_hrdwr')],
             'requirement': [
                 lvwStakeholder(configuration),
                 RequirementHardware(configuration, matrix_type='rqrmnt_hrdwr'),
-                RequirementValidation(configuration, matrix_type='rqrmnt_vldtn')
+                RequirementValidation(
+                    configuration, matrix_type='rqrmnt_vldtn')
             ],
             'hardware': [
                 HardwareRequirement(configuration, matrix_type='hrdwr_rqrmnt'),
                 HardwareValidation(configuration, matrix_type='hrdwr_vldtn')
             ],
             'validation': [
-                ValidationRequirement(configuration, matrix_type='vldtn_rqrmnt'),
+                ValidationRequirement(
+                    configuration, matrix_type='vldtn_rqrmnt'),
                 ValidationHardware(configuration, matrix_type='vldtn_hrdwr')
             ]
         }

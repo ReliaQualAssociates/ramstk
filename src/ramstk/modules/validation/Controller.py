@@ -46,9 +46,15 @@ class ValidationDataController(RAMSTKDataController):
 
         # Initialize private scalar attributes.
         self._dmx_vldtn_rqrmnt_matrix = RAMSTKDataMatrix(
-            dao, RAMSTKValidation, RAMSTKRequirement)
-        self._dmx_vldtn_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKValidation,
-                                                     RAMSTKHardware)
+            dao,
+            row_table=RAMSTKValidation,
+            column_table=RAMSTKRequirement,
+            **kwargs)
+        self._dmx_vldtn_hw_matrix = RAMSTKDataMatrix(
+            dao,
+            row_table=RAMSTKValidation,
+            column_table=RAMSTKHardware,
+            **kwargs)
 
         # Initialize public dictionary attributes.
 
