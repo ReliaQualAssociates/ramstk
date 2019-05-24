@@ -6,49 +6,72 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Configuration information and methods for RAMSTK."""
 
+# Standard Library Imports
 import configparser
-from os import environ, path, makedirs
-import sys
-
-# Add localization support.
 import gettext
+import sys
+from os import environ, makedirs, path
 
-# Import other RAMSTK modules.
+# RAMSTK Imports
 import ramstk.Utilities as Utilities
 
 _ = gettext.gettext
 
-__author__ = 'Doyle Rowland <doyle.rowland@reliaqual.com>'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
+__author__ = "Doyle Rowland <doyle.rowland@reliaqual.com>"
+__email__ = "doyle.rowland@reliaqual.com"
+__organization__ = "ReliaQual Associates, LLC"
 __copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
 
 # Define global list constants.
-RAMSTK_ACTIVE_ENVIRONMENTS = [[_("Ground, Benign")], [_("Ground, Fixed")],
-                              [_("Ground, Mobile")], [_("Naval, Sheltered")],
-                              [_("Naval, Unsheltered")],
-                              [_("Airborne, Inhabited, Cargo")],
-                              [_("Airborne, Inhabited, Fighter")],
-                              [_("Airborne, Uninhabited, Cargo")],
-                              [_("Airborne, Uninhabited, Fighter")],
-                              [_("Airborne, Rotary Wing")],
-                              [_("Space, Flight")], [_("Missile, Flight")],
-                              [_("Missile, Launch")]]
-RAMSTK_DORMANT_ENVIRONMENTS = [[_("Airborne")], [_("Ground")], [_("Naval")],
-                               [_("Space")]]
+RAMSTK_ACTIVE_ENVIRONMENTS = [
+    [_("Ground, Benign")],
+    [_("Ground, Fixed")],
+    [_("Ground, Mobile")],
+    [_("Naval, Sheltered")],
+    [_("Naval, Unsheltered")],
+    [_("Airborne, Inhabited, Cargo")],
+    [_("Airborne, Inhabited, Fighter")],
+    [_("Airborne, Uninhabited, Cargo")],
+    [_("Airborne, Uninhabited, Fighter")],
+    [_("Airborne, Rotary Wing")],
+    [_("Space, Flight")],
+    [_("Missile, Flight")],
+    [_("Missile, Launch")],
+]
+RAMSTK_DORMANT_ENVIRONMENTS = [
+    [_("Airborne")],
+    [_("Ground")],
+    [_("Naval")],
+    [_("Space")],
+]
 
-RAMSTK_ALLOCATION_MODELS = [['Equal Apportionment'], ['ARINC Apportionment'],
-                            ['AGREE Apportionment'],
-                            ['Feasibility of Objectives'],
-                            ['Repairable Systems Apportionment']]
+RAMSTK_ALLOCATION_MODELS = [
+    ["Equal Apportionment"],
+    ["ARINC Apportionment"],
+    ["AGREE Apportionment"],
+    ["Feasibility of Objectives"],
+    ["Repairable Systems Apportionment"],
+]
 
-RAMSTK_HR_TYPES = [[_("Assessed")], [_("Defined, Hazard Rate")],
-                   [_("Defined, MTBF")], [_("Defined, Distribution")]]
-RAMSTK_HR_MODELS = [[_("MIL-HDBK-217F Parts Count")],
-                    [_("MIL-HDBK-217F Parts Stress")], [_("NSWC-11")]]
-RAMSTK_HR_DISTRIBUTIONS = [[_("1P Exponential")], [_("2P Exponential")],
-                           [_("Gaussian")], [_("Lognormal")],
-                           [_("2P Weibull")], [_("3P Weibull")]]
+RAMSTK_HR_TYPES = [
+    [_("Assessed")],
+    [_("Defined, Hazard Rate")],
+    [_("Defined, MTBF")],
+    [_("Defined, Distribution")],
+]
+RAMSTK_HR_MODELS = [
+    [_("MIL-HDBK-217F Parts Count")],
+    [_("MIL-HDBK-217F Parts Stress")],
+    [_("NSWC-11")],
+]
+RAMSTK_HR_DISTRIBUTIONS = [
+    [_("1P Exponential")],
+    [_("2P Exponential")],
+    [_("Gaussian")],
+    [_("Lognormal")],
+    [_("2P Weibull")],
+    [_("3P Weibull")],
+]
 
 RAMSTK_CONTROL_TYPES = [_("Prevention"), _("Detection")]
 RAMSTK_COST_TYPES = [[_("Defined")], [_("Calculated")]]
@@ -57,74 +80,117 @@ RAMSTK_MTTR_TYPES = [[_("Defined")], [_("Calculated")]]
 RAMSTK_CRITICALITY = [
     [
         _("Catastrophic"),
-        _("Could result in death, permanent total disability, loss exceeding "
-          "$1M, or irreversible severe environmental damage that violates law "
-          "or regulation."), "I", 4
+        _(
+            "Could result in death, permanent total disability, loss exceeding "
+            "$1M, or irreversible severe environmental damage that violates law "
+            "or regulation."
+        ),
+        "I",
+        4,
     ],
     [
         _("Critical"),
-        _("Could result in permanent partial disability, injuries or "
-          "occupational illness that may result in hospitalization of at least "
-          "three personnel, loss exceeding $200K but less than $1M, or "
-          "reversible environmental damage causing a violation of law or "
-          "regulation."), "II", 3
+        _(
+            "Could result in permanent partial disability, injuries or "
+            "occupational illness that may result in hospitalization of at least "
+            "three personnel, loss exceeding $200K but less than $1M, or "
+            "reversible environmental damage causing a violation of law or "
+            "regulation."
+        ),
+        "II",
+        3,
     ],
     [
         _("Marginal"),
-        _("Could result in injury or occupational illness resulting in one or "
-          "more lost work days(s), loss exceeding $10K but less than $200K, or "
-          "mitigatible environmental damage without violation of law or "
-          "regulation where restoration activities can be accomplished."),
-        "III", 2
+        _(
+            "Could result in injury or occupational illness resulting in one or "
+            "more lost work days(s), loss exceeding $10K but less than $200K, or "
+            "mitigatible environmental damage without violation of law or "
+            "regulation where restoration activities can be accomplished."
+        ),
+        "III",
+        2,
     ],
     [
         _("Negligble"),
-        _("Could result in injury or illness not resulting in a lost work day, "
-          "loss exceeding $2K but less than $10K, or minimal environmental "
-          "damage not violating law or regulation."), "IV", 1
-    ]
+        _(
+            "Could result in injury or illness not resulting in a lost work day, "
+            "loss exceeding $2K but less than $10K, or minimal environmental "
+            "damage not violating law or regulation."
+        ),
+        "IV",
+        1,
+    ],
 ]
-RAMSTK_FAILURE_PROBABILITY = [[_("Level E - Extremely Unlikely"), 1],
-                              [_("Level D - Remote"), 2],
-                              [_("Level C - Occasional"), 3],
-                              [_("Level B - Reasonably Probable"), 4],
-                              [_("Level A - Frequent"), 5]]
+RAMSTK_FAILURE_PROBABILITY = [
+    [_("Level E - Extremely Unlikely"), 1],
+    [_("Level D - Remote"), 2],
+    [_("Level C - Occasional"), 3],
+    [_("Level B - Reasonably Probable"), 4],
+    [_("Level A - Frequent"), 5],
+]
 
-RAMSTK_SW_DEV_ENVIRONMENTS = [[_("Organic"), 1.0, 0.76],
-                              [_("Semi-Detached"), 1.0, 1.0],
-                              [_("Embedded"), 1.0, 1.3]]
-RAMSTK_SW_DEV_PHASES = [[_("Concept/Planning (PCP)")],
-                        [_("Requirements Analysis (SRA)")],
-                        [_("Preliminary Design Review (PDR)")],
-                        [_("Critical Design Review (CDR)")],
-                        [_("Test Readiness Review (TRR)")], [_("Released")]]
-RAMSTK_SW_LEVELS = [[_("Software System"), 0], [_("Software Module"), 0],
-                    [_("Software Unit"), 0]]
-RAMSTK_SW_APPLICATION = [[_("Airborne"), 0.0128, 6.28],
-                         [_("Strategic"), 0.0092, 1.2],
-                         [_("Tactical"), 0.0078, 13.8],
-                         [_("Process Control"), 0.0018, 3.8],
-                         [_("Production Center"), 0.0085, 23.0],
-                         [_("Developmental"), 0.0123, 132.6]]
-RAMSTK_SW_TEST_METHODS = [[
-    _("Code Reviews"),
-    _("Code review is a systematic examination (often known as peer review) "
-      "of computer source code.")
-], [_("Error/Anomaly Detection"), _("")], [_("Structure Analysis"),
-                                           _("")],
-                          [_("Random Testing"), _("")],
-                          [_("Functional Testing"),
-                           _("")], [_("Branch Testing"),
-                                    _("")]]
+RAMSTK_SW_DEV_ENVIRONMENTS = [
+    [_("Organic"), 1.0, 0.76],
+    [_("Semi-Detached"), 1.0, 1.0],
+    [_("Embedded"), 1.0, 1.3],
+]
+RAMSTK_SW_DEV_PHASES = [
+    [_("Concept/Planning (PCP)")],
+    [_("Requirements Analysis (SRA)")],
+    [_("Preliminary Design Review (PDR)")],
+    [_("Critical Design Review (CDR)")],
+    [_("Test Readiness Review (TRR)")],
+    [_("Released")],
+]
+RAMSTK_SW_LEVELS = [
+    [_("Software System"), 0],
+    [_("Software Module"), 0],
+    [_("Software Unit"), 0],
+]
+RAMSTK_SW_APPLICATION = [
+    [_("Airborne"), 0.0128, 6.28],
+    [_("Strategic"), 0.0092, 1.2],
+    [_("Tactical"), 0.0078, 13.8],
+    [_("Process Control"), 0.0018, 3.8],
+    [_("Production Center"), 0.0085, 23.0],
+    [_("Developmental"), 0.0123, 132.6],
+]
+RAMSTK_SW_TEST_METHODS = [
+    [
+        _("Code Reviews"),
+        _(
+            "Code review is a systematic examination (often known as peer review) "
+            "of computer source code."
+        ),
+    ],
+    [_("Error/Anomaly Detection"), _("")],
+    [_("Structure Analysis"), _("")],
+    [_("Random Testing"), _("")],
+    [_("Functional Testing"), _("")],
+    [_("Branch Testing"), _("")],
+]
 
-RAMSTK_LIFECYCLE = [[_("Design")], [_("Reliability Growth")],
-                    [_("Reliability Qualification")], [_("Production")],
-                    [_("Storage")], [_("Operation")], [_("Disposal")]]
-RAMSTK_S_DIST = [["Constant Probability"], ["Exponential"], ["Gaussian"],
-                 ["LogNormal"], ["Uniform"], ["Weibull"]]
+RAMSTK_LIFECYCLE = [
+    [_("Design")],
+    [_("Reliability Growth")],
+    [_("Reliability Qualification")],
+    [_("Production")],
+    [_("Storage")],
+    [_("Operation")],
+    [_("Disposal")],
+]
+RAMSTK_S_DIST = [
+    ["Constant Probability"],
+    ["Exponential"],
+    ["Gaussian"],
+    ["LogNormal"],
+    ["Uniform"],
+    ["Weibull"],
+]
 
 
-class Configuration(object):
+class Configuration:
     r"""
     RAMSTK configuration class.
 
@@ -312,11 +378,7 @@ class Configuration(object):
     RAMSTK_COLORS = {}
     RAMSTK_COM_INFO = {}  # RAMSTK Common database info.
     RAMSTK_PROG_INFO = {}  # RAMSTK Program database info.
-    RAMSTK_TABPOS = {
-        'listbook': 'top',
-        'modulebook': 'bottom',
-        'workbook': 'bottom'
-    }
+    RAMSTK_TABPOS = {"listbook": "top", "modulebook": "bottom", "workbook": "bottom"}
 
     # The following global dicts are loaded from information in the RAMSTK
     # Common database.
@@ -352,30 +414,30 @@ class Configuration(object):
     RAMSTK_RISK_POINTS = [4, 10]
 
     # Define public scalar class attributes.
-    RAMSTK_MODE = ''
-    RAMSTK_SITE_CONF = ''
-    RAMSTK_PROG_CONF = ''
-    RAMSTK_HOME_DIR = ''
-    RAMSTK_SITE_DIR = ''
-    RAMSTK_ICON_DIR = ''
-    RAMSTK_DATA_DIR = ''
-    RAMSTK_CONF_DIR = ''
-    RAMSTK_LOG_DIR = ''
-    RAMSTK_PROG_DIR = ''
-    RAMSTK_DEBUG_LOG = ''
-    RAMSTK_IMPORT_LOG = ''
-    RAMSTK_USER_LOG = ''
+    RAMSTK_MODE = ""
+    RAMSTK_SITE_CONF = ""
+    RAMSTK_PROG_CONF = ""
+    RAMSTK_HOME_DIR = ""
+    RAMSTK_SITE_DIR = ""
+    RAMSTK_ICON_DIR = ""
+    RAMSTK_DATA_DIR = ""
+    RAMSTK_CONF_DIR = ""
+    RAMSTK_LOG_DIR = ""
+    RAMSTK_PROG_DIR = ""
+    RAMSTK_DEBUG_LOG = ""
+    RAMSTK_IMPORT_LOG = ""
+    RAMSTK_USER_LOG = ""
     RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
-    RAMSTK_COM_BACKEND = ''
-    RAMSTK_BACKEND = ''
-    RAMSTK_REPORT_SIZE = 'letter'
+    RAMSTK_COM_BACKEND = ""
+    RAMSTK_BACKEND = ""
+    RAMSTK_REPORT_SIZE = "letter"
     RAMSTK_HR_MULTIPLIER = 1000000.0
     RAMSTK_DEC_PLACES = 6
     RAMSTK_MTIME = 100.0
-    RAMSTK_GUI_LAYOUT = 'advanced'
-    RAMSTK_METHOD = 'STANDARD'  # STANDARD or LRM
-    RAMSTK_LOCALE = 'en_US'
-    RAMSTK_OS = ''
+    RAMSTK_GUI_LAYOUT = "advanced"
+    RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
+    RAMSTK_LOCALE = "en_US"
+    RAMSTK_OS = ""
 
     def __init__(self):
         """Initialize the RAMSTK configuration parser."""
@@ -383,14 +445,33 @@ class Configuration(object):
 
         # Initialize private list attributes.
         self._lst_colors = [
-            'revisionfg', 'functionfg', 'requirementfg', 'hardwarefg',
-            'validationfg', 'revisionbg', 'functionbg', 'requirementbg',
-            'hardwarebg', 'validationbg', 'stakeholderbg', 'stakeholderfg'
+            "revisionfg",
+            "functionfg",
+            "requirementfg",
+            "hardwarefg",
+            "validationfg",
+            "revisionbg",
+            "functionbg",
+            "requirementbg",
+            "hardwarebg",
+            "validationbg",
+            "stakeholderbg",
+            "stakeholderfg",
         ]
         self._lst_format_files = [
-            'allocation', 'dfmeca', 'failure_definition', 'ffmea', 'function',
-            'hardware', 'hazops', 'pof', 'requirement', 'revision',
-            'similaritem', 'stakeholder', 'validation'
+            "allocation",
+            "dfmeca",
+            "failure_definition",
+            "ffmea",
+            "function",
+            "hardware",
+            "hazops",
+            "pof",
+            "requirement",
+            "revision",
+            "similaritem",
+            "stakeholder",
+            "validation",
         ]
 
         # Initialize private scalar attributes.
@@ -401,21 +482,22 @@ class Configuration(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        if(sys.platform == 'linux' or sys.platform=='linux2'):
-            self.RAMSTK_OS = 'Linux'
-            self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + '/share/RAMSTK'
-            self.RAMSTK_HOME_DIR = environ['HOME']
-            self.RAMSTK_LOG_DIR = '/var/log/RAMSTK'
 
-        elif sys.platform == 'win32':
-            self.RAMSTK_OS = 'Windows'
-            self.RAMSTK_SITE_DIR = environ['PYTHONPATH'] + '/RAMSTK'
-            self.RAMSTK_HOME_DIR = environ['USERPROFILE']
-            self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + '/logs'
+        if sys.platform == "linux" or sys.platform == "linux2":
+            self.RAMSTK_OS = "Linux"
+            self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+            self.RAMSTK_HOME_DIR = environ["HOME"]
+            self.RAMSTK_LOG_DIR = "/var/log/RAMSTK"
 
-        self.RAMSTK_DATA_DIR = self.RAMSTK_SITE_DIR + '/layouts'
-        self.RAMSTK_ICON_DIR = self.RAMSTK_SITE_DIR + '/icons'
-        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + '/analyses/ramstk/'
+        elif sys.platform == "win32":
+            self.RAMSTK_OS = "Windows"
+            self.RAMSTK_SITE_DIR = environ["PYTHONPATH"] + "/RAMSTK"
+            self.RAMSTK_HOME_DIR = environ["USERPROFILE"]
+            self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + "/logs"
+
+        self.RAMSTK_DATA_DIR = self.RAMSTK_SITE_DIR + "/layouts"
+        self.RAMSTK_ICON_DIR = self.RAMSTK_SITE_DIR + "/icons"
+        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
         self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
     def get_site_configuration(self):
@@ -430,19 +512,18 @@ class Configuration(object):
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
+
         if Utilities.file_exists(self.RAMSTK_SITE_CONF):
             _config = configparser.ConfigParser()
             _config.read(self.RAMSTK_SITE_CONF)
 
-            self.RAMSTK_COM_BACKEND = _config.get('Backend', 'type')
-            self.RAMSTK_COM_INFO['host'] = _config.get('Backend', 'host')
-            self.RAMSTK_COM_INFO['socket'] = _config.get('Backend', 'socket')
-            self.RAMSTK_COM_INFO['database'] = _config.get(
-                'Backend', 'database')
-            self.RAMSTK_COM_INFO['user'] = _config.get('Backend', 'user')
-            self.RAMSTK_COM_INFO['password'] = _config.get(
-                'Backend', 'password')
-            self.RAMSTK_COM_INFO['path'] = _config.get('Backend', 'password')
+            self.RAMSTK_COM_BACKEND = _config.get("Backend", "type")
+            self.RAMSTK_COM_INFO["host"] = _config.get("Backend", "host")
+            self.RAMSTK_COM_INFO["socket"] = _config.get("Backend", "socket")
+            self.RAMSTK_COM_INFO["database"] = _config.get("Backend", "database")
+            self.RAMSTK_COM_INFO["user"] = _config.get("Backend", "user")
+            self.RAMSTK_COM_INFO["password"] = _config.get("Backend", "password")
+            self.RAMSTK_COM_INFO["path"] = _config.get("Backend", "password")
 
         return _return
 
@@ -455,21 +536,21 @@ class Configuration(object):
         """
         _return = False
 
-        _common_db = self.RAMSTK_SITE_DIR + '/ramstk_common.rtk'
+        _common_db = self.RAMSTK_SITE_DIR + "/ramstk_common.rtk"
 
         _config = configparser.ConfigParser()
 
-        _config.add_section('Backend')
-        _config.set('Backend', 'host', 'localhost')
-        _config.set('Backend', 'socket', '3306')
-        _config.set('Backend', 'database', _common_db)
-        _config.set('Backend', 'user', 'ramstk')
-        _config.set('Backend', 'password', 'ramstk')
-        _config.set('Backend', 'type', 'sqlite')
-        _config.set('Backend', 'path', self.RAMSTK_SITE_DIR)
+        _config.add_section("Backend")
+        _config.set("Backend", "host", "localhost")
+        _config.set("Backend", "socket", "3306")
+        _config.set("Backend", "database", _common_db)
+        _config.set("Backend", "user", "ramstk")
+        _config.set("Backend", "password", "ramstk")
+        _config.set("Backend", "type", "sqlite")
+        _config.set("Backend", "path", self.RAMSTK_SITE_DIR)
 
         try:
-            _parser = open(self.RAMSTK_SITE_CONF, 'w')
+            _parser = open(self.RAMSTK_SITE_CONF, "w")
             _config.write(_parser)
             _parser.close()
         except EnvironmentError:
@@ -494,15 +575,16 @@ class Configuration(object):
         # Create the directories needed for the user.  Always prefer the RAMSTK
         # directories in the user's $HOME over the system-wide directories.
         # Configuration directory.
-        self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK'
+        self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
         try:
             makedirs(self.RAMSTK_CONF_DIR)
-            self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + '/RAMSTK.conf'
+            self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.conf"
         except OSError:
             pass
 
         # Data directory.
-        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + '/layouts'
+        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + "/layouts"
+
         if not Utilities.dir_exists(self.RAMSTK_DATA_DIR):
             try:
                 makedirs(self.RAMSTK_DATA_DIR)
@@ -510,7 +592,8 @@ class Configuration(object):
                 pass
 
         # Icon directory.
-        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + '/icons'
+        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + "/icons"
+
         if not Utilities.dir_exists(self.RAMSTK_ICON_DIR):
             try:
                 makedirs(self.RAMSTK_ICON_DIR)
@@ -518,7 +601,8 @@ class Configuration(object):
                 pass
 
         # Log directory.
-        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + '/logs'
+        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + "/logs"
+
         if not Utilities.dir_exists(self.RAMSTK_LOG_DIR):
             try:
                 makedirs(self.RAMSTK_LOG_DIR)
@@ -526,6 +610,7 @@ class Configuration(object):
                 pass
 
         # Program directory.
+
         if not Utilities.dir_exists(self.RAMSTK_PROG_DIR):
             try:
                 makedirs(self.RAMSTK_PROG_DIR)
@@ -534,76 +619,76 @@ class Configuration(object):
 
         # Copy format files from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_CONF_DIR.
-        for _file in glob.glob(self.RAMSTK_SITE_DIR + '/layouts/*.xml'):
+
+        for _file in glob.glob(self.RAMSTK_SITE_DIR + "/layouts/*.xml"):
             file_util.copy_file(_file, self.RAMSTK_DATA_DIR)
 
         # Copy the icons from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_ICON_DIR.
         try:
-            dir_util.copy_tree(self.RAMSTK_SITE_DIR + '/icons/',
-                               self.RAMSTK_ICON_DIR)
+            dir_util.copy_tree(self.RAMSTK_SITE_DIR + "/icons/", self.RAMSTK_ICON_DIR)
         except IOError:
             _return = True
 
         # Create the default RAMSTK user configuration file.
-        _config.add_section('General')
-        _config.set('General', 'firstrun', True)
-        _config.set('General', 'reportsize', 'letter')
-        _config.set('General', 'frmultiplier', '1000000.0')
-        _config.set('General', 'calcreltime', '100.0')
-        _config.set('General', 'autoaddlistitems', 'False')
-        _config.set('General', 'decimal', '6')
-        _config.set('General', 'modesource', '1')
-        _config.set('General', 'parallelcalcs', 'False')
-        _config.set('General', 'moduletabpos', 'top')
-        _config.set('General', 'listtabpos', 'bottom')
-        _config.set('General', 'worktabpos', 'bottom')
+        _config.add_section("General")
+        _config.set("General", "firstrun", True)
+        _config.set("General", "reportsize", "letter")
+        _config.set("General", "frmultiplier", "1000000.0")
+        _config.set("General", "calcreltime", "100.0")
+        _config.set("General", "autoaddlistitems", "False")
+        _config.set("General", "decimal", "6")
+        _config.set("General", "modesource", "1")
+        _config.set("General", "parallelcalcs", "False")
+        _config.set("General", "moduletabpos", "top")
+        _config.set("General", "listtabpos", "bottom")
+        _config.set("General", "worktabpos", "bottom")
 
-        _config.add_section('Backend')
-        _config.set('Backend', 'type', 'sqlite')
-        _config.set('Backend', 'host', 'localhost')
-        _config.set('Backend', 'socket', '3306')
-        _config.set('Backend', 'database', '')
-        _config.set('Backend', 'user', '')
-        _config.set('Backend', 'password', '')
+        _config.add_section("Backend")
+        _config.set("Backend", "type", "sqlite")
+        _config.set("Backend", "host", "localhost")
+        _config.set("Backend", "socket", "3306")
+        _config.set("Backend", "database", "")
+        _config.set("Backend", "user", "")
+        _config.set("Backend", "password", "")
 
-        _config.add_section('Directories')
-        _config.set('Directories', 'datadir', self.RAMSTK_DATA_DIR)
-        _config.set('Directories', 'icondir', self.RAMSTK_ICON_DIR)
-        _config.set('Directories', 'logdir', self.RAMSTK_LOG_DIR)
-        _config.set('Directories', 'progdir', self.RAMSTK_PROG_DIR)
+        _config.add_section("Directories")
+        _config.set("Directories", "datadir", self.RAMSTK_DATA_DIR)
+        _config.set("Directories", "icondir", self.RAMSTK_ICON_DIR)
+        _config.set("Directories", "logdir", self.RAMSTK_LOG_DIR)
+        _config.set("Directories", "progdir", self.RAMSTK_PROG_DIR)
 
-        _config.add_section('Files')
-        _config.set('Files', 'allocation', 'Allocation.xml')
-        _config.set('Files', 'dfmeca', 'DFMECA.xml')
-        _config.set('Files', 'failure_definition', 'FailureDefinition.xml')
-        _config.set('Files', 'ffmea', 'FFMEA.xml')
-        _config.set('Files', 'function', 'Function.xml')
-        _config.set('Files', 'hardware', 'Hardware.xml')
-        _config.set('Files', 'hazops', 'HazOps.xml')
-        _config.set('Files', 'pof', 'PoF.xml')
-        _config.set('Files', 'requirement', 'Requirement.xml')
-        _config.set('Files', 'revision', 'Revision.xml')
-        _config.set('Files', 'similaritem', 'SimilarItem.xml')
-        _config.set('Files', 'stakeholder', 'Stakeholder.xml')
-        _config.set('Files', 'validation', 'Validation.xml')
+        _config.add_section("Files")
+        _config.set("Files", "allocation", "Allocation.xml")
+        _config.set("Files", "dfmeca", "DFMECA.xml")
+        _config.set("Files", "failure_definition", "FailureDefinition.xml")
+        _config.set("Files", "ffmea", "FFMEA.xml")
+        _config.set("Files", "function", "Function.xml")
+        _config.set("Files", "hardware", "Hardware.xml")
+        _config.set("Files", "hazops", "HazOps.xml")
+        _config.set("Files", "pof", "PoF.xml")
+        _config.set("Files", "requirement", "Requirement.xml")
+        _config.set("Files", "revision", "Revision.xml")
+        _config.set("Files", "similaritem", "SimilarItem.xml")
+        _config.set("Files", "stakeholder", "Stakeholder.xml")
+        _config.set("Files", "validation", "Validation.xml")
 
-        _config.add_section('Colors')
-        _config.set('Colors', 'functionbg', '#FFFFFF')
-        _config.set('Colors', 'functionfg', '#000000')
-        _config.set('Colors', 'hardwarebg', '#FFFFFF')
-        _config.set('Colors', 'hardwarefg', '#000000')
-        _config.set('Colors', 'requirementbg', '#FFFFFF')
-        _config.set('Colors', 'requirementfg', '#000000')
-        _config.set('Colors', 'revisionbg', '#FFFFFF')
-        _config.set('Colors', 'revisionfg', '#000000')
-        _config.set('Colors', 'stakeholderbg', '#FFFFFF')
-        _config.set('Colors', 'stakeholderfg', '#000000')
-        _config.set('Colors', 'validationbg', '#FFFFFF')
-        _config.set('Colors', 'validationfg', '#000000')
+        _config.add_section("Colors")
+        _config.set("Colors", "functionbg", "#FFFFFF")
+        _config.set("Colors", "functionfg", "#000000")
+        _config.set("Colors", "hardwarebg", "#FFFFFF")
+        _config.set("Colors", "hardwarefg", "#000000")
+        _config.set("Colors", "requirementbg", "#FFFFFF")
+        _config.set("Colors", "requirementfg", "#000000")
+        _config.set("Colors", "revisionbg", "#FFFFFF")
+        _config.set("Colors", "revisionfg", "#000000")
+        _config.set("Colors", "stakeholderbg", "#FFFFFF")
+        _config.set("Colors", "stakeholderfg", "#000000")
+        _config.set("Colors", "validationbg", "#FFFFFF")
+        _config.set("Colors", "validationfg", "#000000")
 
         try:
-            _parser = open(self.RAMSTK_PROG_CONF, 'w')
+            _parser = open(self.RAMSTK_PROG_CONF, "w")
             _config.write(_parser)
             _parser.close()
         except EnvironmentError:
@@ -625,42 +710,37 @@ class Configuration(object):
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
+
         if Utilities.file_exists(self.RAMSTK_PROG_CONF):
             _config = configparser.ConfigParser()
             _config.read(self.RAMSTK_PROG_CONF)
 
             for _color in self._lst_colors:
-                self.RAMSTK_COLORS[_color] = _config.get('Colors', _color)
+                self.RAMSTK_COLORS[_color] = _config.get("Colors", _color)
 
             for _file in self._lst_format_files:
-                self.RAMSTK_FORMAT_FILE[_file] = _config.get('Files', _file)
+                self.RAMSTK_FORMAT_FILE[_file] = _config.get("Files", _file)
 
-            self.RAMSTK_BACKEND = _config.get('Backend', 'type')
-            self.RAMSTK_PROG_INFO['host'] = _config.get('Backend', 'host')
-            self.RAMSTK_PROG_INFO['socket'] = _config.get('Backend', 'socket')
-            self.RAMSTK_PROG_INFO['database'] = _config.get(
-                'Backend', 'database')
-            self.RAMSTK_PROG_INFO['user'] = _config.get('Backend', 'user')
-            self.RAMSTK_PROG_INFO['password'] = _config.get(
-                'Backend', 'password')
+            self.RAMSTK_BACKEND = _config.get("Backend", "type")
+            self.RAMSTK_PROG_INFO["host"] = _config.get("Backend", "host")
+            self.RAMSTK_PROG_INFO["socket"] = _config.get("Backend", "socket")
+            self.RAMSTK_PROG_INFO["database"] = _config.get("Backend", "database")
+            self.RAMSTK_PROG_INFO["user"] = _config.get("Backend", "user")
+            self.RAMSTK_PROG_INFO["password"] = _config.get("Backend", "password")
 
-            self.RAMSTK_DATA_DIR = _config.get('Directories', 'datadir')
-            self.RAMSTK_ICON_DIR = _config.get('Directories', 'icondir')
-            self.RAMSTK_LOG_DIR = _config.get('Directories', 'logdir')
-            self.RAMSTK_PROG_DIR = _config.get('Directories', 'progdir')
+            self.RAMSTK_DATA_DIR = _config.get("Directories", "datadir")
+            self.RAMSTK_ICON_DIR = _config.get("Directories", "icondir")
+            self.RAMSTK_LOG_DIR = _config.get("Directories", "logdir")
+            self.RAMSTK_PROG_DIR = _config.get("Directories", "progdir")
 
-            self.RAMSTK_REPORT_SIZE = _config.get('General', 'reportsize')
-            self.RAMSTK_HR_MULTIPLIER = float(
-                _config.get('General', 'frmultiplier'))
-            self.RAMSTK_DEC_PLACES = int(_config.get('General', 'decimal'))
-            self.RAMSTK_MTIME = float(_config.get('General', 'calcreltime'))
-            self.RAMSTK_MODE_SOURCE = _config.get('General', 'modesource')
-            self.RAMSTK_TABPOS['listbook'] = _config.get(
-                'General', 'listtabpos')
-            self.RAMSTK_TABPOS['modulebook'] = _config.get(
-                'General', 'moduletabpos')
-            self.RAMSTK_TABPOS['workbook'] = _config.get(
-                'General', 'worktabpos')
+            self.RAMSTK_REPORT_SIZE = _config.get("General", "reportsize")
+            self.RAMSTK_HR_MULTIPLIER = float(_config.get("General", "frmultiplier"))
+            self.RAMSTK_DEC_PLACES = int(_config.get("General", "decimal"))
+            self.RAMSTK_MTIME = float(_config.get("General", "calcreltime"))
+            self.RAMSTK_MODE_SOURCE = _config.get("General", "modesource")
+            self.RAMSTK_TABPOS["listbook"] = _config.get("General", "listtabpos")
+            self.RAMSTK_TABPOS["modulebook"] = _config.get("General", "moduletabpos")
+            self.RAMSTK_TABPOS["workbook"] = _config.get("General", "worktabpos")
         else:
             _return = True
 
@@ -675,24 +755,22 @@ class Configuration(object):
         """
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK'):
-            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK'
+
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
+            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
         else:
             self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK/data'):
-            self.RAMSTK_DATA_DIR = self.RAMSTK_HOME_DIR + \
-            '/.config/RAMSTK/data'
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/data"):
+            self.RAMSTK_DATA_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/data"
 
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR +
-                                '/.config/RAMSTK/icons'):
-            self.RAMSTK_ICON_DIR = self.RAMSTK_HOME_DIR + \
-            '/.config/RAMSTK/icons'
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/icons"):
+            self.RAMSTK_ICON_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/icons"
 
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK/logs'):
-            self.RAMSTK_LOG_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK/logs'
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"):
+            self.RAMSTK_LOG_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"
 
-        self.RAMSTK_SITE_CONF = self.RAMSTK_CONF_DIR + '/Site.conf'
+        self.RAMSTK_SITE_CONF = self.RAMSTK_CONF_DIR + "/Site.conf"
 
         if not Utilities.file_exists(self.RAMSTK_SITE_CONF):
             self._set_site_configuration()
@@ -712,50 +790,46 @@ class Configuration(object):
 
         if Utilities.file_exists(self.RAMSTK_PROG_CONF):
             _config = configparser.ConfigParser()
-            _config.add_section('General')
-            _config.set('General', 'reportsize', self.RAMSTK_REPORT_SIZE)
-            _config.set('General', 'parallelcalcs', 'False')
-            _config.set('General', 'frmultiplier',
-                        str(self.RAMSTK_HR_MULTIPLIER))
-            _config.set('General', 'calcreltime', str(self.RAMSTK_MTIME))
-            _config.set('General', 'autoaddlistitems', 'False')
-            _config.set('General', 'decimal', str(self.RAMSTK_DEC_PLACES))
-            _config.set('General', 'modesource', self.RAMSTK_MODE_SOURCE)
-            _config.set('General', 'moduletabpos',
-                        self.RAMSTK_TABPOS['modulebook'])
-            _config.set('General', 'listtabpos',
-                        self.RAMSTK_TABPOS['listbook'])
-            _config.set('General', 'worktabpos',
-                        self.RAMSTK_TABPOS['workbook'])
+            _config.add_section("General")
+            _config.set("General", "reportsize", self.RAMSTK_REPORT_SIZE)
+            _config.set("General", "parallelcalcs", "False")
+            _config.set("General", "frmultiplier", str(self.RAMSTK_HR_MULTIPLIER))
+            _config.set("General", "calcreltime", str(self.RAMSTK_MTIME))
+            _config.set("General", "autoaddlistitems", "False")
+            _config.set("General", "decimal", str(self.RAMSTK_DEC_PLACES))
+            _config.set("General", "modesource", self.RAMSTK_MODE_SOURCE)
+            _config.set("General", "moduletabpos", self.RAMSTK_TABPOS["modulebook"])
+            _config.set("General", "listtabpos", self.RAMSTK_TABPOS["listbook"])
+            _config.set("General", "worktabpos", self.RAMSTK_TABPOS["workbook"])
 
-            _config.add_section('Backend')
-            _config.set('Backend', 'type', self.RAMSTK_BACKEND)
-            _config.set('Backend', 'host', self.RAMSTK_PROG_INFO['host'])
-            _config.set('Backend', 'socket',
-                        str(self.RAMSTK_PROG_INFO['socket']))
-            _config.set('Backend', 'database',
-                        self.RAMSTK_PROG_INFO['database'])
-            _config.set('Backend', 'user', self.RAMSTK_PROG_INFO['user'])
-            _config.set('Backend', 'password',
-                        self.RAMSTK_PROG_INFO['password'])
+            _config.add_section("Backend")
+            _config.set("Backend", "type", self.RAMSTK_BACKEND)
+            _config.set("Backend", "host", self.RAMSTK_PROG_INFO["host"])
+            _config.set("Backend", "socket", str(self.RAMSTK_PROG_INFO["socket"]))
+            _config.set("Backend", "database", self.RAMSTK_PROG_INFO["database"])
+            _config.set("Backend", "user", self.RAMSTK_PROG_INFO["user"])
+            _config.set("Backend", "password", self.RAMSTK_PROG_INFO["password"])
 
-            _config.add_section('Directories')
-            _config.set('Directories', 'datadir', self.RAMSTK_DATA_DIR)
-            _config.set('Directories', 'icondir', self.RAMSTK_ICON_DIR)
-            _config.set('Directories', 'logdir', self.RAMSTK_LOG_DIR)
-            _config.set('Directories', 'progdir', self.RAMSTK_PROG_DIR)
+            _config.add_section("Directories")
+            _config.set("Directories", "datadir", self.RAMSTK_DATA_DIR)
+            _config.set("Directories", "icondir", self.RAMSTK_ICON_DIR)
+            _config.set("Directories", "logdir", self.RAMSTK_LOG_DIR)
+            _config.set("Directories", "progdir", self.RAMSTK_PROG_DIR)
 
-            _config.add_section('Files')
+            _config.add_section("Files")
+
             for _file in self._lst_format_files:
-                _config.set('Files', _file,
-                            path.basename(self.RAMSTK_FORMAT_FILE[_file]))
+                _config.set(
+                    "Files", _file, path.basename(self.RAMSTK_FORMAT_FILE[_file])
+                )
 
-            _config.add_section('Colors')
+            _config.add_section("Colors")
+
             for _color in self._lst_colors:
-                _config.set('Colors', _color, self.RAMSTK_COLORS[_color])
+                _config.set("Colors", _color, self.RAMSTK_COLORS[_color])
 
             try:
-                _parser = open(self.RAMSTK_PROG_CONF, 'w')
+                _parser = open(self.RAMSTK_PROG_CONF, "w")
                 _config.write(_parser)
                 _parser.close()
             except EnvironmentError:
@@ -774,12 +848,13 @@ class Configuration(object):
 
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + '/.config/RAMSTK'):
-            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + '/.config/RAMSTK'
+
+        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
+            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
         else:
             self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
             _return = first_run
 
-        self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + '/RAMSTK.conf'
+        self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.conf"
 
         return _return
