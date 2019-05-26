@@ -6,11 +6,17 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Module View."""
 
+# Standard Library Imports
+from ast import literal_eval
+
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
+
+# RAMSTK Local Imports
 from .ModuleView import RAMSTKModuleView
 
 
@@ -432,7 +438,7 @@ class ModuleView(RAMSTKModuleView):
         (_model, _row) = treeview.get_selection().get_selected()
 
         if _row is not None:
-            _attributes = eval(
+            _attributes = literal_eval(
                 _model.get_value(_row,
                                  _model.get_n_columns() - 1))
 

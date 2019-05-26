@@ -6,10 +6,10 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKCommonDB File."""
 
-# Import standard library modules.
+# Standard Library Imports
 import gettext
 
-# Import third party modules.
+# Third Party Imports
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -562,72 +562,56 @@ RAMSTK_SUBCATEGORIES = [
     (1, 4, 'Microprocessor, Microcontroller'), (1, 5, 'Memory, ROM'),
     (1, 6, 'Memory, EEPROM'), (1, 7, 'Memory, DRAM'), (1, 8, 'Memory, SRAM'),
     (1, 9, 'GaAs'), (1, 10, 'VHSIC, VLSI'), (2, 12, 'Diode, Low Frequency'),
-    (2, 13, 'Diode, High Frequency'), (2, 14,
-                                       'Transistor, Low Frequency, Bipolar'),
-    (2, 15, 'Transistor, Low Frequency, Si FET'), (2, 16,
-                                                   'Transistor, Unijunction'),
+    (2, 13, 'Diode, High Frequency'),
+    (2, 14, 'Transistor, Low Frequency, Bipolar'),
+    (2, 15, 'Transistor, Low Frequency, Si FET'),
+    (2, 16, 'Transistor, Unijunction'),
     (2, 17, 'Transistor, High Frequency, Low Noise, Bipolar'),
     (2, 18, 'Transistor, High Frequency, High Power, Bipolar'),
     (2, 19, 'Transistor, High Frequency, GaAs FET'),
     (2, 20, 'Transistor, High Frequency, Si FET'), (2, 21, 'Thyristor, SCR'),
     (2, 22, 'Optoelectronic, Detector, Isolator, Emitter'),
     (2, 23, 'Optoelectronic, Alphanumeric Display'),
-    (2, 24, 'Optoelectronic, Laser Diode'), (3, 25,
-                                             'Fixed, Composition (RC, RCR)'),
+    (2, 24, 'Optoelectronic, Laser Diode'),
+    (3, 25, 'Fixed, Composition (RC, RCR)'),
     (3, 26, 'Fixed, Film (RL, RLR, RN, RNC, RNN, RNR)'),
     (3, 27, 'Fixed, Film, Power (RD)'), (3, 28, 'Fixed, Film, Network (RZ)'),
-    (3, 29,
-     'Fixed, Wirewound (RB, RBR)'), (3, 30,
-                                     'Fixed, Wirewound, Power (RW, RWR)'),
+    (3, 29, 'Fixed, Wirewound (RB, RBR)'),
+    (3, 30, 'Fixed, Wirewound, Power (RW, RWR)'),
     (3, 31, 'Fixed, Wirewound, Power, Chassis-Mounted (RE, RER)'),
     (3, 32, 'Thermistor (RTH)'), (3, 33, 'Variable, Wirewound (RT, RTR)'),
     (3, 34, 'Variable, Wirewound, Precision (RR)'),
     (3, 35, 'Variable, Wirewound, Semiprecision (RA, RK)'),
     (3, 36, 'Variable, Wirewound, Power (RP)'),
-    (3, 37,
-     'Variable, Non-Wirewound (RJ, RJR)'), (3, 38,
-                                            'Variable, Composition (RV)'),
+    (3, 37, 'Variable, Non-Wirewound (RJ, RJR)'),
+    (3, 38, 'Variable, Composition (RV)'),
     (3, 39, 'Variable, Non-Wirewound, Film and Precision (RQ, RVC)'),
-    (4, 40,
-     'Fixed, Paper, Bypass (CA, CP)'), (4, 41,
-                                        'Fixed, Feed-Through (CZ, CZR)'),
+    (4, 40, 'Fixed, Paper, Bypass (CA, CP)'),
+    (4, 41, 'Fixed, Feed-Through (CZ, CZR)'),
     (4, 42, 'Fixed, Paper and Plastic Film (CPV, CQ, CQR)'),
     (4, 43, 'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)'),
     (4, 44, 'Fixed, Plastic and Metallized Plastic'),
     (4, 45, 'Fixed, Super-Metallized Plastic (CRH)'),
     (4, 46, 'Fixed, Mica (CM, CMR)'), (4, 47, 'Fixed, Mica, Button (CB)'),
-    (4, 48,
-     'Fixed, Glass (CY, CYR)'), (4, 49,
-                                 'Fixed, Ceramic, General Purpose (CK, CKR)'),
+    (4, 48, 'Fixed, Glass (CY, CYR)'),
+    (4, 49, 'Fixed, Ceramic, General Purpose (CK, CKR)'),
     (4, 50,
      'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)'),
     (4, 51, 'Fixed, Electrolytic, Tantalum, Solid (CSR)'),
     (4, 52, 'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)'),
     (4, 53, 'Fixed, Electrolytic, Aluminum (CU, CUR)'),
-    (4, 54,
-     'Fixed, Electrolytic (Dry), Aluminum (CE)'), (4, 55,
-                                                   'Variable, Ceramic (CV)'),
-    (4, 56, 'Variable, Piston Type (PC)'), (4, 57,
-                                            'Variable, Air Trimmer (CT)'),
+    (4, 54, 'Fixed, Electrolytic (Dry), Aluminum (CE)'),
+    (4, 55, 'Variable, Ceramic (CV)'), (4, 56, 'Variable, Piston Type (PC)'),
+    (4, 57, 'Variable, Air Trimmer (CT)'),
     (4, 58, 'Variable and Fixed, Gas or Vacuum (CG)'), (5, 62, 'Transformer'),
-    (5, 63, 'Coil'), (6, 64,
-                      'Mechanical'), (6, 65,
-                                      'Solid State'), (7, 67,
-                                                       'Toggle or Pushbutton'),
-    (7, 68, 'Sensitive'), (7, 69,
-                           'Rotary'), (7, 70,
-                                       'Thumbwheel'), (7, 71,
-                                                       'Circuit Breaker'),
-    (8, 72,
-     'Multi-Pin'), (8, 73,
-                    'PCB Edge'), (8, 74,
-                                  'IC Socket'), (8, 75,
-                                                 'Plated Through Hole (PTH)'),
-    (8, 76, 'Connection, Non-PTH'), (9, 77, 'Elapsed Time'), (9, 78, 'Panel'),
-    (10, 80, 'Crystal'), (10, 81,
-                          'Filter, Non-Tunable Electronic'), (10, 82,
-                                                              'Fuse'), (10, 83,
-                                                                        'Lamp')
+    (5, 63, 'Coil'), (6, 64, 'Mechanical'), (6, 65, 'Solid State'),
+    (7, 67, 'Toggle or Pushbutton'), (7, 68, 'Sensitive'), (7, 69, 'Rotary'),
+    (7, 70, 'Thumbwheel'), (7, 71, 'Circuit Breaker'), (8, 72, 'Multi-Pin'),
+    (8, 73, 'PCB Edge'), (8, 74, 'IC Socket'),
+    (8, 75, 'Plated Through Hole (PTH)'), (8, 76, 'Connection, Non-PTH'),
+    (9, 77, 'Elapsed Time'), (9, 78, 'Panel'), (10, 80, 'Crystal'),
+    (10, 81, 'Filter, Non-Tunable Electronic'), (10, 82, 'Fuse'),
+    (10, 83, 'Lamp')
 ]
 
 RAMSTK_TYPES = {
@@ -675,17 +659,18 @@ RAMSTK_TYPES = {
 }
 
 
+# pylint: disable=too-many-locals
 def create_common_db(**kwargs):
     """Create and populate the RAMSTK Common database."""
     import os
     from datetime import date, timedelta
 
     from ramstk.dao import (RAMSTKSiteInfo, RAMSTKCategory, RAMSTKCondition,
-                         RAMSTKFailureMode, RAMSTKGroup, RAMSTKHazards,
-                         RAMSTKLoadHistory, RAMSTKManufacturer,
-                         RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel,
-                         RAMSTKRPN, RAMSTKStakeholders, RAMSTKStatus,
-                         RAMSTKSubCategory, RAMSTKType, RAMSTKUser)
+                            RAMSTKFailureMode, RAMSTKGroup, RAMSTKHazards,
+                            RAMSTKLoadHistory, RAMSTKManufacturer,
+                            RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel,
+                            RAMSTKRPN, RAMSTKStakeholders, RAMSTKStatus,
+                            RAMSTKSubCategory, RAMSTKType, RAMSTKUser)
 
     __test = kwargs['test']
     uri = kwargs['database']
@@ -852,15 +837,15 @@ def create_common_db(**kwargs):
     _user = RAMSTKUser()
     if not __test:
         _yn = input(
-            _("Would you like to add an RAMSTK Administrator? ([y]/n): ")
+            _("Would you like to add a RAMSTK Administrator? ([y]/n): ")
         ) or 'y'
 
         if _yn.lower() == 'y':
             _user.user_lname = input(
                 _("Enter the RAMSTK Administrator's last name (surname): "))
             _user.user_fname = input(
-                _("Enter the RAMSTK Administrator's first name (given name): "
-                  ))
+                _("Enter the RAMSTK Administrator's first name (given name): ")
+            )
             _user.user_email = input(
                 _("Enter the RAMSTK Administrator's e-mail address: "))
             _user.user_phone = input(
@@ -875,5 +860,3 @@ def create_common_db(**kwargs):
     session.add(_user)
 
     session.commit()
-
-    return None

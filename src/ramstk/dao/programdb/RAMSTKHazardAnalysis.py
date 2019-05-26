@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKHazardAnalysis Table."""
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
-from ramstk.Utilities import none_to_default
+# RAMSTK Package Imports
 from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
+from ramstk.Utilities import none_to_default
 
 
 class RAMSTKHazardAnalysis(RAMSTK_BASE):
@@ -280,7 +281,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
         ]
 
         # Use the list to filter the local namespace
-        _calculations = dict([(k, locals().get(k, None)) for k in _safe_list])
+        _calculations = {k: None for k in _safe_list}
 
         # Calculate the MIL-STD-882 hazard risk indices.
         try:
@@ -341,6 +342,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
         for _index, _key in enumerate(_keys):
             vars()[_key] = _values[_index]
 
+        # pylint: disable=eval-used
         try:
             self.result_1 = eval(_calculations['equation1'],
                                  {"__builtins__": None}, _calculations)

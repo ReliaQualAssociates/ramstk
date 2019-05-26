@@ -11,7 +11,9 @@ import configparser
 import gettext
 import sys
 from os import environ, makedirs, path
+from typing import Dict
 
+# RAMSTK Package Imports
 # RAMSTK Imports
 import ramstk.Utilities as Utilities
 
@@ -374,7 +376,7 @@ class Configuration:
     """
 
     # Define public dictionary class attributes.
-    RAMSTK_FORMAT_FILE = {}
+    RAMSTK_FORMAT_FILE: Dict[str, str] = {}
     RAMSTK_COLORS = {}
     RAMSTK_COM_INFO = {}  # RAMSTK Common database info.
     RAMSTK_PROG_INFO = {}  # RAMSTK Program database info.
