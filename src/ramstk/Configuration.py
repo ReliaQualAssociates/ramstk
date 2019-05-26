@@ -377,40 +377,40 @@ class Configuration:
 
     # Define public dictionary class attributes.
     RAMSTK_FORMAT_FILE: Dict[str, str] = {}
-    RAMSTK_COLORS = {}
-    RAMSTK_COM_INFO = {}  # RAMSTK Common database info.
-    RAMSTK_PROG_INFO = {}  # RAMSTK Program database info.
+    RAMSTK_COLORS: Dict[str, str] = {}
+    RAMSTK_COM_INFO: Dict[str, str] = {}  # RAMSTK Common database info.
+    RAMSTK_PROG_INFO: Dict[str, str] = {}  # RAMSTK Program database info.
     RAMSTK_TABPOS = {"listbook": "top", "modulebook": "bottom", "workbook": "bottom"}
 
     # The following global dicts are loaded from information in the RAMSTK
     # Common database.
-    RAMSTK_ACTION_CATEGORY = {}
-    RAMSTK_ACTION_STATUS = {}
-    RAMSTK_AFFINITY_GROUPS = {}  # User updateable
-    RAMSTK_CATEGORIES = {}  # Static.
-    RAMSTK_DAMAGE_MODELS = {}  # User updateable.
-    RAMSTK_DETECTION_METHODS = {}
-    RAMSTK_FAILURE_MODES = {}  # User updateable.
-    RAMSTK_HAZARDS = {}  # User updateable.
-    RAMSTK_INCIDENT_CATEGORY = {}
-    RAMSTK_INCIDENT_STATUS = {}
-    RAMSTK_INCIDENT_TYPE = {}
-    RAMSTK_LOAD_HISTORY = {}  # User updateable.
-    RAMSTK_MANUFACTURERS = {}
-    RAMSTK_MEASURABLE_PARAMETERS = {}  # User updateable.
-    RAMSTK_MEASUREMENT_UNITS = {}
-    RAMSTK_MODULES = {}  # Static.
-    RAMSTK_PAGE_NUMBER = {}
-    RAMSTK_REQUIREMENT_TYPE = {}
-    RAMSTK_RPN_DETECTION = {}  # User updateable.
-    RAMSTK_RPN_OCCURRENCE = {}  # User updateable.
-    RAMSTK_RPN_SEVERITY = {}  # User updateable.
-    RAMSTK_SEVERITY = {}
-    RAMSTK_STAKEHOLDERS = {}  # User updateable.
-    RAMSTK_SUBCATEGORIES = {}  # Static.
-    RAMSTK_USERS = {}  # Admin updateable.
-    RAMSTK_VALIDATION_TYPE = {}
-    RAMSTK_WORKGROUPS = {}  # Admin updateable.
+    RAMSTK_ACTION_CATEGORY: Dict[str, str] = {}
+    RAMSTK_ACTION_STATUS: Dict[str, str] = {}
+    RAMSTK_AFFINITY_GROUPS: Dict[str, str] = {}  # User updateable
+    RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
+    RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User updateable.
+    RAMSTK_DETECTION_METHODS: Dict[str, str] = {}
+    RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User updateable.
+    RAMSTK_HAZARDS: Dict[str, str] = {}  # User updateable.
+    RAMSTK_INCIDENT_CATEGORY: Dict[str, str] = {}
+    RAMSTK_INCIDENT_STATUS: Dict[str, str] = {}
+    RAMSTK_INCIDENT_TYPE: Dict[str, str] = {}
+    RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User updateable.
+    RAMSTK_MANUFACTURERS: Dict[str, str] = {}
+    RAMSTK_MEASURABLE_PARAMETERS: Dict[str, str] = {}  # User updateable.
+    RAMSTK_MEASUREMENT_UNITS: Dict[str, str] = {}
+    RAMSTK_MODULES: Dict[str, str] = {}  # Static.
+    RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
+    RAMSTK_REQUIREMENT_TYPE: Dict[str, str] = {}
+    RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User updateable.
+    RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User updateable.
+    RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User updateable.
+    RAMSTK_SEVERITY: Dict[str, str] = {}
+    RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User updateable.
+    RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
+    RAMSTK_USERS: Dict[str, str] = {}  # Admin updateable.
+    RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}
+    RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin updateable.
 
     # Define global list class attributes.
     RAMSTK_RISK_POINTS = [4, 10]
