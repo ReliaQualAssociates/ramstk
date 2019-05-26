@@ -7,8 +7,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Button Module."""
 
+# RAMSTK Local Imports
 # Import the ramstk.Widget base class.
-from .Widget import _, GdkPixbuf, GObject, Gtk
+from .Widget import GdkPixbuf, GObject, Gtk, _
 
 
 def do_make_buttonbox(self, **kwargs):
@@ -80,7 +81,7 @@ def do_make_buttonbox(self, **kwargs):
 class RAMSTKButton(Gtk.Button):
     """This is the RAMSTK Button class."""
 
-    def __init__(self, height=40, width=200, label="...", icon=None, **kwargs):
+    def __init__(self, height=40, width=200, label="...", icon=None, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an instance of the RAMSTK Button.
 
@@ -97,12 +98,12 @@ class RAMSTKButton(Gtk.Button):
         GObject.GObject.__init__(self, label=label)
         self.show_all()
 
-        # TODO: Remove this when all RAMSTK Entrys are refactored.
+        # TODO: Remove this when all RAMSTK Buttons are refactored.
         self.do_set_properties(
             height=height, width=width, tooltip=label, icon=icon)
 
     def do_set_properties(self, **kwargs):
-        """
+        r"""
         Set the properties of the RAMSTK button.
 
         :param \**kwargs: See below
@@ -171,7 +172,7 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         GObject.GObject.__init__(self, label=label, use_underline=True)
 
     def do_set_properties(self, **kwargs):
-        """
+        r"""
         Set the properties of the RAMSTK button.
 
         :param \**kwargs: See below
@@ -206,9 +207,9 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         self.get_child().set_use_markup(True)
         self.get_child().set_line_wrap(True)
         self.get_child().props.height_request = _height
-        self.get_child().props.width_request = width
+        self.get_child().props.width_request = _width
 
-        self.set_tooltip_markup(tooltip)
+        self.set_tooltip_markup(_tooltip)
 
     def do_update(self, value, handler_id):
         """

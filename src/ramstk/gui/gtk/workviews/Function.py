@@ -6,14 +6,18 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Function Work View."""
 
+# Third Party Imports
 # Import third party modules.
 from pubsub import pub
 
+# RAMSTK Package Imports
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk import (RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame,
                                    RAMSTKLabel, RAMSTKScrolledWindow,
                                    RAMSTKTextView, do_make_label_group)
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
+
+# RAMSTK Local Imports
 from .WorkView import RAMSTKWorkView
 
 
@@ -121,7 +125,7 @@ class GeneralData(RAMSTKWorkView):
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])
         _fixed.put(self.txtName, _x_pos, _y_pos[1])
-        _fixed.put(self.cmbRequirementType, _x_pos, _y_pos[2])
+        _fixed.put(self.txtRemarks, _x_pos, _y_pos[2])
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
 
         self.pack_start(_frame, True, True, 0)

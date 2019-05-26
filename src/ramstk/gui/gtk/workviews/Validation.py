@@ -6,18 +6,24 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RASMTK Validation Work View."""
 
+# Standard Library Imports
 from datetime import datetime
 
+# Third Party Imports
 import numpy as np
-from pubsub import pub
 from matplotlib.patches import Ellipse
+from pubsub import pub
 
+# RAMSTK Package Imports
 # Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk import (
-    RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKMessageDialog, RAMSTKPlot, RAMSTKScrolledWindow,
-    RAMSTKTextView, do_make_label_group)
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+from ramstk.gui.gtk.ramstk import (RAMSTKButton, RAMSTKComboBox,
+                                   RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
+                                   RAMSTKLabel, RAMSTKMessageDialog,
+                                   RAMSTKPlot, RAMSTKScrolledWindow,
+                                   RAMSTKTextView, do_make_label_group)
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
+
+# RAMSTK Local Imports
 from .WorkView import RAMSTKWorkView
 
 
@@ -541,8 +547,8 @@ class GeneralData(RAMSTKWorkView):
         """
         Load the Validation General Data page.
 
-        :param tuple attributes: a dict of attribute key:value pairs for
-                                 the selected Validation.
+        :param dict attributes: a dict of attribute key:value pairs for the selected
+                                Validation.
         :return: None
         :rtype: None
         """

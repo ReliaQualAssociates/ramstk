@@ -6,13 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Usage Profile List View Module."""
 
-# Import third party modules.
+# Third Party Imports
 from pubsub import pub
 from sortedcontainers import SortedDict
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, GObject, Gtk, Pango
+from ramstk.gui.gtk.ramstk.Widget import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
+
+# RAMSTK Local Imports
 from .ListView import RAMSTKListView
 
 

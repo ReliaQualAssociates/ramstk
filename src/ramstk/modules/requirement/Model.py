@@ -6,12 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Package Data Model."""
 
+# Third Party Imports
 # Import third party packages.
 from pubsub import pub
 
+# RAMSTK Package Imports
+from ramstk.dao import RAMSTKRequirement
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import RAMSTKRequirement
 
 
 class RequirementDataModel(RAMSTKDataModel):
@@ -115,8 +117,8 @@ class RequirementDataModel(RAMSTKDataModel):
         in the connected RAMSTK Program database.  It then adds each to the
         Requirement data model treelib.Tree().
 
-        :return: tree; the Tree() of RAMSTKRequirement data models.
-        :rtype: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
         _revision_id = kwargs['revision_id']
         _session = RAMSTKDataModel.do_select_all(self)
@@ -146,8 +148,6 @@ class RequirementDataModel(RAMSTKDataModel):
         # let anyone who cares know the Requirements have been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_requirements', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """

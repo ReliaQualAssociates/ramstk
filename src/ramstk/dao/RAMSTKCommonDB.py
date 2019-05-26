@@ -8,6 +8,7 @@
 
 # Standard Library Imports
 import gettext
+from typing import Any
 
 # Third Party Imports
 from sqlalchemy import create_engine
@@ -16,7 +17,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 _ = gettext.gettext
 
-RAMSTK_BASE = declarative_base()
+RAMSTK_BASE: Any = declarative_base()
 
 # This file contains all the dictionaries defining the default fields for each
 # of the tables in the RAMSTK Common database.

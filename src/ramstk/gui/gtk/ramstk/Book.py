@@ -6,13 +6,17 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The Base RAMSTK Book."""
 
+# Standard Library Imports
 # Modules for localization support.
 import locale
+from typing import Dict
 
+# Third Party Imports
 from pubsub import pub
 
+# RAMSTK Local Imports
 # Import the ramstk.Widget base class.
-from .Widget import _, Gdk, Gtk, GObject
+from .Widget import Gdk, GObject, Gtk, _
 
 
 def destroy(__widget, __event=None):
@@ -69,7 +73,7 @@ class RAMSTKBook(Gtk.Window):  # pylint: disable=R0904
 
     RAMSTK_CONFIGURATION = None
 
-    dic_books = {}
+    dic_books: Dict[str, object] = {}
     dic_tab_position = {
         'left': Gtk.PositionType.LEFT,
         'right': Gtk.PositionType.RIGHT,
