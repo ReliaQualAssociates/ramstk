@@ -13,6 +13,7 @@
 *.tox
 *.e5s
 *.geany
+*:p
 tags
 
 # Python specific directories and files to ignore

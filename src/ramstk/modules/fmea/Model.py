@@ -6,15 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Models."""
 
-# Import third party packages.
+# Third Party Imports
 from pubsub import pub
 from treelib import tree
 
-# Import other RAMSTK modules.
-from ramstk.Utilities import OutOfRangeError
-from ramstk.modules import RAMSTKDataModel
+# RAMSTK Package Imports
 from ramstk.dao import (RAMSTKAction, RAMSTKCause, RAMSTKControl,
                         RAMSTKMechanism, RAMSTKMode)
+from ramstk.modules import RAMSTKDataModel
+from ramstk.Utilities import OutOfRangeError
 
 
 class ModeDataModel(RAMSTKDataModel):
@@ -69,10 +69,10 @@ class ModeDataModel(RAMSTKDataModel):
 
         if _functional:
             _modes = _session.query(RAMSTKMode).filter(
-                RAMSTKMode.function_id == _parent_id).all()
+                RAMSTKMode.function_id == _parent_id, ).all()
         else:
             _modes = _session.query(RAMSTKMode).filter(
-                RAMSTKMode.hardware_id == _parent_id).all()
+                RAMSTKMode.hardware_id == _parent_id, ).all()
 
         for _mode in _modes:
             # We get and then set the attributes to replace any None values
@@ -80,7 +80,11 @@ class ModeDataModel(RAMSTKDataModel):
             _attributes = _mode.get_attributes()
             _mode.set_attributes(_attributes)
             self.tree.create_node(
-                _mode.description, _mode.mode_id, parent=0, data=_mode)
+                _mode.description,
+                _mode.mode_id,
+                parent=0,
+                data=_mode,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -104,13 +108,19 @@ class ModeDataModel(RAMSTKDataModel):
         _mode.function_id = kwargs['function_id']
         _mode.hardware_id = kwargs['hardware_id']
         _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
+            self,
+            entities=[
                 _mode,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
-                _mode.description, _mode.mode_id, parent=0, data=_mode)
+                _mode.description,
+                _mode.mode_id,
+                parent=0,
+                data=_mode,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -171,12 +181,16 @@ class ModeDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the FMEA modes "
-                        "table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the FMEA modes "
+                    "table did not update."
+                )
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the FMEA modes "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the FMEA modes "
+                "table."
+            )
 
         return _error_code, _msg
 
@@ -228,7 +242,7 @@ class MechanismDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         _mechanisms = _session.query(RAMSTKMechanism).filter(
-            RAMSTKMechanism.mode_id == _parent_id).all()
+            RAMSTKMechanism.mode_id == _parent_id, ).all()
 
         for _mechanism in _mechanisms:
             # We get and then set the attributes to replace any None values
@@ -239,7 +253,8 @@ class MechanismDataModel(RAMSTKDataModel):
                 _mechanism.description,
                 _mechanism.mechanism_id,
                 parent=0,
-                data=_mechanism)
+                data=_mechanism,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -262,16 +277,19 @@ class MechanismDataModel(RAMSTKDataModel):
         _mechanism = RAMSTKMechanism()
         _mechanism.mode_id = kwargs['mode_id']
         _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
+            self,
+            entities=[
                 _mechanism,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _mechanism.description,
                 _mechanism.mechanism_id,
                 parent=0,
-                data=_mechanism)
+                data=_mechanism,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -332,13 +350,16 @@ class MechanismDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the FMEA "
-                        "mechanisms table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the FMEA "
+                    "mechanisms table did not update."
+                )
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA mechanisms "
-                "table.")
+                "table."
+            )
 
         return _error_code, _msg
 
@@ -395,10 +416,10 @@ class CauseDataModel(RAMSTKDataModel):
 
         if _functional:
             _causes = _session.query(RAMSTKCause).filter(
-                RAMSTKCause.mode_id == _parent_id).all()
+                RAMSTKCause.mode_id == _parent_id, ).all()
         else:
             _causes = _session.query(RAMSTKCause).filter(
-                RAMSTKCause.mechanism_id == _parent_id).all()
+                RAMSTKCause.mechanism_id == _parent_id, ).all()
 
         for _cause in _causes:
             # We get and then set the attributes to replace any None values
@@ -406,7 +427,11 @@ class CauseDataModel(RAMSTKDataModel):
             _attributes = _cause.get_attributes()
             _cause.set_attributes(_attributes)
             self.tree.create_node(
-                _cause.description, _cause.cause_id, parent=0, data=_cause)
+                _cause.description,
+                _cause.cause_id,
+                parent=0,
+                data=_cause,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -430,13 +455,19 @@ class CauseDataModel(RAMSTKDataModel):
         _cause.mode_id = kwargs['mode_id']
         _cause.mechanism_id = kwargs['mechanism_id']
         _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
+            self,
+            entities=[
                 _cause,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
-                _cause.description, _cause.cause_id, parent=0, data=_cause)
+                _cause.description,
+                _cause.cause_id,
+                parent=0,
+                data=_cause,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -497,12 +528,16 @@ class CauseDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the FMEA causes "
-                        "table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the FMEA causes "
+                    "table did not update."
+                )
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the FMEA causes "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the FMEA causes "
+                "table."
+            )
 
         return _error_code, _msg
 
@@ -557,7 +592,7 @@ class ControlDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         _controls = _session.query(RAMSTKControl).filter(
-            RAMSTKControl.cause_id == _parent_id).all()
+            RAMSTKControl.cause_id == _parent_id, ).all()
 
         for _control in _controls:
             # We get and then set the attributes to replace any None values
@@ -568,7 +603,8 @@ class ControlDataModel(RAMSTKDataModel):
                 _control.description,
                 _control.control_id,
                 parent=0,
-                data=_control)
+                data=_control,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -591,16 +627,19 @@ class ControlDataModel(RAMSTKDataModel):
         _control = RAMSTKControl()
         _control.cause_id = kwargs['cause_id']
         _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
+            self,
+            entities=[
                 _control,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _control.description,
                 _control.control_id,
                 parent=0,
-                data=_control)
+                data=_control,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -663,12 +702,14 @@ class ControlDataModel(RAMSTKDataModel):
                 _error_code = 1
                 _msg = (
                     "RAMSTK ERROR: One or more records in the FMEA controls "
-                    "table did not update.")
+                    "table did not update."
+                )
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA controls "
-                "table.")
+                "table."
+            )
 
         return _error_code, _msg
 
@@ -720,7 +761,7 @@ class ActionDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         _actions = _session.query(RAMSTKAction).filter(
-            RAMSTKAction.cause_id == _parent_id).all()
+            RAMSTKAction.cause_id == _parent_id, ).all()
 
         for _action in _actions:
             # We get and then set the attributes to replace any None values
@@ -731,7 +772,8 @@ class ActionDataModel(RAMSTKDataModel):
                 _action.action_status,
                 _action.action_id,
                 parent=0,
-                data=_action)
+                data=_action,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -754,16 +796,19 @@ class ActionDataModel(RAMSTKDataModel):
         _action = RAMSTKAction()
         _action.cause_id = kwargs['cause_id']
         _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
+            self,
+            entities=[
                 _action,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _action.action_status,
                 _action.action_id,
                 parent=0,
-                data=_action)
+                data=_action,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -830,11 +875,14 @@ class ActionDataModel(RAMSTKDataModel):
                 _error_code = 1
                 _msg = (
                     "RAMSTK ERROR: One or more records in the FMEA actions "
-                    "table did not update.")
+                    "table did not update."
+                )
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the FMEA actions "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the FMEA actions "
+                "table."
+            )
 
         return _error_code, _msg
 
@@ -915,7 +963,9 @@ class FMEADataModel(RAMSTKDataModel):
         RAMSTKDataModel.do_select_all(self)
 
         _modes = self.dtm_mode.do_select_all(
-            parent_id=_parent_id, functional=self._functional).nodes
+            parent_id=_parent_id,
+            functional=self._functional,
+        ).nodes
 
         for _key in _modes:
             _mode = _modes[_key].data
@@ -925,7 +975,8 @@ class FMEADataModel(RAMSTKDataModel):
                     tag=_mode.description,
                     identifier=_node_id,
                     parent=0,
-                    data=_mode)
+                    data=_mode,
+                )
                 if self._functional:
                     self._do_add_causes(_mode.mode_id, _node_id, True)
                 else:
@@ -934,9 +985,13 @@ class FMEADataModel(RAMSTKDataModel):
         # If we're not running a test and there were allocations returned,
         # let anyone who cares know the Allocations have been selected.
         if not self._test and self.tree.size() > 1:
-            pub.sendMessage('retrieved_fmea', tree=self.tree)
-
-        return None
+            pub.sendMessage(
+                'retrieved_ffmea',
+                attributes={
+                    'tree': self.tree,
+                    'row': None,
+                },
+            )
 
     def _do_add_mechanisms(self, mode_id, parent_id):
         """
@@ -958,7 +1013,8 @@ class FMEADataModel(RAMSTKDataModel):
                     tag=_mechanism.description,
                     identifier=_node_id,
                     parent=parent_id,
-                    data=_mechanism)
+                    data=_mechanism,
+                )
 
                 self._do_add_causes(_mechanism.mechanism_id, _node_id, False)
 
@@ -977,7 +1033,9 @@ class FMEADataModel(RAMSTKDataModel):
         _return = False
 
         _causes = self.dtm_cause.do_select_all(
-            parent_id=parent_id, functional=functional).nodes
+            parent_id=parent_id,
+            functional=functional,
+        ).nodes
         for _key in _causes:
             _cause = _causes[_key].data
             if _cause is not None:
@@ -986,7 +1044,8 @@ class FMEADataModel(RAMSTKDataModel):
                     tag=_cause.description,
                     identifier=_node_id,
                     parent=parent_node,
-                    data=_cause)
+                    data=_cause,
+                )
 
                 self._do_add_controls(_cause.cause_id, _node_id)
                 self._do_add_actions(_cause.cause_id, _node_id)
@@ -1018,7 +1077,8 @@ class FMEADataModel(RAMSTKDataModel):
                     tag=_control.description,
                     identifier=_node_id,
                     parent=parent_id,
-                    data=_control)
+                    data=_control,
+                )
 
         return _return
 
@@ -1043,7 +1103,8 @@ class FMEADataModel(RAMSTKDataModel):
                     tag=_action.action_category,
                     identifier=_node_id,
                     parent=parent_id,
-                    data=_action)
+                    data=_action,
+                )
 
         return _return
 
@@ -1085,23 +1146,29 @@ class FMEADataModel(RAMSTKDataModel):
 
         if _level == 'mode':
             _error_code, _msg = self.dtm_mode.do_insert(
-                function_id=_function_id, hardware_id=_hardware_id)
+                function_id=_function_id,
+                hardware_id=_hardware_id,
+            )
             _entity = self.dtm_mode.do_select(self.dtm_mode.last_id)
             _tag = 'Mode'
             _node_id = '0.' + str(self.dtm_mode.last_id)
         elif _level == 'mechanism':
             _error_code, _msg = self.dtm_mechanism.do_insert(
-                mode_id=_entity_id)
+                mode_id=_entity_id, )
             _entity = self.dtm_mechanism.do_select(self.dtm_mechanism.last_id)
             _tag = 'Mechanism'
             _node_id = _parent_id + '.' + str(self.dtm_mechanism.last_id)
         elif _level == 'cause':
             if self._functional:
                 _error_code, _msg = self.dtm_cause.do_insert(
-                    mode_id=_entity_id, mechanism_id=-1)
+                    mode_id=_entity_id,
+                    mechanism_id=-1,
+                )
             else:
                 _error_code, _msg = self.dtm_cause.do_insert(
-                    mode_id=-1, mechanism_id=_entity_id)
+                    mode_id=-1,
+                    mechanism_id=_entity_id,
+                )
             _entity = self.dtm_cause.do_select(self.dtm_cause.last_id)
             _tag = 'Cause'
             _node_id = _parent_id + '.' + str(self.dtm_cause.last_id)
@@ -1124,7 +1191,11 @@ class FMEADataModel(RAMSTKDataModel):
 
         try:
             self.tree.create_node(
-                _tag, _node_id, parent=_parent_id, data=_entity)
+                _tag,
+                _node_id,
+                parent=_parent_id,
+                data=_entity,
+            )
         except tree.NodeIDAbsentError:
             _error_code = 2005
             _msg = 'RAMSTK ERROR: Attempted to add an item under non-existent ' \
@@ -1194,8 +1265,10 @@ class FMEADataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more line items in the FMEA did "
-                        "not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more line items in the FMEA did "
+                    "not update."
+                )
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all line items in the FMEA.")
@@ -1239,10 +1312,12 @@ class FMEADataModel(RAMSTKDataModel):
             _error_code, _msg = _node.data.calculate_criticality(item_hr)
             try:
                 self.item_criticality[
-                    _node.data.severity_class] += _node.data.mode_criticality
+                    _node.data.severity_class
+                ] += _node.data.mode_criticality
             except KeyError:
                 self.item_criticality[
-                    _node.data.severity_class] = _node.data.mode_criticality
+                    _node.data.severity_class
+                ] = _node.data.mode_criticality
 
         return _error_code, _msg
 
@@ -1264,18 +1339,21 @@ class FMEADataModel(RAMSTKDataModel):
         for _node in self.tree.children(0):
             if _node.data is None:
                 _msg = "Node ID: {0:s} has no data package.".format(
-                    str(_node.identifier))
+                    str(_node.identifier), )
             elif _node.data.is_mode:
                 for _child in self.tree.subtree(_node.identifier).all_nodes():
                     try:
                         _error_code, _msg = _child.data.calculate_rpn(
                             _node.data.rpn_severity,
-                            _node.data.rpn_severity_new)
+                            _node.data.rpn_severity_new,
+                        )
                     except OutOfRangeError as _error:
                         _error_code = 1
                         _msg = _error.message
                     except AttributeError:
-                        _msg = ("Node ID: {0:s} is not a Mechanism or "
-                                "Cause.").format(str(_child.identifier))
+                        _msg = (
+                            "Node ID: {0:s} is not a Mechanism or "
+                            "Cause."
+                        ).format(str(_child.identifier))
 
         return _error_code, _msg
