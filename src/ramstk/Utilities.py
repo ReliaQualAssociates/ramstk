@@ -138,7 +138,7 @@ def error_handler(message):
     elif 'index out of range' in message[0]:  # Index error
         _error_code = 40
     else:  # Unhandled error
-        print(message)
+        print message
         _error_code = 1000  # pragma: no cover
 
     return _error_code

@@ -21,7 +21,6 @@ __email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
 
-ATTRIBUTES = {'site_dao': '', 'site': True, 'program': False}
 
 @pytest.mark.integration
 def test_create_options_data_model(test_dao, test_common_dao):
@@ -102,7 +101,7 @@ def test_request_do_select_all(test_dao, test_common_dao, test_configuration):
     DUT = dtcOptions(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
 
-    assert not DUT.request_do_select_all(ATTRIBUTES)
+    assert not DUT.request_do_select_all(site=True, program=True)
 
 
 @pytest.mark.integration
@@ -110,8 +109,7 @@ def test_request_get_options_site(test_dao, test_common_dao, test_configuration)
     """ request_get_options() should return a dict of site option:value pairs. """
     DUT = dtcOptions(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    ATTRIBUTES['program'] = True
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(site=True, program=True)
 
     _options = DUT.request_get_options(site=True, program=False)
 
@@ -128,8 +126,7 @@ def test_request_get_options_program(test_dao, test_common_dao, test_configurati
     """ request_get_options() should return a dict of program option:value pairs. """
     DUT = dtcOptions(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    ATTRIBUTES['program'] = True
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(site=True, program=True)
 
     _options = DUT.request_get_options(site=False, program=True)
 
@@ -151,8 +148,7 @@ def test_request_set_options_site(test_dao, test_common_dao, test_configuration)
     """ request_set_options() should return False when successfully setting site options. """
     DUT = dtcOptions(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    ATTRIBUTES['program'] = True
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(site=True, program=True)
 
     _options = DUT.request_get_options(site=True, program=False)
     _options['function_enabled'] == 0
@@ -167,8 +163,7 @@ def test_request_set_options_program(test_dao, test_common_dao, test_configurati
     """ request_set_options() should return False when successfully setting program options. """
     DUT = dtcOptions(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    ATTRIBUTES['program'] = True
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(site=True, program=True)
 
     _options = DUT.request_get_options(site=False, program=True)
     _options['function_active'] == 0
@@ -184,7 +179,6 @@ def test_request_do_update_all(test_dao, test_common_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcOptions(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    ATTRIBUTES['program'] = True
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(site=True, program=True)
 
     assert not DUT.request_do_update()

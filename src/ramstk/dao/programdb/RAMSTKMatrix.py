@@ -15,8 +15,8 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKMatrix(RAMSTK_BASE):
-    """Class to represent ramstk_matrix table in the RAMSTK Program database.
-
+    """
+    Class to represent the ramstk_matrix table in the RAMSTK Program database.
     Matrix types are one of the following:
 
         +-------------+--------------+--------------+
@@ -48,7 +48,6 @@ class RAMSTKMatrix(RAMSTK_BASE):
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
-
     __tablename__ = 'ramstk_matrix'
     __table_args__ = {'extend_existing': True}
 
@@ -121,6 +120,6 @@ class RAMSTKMatrix(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKMatrix.set_attributes().".format(str(_err))
+                   "RAMSTKMatrix.set_attributes().".format(_err)
 
         return _error_code, _msg

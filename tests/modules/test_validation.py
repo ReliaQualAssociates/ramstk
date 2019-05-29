@@ -7,8 +7,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Validation module algorithms and models. """
 
-from datetime import date, timedelta
-
 from treelib import Tree
 
 import pytest
@@ -22,43 +20,11 @@ __email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2015 Doyle "weibullguy" Rowland'
 
-ATTRIBUTES = {
-    'revision_id': 1,
-    'validation_id': 1,
-    'acceptable_maximum': 0.0,
-    'acceptable_mean': 0.0,
-    'acceptable_minimum': 0.0,
-    'acceptable_variance': 0.0,
-    'confidence': 95.0,
-    'cost_average': 0.0,
-    'cost_ll': 0.0,
-    'cost_maximum': 0.0,
-    'cost_mean': 0.0,
-    'cost_minimum': 0.0,
-    'cost_ul': 0.0,
-    'cost_variance': 0.0,
-    'date_end': date.today() + timedelta(days=30),
-    'date_start': date.today(),
-    'description': '',
-    'measurement_unit': '',
-    'name': '',
-    'status': 0.0,
-    'task_type': '',
-    'task_specification': '',
-    'time_average': 0.0,
-    'time_ll': 0.0,
-    'time_maximum': 0.0,
-    'time_mean': 0.0,
-    'time_minimum': 0.0,
-    'time_ul': 0.0,
-    'time_variance': 0.0
-}
-
 
 @pytest.mark.integration
 def test_data_model_create(test_dao):
     """ __init__() should return a Validation model. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
 
     assert isinstance(DUT, dtmValidation)
     assert isinstance(DUT.tree, Tree)
@@ -68,18 +34,19 @@ def test_data_model_create(test_dao):
 @pytest.mark.integration
 def test_do_select_all(test_dao):
     """ do_select_all() should return a Tree() object populated with RAMSTKValidation instances on success. """
-    DUT = dtmValidation(test_dao, test=True)
-    DUT.do_select_all(revision_id=1)
+    DUT = dtmValidation(test_dao)
+    _tree = DUT.do_select_all(revision_id=1)
 
-    assert isinstance(DUT.tree, Tree)
-    assert isinstance(DUT.tree.get_node(1).data, RAMSTKValidation)
+    assert isinstance(_tree, Tree)
+    assert isinstance(_tree.get_node(1).data, RAMSTKValidation)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
     """ do_select() should return an instance of the RAMSTKValidation data model on success. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
+
     _validation = DUT.do_select(1)
 
     assert isinstance(_validation, RAMSTKValidation)
@@ -89,7 +56,7 @@ def test_do_select(test_dao):
 @pytest.mark.integration
 def test_do_select_non_existent_id(test_dao):
     """ do_select() should return None when a non-existent Validation ID is requested. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     _validation = DUT.do_select(100)
 
     assert _validation is None
@@ -128,15 +95,14 @@ def test_request_do_delete_matrix_column(test_dao, test_configuration):
 @pytest.mark.integration
 def test_do_insert(test_dao):
     """ do_insert() should return False on success. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(revision_id=1)
 
     assert _error_code == 0
-    assert _msg == (
-        'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-        'database.')
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
+                    'database.')
     assert DUT.last_id == 2
 
 
@@ -179,7 +145,7 @@ def test_request_do_insert_matrix_column(test_dao, test_configuration):
 @pytest.mark.integration
 def test_do_delete(test_dao):
     """ do_delete() should return a zero error code on success. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
     DUT.do_insert(revision_id=1)
 
@@ -193,7 +159,7 @@ def test_do_delete(test_dao):
 @pytest.mark.integration
 def test_do_delete_non_existent_id(test_dao):
     """ do_delete() should return a non-zero error code when passed a Validation ID that doesn't exist. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_delete(300)
@@ -206,7 +172,7 @@ def test_do_delete_non_existent_id(test_dao):
 @pytest.mark.integration
 def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _validation = DUT.do_select(DUT.last_id)
@@ -221,21 +187,20 @@ def test_do_update(test_dao):
 @pytest.mark.integration
 def test_do_update_non_existent_id(test_dao):
     """ do_update() should return a non-zero error code when passed a Validation ID that doesn't exist. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == (
-        'RAMSTK ERROR: Attempted to save non-existent Validation ID '
-        '100.')
+    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Validation ID '
+                    '100.')
 
 
 @pytest.mark.integration
 def test_do_update_status(test_dao):
     """ do_update_status() should return a zero error code on success. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update_status()
@@ -247,7 +212,7 @@ def test_do_update_status(test_dao):
 @pytest.mark.integration
 def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update_all()
@@ -260,7 +225,7 @@ def test_do_update_all(test_dao):
 @pytest.mark.integration
 def test_do_calculate_time(test_dao):
     """ do_calculate() returns False on successfully calculating tasks times. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
     _validation = DUT.do_select(1)
     _validation.time_minimum = 25.2
@@ -276,7 +241,7 @@ def test_do_calculate_time(test_dao):
 @pytest.mark.integration
 def test_do_calculate_cost(test_dao):
     """ do_calculate() returns False on successfully calculating tasks costs. """
-    DUT = dtmValidation(test_dao, test=True)
+    DUT = dtmValidation(test_dao)
     DUT.do_select_all(revision_id=1)
     _validation = DUT.do_select(1)
     _validation.cost_minimum = 252.00
@@ -302,17 +267,16 @@ def test_data_controller_create(test_dao, test_configuration):
 def test_request_do_select_all(test_dao, test_configuration):
     """ request_do_select_all() should return a Tree of RAMSTKValidation models. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    _tree = DUT.request_do_select_all(revision_id=1)
 
-    assert isinstance(
-        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKValidation)
+    assert isinstance(_tree.get_node(1).data, RAMSTKValidation)
 
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
     """ request_do_select() should return an RAMSTKValidation model. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert isinstance(DUT.request_do_select(1), RAMSTKValidation)
 
@@ -329,7 +293,7 @@ def test_request_do_select_non_existent_id(test_dao, test_configuration):
 def test_request_do_insert(test_dao, test_configuration):
     """ request_do_insert() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert not DUT.request_do_insert(revision_id=1)
 
@@ -338,7 +302,7 @@ def test_request_do_insert(test_dao, test_configuration):
 def test_request_do_delete(test_dao, test_configuration):
     """ request_do_delete() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert not DUT.request_do_delete(2)
 
@@ -347,7 +311,7 @@ def test_request_do_delete(test_dao, test_configuration):
 def test_request_do_delete_non_existent_id(test_dao, test_configuration):
     """ request_do_delete() should return True when attempting to delete a non-existent Validation. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert DUT.request_do_delete(100)
 
@@ -356,7 +320,7 @@ def test_request_do_delete_non_existent_id(test_dao, test_configuration):
 def test_request_do_update(test_dao, test_configuration):
     """ request_do_update() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert not DUT.request_do_update(1)
 
@@ -365,7 +329,7 @@ def test_request_do_update(test_dao, test_configuration):
 def test_request_do_update_non_existent_id(test_dao, test_configuration):
     """ request_do_update() should return True when attempting to save a non-existent Validation. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert DUT.request_do_update(100)
 
@@ -374,7 +338,7 @@ def test_request_do_update_non_existent_id(test_dao, test_configuration):
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert not DUT.request_do_update_all()
 
@@ -383,7 +347,7 @@ def test_request_do_update_all(test_dao, test_configuration):
 def test_request_do_calculate(test_dao, test_configuration):
     """ request_do_calculate() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
     _validation = DUT.request_do_select(1)
     _validation.cost_minimum = 252.00
     _validation.cost_average = 368.00

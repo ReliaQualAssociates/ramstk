@@ -17,7 +17,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 # pylint: disable=R0902
 class RAMSTKNSWC(RAMSTK_BASE):
     """
-    Class to represent ramstk_nswc table in the RAMSTK Program database.
+    Class to represent the ramstk_nswc table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
@@ -97,11 +97,12 @@ class RAMSTKNSWC(RAMSTK_BASE):
         """
         Retrieve the current values of the RAMSTKNSWC data model attributes.
 
-        :return: {hardware_id, Cac, Calt, Cb, Cbl, Cbt, Cbv, Cc, Ccf, Ccp, Ccs,
-                  Ccv, Ccw, Cd, Cdc, Cdl, Cdp, Cds, Cdw, Cdy, Ce, Cf, Cg, Cga,
-                  Cgl, Cgp, Cgs, Cgt, Cgv, Ch, Ci, Ck, Cl, Clc, Cm, Cmu, Cn,
-                  Cnp, Cnw, Cp, Cpd, Cpf, Cpv, Cq, Cr, Crd, Cs, Csc, Csf, Cst,
-                  Csv, Csw, Csz, Ct, Cv, Cw, Cy} pairs.
+        :return: {hardware_id, availability_alloc, env_factor, goal_measure_id,
+                  hazard_rate_alloc, hazard_rate_goal, included, int_factor,
+                  method_id, mtbf_alloc, mtbf_goal, n_sub_systems,
+                  n_sub_elements, parent_id, percent_wt_factor,
+                  reliability_alloc, reliability_goal, op_time_factor,
+                  soa_factor, weight_factor} pairs.
         :rtype: dict
         """
         _attributes = {
@@ -242,6 +243,6 @@ class RAMSTKNSWC(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKNSWC.set_attributes().".format(str(_err))
+                   "RAMSTKNSWC.set_attributes().".format(_err)
 
         return _error_code, _msg

@@ -6,7 +6,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKFailureDefinition Table Module."""
 
-# Import third party modules.
 from sqlalchemy import BLOB, Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
@@ -17,7 +16,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKFailureDefinition(RAMSTK_BASE):
     """
-    Class representing ramstk_failure_definition table in RAMSTK Program database.
+    Class representing the ramstk_failure_definition table in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -37,7 +36,7 @@ class RAMSTKFailureDefinition(RAMSTK_BASE):
         autoincrement=True,
         nullable=False)
 
-    definition = Column('fld_definition', BLOB, default=b'Failure Definition')
+    definition = Column('fld_definition', BLOB, default='Failure Definition')
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='failures')
@@ -71,13 +70,14 @@ class RAMSTKFailureDefinition(RAMSTK_BASE):
             format(self.definition_id)
 
         try:
-            self.definition = none_to_default(attributes['definition'],
-                                              b'Failure Definition')
+            self.definition = str(
+                none_to_default(attributes['definition'],
+                                'Failure Definition'))
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKFailureDefinition.set_attributes().".format(str(_err))
+                   "RAMSTKFailureDefinition.set_attributes().".format(_err)
         except (TypeError, ValueError) as _err:
             _error_code = error_handler(_err.args)
             _msg = "RAMSTK ERROR: Incorrect data type when converting one or " \

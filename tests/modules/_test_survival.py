@@ -286,7 +286,7 @@ class TestSurvivalModel(unittest.TestCase):
         self.DUT.dicRecords[2] = _record
         self.DUT.dicRecords = OrderedDict(
             sorted(
-                list(self.DUT.dicRecords.items()),
+                self.DUT.dicRecords.items(),
                 key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.calculate_tbf(1, 2))
@@ -319,7 +319,7 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.DUT.dicRecords = OrderedDict(
             sorted(
-                list(self.DUT.dicRecords.items()),
+                self.DUT.dicRecords.items(),
                 key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
@@ -350,7 +350,7 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.DUT.dicRecords = OrderedDict(
             sorted(
-                list(self.DUT.dicRecords.items()),
+                self.DUT.dicRecords.items(),
                 key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
@@ -381,7 +381,7 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.DUT.dicRecords = OrderedDict(
             sorted(
-                list(self.DUT.dicRecords.items()),
+                self.DUT.dicRecords.items(),
                 key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
@@ -413,7 +413,7 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.DUT.dicRecords = OrderedDict(
             sorted(
-                list(self.DUT.dicRecords.items()),
+                self.DUT.dicRecords.items(),
                 key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
@@ -445,7 +445,7 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.DUT.dicRecords = OrderedDict(
             sorted(
-                list(self.DUT.dicRecords.items()),
+                self.DUT.dicRecords.items(),
                 key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
@@ -477,7 +477,7 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.DUT.dicRecords = OrderedDict(
             sorted(
-                list(self.DUT.dicRecords.items()),
+                self.DUT.dicRecords.items(),
                 key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
@@ -509,7 +509,7 @@ class TestSurvivalModel(unittest.TestCase):
 
         self.DUT.dicRecords = OrderedDict(
             sorted(
-                list(self.DUT.dicRecords.items()),
+                self.DUT.dicRecords.items(),
                 key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())

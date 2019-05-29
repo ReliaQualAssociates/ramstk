@@ -36,7 +36,7 @@ class RAMSTKMission(RAMSTK_BASE):
         primary_key=True,
         autoincrement=True,
         nullable=False)
-    description = Column('fld_description', BLOB, default=b'')
+    description = Column('fld_description', BLOB, default='Description')
     mission_time = Column('fld_mission_time', Float, default=0.0)
     time_units = Column('fld_time_units', String(256), default='hours')
 
@@ -78,7 +78,8 @@ class RAMSTKMission(RAMSTK_BASE):
             format(self.mission_id)
 
         try:
-            self.description = none_to_default(attributes['description'], b'')
+            self.description = str(
+                none_to_default(attributes['description'], 'Description'))
             self.mission_time = float(
                 none_to_default(attributes['mission_time'], 0.0))
             self.time_units = str(
@@ -87,6 +88,6 @@ class RAMSTKMission(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKMission.set_attributes().".format(str(_err))
+                   "RAMSTKMission.set_attributes().".format(_err)
 
         return _error_code, _msg

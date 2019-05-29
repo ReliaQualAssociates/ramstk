@@ -60,7 +60,7 @@ class RAMSTKStakeholders(RAMSTK_BASE):
             _error_code = 40
             _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
                     "dictionary passed to "
-                    "{1:s}.set_attributes().").format(str(_err),
+                    "{1:s}.set_attributes().").format(_err,
                                                       self.__class__.__name__)
 
         return _error_code, _msg

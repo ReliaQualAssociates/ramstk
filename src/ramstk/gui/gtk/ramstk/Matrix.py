@@ -1,4 +1,3 @@
-# pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
 #       gui.gtk.ramstk.Matrix.py is part of The RAMSTK Project
@@ -7,12 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKBaseMatrix Module."""
 
-# Modules for localization.
+# Import modules for localization support.
+import gettext
 import locale
 
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk import RAMSTKLabel
-from .Widget import _, GdkPixbuf, GObject, Gtk, Pango
+from .Widget import gobject, gtk, pango
+
+_ = gettext.gettext
 
 
 class RAMSTKBaseMatrix(object):
@@ -26,8 +28,8 @@ class RAMSTKBaseMatrix(object):
     :ivar _ramstk_matrix: the RAMSTKDataMatrix to display in the Matrix View.
     :ivar int _n_columns: the number of columns in the matrix.
     :ivar int _n_rows: the number rows in the matrix.
-    :ivar matrix: the Gtk.TreeView() displaying the RAMSTKDataMatrix.
-    :type matrix: :class:`Gtk.TreeView`
+    :ivar matrix: the gtk.TreeView() displaying the RAMSTKDataMatrix.
+    :type matrix: :class:`gtk.TreeView`
     """
 
     def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
@@ -73,7 +75,7 @@ class RAMSTKBaseMatrix(object):
 
         # Initialize public scalar attributes.
         self.n_fixed_columns = 0
-        self.matrix = Gtk.TreeView(None)
+        self.matrix = gtk.TreeView(None)
 
         try:
             locale.setlocale(locale.LC_ALL,
@@ -106,43 +108,44 @@ class RAMSTKBaseMatrix(object):
         self._n_columns = len(self._ramstk_matrix.columns)
         self._n_rows = len(self._ramstk_matrix.index)
 
-        _gobject_types = [GObject.TYPE_INT, GObject.TYPE_STRING] + \
-                         [GdkPixbuf.Pixbuf, GObject.TYPE_STRING] * \
-            (self._n_columns) + [GObject.TYPE_STRING]
+        _gobject_types = [gobject.TYPE_INT, gobject.TYPE_STRING] + \
+                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * \
+            (self._n_columns) + [gobject.TYPE_STRING]
 
-        _model = Gtk.TreeStore(*_gobject_types)
+        _model = gtk.TreeStore(*_gobject_types)
 
         self.matrix.set_model(_model)
 
         # The first column will contain the Function ID and Function Code.
-        _cell = Gtk.CellRendererText()
+        _cell = gtk.CellRendererText()
         _cell.set_property('background', 'light gray')
-        _column = self._make_column([
-            _cell,
-        ], '', visible=False)
+        _column = self._make_column(
+            [
+                _cell,
+            ], '', visible=False)
         _column.set_attributes(_cell, text=0)
-        _cell = Gtk.CellRendererText()
+        _cell = gtk.CellRendererText()
         _cell.set_alignment(0.9, 0.5)
         _cell.set_property('background', 'light gray')
         _cell.set_property('editable', False)
         _cell.set_property('foreground', '#000000')
         _cell.set_property('wrap-width', 250)
-        _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
+        _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
         _column = self._make_column([
             _cell,
         ], rows)
         _column.set_attributes(_cell, markup=1)
         self.matrix.append_column(_column)
 
-        # The remaining columns will be Gtk.CellRendererCombo()'s for
+        # The remaining columns will be gtk.CellRendererCombo()'s for
         # displaying the interaction between Function and Hardware.
         j = 2
-        for i in range(self._n_columns):  # pylint: disable=E0602
+        for i in xrange(self._n_columns):  # pylint: disable=E0602
             _cell = self._make_combo_cell()
             self._do_set_properties(_cell, True, i + j + 1,
                                     self._ramstk_matrix.columns[i], _model)
 
-            _pbcell = Gtk.CellRendererPixbuf()
+            _pbcell = gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)
             _heading = column_headings[self._ramstk_matrix.columns[i]]
             _column = self._make_column([_pbcell, _cell], _heading)
@@ -153,7 +156,7 @@ class RAMSTKBaseMatrix(object):
 
         # Add one more column so the last column will not be extra wide.
         _column = self._make_column([
-            Gtk.CellRendererText(),
+            gtk.CellRendererText(),
         ], '')
 
         try:
@@ -168,7 +171,7 @@ class RAMSTKBaseMatrix(object):
         for i in list(self._ramstk_matrix.index):
             _data = [i, "<span weight='bold'>" + row_headings[i] + "</span>"]
             for j in list(self._ramstk_matrix.loc[i]):
-                _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                _pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons[j], 22, 22)
                 _data.append(_pixbuf)
                 _data.append(j)
@@ -181,19 +184,19 @@ class RAMSTKBaseMatrix(object):
     # pylint: disable=too-many-arguments
     def _do_edit_cell(self, cell, path, row, position, col_index, model):
         """
-        Respond to `changed` signals for the Gtk.CellRendererCombo()s.
+        Respond to `changed` signals for the gtk.CellRendererCombo()s.
 
-        :param cell: the Gtk.CellRendererCombo() calling this method.
-        :type cell: :class:`Gtk.CellRendererCombo`
+        :param cell: the gtk.CellRendererCombo() calling this method.
+        :type cell: :class:`gtk.CellRendererCombo`
         :param str path: the path of the selected row in the RAMSTKMatrix.
-        :param row: the Gtk.TreeIter() for the Gtk.CellRendererCombo() in the
+        :param row: the gtk.TreeIter() for the gtk.CellRendererCombo() in the
                     selected row in the RAMSTKMatrix.
-        :type row: :class:`Gtk.TreeIter`
+        :type row: :class:`gtk.TreeIter`
         :param int position: the position of the cell in the RAMSTKMatrix.
         :param int col_index: the column_item_id of the Matrix cell to be
                               edited.
-        :param model: the Gtk.TreeModel() associated with the RAMSTKMatrix.
-        :type model: :class:`Gtk.TreeModel`
+        :param model: the gtk.TreeModel() associated with the RAMSTKMatrix.
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -203,15 +206,15 @@ class RAMSTKBaseMatrix(object):
         _row_item_id = model[path][0]
         if _model.get_value(row, 0) == 'Partial':
             self._ramstk_matrix[_column_item_id][_row_item_id] = 1
-            _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            _pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
                 self._dic_icons[1], 22, 22)
         elif _model.get_value(row, 0) == 'Complete':
             self._ramstk_matrix[_column_item_id][_row_item_id] = 2
-            _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            _pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
                 self._dic_icons[2], 22, 22)
         else:
             self._ramstk_matrix[_column_item_id][_row_item_id] = 0
-            _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            _pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
                 self._dic_icons[0], 22, 22)
 
         model[path][position - 1] = _pixbuf
@@ -220,39 +223,93 @@ class RAMSTKBaseMatrix(object):
 
     def _do_set_properties(self, cell, editable, position, col_index, model):
         """
-        Set common properties of Gtk.CellRenderers().
+        Set common properties of gtk.CellRenderers().
 
         :param cell: the cell whose properties are to be set.
-        :type cell: :class:`Gtk.CellRenderer`
+        :type cell: :class:`gtk.CellRenderer`
         :param bool editable: indicates whether or not the cell is editable.
-        :param int position: the position in the Gtk.TreeModel() that this
+        :param int position: the position in the gtk.TreeModel() that this
                              cell falls.
         :param int col_index: the column_item_id of the Matrix cell to be
                               edited.
-        :param model: the :class:`Gtk.TreeModel` associated with the
+        :param model: the :class:`gtk.TreeModel` associated with the
                       treeview.
         """
         cell.set_property('background', '#FFFFFF')
         cell.set_property('editable', editable)
         cell.set_property('foreground', '#000000')
         cell.set_property('wrap-width', 250)
-        cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
+        cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
         cell.set_property('yalign', 0.1)
         cell.connect('changed', self._do_edit_cell, position, col_index, model)
+
+    def _make_buttonbox(self, **kwargs):
+        """
+        Create the buttonbox for RAMSTK Matrix Views.
+
+        This method creates the base buttonbox used by all RAMSTK Matrix Views.
+        Use a buttonbox for an RAMSTK Matrix View if there are only buttons to be
+        added.
+
+        :return: _buttonbox
+        :rtype: :class:`gtk.ButtonBox`
+        """
+        _icons = kwargs['icons']
+        _tooltips = kwargs['tooltips']
+        _callbacks = kwargs['callbacks']
+        _orientation = kwargs['orientation']
+        _height = kwargs['height']
+        _width = kwargs['width']
+
+        if _orientation == 'horizontal':
+            _buttonbox = gtk.HButtonBox()
+        else:
+            _buttonbox = gtk.VButtonBox()
+
+        _buttonbox.set_layout(gtk.BUTTONBOX_START)
+
+        i = 0
+        for _icon in _icons:
+            _image = gtk.Image()
+            _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                self._dic_icons[_icon], _height, _width)
+            _image.set_from_pixbuf(_icon)
+
+            _button = gtk.Button()
+            _button.set_image(_image)
+
+            _button.props.width_request = _width
+            _button.props.height_request = _height
+
+            try:
+                _button.set_tooltip_markup(_tooltips[i])
+            except IndexError:
+                _button.set_tooltip_markup("")
+
+            try:
+                _button.connect('clicked', _callbacks[i])
+            except IndexError:
+                _button.set_sensitive(False)
+
+            _buttonbox.pack_start(_button)
+
+            i += 1
+
+        return _buttonbox
 
     @staticmethod
     def _make_combo_cell():
         """
-        Make a Gtk.CellRendererCombo().
+        Make a gtk.CellRendererCombo().
 
         :return: _cell
-        :rtype: :py:class:`Gtk.CellRendererCombo`
+        :rtype: :py:class:`gtk.CellRendererCombo`
         """
-        _cell = Gtk.CellRendererCombo()
-        _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
+        _cell = gtk.CellRendererCombo()
+        _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
         _cellmodel.append([""])
-        _cellmodel.append([_("Partial")])
-        _cellmodel.append([_("Complete")])
+        _cellmodel.append([_(u"Partial")])
+        _cellmodel.append([_(u"Complete")])
         _cell.set_property('has-entry', False)
         _cell.set_property('model', _cellmodel)
         _cell.set_property('text-column', 0)
@@ -261,25 +318,25 @@ class RAMSTKBaseMatrix(object):
 
     def _make_column(self, cells, heading, visible=True):
         """
-        Make a Gtk.TreeViewColumn().
+        Make a gtk.TreeViewColumn().
 
-        :param list cells: list of Gtk.CellRenderer()s that are to be packed in
+        :param list cells: list of gtk.CellRenderer()s that are to be packed in
                            the column.
         :param str heading: the column heading text.
         :return: _column
-        :rtype: :py:class:`Gtk.TreeViewColumn`
+        :rtype: :py:class:`gtk.TreeViewColumn`
         """
-        _column = Gtk.TreeViewColumn("")
+        _column = gtk.TreeViewColumn("")
 
         for _cell in cells:
-            if isinstance(_cell, Gtk.CellRendererPixbuf):
+            if isinstance(_cell, gtk.CellRendererPixbuf):
                 _column.pack_start(_cell, False)
             else:
                 _column.pack_start(_cell, True)
                 _column.connect('notify::width', self._on_resize_wrap, _cell)
 
         _label = RAMSTKLabel(
-            heading, width=-1, height=-1, justify=Gtk.Justification.CENTER)
+            heading, width=-1, height=-1, justify=gtk.JUSTIFY_CENTER)
         _label.set_angle(90)
         _column.set_widget(_label)
         _column.set_resizable(True)
@@ -291,15 +348,15 @@ class RAMSTKBaseMatrix(object):
     @staticmethod
     def _on_resize_wrap(column, __param, cell):
         """
-        Dynamically set the wrap-width property for a Gtk.CellRenderer().
+        Dynamically set the wrap-width property for a gtk.CellRenderer().
 
         This method is called when the column width is resized.
 
-        :param column: the Gtk.TreeViewColumn() being resized.
-        :type column: :class:`Gtk.TreeViewColumn`
+        :param column: the gtk.TreeViewColumn() being resized.
+        :type column: :class:`gtk.TreeViewColumn`
         :param GParamInt __param: the triggering parameter.
-        :param cell: the Gtk.CellRenderer() that needs to be resized.
-        :type cell: :class:`Gtk.CellRenderer`
+        :param cell: the gtk.CellRenderer() that needs to be resized.
+        :type cell: :class:`gtk.CellRenderer`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

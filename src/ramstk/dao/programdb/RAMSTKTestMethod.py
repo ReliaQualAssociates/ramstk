@@ -16,7 +16,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKTestMethod(RAMSTK_BASE):
     """
-    Class to represent table ramstk_test_method in the RAMSTK Program database.
+    Class to represent the table ramstk_test_method in the RAMSTK Program database.
 
     This table shared a Many-to-One relationship with ramstk_op_stress.
     """
@@ -39,7 +39,7 @@ class RAMSTKTestMethod(RAMSTK_BASE):
     description = Column('fld_description', String(512), default='')
     boundary_conditions = Column(
         'fld_boundary_conditions', String(512), default='')
-    remarks = Column('fld_remarks', BLOB, default=b'')
+    remarks = Column('fld_remarks', BLOB, default='')
 
     # Define the relationships to other tables in the RAMSTK Program database.
     op_load = relationship('RAMSTKOpLoad', back_populates='test_method')
@@ -85,11 +85,11 @@ class RAMSTKTestMethod(RAMSTK_BASE):
                 none_to_default(attributes['description'], ''))
             self.boundary_conditions = str(
                 none_to_default(attributes['boundary_conditions'], ''))
-            self.remarks = none_to_default(attributes['remarks'], b'')
+            self.remarks = str(none_to_default(attributes['remarks'], ''))
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKTestMethod.set_attributes().".format(str(_err))
+                   "RAMSTKTestMethod.set_attributes().".format(_err)
 
         return _error_code, _msg

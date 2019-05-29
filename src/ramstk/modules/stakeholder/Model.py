@@ -6,9 +6,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Stakeholder Package Data Model Module."""
 
-# Import third party packages.
-from pubsub import pub
-
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
 from ramstk.dao import RAMSTKStakeholder
@@ -25,7 +22,7 @@ class StakeholderDataModel(RAMSTKDataModel):
 
     _tag = 'Stakeholders'
 
-    def __init__(self, dao, **kwargs):
+    def __init__(self, dao):
         """
         Initialize a Stakeholder data model instance.
 
@@ -40,7 +37,6 @@ class StakeholderDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -48,78 +44,35 @@ class StakeholderDataModel(RAMSTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
+    def do_select_all(self, **kwargs):
         """
-        Calculate the improvement factor and overall weighting.
+        Retrieve all the Stakeholders from the RAMSTK Program database.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        This method retrieves all the records from the RAMSTKStakeholder
+        table in the connected RAMSTK Program database.  It then add each to the
+        Stakeholder data model treelib.Tree().
+
+        :return: tree; the treelib Tree() of RAMSTKStakeholder data models.
+        :rtype: :class:`treelib.Tree`
         """
-        _return = False
+        _revision_id = kwargs['revision_id']
+        _session = RAMSTKDataModel.do_select_all(self, **kwargs)
 
-        _stakeholder = self.tree.get_node(node_id).data
+        for _stakeholder in _session.query(RAMSTKStakeholder).filter(
+                RAMSTKStakeholder.revision_id == _revision_id).all():
+            self.tree.create_node(
+                _stakeholder.description,
+                _stakeholder.stakeholder_id,
+                parent=0,
+                data=_stakeholder)
 
-        _stakeholder.improvement = 1.0 + 0.2 * (
-            _stakeholder.planned_rank - _stakeholder.customer_rank)
-        _stakeholder.overall_weight = float(_stakeholder.priority) * \
-            _stakeholder.improvement * _stakeholder.user_float_1 * \
-            _stakeholder.user_float_2 * _stakeholder.user_float_3 * \
-            _stakeholder.user_float_4 * _stakeholder.user_float_5
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RAMSTKDataModel.__init__
+            self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
 
-        # If we're not running a test, let anyone who cares know a Stakeholder
-        # input was calculated.
-        if not self._test:
-            pub.sendMessage(
-                'calculated_stakeholder',
-                node_id=node_id,
-                results=[
-                    _stakeholder.improvement, _stakeholder.overall_weight
-                ])
+        _session.close()
 
-        return _return
-
-    def do_calculate_all(self, **kwargs):
-        """
-        Calculate metrics for all Stakeholder inputs.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        # Calculate all Stakeholder inputs, skipping the top node in the tree.
-        for _node in self.tree.all_nodes():
-            if _node.identifier != 0:
-                self.do_calculate(_node.identifier, **kwargs)
-
-        return _return
-
-    def do_delete(self, node_id):
-        """
-        Remove a record from the RAMSTKStakeholder table.
-
-        :param int node_id: the ID of the Stakeholder to be
-                                  removed.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
-            _error_code = 2005
-            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
-                          'Stakeholder ID {0:d}.'.format(node_id)
-        else:
-            self.last_id = max(self.tree.nodes.keys())
-
-            # If we're not running a test, let anyone who cares know a
-            # Stakeholder input was deleted.
-            if not self._test:
-                pub.sendMessage('deleted_stakeholder', tree=self.tree)
-
-        return _error_code, _msg
+        return self.tree
 
     def do_insert(self, **kwargs):
         """
@@ -147,55 +100,31 @@ class StakeholderDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            try:
-                self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
-            except TypeError:
-                self.last_id = _stakeholder.stakeholder_id
-
-            # If we're not running a test, let anyone who cares know a new
-            # Function was inserted.
-            if not self._test:
-                pub.sendMessage('inserted_stakeholder', tree=self.tree)
+            self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
 
         return _error_code, _msg
 
-    def do_select_all(self, **kwargs):
+    def do_delete(self, node_id):
         """
-        Retrieve all the Stakeholders from the RAMSTK Program database.
+        Remove a record from the RAMSTKStakeholder table.
 
-        This method retrieves all the records from the RAMSTKStakeholder
-        table in the connected RAMSTK Program database.  It then add each to the
-        Stakeholder data model treelib.Tree().
-
-        :return: tree; the treelib Tree() of RAMSTKStakeholder data models.
-        :rtype: :class:`treelib.Tree`
+        :param int node_id: the ID of the Stakeholder to be
+                                  removed.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
-        _revision_id = kwargs['revision_id']
-        _session = RAMSTKDataModel.do_select_all(self, **kwargs)
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
-        for _stakeholder in _session.query(RAMSTKStakeholder).filter(
-                RAMSTKStakeholder.revision_id == _revision_id).all():
-            self.tree.create_node(
-                _stakeholder.description,
-                _stakeholder.stakeholder_id,
-                parent=0,
-                data=_stakeholder)
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RAMSTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
+                          'Stakeholder ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
-            try:
-                self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
-            except TypeError:
-                self.last_id = _stakeholder.stakeholder_id
-
-        _session.close()
-
-        # If we're not running a test and there were stakeholders returned,
-        # let anyone who cares know the Stakeholders have been selected.
-        if not self._test and self.tree.size() > 1:
-            pub.sendMessage('retrieved_stakeholders', tree=self.tree)
-
-        return None
+        return _error_code, _msg
 
     def do_update(self, node_id):
         """
@@ -208,13 +137,7 @@ class StakeholderDataModel(RAMSTKDataModel):
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
-        # If there was no error and we're not running a test, let anyone
-        # who cares know a Function was updated.
-        if _error_code == 0:
-            if not self._test:
-                _attributes = self.do_select(node_id).get_attributes()
-                pub.sendMessage('updated_stakeholder', attributes=_attributes)
-        else:
+        if _error_code != 0:
             _error_code = 2006
             _msg = 'RAMSTK ERROR: Attempted to save non-existent Stakeholder ' \
                    'ID {0:d}.'.format(node_id)
@@ -247,3 +170,39 @@ class StakeholderDataModel(RAMSTKDataModel):
                     "table.")
 
         return _error_code, _msg
+
+    def do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
+        """
+        Calculate the improvement factor and overall weighting.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _stakeholder = self.tree.get_node(node_id).data
+
+        _stakeholder.improvement = 1.0 + 0.2 * (
+            _stakeholder.planned_rank - _stakeholder.customer_rank)
+        _stakeholder.overall_weight = float(_stakeholder.priority) * \
+            _stakeholder.improvement * _stakeholder.user_float_1 * \
+            _stakeholder.user_float_2 * _stakeholder.user_float_3 * \
+            _stakeholder.user_float_4 * _stakeholder.user_float_5
+
+        return _return
+
+    def do_calculate_all(self, **kwargs):
+        """
+        Calculate metrics for all Stakeholder inputs.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        # Calculate all Stakeholder inputs, skipping the top node in the tree.
+        for _node in self.tree.all_nodes():
+            if _node.identifier != 0:
+                self.do_calculate(_node.identifier, **kwargs)
+
+        return _return

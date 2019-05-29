@@ -35,21 +35,20 @@ ATTRIBUTES = {
     'remarks': '',
     'mtbf_mission': 0.0,
     'function_code': 'PRESS-001',
-    'name': 'Function Name',
+    'name': u'Function Name',
     'level': 0,
     'mttr': 0.0,
     'mcmt': 0.0,
     'function_id': 1,
     'availability_logistics': 1.0,
-    'total_mode_count': 0,
-    'revision_id': 1
+    'total_mode_count': 0
 }
 
 
 @pytest.mark.integration
 def test_create_data_model(test_dao):
     """ __init__() should return a Function model. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
 
     assert isinstance(DUT, dtmFunction)
     assert isinstance(DUT.tree, Tree)
@@ -59,17 +58,17 @@ def test_create_data_model(test_dao):
 @pytest.mark.integration
 def test_do_select_all(test_dao):
     """ do_select_all() should return a Tree() object populated with RAMSTKFunction instances on success. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
+    _tree = DUT.do_select_all(revision_id=1)
 
-    assert DUT.do_select_all(revision_id=1) is None
-    assert isinstance(DUT.tree, Tree)
-    assert isinstance(DUT.tree.get_node(1).data, RAMSTKFunction)
+    assert isinstance(_tree, Tree)
+    assert isinstance(_tree.get_node(1).data, RAMSTKFunction)
 
 
 @pytest.mark.integration
 def test_do_select(test_dao):
     """ do_select() should return an instance of the RAMSTKFunction data model on success. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
     _function = DUT.do_select(1)
 
@@ -81,7 +80,7 @@ def test_do_select(test_dao):
 @pytest.mark.integration
 def test_do_select_non_existent_id(test_dao):
     """ do_select() should return None when a non-existent Function ID is requested. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     _function = DUT.do_select(100)
 
     assert _function is None
@@ -90,15 +89,14 @@ def test_do_select_non_existent_id(test_dao):
 @pytest.mark.integration
 def test_do_insert_sibling(test_dao):
     """ do_insert() should return False on success when inserting a sibling Function. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=0)
 
     assert _error_code == 0
-    assert _msg == (
-        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+                    "database.")
     assert DUT.last_id == 4
 
     DUT.do_delete(DUT.last_id)
@@ -107,15 +105,14 @@ def test_do_insert_sibling(test_dao):
 @pytest.mark.integration
 def test_do_insert_child(test_dao):
     """ do_insert() should return False on success when inserting a child Function. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1)
 
     assert _error_code == 0
-    assert _msg == (
-        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+                    "database.")
     assert DUT.last_id == 4
 
     DUT.do_delete(DUT.last_id)
@@ -124,7 +121,7 @@ def test_do_insert_child(test_dao):
 @pytest.mark.integration
 def test_do_delete(test_dao):
     """ do_delete() should return a zero error code on success. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
     DUT.do_insert(revision_id=1, parent_id=1)
 
@@ -138,20 +135,20 @@ def test_do_delete(test_dao):
 @pytest.mark.integration
 def test_do_delete_non_existent_id(test_dao):
     """ do_delete() should return a non-zero error code when passed a Function ID that doesn't exist. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to delete non-existent "
-                    "Function ID 300.")
+    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Function "
+                    "ID 300.")
 
 
 @pytest.mark.integration
 def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _function = DUT.tree.get_node(1).data
@@ -166,27 +163,27 @@ def test_do_update(test_dao):
 @pytest.mark.integration
 def test_do_update_non_existent_id(test_dao):
     """ do_update() should return a non-zero error code when passed a Function ID that doesn't exist. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update(100)
 
-    assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent "
-                    "Function ID 100.")
+    assert _error_code == 2006
+    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Function ID "
+                    "100.")
 
 
 @pytest.mark.integration
 def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
-    DUT = dtmFunction(test_dao, test=True)
+    DUT = dtmFunction(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the "
-                    "function table.")
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the function "
+                    "table.")
 
 
 @pytest.mark.integration
@@ -203,10 +200,9 @@ def test_create_controller(test_dao, test_configuration):
 def test_request_do_select_all(test_dao, test_configuration):
     """ request_select_all() should return a Tree of RAMSTKFunction models. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
+    _tree = DUT.request_do_select_all(revision_id=1)
 
-    assert DUT.request_do_select_all(ATTRIBUTES) is None
-    assert isinstance(
-        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKFunction)
+    assert isinstance(_tree.get_node(1).data, RAMSTKFunction)
 
 
 @pytest.mark.integration
@@ -218,23 +214,23 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
 
     assert isinstance(_matrix, pd.DataFrame)
     assert _column_hdrs == {
-        1: 'S1',
-        2: 'S1:SS1',
-        4: 'S1:SS3',
-        3: 'S1:SS2',
-        5: 'S1:SS4',
-        6: 'S1:SS1:A1',
-        7: 'S1:SS1:A2',
-        8: 'S1:SS1:A3'
+        1: u'S1',
+        2: u'S1:SS1',
+        4: u'S1:SS3',
+        3: u'S1:SS2',
+        5: u'S1:SS4',
+        6: u'S1:SS1:A1',
+        7: u'S1:SS1:A2',
+        8: u'S1:SS1:A3'
     }
-    assert _row_hdrs == {1: 'FUNC-0001', 2: 'FUNC-0002', 3: 'FUNC-0003'}
+    assert _row_hdrs == {1: u'FUNC-0001', 2: u'FUNC-0002', 3: u'FUNC-0003'}
 
 
 @pytest.mark.integration
 def test_request_do_select(test_dao, test_configuration):
     """ request_do_select() should return an RAMSTKFunction model. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     _function = DUT.request_do_select(1)
 
@@ -254,7 +250,7 @@ def test_request_do_select_non_existent_id(test_dao, test_configuration):
 def test_request_do_insert(test_dao, test_configuration):
     """ request_do_insert() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert not DUT.request_do_insert(revision_id=1, parent_id=0)
 
@@ -298,7 +294,7 @@ def test_request_do_insert_matrix_column(test_dao, test_configuration):
 def test_request_do_delete(test_dao, test_configuration):
     """ request_do_delete() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
     DUT.request_do_insert(revision_id=1, parent_id=0)
 
     assert not DUT.request_do_delete(DUT.request_last_id())
@@ -308,7 +304,7 @@ def test_request_do_delete(test_dao, test_configuration):
 def test_request_do_delete_non_existent_id(test_dao, test_configuration):
     """ request_do_delete() should return True when attempting to delete a non-existent Function. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert DUT.request_do_delete(100)
 
@@ -350,7 +346,7 @@ def test_request_do_delete_matrix_column(test_dao, test_configuration):
 def test_request_do_update(test_dao, test_configuration):
     """ request_do_update() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert not DUT.request_do_update(1)
 
@@ -359,7 +355,7 @@ def test_request_do_update(test_dao, test_configuration):
 def test_request_do_update_non_existent_id(test_dao, test_configuration):
     """ request_do_update() should return True when attempting to save a non-existent Function. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert DUT.request_do_update(100)
 
@@ -388,7 +384,7 @@ def test_request_do_update_non_existent_matrix(test_dao, test_configuration):
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     assert not DUT.request_do_update_all()
 
@@ -397,7 +393,7 @@ def test_request_do_update_all(test_dao, test_configuration):
 def test_request_get_attributes(test_dao, test_configuration):
     """ request_get_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     _attributes = DUT.request_get_attributes(1)
 
@@ -409,10 +405,9 @@ def test_request_get_attributes(test_dao, test_configuration):
 def test_request_set_attributes(test_dao, test_configuration):
     """ request_set_attributes() should return a dict of {attribute name:attribute value} pairs. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
-    (_error_code, _msg) = DUT.request_set_attributes(1, 'availability_mission',
-                                                     0.9978)
+    _error_code, _msg = DUT.request_set_attributes(1, ATTRIBUTES)
 
     assert _error_code == 0
     assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKFunction 1 attributes.")
@@ -422,7 +417,7 @@ def test_request_set_attributes(test_dao, test_configuration):
 def test_request_last_id(test_dao, test_configuration):
     """ request_last_id() should return the last Function ID used in the RAMSTK Program database. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(revision_id=1)
 
     _last_id = DUT.request_last_id()
 

@@ -8,7 +8,6 @@
 
 from datetime import date
 
-# Import third party modules.
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
@@ -19,7 +18,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKRequirement(RAMSTK_BASE):
     """
-    Class to represent ramstk_requirement table in the RAMSTK Program database.
+    Class to represent the ramstk_requirement table in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
@@ -40,7 +39,7 @@ class RAMSTKRequirement(RAMSTK_BASE):
         nullable=False)
 
     derived = Column('fld_derived', Integer, default=0)
-    description = Column('fld_description', BLOB, default=b'')
+    description = Column('fld_description', BLOB, default='')
     figure_number = Column('fld_figure_number', String(256), default='')
     owner = Column('fld_owner', String(256), default='')
     page_number = Column('fld_page_number', String(256), default='')
@@ -184,7 +183,8 @@ class RAMSTKRequirement(RAMSTK_BASE):
 
         try:
             self.derived = int(none_to_default(attributes['derived'], 0))
-            self.description = none_to_default(attributes['description'], b'')
+            self.description = str(
+                none_to_default(attributes['description'], ''))
             self.figure_number = str(
                 none_to_default(attributes['figure_number'], ''))
             self.owner = str(none_to_default(attributes['owner'], ''))
@@ -273,7 +273,7 @@ class RAMSTKRequirement(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKMechanism.set_attributes().".format(str(_err))
+                   "RAMSTKMechanism.set_attributes().".format(_err)
 
         return _error_code, _msg
 

@@ -26,15 +26,15 @@ ATTRIBUTES = {
     'software_active': 1,
     'last_saved': date.today(),
     'revision_id': 1,
-    'method': 'STANDARD',
+    'method': u'STANDARD',
     'survival_active': 1,
     'created_on': date.today(),
     'fraca_active': 1,
-    'last_saved_by': '',
+    'last_saved_by': u'',
     'hardware_active': 1,
     'rbd_active': 0,
     'rcm_active': 0,
-    'created_by': '',
+    'created_by': u'',
     'testing_active': 1
 }
 

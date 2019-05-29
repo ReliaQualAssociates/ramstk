@@ -34,7 +34,7 @@ class SimilarItemDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmSimilarItem(dao, **kwargs),
+            model=dtmSimilarItem(dao),
             ramstk_module='similar_item',
             **kwargs)
 

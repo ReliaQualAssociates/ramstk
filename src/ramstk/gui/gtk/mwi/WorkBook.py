@@ -21,7 +21,7 @@ from ramstk.gui.gtk.workviews import wvwRevisionGD
 from ramstk.gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
 from ramstk.gui.gtk.workviews import wvwHardwareGD, wvwHardwareAI, wvwHardwareAR
 from ramstk.gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk
+from ramstk.gui.gtk.ramstk.Widget import _, gtk
 
 
 class WorkBook(RAMSTKBook):
@@ -73,19 +73,8 @@ class WorkBook(RAMSTKBook):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
-
-    def __make_ui(self):
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        self.set_title(_("RAMSTK Work Book"))
+        # Set the properties for the ModuleBook and it's widgets.
+        self.set_title(_(u"RAMSTK Work Book"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
@@ -97,13 +86,13 @@ class WorkBook(RAMSTKBook):
         self.set_default_size(_width, _height)
         self.move((_width / 1), (_height / 2))
 
-        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+        if controller.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'left':
             self.notebook.set_tab_pos(self._left_tab)
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+        elif controller.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'right':
             self.notebook.set_tab_pos(self._right_tab)
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
+        elif controller.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
                 'workbook'].lower() == 'top':
             self.notebook.set_tab_pos(self._top_tab)
         else:
@@ -116,7 +105,7 @@ class WorkBook(RAMSTKBook):
         self.add(self.notebook)
         self.show_all()
 
-        return None
+        pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
 
     def _on_module_change(self, module=''):
         """
@@ -140,13 +129,13 @@ class WorkBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
-        if event.new_window_state == Gdk.WindowState.ICONIFIED:
+        if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
             for _window in ['listbook', 'modulebook', 'workbook']:
                 self._mdcRAMSTK.dic_books[_window].iconify()
         elif event.new_window_state == 0:
             for _window in ['listbook', 'modulebook', 'workbook']:
                 self._mdcRAMSTK.dic_books[_window].deiconify()
-        elif event.new_window_state == Gdk.WindowState.MAXIMIZED:
+        elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
             window.maximize()
 
         return None

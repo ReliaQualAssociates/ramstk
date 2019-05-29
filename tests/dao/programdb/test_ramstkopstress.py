@@ -17,11 +17,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'description': 'Test Operating Stress',
+    'description': u'Test Operating Stress',
     'load_id': 1,
     'load_history': '',
     'measurable_parameter': '',
-    'remarks': b'',
+    'remarks': '',
     'stress_id': 1
 }
 
@@ -42,7 +42,7 @@ def test_ramstkopstress_create(test_dao):
     assert DUT.description == 'Test Operating Stress'
     assert DUT.measurable_parameter == ''
     assert DUT.load_history == ''
-    assert DUT.remarks == b''
+    assert DUT.remarks == ''
 
 
 @pytest.mark.integration
@@ -61,7 +61,7 @@ def test_get_attributes(test_dao):
     assert _attributes['description'] == 'Test Operating Stress'
     assert _attributes['load_history'] == ''
     assert _attributes['measurable_parameter'] == ''
-    assert _attributes['remarks'] == b''
+    assert _attributes['remarks'] == ''
 
 
 @pytest.mark.integration

@@ -8,8 +8,7 @@
 
 # pylint: disable=E0401
 try:
-    from matplotlib.backends.backend_gtk3cairo \
-        import FigureCanvasGTK3Cairo as FigureCanvas
+    from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
     from matplotlib.figure import Figure  # pylint: disable=E0401
     from matplotlib.lines import Line2D  # pylint: disable=E0401
 except RuntimeError:
@@ -17,7 +16,7 @@ except RuntimeError:
     pass
 
 # Import other RAMSTK Widget classes.
-from .Widget import _, Gtk  # pylint: disable=E0401
+from .Widget import _, gtk  # pylint: disable=E0401
 
 
 class RAMSTKPlot(object):
@@ -193,12 +192,12 @@ class RAMSTKPlot(object):
         """
         Return the plot to the Work Book page it is part of.
 
-        :param __window: the Gtk.Window() that is being destroyed.
-        :type __window: :class:`Gtk.Window`
-        :param __event: the Gdk.Event() that called this method.
-        :type __event: :class:`Gdk.Event`
-        :param parent: the original parent Gtk.Widget() for the plot.
-        :type parent: :class:`Gtk.Widget`
+        :param __window: the gtk.Window() that is being destroyed.
+        :type __window: :class:`gtk.Window`
+        :param __event: the gtk.gdk.Event() that called this method.
+        :type __event: :class:`gtk.gdk.Event`
+        :param parent: the original parent gtk.Widget() for the plot.
+        :type parent: :class:`gtk.Widget`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -219,13 +218,13 @@ class RAMSTKPlot(object):
         _parent = self.plot.get_parent()
 
         if event.button == 3:  # Right click.
-            _window = Gtk.Window()
+            _window = gtk.Window()
             _window.set_skip_pager_hint(True)
             _window.set_skip_taskbar_hint(True)
             _window.set_default_size(800, 400)
             _window.set_border_width(5)
-            _window.set_position(Gtk.WindowPosition.NONE)
-            _window.set_title(_("RAMSTK Plot"))
+            _window.set_position(gtk.WIN_POS_NONE)
+            _window.set_title(_(u"RAMSTK Plot"))
 
             _window.connect('delete_event', self.close_plot, _parent)
 
@@ -235,46 +234,35 @@ class RAMSTKPlot(object):
 
         return False
 
-    def do_make_labels(self, label, x_pos, y_pos, **kwargs):
-        r"""
+    def do_make_labels(self,
+                       label,
+                       x_pos,
+                       y_pos,
+                       set_x=True,
+                       fontsize=14,
+                       fontweight='bold'):
+        """
         Make the abscissa or ordinate label.
 
         :param str label: the text to display as the abscissa or ordinate
                           label.
         :param float x_pos: the position along the abscissa to place the label.
         :param float y_pos: the position along the ordinate to place the label.
-        :param \**kwargs: See below
-
-        :Keyword Arguments:
-            * *set_x* (bool) -- whether to set the abscissa (default) or
-                                ordinate label.
-            * *fontsize* (int) -- the size of the font to use for the axis
-                                  label.
-            * *fontweight* (str) -- the weight of the font to use for the axis
-                                    label.
+        :keyword bool set_x: whether to set the abscissa (default) or ordinate
+                             label.
+        :keyword int fontsize: the size of the font to use for the axis label.
+        :keyword str fontweight: the weight of the font to use for the axis
+                                 label.
         :return: matplotlib text instance representing the label.
         :rtype: :class:`matplotlib.text.Text`
         """
-        try:
-            _set_x = kwargs['set_x']
-        except KeyError:
-            _set_x = True
-        try:
-            _fontsize = kwargs['fontsize']
-        except KeyError:
-            _fonsize = 14
-        try:
-            _fontweight = kwargs['fontweight']
-        except KeyError:
-            _fontweight = 'bold'
-
         _label = None
 
-        if _set_x:
+        if set_x:
             _label = self.axis.set_xlabel(
                 label, {
-                    'fontsize': _fontsize,
-                    'fontweight': _fontweight,
+                    'fontsize': fontsize,
+                    'fontweight': fontweight,
                     'verticalalignment': 'center',
                     'horizontalalignment': 'center',
                     'x': x_pos,
@@ -283,8 +271,8 @@ class RAMSTKPlot(object):
         else:
             _label = self.axis.set_ylabel(
                 label, {
-                    'fontsize': _fontsize,
-                    'fontweight': _fontweight,
+                    'fontsize': fontsize,
+                    'fontweight': fontweight,
                     'verticalalignment': 'center',
                     'horizontalalignment': 'center',
                     'rotation': 'vertical'
@@ -293,90 +281,66 @@ class RAMSTKPlot(object):
         return _label
 
     # pylint: disable=too-many-arguments
-    def do_make_legend(self, text, **kwargs):
-        r"""
+    def do_make_legend(self,
+                       text,
+                       fontsize='small',
+                       frameon=False,
+                       location='upper right',
+                       ncol=1,
+                       shadow=True,
+                       title="",
+                       lwd=0.5):
+        """
         Make a legend on the RAMSTKPlot.
 
         :param tuple text: the text to display in the legend.
-        :param \**kwargs: See below
-
-        :Keyword Arguments:
-            * *fontsize* (str) -- the size of the font to use for the legend.
-                                  Options are:
-                                   - xx-small
-                                   - x-small
-                                   - small (default)
-                                   - medium
-                                   - large
-                                   - x-large
-                                   - xx-large
-            * *frameon* (bool) -- whether or not there is a frame around the
-                                  legend.
-            * *location* (str) -- the location of the legend on the plot.
-                                  Options are:
-                                   - best
-                                   - upper right (default)
-                                   - upper left
-                                   - lower left
-                                   - lower right
-                                   - right
-                                   - center left
-                                   - center right
-                                   - lower center
-                                   - upper center
-                                   - center
-            * *ncol* (int) -- the number columns in the legend.  Default is 1.
-            * *shadow* (bool) -- whether or not to display a shadow behind the
-                                 legend block.  Default is True.
-            * *title* (str) -- the title of the legend.  Default is an empty
-                               string.
-            * *lwd* (float) -- the linewidth of the box around the legend.
-        :return: None
-        :rtype: None
+        :keyword str fontsize: the size of the font to use for the legend.
+                               Options are:
+                                - xx-small
+                                - x-small
+                                - small (default)
+                                - medium
+                                - large
+                                - x-large
+                                - xx-large
+        :keyword bool frameon: whether or not there is a frame around the
+                               legend.
+        :keyword str location: the location of the legend on the plot.  Options
+                               are:
+                                - best
+                                - upper right (default)
+                                - upper left
+                                - lower left
+                                - lower right
+                                - right
+                                - center left
+                                - center right
+                                - lower center
+                                - upper center
+                                - center
+        :keyword int ncol: the number columns in the legend.  Default is 1.
+        :keyword bool shadow: whether or not to display a shadow behind the
+                              legend block.  Default is True.
+        :keyword str title: the title of the legend.  Default is an empty
+                            string.
+        :keyword float lwd: the linewidth of the box around the legend.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
-        try:
-            _fontsize = kwargs['fontsize']
-        except KeyError:
-            _fontsize = 'small'
-        try:
-            _frameon = kwargs['frameon']
-        except KeyError:
-            _frameon = False
-        try:
-            _location = kwargs['location']
-        except KeyError:
-            _location = 'upper right'
-        try:
-            _ncol = kwargs['ncol']
-        except KeyError:
-            _ncol = 1
-        try:
-            _shadow = kwargs['shadow']
-        except KeyError:
-            _shadow = True
-        try:
-            _title = kwargs['title']
-        except KeyError:
-            _title = ""
-        try:
-            _lwd = kwargs['lwd']
-        except KeyError:
-            _lwd = 0.5
-
         _legend = self.axis.legend(
             text,
-            frameon=_frameon,
-            loc=_location,
-            ncol=_ncol,
-            shadow=_shadow,
-            title=_title)
+            frameon=frameon,
+            loc=location,
+            ncol=ncol,
+            shadow=shadow,
+            title=title)
 
         for _text in _legend.get_texts():
-            _text.set_fontsize(_fontsize)
+            _text.set_fontsize(fontsize)
         for _line in _legend.get_lines():
-            _line.set_linewidth(_lwd)
+            _line.set_linewidth(lwd)
 
-        return None
+        return False
 
     def do_make_title(self, title, fontsize=16, fontweight='bold'):
         """

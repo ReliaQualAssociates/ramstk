@@ -11,7 +11,7 @@ from pubsub import pub
 # Import other RAMSTK modules.
 from ramstk.Utilities import date_to_ordinal
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+from ramstk.gui.gtk.ramstk.Widget import _, gtk
 from .ModuleView import RAMSTKModuleView
 
 
@@ -20,8 +20,8 @@ class ModuleView(RAMSTKModuleView):
     Display Validation attribute data in the RAMSTK Module Book.
 
     The Validation Module View displays all the Validations associated with the
-    connected RAMSTK Program in a flat list.  The attributes of a Validation
-    Module View are:
+    connected RAMSTK Program in a flat list.  The attributes of a Validation Module
+    View are:
 
     :ivar int _validation_id: the ID of the currently selected Validation.
     """
@@ -36,13 +36,13 @@ class ModuleView(RAMSTKModuleView):
         RAMSTKModuleView.__init__(self, controller, module='validation')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = \
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/validation.png'
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._revision_id = None
         self._validation_id = None
 
         # Initialize public dictionary attributes.
@@ -51,28 +51,18 @@ class ModuleView(RAMSTKModuleView):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_tree, 'retrieved_validations')
-        pub.subscribe(self._on_edit, 'wvwEditedValidation')
-
-    def __make_ui(self):
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        RAMSTKModuleView._make_ui(self)
-
-        self.make_treeview()
+        self._make_treeview()
         self.treeview.set_tooltip_text(
-            _("Displays the list of validation tasks."))
+            _(u"Displays the list of validation "
+              u"tasks."))
+        self._lst_handler_id.append(
+            self.treeview.connect('cursor_changed', self._do_change_row))
+        self._lst_handler_id.append(
+            self.treeview.connect('button_press_event', self._on_button_press))
 
         i = 0
         for _column in self.treeview.get_columns():
-            _cell = _column.get_cells()[0]
+            _cell = _column.get_cell_renderers()[0]
             try:
                 if _cell.get_property('editable'):
                     _cell.connect('edited', self._do_edit_cell, i,
@@ -81,31 +71,66 @@ class ModuleView(RAMSTKModuleView):
                 pass
             i += 1
 
+        self._img_tab.set_from_file(self._dic_icons['tab'])
         _label = ramstk.RAMSTKLabel(
-            _("Validation"),
+            _(u"Validation"),
             width=-1,
             height=-1,
-            tooltip=_("Displays the list of validation tasks."))
+            tooltip=_(u"Displays the program validation tasks."))
 
-        self.hbx_tab_label.pack_end(_label, True, True, 0)
+        self.hbx_tab_label.pack_start(self._img_tab)
+        self.hbx_tab_label.pack_end(_label)
+        self.hbx_tab_label.show_all()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(self._make_buttonbox())
+        self.pack_start(_scrollwindow, expand=False, fill=False)
 
         self.show_all()
 
-        return None
+        pub.subscribe(self._on_select_revision, 'selectedRevision')
+        pub.subscribe(self._on_edit, 'wvwEditedValidation')
+
+    def _do_change_row(self, treeview):
+        """
+        Handle events for the Validation package Module View RAMSTKTreeView().
+
+        This method is called whenever a Validation Module View RAMSTKTreeView()
+        row is activated/changed.
+
+        :param treeview: the Validation class gtk.TreeView().
+        :type treeview: :class:`gtk.TreeView`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        treeview.handler_block(self._lst_handler_id[0])
+
+        _model, _row = treeview.get_selection().get_selected()
+
+        self._validation_id = _model.get_value(_row, 1)
+
+        treeview.handler_unblock(self._lst_handler_id[0])
+
+        pub.sendMessage('selectedValidation', module_id=self._validation_id)
+
+        return _return
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
         Handle edits of the Validation package Module View RAMSTKTreeview().
 
-        :param __cell: the Gtk.CellRenderer() that was edited.
-        :type __cell: :class:`Gtk.CellRenderer`
-        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer()
+        :param __cell: the gtk.CellRenderer() that was edited.
+        :type __cell: :class:`gtk.CellRenderer`
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
                          that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
-                             Gtk.CellRenderer().
-        :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
-        :type model: :class:`Gtk.TreeModel`
+                             gtk.CellRenderer().
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -170,8 +195,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to calculate all hardware items.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -185,42 +210,31 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to delete the selected record from the RAMSTKValidation table.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        _prompt = _("You are about to delete Validation {0:d} and all data "
-                    "associated with it.  Is this really what you want "
-                    "to do?").format(self._validation_id)
-        _dialog = ramstk.RAMSTKMessageDialog(
-            _prompt, self._dic_icons['question'], 'question')
+        _prompt = _(u"You are about to delete Validation {0:d} and all data "
+                    u"associated with it.  Is this really what you want "
+                    u"to do?").format(self._validation_id)
+        _dialog = ramstk.RAMSTKMessageDialog(_prompt, self._dic_icons['question'],
+                                          'question')
         _response = _dialog.do_run()
 
-        if _response == Gtk.ResponseType.YES:
+        if _response == gtk.RESPONSE_YES:
             _dialog.do_destroy()
-            if self._dtc_data_controller.request_do_delete(
-                    self._validation_id):
-                _prompt = _("An error occurred when attempting to delete "
-                            "Validation {0:d}.").format(self._validation_id)
+            if self._dtc_function.request_do_delete(self._function_id):
+                _prompt = _(u"An error occurred when attempting to delete "
+                            u"Validation {0:d}.").format(self._validation_id)
                 _error_dialog = ramstk.RAMSTKMessageDialog(
                     _prompt, self._dic_icons['error'], 'error')
-                if _error_dialog.do_run() == Gtk.ResponseType.OK:
+                if _error_dialog.do_run() == gtk.RESPONSE_OK:
                     _error_dialog.do_destroy()
 
                 _return = True
-            else:
-                _model, _row = self.treeview.get_selection().get_selected()
-                _prow = _model.iter_parent(_row)
-                _model.remove(_row)
-
-                if _prow is not None:
-                    _path = _model.get_path(_prow)
-                    _column = self.treeview.get_column(0)
-                    self.treeview.set_cursor(_path, None, False)
-                    self.treeview.row_activated(_path, _column)
         else:
             _dialog.do_destroy()
 
@@ -230,8 +244,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Launch the Export assistant.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: None
         :rtype: None
         """
@@ -241,8 +255,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to insert a new record to the RAMSTKValidation table.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -250,17 +264,16 @@ class ModuleView(RAMSTKModuleView):
 
         self._dtc_data_controller.request_do_select(self._validation_id)
 
-        if not self._dtc_data_controller.request_do_insert(
-                revision_id=self._revision_id):
-            self._on_select_revision(self._revision_id)
+        if not self._dtc_data_controller.request_do_insert():
+            self._on_select_validation()
         else:
-            _prompt = _("An error occurred while attempting to add a "
-                        "Validation.")
+            _prompt = _(u"An error occurred while attempting to add a "
+                        u"Validation.")
             _error_dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             self._mdcRAMSTK.debug_log.error(_prompt)
 
-            if _error_dialog.do_run() == Gtk.ResponseType.OK:
+            if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
 
             _return = True
@@ -271,8 +284,8 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to insert a new sibling Validation task.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -282,15 +295,15 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to update the selected record to the RAMSTKValidation table.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.set_cursor(gtk.gdk.WATCH)
         _return = self._dtc_data_controller.request_do_update(
             self._validation_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
 
         return _return
 
@@ -298,38 +311,43 @@ class ModuleView(RAMSTKModuleView):
         """
         Send request to save all the records to the RAMSTKValidation table.
 
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.set_cursor(gtk.gdk.WATCH)
         _return = self._dtc_data_controller.request_do_update_all()
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.set_cursor(gtk.gdk.LEFT_PTR)
 
         return _return
 
     def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Create the Gtk.ButtonBox() for the Validation Module View.
+        Create the gtk.ButtonBox() for the Validation Module View.
 
-        :return: _buttonbox; the Gtk.ButtonBox() for the Validation class
+        :return: _buttonbox; the gtk.ButtonBox() for the Validation class
                  Module View.
-        :rtype: :class:`Gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _("Add a new Validation task."),
-            _("Remove the currently selected Validation task1."),
-            _("Exports Verification tasks to an external file (CSV, Excel, "
-              "and text files are supported).")
+            _(u"Add a new Validation task."),
+            _(u"Remove the currently selected Validation task1."),
+            _(u"Save the currently selected Validation task to the open "
+              u"RAMSTK Program database."),
+            _(u"Saves all Validation tasks to the open RAMSTK Program "
+              u"database."),
+            _(u"Exports Verification tasks to an external file (CSV, Excel, "
+              u"and text files are supported).")
         ]
         _callbacks = [
             self._do_request_insert_sibling, self._do_request_delete,
+            self._do_request_update, self._do_request_update_all,
             self._do_request_export
         ]
-        _icons = ['add', 'remove', 'export']
+        _icons = ['add', 'remove', 'save', 'save-all', 'export']
 
-        _buttonbox = ramstk.do_make_buttonbox(
+        _buttonbox = RAMSTKModuleView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
@@ -340,13 +358,33 @@ class ModuleView(RAMSTKModuleView):
 
         return _buttonbox
 
+    def _make_treeview(self):
+        """
+        Set up the Validation Module View RAMSTKTreeView().
+
+        This method sets all cells as non-editable to make the Validation
+        Module View read-only.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _color = gtk.gdk.color_parse('#EEEEEE')
+        for _column in self.treeview.get_columns():
+            _cell = _column.get_cell_renderers()[0]
+            _cell.set_property('editable', False)
+            _cell.set_property('cell-background-gdk', _color)
+
+        return _return
+
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the Validation Module View RAMSTKTreeView().
 
-        :param treeview: the Validation class Gtk.TreeView().
+        :param treeview: the Validation class gtk.TreeView().
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
-        :param event: the Gdk.Event() that called this method (the
+        :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
                                     * 1 = left
@@ -357,7 +395,7 @@ class ModuleView(RAMSTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :class:`Gdk.Event`
+        :type event: :class:`gtk.gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -368,23 +406,48 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add', 'remove', 'save', 'save-all']
-            _labels = [
-                _("Add Validation Task"),
-                _("Remove the Selected Validation Task"),
-                _("Save Selected Validation Task"),
-                _("Save All Validation Tasks")
-            ]
-            _callbacks = [
-                self._do_request_insert_sibling, self._do_request_delete,
-                self._do_request_update, self._do_request_update_all
-            ]
-            RAMSTKModuleView.on_button_press(
-                self,
-                event,
-                icons=_icons,
-                labels=_labels,
-                callbacks=_callbacks)
+            _menu = gtk.Menu()
+            _menu.popup(None, None, None, event.button, event.time)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['add'])
+            _menu_item.set_label(_(u"Add New Validation"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['remove'])
+            _menu_item.set_label(_(u"Remove Selected Validation"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_delete)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save'])
+            _menu_item.set_label(_(u"Save Selected Validation"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save-all'])
+            _menu_item.set_label(_(u"Save All Validations"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update_all)
+            _menu_item.show()
+            _menu.append(_menu_item)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -418,10 +481,10 @@ class ModuleView(RAMSTKModuleView):
         Update the Module View RAMSTKTreeView() with Validation attribute changes.
 
         This method is called by other views when the Validation data model
-        attributes are edited via their Gtk.Widgets().
+        attributes are edited via their gtk.Widgets().
 
         :ivar int position: the ordinal position in the Module Book
-                            Gtk.TreeView() of the data being updated.
+                            gtk.TreeView() of the data being updated.
         :ivar new_text: the new value of the attribute to be updated.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -431,37 +494,12 @@ class ModuleView(RAMSTKModuleView):
 
         return False
 
-    def _on_row_change(self, treeview):
-        """
-        Handle events for the Validation package Module View RAMSTKTreeView().
-
-        This method is called whenever a Validation Module View RAMSTKTreeView()
-        row is activated/changed.
-
-        :param treeview: the Validation class Gtk.TreeView().
-        :type treeview: :class:`Gtk.TreeView`
-        :return: None
-        :rtype: None
-        """
-        treeview.handler_block(self._lst_handler_id[0])
-
-        _model, _row = treeview.get_selection().get_selected()
-
-        if _row is not None:
-            self._validation_id = _model.get_value(_row, 1)
-
-            pub.sendMessage('selectedValidation', module_id=self._validation_id)
-
-        treeview.handler_unblock(self._lst_handler_id[0])
-
-        return None
-
     def _on_select_revision(self, module_id):
         """
         Load the Validation Module View RAMSTKTreeView().
 
-        This method loads the RAMSTKTreeView() with Validation attribute data
-        when an RAMSTK Program database is opened.
+        This method loads the RAMSTKTreeView() with Validation attribute data when
+        an RAMSTK Program database is opened.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -477,8 +515,8 @@ class ModuleView(RAMSTKModuleView):
 
         _return = RAMSTKModuleView.on_select_revision(self, tree=_validations)
         if _return:
-            _prompt = _("An error occured while loading Validation Tasks "
-                        "into the Module View.")
+            _prompt = _(u"An error occured while loading Validation Tasks "
+                        u"into the Module View.")
             _dialog = ramstk.RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _dialog.do_run() == self._response_ok:

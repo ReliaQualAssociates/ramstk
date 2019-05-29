@@ -17,7 +17,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE  # pragma: no cover
 
 class RAMSTKReliability(RAMSTK_BASE):
     """
-    Class to represent ramstk_reliability table in the RAMSTK Program database.
+    Class to represent the ramstk_reliability table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
     """
@@ -255,6 +255,6 @@ class RAMSTKReliability(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKReliability.set_attributes().".format(str(_err))
+                   "RAMSTKReliability.set_attributes().".format(_err)
 
         return _error_code, _msg

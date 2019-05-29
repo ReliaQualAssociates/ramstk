@@ -34,7 +34,7 @@ class HazardAnalysisDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmHazardAnalysis(dao, **kwargs),
+            model=dtmHazardAnalysis(dao),
             ramstk_module='hazard_analysis',
             **kwargs)
 

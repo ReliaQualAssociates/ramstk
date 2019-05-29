@@ -8,8 +8,6 @@
 
 from datetime import date
 
-# Import third party packages.
-from pubsub import pub
 from sortedcontainers import SortedDict
 from treelib import tree, Tree
 
@@ -24,13 +22,13 @@ class ValidationDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a Validation.
 
-    An RAMSTK Project will consist of one or more Validations.  The attributes
-    of a Validation are:
+    An RAMSTK Project will consist of one or more Validations.  The attributes of a
+    Validation are:
     """
 
     _tag = 'Validations'
 
-    def __init__(self, dao, **kwargs):
+    def __init__(self, dao):
         """
         Initialize a Validation data model instance.
 
@@ -45,7 +43,6 @@ class ValidationDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
         self.dic_status = {}
@@ -94,10 +91,7 @@ class ValidationDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            try:
-                self.last_id = max(self.last_id, _validation.validation_id)
-            except TypeError:
-                self.last_id = _validation.validation_id
+            self.last_id = max(self.last_id, _validation.validation_id)
 
         # Now select all the status updates.
         _today = False
@@ -134,12 +128,7 @@ class ValidationDataModel(RAMSTKDataModel):
 
         _session.close()
 
-        # If we're not running a test and there were validation tasks returned,
-        # let anyone who cares know the Validation tasks have been selected.
-        if not self._test and self.tree.size() > 1:
-            pub.sendMessage('retrieved_validations', tree=self.tree)
-
-        return None
+        return self.tree
 
     def do_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -416,7 +405,7 @@ class ValidationDataModel(RAMSTKDataModel):
         """
         _time_remaining = {}
 
-        _dates = list(SortedDict(self.status_tree.nodes).keys())
+        _dates = SortedDict(self.status_tree.nodes).keys()
         _dates.pop(0)
 
         for _key in _dates:

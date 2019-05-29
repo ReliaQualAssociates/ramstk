@@ -18,31 +18,31 @@ __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'mode_id': 1,
-    'effect_local': '',
-    'mission': 'Default Mission',
-    'other_indications': '',
+    'effect_local': u'',
+    'mission': u'Default Mission',
+    'other_indications': u'',
     'mode_criticality': 0.0,
     'single_point': 0,
-    'design_provisions': b'',
+    'design_provisions': '',
     'type_id': 0,
     'rpn_severity_new': 1,
-    'effect_next': '',
-    'detection_method': '',
+    'effect_next': u'',
+    'detection_method': u'',
     'hardware_id': -1,
-    'operator_actions': b'',
+    'operator_actions': '',
     'critical_item': 0,
-    'hazard_rate_source': '',
-    'severity_class': '',
+    'hazard_rate_source': u'',
+    'severity_class': u'',
     'description': 'Test Functional Failure Mode #1',
-    'mission_phase': '',
-    'mode_probability': '',
-    'remarks': b'',
+    'mission_phase': u'',
+    'mode_probability': u'',
+    'remarks': '',
     'function_id': 1,
     'mode_ratio': 0.0,
     'mode_hazard_rate': 0.0,
     'rpn_severity': 1,
-    'isolation_method': '',
-    'effect_end': '',
+    'isolation_method': u'',
+    'effect_end': u'',
     'mode_op_time': 0.0,
     'effect_probability': 0.0
 }
@@ -64,7 +64,7 @@ def test_ramstkmode_create(test_dao):
     assert DUT.mode_id == 1
     assert DUT.critical_item == 0
     assert DUT.description == 'Test Functional Failure Mode #1'
-    assert DUT.design_provisions == b''
+    assert DUT.design_provisions == ''
     assert DUT.detection_method == ''
     assert DUT.effect_end == ''
     assert DUT.effect_local == ''
@@ -79,9 +79,9 @@ def test_ramstkmode_create(test_dao):
     assert DUT.mode_op_time == 0.0
     assert DUT.mode_probability == ''
     assert DUT.mode_ratio == 0.0
-    assert DUT.operator_actions == b''
+    assert DUT.operator_actions == ''
     assert DUT.other_indications == ''
-    assert DUT.remarks == b''
+    assert DUT.remarks == ''
     assert DUT.rpn_severity == 1
     assert DUT.rpn_severity_new == 1
     assert DUT.severity_class == ''

@@ -199,7 +199,7 @@ experience. -->
         <column>
             <defaulttitle>Parent Assembly</defaulttitle>
             <usertitle>Parent Assembly</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>18</position>
             <widget>text</widget>
             <editable>0</editable>

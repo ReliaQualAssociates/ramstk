@@ -35,7 +35,7 @@ class RevisionDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmRevision(dao, **kwargs),
+            model=dtmRevision(dao),
             ramstk_module='revision',
             **kwargs)
 
@@ -51,11 +51,63 @@ class RevisionDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.request_do_delete, 'request_delete_revision')
-        pub.subscribe(self.request_do_insert, 'request_insert_revision')
-        pub.subscribe(self.request_do_update, 'request_update_revision')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_revisions')
-        pub.subscribe(self.request_set_attributes, 'mvw_editing_revision')
-        pub.subscribe(self.request_set_attributes, 'wvw_editing_revision')
+    def request_do_insert(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Request to add an RAMSTKRevision table record.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_insert()
+
+        if _error_code == 0:
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
+
+            if not self._test:
+                pub.sendMessage(
+                    'insertedRevision', revision_id=self.dtm_revision.last_id)
+        else:
+            _msg = _msg + '  Failed to add a new Revision to the RAMSTK ' \
+                'Program database.'
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
+
+    def request_do_delete(self, node_id):
+        """
+        Request to delete an RAMSTKRevision table record.
+
+        :param int node_id: the PyPubSub Tree() ID to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      'deletedRevision')
+
+    def request_do_update(self, node_id):
+        """
+        Request to update an RAMSTKRevision table record.
+
+        :param int node_id: the PyPubSub Tree() ID of the Revision to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      'savedRevision')
+
+    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Request to update all records in the RAMSTKRevision table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = self._dtm_data_model.do_update_all()
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)

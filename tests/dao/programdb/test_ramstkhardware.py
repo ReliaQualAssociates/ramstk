@@ -43,7 +43,7 @@ ATTRIBUTES = {
     'part_number': '',
     'quantity': 1,
     'ref_des': 'S1',
-    'remarks': b'',
+    'remarks': '',
     'repairable': 0,
     'specification_number': '',
     'subcategory_id': 0,
@@ -92,7 +92,7 @@ def test_ramstkhardware_create(test_dao):
     assert DUT.part_number == ''
     assert DUT.quantity == 1
     assert DUT.ref_des == 'S1'
-    assert DUT.remarks == b''
+    assert DUT.remarks == ''
     assert DUT.repairable == 0
     assert DUT.specification_number == ''
     assert DUT.subcategory_id == 0

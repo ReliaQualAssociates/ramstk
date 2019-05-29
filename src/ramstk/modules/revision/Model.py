@@ -6,9 +6,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Revision Package Data Model."""
 
-# Import third party packages.
-from pubsub import pub
-
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
 from ramstk.dao import RAMSTKRevision
@@ -24,7 +21,7 @@ class RevisionDataModel(RAMSTKDataModel):
 
     _tag = 'Revisions'
 
-    def __init__(self, dao, **kwargs):
+    def __init__(self, dao):
         """
         Initialize a Revision data model instance.
 
@@ -39,71 +36,12 @@ class RevisionDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-
-    def do_delete(self, node_id):
-        """
-        Remove a record from the RAMSTKRevision table.
-
-        :param int node_id entity: the ID of the RAMSTKRevision record to be
-                                   removed from the RAMSTK Program database.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
-            _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to delete non-existent Revision "
-                    "ID {0:s}.").format(str(node_id))
-        else:
-            self.last_id = max(self.tree.nodes.keys())
-
-            # If we're not running a test, let anyone who cares know a Function
-            # was deleted.
-            if not self._test:
-                pub.sendMessage('deleted_revision', tree=self.tree)
-
-        return _error_code, _msg
-
-    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Add a record to the RAMSTKRevision table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _revision = RAMSTKRevision()
-        _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
-                _revision,
-            ])
-
-        if _error_code == 0:
-            self.tree.create_node(
-                _revision.name,
-                _revision.revision_id,
-                parent=0,
-                data=_revision)
-
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
-            self.last_id = _revision.revision_id
-
-            # If we're not running a test, let anyone who cares know a new
-            # Function was inserted.
-            if not self._test:
-                pub.sendMessage('inserted_revision', tree=self.tree)
-
-        return _error_code, _msg
 
     def do_select_all(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -131,19 +69,59 @@ class RevisionDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            try:
-                self.last_id = max(self.last_id, _revision.revision_id)
-            except TypeError:
-                self.last_id = _revision.revision_id
+            self.last_id = max(self.last_id, _revision.revision_id)
 
         _session.close()
 
-        # If we're not running a test and there were requirements returned,
-        # let anyone who cares know the Requirements have been selected.
-        if not self._test and self.tree.size() > 1:
-            pub.sendMessage('retrieved_revisions', tree=self.tree)
+        return self.tree
 
-        return None
+    def do_insert(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Add a record to the RAMSTKRevision table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _revision = RAMSTKRevision()
+        _error_code, _msg = RAMSTKDataModel.do_insert(
+            self, entities=[
+                _revision,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _revision.name,
+                _revision.revision_id,
+                parent=0,
+                data=_revision)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RAMSTKDataModel.__init__
+            self.last_id = _revision.revision_id
+
+        return _error_code, _msg
+
+    def do_delete(self, node_id):
+        """
+        Remove a record from the RAMSTKRevision table.
+
+        :param int node_id entity: the ID of the RAMSTKRevision record to be
+                                   removed from the RAMSTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RAMSTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RAMSTK ERROR: Attempted to delete non-existent ' \
+                          'Revision ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
+
+        return _error_code, _msg
 
     def do_update(self, node_id):
         """
@@ -155,16 +133,10 @@ class RevisionDataModel(RAMSTKDataModel):
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
-        # If there was no error and we're not running a test, let anyone
-        # who cares know a Function was updated.
-        if _error_code == 0:
-            if not self._test:
-                _attributes = self.do_select(node_id).get_attributes()
-                pub.sendMessage('updated_revision', attributes=_attributes)
-        else:
-            _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to save non-existent "
-                    "Revision ID {0:d}.").format(node_id)
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Revision ID ' \
+                   '{0:d}.'.format(node_id)
 
         return _error_code, _msg
 

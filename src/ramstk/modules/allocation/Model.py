@@ -6,8 +6,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Allocation Package Data Models."""
 
-# Import third party packages.
-from pubsub import pub
 from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
 # Import other RAMSTK modules.
@@ -20,7 +18,7 @@ class AllocationDataModel(RAMSTKDataModel):
 
     _tag = 'Allocations'
 
-    def __init__(self, dao, **kwargs):
+    def __init__(self, dao):
         """
         Initialize an Allocation data model instance.
 
@@ -35,7 +33,6 @@ class AllocationDataModel(RAMSTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -71,19 +68,11 @@ class AllocationDataModel(RAMSTKDataModel):
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            try:
-                self.last_id = max(self.last_id, _allocation.hardware_id)
-            except TypeError:
-                self.last_id = _allocation.hardware_id
+            self.last_id = max(self.last_id, _allocation.hardware_id)
 
         _session.close()
 
-        # If we're not running a test and there were allocations returned,
-        # let anyone who cares know the Allocations have been selected.
-        if not self._test and self.tree.size() > 1:
-            pub.sendMessage('retrieved_allocations', tree=self.tree)
-
-        return None
+        return self.tree
 
     def do_select_children(self, node_id):
         """

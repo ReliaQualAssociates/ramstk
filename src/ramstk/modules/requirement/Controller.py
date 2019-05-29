@@ -6,14 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Package Data Controller."""
 
-# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataController
 from ramstk.modules import RAMSTKDataMatrix
-from ramstk.dao import (RAMSTKRequirement, RAMSTKHardware, RAMSTKSoftware,
-                        RAMSTKValidation)
+from ramstk.dao import RAMSTKRequirement, RAMSTKHardware, RAMSTKSoftware, RAMSTKValidation
 from . import dtmRequirement
 
 
@@ -39,7 +37,7 @@ class RequirementDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmRequirement(dao, **kwargs),
+            model=dtmRequirement(dao),
             ramstk_module='requirement',
             **kwargs)
 
@@ -60,15 +58,6 @@ class RequirementDataController(RAMSTKDataController):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.request_do_delete, 'request_delete_requirement')
-        pub.subscribe(self.request_do_insert, 'request_insert_requirement')
-        pub.subscribe(self.request_do_select_all, 'selected_revision')
-        pub.subscribe(self.request_do_update, 'request_update_requirement')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_requirements')
-        pub.subscribe(self._request_set_attributes, 'editing_requirement')
 
     def request_do_create(self, revision_id, matrix_type):
         """
@@ -152,15 +141,29 @@ class RequirementDataController(RAMSTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_do_insert(self, revision_id, parent_id, **kwargs):  # pylint: disable=unused-argument
+    def request_do_insert(self, **kwargs):
         """
         Request to add an RAMSTKRequirement table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _revision_id = kwargs['revision_id']
+        _parent_id = kwargs['parent_id']
         _error_code, _msg = self._dtm_data_model.do_insert(
-            revision_id=revision_id, parent_id=parent_id)
+            revision_id=_revision_id, parent_id=_parent_id)
+
+        if _error_code == 0:
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
+
+            if not self._test:
+                pub.sendMessage(
+                    'insertedRequirement',
+                    requirement_id=self._dtm_data_model.last_id,
+                    parent_id=_parent_id)
+        else:
+            _msg = _msg + '  Failed to add a new Requirement to the RAMSTK ' \
+                'Program database.'
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
@@ -205,6 +208,20 @@ class RequirementDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
 
+    def request_do_delete(self, node_id):
+        """
+        Request to delete an RAMSTKRequirement table record.
+
+        :param str node_id: the PyPubSub Tree() ID of the Requirement to
+                            delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      'deletedRequirement')
+
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
         Request to remove a row or column from the selected Data Matrix.
@@ -235,6 +252,19 @@ class RequirementDataController(RAMSTKDataController):
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       'deletedMatrix')
+
+    def request_do_update(self, node_id):
+        """
+        Request to update an RAMSTKRequirement table record.
+
+        :param str node_id: the PyPubSub Tree() ID of the Requirement to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      'savedRequirement')
 
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
@@ -269,24 +299,14 @@ class RequirementDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       'savedMatrix')
 
-    def _request_set_attributes(self, module_id, key, value):
+    def request_do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
-        Request to set a Requirement attribute.
+        Request to update all records in the RAMSTKRequirement table.
 
-        :param int module_id: the ID of the entity who's attribute is to
-                              be set.
-        :param str key: the key of the attributes to set.
-        :param value: the value to set the attribute identified by the
-                      key.
-        :return:
-        :rtype:
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
-        if key == 'requirement_type':
-            _value = self._dtm_data_model.do_create_code(value[0], module_id)
-            RAMSTKDataController.request_set_attributes(
-                self, module_id, 'requirement_code', _value)
+        _error_code, _msg = self._dtm_data_model.do_update_all()
 
-            value = value[1]
-
-        return RAMSTKDataController.request_set_attributes(
-            self, module_id, key, value)
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)

@@ -54,7 +54,7 @@ class RAMSTKHardware(RAMSTK_BASE):
     cost = Column('fld_cost', Float, default=0.0)
     cost_failure = Column('fld_cost_failure', Float, default=0.0)
     cost_hour = Column('fld_cost_hour', Float, default=0.0)
-    cost_type_id = Column('fld_cost_type_id', Integer, default=0)
+    cost_type_id = Column('fld_cost_Type_id', Integer, default=0)
     description = Column('fld_description', String(512), default='')
     duty_cycle = Column('fld_duty_cycle', Float, default=100.0)
     figure_number = Column('fld_figure_number', String(256), default='')
@@ -70,7 +70,7 @@ class RAMSTKHardware(RAMSTK_BASE):
     part_number = Column('fld_part_number', String(256), default='')
     quantity = Column('fld_quantity', Integer, default=1)
     ref_des = Column('fld_ref_des', String(256), default='')
-    remarks = Column('fld_remarks', BLOB, default=b'')
+    remarks = Column('fld_remarks', BLOB, default='')
     repairable = Column('fld_repairable', Integer, default=0)
     specification_number = Column(
         'fld_specification_number', String(256), default='')
@@ -230,7 +230,7 @@ class RAMSTKHardware(RAMSTK_BASE):
                 none_to_default(attributes['part_number'], ''))
             self.quantity = int(none_to_default(attributes['quantity'], 1))
             self.ref_des = str(none_to_default(attributes['ref_des'], ''))
-            self.remarks = none_to_default(attributes['remarks'], b'')
+            self.remarks = str(none_to_default(attributes['remarks'], ''))
             self.repairable = int(none_to_default(attributes['repairable'], 0))
             self.specification_number = str(
                 none_to_default(attributes['specification_number'], ''))
@@ -251,6 +251,6 @@ class RAMSTKHardware(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKHardware.set_attributes().".format(str(_err))
+                   "RAMSTKHardware.set_attributes().".format(_err)
 
         return _error_code, _msg

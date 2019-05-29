@@ -142,8 +142,14 @@ class RAMSTKDataMatrix(object):
         """
         return self.dtf_matrix[col][row]
 
-    def do_select_all(self, revision_id, matrix_type, **kwargs):
-        r"""
+    def do_select_all(self,
+                      revision_id,
+                      matrix_type,
+                      rkey='rkey',
+                      ckey='ckey',
+                      rheader=0,
+                      cheader=0):
+        """
         Select everything needed to build the matrix.
 
         This method selects the row headngs, the column headings, and the cell
@@ -153,39 +159,18 @@ class RAMSTKDataMatrix(object):
                                 associated with.
         :param str matrix_type: the type of the Matrix to select all rows and
                                 all columns for.
-        :param \**kwargs: See below
-
-        :Keyword Arguments:
-            * *rkey* (int) -- the key in the row table attributes containing
-                              the module ID.
-            * *ckey* (int) -- the key in the column table attributes containing
-                              the module ID.
-            * *rheader* (int) -- the index in the row table attributes
-                                 containing the text to use for the Matrix row
-                                 headings.
-            * *cheader* (int) -- the index in the column table attributes
-                                 containing the text to use for the Matrix
-                                 column headings.
+        :keyword int rkey: the key in the row table attributes containing the
+                           module ID.
+        :keyword int ckey: the key in the column table attributes containing
+                           the module ID.
+        :keyword int rheader: the index in the row table attributes containing
+                              the text to use for the Matrix row headings.
+        :keyword int cheader: the index in the column table attributes
+                              containing the text to use for the Matrix column
+                              headings.
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
-        try:
-            _rkey = kwargs['rkey']
-        except KeyError:
-            _rkey = 'rkey'
-        try:
-            _ckey = kwargs['ckey']
-        except KeyError:
-            _ckey = 'ckey'
-        try:
-            _rheader = kwargs['rheader']
-        except KeyError:
-            _rheader = 0
-        try:
-            _cheader = kwargs['cheader']
-        except KeyError:
-            _cheader = 0
-
         _return = False
 
         _session = self.dao.RAMSTK_SESSION(
@@ -205,7 +190,7 @@ class RAMSTKDataMatrix(object):
         for _row in _session.query(self._row_table).filter(
                 self._row_table.revision_id == revision_id).all():
             _attributes = _row.get_attributes()
-            self.dic_row_hdrs[_attributes[_rkey]] = _attributes[_rheader]
+            self.dic_row_hdrs[_attributes[rkey]] = _attributes[rheader]
 
             self.n_row += 1
 
@@ -216,15 +201,14 @@ class RAMSTKDataMatrix(object):
                 self._column_table.revision_id == revision_id).all():
             _attributes = _column.get_attributes()
             try:
-                self.dic_column_hdrs[
-                    _attributes[_ckey]] = _attributes[_cheader]
+                self.dic_column_hdrs[_attributes[ckey]] = _attributes[cheader]
             except TypeError:
-                print('FIXME: Handle TypeError in ' \
+                print 'FIXME: Handle TypeError in ' \
                       'RAMSTKDataMatrix.do_select_all().  Tuple indices must ' \
                       'be integers, not str.  This will be fixed when all ' \
                       'the RAMSTK database tables are converted to return ' \
                       'dicts from the get_attributes() method.  Matrix {0:s} ' \
-                      'is not working.  See issue #59'.format(matrix_type))
+                      'is not working.  See issue #59'.format(matrix_type)
 
             self.n_col += 1
 

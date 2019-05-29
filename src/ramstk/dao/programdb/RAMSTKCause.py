@@ -121,7 +121,7 @@ class RAMSTKCause(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKCause.set_attributes().".format(str(_err))
+                   "RAMSTKCause.set_attributes().".format(_err)
 
         return _error_code, _msg
 
@@ -144,33 +144,33 @@ class RAMSTKCause(RAMSTK_BASE):
         if not 0 < severity < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _("RPN severity is outside the range "
-                  "[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
+                _(u"RPN severity is outside the range "
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < self.rpn_occurrence < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _("RPN occurrence is outside the range "
-                  "[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
+                _(u"RPN occurrence is outside the range "
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < self.rpn_detection < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _("RPN detection is outside the range "
-                  "[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
+                _(u"RPN detection is outside the range "
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < severity_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _("RPN new severity is outside the range "
-                  "[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
+                _(u"RPN new severity is outside the range "
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < self.rpn_occurrence_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _("RPN new occurrence is outside the range "
-                  "[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
+                _(u"RPN new occurrence is outside the range "
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
         if not 0 < self.rpn_detection_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _("RPN new detection is outside the range "
-                  "[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
+                _(u"RPN new detection is outside the range "
+                  u"[1, 10] for Cause ID: {0:d}.").format(self.cause_id))
 
         self.rpn = int(severity) \
             * int(self.rpn_occurrence) \
@@ -184,14 +184,14 @@ class RAMSTKCause(RAMSTK_BASE):
             _msg = ("Failure cause RPN has a value less than 1 for Cause "
                     "ID: {0:d}").format(self.cause_id)
             raise OutOfRangeError(
-                _("Failure cause RPN has a value less than 1 for Cause ID: "
-                  "{0:d}.").format(self.cause_id))
+                _(u"Failure cause RPN has a value less than 1 for Cause ID: "
+                  u"{0:d}.").format(self.cause_id))
         if self.rpn_new > 1000:
             _error_code = 2030
             _msg = ("Failure cause RPN has a value greater than 1000 for "
                     "Cause ID: {0:d}.").format(self.cause_id)
             raise OutOfRangeError(
-                _("Failure cause RPN has a value greater than 1000 for Cause "
-                  "ID: {0:d}.").format(self.cause_id))
+                _(u"Failure cause RPN has a value greater than 1000 for Cause "
+                  u"ID: {0:d}.").format(self.cause_id))
 
         return _error_code, _msg

@@ -16,7 +16,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 class RAMSTKOpStress(RAMSTK_BASE):
     """
-    Class to represent table ramstk_op_stress in the RAMSTK Program database.
+    Class to represent the table ramstk_op_stress in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_op_load.
     """
@@ -40,7 +40,7 @@ class RAMSTKOpStress(RAMSTK_BASE):
     load_history = Column('fld_load_history', String(512), default='')
     measurable_parameter = Column(
         'fld_measurable_parameter', String(512), default='')
-    remarks = Column('fld_remarks', BLOB, default=b'')
+    remarks = Column('fld_remarks', BLOB, default='')
 
     # Define the relationships to other tables in the RAMSTK Program database.
     op_load = relationship('RAMSTKOpLoad', back_populates='op_stress')
@@ -86,13 +86,13 @@ class RAMSTKOpStress(RAMSTK_BASE):
             self.description = str(none_to_default(values['description'], ''))
             self.load_history = str(
                 none_to_default(values['load_history'], ''))
-            self.measurable_parameter = none_to_default(
-                values['measurable_parameter'], b'')
-            self.remarks = none_to_default(values['remarks'], b'')
+            self.measurable_parameter = str(
+                none_to_default(values['measurable_parameter'], ''))
+            self.remarks = str(none_to_default(values['remarks'], ''))
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKOpStress.set_attributes().".format(str(_err))
+                   "RAMSTKOpStress.set_attributes().".format(_err)
 
         return _error_code, _msg

@@ -42,6 +42,7 @@ from .programdb.RAMSTKHazardAnalysis import RAMSTKHazardAnalysis
 from .programdb.RAMSTKIncident import RAMSTKIncident
 from .programdb.RAMSTKIncidentAction import RAMSTKIncidentAction
 from .programdb.RAMSTKIncidentDetail import RAMSTKIncidentDetail
+from .programdb.RAMSTKLoadHistory import RAMSTKLoadHistory
 from .programdb.RAMSTKMatrix import RAMSTKMatrix
 from .programdb.RAMSTKMechanism import RAMSTKMechanism
 from .programdb.RAMSTKMilHdbkF import RAMSTKMilHdbkF

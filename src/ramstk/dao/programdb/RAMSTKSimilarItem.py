@@ -17,7 +17,7 @@ from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 # pylint: disable=R0902
 class RAMSTKSimilarItem(RAMSTK_BASE):
     """
-    Class to represent ramstk_similar_item table in RAMSTK Program database.
+    Class to represent the ramstk_similar_item table in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_hardware.
     """
@@ -37,26 +37,17 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         primary_key=True,
         nullable=False)
 
-    change_description_1 = Column(
-        'fld_change_description_1', BLOB, default=b'')
-    change_description_2 = Column(
-        'fld_change_description_2', BLOB, default=b'')
-    change_description_3 = Column(
-        'fld_change_description_3', BLOB, default=b'')
-    change_description_4 = Column(
-        'fld_change_description_4', BLOB, default=b'')
-    change_description_5 = Column(
-        'fld_change_description_5', BLOB, default=b'')
-    change_description_6 = Column(
-        'fld_change_description_6', BLOB, default=b'')
-    change_description_7 = Column(
-        'fld_change_description_7', BLOB, default=b'')
-    change_description_8 = Column(
-        'fld_change_description_8', BLOB, default=b'')
-    change_description_9 = Column(
-        'fld_change_description_9', BLOB, default=b'')
+    change_description_1 = Column('fld_change_description_1', BLOB, default='')
+    change_description_2 = Column('fld_change_description_2', BLOB, default='')
+    change_description_3 = Column('fld_change_description_3', BLOB, default='')
+    change_description_4 = Column('fld_change_description_4', BLOB, default='')
+    change_description_5 = Column('fld_change_description_5', BLOB, default='')
+    change_description_6 = Column('fld_change_description_6', BLOB, default='')
+    change_description_7 = Column('fld_change_description_7', BLOB, default='')
+    change_description_8 = Column('fld_change_description_8', BLOB, default='')
+    change_description_9 = Column('fld_change_description_9', BLOB, default='')
     change_description_10 = Column(
-        'fld_change_description_10', BLOB, default=b'')
+        'fld_change_description_10', BLOB, default='')
     change_factor_1 = Column('fld_change_factor_1', Float, default=1.0)
     change_factor_2 = Column('fld_change_factor_2', Float, default=1.0)
     change_factor_3 = Column('fld_change_factor_3', Float, default=1.0)
@@ -85,11 +76,11 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
     result_5 = Column('fld_result_5', Float, default=0.0)
     temperature_from = Column('fld_temperature_from', Float, default=30.0)
     temperature_to = Column('fld_temperature_to', Float, default=30.0)
-    user_blob_1 = Column('fld_user_blob_1', BLOB, default=b'')
-    user_blob_2 = Column('fld_user_blob_2', BLOB, default=b'')
-    user_blob_3 = Column('fld_user_blob_3', BLOB, default=b'')
-    user_blob_4 = Column('fld_user_blob_4', BLOB, default=b'')
-    user_blob_5 = Column('fld_user_blob_5', BLOB, default=b'')
+    user_blob_1 = Column('fld_user_blob_1', BLOB, default='')
+    user_blob_2 = Column('fld_user_blob_2', BLOB, default='')
+    user_blob_3 = Column('fld_user_blob_3', BLOB, default='')
+    user_blob_4 = Column('fld_user_blob_4', BLOB, default='')
+    user_blob_5 = Column('fld_user_blob_5', BLOB, default='')
     user_float_1 = Column('fld_user_Float_1', Float, default=0.0)
     user_float_2 = Column('fld_user_Float_2', Float, default=0.0)
     user_float_3 = Column('fld_user_Float_3', Float, default=0.0)
@@ -199,26 +190,26 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
                format(self.hardware_id)
 
         try:
-            self.change_description_1 = none_to_default(
-                attributes['change_description_1'], b'')
-            self.change_description_2 = none_to_default(
-                attributes['change_description_2'], b'')
-            self.change_description_3 = none_to_default(
-                attributes['change_description_3'], b'')
-            self.change_description_4 = none_to_default(
-                attributes['change_description_4'], b'')
-            self.change_description_5 = none_to_default(
-                attributes['change_description_5'], b'')
-            self.change_description_6 = none_to_default(
-                attributes['change_description_6'], b'')
-            self.change_description_7 = none_to_default(
-                attributes['change_description_7'], b'')
-            self.change_description_8 = none_to_default(
-                attributes['change_description_8'], b'')
-            self.change_description_9 = none_to_default(
-                attributes['change_description_9'], b'')
-            self.change_description_10 = none_to_default(
-                attributes['change_description_10'], b'')
+            self.change_description_1 = str(
+                none_to_default(attributes['change_description_1'], ''))
+            self.change_description_2 = str(
+                none_to_default(attributes['change_description_2'], ''))
+            self.change_description_3 = str(
+                none_to_default(attributes['change_description_3'], ''))
+            self.change_description_4 = str(
+                none_to_default(attributes['change_description_4'], ''))
+            self.change_description_5 = str(
+                none_to_default(attributes['change_description_5'], ''))
+            self.change_description_6 = str(
+                none_to_default(attributes['change_description_6'], ''))
+            self.change_description_7 = str(
+                none_to_default(attributes['change_description_7'], ''))
+            self.change_description_8 = str(
+                none_to_default(attributes['change_description_8'], ''))
+            self.change_description_9 = str(
+                none_to_default(attributes['change_description_9'], ''))
+            self.change_description_10 = str(
+                none_to_default(attributes['change_description_10'], ''))
             self.change_factor_1 = float(
                 none_to_default(attributes['change_factor_1'], 1.0))
             self.change_factor_2 = float(
@@ -268,11 +259,16 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
                 none_to_default(attributes['temperature_from'], 0))
             self.temperature_to = float(
                 none_to_default(attributes['temperature_to'], 0))
-            self.user_blob_1 = none_to_default(attributes['user_blob_1'], b'')
-            self.user_blob_2 = none_to_default(attributes['user_blob_2'], b'')
-            self.user_blob_3 = none_to_default(attributes['user_blob_3'], b'')
-            self.user_blob_4 = none_to_default(attributes['user_blob_4'], b'')
-            self.user_blob_5 = none_to_default(attributes['user_blob_5'], b'')
+            self.user_blob_1 = str(
+                none_to_default(attributes['user_blob_1'], ''))
+            self.user_blob_2 = str(
+                none_to_default(attributes['user_blob_2'], ''))
+            self.user_blob_3 = str(
+                none_to_default(attributes['user_blob_3'], ''))
+            self.user_blob_4 = str(
+                none_to_default(attributes['user_blob_4'], ''))
+            self.user_blob_5 = str(
+                none_to_default(attributes['user_blob_5'], ''))
             self.user_float_1 = float(
                 none_to_default(attributes['user_float_1'], 0.0))
             self.user_float_2 = float(
@@ -292,10 +288,10 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RAMSTKSimilarItem.set_attributes().".format(str(_err))
+                   "RAMSTKSimilarItem.set_attributes().".format(_err)
         except ValueError as _err:
-            # FIXME: Handle ValueError in RAMSTKSimilarItem.set_attributes().
-            print(_err)
+            # FIXME: Handle ValueError in RAMSTKSimilarItem.set_attrobutes().
+            print _err
 
         return _error_code, _msg
 
@@ -516,8 +512,8 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         _sia['res4'] = self.result_4
         _sia['res5'] = self.result_5
 
-        _keys = list(_sia.keys())
-        _values = list(_sia.values())
+        _keys = _sia.keys()
+        _values = _sia.values()
 
         for _index, _key in enumerate(_keys):
             vars()[_key] = _values[_index]

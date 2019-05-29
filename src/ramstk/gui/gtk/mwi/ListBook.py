@@ -11,12 +11,12 @@ from pubsub import pub
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk import RAMSTKBook
 from ramstk.gui.gtk.listviews import (lvwUsageProfile, lvwFailureDefinition,
-                                      lvwStakeholder)
-from ramstk.gui.gtk.matrixviews import (
-    FunctionHardware, RequirementHardware, RequirementValidation,
-    HardwareRequirement, HardwareValidation, ValidationRequirement,
-    ValidationHardware)
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk
+                                   lvwStakeholder)
+from ramstk.gui.gtk.matrixviews import (FunctionHardware, RequirementHardware,
+                                     RequirementValidation,
+                                     HardwareRequirement, HardwareValidation,
+                                     ValidationRequirement, ValidationHardware)
+from ramstk.gui.gtk.ramstk.Widget import _, gtk
 
 
 class ListBook(RAMSTKBook):
@@ -75,20 +75,8 @@ class ListBook(RAMSTKBook):
 
         # Initialize public scalar attributes.
 
-        self.__make_ui()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
-        pub.subscribe(self._on_close, 'closedProgram')
-
-    def __make_ui(self):
-        """
-        Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        self.set_title(_("RAMSTK Lists and Matrices"))
+        # Set the properties for the ListBook and it's widgets.
+        self.set_title(_(u"RAMSTK Lists and Matrices"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
@@ -114,7 +102,8 @@ class ListBook(RAMSTKBook):
 
         self.show_all()
 
-        return None
+        pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
+        pub.subscribe(self._on_close, 'closedProgram')
 
     def _on_close(self):
         """
@@ -162,13 +151,13 @@ class ListBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
-        if event.new_window_state == Gdk.WindowState.ICONIFIED:
+        if event.new_window_state == gtk.gdk.WINDOW_STATE_ICONIFIED:
             for _window in ['listbook', 'modulebook', 'workbook']:
                 self._mdcRAMSTK.dic_books[_window].iconify()
         elif event.new_window_state == 0:
             for _window in ['listbook', 'modulebook', 'workbook']:
                 self._mdcRAMSTK.dic_books[_window].deiconify()
-        elif event.new_window_state == Gdk.WindowState.MAXIMIZED:
+        elif event.new_window_state == gtk.gdk.WINDOW_STATE_MAXIMIZED:
             window.maximize()
 
         return None

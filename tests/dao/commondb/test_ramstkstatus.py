@@ -15,9 +15,9 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'description': 'Incident has been initiated.',
-    'name': 'Initiated',
-    'status_type': 'incident',
+    'description': u'Incident has been initiated.',
+    'name': u'Initiated',
+    'status_type': u'incident',
     'status_id': 1
 }
 

@@ -16,9 +16,9 @@ __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'mode_id': 3,
-    'description': 'Parameter Change',
+    'description': u'Parameter Change',
     'subcategory_id': 24,
-    'source': 'FMD-97',
+    'source': u'FMD-97',
     'category_id': 3,
     'mode_ratio': 0.2
 }

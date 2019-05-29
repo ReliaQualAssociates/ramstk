@@ -44,8 +44,8 @@ class RAMSTKIncidentAction(RAMSTK_BASE):
         nullable=False)
 
     action_owner = Column('fld_action_owner', Integer, default=0)
-    action_prescribed = Column('fld_action_prescribed', BLOB, default=b'')
-    action_taken = Column('fld_action_taken', BLOB, default=b'')
+    action_prescribed = Column('fld_action_prescribed', BLOB, default='')
+    action_taken = Column('fld_action_taken', BLOB, default='')
     approved = Column('fld_approved', Integer, default=0)
     approved_by = Column('fld_approved_by', Integer, default=0)
     approved_date = Column(
@@ -97,8 +97,8 @@ class RAMSTKIncidentAction(RAMSTK_BASE):
 
         try:
             self.action_owner = int(none_to_default(values[0], 0))
-            self.action_prescribed = none_to_default(values[1], b'')
-            self.action_taken = none_to_default(values[2], b'')
+            self.action_prescribed = str(none_to_default(values[1], ''))
+            self.action_taken = str(none_to_default(values[2], ''))
             self.approved = int(none_to_default(values[3], 0))
             self.approved_by = int(none_to_default(values[4], 0))
             self.approved_date = none_to_default(

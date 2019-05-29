@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.assistants.Export.py is part of The RAMSTK Project
@@ -11,7 +12,7 @@ import os
 # Export other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.ramstk import RAMSTKMessageDialog
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk, set_cursor
+from ramstk.gui.gtk.ramstk.Widget import _, gtk, set_cursor
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -26,12 +27,14 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
         """
         Initialize an instance of the Export Assistant.
 
+        :param __widget: the gtk.Widget() that called this class.
+        :type __widget: :class:`gtk.Widget`
         :param controller: the RAMSTK master data controller.
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         :param str module: the RAMSTK module to export.
         """
         ramstk.RAMSTKFileChooser.__init__(
-            self, _("RAMSTK Export"),
+            self, _(u"RAMSTK Export"),
             controller.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
 
         # Initialize private dict variables.
@@ -77,13 +80,13 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
         :return: None
         :rtype: None
         """
-        set_cursor(self._mdcRAMSTK, Gdk.CursorType.WATCH)
+        set_cursor(self._mdcRAMSTK, gtk.gdk.WATCH)
 
         self._dtc_data_controller.request_do_load_output(
             self._module, self._tree)
         self._dtc_data_controller.request_do_export(filetype, filename)
 
-        set_cursor(self._mdcRAMSTK, Gdk.CursorType.LEFT_PTR)
+        set_cursor(self._mdcRAMSTK, gtk.gdk.LEFT_PTR)
 
         return None
 
@@ -106,13 +109,13 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
                 _filetype = 'excel'
 
             if os.path.exists(_filename):
-                _prompt = _("File {0:s} already exists.  "
-                            "Overwrite?").format(_filename)
+                _prompt = _(u"File {0:s} already exists.  "
+                            u"Overwrite?").format(_filename)
                 _icon = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
                         '/32x32/warning.png'
                 _dialog = RAMSTKMessageDialog(_prompt, _icon, 'question')
                 _response = _dialog.do_run()
-                if _response == Gtk.ResponseType.YES:
+                if _response == gtk.RESPONSE_YES:
                     _dialog.destroy()
                     _cansave = True
                 else:

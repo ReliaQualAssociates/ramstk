@@ -31,11 +31,7 @@ class PhysicsOfFailureDataController(RAMSTKDataController):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
         RAMSTKDataController.__init__(
-            self,
-            configuration,
-            model=dtmPoF(dao, **kwargs),
-            ramstk_module='PoF',
-            **kwargs)
+            self, configuration, model=dtmPoF(dao), ramstk_module='PoF', **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -49,16 +45,14 @@ class PhysicsOfFailureDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_do_select_all(self, attributes):
+    def request_do_select_all(self, **kwargs):
         """
-        Retrieve the treelib Tree() from the Requirement Data Model.
+        Load the entire PoF for a failure Mode.
 
-        :return: tree; the treelib Tree() of RAMSTKRequirement models in the
-                 Requirement tree.
+        :return: tree; the PoF treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        return self._dtm_data_model.do_select_all(
-            hardware_id=attributes['hardware_id'])
+        return self._dtm_data_model.do_select_all(**kwargs)
 
     def request_do_insert(self, **kwargs):
         """

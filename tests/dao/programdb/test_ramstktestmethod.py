@@ -16,11 +16,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'remarks': b'',
+    'remarks': '',
     'test_id': 1,
-    'boundary_conditions': '',
+    'boundary_conditions': u'',
     'load_id': 1,
-    'description': 'Test Test Method'
+    'description': u'Test Test Method'
 }
 
 
@@ -39,7 +39,7 @@ def test_ramstkopstress_create(test_dao):
     assert DUT.test_id == 1
     assert DUT.description == 'Test Test Method'
     assert DUT.boundary_conditions == ''
-    assert DUT.remarks == b''
+    assert DUT.remarks == ''
 
 
 @pytest.mark.integration
@@ -57,7 +57,7 @@ def test_get_attributes(test_dao):
     assert _attributes['test_id'] == 1
     assert _attributes['description'] == 'Test Test Method'
     assert _attributes['boundary_conditions'] == ''
-    assert _attributes['remarks'] == b''
+    assert _attributes['remarks'] == ''
 
 
 @pytest.mark.integration

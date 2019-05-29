@@ -17,14 +17,12 @@ import pytest
 from ramstk.dao import DAO, RAMSTKUser
 from ramstk.modules.preferences import dtmPreferences, dtcPreferences
 from ramstk.modules.preferences.Model import (SitePreferencesDataModel,
-                                              UserPreferencesDataModel)
+                                           UserPreferencesDataModel)
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
-
-ATTRIBUTES = {'revision_id': 1, 'site_dao': '', 'site': True, 'user': True}
 
 try:
     VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
@@ -34,8 +32,8 @@ except KeyError:
     elif platform.system() == 'Windows':
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
-        print(("The {0:s} system platform is not "
-               "supported.").format(platform.system()))
+        print("The {0:s} system platform is not "
+              "supported.").format(platform.system())
         sys.exit(1)
 
 CONF_DIR = VIRTUAL_ENV + '/share/RAMSTK'
@@ -106,7 +104,7 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
     assert DUT.user_preferences['common_db_info'] == {
         'type': 'sqlite',
         'host': 'localhost',
-        'socket': '3306',
+        'socket': 3306,
         'database': TEST_COMMON_DB_PATH,
         'user': 'ramstkcom',
         'password': 'ramstkcom'
@@ -130,8 +128,7 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
     }
     assert DUT.user_preferences['sitedir'] == VIRTUAL_ENV + '/share/RAMSTK'
     assert DUT.user_preferences['datadir'] == DATA_DIR
-    assert DUT.user_preferences[
-        'icondir'] == VIRTUAL_ENV + '/share/RAMSTK/icons'
+    assert DUT.user_preferences['icondir'] == VIRTUAL_ENV + '/share/RAMSTK/icons'
     assert DUT.user_preferences['logdir'] == LOG_DIR
     assert DUT.user_preferences['progdir'] == TMP_DIR
     assert DUT.user_preferences['format_files'] == {
@@ -212,7 +209,7 @@ def test_request_do_select_all(test_dao, test_common_dao, test_configuration):
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
 
-    assert not DUT.request_do_select_all(ATTRIBUTES)
+    assert not DUT.request_do_select_all(site=True, user=True)
 
 
 @pytest.mark.integration
@@ -221,35 +218,20 @@ def test_request_get_preferences_site(test_dao, test_common_dao,
     """ request_get_preferences() should return a dict of dicts of site option:value pairs. """
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(site=True, user=True)
 
     _preferences = DUT.request_get_preferences(site=True, user=False)
 
     assert isinstance(_preferences, dict)
-    assert 'detection_methods' in list(_preferences.keys())
-    assert 'incident_status' in list(_preferences.keys())
-    assert 'environment_conditions' in list(_preferences.keys())
-    assert 'action_status' in list(_preferences.keys())
-    assert 'measurement_units' in list(_preferences.keys())
-    assert 'damage_models' in list(_preferences.keys())
-    assert 'workgroups' in list(_preferences.keys())
-    assert 'users' in list(_preferences.keys())
-    assert 'hazards' in list(_preferences.keys())
-    assert 'action_category' in list(_preferences.keys())
-    assert 'load_history' in list(_preferences.keys())
-    assert 'stakeholders' in list(_preferences.keys())
-    assert 'rpn_detection' in list(_preferences.keys())
-    assert 'manufacturers' in list(_preferences.keys())
-    assert 'rpn_occurrence' in list(_preferences.keys())
-    assert 'failure_modes' in list(_preferences.keys())
-    assert 'validation_types' in list(_preferences.keys())
-    assert 'damaging_conditions' in list(_preferences.keys())
-    assert 'measureable_parameters' in list(_preferences.keys())
-    assert 'incident_types' in list(_preferences.keys())
-    assert 'rpn_severity' in list(_preferences.keys())
-    assert 'requirement_types' in list(_preferences.keys())
-    assert 'incident_category' in list(_preferences.keys())
-    assert 'affinity_groups' in list(_preferences.keys())
+    assert _preferences.keys() == [
+        'detection_methods', 'incident_status', 'environment_conditions',
+        'action_status', 'measurement_units', 'damage_models', 'workgroups',
+        'users', 'hazards', 'action_category', 'load_history', 'stakeholders',
+        'rpn_detection', 'manufacturers', 'rpn_occurrence', 'failure_modes',
+        'validation_types', 'damaging_conditions', 'measureable_parameters',
+        'incident_types', 'rpn_severity', 'requirement_types',
+        'incident_category', 'affinity_groups'
+    ]
 
 
 @pytest.mark.integration
@@ -258,25 +240,16 @@ def test_request_get_preferences_user(test_dao, test_common_dao,
     """ request_get_preferences() should return a dict of program option:value pairs. """
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(site=True, user=True)
 
     _preferences = DUT.request_get_preferences(site=False, user=True)
 
     assert isinstance(_preferences, dict)
-    assert 'hr_multiplier' in list(_preferences.keys())
-    assert 'report_size' in list(_preferences.keys())
-    assert 'decimal' in list(_preferences.keys())
-    assert 'icondir' in list(_preferences.keys())
-    assert 'colors' in list(_preferences.keys())
-    assert 'common_db_info' in list(_preferences.keys())
-    assert 'datadir' in list(_preferences.keys())
-    assert 'tabpos' in list(_preferences.keys())
-    assert 'calcreltime' in list(_preferences.keys())
-    assert 'logdir' in list(_preferences.keys())
-    assert 'sitedir' in list(_preferences.keys())
-    assert 'program_db_info' in list(_preferences.keys())
-    assert 'format_files' in list(_preferences.keys())
-    assert 'progdir' in list(_preferences.keys())
+    assert _preferences.keys() == [
+        'hr_multiplier', 'report_size', 'decimal', 'icondir', 'colors',
+        'common_db_info', 'datadir', 'tabpos', 'calcreltime', 'logdir',
+        'sitedir', 'program_db_info', 'format_files', 'progdir'
+    ]
 
 
 @pytest.mark.integration
@@ -284,7 +257,7 @@ def test_request_do_update(test_dao, test_common_dao, test_configuration):
     """ request_do_update() should return False on success. """
     DUT = dtcPreferences(
         test_dao, test_configuration, site_dao=test_common_dao, test='True')
-    DUT.request_do_select_all(ATTRIBUTES)
+    DUT.request_do_select_all(site=True, user=True)
 
     DUT.request_get_preferences(site=False, user=True)
     DUT._dtm_data_model.user_preferences['hr_multiplier'] = 1.0

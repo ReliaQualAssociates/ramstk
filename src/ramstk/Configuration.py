@@ -6,7 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Configuration information and methods for RAMSTK."""
 
-import configparser
+import ConfigParser
 from os import environ, path, makedirs
 import sys
 
@@ -24,102 +24,96 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
 
 # Define global list constants.
-RAMSTK_ACTIVE_ENVIRONMENTS = [[_("Ground, Benign")], [_("Ground, Fixed")],
-                              [_("Ground, Mobile")], [_("Naval, Sheltered")],
-                              [_("Naval, Unsheltered")],
-                              [_("Airborne, Inhabited, Cargo")],
-                              [_("Airborne, Inhabited, Fighter")],
-                              [_("Airborne, Uninhabited, Cargo")],
-                              [_("Airborne, Uninhabited, Fighter")],
-                              [_("Airborne, Rotary Wing")],
-                              [_("Space, Flight")], [_("Missile, Flight")],
-                              [_("Missile, Launch")]]
-RAMSTK_DORMANT_ENVIRONMENTS = [[_("Airborne")], [_("Ground")], [_("Naval")],
-                               [_("Space")]]
+RAMSTK_ACTIVE_ENVIRONMENTS = [[_(u"Ground, Benign")], [_(u"Ground, Fixed")], [
+    _(u"Ground, Mobile")
+], [_(u"Naval, Sheltered")], [_(u"Naval, Unsheltered")], [
+    _(u"Airborne, Inhabited, Cargo")
+], [_(u"Airborne, Inhabited, Fighter")], [_(u"Airborne, Uninhabited, Cargo")],
+                              [_(u"Airborne, Uninhabited, Fighter")], [
+                                  _(u"Airborne, Rotary Wing")
+                              ], [_(u"Space, Flight")],
+                              [_(u"Missile, Flight")], [_(u"Missile, Launch")]]
+RAMSTK_DORMANT_ENVIRONMENTS = [[_(u"Airborne")], [_(u"Ground")], [_(u"Naval")],
+                               [_(u"Space")]]
 
-RAMSTK_ALLOCATION_MODELS = [['Equal Apportionment'], ['ARINC Apportionment'],
-                            ['AGREE Apportionment'],
-                            ['Feasibility of Objectives'],
-                            ['Repairable Systems Apportionment']]
+RAMSTK_ALLOCATION_MODELS = [[u'Equal Apportionment'], [u'ARINC Apportionment'],
+                            [u'AGREE Apportionment'], [
+                                u'Feasibility of Objectives'
+                            ], [u'Repairable Systems Apportionment']]
 
-RAMSTK_HR_TYPES = [[_("Assessed")], [_("Defined, Hazard Rate")],
-                   [_("Defined, MTBF")], [_("Defined, Distribution")]]
-RAMSTK_HR_MODELS = [[_("MIL-HDBK-217F Parts Count")],
-                    [_("MIL-HDBK-217F Parts Stress")], [_("NSWC-11")]]
-RAMSTK_HR_DISTRIBUTIONS = [[_("1P Exponential")], [_("2P Exponential")],
-                           [_("Gaussian")], [_("Lognormal")],
-                           [_("2P Weibull")], [_("3P Weibull")]]
+RAMSTK_HR_TYPES = [[_(u"Assessed")], [_(u"Defined, Hazard Rate")],
+                   [_(u"Defined, MTBF")], [_(u"Defined, Distribution")]]
+RAMSTK_HR_MODELS = [[_(u"MIL-HDBK-217F Parts Count")],
+                    [_(u"MIL-HDBK-217F Parts Stress")], [_(u"NSWC-11")]]
+RAMSTK_HR_DISTRIBUTIONS = [[_(u"1P Exponential")], [_(u"2P Exponential")],
+                           [_(u"Gaussian")], [_(u"Lognormal")],
+                           [_(u"2P Weibull")], [_(u"3P Weibull")]]
 
-RAMSTK_CONTROL_TYPES = [_("Prevention"), _("Detection")]
-RAMSTK_COST_TYPES = [[_("Defined")], [_("Calculated")]]
-RAMSTK_MTTR_TYPES = [[_("Defined")], [_("Calculated")]]
+RAMSTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
+RAMSTK_COST_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
+RAMSTK_MTTR_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
 
-RAMSTK_CRITICALITY = [
-    [
-        _("Catastrophic"),
-        _("Could result in death, permanent total disability, loss exceeding "
-          "$1M, or irreversible severe environmental damage that violates law "
-          "or regulation."), "I", 4
-    ],
-    [
-        _("Critical"),
-        _("Could result in permanent partial disability, injuries or "
-          "occupational illness that may result in hospitalization of at least "
-          "three personnel, loss exceeding $200K but less than $1M, or "
-          "reversible environmental damage causing a violation of law or "
-          "regulation."), "II", 3
-    ],
-    [
-        _("Marginal"),
-        _("Could result in injury or occupational illness resulting in one or "
-          "more lost work days(s), loss exceeding $10K but less than $200K, or "
-          "mitigatible environmental damage without violation of law or "
-          "regulation where restoration activities can be accomplished."),
-        "III", 2
-    ],
-    [
-        _("Negligble"),
-        _("Could result in injury or illness not resulting in a lost work day, "
-          "loss exceeding $2K but less than $10K, or minimal environmental "
-          "damage not violating law or regulation."), "IV", 1
-    ]
-]
-RAMSTK_FAILURE_PROBABILITY = [[_("Level E - Extremely Unlikely"), 1],
-                              [_("Level D - Remote"), 2],
-                              [_("Level C - Occasional"), 3],
-                              [_("Level B - Reasonably Probable"), 4],
-                              [_("Level A - Frequent"), 5]]
+RAMSTK_CRITICALITY = [[
+    _(u"Catastrophic"),
+    _(u"Could result in death, permanent total disability, loss exceeding "
+      u"$1M, or irreversible severe environmental damage that violates law "
+      u"or regulation."), "I", 4
+], [
+    _(u"Critical"),
+    _(u"Could result in permanent partial disability, injuries or "
+      u"occupational illness that may result in hospitalization of at least "
+      u"three personnel, loss exceeding $200K but less than $1M, or "
+      u"reversible environmental damage causing a violation of law or "
+      u"regulation."), "II", 3
+], [
+    _(u"Marginal"),
+    _(u"Could result in injury or occupational illness resulting in one or "
+      u"more lost work days(s), loss exceeding $10K but less than $200K, or "
+      u"mitigatible environmental damage without violation of law or "
+      u"regulation where restoration activities can be accomplished."), "III",
+    2
+], [
+    _(u"Negligble"),
+    _(u"Could result in injury or illness not resulting in a lost work day, "
+      u"loss exceeding $2K but less than $10K, or minimal environmental "
+      u"damage not violating law or regulation."), "IV", 1
+]]
+RAMSTK_FAILURE_PROBABILITY = [[_(u"Level E - Extremely Unlikely"),
+                               1], [_(u"Level D - Remote"),
+                                    2], [_(u"Level C - Occasional"), 3],
+                              [_(u"Level B - Reasonably Probable"),
+                               4], [_(u"Level A - Frequent"), 5]]
 
-RAMSTK_SW_DEV_ENVIRONMENTS = [[_("Organic"), 1.0, 0.76],
-                              [_("Semi-Detached"), 1.0, 1.0],
-                              [_("Embedded"), 1.0, 1.3]]
-RAMSTK_SW_DEV_PHASES = [[_("Concept/Planning (PCP)")],
-                        [_("Requirements Analysis (SRA)")],
-                        [_("Preliminary Design Review (PDR)")],
-                        [_("Critical Design Review (CDR)")],
-                        [_("Test Readiness Review (TRR)")], [_("Released")]]
-RAMSTK_SW_LEVELS = [[_("Software System"), 0], [_("Software Module"), 0],
-                    [_("Software Unit"), 0]]
-RAMSTK_SW_APPLICATION = [[_("Airborne"), 0.0128, 6.28],
-                         [_("Strategic"), 0.0092, 1.2],
-                         [_("Tactical"), 0.0078, 13.8],
-                         [_("Process Control"), 0.0018, 3.8],
-                         [_("Production Center"), 0.0085, 23.0],
-                         [_("Developmental"), 0.0123, 132.6]]
+RAMSTK_SW_DEV_ENVIRONMENTS = [[_(u"Organic"), 1.0,
+                               0.76], [_(u"Semi-Detached"), 1.0, 1.0],
+                              [_(u"Embedded"), 1.0, 1.3]]
+RAMSTK_SW_DEV_PHASES = [[_(u"Concept/Planning (PCP)")], [
+    _(u"Requirements Analysis (SRA)")
+], [_(u"Preliminary Design Review (PDR)")],
+                        [_(u"Critical Design Review (CDR)")],
+                        [_(u"Test Readiness Review (TRR)")], [_(u"Released")]]
+RAMSTK_SW_LEVELS = [[_(u"Software System"), 0], [_(u"Software Module"), 0],
+                    [_(u"Software Unit"), 0]]
+RAMSTK_SW_APPLICATION = [[_(u"Airborne"), 0.0128,
+                          6.28], [_(u"Strategic"), 0.0092,
+                                  1.2], [_(u"Tactical"), 0.0078, 13.8],
+                         [_(u"Process Control"), 0.0018,
+                          3.8], [_(u"Production Center"), 0.0085,
+                                 23.0], [_(u"Developmental"), 0.0123, 132.6]]
 RAMSTK_SW_TEST_METHODS = [[
-    _("Code Reviews"),
-    _("Code review is a systematic examination (often known as peer review) "
-      "of computer source code.")
-], [_("Error/Anomaly Detection"), _("")], [_("Structure Analysis"),
-                                           _("")],
-                          [_("Random Testing"), _("")],
-                          [_("Functional Testing"),
-                           _("")], [_("Branch Testing"),
-                                    _("")]]
+    _(u"Code Reviews"),
+    _(u"Code review is a systematic examination (often known as peer review) "
+      u"of computer source code.")
+], [_(u"Error/Anomaly Detection"), _(u"")], [_(u"Structure Analysis"),
+                                             _(u"")],
+                          [_(u"Random Testing"),
+                           _(u"")], [_(u"Functional Testing"),
+                                     _(u"")], [_(u"Branch Testing"),
+                                               _(u"")]]
 
-RAMSTK_LIFECYCLE = [[_("Design")], [_("Reliability Growth")],
-                    [_("Reliability Qualification")], [_("Production")],
-                    [_("Storage")], [_("Operation")], [_("Disposal")]]
+RAMSTK_LIFECYCLE = [[_(u"Design")], [_(u"Reliability Growth")],
+                    [_(u"Reliability Qualification")], [_(u"Production")],
+                    [_(u"Storage")], [_(u"Operation")], [_(u"Disposal")]]
 RAMSTK_S_DIST = [["Constant Probability"], ["Exponential"], ["Gaussian"],
                  ["LogNormal"], ["Uniform"], ["Weibull"]]
 
@@ -190,7 +184,7 @@ class Configuration(object):
                               | password | User password (MySQL only)    |
                               +----------+-------------------------------+
     :cvar dict RAMSTK_TABPOS: Dictionary containing the location of tabs in the
-                           three main Gtk.Notebook() widgets.  Can be one of:
+                           three main gtk.Notebook() widgets.  Can be one of:
 
                            * Top
                            * Bottom
@@ -401,7 +395,7 @@ class Configuration(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        if(sys.platform == 'linux' or sys.platform=='linux2'):
+        if sys.platform == 'linux2':
             self.RAMSTK_OS = 'Linux'
             self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + '/share/RAMSTK'
             self.RAMSTK_HOME_DIR = environ['HOME']
@@ -409,7 +403,7 @@ class Configuration(object):
 
         elif sys.platform == 'win32':
             self.RAMSTK_OS = 'Windows'
-            self.RAMSTK_SITE_DIR = environ['PYTHONPATH'] + '/RAMSTK'
+            self.RAMSTK_SITE_DIR = environ['COMMONPROGRAMFILES(X86)'] + '/RAMSTK'
             self.RAMSTK_HOME_DIR = environ['USERPROFILE']
             self.RAMSTK_LOG_DIR = self.RAMSTK_SITE_DIR + '/logs'
 
@@ -431,7 +425,7 @@ class Configuration(object):
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
         if Utilities.file_exists(self.RAMSTK_SITE_CONF):
-            _config = configparser.ConfigParser()
+            _config = ConfigParser.ConfigParser()
             _config.read(self.RAMSTK_SITE_CONF)
 
             self.RAMSTK_COM_BACKEND = _config.get('Backend', 'type')
@@ -457,11 +451,11 @@ class Configuration(object):
 
         _common_db = self.RAMSTK_SITE_DIR + '/ramstk_common.rtk'
 
-        _config = configparser.ConfigParser()
+        _config = ConfigParser.ConfigParser()
 
         _config.add_section('Backend')
         _config.set('Backend', 'host', 'localhost')
-        _config.set('Backend', 'socket', '3306')
+        _config.set('Backend', 'socket', 3306)
         _config.set('Backend', 'database', _common_db)
         _config.set('Backend', 'user', 'ramstk')
         _config.set('Backend', 'password', 'ramstk')
@@ -489,7 +483,7 @@ class Configuration(object):
 
         _return = False
 
-        _config = configparser.ConfigParser()
+        _config = ConfigParser.ConfigParser()
 
         # Create the directories needed for the user.  Always prefer the RAMSTK
         # directories in the user's $HOME over the system-wide directories.
@@ -549,11 +543,11 @@ class Configuration(object):
         _config.add_section('General')
         _config.set('General', 'firstrun', True)
         _config.set('General', 'reportsize', 'letter')
-        _config.set('General', 'frmultiplier', '1000000.0')
-        _config.set('General', 'calcreltime', '100.0')
+        _config.set('General', 'frmultiplier', 1000000.0)
+        _config.set('General', 'calcreltime', 100.0)
         _config.set('General', 'autoaddlistitems', 'False')
-        _config.set('General', 'decimal', '6')
-        _config.set('General', 'modesource', '1')
+        _config.set('General', 'decimal', 6)
+        _config.set('General', 'modesource', 1)
         _config.set('General', 'parallelcalcs', 'False')
         _config.set('General', 'moduletabpos', 'top')
         _config.set('General', 'listtabpos', 'bottom')
@@ -562,7 +556,7 @@ class Configuration(object):
         _config.add_section('Backend')
         _config.set('Backend', 'type', 'sqlite')
         _config.set('Backend', 'host', 'localhost')
-        _config.set('Backend', 'socket', '3306')
+        _config.set('Backend', 'socket', 3306)
         _config.set('Backend', 'database', '')
         _config.set('Backend', 'user', '')
         _config.set('Backend', 'password', '')
@@ -626,7 +620,7 @@ class Configuration(object):
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
         if Utilities.file_exists(self.RAMSTK_PROG_CONF):
-            _config = configparser.ConfigParser()
+            _config = ConfigParser.ConfigParser()
             _config.read(self.RAMSTK_PROG_CONF)
 
             for _color in self._lst_colors:
@@ -650,10 +644,9 @@ class Configuration(object):
             self.RAMSTK_PROG_DIR = _config.get('Directories', 'progdir')
 
             self.RAMSTK_REPORT_SIZE = _config.get('General', 'reportsize')
-            self.RAMSTK_HR_MULTIPLIER = float(
-                _config.get('General', 'frmultiplier'))
-            self.RAMSTK_DEC_PLACES = int(_config.get('General', 'decimal'))
-            self.RAMSTK_MTIME = float(_config.get('General', 'calcreltime'))
+            self.RAMSTK_HR_MULTIPLIER = _config.get('General', 'frmultiplier')
+            self.RAMSTK_DEC_PLACES = _config.get('General', 'decimal')
+            self.RAMSTK_MTIME = _config.get('General', 'calcreltime')
             self.RAMSTK_MODE_SOURCE = _config.get('General', 'modesource')
             self.RAMSTK_TABPOS['listbook'] = _config.get(
                 'General', 'listtabpos')
@@ -711,15 +704,14 @@ class Configuration(object):
         _return = False
 
         if Utilities.file_exists(self.RAMSTK_PROG_CONF):
-            _config = configparser.ConfigParser()
+            _config = ConfigParser.ConfigParser()
             _config.add_section('General')
             _config.set('General', 'reportsize', self.RAMSTK_REPORT_SIZE)
             _config.set('General', 'parallelcalcs', 'False')
-            _config.set('General', 'frmultiplier',
-                        str(self.RAMSTK_HR_MULTIPLIER))
-            _config.set('General', 'calcreltime', str(self.RAMSTK_MTIME))
+            _config.set('General', 'frmultiplier', self.RAMSTK_HR_MULTIPLIER)
+            _config.set('General', 'calcreltime', self.RAMSTK_MTIME)
             _config.set('General', 'autoaddlistitems', 'False')
-            _config.set('General', 'decimal', str(self.RAMSTK_DEC_PLACES))
+            _config.set('General', 'decimal', self.RAMSTK_DEC_PLACES)
             _config.set('General', 'modesource', self.RAMSTK_MODE_SOURCE)
             _config.set('General', 'moduletabpos',
                         self.RAMSTK_TABPOS['modulebook'])
@@ -732,7 +724,7 @@ class Configuration(object):
             _config.set('Backend', 'type', self.RAMSTK_BACKEND)
             _config.set('Backend', 'host', self.RAMSTK_PROG_INFO['host'])
             _config.set('Backend', 'socket',
-                        str(self.RAMSTK_PROG_INFO['socket']))
+                        int(self.RAMSTK_PROG_INFO['socket']))
             _config.set('Backend', 'database',
                         self.RAMSTK_PROG_INFO['database'])
             _config.set('Backend', 'user', self.RAMSTK_PROG_INFO['user'])

@@ -52,7 +52,7 @@ def test_do_select(test_dao):
 
     assert isinstance(_mission, RAMSTKMission)
     assert _mission.mission_id == 1
-    assert _mission.description == b'Test Mission'
+    assert _mission.description == 'Test Mission'
 
 
 @pytest.mark.integration
@@ -73,9 +73,8 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1)
 
     assert _error_code == 0
-    assert _msg == (
-        'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-        'database.')
+    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
+                    'database.')
     assert DUT.last_id == 2
 
 
@@ -101,8 +100,8 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent Mission '
-                    'ID 300.')
+    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent Mission ID '
+                    '300.')
 
 
 @pytest.mark.integration
@@ -112,7 +111,7 @@ def test_do_update(test_dao):
     DUT.do_select_all(revision_id=1)
 
     _mission = DUT.do_select(1)
-    _mission.description = b'Test Mission'
+    _mission.description = 'Test Mission'
 
     _error_code, _msg = DUT.do_update(1)
 
@@ -142,6 +141,5 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == (
-        "RAMSTK SUCCESS: Updating all records in the usage profile "
-        "mission table.")
+    assert _msg == ("RAMSTK SUCCESS: Updating all records in the usage profile "
+                    "mission table.")

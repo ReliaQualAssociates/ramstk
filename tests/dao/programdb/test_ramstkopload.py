@@ -20,7 +20,7 @@ ATTRIBUTES = {
     'damage_model': '',
     'load_id': 1,
     'mechanism_id': 1,
-    'description': 'Test Operating Load'
+    'description': u'Test Operating Load'
 }
 
 

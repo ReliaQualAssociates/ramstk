@@ -15,10 +15,10 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'method_type': 'detection',
+    'method_type': u'detection',
     'method_id': 1,
-    'name': 'Code Reviews',
-    'description': ''
+    'name': u'Code Reviews',
+    'description': u''
 }
 
 

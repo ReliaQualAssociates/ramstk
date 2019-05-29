@@ -9,10 +9,10 @@
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
 from ramstk.dao import (RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode,
-                        RAMSTKGroup, RAMSTKHazards, RAMSTKLoadHistory,
-                        RAMSTKManufacturer, RAMSTKMeasurement, RAMSTKMethod,
-                        RAMSTKModel, RAMSTKRPN, RAMSTKStakeholders,
-                        RAMSTKStatus, RAMSTKType, RAMSTKUser)
+                     RAMSTKGroup, RAMSTKHazards, RAMSTKLoadHistory,
+                     RAMSTKManufacturer, RAMSTKMeasurement, RAMSTKMethod,
+                     RAMSTKModel, RAMSTKRPN, RAMSTKStakeholders, RAMSTKStatus,
+                     RAMSTKType, RAMSTKUser)
 
 
 class PreferencesDataModel(RAMSTKDataModel):

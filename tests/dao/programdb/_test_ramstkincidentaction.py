@@ -91,8 +91,8 @@ class TestRAMSTKIncidentAction(unittest.TestCase):
         """
         (TestRAMSTKIncidentAction) get_attributes should return a tuple of attribute values.
         """
-        print(self.DUT.get_attributes())
-        print(self._attributes)
+        print self.DUT.get_attributes()
+        print self._attributes
         self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)

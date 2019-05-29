@@ -21,9 +21,9 @@ ATTRIBUTES = {
     'action_approve_date': date.today() + timedelta(days=30),
     'action_status': '',
     'action_closed': 0,
-    'action_taken': b'',
+    'action_taken': '',
     'action_close_date': date.today() + timedelta(days=30),
-    'action_recommended': b'Recommended action for Failure Cause #1',
+    'action_recommended': 'Recommended action for Failure Cause #1',
     'action_category': '',
     'action_owner': '',
     'cause_id': 1,
@@ -48,12 +48,12 @@ def test_ramstkaction_create(test_dao):
     assert DUT.cause_id == 1
     assert DUT.action_id == 1
     assert DUT.action_recommended == (
-        b'Test Functional FMEA Recommended Action #1 for Cause ID 1')
+        'Test Functional FMEA Recommended Action #1 for Cause ID 1')
     assert DUT.action_category == ''
     assert DUT.action_owner == ''
     assert DUT.action_due_date == date.today() + timedelta(days=30)
     assert DUT.action_status == ''
-    assert DUT.action_taken == b''
+    assert DUT.action_taken == ''
     assert DUT.action_approved == 0
     assert DUT.action_approve_date == date.today() + timedelta(days=30)
     assert DUT.action_closed == 0

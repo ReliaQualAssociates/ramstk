@@ -198,20 +198,20 @@ def overstressed(**attributes):
         if attributes['power_ratio'] > 0.70:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(". Operating power > 70% rated power in harsh "
-                  "environment.\n")
+                _(u". Operating power > 70% rated power in harsh "
+                  u"environment.\n")
             _reason_num += 1
         if attributes['temperature_junction'] > 125.0:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(". Junction temperature > 125.0C in harsh environment.\n")
+                _(u". Junction temperature > 125.0C in harsh environment.\n")
             _reason_num += 1
     else:
         if attributes['power_ratio'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(". Operating power > 90% rated power in mild "
-                  "environment.\n")
+                _(u". Operating power > 90% rated power in mild "
+                  u"environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason

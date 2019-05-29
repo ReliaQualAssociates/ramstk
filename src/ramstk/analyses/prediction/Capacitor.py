@@ -440,22 +440,22 @@ def overstressed(**attributes):
         if attributes['voltage_ratio'] > 0.60:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(". Operating voltage > 60% rated voltage in harsh "
-                  "environment.\n")
+                _(u". Operating voltage > 60% rated voltage in harsh "
+                  u"environment.\n")
             _reason_num += 1
         if (attributes['temperature_rated_max'] -
                 attributes['temperature_active'] <= 10.0):
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(". Operating temperature within 10.0C of maximum rated "
-                  "temperature.\n")
+                _(u". Operating temperature within 10.0C of maximum rated "
+                  u"temperature.\n")
             _reason_num += 1
     else:
         if attributes['voltage_ratio'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(". Operating voltage > 90% rated voltage in mild "
-                  "environment.\n")
+                _(u". Operating voltage > 90% rated voltage in mild "
+                  u"environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason

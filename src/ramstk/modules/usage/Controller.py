@@ -6,7 +6,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Usage Profile Package Data Controller."""
 
-# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
@@ -37,7 +36,7 @@ class UsageProfileDataController(RAMSTKDataController):
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmUsageProfile(dao, **kwargs),
+            model=dtmUsageProfile(dao),
             ramstk_module='usage_profile',
             **kwargs)
 
@@ -53,25 +52,12 @@ class UsageProfileDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.request_do_delete, 'request_delete_profile')
-        pub.subscribe(self.request_do_insert, 'request_insert_profile')
-        pub.subscribe(self.request_do_select_all, 'selected_revision')
-        pub.subscribe(self.request_do_update, 'request_update_profile')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_profiles')
-        pub.subscribe(self.request_set_attributes, 'editing_profile')
-
-    def request_do_insert(self, entity_id, parent_id, level, **kwargs):
+    def request_do_insert(self, **kwargs):
         """
-        Request to add a record.
+        Request to add a RAMSTKMission, RAMSTKMissionPhase, or RAMSTKEnvironment record.
 
-        This method will add a RAMSTKMission, RAMSTKMissionPhase, or
-        RAMSTKEnvironment record.
-
-        :param int entity_id: the RAMSTK Program database Revision ID,
-                              Mission ID, or Mission Phase ID to add the entity
-                              to.
+        :param int entity_id: the RAMSTK Program database Revision ID, Mission ID,
+                              or Mission Phase ID to add the entity to.
         :param int parent_id: the Node ID of the parent node in the treelib
                               Tree().
         :param str level: the level of entity to add to the Usage Profile.
@@ -84,8 +70,68 @@ class UsageProfileDataController(RAMSTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        _entity_id = kwargs['entity_id']
+        _parent_id = kwargs['parent_id']
+        _level = kwargs['level']
         _error_code, _msg = self._dtm_data_model.do_insert(
-            entity_id=entity_id, parent_id=parent_id, level=level)
+            entity_id=_entity_id, parent_id=_parent_id, level=_level)
+
+        # If the add was successful log the success message to the user log.
+        # Otherwise, update the error message and write it to the debug log.
+        if _error_code == 0:
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
+
+            if not self._test:
+                if _level == 0:
+                    pub.sendMessage('addedMission')
+                elif _level == 1:
+                    pub.sendMessage('addedPhase')
+                elif _level == 2:
+                    pub.sendMessage('addedEnvironment')
+
+        else:
+            _msg = _msg + '  Failed to add a new Usage Profile entity to ' \
+                          'the RAMSTK Program '
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
+
+    def request_do_delete(self, node_id):
+        """
+        Request to delete a RAMSTKMission, RAMSTKMissionPhase, or RAMSTKEnvironment.
+
+        :param int node_id: the Mission, Mission Phase, Environment ID to add
+                            the entity.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
+
+    def request_do_update(self, node_id):
+        """
+        Request to update an RAMSTKMission, RAMSTKMissionPhase, or RAMSTKEnvironment.
+
+        :param int node_id: the ID of the entity to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_update(node_id)
+
+        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
+                                                      None)
+
+    def request_do_update_all(self, **kwargs):
+        """
+        Request to update all records in the Usage Profile tables.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)

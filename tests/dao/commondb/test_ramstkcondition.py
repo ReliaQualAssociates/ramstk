@@ -15,9 +15,9 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'condition_type': 'operating',
+    'condition_type': u'operating',
     'condition_id': 1,
-    'description': 'Cavitation'
+    'description': u'Cavitation'
 }
 
 
@@ -77,4 +77,4 @@ def test_set_attributes_missing_key(test_common_dao):
                     "attribute dictionary passed to "
                     "RAMSTKCondition.set_attributes().")
 
-    ATTRIBUTES['condition_type'] = 'operating'
+    ATTRIBUTES['condition_type'] = u'operating'

@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring, unused-import
+# pylint: disable=C0111,W0611
 # -*- coding: utf-8 -*-
 #
 #       ramstk.gui.gtk.listviews.__init__.py is part of the RAMSTK Project

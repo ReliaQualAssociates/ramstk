@@ -120,7 +120,7 @@ HARDWARE_ATTRIBUTES = {
     'Ccp': 0.0,
     'Cpf': 0.0,
     'Cs': 0.0,
-    'reason': '',
+    'reason': u'',
     'Ccs': 0.0,
     'offset': 0.0,
     'load_operating': 0.0,
@@ -167,7 +167,7 @@ HARDWARE_ATTRIBUTES = {
     'C2': 0.0,
     'C1': 0.0,
     'failure_distribution_id': 0,
-    'hazard_rate_model': '',
+    'hazard_rate_model': u'',
     'quantity': 1,
     'pressure_contact': 0.0,
     'part': 1,
@@ -276,8 +276,6 @@ HARDWARE_ATTRIBUTES = {
 }
 
 # These are the dormant hazard rate multipliers.
-# First key is the category ID; second key is the active environment ID;
-# third key is the dormant environment ID.
 DORMANT_MULT = {
     1: {
         1: {

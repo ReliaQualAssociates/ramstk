@@ -9,7 +9,6 @@
 import os
 import platform
 import sys
-import tempfile
 import glob
 import csv
 import gettext
@@ -25,8 +24,6 @@ from ramstk.dao.RAMSTKProgramDB import do_create_test_database
 
 _ = gettext.gettext
 
-TEMPDIR = tempfile.gettempdir()
-
 try:
     VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
 except KeyError:
@@ -35,8 +32,8 @@ except KeyError:
     elif platform.system() == 'Windows':
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
-        print(("The {0:s} system platform is not "
-               "supported.").format(platform.system()))
+        print("The {0:s} system platform is not "
+              "supported.").format(platform.system())
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -102,18 +99,15 @@ HEADERS = {
 }
 
 # Row data for the Function import test file.
-ROW_DATA = [
-    [
-        1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
-        'This is a function that is about system pressure.  This remarks box also needs to be larger.',
-        1, 0
-    ],
-    [
-        1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
-        'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
-        0, 0
-    ]
-]
+ROW_DATA = [[
+    1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
+    'This is a function that is about system pressure.  This remarks box also needs to be larger.',
+    1, 0
+], [
+    1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
+    'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
+    0, 0
+]]
 
 
 @pytest.fixture(scope='session')
@@ -145,10 +139,10 @@ def test_dao():
     # If there are existing test databases, delete them.
     if os.path.exists(TEST_PROGRAM_DB_PATH):
         os.remove(TEST_PROGRAM_DB_PATH)
-    if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
-        os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
-    if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
-        os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
+    if os.path.exists('/tmp/_ramstk_program_db.ramstk'):
+        os.remove('/tmp/_ramstk_program_db.ramstk')
+    if os.path.exists('/tmp/_ramstk_test_db.ramstk'):
+        os.remove('/tmp/_ramstk_test_db.ramstk')
 
     # Create and populate an RAMSTK Program test database.
     dao = DAO()
@@ -173,21 +167,20 @@ def test_configuration():
 
     configuration.RAMSTK_SITE_DIR = CONF_DIR
     configuration.RAMSTK_CONF_DIR = CONF_DIR
-    configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + \
-        '/RAMSTK.conf'
+    configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + '/RAMSTK.conf'
 
     configuration.RAMSTK_COM_BACKEND = 'sqlite'
     configuration.RAMSTK_COM_INFO['host'] = 'localhost'
-    configuration.RAMSTK_COM_INFO['socket'] = '3306'
+    configuration.RAMSTK_COM_INFO['socket'] = 3306
     configuration.RAMSTK_COM_INFO['database'] = TEST_COMMON_DB_PATH
     configuration.RAMSTK_COM_INFO['user'] = 'ramstkcom'
     configuration.RAMSTK_COM_INFO['password'] = 'ramstkcom'
 
     configuration.RAMSTK_REPORT_SIZE = 'letter'
-    configuration.RAMSTK_HR_MULTIPLIER = '1000000.0'
-    configuration.RAMSTK_MTIME = '100.0'
-    configuration.RAMSTK_DEC_PLACES = '6'
-    configuration.RAMSTK_MODE_SOURCE = '1'
+    configuration.RAMSTK_HR_MULTIPLIER = 1000000.0
+    configuration.RAMSTK_MTIME = 100.0
+    configuration.RAMSTK_DEC_PLACES = 6
+    configuration.RAMSTK_MODE_SOURCE = 1
     configuration.RAMSTK_TABPOS = {
         'modulebook': 'top',
         'listbook': 'bottom',
@@ -196,7 +189,7 @@ def test_configuration():
 
     configuration.RAMSTK_BACKEND = 'sqlite'
     configuration.RAMSTK_PROG_INFO['host'] = 'localhost'
-    configuration.RAMSTK_PROG_INFO['socket'] = '3306'
+    configuration.RAMSTK_PROG_INFO['socket'] = 3306
     configuration.RAMSTK_PROG_INFO['database'] = TEST_PROGRAM_DB_PATH
     configuration.RAMSTK_PROG_INFO['user'] = 'johnny.tester'
     configuration.RAMSTK_PROG_INFO['password'] = 'clear.text.password'
@@ -253,7 +246,7 @@ def test_csv_file_function():
     """Create and populate a *.csv file for testing Function imports."""
     _test_file = TMP_DIR + '/test_inputs_functions.csv'
 
-    with open(_test_file, 'w') as _csv_file:
+    with open(_test_file, 'wb') as _csv_file:
         filewriter = csv.writer(
             _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Function'])
@@ -268,7 +261,7 @@ def test_csv_file_requirement():
     """Create and populate a *.csv file for testing Requirement import mapping."""
     _test_file = TMP_DIR + '/test_inputs_requirements.csv'
 
-    with open(_test_file, 'w') as _csv_file:
+    with open(_test_file, 'wb') as _csv_file:
         filewriter = csv.writer(
             _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Requirement'])
@@ -281,7 +274,7 @@ def test_csv_file_hardware():
     """Create and populate a *.csv file for testing Hardware import mapping."""
     _test_file = TMP_DIR + '/test_inputs_hardware.csv'
 
-    with open(_test_file, 'w') as _csv_file:
+    with open(_test_file, 'wb') as _csv_file:
         filewriter = csv.writer(
             _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Hardware'])
@@ -294,7 +287,7 @@ def test_csv_file_validation():
     """Create and populate a *.csv file for testing Validation import mapping."""
     _test_file = TMP_DIR + '/test_inputs_validation.csv'
 
-    with open(_test_file, 'w') as _csv_file:
+    with open(_test_file, 'wb') as _csv_file:
         filewriter = csv.writer(
             _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         filewriter.writerow(HEADERS['Validation'])
@@ -350,7 +343,6 @@ def test_format_file():
     _layout.write(_test_file)
 
     yield _test_file
-
 
 @pytest.fixture
 def test_export_file():

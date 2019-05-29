@@ -17,12 +17,12 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'owner': '',
+    'owner': u'',
     'priority': 0,
     'parent_id': 0,
     'requirement_code': 'REL-0001',
     'q_complete_4': 0,
-    'requirement_type': '',
+    'requirement_type': u'',
     'q_complete_5': 0,
     'validated_date': date.today(),
     'revision_id': 1,
@@ -36,13 +36,13 @@ ATTRIBUTES = {
     'q_consistent_2': 0,
     'q_consistent_1': 0,
     'q_clarity_3': 0,
-    'specification': '',
+    'specification': u'',
     'q_complete_0': 0,
     'q_complete_1': 0,
     'q_complete_2': 0,
     'q_complete_3': 0,
-    'page_number': '',
-    'figure_number': '',
+    'page_number': u'',
+    'figure_number': u'',
     'q_complete_6': 0,
     'q_complete_7': 0,
     'q_complete_8': 0,
@@ -53,7 +53,7 @@ ATTRIBUTES = {
     'q_clarity_4': 0,
     'q_clarity_5': 0,
     'q_clarity_2': 0,
-    'description': b'',
+    'description': '',
     'q_clarity_0': 0,
     'q_clarity_1': 0,
     'q_verifiable_4': 0,
@@ -82,7 +82,7 @@ def test_ramstkrequirement_create(test_dao):
     assert DUT.revision_id == 1
     assert DUT.requirement_id == 1
     assert DUT.derived == 0
-    assert DUT.description == b''
+    assert DUT.description == ''
     assert DUT.figure_number == ''
     assert DUT.owner == ''
     assert DUT.page_number == ''
