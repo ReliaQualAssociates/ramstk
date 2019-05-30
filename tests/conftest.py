@@ -9,6 +9,7 @@
 import os
 import platform
 import sys
+import tempfile
 import glob
 import csv
 import gettext
@@ -23,6 +24,8 @@ from ramstk.dao import DAO
 from ramstk.dao.RAMSTKProgramDB import do_create_test_database
 
 _ = gettext.gettext
+
+TEMPDIR = tempfile.gettempdir()
 
 try:
     VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
@@ -139,10 +142,10 @@ def test_dao():
     # If there are existing test databases, delete them.
     if os.path.exists(TEST_PROGRAM_DB_PATH):
         os.remove(TEST_PROGRAM_DB_PATH)
-    if os.path.exists('/tmp/_ramstk_program_db.ramstk'):
-        os.remove('/tmp/_ramstk_program_db.ramstk')
-    if os.path.exists('/tmp/_ramstk_test_db.ramstk'):
-        os.remove('/tmp/_ramstk_test_db.ramstk')
+    if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
+    if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
 
     # Create and populate an RAMSTK Program test database.
     dao = DAO()

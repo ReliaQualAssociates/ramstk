@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.modules.function.Controller.py is part of The RAMSTK Project
+#       ramstk.modules.function.Controller.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Package Data Controller."""
 
+# Import third party modules.
 from pubsub import pub
 
 # Import other RAMSTK modules.
@@ -17,27 +19,28 @@ from . import dtmFunction
 
 class FunctionDataController(RAMSTKDataController):
     """
-    Provide an interface between the Function data model and an RAMSTK view model.
+    Provide interface between Function data model and RAMSTK view model.
 
-    A single Function controller can manage one or more Function data models.
-    The attributes of a Function data controller are:
+    A single Function controller can manage one or more Function data
+    models.  The attributes of a Function data controller are:
     """
 
     def __init__(self, dao, configuration, **kwargs):
         """
         Initialize a Function data controller instance.
 
-        :param dao: the RAMSTK Program DAO instance to pass to the Function Data
-                    Model.
+        :param dao: the RAMSTK Program DAO instance to pass to the
+                    Function Data Model.
         :type dao: :class:`ramstk.dao.DAO`
-        :param configuration: the Configuration instance associated with the
-                              current instance of the RAMSTK application.
+        :param configuration: the Configuration instance associated with
+                              the current instance of the RAMSTK
+                              application.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
         RAMSTKDataController.__init__(
             self,
             configuration,
-            model=dtmFunction(dao),
+            model=dtmFunction(dao, **kwargs),
             ramstk_module='function',
             **kwargs)
 
@@ -57,6 +60,15 @@ class FunctionDataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.request_do_select_all, 'selected_revision')
+        pub.subscribe(self.request_do_delete, 'request_delete_function')
+        pub.subscribe(self.request_do_insert, 'request_insert_function')
+        pub.subscribe(self.request_do_update, 'request_update_function')
+        pub.subscribe(self.request_do_update_all,
+                      'request_update_all_functions')
+        pub.subscribe(self.request_set_attributes, 'editing_function')
+
     def request_do_create(self, revision_id, matrix_type):
         """
         Request to create or refresh a Function matrix.
@@ -73,6 +85,16 @@ class FunctionDataController(RAMSTKDataController):
                 ckey='hardware_id')
 
         return
+
+    def request_do_select_all(self, revision_id):
+        """
+        Retrieve the treelib Tree() from the Function Data Model.
+
+        :return: tree; the treelib Tree() of RAMSTKFunction models in the
+                 Function tree.
+        :rtype: :class:`treelib.Tree`
+        """
+        return self._dtm_data_model.do_select_all(revision_id=revision_id)
 
     def request_do_select_all_matrix(self, revision_id, matrix_type):
         """
@@ -109,28 +131,15 @@ class FunctionDataController(RAMSTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_do_insert(self, **kwargs):
+    def request_do_insert(self, revision_id, parent_id, **kwargs):  # pylint: disable=unused-argument
         """
         Request to add an RAMSTKFunction table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _revision_id = kwargs['revision_id']
-        _parent_id = kwargs['parent_id']
         _error_code, _msg = self._dtm_data_model.do_insert(
-            revision_id=_revision_id, parent_id=_parent_id)
-
-        if _error_code == 0:
-            self._configuration.RAMSTK_USER_LOG.info(_msg)
-
-            if not self._test:
-                pub.sendMessage(
-                    'insertedFunction', function_id=self._dtm_data_model.last_id)
-        else:
-            _msg = _msg + '  Failed to add a new Function to the RAMSTK ' \
-                'Program database.'
-            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
+            revision_id=revision_id, parent_id=parent_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
@@ -180,7 +189,7 @@ class FunctionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_delete(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'deletedFunction')
+                                                      None)
 
     def request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -218,7 +227,7 @@ class FunctionDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_update(node_id)
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      'savedFunction')
+                                                      None)
 
     def request_do_update_matrix(self, revision_id, matrix_type):
         """
@@ -252,3 +261,22 @@ class FunctionDataController(RAMSTKDataController):
 
         return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
                                                       None)
+
+    def request_set_attributes(self, module_id, key, value):
+        """
+        Request to set a Function attribute.
+
+        :param int module_id: the ID of the entity who's attribute is to
+                              be set.
+        :param str key: the key of the attributes to set.
+        :param value: the value to set the attribute identified by the
+                      key.
+        :return:
+        :rtype:
+        """
+        _entity = self.request_do_select(module_id)
+        _attributes = _entity.get_attributes()
+
+        _attributes[key] = value
+
+        return _entity.set_attributes(_attributes)

@@ -18,18 +18,18 @@ class RAMSTKDataModel(object):  # pragma: no cover
     """
     This is the meta-class for all RAMSTK Data Models.
 
-    :ivar tree: the :class:`treelib.Tree` that will contain the structure
-                of the RAMSTK module being modeled..
-    :ivar dao: the :class:`ramstk.dao.DAO` object used to communicate with the
-               RAMSTK Program database.
+    :ivar tree: the :class:`treelib.Tree` that will contain the
+                structure of the RAMSTK module being modeled..
+    :ivar dao: the :class:`ramstk.dao.DAO` object used to communicate
+               with the RAMSTK Program database.
     """
 
     def __init__(self, dao):
         """
         Initialize an RAMSTK data model instance.
 
-        :param dao: the data access object for communicating with the RAMSTK
-                    Program database.
+        :param dao: the data access object for communicating with the
+                    RAMSTK Program database.
         :type dao: :class:`ramstk.dao.DAO.DAO`
         """
         # Initialize private dictionary attributes.
@@ -161,8 +161,8 @@ class RAMSTKDataModel(object):  # pragma: no cover
                 _error_code, _msg = self.dao.db_update(_session)
         except AttributeError:
             _error_code = 1
-            _msg = 'RAMSTK ERROR: Attempted to save non-existent entity ' \
-                   'with Node ID {0:s}.'.format(str(node_id))
+            _msg = ('RAMSTK ERROR: Attempted to save non-existent '
+                    'entity with Node ID {0:s}.').format(str(node_id))
 
         _session.close()
 

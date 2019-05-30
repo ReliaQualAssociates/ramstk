@@ -93,10 +93,10 @@ def test_do_load_output_function(test_dao):
     """do_load_output() should return None when loading Functions for export."""
     DUT = dtmExports(test_dao)
 
-    _function = dtmFunction(test_dao)
-    _tree = _function.do_select_all(revision_id=1)
+    _function = dtmFunction(test_dao, test=True)
+    _function.do_select_all(revision_id=1)
 
-    assert DUT.do_load_output('Function', _tree) is None
+    assert DUT.do_load_output('Function', _function.tree) is None
 
 
 @pytest.mark.integration
@@ -159,9 +159,9 @@ def test_do_export_to_csv(test_dao, test_export_file):
     """do_export() should return None when exporting to a CSV file."""
     DUT = dtmExports(test_dao)
 
-    _function = dtmFunction(test_dao)
-    _tree = _function.do_select_all(revision_id=1)
-    DUT.do_load_output('Function', _tree)
+    _function = dtmFunction(test_dao, test=True)
+    _function.do_select_all(revision_id=1)
+    DUT.do_load_output('Function', _function.tree)
 
     _test_csv = test_export_file + '_function.csv'
     assert DUT.do_export('csv', _test_csv) is None
@@ -210,9 +210,9 @@ def test_do_export_to_text(test_dao, test_export_file):
     """do_export() should return None when exporting to a text file."""
     DUT = dtmExports(test_dao)
 
-    _function = dtmFunction(test_dao)
-    _tree = _function.do_select_all(revision_id=1)
-    DUT.do_load_output('Function', _tree)
+    _function = dtmFunction(test_dao, test=True)
+    _function.do_select_all(revision_id=1)
+    DUT.do_load_output('Function', _function.tree)
 
     _test_text = test_export_file + '_function.txt'
     assert DUT.do_export('text', _test_text) is None
@@ -233,10 +233,10 @@ def test_request_do_load_output(test_dao, test_configuration):
     request_do_load_output() should return None."""
     DUT = dtcExports(test_dao, test_configuration, test=True)
 
-    _function = dtmFunction(test_dao)
-    _tree = _function.do_select_all(revision_id=1)
+    _function = dtmFunction(test_dao, test=True)
+    _function.do_select_all(revision_id=1)
 
-    assert DUT.request_do_load_output('Function', _tree) is None
+    assert DUT.request_do_load_output('Function', _function.tree) is None
 
 
 @pytest.mark.integration
@@ -246,9 +246,9 @@ def test_request_do_export_to_csv(test_dao, test_configuration, test_export_file
     """
     DUT = dtcExports(test_dao, test_configuration, test=True)
 
-    _function = dtmFunction(test_dao)
-    _tree = _function.do_select_all(revision_id=1)
-    DUT.request_do_load_output('Function', _tree)
+    _function = dtmFunction(test_dao, test=True)
+    _function.do_select_all(revision_id=1)
+    DUT.request_do_load_output('Function', _function.tree)
 
     _test_csv = test_export_file + '_function.csv'
 
