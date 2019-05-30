@@ -88,6 +88,15 @@ def test_do_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
+def test_request_do_create_matrix(test_dao, test_configuration):
+    """ request_do_create_matrix should return None. """
+    DUT = dtcFunction(test_dao, test_configuration, test=True)
+    DUT.request_do_select_all(ATTRIBUTES)
+
+    assert DUT._request_do_create_matrix(1, 'fnctn_hrdwr') is None
+
+
+@pytest.mark.integration
 def test_do_insert_sibling(test_dao):
     """ do_insert() should return False on success when inserting a sibling Function. """
     DUT = dtmFunction(test_dao, test=True)
@@ -213,7 +222,7 @@ def test_request_do_select_all(test_dao, test_configuration):
 def test_request_do_select_all_matrix(test_dao, test_configuration):
     """ request_do_select_all_matrix() should return a tuple containing the matrix, column headings, and row headings. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
 
     assert isinstance(_matrix, pd.DataFrame)
@@ -265,31 +274,39 @@ def test_request_do_insert(test_dao, test_configuration):
 def test_request_do_insert_matrix_row(test_dao, test_configuration):
     """ request_do_insert_matrix() should return False on successfully inserting a row. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
 
-    assert not DUT.request_do_insert_matrix('fnctn_hrdwr', 4, 'Function Code')
+    assert not DUT._request_do_insert_matrix('fnctn_hrdwr', 4, 'Function Code')
     assert DUT._dmx_fctn_hw_matrix.dic_row_hdrs[4] == 'Function Code'
 
+@pytest.mark.integration
+def test_request_do_insert_non_existent_matrix(test_dao, test_configuration):
+    """ _request_do_insert_matrix() should return True when attempting to insert to a non-existent matrix. """
+    DUT = dtcFunction(test_dao, test_configuration, test=True)
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
+        1, 'fnctn_hrdwr')
+
+    assert DUT._request_do_insert_matrix('fnctn_rvsn', 4, 'COST-0001')
 
 @pytest.mark.integration
 def test_request_do_insert_matrix_duplicate_row(test_dao, test_configuration):
     """ request_do_insert_matrix() should return True when attempting to insert a duplicate row. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
 
-    assert DUT.request_do_insert_matrix('fnctn_hrdwr', 2, 'Function Code')
+    assert DUT._request_do_insert_matrix('fnctn_hrdwr', 2, 'Function Code')
 
 
 @pytest.mark.integration
 def test_request_do_insert_matrix_column(test_dao, test_configuration):
     """ request_do_insert_matrix() should return False on successfully inserting a column. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
 
-    assert not DUT.request_do_insert_matrix(
+    assert not DUT._request_do_insert_matrix(
         'fnctn_hrdwr', 9, 'S1:SS1:A2', row=False)
     assert DUT._dmx_fctn_hw_matrix.dic_column_hdrs[9] == 'S1:SS1:A2'
 
@@ -315,35 +332,45 @@ def test_request_do_delete_non_existent_id(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_delete_matrix_row(test_dao, test_configuration):
-    """ request_do_delete_matrix() should return False on successfully deleting a row. """
+    """ _request_do_delete_matrix() should return False on successfully deleting a row. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
-    DUT.request_do_insert_matrix('fnctn_hrdwr', 4, 'Function Code')
+    DUT._request_do_insert_matrix('fnctn_hrdwr', 4, 'Function Code')
 
-    assert not DUT.request_do_delete_matrix('fnctn_hrdwr', 4)
+    assert not DUT._request_do_delete_matrix('fnctn_hrdwr', 4)
+
+
+@pytest.mark.integration
+def test_request_do_delete_nonexistent_matrix(test_dao, test_configuration):
+    """ _request_do_delete_matrix() should return True when attempting to deletie from a non-existent matrix. """
+    DUT = dtcFunction(test_dao, test_configuration, test=True)
+    DUT._request_do_select_all_matrix(1, 'fnctn_hrdwr')
+    DUT._request_do_insert_matrix('fnctn_hrdwr', 4, 'Function Code')
+
+    assert DUT._request_do_delete_matrix('fnctn_rvsn', 4)
 
 
 @pytest.mark.integration
 def test_request_do_delete_matrix_non_existent_row(test_dao,
                                                    test_configuration):
-    """ request_do_delete_matrix() should return True when attempting to delete a non-existent row. """
+    """ _request_do_delete_matrix() should return True when attempting to delete a non-existent row. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
 
-    assert DUT.request_do_delete_matrix('fnctn_hrdwr', 4)
+    assert DUT._request_do_delete_matrix('fnctn_hrdwr', 4)
 
 
 @pytest.mark.integration
 def test_request_do_delete_matrix_column(test_dao, test_configuration):
-    """ request_do_delete_matrix() should return False on successfully deleting a column. """
+    """ _request_do_delete_matrix() should return False on successfully deleting a column. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
-    DUT.request_do_insert_matrix('fnctn_hrdwr', 4, 'S1:SS1:A1', row=False)
+    DUT._request_do_insert_matrix('fnctn_hrdwr', 4, 'S1:SS1:A1', row=False)
 
-    assert not DUT.request_do_delete_matrix('fnctn_hrdwr', 4, row=False)
+    assert not DUT._request_do_delete_matrix('fnctn_hrdwr', 4, row=False)
 
 
 @pytest.mark.integration
@@ -368,20 +395,20 @@ def test_request_do_update_non_existent_id(test_dao, test_configuration):
 def test_request_do_update_matrix(test_dao, test_configuration):
     """ request_do_update_matrix() should return False on success. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
 
-    assert not DUT.request_do_update_matrix(1, 'fnctn_hrdwr')
+    assert not DUT._request_do_update_matrix(1, 'fnctn_hrdwr')
 
 
 @pytest.mark.integration
 def test_request_do_update_non_existent_matrix(test_dao, test_configuration):
     """ request_do_update_matrix() should return True when attempting to update a non-existent matrix. """
     DUT = dtcFunction(test_dao, test_configuration, test=True)
-    (_matrix, _column_hdrs, _row_hdrs) = DUT.request_do_select_all_matrix(
+    (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
         1, 'fnctn_hrdwr')
 
-    assert DUT.request_do_update_matrix(1, 'fnctn_sftwr')
+    assert DUT._request_do_update_matrix(1, 'fnctn_rvsn')
 
 
 @pytest.mark.integration

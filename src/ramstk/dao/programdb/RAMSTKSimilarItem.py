@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKSimilarItem Table."""
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
-from ramstk.Utilities import none_to_default
+# RAMSTK Package Imports
 from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
+from ramstk.Utilities import none_to_default
 
 
 # pylint: disable=R0902
@@ -471,7 +472,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         ]
 
         # Use the list to filter the local namespace
-        _sia = dict([(k, locals().get(k, None)) for k in _safe_list])
+        _sia = {k: None for k in _safe_list}
 
         # Get the assembly failure intensity.
         _sia['hr'] = hazard_rate
@@ -522,6 +523,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         for _index, _key in enumerate(_keys):
             vars()[_key] = _values[_index]
 
+        # pylint: disable=eval-used
         try:
             self.result_1 = eval(_sia['equation1'], {"__builtins__": None},
                                  _sia)
@@ -560,7 +562,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         # If all the equations are set and _return is True, then there is a
         # real issue.  Otherwise, _return was set just because one or more
         # equations was empty and it is a false True.
-        if (_return and _sia['equation1'] != '' or _sia['equation2'] != ''
+        if (_sia['equation1'] != '' or _sia['equation2'] != ''
                 or _sia['equation3'] != '' or _sia['equation4'] != ''
                 or _sia['equation5'] != ''):
             _return = False

@@ -24,20 +24,19 @@ class ModuleView(RAMSTKModuleView):
     Requriements Module View are:
 
     :ivar _requirement_id: the ID of the currently selected Requirement.
-    :ivar _revision_id: the ID of the currently selected Revision.
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Requirement Module View.
 
-        :param controller: the RAMSTK Master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKModuleView.__init__(self, controller, module='requirement')
+        RAMSTKModuleView.__init__(self, configuration, module='requirement')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/requirement.png'
 
         # Initialize private list attributes.
@@ -67,11 +66,35 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        RAMSTKModuleView._make_ui(self)
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            RAMSTKModuleView._make_buttonbox(
+                self,
+                icons=['insert_sibling', 'insert_child', 'remove', 'export'],
+                tooltips=[
+                    _("Adds a new Requirement at the same hierarchy level as "
+                      "the selected Requirement (i.e., a sibling "
+                      "Requirement)."),
+                    _("Adds a new Requirement one level subordinate to the "
+                      "selected Requirement (i.e., a derived requirement)."),
+                    _("Remove the currently selected Requirement."),
+                    _("Exports Requirementss to an external file (CSV, Excel, "
+                      "and text files are supported).")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling,
+                    self.do_request_insert_child, self._do_request_delete,
+                    self._do_request_export
+                ]))
+        self.pack_start(_scrolledwindow, False, False, 0)
 
         self.make_treeview()
         self.treeview.set_tooltip_text(
             _("Displays the hierarchical list of requirements."))
+
+        RAMSTKModuleView._make_ui(self)
 
         _label = ramstk.RAMSTKLabel(
             _("Requirements"),
@@ -82,8 +105,6 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
-
-        return None
 
     def _do_load_code(self, code):
         """
@@ -97,8 +118,6 @@ class ModuleView(RAMSTKModuleView):
         _path = _model.get_path(_row)
 
         _model[_path][self._lst_col_order[9]] = code
-
-        return None
 
     def _do_refresh_tree(self, module_id, key, value):
         """
@@ -134,8 +153,6 @@ class ModuleView(RAMSTKModuleView):
 
         _dialog.do_destroy()
 
-        return None
-
     def _do_request_export(self, __button):
         """
         Launch the Export assistant.
@@ -151,12 +168,13 @@ class ModuleView(RAMSTKModuleView):
         """
         Request to insert a new Requirement into the RAMSTK Program database.
 
-        :param bool sibling: indicates whether to insert a sibling (default)
-                             Requirement or a child Requirement.
         :return: None
         :rtype: None
         """
-        _sibling = kwargs['sibling']
+        try:
+            _sibling = kwargs['sibling']
+        except KeyError:
+            _sibling = True
 
         if _sibling:
             try:
@@ -171,8 +189,6 @@ class ModuleView(RAMSTKModuleView):
             revision_id=self._revision_id,
             parent_id=_parent_id)
 
-        return None
-
     def _do_request_update(self, __button):
         """
         Request to save the currently selected Requirement.
@@ -182,12 +198,10 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
             'request_update_requirement', node_id=self._requirement_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -198,45 +212,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_requirements')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Requirement Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement class
-                 Module View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Adds a new Requirement at the same hierarchy level as the "
-              "selected Requirement (i.e., a sibling Requirement)."),
-            _("Adds a new Requirement one level subordinate to the selected "
-              "Requirement (i.e., a derived requirement)."),
-            _("Remove the currently selected Requirement."),
-            _("Exports Requirementss to an external file (CSV, Excel, and "
-              "text files are supported).")
-        ]
-        _callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
-            self._do_request_delete, self._do_request_export
-        ]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_button_press(self, treeview, event):
         """
@@ -246,7 +224,6 @@ class ModuleView(RAMSTKModuleView):
         :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView`
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
-
                                     * 1 = left
                                     * 2 = scrollwheel
                                     * 3 = right
@@ -254,10 +231,9 @@ class ModuleView(RAMSTKModuleView):
                                     * 5 = backward
                                     * 8 =
                                     * 9 =
-
         :type event: :class:`Gdk.Event`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         treeview.handler_block(self._lst_handler_id[1])
 
@@ -266,9 +242,7 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = [
-                'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
-            ]
+            _icons = ['insert_sibling', 'insert_child']
             _labels = [
                 _("Add Sibling Requirement"),
                 _("Add Child Requirement"),
@@ -277,10 +251,10 @@ class ModuleView(RAMSTKModuleView):
                 _("Save All Requirements")
             ]
             _callbacks = [
-                self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_delete, self._do_request_update,
-                self._do_request_update_all
+                self._do_request_insert_sibling,
+                self._do_request_insert_child,
             ]
+
             RAMSTKModuleView.on_button_press(
                 self,
                 event,
@@ -289,8 +263,6 @@ class ModuleView(RAMSTKModuleView):
                 callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
-
-        return False
 
     def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
@@ -310,30 +282,28 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        _dic_keys = {
+            2: 'derived',
+            3: 'description',
+            4: 'figure_number',
+            6: 'page_number',
+            10: 'specification',
+            12: 'validated',
+            13: 'validated_date'
+        }
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
+
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
-            if self._lst_col_order[position] == 2:
-                _key = 'derived'
-            elif self._lst_col_order[position] == 3:
-                _key = 'description'
-            elif self._lst_col_order[position] == 4:
-                _key = 'figure_number'
-            elif self._lst_col_order[position] == 6:
-                _key = 'page_number'
-            elif self._lst_col_order[position] == 10:
-                _key = 'specification'
-            elif self._lst_col_order[position] == 12:
-                _key = 'validated'
-            elif self._lst_col_order[position] == 13:
-                _key = 'validated_date'
 
             pub.sendMessage(
-                'editing_requirement',
+                'mvw_editing_requirement',
                 module_id=self._requirement_id,
                 key=_key,
                 value=new_text)
-
-        return None
 
     def _on_row_change(self, treeview):
         """
@@ -456,5 +426,3 @@ class ModuleView(RAMSTKModuleView):
             pub.sendMessage('selected_requirement', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        return None

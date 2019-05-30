@@ -11,12 +11,11 @@ import logging
 import os
 from datetime import date
 
-from sqlalchemy.orm import scoped_session  # pylint: disable=E0401
-from pubsub import pub  # pylint: disable=E0401
-from treelib import Tree  # pylint: disable=E0401
+from sqlalchemy.orm import scoped_session
+from pubsub import pub
+from treelib import Tree
 
 # Import other RAMSTK modules.
-# pylint: disable=E0401
 from .Configuration import Configuration
 from . import Utilities
 from ramstk.dao.DAO import DAO
@@ -76,9 +75,18 @@ def main():
     #     Gtk.main_iteration()
 
     # sleep(3)
-    RAMSTK(test=False)
+    _app = RAMSTK(test=False)
 
     # splScreen.window.destroy()
+
+    # Create RAMSTK Books.  These need to be initialized after reading the
+    # configuration.
+    if _app.RAMSTK_CONFIGURATION.RAMSTK_GUI_LAYOUT == 'basic':  # Single window.
+        pass
+    else:  # Multiple windows.
+        ListBook(_app.RAMSTK_CONFIGURATION)
+        ModuleBook(_app.RAMSTK_CONFIGURATION)
+        WorkBook(_app.RAMSTK_CONFIGURATION)
 
     Gtk.main()
 
@@ -611,11 +619,6 @@ class RAMSTK(object):
             'imports': None,
             'exports': None,
         }
-        self.dic_books = {
-            'listbook': None,
-            'modulebook': None,
-            'workbook': None
-        }
 
         # Define public list attributes.
 
@@ -668,15 +671,6 @@ class RAMSTK(object):
         # Validate the license.
         # if self._validate_license():
         #    sys.exit(2)
-
-        # Create RAMSTK Books.  These need to be initialized after reading the
-        # configuration.
-        if self.RAMSTK_CONFIGURATION.RAMSTK_GUI_LAYOUT == 'basic':  # Single window.
-            pass
-        else:  # Multiple windows.
-            self.dic_books['listbook'] = ListBook(self)
-            self.dic_books['modulebook'] = ModuleBook(self)
-            self.dic_books['workbook'] = WorkBook(self)
 
         _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
@@ -881,11 +875,6 @@ class RAMSTK(object):
         """
         _return = False
 
-        # TODO: Move this to the ModuleBook.
-        _message = _("Saving Program Database {0:s}"). \
-            format(self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])
-        self.dic_books['modulebook'].statusbar.push(2, _message)
-
         _error_code, _msg = self.ramstk_model.do_save_program()
 
         if _error_code == 0:
@@ -896,9 +885,6 @@ class RAMSTK(object):
         else:
             self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)
             _return = True
-
-        # TODO: Move this to the ModuleBook.
-        self.dic_books['modulebook'].statusbar.pop(2)
 
         return _return
 

@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Datamodels Package RAMSTKDataMatrix."""
 
+from pubsub import pub
+
 import pandas as pd
 from sqlalchemy import and_, func
 
@@ -13,7 +15,7 @@ from sqlalchemy import and_, func
 from ramstk.dao import RAMSTKMatrix
 
 
-class RAMSTKDataMatrix(object):
+class RAMSTKDataMatrix():
     """
     The RAMSTK Data Matrix model.
 
@@ -62,15 +64,16 @@ class RAMSTKDataMatrix(object):
 
     _tag = 'matrix'
 
-    def __init__(self, dao, row_table, column_table):
+    def __init__(self, dao, **kwargs):
         """Initialize a Matrix data model instance."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._column_table = column_table
-        self._row_table = row_table
+        self._column_table = kwargs['column_table']
+        self._row_table = kwargs['row_table']
+        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
         self.dtf_matrix = None
@@ -166,8 +169,8 @@ class RAMSTKDataMatrix(object):
             * *cheader* (int) -- the index in the column table attributes
                                  containing the text to use for the Matrix
                                  column headings.
-        :return: False if successful or True if an error occurs.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         try:
             _rkey = kwargs['rkey']
@@ -186,7 +189,16 @@ class RAMSTKDataMatrix(object):
         except KeyError:
             _cheader = 0
 
-        _return = False
+        _dic_row_title = {
+            'fnctn_hrdwr': 'Function',
+            'fnctn_vldtn': 'Function',
+            'rqrmnt_hrdwr': 'Requirement',
+            'rqrmnt_vldtn': 'Requirement',
+            'hrdwr_rqrmnt': 'Hardware',
+            'hrdwr_vldtn': 'Hardware',
+            'vldtn_rqrmnt': 'Validation',
+            'vldtn_hrdwr': 'Validation'
+        }
 
         _session = self.dao.RAMSTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
@@ -246,7 +258,15 @@ class RAMSTKDataMatrix(object):
 
         _session.close()
 
-        return _return
+        # If we're not running a test, let anyone who cares know a matrix was
+        # selected.
+        if not self._test:
+            pub.sendMessage(
+                'retrieved_matrix',
+                matrix=self.dtf_matrix,
+                column_headings=self.dic_column_hdrs,
+                row_headings=self.dic_row_hdrs,
+                row=_dic_row_title[matrix_type])
 
     def do_insert(self, item_id, heading, row=True):
         """

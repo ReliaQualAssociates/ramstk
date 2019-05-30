@@ -6,14 +6,18 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKProgramDB File."""
 
-# Import third party modules.
+# Standard Library Imports
+from typing import Any
+
+# Third Party Imports
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-RAMSTK_BASE = declarative_base()
+RAMSTK_BASE: Any = declarative_base()
 
 
+# pylint: disable=too-many-locals
 def do_make_tables(engine):
     """Make all the tables in the RAMSTK Program database."""
     from ramstk.dao import (
@@ -74,8 +78,6 @@ def do_make_tables(engine):
     RAMSTKUnits.__table__.create(bind=engine)
     RAMSTKValidation.__table__.create(bind=engine)
 
-    return None
-
 
 def create_program_db(**kwargs):
     """Create and populate a RAMSTK Program database."""
@@ -113,9 +115,8 @@ def create_program_db(**kwargs):
 
     session.commit()
 
-    return None
 
-
+# pylint: disable=too-many-statements, too-many-locals
 def do_create_test_database(database):
     """
     Create a new RAMSTK Program test database.
@@ -125,6 +126,7 @@ def do_create_test_database(database):
     :return: False if successful or True if an error occurs.
     :rtype: bool
     """
+    # pylint: disable=unused-import
     from ramstk.dao import (
         RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl,
         RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,

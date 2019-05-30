@@ -29,7 +29,7 @@ __trove__ = [
 # Lists of required packages for RAMSTK.
 INSTALL_REQUIRES = [
     'defusedxml', 'lifelines>=0.13,<15.0', 'matplotlib', 'numpy',
-    'pandas', 'pycairo', 'PyGObject>=2.28,<=3.18.2', 'PyPubSub', 'scipy',
+    'pandas', 'pycairo', 'PyGObject>=2.28', 'PyPubSub', 'scipy',
     'sortedcontainers==2.1.0', 'SQLAlchemy', 'SQLAlchemy-Utils', 'statsmodels',
     'treelib', 'xlrd', 'xlwt'
 ]

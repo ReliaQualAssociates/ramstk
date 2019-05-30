@@ -262,7 +262,7 @@ class RAMSTKPlot(object):
         try:
             _fontsize = kwargs['fontsize']
         except KeyError:
-            _fonsize = 14
+            _fontsize = 14
         try:
             _fontweight = kwargs['fontweight']
         except KeyError:

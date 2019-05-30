@@ -55,14 +55,14 @@ class UsageProfileDataController(RAMSTKDataController):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.request_do_delete, 'request_delete_profile')
-        pub.subscribe(self.request_do_insert, 'request_insert_profile')
+        pub.subscribe(self._request_do_insert, 'request_insert_profile')
         pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_update, 'request_update_profile')
         pub.subscribe(self.request_do_update_all,
                       'request_update_all_profiles')
         pub.subscribe(self.request_set_attributes, 'editing_profile')
 
-    def request_do_insert(self, entity_id, parent_id, level, **kwargs):
+    def _request_do_insert(self, entity_id, parent_id, level, **kwargs):
         """
         Request to add a record.
 

@@ -16,7 +16,7 @@ from ramstk.gui.gtk.matrixviews import (
     FunctionHardware, RequirementHardware, RequirementValidation,
     HardwareRequirement, HardwareValidation, ValidationRequirement,
     ValidationHardware)
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk
+from ramstk.gui.gtk.ramstk.Widget import _
 
 
 class ListBook(RAMSTKBook):
@@ -34,14 +34,15 @@ class ListBook(RAMSTKBook):
                               that RAMSTK module.
     """
 
-    def __init__(self, controller):
+    def __init__(self, configuration):
         """
         Initialize an instance of the RAMSTK List View class.
 
-        :param controller: the RAMSTK master data controller.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKBook.__init__(self, controller)
+        RAMSTKBook.__init__(self, configuration)
+        self.dic_books['listbook'] = self
 
         # Initialize private dictionary attributes.
 
@@ -51,23 +52,26 @@ class ListBook(RAMSTKBook):
 
         # Initialize public dictionary attributes.
         self.dic_list_view = {
-            'revision':
-            [lvwUsageProfile(controller),
-             lvwFailureDefinition(controller)],
+            'revision': [
+                lvwUsageProfile(configuration),
+                lvwFailureDefinition(configuration)
+            ],
             'function':
-            [FunctionHardware(controller, matrix_type='fnctn_hrdwr')],
+            [FunctionHardware(configuration, matrix_type='fnctn_hrdwr')],
             'requirement': [
-                lvwStakeholder(controller),
-                RequirementHardware(controller, matrix_type='rqrmnt_hrdwr'),
-                RequirementValidation(controller, matrix_type='rqrmnt_vldtn')
+                lvwStakeholder(configuration),
+                RequirementHardware(configuration, matrix_type='rqrmnt_hrdwr'),
+                RequirementValidation(
+                    configuration, matrix_type='rqrmnt_vldtn')
             ],
             'hardware': [
-                HardwareRequirement(controller, matrix_type='hrdwr_rqrmnt'),
-                HardwareValidation(controller, matrix_type='hrdwr_vldtn')
+                HardwareRequirement(configuration, matrix_type='hrdwr_rqrmnt'),
+                HardwareValidation(configuration, matrix_type='hrdwr_vldtn')
             ],
             'validation': [
-                ValidationRequirement(controller, matrix_type='vldtn_rqrmnt'),
-                ValidationHardware(controller, matrix_type='vldtn_hrdwr')
+                ValidationRequirement(
+                    configuration, matrix_type='vldtn_rqrmnt'),
+                ValidationHardware(configuration, matrix_type='vldtn_hrdwr')
             ]
         }
 
@@ -75,11 +79,12 @@ class ListBook(RAMSTKBook):
 
         # Initialize public scalar attributes.
 
+        self.__set_properties()
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
-        pub.subscribe(self._on_close, 'closedProgram')
+        pub.subscribe(self._on_close, 'closed_program')
 
     def __make_ui(self):
         """
@@ -88,37 +93,34 @@ class ListBook(RAMSTKBook):
         :return: None
         :rtype: None
         """
+        self.add(self.notebook)
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties of the RAMSTKListBook and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _tab_position = self.dic_tab_position[
+                self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS['listbook'].lower()]
+        except KeyError:
+            _tab_position = self._bottom_tab
+        self.notebook.set_tab_pos(_tab_position)
+
         self.set_title(_("RAMSTK Lists and Matrices"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
 
-        self.set_default_size((self._width / 3) - 10, (2 * self._height / 7))
+        self.resize((self._width / 3) - 10, (2 * self._height / 7))
         self.move((2 * self._width / 3), 0)
-
-        if self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
-                'listbook'].lower() == 'left':
-            self.notebook.set_tab_pos(self._left_tab)
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
-                'listbook'].lower() == 'right':
-            self.notebook.set_tab_pos(self._right_tab)
-        elif self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_TABPOS[
-                'listbook'].lower() == 'top':
-            self.notebook.set_tab_pos(self._top_tab)
-        else:
-            self.notebook.set_tab_pos(self._bottom_tab)
-
-        self.connect('window_state_event', self._on_window_state_event)
-
-        self.add(self.notebook)
-
-        self.show_all()
-
-        return None
 
     def _on_close(self):
         """
-        Update the Modules Views when a RAMSTK Program database is closed.
+        Clear the List Views when a RAMSTK Program database is closed.
 
         :return: None
         :rtype: None
@@ -137,38 +139,14 @@ class ListBook(RAMSTKBook):
 
                 _model.clear()
 
-        return None
-
     def _on_module_change(self, module=''):
         """
         Load the List Views for the RAMSTK module selected in the Module Book.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        RAMSTKBook._on_module_change(self)
-
-        for _list in self.dic_list_view[module]:
-            self.notebook.insert_page(_list, _list.hbx_tab_label, -1)
-
-        return _return
-
-    def _on_window_state_event(self, window, event):
-        """
-        Iconify or deiconify all three books together.
-
         :return: None
         :rtype: None
         """
-        if event.new_window_state == Gdk.WindowState.ICONIFIED:
-            for _window in ['listbook', 'modulebook', 'workbook']:
-                self._mdcRAMSTK.dic_books[_window].iconify()
-        elif event.new_window_state == 0:
-            for _window in ['listbook', 'modulebook', 'workbook']:
-                self._mdcRAMSTK.dic_books[_window].deiconify()
-        elif event.new_window_state == Gdk.WindowState.MAXIMIZED:
-            window.maximize()
+        RAMSTKBook.on_module_change(self)
 
-        return None
+        for _list in self.dic_list_view[module]:
+            self.notebook.insert_page(_list, _list.hbx_tab_label, -1)

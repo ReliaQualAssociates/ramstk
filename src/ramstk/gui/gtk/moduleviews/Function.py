@@ -20,28 +20,24 @@ class ModuleView(RAMSTKModuleView):
     Display Function attribute data in the RAMSTK Module Book.
 
     The Function Module Book view displays all the Functions associated with
-    the RAMSTK Program in a flat list.  The attributes of the Function Module
-    View are:
+    the RAMSTK Program in a hierarchical list.  The attributes of the Function
+    Module View are:
 
     :ivar int _function_id: the ID of the currently selected Function.
-    :ivar int _parent_id: the ID of the parent Function for the currently
-                          selected Function.
-    :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Module View for the Function package.
 
-        :param controller: the RAMSTK Master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKModuleView.__init__(self, controller, module='function')
+        RAMSTKModuleView.__init__(self, configuration, module='function')
 
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = \
-            controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
-            '/32x32/function.png'
+            self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + '/32x32/function.png'
 
         # Initialize private list attributes.
 
@@ -69,10 +65,33 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        RAMSTKModuleView._make_ui(self)
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            RAMSTKModuleView._make_buttonbox(
+                self,
+                icons=['insert_sibling', 'insert_child', 'remove', 'export'],
+                tooltips=[
+                    _("Adds a new Function at the same hierarchy level as "
+                      "the selected Function (i.e., a sibling Function)."),
+                    _("Adds a new Function one level subordinate to the "
+                      "selected Function (i.e., a child function)."),
+                    _("Remove the currently selected Function."),
+                    _("Exports Functions to an external file (CSV, Excel, and "
+                      "text files are supported).")
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling,
+                    self.do_request_insert_child, self._do_request_delete,
+                    self._do_request_export
+                ]))
+        self.pack_start(_scrolledwindow, False, False, 0)
 
         self.make_treeview(editable=[5, 15, 17, 18])
         self.treeview.set_tooltip_text(_("Displays the list of functions."))
+
+        RAMSTKModuleView._make_ui(self)
 
         _label = ramstk.RAMSTKLabel(
             _("Functions"),
@@ -83,8 +102,6 @@ class ModuleView(RAMSTKModuleView):
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
-
-        return None
 
     def _do_request_delete(self, __button):
         """
@@ -108,8 +125,6 @@ class ModuleView(RAMSTKModuleView):
 
         _dialog.do_destroy()
 
-        return None
-
     def _do_request_export(self, __button):
         """
         Launch the Export assistant.
@@ -128,7 +143,10 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _sibling = kwargs['sibling']
+        try:
+            _sibling = kwargs['sibling']
+        except KeyError:
+            _sibling = True
 
         if _sibling:
             try:
@@ -143,8 +161,6 @@ class ModuleView(RAMSTKModuleView):
             revision_id=self._revision_id,
             parent_id=_parent_id)
 
-        return None
-
     def _do_request_update(self, __button):
         """
         Request to save the currently selected Function.
@@ -157,8 +173,6 @@ class ModuleView(RAMSTKModuleView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_function', node_id=self._function_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
 
     def _do_request_update_all(self, __button):
         """
@@ -173,42 +187,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_update_all_functions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        return None
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Function class Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Module
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Adds a new Function at the same hierarchy level as "
-              "the selected Function (i.e., a sibling Function)."),
-            _("Adds a new Function one level subordinate to the "
-              "selected Function (i.e., a child function)."),
-            _("Remove the currently selected Function."),
-            _("Exports Functions to an external file (CSV, Excel, and "
-              "text files are supported).")
-        ]
-        _callbacks = [
-            self.do_request_insert_sibling, self.do_request_insert_child,
-            self._do_request_delete, self._do_request_export
-        ]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'export']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
     def _on_button_press(self, treeview, event):
         """
         Handle mouse clicks on the Function Module View RAMSTKTreeView().
@@ -218,7 +196,6 @@ class ModuleView(RAMSTKModuleView):
         :param event: the Gdk.Event() that called this method (the
                       important attribute is which mouse button was
                       clicked).
-
                                     * 1 = left
                                     * 2 = scrollwheel
                                     * 3 = right
@@ -226,10 +203,9 @@ class ModuleView(RAMSTKModuleView):
                                     * 5 = backward
                                     * 8 =
                                     * 9 =
-
         :type event: :class:`Gdk.Event`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         treeview.handler_block(self._lst_handler_id[1])
 
@@ -239,9 +215,7 @@ class ModuleView(RAMSTKModuleView):
         # selected row.  Thus, we don't need (or want) to respond to
         # left button clicks.
         if event.button == 3:
-            _icons = [
-                'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
-            ]
+            _icons = ['insert_sibling', 'insert_child']
             _labels = [
                 _("Add Sibling Function"),
                 _("Add Child Function"),
@@ -250,10 +224,9 @@ class ModuleView(RAMSTKModuleView):
                 _("Save All Functions")
             ]
             _callbacks = [
-                self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_delete, self._do_request_update,
-                self._do_request_update_all
+                self.do_request_insert_sibling, self.do_request_insert_child
             ]
+
             RAMSTKModuleView.on_button_press(
                 self,
                 event,
@@ -262,8 +235,6 @@ class ModuleView(RAMSTKModuleView):
                 callbacks=_callbacks)
 
         treeview.handler_unblock(self._lst_handler_id[1])
-
-        return False
 
     def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
@@ -303,8 +274,6 @@ class ModuleView(RAMSTKModuleView):
                 key=_key,
                 value=new_text)
 
-        return None
-
     def _on_row_change(self, treeview):
         """
         Handle events for the Function package Module Book RAMSTKTreeView().
@@ -324,33 +293,39 @@ class ModuleView(RAMSTKModuleView):
         (_model, _row) = treeview.get_selection().get_selected()
 
         if _row is not None:
-            _attributes['revision_id'] = _model.get_value(_row,
-                                                          self._lst_col_order[0])
-            _attributes['function_id'] = _model.get_value(_row,
-                                                          self._lst_col_order[1])
+            _attributes['revision_id'] = _model.get_value(
+                _row, self._lst_col_order[0])
+            _attributes['function_id'] = _model.get_value(
+                _row, self._lst_col_order[1])
             _attributes['availability_logistics'] = _model.get_value(
                 _row, self._lst_col_order[2])
             _attributes['availability_mission'] = _model.get_value(
                 _row, self._lst_col_order[3])
-            _attributes['cost'] = _model.get_value(_row, self._lst_col_order[4])
+            _attributes['cost'] = _model.get_value(_row,
+                                                   self._lst_col_order[4])
             _attributes['function_code'] = _model.get_value(
                 _row, self._lst_col_order[5])
             _attributes['hazard_rate_logistics'] = _model.get_value(
                 _row, self._lst_col_order[6])
             _attributes['hazard_rate_mission'] = _model.get_value(
                 _row, self._lst_col_order[7])
-            _attributes['level'] = _model.get_value(_row, self._lst_col_order[8])
+            _attributes['level'] = _model.get_value(_row,
+                                                    self._lst_col_order[8])
             _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[9])
-            _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[10])
-            _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[11])
+            _attributes['mcmt'] = _model.get_value(_row,
+                                                   self._lst_col_order[10])
+            _attributes['mpmt'] = _model.get_value(_row,
+                                                   self._lst_col_order[11])
             _attributes['mtbf_logistics'] = _model.get_value(
                 _row, self._lst_col_order[12])
-            _attributes['mtbf_mission'] = _model.get_value(_row,
-                                                           self._lst_col_order[13])
-            _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[14])
-            _attributes['name'] = _model.get_value(_row, self._lst_col_order[15])
-            _attributes['parent_id'] = _model.get_value(_row,
-                                                        self._lst_col_order[16])
+            _attributes['mtbf_mission'] = _model.get_value(
+                _row, self._lst_col_order[13])
+            _attributes['mttr'] = _model.get_value(_row,
+                                                   self._lst_col_order[14])
+            _attributes['name'] = _model.get_value(_row,
+                                                   self._lst_col_order[15])
+            _attributes['parent_id'] = _model.get_value(
+                _row, self._lst_col_order[16])
             _attributes['remarks'] = _model.get_value(_row,
                                                       self._lst_col_order[17])
             _attributes['safety_critical'] = _model.get_value(
@@ -370,5 +345,3 @@ class ModuleView(RAMSTKModuleView):
             pub.sendMessage('selected_function', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])
-
-        return None

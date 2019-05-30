@@ -6,13 +6,18 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Function Work View."""
 
+# Third Party Imports
 # Import third party modules.
 from pubsub import pub
 
+# RAMSTK Package Imports
 # Import other RAMSTK modules.
-from ramstk.Utilities import boolean_to_integer
-from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+from ramstk.gui.gtk.ramstk import (RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame,
+                                   RAMSTKLabel, RAMSTKScrolledWindow,
+                                   RAMSTKTextView, do_make_label_group)
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
+
+# RAMSTK Local Imports
 from .WorkView import RAMSTKWorkView
 
 
@@ -48,23 +53,24 @@ class GeneralData(RAMSTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    _lst_labels = [
+        _("Function Code:"),
+        _("Function Description:"),
+        _("Remarks:")
+    ]
+
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Function package.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKWorkView.__init__(self, controller, module='Function')
+        RAMSTKWorkView.__init__(self, configuration, module='Function')
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_gendata_labels = [
-            _("Function Code:"),
-            _("Function Description:"),
-            _("Remarks:")
-        ]
 
         # Initialize private scalar attributes.
         self._function_id = None
@@ -76,50 +82,22 @@ class GeneralData(RAMSTKWorkView):
         # Initialize public scalar attributes.
 
         # General data page widgets.
-        self.chkSafetyCritical = ramstk.RAMSTKCheckButton(
-            label=_("Function is safety critical."),
-            tooltip=_("Indicates whether or not the selected function is "
-                      "safety critical."))
 
-        self.txtCode = ramstk.RAMSTKEntry(
-            width=125, tooltip=_("A unique code for the selected function."))
-        self.txtName = ramstk.RAMSTKEntry(
-            width=800, tooltip=_("The name of the selected function."))
-        self.txtRemarks = ramstk.RAMSTKTextView(
-            Gtk.TextBuffer(),
-            width=800,
-            tooltip=_("Enter any remarks associated with the "
-                      "selected function."))
+        self.chkSafetyCritical = RAMSTKCheckButton(
+            label=_("Function is safety critical."))
 
+        self.txtCode = RAMSTKEntry()
+        self.txtName = RAMSTKEntry()
+        self.txtRemarks = RAMSTKTextView(Gtk.TextBuffer())
+
+        self.__set_properties()
         self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._on_edit, 'mvw_editing_function')
         pub.subscribe(self._do_load_page, 'selected_function')
-
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Make the Gtk.ButtonBox() for the Function class Work View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Function class Work
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = []
-        _callbacks = []
-        _icons = []
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def __make_ui(self):
         """
@@ -128,12 +106,49 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_frame, _fixed, __,
-         _y_pos) = RAMSTKWorkView.make_general_data_page(self)
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
+                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.add_with_viewport(
+            RAMSTKWorkView._make_buttonbox(
+                self, icons=[], tooltips=[], callbacks=[]))
+        self.pack_start(_scrolledwindow, False, False, 0)
 
+        _fixed = Gtk.Fixed()
+
+        _scrollwindow = RAMSTKScrolledWindow(_fixed)
+        _frame = RAMSTKFrame(label=_("General Information"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = do_make_label_group(self._lst_labels, _fixed, 5, 5)
+        _x_pos += 50
+
+        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+        _fixed.put(self.txtName, _x_pos, _y_pos[1])
+        _fixed.put(self.txtRemarks, _x_pos, _y_pos[2])
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
 
-        # Connect to callback functions for editable Gtk.Widgets().
+        self.pack_start(_frame, True, True, 0)
+
+        # Create the label for the Gtk.Notebook() tab.
+        _label = RAMSTKLabel(
+            _("General\nData"),
+            height=30,
+            width=-1,
+            justify=Gtk.Justification.CENTER,
+            tooltip=_("Displays general information for the selected "
+                      "function."))
+        self.hbx_tab_label.pack_start(_label, True, True, 0)
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set the callback methods and functions.
+
+        :return: None
+        :rtype: None
+        """
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
@@ -143,11 +158,27 @@ class GeneralData(RAMSTKWorkView):
         self._lst_handler_id.append(
             self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_start(_frame, True, True, 0)
-        self.show_all()
+    def __set_properties(self):
+        """
+        Set the properties of the General Data Work View and widgets.
 
-        return None
+        :return: None
+        :rtype: None
+        """
+        # ----- BUTTONS
+        self.chkSafetyCritical.do_set_properties(
+            tooltip=_("Indicates whether or not the selected function is "
+                      "safety critical."))
+
+        # ----- ENTRIES
+        self.txtCode.do_set_properties(
+            width=125, tooltip=_("A unique code for the selected function."))
+        self.txtName.do_set_properties(
+            width=800, tooltip=_("The name of the selected function."))
+        self.txtRemarks.do_set_properties(
+            height=100,
+            width=800,
+            tooltip=_("Any remarks associated with the selected function."))
 
     def _do_clear_page(self):
         """
@@ -156,24 +187,10 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text('')
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text('')
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        _buffer = self.txtRemarks.do_get_buffer()
-        _buffer.handler_block(self._lst_handler_id[2])
-        _buffer.set_text('')
-        _buffer.handler_block(self._lst_handler_id[2])
-
-        self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
-        self.chkSafetyCritical.set_active(False)
-        self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
-
-        return None
+        self.txtCode.do_update('', self._lst_handler_id[0])
+        self.txtName.do_update('', self._lst_handler_id[1])
+        self.txtRemarks.do_update('', self._lst_handler_id[2])
+        self.chkSafetyCritical.do_update(False, self._lst_handler_id[3])
 
     def _do_load_page(self, attributes):
         """
@@ -186,29 +203,20 @@ class GeneralData(RAMSTKWorkView):
         """
         self._revision_id = attributes['revision_id']
         self._function_id = attributes['function_id']
+
         RAMSTKWorkView.on_select(
             self,
             title=_("Analyzing Function {0:s} - {1:s}").format(
                 str(attributes['function_code']), str(attributes['name'])))
 
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(attributes['function_code']))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(str(attributes['name']))
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        _textbuffer = self.txtRemarks.do_get_buffer()
-        _textbuffer.handler_block(self._lst_handler_id[2])
-        _textbuffer.set_text(str(attributes['remarks']))
-        _textbuffer.handler_unblock(self._lst_handler_id[2])
-
-        self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
-        self.chkSafetyCritical.set_active(int(attributes['safety_critical']))
-        self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
-
-        return None
+        self.txtCode.do_update(
+            str(attributes['function_code']), self._lst_handler_id[0])
+        self.txtName.do_update(
+            str(attributes['name']), self._lst_handler_id[1])
+        self.txtRemarks.do_update(
+            str(attributes['remarks']), self._lst_handler_id[2])
+        self.chkSafetyCritical.do_update(
+            int(attributes['safety_critical']), self._lst_handler_id[3])
 
     def _do_request_update(self, __button):
         """
@@ -223,8 +231,6 @@ class GeneralData(RAMSTKWorkView):
         pub.sendMessage('request_update_function', node_id=self._function_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        return None
-
     def _do_request_update_all(self, __button):
         """
         Request to save all the Functions.
@@ -237,8 +243,6 @@ class GeneralData(RAMSTKWorkView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_functions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
 
     def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
         """
@@ -259,25 +263,15 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        if key == 'function_code':
-            self.txtCode.handler_block(self._lst_handler_id[0])
-            self.txtCode.set_text(str(value))
-            self.txtCode.handler_unblock(self._lst_handler_id[0])
-        elif key == 'name':
-            self.txtName.handler_block(self._lst_handler_id[1])
-            self.txtName.set_text(str(value))
-            self.txtName.handler_unblock(self._lst_handler_id[1])
-        elif key == 'remarks':
-            _textbuffer = self.txtRemarks.do_get_buffer()
-            _textbuffer.handler_block(self._lst_handler_id[2])
-            _textbuffer.set_text(str(value))
-            _textbuffer.handler_unblock(self._lst_handler_id[2])
-        elif key == 'safety_critical':
-            self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
-            self.chkSafetyCritical.set_active(int(value))
-            self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
+        _dic_switch = {
+            'function_code': [self.txtCode.do_update, 0],
+            'name': [self.txtName.do_update, 1],
+            'remarks': [self.txtRemarks.do_update, 2],
+            'safety_critical': [self.chkSafetyCritical.do_update, 3]
+        }
 
-        return None
+        (_function, _id) = _dic_switch.get(key)
+        _function(value, self._lst_handler_id[_id])
 
     def _on_focus_out(self, entry, index):
         """
@@ -297,30 +291,28 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        _dic_keys = {0: 'function_code', 1: 'name', 2: 'remarks'}
         _key = ''
         _text = ''
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index == 0:
-            _key = 'function_code'
-            _text = str(entry.get_text())
-        elif index == 1:
-            _key = 'name'
-            _text = str(entry.get_text())
-        elif index == 2:
-            _key = 'remarks'
-            _text = self.txtRemarks.do_get_text()
+        try:
+            _new_text = str(entry.get_text())
+        except ValueError:
+            _new_text = ''
 
         pub.sendMessage(
             'wvw_editing_function',
             module_id=self._function_id,
             key=_key,
-            value=_text)
+            value=_new_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
     def _on_toggled(self, togglebutton, index):
         """
@@ -332,17 +324,20 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        _dic_keys = {3: 'safety_critical'}
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
+
         togglebutton.handler_block(self._lst_handler_id[index])
 
-        _key = 'safety_critical'
-        _text = boolean_to_integer(self.chkSafetyCritical.get_active())
-
-        togglebutton.handler_unblock(self._lst_handler_id[index])
+        _new_text = int(togglebutton.get_active())
 
         pub.sendMessage(
             'wvw_editing_function',
             module_id=self._function_id,
             key=_key,
-            value=_text)
+            value=_new_text)
 
-        return None
+        togglebutton.handler_unblock(self._lst_handler_id[index])
