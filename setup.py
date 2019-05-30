@@ -31,7 +31,7 @@ if not sys.version_info[0] == 2:
 
 # Lists of required packages for RAMSTK.
 INSTALL_REQUIRES = [
-    'defusedxml', 'lifelines', 'matplotlib==1.4.3', 'numpy', 'pandas',
+    'defusedxml', 'lifelines>=0.13,<0.15', 'matplotlib==1.4.3', 'numpy', 'pandas',
     'PyPubSub==3.3.0', 'scipy', 'sortedcontainers==1.5.9', 'SQLAlchemy',
     'SQLAlchemy-Utils', 'statsmodels', 'treelib', 'xlrd', 'xlwt'
 ]
