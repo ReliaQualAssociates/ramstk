@@ -6,23 +6,20 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKWorkBook Module."""
 
+# Third Party Imports
 from pubsub import pub
 
+# RAMSTK Package Imports
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk import RAMSTKBook
-
-from ramstk.gui.gtk.workviews import wvwAllocation
-from ramstk.gui.gtk.workviews import wvwFFMEA, wvwDFMECA
-from ramstk.gui.gtk.workviews import wvwHazOps
-from ramstk.gui.gtk.workviews import wvwPoF
-from ramstk.gui.gtk.workviews import wvwSimilarItem
-from ramstk.gui.gtk.workviews import wvwFunctionGD
-from ramstk.gui.gtk.workviews import wvwRevisionGD
-from ramstk.gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
-from ramstk.gui.gtk.workviews import (wvwHardwareGD, wvwHardwareAI,
-                                      wvwHardwareAR)
-from ramstk.gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
 from ramstk.gui.gtk.ramstk.Widget import _
+from ramstk.gui.gtk.workviews import (wvwAllocation, wvwBurndownCurve,
+                                      wvwFunctionGD, wvwHardwareAI,
+                                      wvwHardwareAR, wvwHardwareGD, wvwHazOps,
+                                      wvwPoF, wvwRequirementAnalysis,
+                                      wvwRequirementGD, wvwRevisionGD,
+                                      wvwSimilarItem, wvwValidationGD)
+from ramstk.gui.gtk.workviews.fmea import wvwDFMECA, wvwFFMEA
 
 
 class WorkBook(RAMSTKBook):
@@ -47,29 +44,31 @@ class WorkBook(RAMSTKBook):
         # Initialize public dictionary attributes.
         self.dic_work_views = {
             'revision': [
-                wvwRevisionGD(controller),
+                wvwRevisionGD(configuration),
             ],
             'function': [
-                wvwFunctionGD(controller),
-                wvwFFMEA(controller),
+                wvwFunctionGD(configuration),
+                wvwFFMEA(configuration),
             ],
             'requirement':
-            [wvwRequirementGD(controller),
-             wvwRequirementAnalysis(controller)],
+            [
+                wvwRequirementGD(configuration),
+                wvwRequirementAnalysis(configuration),
+            ],
             'hardware': [
-                wvwHardwareGD(controller),
-                wvwAllocation(controller),
-                wvwHazOps(controller),
-                wvwSimilarItem(controller),
-                wvwHardwareAI(controller),
-                wvwHardwareAR(controller),
-                wvwDFMECA(controller),
-                wvwPoF(controller)
+                wvwHardwareGD(configuration),
+                wvwAllocation(configuration),
+                wvwHazOps(configuration),
+                wvwSimilarItem(configuration),
+                wvwHardwareAI(configuration),
+                wvwHardwareAR(configuration),
+                wvwDFMECA(configuration),
+                wvwPoF(configuration),
             ],
             'validation': [
                 wvwValidationGD(configuration),
-                wvwBurndownCurve(configuration)
-            ]
+                wvwBurndownCurve(configuration),
+            ],
         }
 
         # Initialize public list attributes.
@@ -103,7 +102,8 @@ class WorkBook(RAMSTKBook):
         """
         try:
             _tab_position = self.dic_tab_position[
-                self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS['workbook'].lower()]
+                self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS['workbook'].lower()
+            ]
         except KeyError:
             _tab_position = self._bottom_tab
         self.notebook.set_tab_pos(_tab_position)

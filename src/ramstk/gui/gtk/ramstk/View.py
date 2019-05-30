@@ -7,19 +7,22 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKBaseView Module."""
 
+# Standard Library Imports
 import ast
 import locale
 
+# Third Party Imports
 # Import third party modules.
 from pubsub import pub
 
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKMessageDialog, RAMSTKTreeView
+from ramstk.gui.gtk.ramstk.Widget import Gdk, GdkPixbuf, Gtk, _
 # Import other RAMSTK Widget classes.
 from ramstk.Utilities import none_to_default
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GdkPixbuf, Gtk
-from ramstk.gui.gtk.ramstk import (RAMSTKMessageDialog, RAMSTKTreeView)
 
 
-class RAMSTKBaseView():  # pylint: disable=old-style-class
+class RAMSTKBaseView():
     """
     Meta class for all RAMSTK ListView, ModuleView, and WorkView classes.
 
@@ -539,11 +542,8 @@ class RAMSTKBaseView():  # pylint: disable=old-style-class
         """
         Load the RAMSTK View Gtk.TreeModel() when a Revision is selected.
 
-        :param tree: the treelib Tree() that should be loaded into the View's
-                     RAMSTKTreeView.
-        :type tree: :class:`treelib.Tree`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         _tree = kwargs['tree']
 

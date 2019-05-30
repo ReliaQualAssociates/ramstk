@@ -7,6 +7,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Entry Module."""
 
+# RAMSTK Local Imports
 # Import the ramstk.Widget base class.
 from .Widget import Gdk, GObject, Gtk, Pango
 
@@ -25,7 +26,7 @@ class RAMSTKEntry(Gtk.Entry):
         self.do_set_properties(**kwargs)
 
     def do_set_properties(self, **kwargs):
-        """
+        r"""
         Set the properties of the RAMSTK Entry.
 
         :param \**kwargs: See below
@@ -85,13 +86,16 @@ class RAMSTKEntry(Gtk.Entry):
                 red=float(int(_color[1:3], 16)),
                 green=float(int(_color[3:5], 16)),
                 blue=float(int(_color[5:7], 16)),
-                alpha=1.0)
+                alpha=1.0,
+            )
             self.override_background_color(Gtk.StateFlags.NORMAL, _bg_color)
             self.override_background_color(Gtk.StateFlags.ACTIVE, _bg_color)
             self.override_background_color(Gtk.StateFlags.PRELIGHT, _bg_color)
             self.override_background_color(Gtk.StateFlags.SELECTED, _bg_color)
-            self.override_background_color(Gtk.StateFlags.INSENSITIVE,
-                                           Gdk.RGBA(191.0, 191.0, 191.0, 1.0))
+            self.override_background_color(
+                Gtk.StateFlags.INSENSITIVE,
+                Gdk.RGBA(191.0, 191.0, 191.0, 1.0),
+            )
             self.modify_font(Pango.FontDescription('bold'))
 
         self.set_tooltip_markup(_tooltip)
@@ -137,8 +141,10 @@ class RAMSTKTextView(Gtk.TextView):
         self.set_wrap_mode(Gtk.WrapMode.WORD)
 
         self.scrollwindow = Gtk.ScrolledWindow()
-        self.scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                     Gtk.PolicyType.AUTOMATIC)
+        self.scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC,
+        )
         self.scrollwindow.add_with_viewport(self)
 
         self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
@@ -167,7 +173,7 @@ class RAMSTKTextView(Gtk.TextView):
         return _buffer.get_text(*_buffer.get_bounds())
 
     def do_set_properties(self, **kwargs):
-        """
+        r"""
         Set the properties of the RAMSTK TextView.
 
         :param \**kwargs: See below
@@ -211,6 +217,8 @@ class RAMSTKTextView(Gtk.TextView):
         :return: None
         :rtype: None
         """
+        _buffer = self.do_get_buffer()
+
         with _buffer.handler_block(handler_id):
             _buffer.set_text(str(value))
             _buffer.handler_unblock(handler_id)

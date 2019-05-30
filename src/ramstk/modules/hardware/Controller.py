@@ -321,12 +321,18 @@ class HardwareBoMDataController(RAMSTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_hw_rqrmnt_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
-                                                      RAMSTKRequirement)
-        self._dmx_hw_tstng_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
-                                                     RAMSTKTest)
-        self._dmx_hw_vldtn_matrix = RAMSTKDataMatrix(dao, RAMSTKHardware,
-                                                     RAMSTKValidation)
+        self._dmx_hw_rqrmnt_matrix = RAMSTKDataMatrix(
+            dao,
+            row_table=RAMSTKHardware,
+            column_table=RAMSTKRequirement,
+            **kwargs)
+        self._dmx_hw_tstng_matrix = RAMSTKDataMatrix(
+            dao, row_table=RAMSTKHardware, column_table=RAMSTKTest, **kwargs)
+        self._dmx_hw_vldtn_matrix = RAMSTKDataMatrix(
+            dao,
+            row_table=RAMSTKHardware,
+            column_table=RAMSTKValidation,
+            **kwargs)
         self._hr_multiplier = configuration.RAMSTK_HR_MULTIPLIER
 
         # Initialize public dictionary attributes.

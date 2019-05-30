@@ -137,7 +137,7 @@ no-docstring-rgx=__.*__
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=80
+max-line-length=88
 
 # Maximum number of lines in a module
 max-module-lines=5000
@@ -244,7 +244,6 @@ min-public-methods=2
 
 # Maximum number of public methods for a class (see R0904).
 max-public-methods=20
-
 
 [IMPORTS]
 

@@ -49,10 +49,16 @@ class FunctionDataController(RAMSTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dmx_fctn_hw_matrix = RAMSTKDataMatrix(dao, RAMSTKFunction,
-                                                    RAMSTKHardware)
-        self._dmx_fctn_sw_matrix = RAMSTKDataMatrix(dao, RAMSTKFunction,
-                                                    RAMSTKSoftware)
+        self._dmx_fctn_hw_matrix = RAMSTKDataMatrix(
+            dao,
+            row_table=RAMSTKFunction,
+            column_table=RAMSTKHardware,
+            **kwargs)
+        self._dmx_fctn_sw_matrix = RAMSTKDataMatrix(
+            dao,
+            row_table=RAMSTKFunction,
+            column_table=RAMSTKSoftware,
+            **kwargs)
 
         # Initialize public dictionary attributes.
 
@@ -92,10 +98,8 @@ class FunctionDataController(RAMSTKDataController):
         :rtype: None
         """
         _dic_creates = {
-            'fnctn_hrdwr':
-            [self._dmx_fctn_hw_matrix.do_create, 'hardware_id'],
-            'fnctn_sftwr':
-            [self._dmx_fctn_sw_matrix.do_create, 'software_id']
+            'fnctn_hrdwr': [self._dmx_fctn_hw_matrix.do_create, 'hardware_id'],
+            'fnctn_sftwr': [self._dmx_fctn_sw_matrix.do_create, 'software_id']
         }
 
         try:
