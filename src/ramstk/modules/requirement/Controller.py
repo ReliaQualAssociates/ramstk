@@ -209,10 +209,13 @@ class RequirementDataController(RAMSTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def _request_do_insert(self, revision_id, parent_id, **kwargs):  # pylint: disable=unused-argument
+    def _request_do_insert(self, revision_id, parent_id):
         """
         Request to add an RAMSTKRequirement table record.
 
+        :param int revision_id: the Revision ID the Requirement is associated
+        with.
+        :param int parent_id: the ID of the parent Requirement.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

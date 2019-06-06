@@ -192,6 +192,10 @@ class RAMSTKDataModel():
                 _error_code, _debug_msg = self.do_update(_node.identifier)
             except AttributeError:
                 _error_code = 1
+                _debug_msg = (
+                    'RAMSTK ERROR: Attempted to save non-existent '
+                    'entity with Node ID {0:s}.'
+                ).format(str(_node.identifier))
 
             _msg = _msg + _debug_msg + '\n'
 

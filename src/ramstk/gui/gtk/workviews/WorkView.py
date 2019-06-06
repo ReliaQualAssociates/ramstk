@@ -7,12 +7,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKWorkView Meta-Class Module."""
 
-# Import third party modules.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
+# RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import RAMSTKBaseView, do_make_buttonbox
+from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
 
 
 class RAMSTKWorkView(Gtk.HBox, RAMSTKBaseView):
@@ -68,6 +68,9 @@ class RAMSTKWorkView(Gtk.HBox, RAMSTKBaseView):
         _tooltips = kwargs['tooltips']
         _callbacks = kwargs['callbacks']
 
+        # do_make_buttonbox always adds the save and save-all options to the
+        # end of the list of callbacks, icons, and tooltips that are passed to
+        # this method.
         _buttonbox = do_make_buttonbox(
             self,
             icons=_icons,
@@ -75,7 +78,8 @@ class RAMSTKWorkView(Gtk.HBox, RAMSTKBaseView):
             callbacks=_callbacks,
             orientation='vertical',
             height=-1,
-            width=-1)
+            width=-1,
+        )
 
         return _buttonbox
 

@@ -59,20 +59,16 @@ class RevisionDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
 
         # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
+        # last_id is defined in RAMSTKDataModel.__init__
+        if _error_code == 0:
+            self.last_id = max(self.tree.nodes.keys())
+            pub.sendMessage('deleted_revision', tree=self.tree)
+        else:
             _error_code = 2005
             _msg = (
                 "RAMSTK ERROR: Attempted to delete non-existent Revision "
                 "ID {0:s}."
             ).format(str(node_id))
-        else:
-            self.last_id = max(self.tree.nodes.keys())
-
-            # If we're not running a test, let anyone who cares know a Function
-            # was deleted.
-            if not self._test:
-                pub.sendMessage('deleted_revision', tree=self.tree)
 
         return _error_code, _msg
 
@@ -99,13 +95,9 @@ class RevisionDataModel(RAMSTKDataModel):
             )
 
             # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
+            # last_id is defined in RAMSTKDataModel.__init__
             self.last_id = _revision.revision_id
-
-            # If we're not running a test, let anyone who cares know a new
-            # Function was inserted.
-            if not self._test:
-                pub.sendMessage('inserted_revision', tree=self.tree)
+            pub.sendMessage('inserted_revision', tree=self.tree)
 
         return _error_code, _msg
 
@@ -158,12 +150,11 @@ class RevisionDataModel(RAMSTKDataModel):
         """
         _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
-        # If there was no error and we're not running a test, let anyone
-        # who cares know a Function was updated.
+        # If we're not running a test, let anyone who cares know a Revision was
+        # updated.
         if _error_code == 0:
-            if not self._test:
-                _attributes = self.do_select(node_id).get_attributes()
-                pub.sendMessage('updated_revision', attributes=_attributes)
+            _attributes = self.do_select(node_id).get_attributes()
+            pub.sendMessage('updated_revision', attributes=_attributes)
         else:
             _error_code = 2005
             _msg = (
@@ -180,20 +171,11 @@ class RevisionDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(
-                    _node.data.revision_id,
-                )
-                _msg = _msg + _debug_msg + '\n'
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more Revisions did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all Revisions.")
+        elif _error_code == 1:
+            _msg = ("RAMSTK ERROR: One or more Revisions did not update.")
 
         return _error_code, _msg

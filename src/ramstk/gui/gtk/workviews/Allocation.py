@@ -11,8 +11,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
-    RAMSTKLabel, RAMSTKTreeView,
+    RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 
@@ -57,8 +56,8 @@ class Allocation(RAMSTKWorkView):
         """
         Initialize the Work View for the Allocation.
 
-        :param controller: the instance of the RAMSTK Configuration() class.
-        :type controller: :class:`ramstk.Configuration.Configuration`
+        :param configuration: the instance of the RAMSTK Configuration() class.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
         RAMSTKWorkView.__init__(
             self,
