@@ -6,12 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Definition Package Data Model Module."""
 
-# Import third party packages.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataModel
+# RAMSTK Package Imports
 from ramstk.dao import RAMSTKFailureDefinition
+from ramstk.modules import RAMSTKDataModel
 
 
 class FailureDefinitionDataModel(RAMSTKDataModel):
@@ -88,14 +88,16 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _definition,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _definition.definition,
                 _definition.definition_id,
                 parent=0,
-                data=_definition)
+                data=_definition,
+            )
 
             self.last_id = _definition.definition_id
 
@@ -114,20 +116,21 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
         table in the connected RAMSTK Program database.  It then add each to
         the Failure Definition data model treelib.Tree().
 
-        :return: tree; the treelib Tree() of RAMSTKFailureDefinition data
-                 models.
-        :rtype: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
         _revision_id = kwargs['revision_id']
         _session = RAMSTKDataModel.do_select_all(self)
 
         for _definition in _session.query(RAMSTKFailureDefinition).filter(
-                RAMSTKFailureDefinition.revision_id == _revision_id).all():
+                RAMSTKFailureDefinition.revision_id == _revision_id,
+        ).all():
             self.tree.create_node(
                 _definition.definition,
                 _definition.definition_id,
                 parent=0,
-                data=_definition)
+                data=_definition,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -143,8 +146,6 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
         # selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_definitions', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """
@@ -165,8 +166,10 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
                 pub.sendMessage('updated_definition', attributes=_attributes)
         else:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to save non-existent "
-                    "Failure Definition ID {0:d}.").format(node_id)
+            _msg = (
+                "RAMSTK ERROR: Attempted to save non-existent "
+                "Failure Definition ID {0:d}."
+            ).format(node_id)
 
         return _error_code, _msg
 
@@ -188,11 +191,15 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the failure "
-                        "definition table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the failure "
+                    "definition table did not update."
+                )
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the failure "
-                    "definition table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the failure "
+                "definition table."
+            )
 
         return _error_code, _msg

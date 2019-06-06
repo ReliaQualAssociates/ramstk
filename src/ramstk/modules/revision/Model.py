@@ -6,12 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Revision Package Data Model."""
 
-# Import third party packages.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataModel
+# RAMSTK Package Imports
 from ramstk.dao import RAMSTKRevision
+from ramstk.modules import RAMSTKDataModel
 
 
 class RevisionDataModel(RAMSTKDataModel):
@@ -62,8 +62,10 @@ class RevisionDataModel(RAMSTKDataModel):
         # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to delete non-existent Revision "
-                    "ID {0:s}.").format(str(node_id))
+            _msg = (
+                "RAMSTK ERROR: Attempted to delete non-existent Revision "
+                "ID {0:s}."
+            ).format(str(node_id))
         else:
             self.last_id = max(self.tree.nodes.keys())
 
@@ -85,14 +87,16 @@ class RevisionDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _revision,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _revision.name,
                 _revision.revision_id,
                 parent=0,
-                data=_revision)
+                data=_revision,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -113,8 +117,8 @@ class RevisionDataModel(RAMSTKDataModel):
         connected RAMSTK Program database.  It then add each to the Revision data
         model treelib.Tree().
 
-        :return: tree; the Tree() of RAMSTKRevision data models.
-        :rtype: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
         _session = RAMSTKDataModel.do_select_all(self)
 
@@ -127,7 +131,8 @@ class RevisionDataModel(RAMSTKDataModel):
                 _revision.name,
                 _revision.revision_id,
                 parent=0,
-                data=_revision)
+                data=_revision,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -142,8 +147,6 @@ class RevisionDataModel(RAMSTKDataModel):
         # let anyone who cares know the Requirements have been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_revisions', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """
@@ -163,8 +166,10 @@ class RevisionDataModel(RAMSTKDataModel):
                 pub.sendMessage('updated_revision', attributes=_attributes)
         else:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to save non-existent "
-                    "Revision ID {0:d}.").format(node_id)
+            _msg = (
+                "RAMSTK ERROR: Attempted to save non-existent "
+                "Revision ID {0:d}."
+            ).format(node_id)
 
         return _error_code, _msg
 
@@ -181,7 +186,8 @@ class RevisionDataModel(RAMSTKDataModel):
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _debug_msg = self.do_update(
-                    _node.data.revision_id)
+                    _node.data.revision_id,
+                )
                 _msg = _msg + _debug_msg + '\n'
             except AttributeError:
                 _error_code = 1
