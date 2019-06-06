@@ -57,12 +57,13 @@ class FMEADataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._request_do_select_all, 'selected_hardware')
         pub.subscribe(self.request_do_delete, 'request_delete_fmea')
         pub.subscribe(self._request_do_insert, 'request_insert_fmea')
         pub.subscribe(self.request_do_update, 'request_update_fmea')
         pub.subscribe(self.request_set_attributes, 'wvw_editing_fmea')
 
-    def request_do_select_all(self, attributes):
+    def _request_do_select_all(self, attributes):
         """
         Load the entire FMEA for a Function or Hardware item.
 
@@ -103,22 +104,6 @@ class FMEADataController(RAMSTKDataController):
             _msg = _msg + '  Failed to add a new {0:s} to the RAMSTK ' \
                 'Program database.'.format(level)
             self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
-
-        return RAMSTKDataController.do_handle_results(
-            self,
-            _error_code,
-            _msg,
-            None,
-        )
-
-    def request_do_update_all(self, **kwargs):
-        """
-        Request all (D)FME(C)A entities be saved to the RAMSTK Program database.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
 
         return RAMSTKDataController.do_handle_results(
             self,
