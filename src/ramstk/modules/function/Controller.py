@@ -7,13 +7,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Package Data Controller."""
 
-# Import third party modules.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataController
-from ramstk.modules import RAMSTKDataMatrix
+# RAMSTK Package Imports
 from ramstk.dao import RAMSTKFunction, RAMSTKHardware, RAMSTKSoftware
+from ramstk.modules import RAMSTKDataController, RAMSTKDataMatrix
+
+# RAMSTK Local Imports
 from . import dtmFunction
 
 
@@ -42,7 +43,8 @@ class FunctionDataController(RAMSTKDataController):
             configuration,
             model=dtmFunction(dao, **kwargs),
             ramstk_module='function',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -53,12 +55,14 @@ class FunctionDataController(RAMSTKDataController):
             dao,
             row_table=RAMSTKFunction,
             column_table=RAMSTKHardware,
-            **kwargs)
+            **kwargs,
+        )
         self._dmx_fctn_sw_matrix = RAMSTKDataMatrix(
             dao,
             row_table=RAMSTKFunction,
             column_table=RAMSTKSoftware,
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize public dictionary attributes.
 
@@ -67,22 +71,34 @@ class FunctionDataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._request_do_create_matrix,
-                      'request_create_function_matrix')
+        pub.subscribe(
+            self._request_do_create_matrix,
+            'request_create_function_matrix',
+        )
         pub.subscribe(self.request_do_delete, 'request_delete_function')
-        pub.subscribe(self._request_do_delete_matrix,
-                      'request_delete_function_matrix')
+        pub.subscribe(
+            self._request_do_delete_matrix,
+            'request_delete_function_matrix',
+        )
         pub.subscribe(self.request_do_insert, 'request_insert_function')
-        pub.subscribe(self._request_do_insert_matrix,
-                      'request_insert_function_matrix')
+        pub.subscribe(
+            self._request_do_insert_matrix,
+            'request_insert_function_matrix',
+        )
         pub.subscribe(self.request_do_select_all, 'selected_revision')
-        pub.subscribe(self._request_do_select_all_matrix,
-                      'request_select_function_matrix')
+        pub.subscribe(
+            self._request_do_select_all_matrix,
+            'request_select_function_matrix',
+        )
         pub.subscribe(self.request_do_update, 'request_update_function')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_functions')
-        pub.subscribe(self._request_do_update_matrix,
-                      'request_update_function_matrix')
+        pub.subscribe(
+            self.request_do_update_all,
+            'request_update_all_functions',
+        )
+        pub.subscribe(
+            self._request_do_update_matrix,
+            'request_update_function_matrix',
+        )
         pub.subscribe(self.request_set_attributes, 'mvw_editing_function')
         pub.subscribe(self.request_set_attributes, 'wvw_editing_function')
 
@@ -99,7 +115,7 @@ class FunctionDataController(RAMSTKDataController):
         """
         _dic_creates = {
             'fnctn_hrdwr': [self._dmx_fctn_hw_matrix.do_create, 'hardware_id'],
-            'fnctn_sftwr': [self._dmx_fctn_sw_matrix.do_create, 'software_id']
+            'fnctn_sftwr': [self._dmx_fctn_sw_matrix.do_create, 'software_id'],
         }
 
         try:
@@ -110,14 +126,17 @@ class FunctionDataController(RAMSTKDataController):
 
         try:
             _create_method(
-                revision_id, matrix_type, rkey='function_id', ckey=_col_id)
+                revision_id, matrix_type, rkey='function_id', ckey=_col_id,
+            )
         except TypeError:
             _error_code = 6
             _msg = 'RAMSTK ERROR: Failed to create matrix ' \
                    '{0:s}.'.format(matrix_type)
 
-            RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+            RAMSTKDataController.do_handle_results(
+                self, _error_code, _msg,
+                None,
+            )
 
     def _request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -139,7 +158,7 @@ class FunctionDataController(RAMSTKDataController):
         """
         _dic_deletes = {
             'fnctn_hrdwr': self._dmx_fctn_hw_matrix.do_delete,
-            'fnctn_sftwr': self._dmx_fctn_sw_matrix.do_delete
+            'fnctn_sftwr': self._dmx_fctn_sw_matrix.do_delete,
         }
 
         try:
@@ -148,13 +167,16 @@ class FunctionDataController(RAMSTKDataController):
             self._matrix_delete_method = None
 
         return RAMSTKDataController.request_do_delete_matrix(
-            self, matrix_type, item_id, row=row)
+            self, matrix_type, item_id, row=row,
+        )
 
-    def _request_do_insert_matrix(self,
-                                  matrix_type,
-                                  item_id,
-                                  heading,
-                                  row=True):
+    def _request_do_insert_matrix(
+            self,
+            matrix_type,
+            item_id,
+            heading,
+            row=True,
+    ):
         """
         Request the to add a new row or column to the Data Matrix.
 
@@ -175,7 +197,7 @@ class FunctionDataController(RAMSTKDataController):
         """
         _dic_inserts = {
             'fnctn_hrdwr': self._dmx_fctn_hw_matrix.do_insert,
-            'fnctn_sftwr': self._dmx_fctn_sw_matrix.do_insert
+            'fnctn_sftwr': self._dmx_fctn_sw_matrix.do_insert,
         }
 
         try:
@@ -184,7 +206,8 @@ class FunctionDataController(RAMSTKDataController):
             self._matrix_insert_method = None
 
         return RAMSTKDataController.request_do_insert_matrix(
-            self, matrix_type, item_id, heading, row=row)
+            self, matrix_type, item_id, heading, row=row,
+        )
 
     def _request_do_select_all_matrix(self, revision_id, matrix_type):
         """
@@ -214,7 +237,8 @@ class FunctionDataController(RAMSTKDataController):
                 rkey='function_id',
                 ckey='hardware_id',
                 rheader='function_code',
-                cheader='comp_ref_des')
+                cheader='comp_ref_des',
+            )
             _matrix = self._dmx_fctn_hw_matrix.dtf_matrix
             _column_hdrs = self._dmx_fctn_hw_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_fctn_hw_matrix.dic_row_hdrs
@@ -233,7 +257,7 @@ class FunctionDataController(RAMSTKDataController):
         """
         _dic_updates = {
             'fnctn_hrdwr': self._dmx_fctn_hw_matrix.do_update,
-            'fnctn_sftwr': self._dmx_fctn_sw_matrix.do_update
+            'fnctn_sftwr': self._dmx_fctn_sw_matrix.do_update,
         }
 
         try:
@@ -242,4 +266,5 @@ class FunctionDataController(RAMSTKDataController):
             self._matrix_update_method = None
 
         return RAMSTKDataController.request_do_update_matrix(
-            self, revision_id, matrix_type)
+            self, revision_id, matrix_type,
+        )

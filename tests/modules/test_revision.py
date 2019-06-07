@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.test_revision.py is part of The RAMSTK Project
@@ -7,13 +7,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Revision algorithms and models."""
 
+# Third Party Imports
+import pytest
+from pubsub import pub
 from treelib import Tree
 
-import pytest
-
-from ramstk.modules.revision import dtmRevision, dtcRevision
-from ramstk.dao import DAO
-from ramstk.dao import RAMSTKRevision
+# RAMSTK Package Imports
+from ramstk.dao import DAO, RAMSTKRevision
+from ramstk.modules.revision import dtcRevision, dtmRevision
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -47,7 +48,7 @@ ATTRIBUTES = {
     'program_time': 2562,
     'program_time_sd': 26.83,
     'program_cost': 26492.83,
-    'program_cost_sd': 15.62
+    'program_cost_sd': 15.62,
 }
 
 
@@ -99,13 +100,20 @@ def test_do_select_non_existent_id(test_dao):
 def test_do_insert(test_dao):
     """ do_insert() should return False on success. """
     DUT = dtmRevision(test_dao, test=True)
+    def on_message(tree):
+        assert isinstance(tree, Tree)
+        assert DUT.last_id == 2
+    pub.subscribe(on_message, 'inserted_revision')
+
     DUT.do_select_all()
 
     _error_code, _msg = DUT.do_insert()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
     assert DUT.last_id == 2
 
 
@@ -113,14 +121,21 @@ def test_do_insert(test_dao):
 def test_do_delete(test_dao):
     """ do_delete() should return a zero error code on success. """
     DUT = dtmRevision(test_dao, test=True)
+    def on_message(tree):
+        assert isinstance(tree, Tree)
+        assert DUT.last_id == 2
+    pub.subscribe(on_message, 'deleted_revision')
+
     DUT.do_select_all()
     DUT.do_insert()
 
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -132,14 +147,21 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to delete non-existent Revision "
-                    "ID 300.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to delete non-existent Revision "
+        "ID 300."
+    )
 
 
 @pytest.mark.integration
 def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
     DUT = dtmRevision(test_dao, test=True)
+    def on_message(attributes):
+        assert isinstance(attributes, dict)
+        assert len(attributes) == 27
+    pub.subscribe(on_message, 'updated_revision')
+
     DUT.do_select_all()
 
     _revision = DUT.tree.get_node(1).data
@@ -160,8 +182,10 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Revision ID "
-                    "100.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to save non-existent Revision ID "
+        "100."
+    )
 
 
 @pytest.mark.integration
@@ -192,7 +216,8 @@ def test_request_do_select_all(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert isinstance(
-        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKRevision)
+        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKRevision,
+    )
 
 
 @pytest.mark.integration
@@ -234,7 +259,8 @@ def test_request_set_attributes(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     _error_code, _msg = DUT.request_set_attributes(
-        module_id=1, key='name', value='New Revision')
+        module_id=1, key='name', value='New Revision',
+    )
 
     assert _error_code == 0
     assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKRevision 1 attributes.")

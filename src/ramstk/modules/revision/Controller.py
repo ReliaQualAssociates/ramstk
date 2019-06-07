@@ -6,10 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Revision Package Data Controller."""
 
-from pubsub import pub  # pylint: disable=E0401
+# Third Party Imports
+from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataController  # pylint: disable=E0401
+# RAMSTK Package Imports
+from ramstk.modules import RAMSTKDataController
+
+# RAMSTK Local Imports
 from . import dtmRevision
 
 
@@ -37,7 +40,8 @@ class RevisionDataController(RAMSTKDataController):
             configuration,
             model=dtmRevision(dao, **kwargs),
             ramstk_module='revision',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -55,7 +59,9 @@ class RevisionDataController(RAMSTKDataController):
         pub.subscribe(self.request_do_delete, 'request_delete_revision')
         pub.subscribe(self.request_do_insert, 'request_insert_revision')
         pub.subscribe(self.request_do_update, 'request_update_revision')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_revisions')
+        pub.subscribe(
+            self.request_do_update_all,
+            'request_update_all_revisions',
+        )
         pub.subscribe(self.request_set_attributes, 'mvw_editing_revision')
         pub.subscribe(self.request_set_attributes, 'wvw_editing_revision')

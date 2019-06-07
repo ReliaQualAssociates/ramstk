@@ -11,8 +11,9 @@ from pubsub import pub
 from treelib import tree
 
 # RAMSTK Package Imports
-from ramstk.dao import (RAMSTKAction, RAMSTKCause, RAMSTKControl,
-                        RAMSTKMechanism, RAMSTKMode)
+from ramstk.dao import (
+    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode,
+)
 from ramstk.modules import RAMSTKDataModel
 from ramstk.Utilities import OutOfRangeError
 
@@ -170,26 +171,17 @@ class ModeDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA modes "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA modes "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA modes "
+                "table did not update."
             )
 
         return _error_code, _msg
@@ -339,26 +331,17 @@ class MechanismDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA "
-                    "mechanisms table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA mechanisms "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA "
+                "mechanisms table did not update."
             )
 
         return _error_code, _msg
@@ -517,26 +500,17 @@ class CauseDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA causes "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA causes "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA causes "
+                "table did not update."
             )
 
         return _error_code, _msg
@@ -689,26 +663,17 @@ class ControlDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA controls "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA controls "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA controls "
+                "table did not update."
             )
 
         return _error_code, _msg
@@ -862,26 +827,17 @@ class ActionDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA actions "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA actions "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA actions "
+                "table did not update."
             )
 
         return _error_code, _msg
@@ -954,8 +910,8 @@ class FMEADataModel(RAMSTKDataModel):
         The Parent ID is one of Function ID (functional FMEA) or Hardware ID
         (hardware FMEA).
 
-        :return: tree; the FMEA treelib Tree().
-        :rtype: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
         _parent_id = kwargs['parent_id']
         self._functional = kwargs['functional']
@@ -1252,26 +1208,15 @@ class FMEADataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _err_code, _debug_msg = self.do_update(_node.identifier)
-
-                if _err_code != 0:
-                    _error_code = 1
-                    _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more line items in the FMEA did "
-                    "not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all line items in the FMEA.")
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more line items in the FMEA did "
+                "not update."
+            )
 
         return _error_code, _msg
 

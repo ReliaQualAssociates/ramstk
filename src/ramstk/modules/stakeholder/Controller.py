@@ -6,10 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Stakeholder Package Data Controller."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.modules import RAMSTKDataController
+
+# RAMSTK Local Imports
 from . import dtmStakeholder
 
 
@@ -37,7 +40,8 @@ class StakeholderDataController(RAMSTKDataController):
             configuration,
             model=dtmStakeholder(dao, **kwargs),
             ramstk_module='stakeholder',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -52,14 +56,20 @@ class StakeholderDataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.request_do_calculate,
-                      'request_calculate_stakeholder')
-        pub.subscribe(self.request_do_calculate_all,
-                      'request_calculate_all_stakeholders')
+        pub.subscribe(
+            self.request_do_calculate,
+            'request_calculate_stakeholder',
+        )
+        pub.subscribe(
+            self.request_do_calculate_all,
+            'request_calculate_all_stakeholders',
+        )
         pub.subscribe(self.request_do_delete, 'request_delete_stakeholder')
         pub.subscribe(self.request_do_insert, 'request_insert_stakeholder')
         pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_update, 'request_update_stakeholder')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_stakeholders')
+        pub.subscribe(
+            self.request_do_update_all,
+            'request_update_all_stakeholders',
+        )
         pub.subscribe(self.request_set_attributes, 'editing_stakeholder')

@@ -6,14 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Package Data Controller."""
 
-# Import third party modules.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataController
-from ramstk.modules import RAMSTKDataMatrix
-from ramstk.dao import (RAMSTKRequirement, RAMSTKHardware, RAMSTKSoftware,
-                        RAMSTKValidation)
+# RAMSTK Package Imports
+from ramstk.dao import (
+    RAMSTKHardware, RAMSTKRequirement, RAMSTKSoftware, RAMSTKValidation,
+)
+from ramstk.modules import RAMSTKDataController, RAMSTKDataMatrix
+
+# RAMSTK Local Imports
 from . import dtmRequirement
 
 
@@ -41,7 +43,8 @@ class RequirementDataController(RAMSTKDataController):
             configuration,
             model=dtmRequirement(dao, **kwargs),
             ramstk_module='requirement',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -52,17 +55,20 @@ class RequirementDataController(RAMSTKDataController):
             dao,
             row_table=RAMSTKRequirement,
             column_table=RAMSTKHardware,
-            **kwargs)
+            **kwargs,
+        )
         self._dmx_rqmt_sw_matrix = RAMSTKDataMatrix(
             dao,
             row_table=RAMSTKRequirement,
             column_table=RAMSTKSoftware,
-            **kwargs)
+            **kwargs,
+        )
         self._dmx_rqmt_val_matrix = RAMSTKDataMatrix(
             dao,
             row_table=RAMSTKRequirement,
             column_table=RAMSTKValidation,
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize public dictionary attributes.
 
@@ -71,22 +77,34 @@ class RequirementDataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._request_do_create_matrix,
-                      'request_create_requirement_matrix')
+        pub.subscribe(
+            self._request_do_create_matrix,
+            'request_create_requirement_matrix',
+        )
         pub.subscribe(self.request_do_delete, 'request_delete_requirement')
-        pub.subscribe(self._request_do_delete_matrix,
-                      'request_delete_requirement_matrix')
+        pub.subscribe(
+            self._request_do_delete_matrix,
+            'request_delete_requirement_matrix',
+        )
         pub.subscribe(self.request_do_insert, 'request_insert_requirement')
-        pub.subscribe(self._request_do_insert_matrix,
-                      'request_insert_requirement_matrix')
+        pub.subscribe(
+            self._request_do_insert_matrix,
+            'request_insert_requirement_matrix',
+        )
         pub.subscribe(self.request_do_select_all, 'selected_revision')
-        pub.subscribe(self._request_do_select_all_matrix,
-                      'request_select_requirement_matrix')
+        pub.subscribe(
+            self._request_do_select_all_matrix,
+            'request_select_requirement_matrix',
+        )
         pub.subscribe(self.request_do_update, 'request_update_requirement')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_requirements')
-        pub.subscribe(self._request_do_update_matrix,
-                      'request_update_requirement_matrix')
+        pub.subscribe(
+            self.request_do_update_all,
+            'request_update_all_requirements',
+        )
+        pub.subscribe(
+            self._request_do_update_matrix,
+            'request_update_requirement_matrix',
+        )
         pub.subscribe(self._request_set_attributes, 'mvw_editing_requirement')
         pub.subscribe(self._request_set_attributes, 'wvw_editing_requirement')
 
@@ -107,7 +125,7 @@ class RequirementDataController(RAMSTKDataController):
             'rqrmnt_sftwr':
             [self._dmx_rqmt_sw_matrix.do_create, 'software_id'],
             'rqrmnt_vldtn':
-            [self._dmx_rqmt_val_matrix.do_create, 'validation_id']
+            [self._dmx_rqmt_val_matrix.do_create, 'validation_id'],
         }
         try:
             _create_method = _dic_creates[matrix_type][0]
@@ -117,14 +135,17 @@ class RequirementDataController(RAMSTKDataController):
 
         try:
             _create_method(
-                revision_id, matrix_type, rkey='requirement_id', ckey=_col_id)
+                revision_id, matrix_type, rkey='requirement_id', ckey=_col_id,
+            )
         except TypeError:
             _error_code = 6
             _msg = 'RAMSTK ERROR: Failed to create matrix ' \
                    '{0:s}.'.format(matrix_type)
 
-            RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+            RAMSTKDataController.do_handle_results(
+                self, _error_code, _msg,
+                None,
+            )
 
     def _request_do_select_all_matrix(self, revision_id, matrix_type):
         """
@@ -154,7 +175,8 @@ class RequirementDataController(RAMSTKDataController):
                 rkey='requirement_id',
                 ckey='hardware_id',
                 rheader='requirement_code',
-                cheader='comp_ref_des')
+                cheader='comp_ref_des',
+            )
             _matrix = self._dmx_rqmt_hw_matrix.dtf_matrix
             _column_hdrs = self._dmx_rqmt_hw_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_rqmt_hw_matrix.dic_row_hdrs
@@ -166,7 +188,8 @@ class RequirementDataController(RAMSTKDataController):
                 rkey='requirement_id',
                 ckey='software_id',
                 rheader='requirement_code',
-                cheader='description')
+                cheader='description',
+            )
             _matrix = self._dmx_rqmt_sw_matrix.dtf_matrix
             _column_hdrs = self._dmx_rqmt_sw_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_rqmt_sw_matrix.dic_row_hdrs
@@ -178,31 +201,40 @@ class RequirementDataController(RAMSTKDataController):
                 rkey='requirement_id',
                 ckey='validation_id',
                 rheader='requirement_code',
-                cheader='name')
+                cheader='name',
+            )
             _matrix = self._dmx_rqmt_val_matrix.dtf_matrix
             _column_hdrs = self._dmx_rqmt_val_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_rqmt_val_matrix.dic_row_hdrs
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def _request_do_insert(self, revision_id, parent_id, **kwargs):  # pylint: disable=unused-argument
+    def _request_do_insert(self, revision_id, parent_id):
         """
         Request to add an RAMSTKRequirement table record.
 
+        :param int revision_id: the Revision ID the Requirement is associated
+        with.
+        :param int parent_id: the ID of the parent Requirement.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _error_code, _msg = self._dtm_data_model.do_insert(
-            revision_id=revision_id, parent_id=parent_id)
+            revision_id=revision_id, parent_id=parent_id,
+        )
 
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
+        return RAMSTKDataController.do_handle_results(
+            self, _error_code, _msg,
+            None,
+        )
 
-    def _request_do_insert_matrix(self,
-                                  matrix_type,
-                                  item_id,
-                                  heading,
-                                  row=True):
+    def _request_do_insert_matrix(
+            self,
+            matrix_type,
+            item_id,
+            heading,
+            row=True,
+    ):
         """
         Request the to add a new row or column to the Data Matrix.
 
@@ -224,7 +256,7 @@ class RequirementDataController(RAMSTKDataController):
         _dic_inserts = {
             'rqrmnt_hrdwr': self._dmx_rqmt_hw_matrix.do_insert,
             'rqrmnt_sftwr': self._dmx_rqmt_sw_matrix.do_insert,
-            'rqrmnt_vldtn': self._dmx_rqmt_val_matrix.do_insert
+            'rqrmnt_vldtn': self._dmx_rqmt_val_matrix.do_insert,
         }
 
         try:
@@ -233,7 +265,8 @@ class RequirementDataController(RAMSTKDataController):
             self._matrix_insert_method = None
 
         return RAMSTKDataController.request_do_insert_matrix(
-            self, matrix_type, item_id, heading, row=row)
+            self, matrix_type, item_id, heading, row=row,
+        )
 
     def _request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -256,7 +289,7 @@ class RequirementDataController(RAMSTKDataController):
         _dic_deletes = {
             'rqrmnt_hrdwr': self._dmx_rqmt_hw_matrix.do_delete,
             'rqrmnt_sftwr': self._dmx_rqmt_sw_matrix.do_delete,
-            'rqrmnt_vldtn': self._dmx_rqmt_val_matrix.do_delete
+            'rqrmnt_vldtn': self._dmx_rqmt_val_matrix.do_delete,
         }
 
         try:
@@ -265,7 +298,8 @@ class RequirementDataController(RAMSTKDataController):
             self._matrix_delete_method = None
 
         return RAMSTKDataController.request_do_delete_matrix(
-            self, matrix_type, item_id, row=row)
+            self, matrix_type, item_id, row=row,
+        )
 
     def _request_do_update_matrix(self, revision_id, matrix_type):
         """
@@ -286,7 +320,7 @@ class RequirementDataController(RAMSTKDataController):
         _dic_updates = {
             'rqrmnt_hrdwr': self._dmx_rqmt_hw_matrix.do_update,
             'rqrmnt_sftwr': self._dmx_rqmt_sw_matrix.do_update,
-            'rqrmnt_vldtn': self._dmx_rqmt_val_matrix.do_update
+            'rqrmnt_vldtn': self._dmx_rqmt_val_matrix.do_update,
         }
 
         try:
@@ -295,7 +329,8 @@ class RequirementDataController(RAMSTKDataController):
             self._matrix_update_method = None
 
         return RAMSTKDataController.request_do_update_matrix(
-            self, revision_id, matrix_type)
+            self, revision_id, matrix_type,
+        )
 
     def _request_set_attributes(self, module_id, key, value):
         """
@@ -313,9 +348,11 @@ class RequirementDataController(RAMSTKDataController):
         if key == 'requirement_type':
             _value = self._dtm_data_model.do_create_code(value[0], module_id)
             RAMSTKDataController.request_set_attributes(
-                self, module_id, 'requirement_code', _value)
+                self, module_id, 'requirement_code', _value,
+            )
 
             value = value[1]
 
         return RAMSTKDataController.request_set_attributes(
-            self, module_id, key, value)
+            self, module_id, key, value,
+        )

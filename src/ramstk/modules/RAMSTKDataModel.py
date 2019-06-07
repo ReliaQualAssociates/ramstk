@@ -6,7 +6,8 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Datamodels Package RAMSTKDataModel."""
 
-from treelib import tree, Tree  # pylint: disable=E0401
+# Third Party Imports
+from treelib import Tree, tree  # pylint: disable=E0401
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -14,7 +15,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
-class RAMSTKDataModel(object):  # pragma: no cover
+class RAMSTKDataModel():
     """
     This is the meta-class for all RAMSTK Data Models.
 
@@ -54,8 +55,10 @@ class RAMSTKDataModel(object):  # pragma: no cover
         # ignore the root of the tree.
         try:
             self.tree.create_node(tag=self._tag, identifier=0, parent=None)
-        except (tree.MultipleRootError, tree.NodeIDAbsentError,
-                tree.DuplicatedNodeIdError):
+        except (
+                tree.MultipleRootError, tree.NodeIDAbsentError,
+                tree.DuplicatedNodeIdError,
+        ):
             pass
 
     def do_select(self, node_id, **kwargs):  # pylint: disable=unused-argument
@@ -87,7 +90,8 @@ class RAMSTKDataModel(object):  # pragma: no cover
             self.tree.remove_node(_node.identifier)
 
         return self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
     def do_insert(self, **kwargs):
         """
@@ -100,7 +104,8 @@ class RAMSTKDataModel(object):  # pragma: no cover
         """
         _entities = kwargs['entities']
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         _error_code, _msg = self.dao.db_add(_entities, _session)
 
@@ -120,7 +125,8 @@ class RAMSTKDataModel(object):  # pragma: no cover
         _msg = ''
 
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         try:
             _entity = self.tree.get_node(node_id).data
@@ -140,8 +146,8 @@ class RAMSTKDataModel(object):  # pragma: no cover
         """
         Update the RAMSTK<MODULE> instance in the RAMSTK Program database.
 
-        :param entity: the RAMSTK<MODULE> instance to update in the RAMSTK Program
-                       database.
+        :param entity: the RAMSTK<MODULE> instance to update in the RAMSTK
+                       Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
@@ -152,7 +158,8 @@ class RAMSTKDataModel(object):  # pragma: no cover
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         try:
             _entity = self.tree.get_node(node_id).data
@@ -161,9 +168,35 @@ class RAMSTKDataModel(object):  # pragma: no cover
                 _error_code, _msg = self.dao.db_update(_session)
         except AttributeError:
             _error_code = 1
-            _msg = ('RAMSTK ERROR: Attempted to save non-existent '
-                    'entity with Node ID {0:s}.').format(str(node_id))
+            _msg = (
+                'RAMSTK ERROR: Attempted to save non-existent '
+                'entity with Node ID {0:s}.'
+            ).format(str(node_id))
 
         _session.close()
+
+        return _error_code, _msg
+
+    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Update all RAMSTK<MODULE> table records in the RAMSTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = ''
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _debug_msg = self.do_update(_node.identifier)
+            except AttributeError:
+                _error_code = 1
+                _debug_msg = (
+                    'RAMSTK ERROR: Attempted to save non-existent '
+                    'entity with Node ID {0:s}.'
+                ).format(str(_node.identifier))
+
+            _msg = _msg + _debug_msg + '\n'
 
         return _error_code, _msg

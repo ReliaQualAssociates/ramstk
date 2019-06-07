@@ -6,18 +6,20 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Package Data Model."""
 
+# Standard Library Imports
 from math import exp
 
-# Import third party packages.
+# Third Party Imports
 from pubsub import pub
 from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.analyses.prediction import Component
+from ramstk.dao import (
+    RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability,
+)
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import (RAMSTKHardware, RAMSTKDesignElectric,
-                        RAMSTKDesignMechanic, RAMSTKMilHdbkF, RAMSTKNSWC,
-                        RAMSTKReliability)
 
 
 class HardwareBoMDataModel(RAMSTKDataModel):
@@ -159,11 +161,14 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                     _attributes['total_cost'] = 0.0
 
             _attributes['hazard_rate_active'] = (
-                _attributes['hazard_rate_active'] / _hr_multiplier)
+                _attributes['hazard_rate_active'] / _hr_multiplier
+            )
             _attributes['hazard_rate_dormant'] = (
-                _attributes['hazard_rate_dormant'] / _hr_multiplier)
+                _attributes['hazard_rate_dormant'] / _hr_multiplier
+            )
             _attributes['hazard_rate_software'] = (
-                _attributes['hazard_rate_software'] / _hr_multiplier)
+                _attributes['hazard_rate_software'] / _hr_multiplier
+            )
 
             _attributes = self._do_calculate_reliability_metrics(_attributes)
             _attributes = self._do_calculate_cost_metrics(_attributes)
@@ -188,16 +193,19 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         """
         if attributes['cost_type_id'] == 1:
             attributes['total_cost'] = (
-                attributes['cost'] * attributes['quantity'])
+                attributes['cost'] * attributes['quantity']
+            )
 
         try:
             attributes['cost_hour'] = (
-                attributes['total_cost'] / attributes['mission_time'])
+                attributes['total_cost'] / attributes['mission_time']
+            )
         except ZeroDivisionError:
             attributes['cost_hour'] = attributes['total_cost']
 
         attributes['cost_failure'] = (
-            attributes['cost_hour'] * attributes['mtbf_logistics'])
+            attributes['cost_hour'] * attributes['mtbf_logistics']
+        )
 
         if attributes['part'] == 1:
             attributes['total_part_count'] = attributes['quantity']
@@ -220,20 +228,24 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 attributes['hazard_rate_specified']
         elif attributes['hazard_rate_type_id'] == 3:
             attributes['hazard_rate_active'] = (
-                1.0 / attributes['mtbf_specified'])
+                1.0 / attributes['mtbf_specified']
+            )
 
         attributes['hazard_rate_active'] = (
             attributes['hazard_rate_active'] +
-            attributes['add_adj_factor']) * attributes['mult_adj_factor']
+            attributes['add_adj_factor']
+        ) * attributes['mult_adj_factor']
 
         attributes['hazard_rate_logistics'] = (
             attributes['hazard_rate_active'] +
             attributes['hazard_rate_dormant'] +
-            attributes['hazard_rate_software'])
+            attributes['hazard_rate_software']
+        )
 
         try:
             attributes['mtbf_logistics'] = (
-                1.0 / attributes['hazard_rate_logistics'])
+                1.0 / attributes['hazard_rate_logistics']
+            )
         except ZeroDivisionError:
             attributes['mtbf_logistics'] = 0.0
         try:
@@ -243,7 +255,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
         attributes['reliability_logistics'] = exp(
             -1.0 * (attributes['hazard_rate_logistics']) *
-            attributes['mission_time'])
+            attributes['mission_time'],
+        )
 
         return attributes
 
@@ -258,20 +271,25 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         :rtype: dict
         """
         attributes['hr_active_variance'] = attributes[
-            'hazard_rate_active']**2.0
+            'hazard_rate_active'
+        ]**2.0
         attributes['hr_dormant_variance'] = attributes[
-            'hazard_rate_dormant']**2.0
+            'hazard_rate_dormant'
+        ]**2.0
         attributes['hr_logistics_variance'] = attributes[
-            'hazard_rate_logistics']**2.0
+            'hazard_rate_logistics'
+        ]**2.0
 
         try:
             attributes['mtbf_log_variance'] = (
-                1.0 / attributes['hr_logistics_variance'])
+                1.0 / attributes['hr_logistics_variance']
+            )
         except ZeroDivisionError:
             attributes['mtbf_log_variance'] = 0.0
         try:
             attributes['mtbf_miss_variance'] = (
-                1.0 / attributes['hr_mission_variance'])
+                1.0 / attributes['hr_mission_variance']
+            )
         except ZeroDivisionError:
             attributes['mtbf_miss_variance'] = 0.0
 
@@ -313,7 +331,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             # If there are children, calculate each of them first.
             for _subnode_id in self.tree.get_node(_node_id).fpointer:
                 _results = self.do_calculate_all(
-                    node_id=_subnode_id, hr_multiplier=_hr_multiplier)
+                    node_id=_subnode_id, hr_multiplier=_hr_multiplier,
+                )
                 _cum_results[0] += _results[0]
                 _cum_results[1] += _results[1]
                 _cum_results[2] += _results[2]
@@ -322,7 +341,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _cum_results[5] += _results[5]
             # Then calculate the parent node.
             _attributes = self.do_calculate(
-                _node_id, hr_multiplier=_hr_multiplier)
+                _node_id, hr_multiplier=_hr_multiplier,
+            )
             if _attributes is not None:
                 _cum_results[0] += _attributes['hazard_rate_active']
                 _cum_results[1] += _attributes['hazard_rate_dormant']
@@ -333,7 +353,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         else:
             if self.tree.get_node(_node_id).data is not None:
                 _attributes = self.do_calculate(
-                    _node_id, hr_multiplier=_hr_multiplier)
+                    _node_id, hr_multiplier=_hr_multiplier,
+                )
                 _cum_results[0] += _attributes['hazard_rate_active']
                 _cum_results[1] += _attributes['hazard_rate_dormant']
                 _cum_results[2] += _attributes['hazard_rate_software']
@@ -342,7 +363,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _cum_results[5] += _attributes['total_power_dissipation']
 
         if self.tree.get_node(
-                _node_id).data is not None and _attributes['part'] == 0:
+                _node_id,
+        ).data is not None and _attributes['part'] == 0:
             _attributes['hazard_rate_active'] = _cum_results[0]
             _attributes['hazard_rate_dormant'] = _cum_results[1]
             _attributes['hazard_rate_software'] = _cum_results[2]
@@ -369,7 +391,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         _msg = ''
 
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         # Delete the RAMSTKHardware entry.  Other RAMSTK Program database tables will
         # delete their entries based on CASCADE behavior.
@@ -379,8 +402,10 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _error_code, _msg = self.dao.db_delete(_hardware, _session)
         except AttributeError:
             _error_code = 2005
-            _msg = ('RAMSTK ERROR: Attempted to delete non-existent Hardware '
-                    'BoM record ID {0:s}.').format(str(node_id))
+            _msg = (
+                'RAMSTK ERROR: Attempted to delete non-existent Hardware '
+                'BoM record ID {0:s}.'
+            ).format(str(node_id))
 
         _session.close()
 
@@ -427,16 +452,20 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
         if _parent_is_part == 1 and _part == 0:
             _error_code = 3006
-            _msg = ("RAMSTK ERROR: You can not have a hardware assembly as a "
-                    "child of a component/piece part.")
+            _msg = (
+                "RAMSTK ERROR: You can not have a hardware assembly as a "
+                "child of a component/piece part."
+            )
         elif _parent_is_part == 1 and _part == 1:
             _error_code = 3006
             _msg = (
                 "RAMSTK ERROR: You can not have a component/piece part as a "
-                "child of another component/piece part.")
+                "child of another component/piece part."
+            )
         else:
             _error_code, _msg = self.dtm_hardware.do_insert(
-                revision_id=_revision_id, parent_id=_parent_id, part=_part)
+                revision_id=_revision_id, parent_id=_parent_id, part=_part,
+            )
 
         if _error_code == 0:
             _data = {}
@@ -445,7 +474,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             _data = _hardware.get_attributes()
 
             _error_code, _error_msg = self.dtm_design_electric.do_insert(
-                hardware_id=_hardware_id)
+                hardware_id=_hardware_id,
+            )
             if _error_code != 0:
                 _msg = _msg + _error_msg + '\n'
             else:
@@ -453,7 +483,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _data.update(_electrical.get_attributes())
 
             _error_code, _error_msg = self.dtm_design_mechanic.do_insert(
-                hardware_id=_hardware_id)
+                hardware_id=_hardware_id,
+            )
             if _error_code != 0:
                 _msg = _msg + _error_msg + '\n'
             else:
@@ -461,7 +492,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _data.update(_mechanical.get_attributes())
 
             _error_code, _error_msg = self.dtm_mil_hdbk_f.do_insert(
-                hardware_id=_hardware_id)
+                hardware_id=_hardware_id,
+            )
             if _error_code != 0:
                 _msg = _msg + _error_msg + '\n'
             else:
@@ -469,7 +501,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _data.update(_mil_hdbk_f.get_attributes())
 
             _error_code, _error_msg = self.dtm_nswc.do_insert(
-                hardware_id=_hardware_id)
+                hardware_id=_hardware_id,
+            )
             if _error_code != 0:
                 _msg = _msg + _error_msg + '\n'
             else:
@@ -477,7 +510,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _data.update(_nswc.get_attributes())
 
             _error_code, _error_msg = self.dtm_reliability.do_insert(
-                hardware_id=_hardware_id)
+                hardware_id=_hardware_id,
+            )
             if _error_code != 0:
                 _msg = _msg + _error_msg + '\n'
             else:
@@ -488,7 +522,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _hardware.comp_ref_des,
                 _hardware_id,
                 parent=_hardware.parent_id,
-                data=_data)
+                data=_data,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -527,15 +562,20 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         if _entity is not None:
             _attributes.update(_entity.get_attributes())
             _attributes.update(
-                self.dtm_design_electric.do_select(node_id).get_attributes())
+                self.dtm_design_electric.do_select(node_id).get_attributes(),
+            )
             _attributes.update(
-                self.dtm_design_mechanic.do_select(node_id).get_attributes())
+                self.dtm_design_mechanic.do_select(node_id).get_attributes(),
+            )
             _attributes.update(
-                self.dtm_mil_hdbk_f.do_select(node_id).get_attributes())
+                self.dtm_mil_hdbk_f.do_select(node_id).get_attributes(),
+            )
             _attributes.update(
-                self.dtm_nswc.do_select(node_id).get_attributes())
+                self.dtm_nswc.do_select(node_id).get_attributes(),
+            )
             _attributes.update(
-                self.dtm_reliability.do_select(node_id).get_attributes())
+                self.dtm_reliability.do_select(node_id).get_attributes(),
+            )
 
         return _attributes
 
@@ -544,36 +584,43 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         Retrieve all the Hardware BoM data from the RAMSTK Program database.
 
         :param int revision_id: the Revision ID to select the Hardware BoM for.
-        :return: tree; the Tree() of data models.
-        :rtype: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
         _revision_id = kwargs['revision_id']
         for _node in self.dtm_hardware.do_select_all(
-                revision_id=_revision_id).all_nodes()[1:]:
+                revision_id=_revision_id,
+        ).all_nodes()[1:]:
             _data = {}
             _hardware_id = _node.data.hardware_id
             _data = _node.data.get_attributes()
             try:
                 _electrical = self.dtm_design_electric.do_select_all(
-                    hardware_id=_hardware_id)
+                    hardware_id=_hardware_id,
+                )
                 _data.update(
-                    _electrical.nodes[_hardware_id].data.get_attributes())
+                    _electrical.nodes[_hardware_id].data.get_attributes(),
+                )
             except KeyError:
                 pass
 
             try:
                 _mechanical = self.dtm_design_mechanic.do_select_all(
-                    hardware_id=_hardware_id)
+                    hardware_id=_hardware_id,
+                )
                 _data.update(
-                    _mechanical.nodes[_hardware_id].data.get_attributes())
+                    _mechanical.nodes[_hardware_id].data.get_attributes(),
+                )
             except KeyError:
                 pass
 
             try:
                 _mil_hdbk_f = self.dtm_mil_hdbk_f.do_select_all(
-                    hardware_id=_hardware_id)
+                    hardware_id=_hardware_id,
+                )
                 _data.update(
-                    _mil_hdbk_f.nodes[_hardware_id].data.get_attributes())
+                    _mil_hdbk_f.nodes[_hardware_id].data.get_attributes(),
+                )
             except KeyError:
                 pass
 
@@ -585,9 +632,11 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
             try:
                 _reliability = self.dtm_reliability.do_select_all(
-                    hardware_id=_hardware_id)
+                    hardware_id=_hardware_id,
+                )
                 _data.update(
-                    _reliability.nodes[_hardware_id].data.get_attributes())
+                    _reliability.nodes[_hardware_id].data.get_attributes(),
+                )
             except KeyError:
                 pass
 
@@ -596,7 +645,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                     _node.data.comp_ref_des,
                     _hardware_id,
                     parent=_node.data.parent_id,
-                    data=_data)
+                    data=_data,
+                )
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
@@ -611,8 +661,6 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         # let anyone who cares know the Hardware has been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_hardware', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """
@@ -663,31 +711,25 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKHardware table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more line items in the hardware "
-                        "bill of materials did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the hardware bill "
-                "of materials.")
+                "of materials."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more line items in the hardware "
+                "bill of materials did not update."
+            )
 
         return _error_code, _msg
 
@@ -740,7 +782,8 @@ class HardwareDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         for _hardware in _session.query(RAMSTKHardware).filter(
-                RAMSTKHardware.revision_id == _revision_id).all():
+                RAMSTKHardware.revision_id == _revision_id,
+        ).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _hardware.get_attributes()
@@ -750,7 +793,8 @@ class HardwareDataModel(RAMSTKDataModel):
                     _hardware.comp_ref_des,
                     _hardware.hardware_id,
                     parent=_hardware.parent_id,
-                    data=_hardware)
+                    data=_hardware,
+                )
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
@@ -779,14 +823,16 @@ class HardwareDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _hardware,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _hardware.name,
                 _hardware.hardware_id,
                 parent=_hardware.parent_id,
-                data=_hardware)
+                data=_hardware,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -840,24 +886,17 @@ class HardwareDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the hardware table "
-                    "did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
-                "RAMSTK SUCCESS: Updating all records in the hardware table.")
+                "RAMSTK SUCCESS: Updating all records in the hardware table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the hardware table "
+                "did not update."
+            )
 
         return _error_code, _msg
 
@@ -935,7 +974,8 @@ class DesignElectricDataModel(RAMSTKDataModel):
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         for _design in _session.query(RAMSTKDesignElectric).\
                 filter(RAMSTKDesignElectric.hardware_id == _hardware_id).all():
@@ -944,7 +984,8 @@ class DesignElectricDataModel(RAMSTKDataModel):
                     _design.hardware_id,
                     _design.hardware_id,
                     parent=0,
-                    data=_design)
+                    data=_design,
+                )
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
@@ -971,14 +1012,16 @@ class DesignElectricDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _design,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _design.hardware_id,
                 _design.hardware_id,
                 parent=0,
-                data=_design)
+                data=_design,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -1034,24 +1077,18 @@ class DesignElectricDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more line items in the electrical "
-                    "design table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the electrical "
-                    "design table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the electrical "
+                "design table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more line items in the electrical "
+                "design table did not update."
+            )
 
         return _error_code, _msg
 
@@ -1101,7 +1138,8 @@ class DesignMechanicDataModel(RAMSTKDataModel):
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         for _design in _session.query(RAMSTKDesignMechanic).\
                 filter(RAMSTKDesignMechanic.hardware_id == _hardware_id).all():
@@ -1110,7 +1148,8 @@ class DesignMechanicDataModel(RAMSTKDataModel):
                     _design.hardware_id,
                     _design.hardware_id,
                     parent=0,
-                    data=_design)
+                    data=_design,
+                )
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
@@ -1137,14 +1176,16 @@ class DesignMechanicDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _design,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _design.hardware_id,
                 _design.hardware_id,
                 parent=0,
-                data=_design)
+                data=_design,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -1200,24 +1241,18 @@ class DesignMechanicDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more line items in the mechanical "
-                    "design table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the mechanical "
-                    "design table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the mechanical "
+                "design table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more line items in the mechanical "
+                "design table did not update."
+            )
 
         return _error_code, _msg
 
@@ -1267,7 +1302,8 @@ class MilHdbkFDataModel(RAMSTKDataModel):
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         for _milhdbkf in _session.query(RAMSTKMilHdbkF).\
                 filter(RAMSTKMilHdbkF.hardware_id == _hardware_id).all():
@@ -1276,7 +1312,8 @@ class MilHdbkFDataModel(RAMSTKDataModel):
                     _milhdbkf.hardware_id,
                     _milhdbkf.hardware_id,
                     parent=0,
-                    data=_milhdbkf)
+                    data=_milhdbkf,
+                )
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
@@ -1303,14 +1340,16 @@ class MilHdbkFDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _milhdbkf,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _milhdbkf.hardware_id,
                 _milhdbkf.hardware_id,
                 parent=0,
-                data=_milhdbkf)
+                data=_milhdbkf,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -1366,24 +1405,18 @@ class MilHdbkFDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the MIL-HDBK-217 "
-                    "table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the MIL-HDBK-217 "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the MIL-HDBK-217 "
+                "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the MIL-HDBK-217 "
+                "table did not update."
+            )
 
         return _error_code, _msg
 
@@ -1433,13 +1466,15 @@ class NSWCDataModel(RAMSTKDataModel):
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         for _nswc in _session.query(RAMSTKNSWC).\
                 filter(RAMSTKNSWC.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
-                    _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
+                    _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc,
+                )
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
@@ -1466,11 +1501,13 @@ class NSWCDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _nswc,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
-                _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
+                _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -1526,22 +1563,15 @@ class NSWCDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the NSWC table "
-                        "did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all records in the NSWC table.")
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the NSWC table "
+                "did not update."
+            )
 
         return _error_code, _msg
 
@@ -1593,7 +1623,8 @@ class ReliabilityDataModel(RAMSTKDataModel):
         # want to clear the tree or we'll only be left with the last hardware
         # ID passed.
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         for _reliability in _session.query(RAMSTKReliability).\
                 filter(RAMSTKReliability.hardware_id == _hardware_id).all():
@@ -1602,7 +1633,8 @@ class ReliabilityDataModel(RAMSTKDataModel):
                     _reliability.hardware_id,
                     _reliability.hardware_id,
                     parent=0,
-                    data=_reliability)
+                    data=_reliability,
+                )
 
                 # pylint: disable=attribute-defined-outside-init
                 # It is defined in RAMSTKDataModel.__init__
@@ -1629,14 +1661,16 @@ class ReliabilityDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _reliability,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _reliability.hardware_id,
                 _reliability.hardware_id,
                 parent=0,
-                data=_reliability)
+                data=_reliability,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -1692,22 +1726,17 @@ class ReliabilityDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the reliability "
-                        "table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the reliability "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the reliability "
+                "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the reliability "
+                "table did not update."
+            )
 
         return _error_code, _msg
