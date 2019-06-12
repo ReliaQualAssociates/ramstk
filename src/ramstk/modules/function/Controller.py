@@ -63,6 +63,10 @@ class FunctionDataController(RAMSTKDataController):
             column_table=RAMSTKSoftware,
             **kwargs,
         )
+        self._dic_inserts = {
+            'fnctn_hrdwr': self._dmx_fctn_hw_matrix.do_insert,
+            'fnctn_sftwr': self._dmx_fctn_sw_matrix.do_insert,
+        }
 
         # Initialize public dictionary attributes.
 
@@ -82,7 +86,7 @@ class FunctionDataController(RAMSTKDataController):
         )
         pub.subscribe(self.request_do_insert, 'request_insert_function')
         pub.subscribe(
-            self._request_do_insert_matrix,
+            self.request_do_insert_matrix,
             'request_insert_function_matrix',
         )
         pub.subscribe(self.request_do_select_all, 'selected_revision')
@@ -168,45 +172,6 @@ class FunctionDataController(RAMSTKDataController):
 
         return RAMSTKDataController.request_do_delete_matrix(
             self, matrix_type, item_id, row=row,
-        )
-
-    def _request_do_insert_matrix(
-            self,
-            matrix_type,
-            item_id,
-            heading,
-            row=True,
-    ):
-        """
-        Request the to add a new row or column to the Data Matrix.
-
-        :param str matrix_type: the type of the Matrix to insert into.  Current
-                                Function matrix types are:
-
-                                fnctn_hrdwr = Function:Hardware
-                                fnctn_sftwr = Function:Software
-                                fnctn_vldtn = Function:Validation
-
-        :param int item_id: the ID of the row or column item to insert into the
-                            Matrix.
-        :param str heading: the heading for the new row or column.
-        :keyword bool row: indicates whether to insert a row (default) or a
-                           column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _dic_inserts = {
-            'fnctn_hrdwr': self._dmx_fctn_hw_matrix.do_insert,
-            'fnctn_sftwr': self._dmx_fctn_sw_matrix.do_insert,
-        }
-
-        try:
-            self._matrix_insert_method = _dic_inserts[matrix_type]
-        except KeyError:
-            self._matrix_insert_method = None
-
-        return RAMSTKDataController.request_do_insert_matrix(
-            self, matrix_type, item_id, heading, row=row,
         )
 
     def _request_do_select_all_matrix(self, revision_id, matrix_type):

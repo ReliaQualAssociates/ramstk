@@ -6,10 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Import Package Data Controller Module."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.modules import RAMSTKDataController
+
+# RAMSTK Local Imports
 from . import dtmImports
 
 
@@ -36,7 +39,8 @@ class ImportDataController(RAMSTKDataController):
             configuration,
             model=dtmImports(dao),
             ramstk_module='imports',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -102,10 +106,12 @@ class ImportDataController(RAMSTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtm_data_model.do_map_to_field(module, exim_field,
-                                                    format_field)
+        return self._dtm_data_model.do_map_to_field(
+            module, exim_field,
+            format_field,
+        )
 
-    def request_do_insert(self, module):
+    def request_do_insert(self, module):    # pylint: disable=arguments-differ
         """
         Request to insert an entity.
 
@@ -114,8 +120,10 @@ class ImportDataController(RAMSTKDataController):
                  the error code and error message returned from the DAO object.
         :rtype: (int, int, str)
         """
-        (_revision_id, _count, _error_code,
-         _msg) = self._dtm_data_model.do_insert(module=module)
+        (
+            _revision_id, _count, _error_code,
+            _msg,
+        ) = self._dtm_data_model.do_insert(module=module)
 
         if _error_code != 0:
             self._configuration.RAMSTK_IMPORT_LOG.error(_msg)

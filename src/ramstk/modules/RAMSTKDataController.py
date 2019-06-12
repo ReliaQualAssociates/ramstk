@@ -191,8 +191,13 @@ class RAMSTKDataController():
         :rtype: bool
         """
         try:
+            _matrix_insert_method = self._dic_inserts[matrix_type]
+        except KeyError:
+            _matrix_insert_method = None
+
+        try:
             # pylint: disable=not-callable
-            _error_code, _msg = self._matrix_insert_method(
+            _error_code, _msg = _matrix_insert_method(
                 item_id, heading, row=row,
             )
         except TypeError:

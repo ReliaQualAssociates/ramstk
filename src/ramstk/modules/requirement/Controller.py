@@ -69,6 +69,11 @@ class RequirementDataController(RAMSTKDataController):
             column_table=RAMSTKValidation,
             **kwargs,
         )
+        self._dic_inserts = {
+            'rqrmnt_hrdwr': self._dmx_rqmt_hw_matrix.do_insert,
+            'rqrmnt_sftwr': self._dmx_rqmt_sw_matrix.do_insert,
+            'rqrmnt_vldtn': self._dmx_rqmt_val_matrix.do_insert,
+        }
 
         # Initialize public dictionary attributes.
 
@@ -88,7 +93,7 @@ class RequirementDataController(RAMSTKDataController):
         )
         pub.subscribe(self.request_do_insert, 'request_insert_requirement')
         pub.subscribe(
-            self._request_do_insert_matrix,
+            self.request_do_insert_matrix,
             'request_insert_requirement_matrix',
         )
         pub.subscribe(self.request_do_select_all, 'selected_revision')
@@ -226,46 +231,6 @@ class RequirementDataController(RAMSTKDataController):
         return RAMSTKDataController.do_handle_results(
             self, _error_code, _msg,
             None,
-        )
-
-    def _request_do_insert_matrix(
-            self,
-            matrix_type,
-            item_id,
-            heading,
-            row=True,
-    ):
-        """
-        Request the to add a new row or column to the Data Matrix.
-
-        :param str matrix_type: the type of the Matrix to retrieve.  Current
-                                Requirement matrix types are:
-
-                                rqrmnt_hrdwr = Requirement:Hardware
-                                rqrmnt_sftwr = Requirement:Software
-                                rqrmnt_vldtn = Requirement:Validation
-
-        :param int item_id: the ID of the row or column item to insert into the
-                            Matrix.
-        :param str heading: the heading for the new row or column.
-        :keyword bool row: indicates whether to insert a row (default) or a
-                           column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _dic_inserts = {
-            'rqrmnt_hrdwr': self._dmx_rqmt_hw_matrix.do_insert,
-            'rqrmnt_sftwr': self._dmx_rqmt_sw_matrix.do_insert,
-            'rqrmnt_vldtn': self._dmx_rqmt_val_matrix.do_insert,
-        }
-
-        try:
-            self._matrix_insert_method = _dic_inserts[matrix_type]
-        except KeyError:
-            self._matrix_insert_method = None
-
-        return RAMSTKDataController.request_do_insert_matrix(
-            self, matrix_type, item_id, heading, row=row,
         )
 
     def _request_do_delete_matrix(self, matrix_type, item_id, row=True):

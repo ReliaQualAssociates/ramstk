@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.hardware.test_hardwarebom.py is part of The RAMSTK Project
@@ -7,16 +7,20 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hardware BoM module algorithms and models. """
 
+# Standard Library Imports
 from datetime import date
+
+# Third Party Imports
 import pandas as pd
+import pytest
 from treelib import Tree
 
-import pytest
-
+# RAMSTK Package Imports
+from ramstk.dao import DAO
 from ramstk.modules.hardware import (
-    dtmHardware, dtmDesignElectric, dtmDesignMechanic, dtmMilHdbkF, dtmNSWC,
-    dtmReliability, dtmHardwareBoM, dtcHardwareBoM)
-from ramstk.dao import DAO, RAMSTKHardware
+    dtcHardwareBoM, dtmDesignElectric, dtmDesignMechanic, dtmHardware,
+    dtmHardwareBoM, dtmMilHdbkF, dtmNSWC, dtmReliability,
+)
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -289,7 +293,7 @@ ATTRIBUTES = {
     'mtbf_logistics': 0.0,
     'mult_adj_factor': 1.0,
     'temperature_knee': 25.0,
-    'total_cost': 0.0
+    'total_cost': 0.0,
 }
 
 
@@ -363,7 +367,8 @@ def test_do_insert_sibling_assembly(test_dao):
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -377,7 +382,8 @@ def test_do_insert_child_assembly(test_dao):
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -403,8 +409,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -418,7 +426,8 @@ def test_do_delete_non_existent_id(test_dao):
     assert _error_code == 2005
     assert _msg == (
         'RAMSTK ERROR: Attempted to delete non-existent Hardware BoM '
-        'record ID 300.')
+        'record ID 300.'
+    )
 
 
 @pytest.mark.integration
@@ -466,7 +475,8 @@ def test_do_update_all(test_dao):
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Updating all records in the hardware bill "
-        "of materials.")
+        "of materials."
+    )
 
 
 @pytest.mark.integration
@@ -493,7 +503,8 @@ def test_request_do_select_all_matrix(test_dao, test_configuration):
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
 
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'hrdwr_vldtn')
+        1, 'hrdwr_vldtn',
+    )
 
     assert isinstance(_matrix, pd.DataFrame)
     assert _column_hdrs[1] == ''
@@ -564,9 +575,10 @@ def test_request_do_insert_matrix_row(test_dao, test_configuration):
     DUT._request_do_create_matrix(1, 'hrdwr_vldtn')
 
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'hrdwr_vldtn')
+        1, 'hrdwr_vldtn',
+    )
 
-    assert not DUT._request_do_insert_matrix('hrdwr_vldtn', 14, 'S1:SS1:A13')
+    assert not DUT.request_do_insert_matrix('hrdwr_vldtn', 14, 'S1:SS1:A13')
     assert DUT._dmx_hw_vldtn_matrix.dic_row_hdrs[14] == 'S1:SS1:A13'
 
 
@@ -575,9 +587,10 @@ def test_request_do_insert_matrix_duplicate_row(test_dao, test_configuration):
     """ request_insert_matrix() should return True when attempting to insert a duplicate row. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'hrdwr_vldtn')
+        1, 'hrdwr_vldtn',
+    )
 
-    assert DUT._request_do_insert_matrix('hrdwr_vldtn', 2, 'S1:SS1:A2')
+    assert DUT.request_do_insert_matrix('hrdwr_vldtn', 2, 'S1:SS1:A2')
 
 
 @pytest.mark.integration
@@ -586,18 +599,23 @@ def test_request_do_insert_matrix_column(test_dao, test_configuration):
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'hrdwr_vldtn')
+        1, 'hrdwr_vldtn',
+    )
 
     if pytest.mark.name == 'integration':
         assert not DUT.request_insert_matrix(
-            'hrdwr_vldtn', 1, 'Test Validation Task 1', row=False)
+            'hrdwr_vldtn', 1, 'Test Validation Task 1', row=False,
+        )
         assert DUT._dmx_hw_vldtn_matrix.dic_column_hdrs[
-            1] == 'Test Validation Task 1'
+            1
+        ] == 'Test Validation Task 1'
     elif pytest.mark.name == 'hardware':
         assert not DUT.request_insert_matrix(
-            'hrdwr_vldtn', 2, 'Test Validation Task 2', row=False)
+            'hrdwr_vldtn', 2, 'Test Validation Task 2', row=False,
+        )
         assert DUT._dmx_hw_vldtn_matrix.dic_column_hdrs[
-            2] == 'Test Validation Task 2'
+            2
+        ] == 'Test Validation Task 2'
 
 
 @pytest.mark.integration
@@ -622,8 +640,9 @@ def test_request_do_delete_matrix_row(test_dao, test_configuration):
     """ _request_do_delete_matrix() should return False on successfully deleting a row. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'hrdwr_vldtn')
-    DUT._request_do_insert_matrix('hrdwr_vldtn', 4, 'Function Code')
+        1, 'hrdwr_vldtn',
+    )
+    DUT.request_do_insert_matrix('hrdwr_vldtn', 4, 'Function Code')
 
     assert not DUT._request_do_delete_matrix('hrdwr_vldtn', 4)
 
@@ -633,18 +652,21 @@ def test_request_do_delete_nonexistent_matrix(test_dao, test_configuration):
     """ _request_do_delete_matrix() should return True when attempting to deletie from a non-existent matrix. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT._request_do_select_all_matrix(1, 'hrdwr_vldtn')
-    DUT._request_do_insert_matrix('hrdwr_vldtn', 44, 'Function Code')
+    DUT.request_do_insert_matrix('hrdwr_vldtn', 44, 'Function Code')
 
     assert DUT._request_do_delete_matrix('hrdwr_rvsn', 44)
 
 
 @pytest.mark.integration
-def test_request_do_delete_matrix_non_existent_row(test_dao,
-                                                   test_configuration):
+def test_request_do_delete_matrix_non_existent_row(
+        test_dao,
+        test_configuration,
+):
     """ _request_do_delete_matrix() should return True when attempting to delete a non-existent row. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'hrdwr_vldtn')
+        1, 'hrdwr_vldtn',
+    )
 
     assert DUT._request_do_delete_matrix('hrdwr_vldtn', 44)
 
@@ -654,8 +676,9 @@ def test_request_do_delete_matrix_column(test_dao, test_configuration):
     """ _request_do_delete_matrix() should return False on successfully deleting a column. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'hrdwr_vldtn')
-    DUT._request_do_insert_matrix('hrdwr_vldtn', 2, 'S1:SS1:A1', row=False)
+        1, 'hrdwr_vldtn',
+    )
+    DUT.request_do_insert_matrix('hrdwr_vldtn', 2, 'S1:SS1:A1', row=False)
 
     assert not DUT._request_do_delete_matrix('hrdwr_vldtn', 2, row=False)
 
@@ -683,7 +706,8 @@ def test_request_set_attributes(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_set_attributes_not_an_attributes(
-        test_dao, test_configuration):
+        test_dao, test_configuration,
+):
     """ request_set_attributes() should return True when the passed attribute does not exist. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
@@ -714,13 +738,16 @@ def test_request_do_update_all(test_dao, test_configuration):
 
 @pytest.mark.integration
 def test_request_do_make_composite_reference_designator(
-        test_dao, test_configuration):
+        test_dao, test_configuration,
+):
     """ request_do_make_composite_reference_designator() should return a zero error code on success. """
     DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
     DUT.request_do_select_all(ATTRIBUTES)
 
-    (_error_code,
-     _msg) = DUT.request_do_make_composite_reference_designator(node_id=1)
+    (
+        _error_code,
+        _msg,
+    ) = DUT.request_do_make_composite_reference_designator(node_id=1)
 
     assert _error_code == 0
     assert _msg == ''

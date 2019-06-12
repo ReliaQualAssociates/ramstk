@@ -7,15 +7,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Validation module algorithms and models. """
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.dao import DAO
-from ramstk.dao import RAMSTKProgramStatus, RAMSTKValidation
-from ramstk.modules.validation import dtmValidation, dtcValidation
+# RAMSTK Package Imports
+from ramstk.dao import DAO, RAMSTKProgramStatus, RAMSTKValidation
+from ramstk.modules.validation import dtcValidation, dtmValidation
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -51,7 +52,7 @@ ATTRIBUTES = {
     'time_mean': 0.0,
     'time_minimum': 0.0,
     'time_ul': 0.0,
-    'time_variance': 0.0
+    'time_variance': 0.0,
 }
 
 
@@ -102,14 +103,16 @@ def test_request_do_delete_matrix_row(test_dao, test_configuration):
     """ request_do_delete_matrix() should return False on successfully deleting a row. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     DUT._request_do_select_all_matrix(1, 'vldtn_hrdwr')
-    DUT._request_do_insert_matrix('vldtn_hrdwr', 5, 'Validation task from test')
+    DUT.request_do_insert_matrix('vldtn_hrdwr', 5, 'Validation task from test')
 
     assert not DUT._request_do_delete_matrix('vldtn_hrdwr', 5)
 
 
 @pytest.mark.integration
-def test_request_do_delete_matrix_non_existent_row(test_dao,
-                                                   test_configuration):
+def test_request_do_delete_matrix_non_existent_row(
+        test_dao,
+        test_configuration,
+):
     """ request_do_delete_matrix() should return True when attempting to delete a non-existent row. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     DUT._request_do_select_all_matrix(1, 'vldtn_hrdwr')
@@ -122,7 +125,7 @@ def test_request_do_delete_matrix_column(test_dao, test_configuration):
     """ request_do_delete_matrix() should return False on successfully deleting a column. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     DUT._request_do_select_all_matrix(1, 'vldtn_hrdwr')
-    DUT._request_do_insert_matrix('vldtn_hrdwr', 5, 'S1:SS1:A1', row=False)
+    DUT.request_do_insert_matrix('vldtn_hrdwr', 5, 'S1:SS1:A1', row=False)
 
     assert not DUT._request_do_delete_matrix('vldtn_hrdwr', 5, row=False)
 
@@ -138,7 +141,8 @@ def test_do_insert(test_dao):
     assert _error_code == 0
     assert _msg == (
         'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-        'database.')
+        'database.'
+    )
     assert DUT.last_id == 2
 
 
@@ -147,12 +151,16 @@ def test_request_do_insert_matrix_row(test_dao, test_configuration):
     """ request_do_insert_matrix() should return False on successfully inserting a row. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'vldtn_hrdwr')
+        1, 'vldtn_hrdwr',
+    )
 
-    assert not DUT._request_do_insert_matrix('vldtn_hrdwr', 5,
-                                            'Validation task from test')
+    assert not DUT.request_do_insert_matrix(
+        'vldtn_hrdwr', 5,
+        'Validation task from test',
+    )
     assert DUT._dmx_vldtn_hw_matrix.dic_row_hdrs[
-        5] == 'Validation task from test'
+        5
+    ] == 'Validation task from test'
 
 
 @pytest.mark.integration
@@ -160,10 +168,13 @@ def test_request_do_insert_matrix_duplicate_row(test_dao, test_configuration):
     """ request_do_insert_matrix() should return True when attempting to insert a duplicate row. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'vldtn_hrdwr')
+        1, 'vldtn_hrdwr',
+    )
 
-    assert DUT._request_do_insert_matrix('vldtn_hrdwr', 1,
-                                        'Validation task from test')
+    assert DUT.request_do_insert_matrix(
+        'vldtn_hrdwr', 1,
+        'Validation task from test',
+    )
 
 
 @pytest.mark.integration
@@ -171,10 +182,12 @@ def test_request_do_insert_matrix_column(test_dao, test_configuration):
     """ request_do_insert_matrix() should return False on successfully inserting a column. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        5, 'vldtn_hrdwr')
+        5, 'vldtn_hrdwr',
+    )
 
-    assert not DUT._request_do_insert_matrix(
-        'vldtn_hrdwr', 9, 'S1:SS1:A11', row=False)
+    assert not DUT.request_do_insert_matrix(
+        'vldtn_hrdwr', 9, 'S1:SS1:A11', row=False,
+    )
     assert DUT._dmx_vldtn_hw_matrix.dic_column_hdrs[9] == 'S1:SS1:A11'
 
 
@@ -188,8 +201,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -201,8 +216,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
-                    'Validation ID 300.')
+    assert _msg == (
+        '  RAMSTK ERROR: Attempted to delete non-existent '
+        'Validation ID 300.'
+    )
 
 
 @pytest.mark.integration
@@ -231,7 +248,8 @@ def test_do_update_non_existent_id(test_dao):
     assert _error_code == 2005
     assert _msg == (
         'RAMSTK ERROR: Attempted to save non-existent Validation ID '
-        '100.')
+        '100.'
+    )
 
 
 @pytest.mark.integration
@@ -255,8 +273,10 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the validation "
-                    "table.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the validation "
+        "table."
+    )
 
 
 @pytest.mark.integration
@@ -334,7 +354,8 @@ def test_request_do_select_all(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert isinstance(
-        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKValidation)
+        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKValidation,
+    )
 
 
 @pytest.mark.integration
@@ -413,7 +434,8 @@ def test_request_do_update_matrix(test_dao, test_configuration):
     """ request_do_update_matrix() should return False on success. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'vldtn_hrdwr')
+        1, 'vldtn_hrdwr',
+    )
 
     assert not DUT._request_do_update_matrix(1, 'vldtn_hrdwr')
 
@@ -423,7 +445,8 @@ def test_request_do_update_non_existent_matrix(test_dao, test_configuration):
     """ request_do_update_matrix() should return True when attempting to update a non-existent matrix. """
     DUT = dtcValidation(test_dao, test_configuration, test=True)
     (_matrix, _column_hdrs, _row_hdrs) = DUT._request_do_select_all_matrix(
-        1, 'vldtn_hrdwr')
+        1, 'vldtn_hrdwr',
+    )
 
     assert DUT._request_do_update_matrix(1, 'vldtn_rvsn')
 
