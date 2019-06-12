@@ -1,7 +1,8 @@
+# ----------- This is 50 characters ----------> |
 # Remember to format your commit message thusly...
 #
-# <type>(<primary scope::secondary scope>): Subject (<=50 characters)
-# ----------- This is 50 characters ----------- |
+# <type>(<primary scope::secondary scope>): Subject
+# Try to keep the subject line <=50 characters
 # <BLANK LINE>
 # <body>
 # <BLANK LINE>
