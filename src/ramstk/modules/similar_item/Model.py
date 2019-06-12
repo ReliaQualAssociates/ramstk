@@ -209,13 +209,15 @@ class SimilarItemDataModel(RAMSTKDataModel):
         try:
             _children = self.tree.children(node_id)
         except NodeIDAbsentError:
-            _children = None
+            _children = []
 
         if _children is not None:
             pub.sendMessage(
                 'retrieved_similar_item_children',
                 children=_children,
             )
+
+        return _children
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """

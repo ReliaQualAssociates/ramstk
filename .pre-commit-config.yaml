@@ -3,7 +3,7 @@ repos:
       sha: v1.0.4
       hooks:
           - id: python-bandit-vulnerability-check
-            args: [-b, .bandit.baseline, --ini, .bandit]
+            args: [-b, .bandit.baseline, -x, tests/]
             files: .py$
     - repo: https://github.com/asottile/add-trailing-comma
       rev: v1.0.0
