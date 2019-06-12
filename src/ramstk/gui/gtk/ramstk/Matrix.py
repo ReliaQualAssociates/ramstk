@@ -7,14 +7,17 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKBaseMatrix Module."""
 
-# Modules for localization.
+# Standard Library Imports
 import locale
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk import (RAMSTKLabel, do_make_buttonbox)
-from .Widget import _, GdkPixbuf, GObject, Gtk, Pango
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKLabel, do_make_buttonbox
+
+# RAMSTK Local Imports
+from .Widget import GdkPixbuf, GObject, Gtk, Pango, _
 
 
 class RAMSTKBaseMatrix():
@@ -34,7 +37,7 @@ class RAMSTKBaseMatrix():
 
     RAMSTK_CONFIGURATION = None
 
-    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):
         """
         Initialize an instance of the RAMSTKMatrix widget class.
 
@@ -79,13 +82,61 @@ class RAMSTKBaseMatrix():
         self.matrix = Gtk.TreeView(None)
 
         try:
-            locale.setlocale(locale.LC_ALL,
-                             self.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
+            locale.setlocale(
+                locale.LC_ALL,
+                self.RAMSTK_CONFIGURATION.RAMSTK_LOCALE,
+            )
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
+        self.__make_ui()
+
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_load_matrix, 'retrieved_matrix')
+
+    def __make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.pack_start(
+            do_make_buttonbox(
+                self,
+                icons=['view-refresh'],
+                tooltips=[
+                    self._dic_matrix_labels[self._matrix_type][0],
+                ],
+                callbacks=[self._do_request_create],
+                orientation='vertical',
+                height=-1,
+                width=-1,
+            ),
+            False, False, 0,
+        )
+
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.add(self.matrix)
+
+        self.pack_end(_scrolledwindow, True, True, 0)
+
+        _label = Gtk.Label()
+        _label.set_markup(
+            "<span weight='bold'>" +
+            self._dic_matrix_labels[self._matrix_type][1] +
+            "</span>",
+        )
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.set_justify(Gtk.Justification.CENTER)
+        _label.show_all()
+        _label.set_tooltip_text(self._dic_matrix_labels[self._matrix_type][2])
+
+        # self.hbx_tab_label.pack_start(_image, True, True, 0)
+        self.hbx_tab_label.pack_end(_label, True, True, 0)
+        self.hbx_tab_label.show_all()
+
+        self.show_all()
 
     def _do_set_properties(self, cell, editable, position, col_index, model):
         """
@@ -111,29 +162,6 @@ class RAMSTKBaseMatrix():
         cell.set_property('yalign', 0.1)
         cell.connect('changed', self._on_cell_edit, position, col_index, model)
 
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the buttonbox for the Requirement:Hardware Matrix View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement:Hardware
-                             Matrix View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _icons = kwargs['icons']
-        _tooltips = kwargs['tooltips']
-        _callbacks = kwargs['callbacks']
-
-        _buttonbox = do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
     def _make_column(self, cells, heading, visible=True):
         """
         Make a Gtk.TreeViewColumn().
@@ -154,7 +182,8 @@ class RAMSTKBaseMatrix():
                 _column.connect('notify::width', self._on_resize_wrap, _cell)
 
         _label = RAMSTKLabel(
-            heading, width=-1, height=-1, justify=Gtk.Justification.CENTER)
+            heading, width=-1, height=-1, justify=Gtk.Justification.CENTER,
+        )
         _label.set_angle(90)
         _column.set_widget(_label)
         _column.set_resizable(True)
@@ -208,15 +237,18 @@ class RAMSTKBaseMatrix():
         if _model.get_value(row, 0) == 'Partial':
             self._ramstk_matrix[_column_item_id][_row_item_id] = 1
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self._dic_icons[1], 22, 22)
+                self._dic_icons[1], 22, 22,
+            )
         elif _model.get_value(row, 0) == 'Complete':
             self._ramstk_matrix[_column_item_id][_row_item_id] = 2
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self._dic_icons[2], 22, 22)
+                self._dic_icons[2], 22, 22,
+            )
         else:
             self._ramstk_matrix[_column_item_id][_row_item_id] = 0
             _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self._dic_icons[0], 22, 22)
+                self._dic_icons[0], 22, 22,
+            )
 
         model[path][position - 1] = _pixbuf
 
@@ -277,9 +309,11 @@ class RAMSTKBaseMatrix():
         # The first column will contain the Function ID and Function Code.
         _cell = Gtk.CellRendererText()
         _cell.set_property('background', 'light gray')
-        _column = self._make_column([
-            _cell,
-        ], '', visible=False)
+        _column = self._make_column(
+            [
+                _cell,
+            ], '', visible=False,
+        )
         _column.set_attributes(_cell, text=0)
         _cell = Gtk.CellRendererText()
         _cell.set_alignment(0.9, 0.5)
@@ -288,9 +322,11 @@ class RAMSTKBaseMatrix():
         _cell.set_property('foreground', '#000000')
         _cell.set_property('wrap-width', 250)
         _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
-        _column = self._make_column([
-            _cell,
-        ], rows)
+        _column = self._make_column(
+            [
+                _cell,
+            ], rows,
+        )
         _column.set_attributes(_cell, markup=1)
         self.matrix.append_column(_column)
 
@@ -299,8 +335,10 @@ class RAMSTKBaseMatrix():
         j = 2
         for i in range(self._n_columns):  # pylint: disable=E0602
             _cell = self._make_combo_cell()
-            self._do_set_properties(_cell, True, i + j + 1,
-                                    self._ramstk_matrix.columns[i], _model)
+            self._do_set_properties(
+                _cell, True, i + j + 1,
+                self._ramstk_matrix.columns[i], _model,
+            )
 
             _pbcell = Gtk.CellRendererPixbuf()
             _pbcell.set_property('xalign', 0.5)
@@ -312,9 +350,11 @@ class RAMSTKBaseMatrix():
             j += 1
 
         # Add one more column so the last column will not be extra wide.
-        _column = self._make_column([
-            Gtk.CellRendererText(),
-        ], '')
+        _column = self._make_column(
+            [
+                Gtk.CellRendererText(),
+            ], '',
+        )
 
         try:
             # pylint: disable=undefined-loop-variable
@@ -329,7 +369,8 @@ class RAMSTKBaseMatrix():
             _data = [i, "<span weight='bold'>" + row_headings[i] + "</span>"]
             for j in list(self._ramstk_matrix.loc[i]):
                 _pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons[j], 22, 22)
+                    self._dic_icons[j], 22, 22,
+                )
                 _data.append(_pixbuf)
                 _data.append(j)
             _data.append('')

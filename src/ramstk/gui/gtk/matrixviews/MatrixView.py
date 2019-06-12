@@ -7,9 +7,10 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKMatrixView Meta-Class Module."""
 
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKBaseMatrix
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
-from ramstk.gui.gtk.ramstk import RAMSTKBaseMatrix
 
 
 class RAMSTKMatrixView(Gtk.HBox, RAMSTKBaseMatrix):
@@ -31,7 +32,7 @@ class RAMSTKMatrixView(Gtk.HBox, RAMSTKBaseMatrix):
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
         GObject.GObject.__init__(self)
-        RAMSTKBaseMatrix.__init__(self, configuration**kwargs)
+        RAMSTKBaseMatrix.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
