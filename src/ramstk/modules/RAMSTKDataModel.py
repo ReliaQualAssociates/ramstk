@@ -61,9 +61,20 @@ class RAMSTKDataModel():
         ):
             pass
 
+    def do_calculate_all(self, **kwargs):
+        """
+        Calculate metrics for all RAMSTK<MODULE>s.
+
+        :return: None
+        :rtype: None
+        """
+        for _node in self.tree.all_nodes()[1:]:
+            if _node.identifier != 0:
+                self.do_calculate(_node.identifier, **kwargs)
+
     def do_select(self, node_id, **kwargs):  # pylint: disable=unused-argument
         """
-        Retrieve the instance of the RAMSTK<MODULE> model for the Node ID passed.
+        Retrieve instance of the RAMSTK<MODULE> model for the Node ID passed.
 
         :param int node_id: the Node ID of the data package to retrieve.
         :return: the instance of the RAMSTK<MODULE> class that was requested

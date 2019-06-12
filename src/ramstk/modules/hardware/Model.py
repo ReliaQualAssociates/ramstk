@@ -427,6 +427,7 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             # was deleted.
             if not self._test:
                 pub.sendMessage('deleted_hardware', tree=self.tree)
+                pub.sendMessage('request_delete_similar_item', node_id=node_id)
 
         return _error_code, _msg
 
@@ -533,6 +534,7 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             # Hardware was inserted.
             if not self._test:
                 pub.sendMessage('inserted_hardware', tree=self.tree)
+                pub.sendMessage('request_insert_similar_item', revision_id=_revision_id, hardware_id=_hardware_id, parent_id=_parent_id)
 
         return _error_code, _msg
 
@@ -541,18 +543,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         Retrieve instance of the RAMSTK<MODULE> model for the Node ID passed.
 
         :param int node_id: the Node ID of the data package to retrieve.
-        :param str table: the RAMSTK Program database table to select the
-                          entity from.  Current options are:
-
-                          * general
-                          * electrical_design
-                          * mechanical_design
-                          * mil_hdbk_f
-                          * nswc
-                          * reliability
-
         :return: the aggregate dict of attributes from each of the data models
-                 that comprise a Hardwar BoM data model or None if the
+                 that comprise a Hardware BoM data model or None if the
                  requested Node ID does not exist.
         :rtype: dict
         """
