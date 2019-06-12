@@ -6,8 +6,10 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Preferences Package Data Controller Module."""
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.modules import RAMSTKDataController
+
+# RAMSTK Local Imports
 from . import dtmPreferences
 
 
@@ -35,7 +37,8 @@ class PreferencesDataController(RAMSTKDataController):
             configuration,
             model=dtmPreferences(dao, _site_dao, configuration),
             ramstk_module='preferences',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -60,7 +63,8 @@ class PreferencesDataController(RAMSTKDataController):
         :rtype: None
         """
         return self._dtm_data_model.do_select_all(
-            site=attributes['site'], user=attributes['user'])
+            site=attributes['site'], user=attributes['user'],
+        )
 
     def request_get_preferences(self, **kwargs):
         """
@@ -98,9 +102,7 @@ class PreferencesDataController(RAMSTKDataController):
         elif _user:
             self._dtm_data_model.user_preferences = preferences
 
-        return None
-
-    def request_do_delete(self, entity):
+    def request_do_delete(self, entity):    # pylint: disable=arguments-differ
         """
         Request to delete the record from the RAMSTK Site database.
 
@@ -110,7 +112,7 @@ class PreferencesDataController(RAMSTKDataController):
         """
         return self._dtm_data_model.do_delete(entity)
 
-    def request_do_update(self):
+    def request_do_update(self):    # pylint: disable=arguments-differ
         """
         Request to update the Site or User Preferences.
 

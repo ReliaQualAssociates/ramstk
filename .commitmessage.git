@@ -1,12 +1,14 @@
 # Remember to format your commit message thusly...
 #
-# <type>(<primary scope:secondary scope>): Subject (try to keep it less than 50 
-#                                          characters)
+# <type>(<primary scope::secondary scope>): Subject (try to keep it less than
+# 50 characters)
 # <BLANK LINE>
 # <body>
-# 
+# <BLANK LINE>
+# <footer>
+#
 # Where <type> is one of:
-#    * feat: a new feature was added.
+#    * feat or feature: a new feature was added.
 #    * fix: a bug fix.
 #    * docs: documentation only change.
 #    * style: change that doesn't affect the meaning of the code.
@@ -31,7 +33,7 @@
 #    * MIL217
 #    * FMEA
 #    * PoF
-# <body> is a multi-line description of the changes.  Use bulleted lists 
-#        (-, *, etc.)to make this easier to read.  Append [FIXES ISSUE:
-#        <issue number>] to the end of each line that fixes an issue.
-#
+# <body> is a multi-line description of the changes.  Use bulleted lists
+#        (-, *, etc.)to make this easier to read.
+# <footer> is the place to list all the GitHub issues (if any) the commit
+# closes.  These should be listed in the format Closes: #<Issue ID>.

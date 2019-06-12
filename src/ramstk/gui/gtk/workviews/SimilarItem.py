@@ -138,7 +138,7 @@ class SimilarItem(RAMSTKWorkView):
         # Load the quality from and quality to Gtk.CellRendererCombo().
         for _idx in [4, 5]:
             _model = self._get_cell_model(_idx)
-            for _quality in self._dic_quality:
+            for _quality in self._dic_quality.values():
                 _model.append([
                     _quality,
                 ])
@@ -146,7 +146,7 @@ class SimilarItem(RAMSTKWorkView):
         # Load the environment from and environment to Gtk.CellRendererCombo().
         for _idx in [6, 7]:
             _model = self._get_cell_model(_idx)
-            for _environment in self._dic_environment:
+            for _environment in self._dic_environment.values():
                 _model.append([
                     _environment,
                 ])

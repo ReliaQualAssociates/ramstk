@@ -6,8 +6,11 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Options Package Data Controller Module."""
 
+# RAMSTK Package Imports
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataController
+
+# RAMSTK Local Imports
 from . import dtmOptions
 
 
@@ -35,7 +38,8 @@ class OptionsDataController(RAMSTKDataController):
             configuration,
             model=dtmOptions(dao, _site_dao),
             ramstk_module='options',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -60,7 +64,8 @@ class OptionsDataController(RAMSTKDataController):
         :rtype: None
         """
         return self._dtm_data_model.do_select_all(
-            site=attributes['site'], program=attributes['program'])
+            site=attributes['site'], program=attributes['program'],
+        )
 
     def request_get_options(self, **kwargs):
         """
@@ -93,15 +98,18 @@ class OptionsDataController(RAMSTKDataController):
         _msg = ''
 
         if _site:
-            (_error_code,
-             _msg) = self._dtm_data_model.site_options.set_attributes(options)
+            (
+                _error_code,
+                _msg,
+            ) = self._dtm_data_model.site_options.set_attributes(options)
         elif _program:
-            (_error_code, _msg
-             ) = self._dtm_data_model.program_options.set_attributes(options)
+            (
+                _error_code, _msg,
+            ) = self._dtm_data_model.program_options.set_attributes(options)
 
         return (_error_code, _msg)
 
-    def request_do_update(self):
+    def request_do_update(self):    # pylint: disable=arguments-differ
         """
         Request to update an RAMSTKOptions table record.
 
