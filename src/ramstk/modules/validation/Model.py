@@ -362,28 +362,14 @@ class ValidationDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKValidation table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the validation "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (

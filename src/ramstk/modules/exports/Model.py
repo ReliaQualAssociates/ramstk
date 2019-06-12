@@ -6,10 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Exports Data Model."""
 
+# Standard Library Imports
 import os
+
+# Third Party Imports
 import pandas as pd
 
-# Export other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.modules import RAMSTKDataModel
 
 
@@ -20,13 +23,13 @@ class ExportDataModel(RAMSTKDataModel):
     _dic_column_headers = {
         'Function': [
             'revision_id', 'function_id', 'level', 'function_code', 'name',
-            'parent_id', 'remarks', 'safety_critical', 'type_id'
+            'parent_id', 'remarks', 'safety_critical', 'type_id',
         ],
         'Requirement': [
             'revision_id', 'requirement_id', 'derived', 'description',
             'figure_number', 'owner', 'page_number', 'parent_id', 'priority',
             'requirement_code', 'specification', 'requirement_type',
-            'validated', 'validated_date'
+            'validated', 'validated_date',
         ],
         'Hardware': [
             'revision_id', 'hardware_id', 'alt_part_num', 'cage_code',
@@ -35,7 +38,7 @@ class ExportDataModel(RAMSTKDataModel):
             'manufacturer_id', 'mission_time', 'name', 'nsn', 'page_number',
             'parent_id', 'part', 'part_number', 'quantity', 'ref_des',
             'remarks', 'repairable', 'specification_number', 'subcategory_id',
-            'tagged_part', 'year_of_manufacture'
+            'tagged_part', 'year_of_manufacture',
         ],
         'Design Electric': [
             'hardware_id', 'application_id', 'area', 'capacitance',
@@ -54,7 +57,7 @@ class ExportDataModel(RAMSTKDataModel):
             'temperature_rated_max', 'temperature_rated_min',
             'temperature_rise', 'theta_jc', 'type_id', 'voltage_ac_operating',
             'voltage_dc_operating', 'voltage_esd', 'voltage_rated',
-            'voltage_ratio', 'weight', 'years_in_production'
+            'voltage_ratio', 'weight', 'years_in_production',
         ],
         'Design Mechanic': [
             'Hardware ID',
@@ -117,7 +120,7 @@ class ExportDataModel(RAMSTKDataModel):
             'hazard_rate_specified', 'hazard_rate_type_id',
             'location_parameter', 'mtbf_specified', 'mult_adj_factor',
             'quality_id', 'reliability_goal', 'reliability_goal_measure_id',
-            'scale_parameter', 'shape_parameter', 'survival_analysis_id'
+            'scale_parameter', 'shape_parameter', 'survival_analysis_id',
         ],
         'Validation': [
             'revision_id', 'validation_id', 'acceptable_maximum',
@@ -125,8 +128,8 @@ class ExportDataModel(RAMSTKDataModel):
             'confidence', 'cost_average', 'cost_maximum', 'cost_minimum',
             'date_start', 'date_end', 'description', 'measurement_unit',
             'name', 'status', 'task_type', 'task_specification',
-            'time_average', 'time_maximum', 'time_minimum'
-        ]
+            'time_average', 'time_maximum', 'time_minimum',
+        ],
     }
 
     _tag = 'Exports'
@@ -187,8 +190,6 @@ class ExportDataModel(RAMSTKDataModel):
         elif file_type == 'pdf':
             print("Portable Document Format")
 
-        return None
-
     def do_load_output(self, module, tree):
         """
         Load the data from the requested RAMSTK module into a Pandas DataFrame.
@@ -213,8 +214,6 @@ class ExportDataModel(RAMSTKDataModel):
         elif module == 'Validation':
             self._do_load_validation(tree)
 
-        return None
-
     def _do_load_function(self, tree):
         """
         Load the Function entities into a Pandas DataFrame.
@@ -234,8 +233,6 @@ class ExportDataModel(RAMSTKDataModel):
             _dic_output_data[_header] = _temp
 
         self._output_data = pd.DataFrame(_dic_output_data)
-
-        return None
 
     def _do_load_requirement(self, tree):
         """
@@ -257,8 +254,6 @@ class ExportDataModel(RAMSTKDataModel):
 
         self._output_data = pd.DataFrame(_dic_output_data)
 
-        return None
-
     def _do_load_hardware(self, tree):
         """
         Load the Hardware entities into a Pandas DataFrame.
@@ -279,8 +274,6 @@ class ExportDataModel(RAMSTKDataModel):
 
         self._output_data = pd.DataFrame(_dic_output_data)
 
-        return None
-
     def _do_load_design_electric(self, tree):
         """
         Load the Design Electric entities into a Pandas DataFrame.
@@ -300,8 +293,6 @@ class ExportDataModel(RAMSTKDataModel):
             _dic_output_data[_header] = _temp
 
         self._output_data = pd.DataFrame(_dic_output_data)
-
-        return None
 
     def _do_load_reliability(self, tree):
         """
@@ -324,8 +315,6 @@ class ExportDataModel(RAMSTKDataModel):
 
         self._output_data = pd.DataFrame(_dic_output_data)
 
-        return None
-
     def _do_load_validation(self, tree):
         """
         Load the Validation entities into a Pandas DataFrame.
@@ -345,5 +334,3 @@ class ExportDataModel(RAMSTKDataModel):
             _dic_output_data[_header] = _temp
 
         self._output_data = pd.DataFrame(_dic_output_data)
-
-        return None

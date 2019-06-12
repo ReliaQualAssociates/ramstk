@@ -6,14 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Physics of Failure Data Model."""
 
+# Third Party Imports
 # Import third party packages.
 from pubsub import pub
 from treelib import tree
 
+# RAMSTK Package Imports
+from ramstk.dao import RAMSTKOpLoad, RAMSTKOpStress, RAMSTKTestMethod
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
-from ramstk.modules.fmea import dtmMode, dtmMechanism
-from ramstk.dao import RAMSTKOpLoad, RAMSTKOpStress, RAMSTKTestMethod
+from ramstk.modules.fmea import dtmMechanism, dtmMode
 
 
 class OpLoadDataModel(RAMSTKDataModel):
@@ -65,7 +67,8 @@ class OpLoadDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         _oploads = _session.query(RAMSTKOpLoad).filter(
-            RAMSTKOpLoad.mechanism_id == _parent_id).all()
+            RAMSTKOpLoad.mechanism_id == _parent_id,
+        ).all()
 
         for _opload in _oploads:
             # We get and then set the attributes to replace any None values
@@ -73,7 +76,8 @@ class OpLoadDataModel(RAMSTKDataModel):
             _attributes = _opload.get_attributes()
             _opload.set_attributes(_attributes)
             self.tree.create_node(
-                _opload.description, _opload.load_id, parent=0, data=_opload)
+                _opload.description, _opload.load_id, parent=0, data=_opload,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -98,11 +102,13 @@ class OpLoadDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _opload,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
-                _opload.description, _opload.load_id, parent=0, data=_opload)
+                _opload.description, _opload.load_id, parent=0, data=_opload,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -145,32 +151,20 @@ class OpLoadDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKOpLoad table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.data.load_id)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more operating loads in the damage "
-                    "modeling worksheet did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all operating loads in the damage "
-                "modeling worksheet.")
+                "modeling worksheet."
+            )
 
         return _error_code, _msg
 
@@ -224,7 +218,8 @@ class OpStressDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         _opstresses = _session.query(RAMSTKOpStress).filter(
-            RAMSTKOpStress.load_id == _load_id).all()
+            RAMSTKOpStress.load_id == _load_id,
+        ).all()
 
         for _opstress in _opstresses:
             # We get and then set the attributes to replace any None values
@@ -235,7 +230,8 @@ class OpStressDataModel(RAMSTKDataModel):
                 _opstress.description,
                 _opstress.stress_id,
                 parent=0,
-                data=_opstress)
+                data=_opstress,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -260,14 +256,16 @@ class OpStressDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _opstress,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _opstress.description,
                 _opstress.stress_id,
                 parent=0,
-                data=_opstress)
+                data=_opstress,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -310,30 +308,20 @@ class OpStressDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKOpStress table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.data.stress_id)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more operating stresses in the "
-                        "damage modeling worksheet did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all operating stresses in the "
-                    "damage modeling worksheet.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all operating stresses in the "
+                "damage modeling worksheet."
+            )
 
         return _error_code, _msg
 
@@ -387,7 +375,8 @@ class TestMethodDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         _testmethods = _session.query(RAMSTKTestMethod).filter(
-            RAMSTKTestMethod.load_id == _parent_id).all()
+            RAMSTKTestMethod.load_id == _parent_id,
+        ).all()
 
         for _testmethod in _testmethods:
             # We get and then set the attributes to replace any None values
@@ -398,7 +387,8 @@ class TestMethodDataModel(RAMSTKDataModel):
                 _testmethod.description,
                 _testmethod.test_id,
                 parent=0,
-                data=_testmethod)
+                data=_testmethod,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -423,14 +413,16 @@ class TestMethodDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _testmethod,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _testmethod.description,
                 _testmethod.test_id,
                 parent=0,
-                data=_testmethod)
+                data=_testmethod,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -473,30 +465,20 @@ class TestMethodDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKTestMethod table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.data.load_id)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more test methods in the damage "
-                        "modeling worksheet did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all test methods in the damage "
-                    "modeling worksheet.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all test methods in the damage "
+                "modeling worksheet."
+            )
 
         return _error_code, _msg
 
@@ -571,7 +553,8 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
         RAMSTKDataModel.do_select_all(self)
 
         _modes = self.dtm_mode.do_select_all(
-            parent_id=_hardware_id, functional=False).nodes
+            parent_id=_hardware_id, functional=False,
+        ).nodes
         for _key in _modes:
             _mode = _modes[_key].data
             if _mode is not None:
@@ -580,7 +563,8 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
                     tag=_mode.description,
                     identifier=_node_id,
                     parent=0,
-                    data=_mode)
+                    data=_mode,
+                )
 
                 self._do_add_mechanisms(_mode.mode_id, _node_id)
 
@@ -588,8 +572,6 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
         # let anyone who cares know the Requirements have been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_pof', tree=self.tree)
-
-        return None
 
     def _do_add_mechanisms(self, mode_id, parent_id):
         """
@@ -602,17 +584,21 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
         :rtype: bool
         """
         _mechanisms = self.dtm_mechanism.do_select_all(
-            parent_id=mode_id, pof=True).nodes
+            parent_id=mode_id, pof=True,
+        ).nodes
         for _key in _mechanisms:
             _mechanism = _mechanisms[_key].data
             if _mechanism is not None and _mechanism.pof_include:
-                _node_id = '{0:s}.{1:d}'.format(parent_id,
-                                                _mechanism.mechanism_id)
+                _node_id = '{0:s}.{1:d}'.format(
+                    parent_id,
+                    _mechanism.mechanism_id,
+                )
                 self.tree.create_node(
                     tag=_mechanism.description,
                     identifier=_node_id,
                     parent=parent_id,
-                    data=_mechanism)
+                    data=_mechanism,
+                )
 
                 self._do_add_oploads(_mechanism.mechanism_id, _node_id)
 
@@ -639,7 +625,8 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
                     tag=_opload.description,
                     identifier=_node_id,
                     parent=parent_id,
-                    data=_opload)
+                    data=_opload,
+                )
 
                 self._do_add_opstress(_opload.load_id, _node_id)
                 self._do_add_test_methods(_opload.load_id, _node_id)
@@ -662,13 +649,16 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
         for _key in _opstresses:
             _opstress = _opstresses[_key].data
             if _opstress is not None:
-                _node_id = '{0:s}.{1:d}s'.format(parent_id,
-                                                 _opstress.stress_id)
+                _node_id = '{0:s}.{1:d}s'.format(
+                    parent_id,
+                    _opstress.stress_id,
+                )
                 self.tree.create_node(
                     tag=_opstress.description,
                     identifier=_node_id,
                     parent=parent_id,
-                    data=_opstress)
+                    data=_opstress,
+                )
 
         return _return
 
@@ -692,7 +682,8 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
                     tag=_method.description,
                     identifier=_node_id,
                     parent=parent_id,
-                    data=_method)
+                    data=_method,
+                )
 
         return _return
 
@@ -725,48 +716,61 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
 
         if _level == 'opload':
             _error_code, _msg = self.dtm_opload.do_insert(
-                mechanism_id=_entity_id)
+                mechanism_id=_entity_id,
+            )
             _entity = self.dtm_opload.do_select(self.dtm_opload.last_id)
             _tag = 'OpLoad'
-            _node_id = '{0:s}.{1:d}'.format(_parent_id,
-                                            self.dtm_opload.last_id)
+            _node_id = '{0:s}.{1:d}'.format(
+                _parent_id,
+                self.dtm_opload.last_id,
+            )
         elif _level == 'opstress':
             _error_code, _msg = self.dtm_opstress.do_insert(load_id=_entity_id)
             _entity = self.dtm_opstress.do_select(self.dtm_opstress.last_id)
             _tag = 'OpStress'
-            _node_id = '{0:s}.{1:d}s'.format(_parent_id,
-                                             self.dtm_opstress.last_id)
+            _node_id = '{0:s}.{1:d}s'.format(
+                _parent_id,
+                self.dtm_opstress.last_id,
+            )
         elif _level == 'testmethod':
             _error_code, _msg = self.dtm_testmethod.do_insert(
-                load_id=_entity_id)
+                load_id=_entity_id,
+            )
             _entity = self.dtm_testmethod.do_select(
-                self.dtm_testmethod.last_id)
+                self.dtm_testmethod.last_id,
+            )
             _tag = 'TestMethod'
-            _node_id = '{0:s}.{1:d}t'.format(_parent_id,
-                                             self.dtm_testmethod.last_id)
+            _node_id = '{0:s}.{1:d}t'.format(
+                _parent_id,
+                self.dtm_testmethod.last_id,
+            )
         else:
             _error_code = 2005
-            _msg = ('RAMSTK ERROR: Attempted to add an item to the Physics of '
-                    'Failure with an undefined indenture level.  Level {0:s} '
-                    'was requested.  Must be one of opload, opstress, or '
-                    'testmethod.').format(_level)
+            _msg = (
+                'RAMSTK ERROR: Attempted to add an item to the Physics of '
+                'Failure with an undefined indenture level.  Level {0:s} '
+                'was requested.  Must be one of opload, opstress, or '
+                'testmethod.'
+            ).format(_level)
 
         try:
             self.tree.create_node(
-                _tag, _node_id, parent=_parent_id, data=_entity)
+                _tag, _node_id, parent=_parent_id, data=_entity,
+            )
         except tree.NodeIDAbsentError:
             _error_code = 2005
-            _msg = 'RAMSTK ERROR: Attempted to add an item under non-existent ' \
-                   'Node ID: {0:s}.'.format(str(_parent_id))
+            _msg = 'RAMSTK ERROR: Attempted to add an item under ' \
+                   'non-existent Node ID {0:s} in Physics of Failure ' \
+                   'analysis.'.format(str(_parent_id))
 
         return _error_code, _msg
 
     def do_delete(self, node_id):
         """
-        Remove record from the RAMSTKOpLoad, RAMSTKOpStress, or RAMSTKTestMethod table.
+        Remove record from RAMSTKOpLoad, RAMSTKOpStress, or RAMSTKTestMethod table.
 
-        :param int node_id: the ID of the RAMSTKMode record to be removed from the
-                            RAMSTK Program database.
+        :param int node_id: the ID of the RAMSTKMode record to be removed from
+        the RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
@@ -797,29 +801,19 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKControl table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more line items in the damage "
-                        "modeling worksheet did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all line items in the damage "
-                    "modeling worksheet.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all line items in the damage "
+                "modeling worksheet."
+            )
 
         return _error_code, _msg

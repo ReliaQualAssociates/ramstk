@@ -164,7 +164,7 @@ class ModeDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKMode table records in the RAMSTK Program database.
 
@@ -324,7 +324,7 @@ class MechanismDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKMechanism table records in the RAMSTK Program database.
 
@@ -493,7 +493,7 @@ class CauseDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKCause table records in the RAMSTK Program database.
 
@@ -656,7 +656,7 @@ class ControlDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKControl table records in the RAMSTK Program database.
 
@@ -820,7 +820,7 @@ class ActionDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKAction table records in the RAMSTK Program database.
 
@@ -1154,8 +1154,9 @@ class FMEADataModel(RAMSTKDataModel):
             )
         except tree.NodeIDAbsentError:
             _error_code = 2005
-            _msg = 'RAMSTK ERROR: Attempted to add an item under non-existent ' \
-                   'Node ID: {0:s}.'.format(str(_parent_id))
+            _msg = 'RAMSTK ERROR: Attempted to add an item under ' \
+                   'non-existent Node ID {0:s} in Failure Mode and Effects ' \
+                   'Analysis.'.format(str(_parent_id))
 
         return _error_code, _msg
 
@@ -1201,7 +1202,7 @@ class FMEADataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all FMEA table records in the RAMSTK Program database.
 

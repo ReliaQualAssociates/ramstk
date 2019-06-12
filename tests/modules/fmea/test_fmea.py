@@ -441,8 +441,8 @@ def test_do_insert_no_parent_in_tree(test_dao):
 
     assert _error_code == 2005
     assert _msg == (
-        "RAMSTK ERROR: Attempted to add an item under non-existent "
-        "Node ID: mode_1."
+        "RAMSTK ERROR: Attempted to add an item under non-existent Node ID "
+        "mode_1 in Failure Mode and Effects Analysis."
     )
 
 

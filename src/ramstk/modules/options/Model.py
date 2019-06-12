@@ -6,9 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Options Data Model."""
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk.dao import RAMSTKProgramInfo, RAMSTKSiteInfo
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import RAMSTKSiteInfo, RAMSTKProgramInfo
 
 
 class OptionsDataModel(RAMSTKDataModel):
@@ -60,8 +60,6 @@ class OptionsDataModel(RAMSTKDataModel):
             self.site_options = self.dtm_site_options.do_select_all()[0]
         if _program:
             self.program_options = self.dtm_program_options.do_select_all()[0]
-
-        return None
 
     def do_update(self):  # pylint: disable=arguments-differ
         """
@@ -116,7 +114,8 @@ class SiteOptionsDataModel(RAMSTKDataModel):
         :rtype: None
         """
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         self._site_info = _session.query(RAMSTKSiteInfo).all()
 
@@ -137,7 +136,8 @@ class SiteOptionsDataModel(RAMSTKDataModel):
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         for _entity in self._site_info:
             _session.add(_entity)
@@ -190,7 +190,8 @@ class ProgramOptionsDataModel(RAMSTKDataModel):
         :rtype: None
         """
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         self._program_info = _session.query(RAMSTKProgramInfo).all()
 
@@ -212,7 +213,8 @@ class ProgramOptionsDataModel(RAMSTKDataModel):
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         for _entity in self._program_info:
             _session.add(_entity)

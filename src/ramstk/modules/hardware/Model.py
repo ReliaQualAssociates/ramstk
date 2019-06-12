@@ -871,7 +871,7 @@ class HardwareDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKHardware table records in the RAMSTK Program database.
 
@@ -1062,7 +1062,7 @@ class DesignElectricDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKDesignElectric table records in the RAMSTK Program database.
 
@@ -1226,7 +1226,7 @@ class DesignMechanicDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKDesignMechanic table records in the RAMSTK Program database.
 
@@ -1390,7 +1390,7 @@ class MilHdbkFDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKMilHdbkF table records in the RAMSTK Program database.
 
@@ -1548,7 +1548,7 @@ class NSWCDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKNSWC table records in the RAMSTK Program database.
 
@@ -1711,7 +1711,7 @@ class ReliabilityDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKReliability table records in the RAMSTK Program database.
 
