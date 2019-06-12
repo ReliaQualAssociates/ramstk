@@ -87,39 +87,7 @@ Please refer to the RAMSTK [coding conventions](https://github.com/weibullguy/ra
 
 #### Git Commit Messages
 
-RAMSTK follows the AngularJS commit message [format]
-(https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines)
-since August 20, 2018.  All commit messages after that date must conform to the
-AngularJS format.
-
-##### Scope
-
-RAMSTK scopes for commit messages are:
-
-* Revision
-* Requirement
-* Function
-* Hardware
-* Validation
-
-Scope can be a colon separated string where the secondary scope is one of:
-
-* Usage
-* FailureDefinition
-* Stakeholder
-* Allocation
-* HazOps
-* SimilarItem
-* MIL217
-* FMEA
-* PoF
-
-Some examples of the extended scope format are:
-
-* Revision:Usage
-* Requirement:Stakeholder
-* Function:FMEA
-* Hardware:HazOps
+There is a commit message template in the root directory for RAMSTK named .gitcommitmessage.txt.  Use this template to build commit messages.
 
 #### Always Add Descriptive Log Messages
 

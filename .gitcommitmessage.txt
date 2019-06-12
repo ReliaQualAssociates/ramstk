@@ -1,7 +1,7 @@
 # Remember to format your commit message thusly...
 #
-# <type>(<primary scope::secondary scope>): Subject (try to keep it less than
-# 50 characters)
+# <type>(<primary scope::secondary scope>): Subject (<=50 characters)
+# ----------- This is 50 characters ----------- |
 # <BLANK LINE>
 # <body>
 # <BLANK LINE>
@@ -17,23 +17,26 @@
 #    * test: add or correct tests.
 #    * chore: changes to the build process or auxiliary tools.
 # <primary scope> is one of:
-#    * Revision
-#    * Requirement
-#    * Function
-#    * Hardware
-#    * Validation
+#    * Revision or Rev
+#    * Requirement or Req
+#    * Function or Func
+#    * Hardware or HW
+#    * Validation or Val
 #    * GUI
+# You may use an asterick (*) if the changes affect multiple primary scopes or
+# the change is docs or chore type.
+#
 # <secondary scope> is one of:
 #    * Usage
-#    * FailureDefinition
-#    * Stakeholder
-#    * Allocation
+#    * FailureDefinition or FailDef
+#    * Stakeholder or Stake
+#    * Allocation or Alloc
 #    * HazOps
-#    * SimilarItem
+#    * SimilarItem or SIA
 #    * MIL217
 #    * FMEA
 #    * PoF
 # <body> is a multi-line description of the changes.  Use bulleted lists
-#        (-, *, etc.)to make this easier to read.
+# (-, *, etc.)to make this easier to read.
 # <footer> is the place to list all the GitHub issues (if any) the commit
 # closes.  These should be listed in the format Closes: #<Issue ID>.
