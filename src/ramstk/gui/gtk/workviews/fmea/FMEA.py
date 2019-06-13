@@ -11,6 +11,9 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
+from ramstk.Configuration import (
+    RAMSTK_CONTROL_TYPES, RAMSTK_FAILURE_PROBABILITY,
+)
 from ramstk.gui.gtk.assistants import AddControlAction
 from ramstk.gui.gtk.ramstk import (
     RAMSTKLabel, RAMSTKMessageDialog, RAMSTKTreeView,
@@ -215,12 +218,12 @@ class FMEA(RAMSTKWorkView):
 
         # Load the failure probabilities into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[14])
-        for _item in self.RAMSTK_CONFIGURATION.RAMSTK_FAILURE_PROBABILITY:
+        for _item in RAMSTK_FAILURE_PROBABILITY:
             _model.append((_item[0], ))
 
         # Load the control type Gtk.CellRendererCombo().
         _model = self._get_cell_model(self._lst_col_order[20])
-        for _item in self.RAMSTK_CONFIGURATION.RAMSTK_CONTROL_TYPES:
+        for _item in RAMSTK_CONTROL_TYPES:
             _model.append((_item, ))
 
         # Load the action category Gtk.CellRendererCombo().
@@ -269,7 +272,7 @@ class FMEA(RAMSTKWorkView):
                     39,
                     40,
             ]:
-                _column.set_visible(False)
+                _columns[_column].set_visible(False)
 
     def __set_callbacks(self):
         """

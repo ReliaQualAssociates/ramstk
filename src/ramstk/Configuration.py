@@ -19,11 +19,6 @@ import ramstk.Utilities as Utilities
 
 _ = gettext.gettext
 
-__author__ = "Doyle Rowland <doyle.rowland@reliaqual.com>"
-__email__ = "doyle.rowland@reliaqual.com"
-__organization__ = "ReliaQual Associates, LLC"
-__copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
-
 # Define global list constants.
 RAMSTK_ACTIVE_ENVIRONMENTS = [
     [_("Ground, Benign")],
@@ -116,9 +111,9 @@ RAMSTK_CRITICALITY = [
     [
         _("Negligble"),
         _(
-            "Could result in injury or illness not resulting in a lost work day, "
-            "loss exceeding $2K but less than $10K, or minimal environmental "
-            "damage not violating law or regulation.",
+            "Could result in injury or illness not resulting in a lost work "
+            "day, loss exceeding $2K but less than $10K, or minimal "
+            "environmental damage not violating law or regulation.",
         ),
         "IV",
         1,
