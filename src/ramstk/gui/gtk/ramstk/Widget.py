@@ -13,10 +13,6 @@ import sys
 # Third Party Imports
 # Disable the unused-import because Gtk, Gdk, GObject, and Pango are all
 # imported from this module by all the other GUI modules.
-from gi.repository import (  # pylint: disable=unused-import
-    Gdk, GdkPixbuf, GObject, Gtk, Pango,
-)
-
 try:
     import gi
     gi.require_version('Gdk', '3.0')
@@ -24,6 +20,9 @@ try:
 except ImportError:
     print("Failed to import package gi; exiting.")
     sys.exit(1)
+from gi.repository import (  # pylint: disable=unused-import
+    Gdk, GdkPixbuf, GObject, Gtk, Pango,
+)
 
 _ = gettext.gettext
 

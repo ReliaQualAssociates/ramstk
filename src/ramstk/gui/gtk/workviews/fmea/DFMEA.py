@@ -280,7 +280,7 @@ class DFMECA(FMEA):
         except KeyError:
             pass
 
-    def _do_load_missions(self, module_id):
+    def _do_load_missions(self, attributes):
         """
         Respond to `selected_revision` signal from pypubsub.
 
@@ -288,8 +288,7 @@ class DFMECA(FMEA):
         :return: None
         :rtype: None
         """
-        _attributes = {"revision_id": module_id}
-        self.dic_controllers["profile"].request_do_select_all(_attributes)
+        self.dic_controllers["profile"].request_do_select_all(attributes)
         _tree = self.dic_controllers["profile"].request_tree()
 
         _missions = _tree.children(0)
