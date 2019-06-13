@@ -2,20 +2,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.assistants.Import.py is part of The RAMSTK Project
+#       gui.gtk.assistants.Import.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007, 2018 Doyle "weibullguy" Rowland
 """Import Assistant Module."""
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk, set_cursor
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007, 2018 Doyle "weibullguy" Rowland'
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import (
+    RAMSTKComboBox, RAMSTKLabel, RAMSTKMessageDialog,
+)
+from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, _
 
 
 class RAMSTKImport(Gtk.Assistant):
@@ -28,7 +25,7 @@ class RAMSTKImport(Gtk.Assistant):
         :param __widget: the Gtk.Widget() that called this class.
         :type __widget: :class:`Gtk.Widget`
         :param controller: the RAMSTK master data controller.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :type controller: :class:`RAMSTK.RAMSTK`
         """
         GObject.GObject.__init__(self)
 
@@ -47,8 +44,9 @@ class RAMSTKImport(Gtk.Assistant):
         # Initialize private scalar variables.
         self._mdcRAMSTK = controller
         self._dtc_data_controller = self._mdcRAMSTK.dic_controllers['imports']
-        self._cmb_select_module = ramstk.RAMSTKComboBox(
-            tooltip=_("Select the RAMSTK module to map."))
+        self._cmb_select_module = RAMSTKComboBox(
+            tooltip=_("Select the RAMSTK module to map."),
+        )
         self._module = None
 
         # Initialize public dict variables.
@@ -70,13 +68,16 @@ class RAMSTKImport(Gtk.Assistant):
         """
         _page = Gtk.Fixed()
 
-        _label = ramstk.RAMSTKLabel(
-            _("RAMSTK is all set and ready to import your "
-              "data.  Press 'Apply' to import or 'Cancel' "
-              "to abort the import."),
+        _label = RAMSTKLabel(
+            _(
+                "RAMSTK is all set and ready to import your "
+                "data.  Press 'Apply' to import or 'Cancel' "
+                "to abort the import.",
+            ),
             height=300,
             width=-1,
-            wrap=True)
+            wrap=True,
+        )
         _label.set_alignment(0.05, 0.05)
 
         _page.put(_label, 25, 5)
@@ -91,22 +92,25 @@ class RAMSTKImport(Gtk.Assistant):
         :rtype: :class:`Gtk.ScrolledWindow`
         """
         # TODO: Implement NSWC (add Design Mechanic to this list).
-        self._cmb_select_module.do_load_combo([[_("Function")],
-                                               [_("Requirement")],
-                                               [_("Hardware")],
-                                               [_("Validation")]])
+        self._cmb_select_module.do_load_combo([
+            [_("Function")],
+            [_("Requirement")],
+            [_("Hardware")],
+            [_("Validation")],
+        ])
 
         _page = Gtk.HBox()
 
         _fixed = Gtk.Fixed()
-        _label = ramstk.RAMSTKLabel(_("Select the RAMSTK module to import:"))
+        _label = RAMSTKLabel(_("Select the RAMSTK module to import:"))
         _fixed.put(_label, 5, 5)
         _fixed.put(self._cmb_select_module, 55, 5)
         _page.pack_start(_fixed, False, False, 0)
 
         _scrollwindow = Gtk.ScrolledWindow()
         _file_chooser = Gtk.FileChooserWidget(
-            action=Gtk.FileChooserAction.OPEN)
+            action=Gtk.FileChooserAction.OPEN,
+        )
         _scrollwindow.add_with_viewport(_file_chooser)
         _page.pack_end(_scrollwindow, True, True, 0)
 
@@ -134,15 +138,18 @@ class RAMSTKImport(Gtk.Assistant):
         """
         _page = Gtk.Fixed()
 
-        _label = ramstk.RAMSTKLabel(
-            _("This is the RAMSTK Import Assistant.  It "
-              "will guide you through the process of "
-              "importing RAMSTK Program module data from "
-              "an external file.  Press 'Forward' to continue "
-              "or 'Cancel' to quit."),
+        _label = RAMSTKLabel(
+            _(
+                "This is the RAMSTK Import Assistant.  It "
+                "will guide you through the process of "
+                "importing RAMSTK Program module data from "
+                "an external file.  Press 'Forward' to continue "
+                "or 'Cancel' to quit.",
+            ),
             height=300,
             width=-1,
-            wrap=True)
+            wrap=True,
+        )
         _label.set_alignment(0.05, 0.05)
 
         _page.put(_label, 25, 5)
@@ -166,8 +173,9 @@ class RAMSTKImport(Gtk.Assistant):
         _model = Gtk.TreeStore(GObject.TYPE_STRING, GObject.TYPE_STRING)
 
         _column = Gtk.TreeViewColumn()
-        _label = ramstk.RAMSTKLabel(
-            _("Import File Column"), justify=Gtk.Justification.CENTER)
+        _label = RAMSTKLabel(
+            _("Import File Column"), justify=Gtk.Justification.CENTER,
+        )
         _column.set_widget(_label)
 
         _cell = Gtk.CellRendererText()
@@ -179,8 +187,9 @@ class RAMSTKImport(Gtk.Assistant):
         self._tvw_field_map.append_column(_column)
 
         _column = Gtk.TreeViewColumn()
-        _label = ramstk.RAMSTKLabel(
-            _("RAMSTK Field"), justify=Gtk.Justification.CENTER)
+        _label = RAMSTKLabel(
+            _("RAMSTK Field"), justify=Gtk.Justification.CENTER,
+        )
         _column.set_widget(_label)
 
         _cell = Gtk.CellRendererCombo()
@@ -222,7 +231,8 @@ class RAMSTKImport(Gtk.Assistant):
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
         self.set_page_title(
-            _page, _("Map Input File Fields to RAMSTK Database Fields"))
+            _page, _("Map Input File Fields to RAMSTK Database Fields"),
+        )
         _page = self.__make_confirm_page()
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONFIRM)
@@ -238,8 +248,6 @@ class RAMSTKImport(Gtk.Assistant):
         self.connect('apply', self._do_request_insert)
 
         self.show_all()
-
-        return None
 
     def _do_edit_cell(self, __cell, path, new_text, model):
         """
@@ -262,11 +270,10 @@ class RAMSTKImport(Gtk.Assistant):
         model[path][1] = new_text
 
         self._dtc_data_controller.request_do_map_to_field(
-            self._module, new_text, _db_field)
+            self._module, new_text, _db_field,
+        )
 
         self.set_page_complete(_page, True)
-
-        return None
 
     def _do_quit(self, __widget):
         """
@@ -279,8 +286,6 @@ class RAMSTKImport(Gtk.Assistant):
         """
         self.destroy()
 
-        return None
-
     def _do_request_insert(self, __assistant):
         """
         Request the data controller insert new records.
@@ -290,42 +295,50 @@ class RAMSTKImport(Gtk.Assistant):
         :return: None
         :rtype: None
         """
-        set_cursor(self._mdcRAMSTK, Gdk.CursorType.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
 
-        (_count, _error_code,
-         _msg) = self._dtc_data_controller.request_do_insert(self._module)
+        (
+            _count, _error_code,
+            _msg,
+        ) = self._dtc_data_controller.request_do_insert(self._module)
 
-        set_cursor(self._mdcRAMSTK, Gdk.CursorType.LEFT_PTR)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
         if _error_code == 2:
             _msg_type = 'error'
-            _user_msg = _("A RAMSTK Program database must be connected to "
-                          "import the data into from an external file.  "
-                          "Please create or open a RAMSTK Program database "
-                          "and try again.")
+            _user_msg = _(
+                "A RAMSTK Program database must be connected to "
+                "import the data into from an external file.  "
+                "Please create or open a RAMSTK Program database "
+                "and try again.",
+            )
         elif _error_code == 3:
             _msg_type = 'error'
-            _user_msg = _("One or more import records violated PRIMARY KEY "
-                          "constraints.  Check your import file data and try "
-                          "again.")
+            _user_msg = _(
+                "One or more import records violated PRIMARY KEY "
+                "constraints.  Check your import file data and try "
+                "again.",
+            )
         elif _error_code == 4:
             _msg_type = 'error'
             _user_msg = _(
                 "One or more import records contains a field with "
                 "a value that is incompatible with the required "
                 "data type for the RAMSTK Program database field it "
-                "was mapped to.")
+                "was mapped to.",
+            )
         else:
             _msg_type = 'information'
-            _user_msg = _("Successfully imported {0:d} {1:s} "
-                          "records.").format(_count, self._module)
+            _user_msg = _(
+                "Successfully imported {0:d} {1:s} "
+                "records.",
+            ).format(_count, self._module)
 
-        _dialog = ramstk.RAMSTKMessageDialog(
-            _user_msg, self._dic_icons[_msg_type], _msg_type)
+        _dialog = RAMSTKMessageDialog(
+            _user_msg, self._dic_icons[_msg_type], _msg_type,
+        )
         if _dialog.do_run() == Gtk.ResponseType.OK:
             _dialog.destroy()
-
-        return None
 
     def _do_select_file(self, filechooser):
         """
@@ -358,14 +371,15 @@ class RAMSTKImport(Gtk.Assistant):
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
         _cellmodel.append([''])
-        (_db_fields,
-         _file_fields) = self._dtc_data_controller.request_get_db_fields(
-             self._module)
+        (
+            _db_fields,
+            _file_fields,
+        ) = self._dtc_data_controller.request_get_db_fields(
+            self._module,
+        )
         for __, _field in enumerate(_file_fields):
             _cellmodel.append([_field])
         for _field in _db_fields:
             _model.append(None, [_field, ''])
 
         self.set_page_complete(_page, True)
-
-        return None
