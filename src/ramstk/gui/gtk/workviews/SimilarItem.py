@@ -858,30 +858,21 @@ class SimilarItem(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = [
-                'edit',
-                'calculate',
-                'save',
-                'save-all',
-            ]
-            _labels = [
-                _("Edit Function"),
-                _("Calculate"),
-                _("Save Selected"),
-                _("Save Allocation"),
-            ]
-            _callbacks = [
-                self._do_request_edit_function,
-                self._do_request_calculate,
-                self._do_request_update,
-                self._do_request_update_all,
-            ]
             RAMSTKWorkView.on_button_press(
                 self,
                 event,
-                icons=_icons,
-                labels=_labels,
-                callbacks=_callbacks,
+                icons=[
+                    'edit',
+                    'calculate',
+                ],
+                labels=[
+                    _("Edit Function"),
+                    _("Calculate"),
+                ],
+                callbacks=[
+                    self._do_request_edit_function,
+                    self._do_request_calculate,
+                ],
             )
 
         treeview.handler_unblock(self._lst_handler_id[1])
@@ -944,6 +935,10 @@ class SimilarItem(RAMSTKWorkView):
             53: 'user_int_4',
             54: 'user_int_5',
         }
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
 
         if not self.treeview.do_edit_cell(
                 __cell,
@@ -952,10 +947,6 @@ class SimilarItem(RAMSTKWorkView):
                 position,
                 model,
         ):
-            try:
-                _key = _dic_keys[self._lst_col_order[position]]
-            except KeyError:
-                _key = ''
 
             pub.sendMessage(
                 'wvw_editing_similar_item',

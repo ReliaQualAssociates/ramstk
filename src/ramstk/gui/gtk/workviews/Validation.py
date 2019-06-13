@@ -15,12 +15,11 @@ from matplotlib.patches import Ellipse
 from pubsub import pub
 
 # RAMSTK Package Imports
-# Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk import (RAMSTKButton, RAMSTKComboBox,
-                                   RAMSTKDateSelect, RAMSTKEntry, RAMSTKFrame,
-                                   RAMSTKLabel, RAMSTKMessageDialog,
-                                   RAMSTKPlot, RAMSTKScrolledWindow,
-                                   RAMSTKTextView, do_make_label_group)
+from ramstk.gui.gtk.ramstk import (
+    RAMSTKButton, RAMSTKComboBox, RAMSTKDateSelect, RAMSTKEntry,
+    RAMSTKFrame, RAMSTKLabel, RAMSTKMessageDialog, RAMSTKPlot,
+    RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group,
+)
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 
 # RAMSTK Local Imports
@@ -83,34 +82,36 @@ class GeneralData(RAMSTKWorkView):
     """
 
     # Define private list attributes.
-    _lst_labels = [[
-        _("Task ID:"),
-        _("Task Description:"),
-        _("Task Type:"),
-        _("Specification:"),
-        _("Measurement Unit:"),
-        _("Minimum Acceptable:"),
-        _("Maximum Acceptable:"),
-        _("Mean Acceptable:"),
-        _("Variance:")
-    ],
-                   [
-                       _("Start Date:"),
-                       _("End Date:"),
-                       _("% Complete:"),
-                       _("Minimum Task Time:"),
-                       _("Most Likely Task Time:"),
-                       _("Maximum Task Time:"),
-                       _("Task Time (95% Confidence):"),
-                       _("Minimum Task Cost:"),
-                       _("Most Likely Task Cost:"),
-                       _("Maximum Task Cost:"),
-                       _("Task Cost (95% Confidence):")
-                   ],
-                   [
-                       _("Project Time (95% Confidence):"),
-                       _("Project Cost (95% Confidence):")
-                   ]]
+    _lst_labels = [
+        [
+            _("Task ID:"),
+            _("Task Description:"),
+            _("Task Type:"),
+            _("Specification:"),
+            _("Measurement Unit:"),
+            _("Minimum Acceptable:"),
+            _("Maximum Acceptable:"),
+            _("Mean Acceptable:"),
+            _("Variance:"),
+        ],
+        [
+            _("Start Date:"),
+            _("End Date:"),
+            _("% Complete:"),
+            _("Minimum Task Time:"),
+            _("Most Likely Task Time:"),
+            _("Maximum Task Time:"),
+            _("Task Time (95% Confidence):"),
+            _("Minimum Task Cost:"),
+            _("Most Likely Task Cost:"),
+            _("Maximum Task Cost:"),
+            _("Task Cost (95% Confidence):"),
+        ],
+        [
+            _("Project Time (95% Confidence):"),
+            _("Project Cost (95% Confidence):"),
+        ],
+    ]
 
     def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
@@ -195,7 +196,8 @@ class GeneralData(RAMSTKWorkView):
         _data = []
         for _key in self.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE:
             _data.append(
-                [self.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE[_key][1]])
+                [self.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE[_key][1]],
+            )
         self.cmbTaskType.do_load_combo(_data)
 
         _model = self.cmbMeasurementUnit.get_model()
@@ -204,7 +206,8 @@ class GeneralData(RAMSTKWorkView):
         _data = []
         for _key in self.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS:
             _data.append(
-                [self.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS[_key][1]])
+                [self.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS[_key][1]],
+            )
         self.cmbMeasurementUnit.do_load_combo(_data)
 
     def __make_ui(self):
@@ -215,17 +218,23 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
         _scrolledwindow.add_with_viewport(
             RAMSTKWorkView._make_buttonbox(
                 self,
                 icons=['calculate-all'],
                 tooltips=[
-                    _("Calculate the cost and time of the program (i.e., all "
-                      "Validation tasks).")
+                    _(
+                        "Calculate the cost and time of the program (i.e., all "
+                        "Validation tasks).",
+                    ),
                 ],
-                callbacks=[self._do_request_calculate_all]))
+                callbacks=[self._do_request_calculate_all],
+            ),
+        )
         self.pack_start(_scrolledwindow, False, False, 0)
 
         _hbox = Gtk.HBox()
@@ -236,8 +245,10 @@ class GeneralData(RAMSTKWorkView):
         _frame = RAMSTKFrame(label=_("Task Description"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = do_make_label_group(self._lst_gendata_labels[0][:2],
-                                             _fixed, 5, 5)
+        _x_pos, _y_pos = do_make_label_group(
+            self._lst_gendata_labels[0][:2],
+            _fixed, 5, 5,
+        )
         _x_pos += 50
 
         _hbox.pack_start(_frame, True, True, 0)
@@ -250,7 +261,8 @@ class GeneralData(RAMSTKWorkView):
             _fixed,
             5,
             _y_pos[1] + 110,
-            y_inc=30)
+            y_inc=30,
+        )
         _x_pos += 35
 
         _fixed.put(self.cmbTaskType, _x_pos, _y_pos[0])
@@ -271,8 +283,10 @@ class GeneralData(RAMSTKWorkView):
         _frame = RAMSTKFrame(label=_("Task Effort"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = do_make_label_group(self._lst_gendata_labels[1],
-                                             _fixed, 5, 5)
+        _x_pos, _y_pos = do_make_label_group(
+            self._lst_gendata_labels[1],
+            _fixed, 5, 5,
+        )
         _x_pos += 50
 
         _vpaned.pack1(_frame, True, True)
@@ -311,8 +325,10 @@ class GeneralData(RAMSTKWorkView):
         _frame = RAMSTKFrame(label=_("Project Effort"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = do_make_label_group(self._lst_gendata_labels[2],
-                                             _fixed, 5, 5)
+        _x_pos, _y_pos = do_make_label_group(
+            self._lst_gendata_labels[2],
+            _fixed, 5, 5,
+        )
         _x_pos += 50
 
         _vpaned.pack2(_frame, True, True)
@@ -335,8 +351,11 @@ class GeneralData(RAMSTKWorkView):
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_("Displays general information for the selected "
-                      "validation."))
+            tooltip=_(
+                "Displays general information for the selected "
+                "validation.",
+            ),
+        )
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
@@ -348,52 +367,89 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.btnEndDate.connect('button-release-event', self._do_select_date,
-                                self.txtEndDate)
-        self.btnStartDate.connect('button-release-event', self._do_select_date,
-                                  self.txtStartDate)
+        self.btnEndDate.connect(
+            'button-release-event', self._do_select_date,
+            self.txtEndDate,
+        )
+        self.btnStartDate.connect(
+            'button-release-event', self._do_select_date,
+            self.txtStartDate,
+        )
 
-        self._lst_handler_id.append(self.txtTask.do_get_buffer().connect(
-            'changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
-            self.cmbTaskType.connect('changed', self._on_combo_changed, 1))
+            self.txtTask.do_get_buffer().connect(
+                'changed', self._on_focus_out, 0,
+            ),
+        )
         self._lst_handler_id.append(
-            self.txtSpecification.connect('changed', self._on_focus_out, 2))
+            self.cmbTaskType.connect('changed', self._on_combo_changed, 1),
+        )
         self._lst_handler_id.append(
-            self.cmbMeasurementUnit.connect('changed', self._on_combo_changed,
-                                            3))
+            self.txtSpecification.connect('changed', self._on_focus_out, 2),
+        )
         self._lst_handler_id.append(
-            self.txtMinAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 4))
+            self.cmbMeasurementUnit.connect(
+                'changed', self._on_combo_changed,
+                3,
+            ),
+        )
         self._lst_handler_id.append(
-            self.txtMeanAcceptable.connect('focus-out-event',
-                                           self._on_focus_out, 5))
+            self.txtMinAcceptable.connect(
+                'focus-out-event',
+                self._on_focus_out, 4,
+            ),
+        )
         self._lst_handler_id.append(
-            self.txtMaxAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 6))
+            self.txtMeanAcceptable.connect(
+                'focus-out-event',
+                self._on_focus_out, 5,
+            ),
+        )
         self._lst_handler_id.append(
-            self.txtVarAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 7))
+            self.txtMaxAcceptable.connect(
+                'focus-out-event',
+                self._on_focus_out, 6,
+            ),
+        )
         self._lst_handler_id.append(
-            self.txtStartDate.connect('focus-out-event', self._on_focus_out,
-                                      8))
+            self.txtVarAcceptable.connect(
+                'focus-out-event',
+                self._on_focus_out, 7,
+            ),
+        )
         self._lst_handler_id.append(
-            self.txtEndDate.connect('focus-out-event', self._on_focus_out, 9))
+            self.txtStartDate.connect(
+                'focus-out-event', self._on_focus_out,
+                8,
+            ),
+        )
         self._lst_handler_id.append(
-            self.spnStatus.connect('focus-out-event', self._on_value_changed,
-                                   10))
+            self.txtEndDate.connect('focus-out-event', self._on_focus_out, 9),
+        )
         self._lst_handler_id.append(
-            self.txtMinTime.connect('focus-out-event', self._on_focus_out, 11))
+            self.spnStatus.connect(
+                'focus-out-event', self._on_value_changed,
+                10,
+            ),
+        )
         self._lst_handler_id.append(
-            self.txtExpTime.connect('focus-out-event', self._on_focus_out, 12))
+            self.txtMinTime.connect('focus-out-event', self._on_focus_out, 11),
+        )
         self._lst_handler_id.append(
-            self.txtMaxTime.connect('focus-out-event', self._on_focus_out, 13))
+            self.txtExpTime.connect('focus-out-event', self._on_focus_out, 12),
+        )
         self._lst_handler_id.append(
-            self.txtMinCost.connect('focus-out-event', self._on_focus_out, 14))
+            self.txtMaxTime.connect('focus-out-event', self._on_focus_out, 13),
+        )
         self._lst_handler_id.append(
-            self.txtExpCost.connect('focus-out-event', self._on_focus_out, 15))
+            self.txtMinCost.connect('focus-out-event', self._on_focus_out, 14),
+        )
         self._lst_handler_id.append(
-            self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
+            self.txtExpCost.connect('focus-out-event', self._on_focus_out, 15),
+        )
+        self._lst_handler_id.append(
+            self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16),
+        )
 
     def __set_properties(self):
         """
@@ -406,81 +462,123 @@ class GeneralData(RAMSTKWorkView):
         self.btnEndDate.do_set_properties(
             height=25,
             width=25,
-            tooltip=_("Launches the calendar to select the date the task was "
-                      "completed."))
+            tooltip=_(
+                "Launches the calendar to select the date the task was "
+                "completed.",
+            ),
+        )
         self.btnStartDate.do_set_properties(
             height=25,
             width=25,
-            tooltip=_("Launches the calendar to select the date the task was "
-                      "started."))
+            tooltip=_(
+                "Launches the calendar to select the date the task was "
+                "started.",
+            ),
+        )
 
         # ----- COMBOBOXES
         self.cmbTaskType.do_set_properties(
-            tooltip=_("Selects and displays the type of task for the "
-                      "selected V&amp;V activity."))
+            tooltip=_(
+                "Selects and displays the type of task for the "
+                "selected V&amp;V activity.",
+            ),
+        )
         self.cmbMeasurementUnit.do_set_properties(
             tooltip=_(
                 "Selects and displays the measurement unit for the selected "
-                "V&amp;V activity acceptance parameter."))
+                "V&amp;V activity acceptance parameter.",
+            ),
+        )
 
         # ----- ENTRIES
         self.txtTask.do_set_properties(
             height=100,
             width=800,
             tooltip=_(
-                "Displays the description of the selected V&amp;V activity."))
+                "Displays the description of the selected V&amp;V activity.",
+            ),
+        )
         self.txtID.do_set_properties(
             width=50,
             editable=False,
-            tooltip=_("Displays the ID of the selected V&amp;V activity."))
+            tooltip=_("Displays the ID of the selected V&amp;V activity."),
+        )
         self.txtMaxAcceptable.do_set_properties(
             width=100,
-            tooltip=_("Displays the maximum acceptable value for the selected "
-                      "V&amp;V activity."))
+            tooltip=_(
+                "Displays the maximum acceptable value for the selected "
+                "V&amp;V activity.",
+            ),
+        )
         self.txtMeanAcceptable.do_set_properties(
             width=100,
             tooltip=_(
                 "Displays the mean acceptable value for the selected V&amp;V "
-                "activity."))
+                "activity.",
+            ),
+        )
         self.txtMinAcceptable.do_set_properties(
             width=100,
-            tooltip=_("Displays the minimum acceptable value for the selected "
-                      "V&amp;V activity."))
+            tooltip=_(
+                "Displays the minimum acceptable value for the selected "
+                "V&amp;V activity.",
+            ),
+        )
         self.txtVarAcceptable.do_set_properties(
             width=100,
-            tooltip=_("Displays the acceptable variance for the selected "
-                      "V&amp;V activity."))
+            tooltip=_(
+                "Displays the acceptable variance for the selected "
+                "V&amp;V activity.",
+            ),
+        )
         self.txtSpecification.do_set_properties(
             tooltip=_(
                 "Displays the internal or industry specification or procedure "
-                "governing the selected V&amp;V activity."))
+                "governing the selected V&amp;V activity.",
+            ),
+        )
         self.txtEndDate.do_set_properties(
             width=100,
-            tooltip=_("Displays the date the selected V&amp;V activity is "
-                      "scheduled to end."))
+            tooltip=_(
+                "Displays the date the selected V&amp;V activity is "
+                "scheduled to end.",
+            ),
+        )
         self.txtStartDate.do_set_properties(
             width=100,
-            tooltip=_("Displays the date the selected V&amp;V activity is "
-                      "scheduled to start."))
+            tooltip=_(
+                "Displays the date the selected V&amp;V activity is "
+                "scheduled to start.",
+            ),
+        )
         self.txtMinTime.do_set_properties(
             width=100,
             tooltip=_(
-                "Minimum person-time needed to complete the selected task."))
+                "Minimum person-time needed to complete the selected task.",
+            ),
+        )
         self.txtExpTime.do_set_properties(
             width=100,
             tooltip=_(
                 "Most likely person-time needed to complete the selected "
-                "task."))
+                "task.",
+            ),
+        )
         self.txtMaxTime.do_set_properties(
             width=100,
             tooltip=_(
-                "Maximum person-time needed to complete the selected task."))
+                "Maximum person-time needed to complete the selected task.",
+            ),
+        )
         self.txtMinCost.do_set_properties(
-            width=100, tooltip=_("Minimim cost of the selected task."))
+            width=100, tooltip=_("Minimim cost of the selected task."),
+        )
         self.txtExpCost.do_set_properties(
-            width=100, tooltip=_("Most likely cost of the selected task."))
+            width=100, tooltip=_("Most likely cost of the selected task."),
+        )
         self.txtMaxCost.do_set_properties(
-            width=100, tooltip=_("Maximum cost of the selected task."))
+            width=100, tooltip=_("Maximum cost of the selected task."),
+        )
         self.txtMeanTimeLL.do_set_properties(width=100, editable=False)
         self.txtMeanTime.do_set_properties(width=100, editable=False)
         self.txtMeanTimeUL.do_set_properties(width=100, editable=False)
@@ -496,7 +594,8 @@ class GeneralData(RAMSTKWorkView):
 
         # ----- SPINBUTTONS
         self.spnStatus.set_tooltip_text(
-            _("Displays % complete of the selected V&amp;V activity."))
+            _("Displays % complete of the selected V&amp;V activity."),
+        )
 
     def _do_clear_page(self):
         """
@@ -558,16 +657,21 @@ class GeneralData(RAMSTKWorkView):
         _types = self.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         for _key, _type in _types.items():
             if _type[1] == attributes['task_type']:
-                _name = '{0:s}-{1:04d}'.format(_type[0],
-                                               int(self._validation_id))
+                _name = '{0:s}-{1:04d}'.format(
+                    _type[0],
+                    int(self._validation_id),
+                )
         RAMSTKWorkView.on_select(
             self,
-            title=_("Analyzing Validation Task {0:s}").format(str(_name)))
+            title=_("Analyzing Validation Task {0:s}").format(str(_name)),
+        )
 
         self.txtID.set_text(str(attributes['validation_id']))
 
-        self.txtTask.do_update(attributes['description'],
-                               self._lst_handler_id[0])
+        self.txtTask.do_update(
+            attributes['description'],
+            self._lst_handler_id[0],
+        )
 
         self.cmbTaskType.handler_block(self._lst_handler_id[1])
         _types = self.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE
@@ -581,7 +685,8 @@ class GeneralData(RAMSTKWorkView):
         self.cmbTaskType.handler_unblock(self._lst_handler_id[1])
 
         self.txtSpecification.do_update(
-            str(attributes['task_specification']), self._lst_handler_id[2])
+            str(attributes['task_specification']), self._lst_handler_id[2],
+        )
 
         self.cmbMeasurementUnit.handler_block(self._lst_handler_id[3])
         _units = self.RAMSTK_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
@@ -593,19 +698,25 @@ class GeneralData(RAMSTKWorkView):
 
         self.txtMinAcceptable.do_update(
             str(self.fmt.format(attributes['acceptable_minimum'])),
-            self._lst_handler_id[4])
+            self._lst_handler_id[4],
+        )
         self.txtMeanAcceptable.do_update(
             str(self.fmt.format(attributes['acceptable_mean'])),
-            self._lst_handler_id[5])
+            self._lst_handler_id[5],
+        )
         self.txtMaxAcceptable.do_update(
             str(self.fmt.format(attributes['acceptable_maximum'])),
-            self._lst_handler_id[6])
+            self._lst_handler_id[6],
+        )
         self.txtVarAcceptable.do_update(
             str(self.fmt.format(attributes['acceptable_variance'])),
-            self._lst_handler_id[7])
+            self._lst_handler_id[7],
+        )
         try:
-            _date_start = datetime.strftime(attributes['date_start'],
-                                            '%Y-%m-%d')
+            _date_start = datetime.strftime(
+                attributes['date_start'],
+                '%Y-%m-%d',
+            )
         except TypeError:
             _date_start = attributes['date_start']
         self.txtStartDate.do_update(_date_start, self._lst_handler_id[8])
@@ -621,34 +732,46 @@ class GeneralData(RAMSTKWorkView):
 
         self.txtMinTime.do_update(
             str(self.fmt.format(attributes['time_minimum'])),
-            self._lst_handler_id[11])
+            self._lst_handler_id[11],
+        )
         self.txtExpTime.do_update(
             str(self.fmt.format(attributes['time_average'])),
-            self._lst_handler_id[12])
+            self._lst_handler_id[12],
+        )
         self.txtMaxTime.do_update(
             str(self.fmt.format(attributes['time_maximum'])),
-            self._lst_handler_id[13])
+            self._lst_handler_id[13],
+        )
         self.txtMinCost.do_update(
             str(self.fmt.format(attributes['cost_minimum'])),
-            self._lst_handler_id[14])
+            self._lst_handler_id[14],
+        )
         self.txtExpCost.do_update(
             str(self.fmt.format(attributes['cost_average'])),
-            self._lst_handler_id[15])
+            self._lst_handler_id[15],
+        )
         self.txtMaxCost.do_update(
             str(self.fmt.format(attributes['cost_maximum'])),
-            self._lst_handler_id[16])
+            self._lst_handler_id[16],
+        )
         self.txtMeanTimeLL.set_text(
-            str(self.fmt.format(attributes['time_ll'])))
+            str(self.fmt.format(attributes['time_ll'])),
+        )
         self.txtMeanTime.set_text(
-            str(self.fmt.format(attributes['time_mean'])))
+            str(self.fmt.format(attributes['time_mean'])),
+        )
         self.txtMeanTimeUL.set_text(
-            str(self.fmt.format(attributes['time_ul'])))
+            str(self.fmt.format(attributes['time_ul'])),
+        )
         self.txtMeanCostLL.set_text(
-            str(self.fmt.format(attributes['cost_ll'])))
+            str(self.fmt.format(attributes['cost_ll'])),
+        )
         self.txtMeanCost.set_text(
-            str(self.fmt.format(attributes['cost_mean'])))
+            str(self.fmt.format(attributes['cost_mean'])),
+        )
         self.txtMeanCostUL.set_text(
-            str(self.fmt.format(attributes['cost_ul'])))
+            str(self.fmt.format(attributes['cost_ul'])),
+        )
 
     def _do_request_calculate_all(self, __button):
         """
@@ -674,7 +797,8 @@ class GeneralData(RAMSTKWorkView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
-            'request_update_validation', node_id=self._validation_id)
+            'request_update_validation', node_id=self._validation_id,
+        )
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
@@ -751,14 +875,17 @@ class GeneralData(RAMSTKWorkView):
             _types = self.RAMSTK_CONFIGURATION.RAMSTK_VALIDATION_TYPE
             for _key, _type in _types.items():
                 if _type[1] == _new_text:
-                    _name = '{0:s}-{1:04d}'.format(_type[0],
-                                                   int(self._validation_id))
+                    _name = '{0:s}-{1:04d}'.format(
+                        _type[0],
+                        int(self._validation_id),
+                    )
 
             pub.sendMessage(
                 'wvw_editing_requirement',
                 module_id=self._validation_id,
                 key='name',
-                value=_name)
+                value=_name,
+            )
 
         elif _key == 'measurement_unit':
             _new_text = _model.get_value(_row, 0)
@@ -769,7 +896,8 @@ class GeneralData(RAMSTKWorkView):
             'wvw_editing_validation',
             module_id=self._validation_id,
             key=_key,
-            value=_new_text)
+            value=_new_text,
+        )
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -808,7 +936,7 @@ class GeneralData(RAMSTKWorkView):
             'time_maximum': [self.txtMaxTime.do_update, 13],
             'cost_minimum': [self.txtMinCost.do_update, 14],
             'cost_average': [self.txtExpCost.do_update, 15],
-            'cost_maximum': [self.txtMaxCost.do_update, 16]
+            'cost_maximum': [self.txtMaxCost.do_update, 16],
         }
 
         if key == 'status':
@@ -855,7 +983,7 @@ class GeneralData(RAMSTKWorkView):
             13: 'time_maximum',
             14: 'cost_minimum',
             15: 'cost_average',
-            16: 'cost_maximum'
+            16: 'cost_maximum',
         }
         try:
             _key = _dic_keys[index]
@@ -879,7 +1007,8 @@ class GeneralData(RAMSTKWorkView):
             'wvw_editing_validation',
             module_id=self._validation_id,
             key=_key,
-            value=_new_text)
+            value=_new_text,
+        )
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -909,7 +1038,8 @@ class GeneralData(RAMSTKWorkView):
             'wvw_editing_validation',
             module_id=self._validation_id,
             key='status',
-            value=float(spinbutton.get_value()))
+            value=float(spinbutton.get_value()),
+        )
 
         spinbutton.handler_unblock(self._lst_handler_id[index])
 
@@ -972,17 +1102,23 @@ class BurndownCurve(RAMSTKWorkView):
         :rtype: None
         """
         _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
         _scrolledwindow.add_with_viewport(
             RAMSTKWorkView._make_buttonbox(
                 self,
                 icons=['calculate-all'],
                 tooltips=[
-                    _("Calculate the cost and time of the program (i.e., all "
-                      "Validation tasks).")
+                    _(
+                        "Calculate the cost and time of the program (i.e., all "
+                        "Validation tasks).",
+                    ),
                 ],
-                callbacks=[self._do_request_calculate_all]))
+                callbacks=[self._do_request_calculate_all],
+            ),
+        )
         self.pack_start(_scrolledwindow, False, False, 0)
 
         _frame = RAMSTKFrame(label=_("Program Validation Effort"))
@@ -993,13 +1129,18 @@ class BurndownCurve(RAMSTKWorkView):
 
         # Insert the tab.
         _label = RAMSTKLabel(
-            _("<span weight='bold'>" + _("Program\nValidation\nProgress") +
-              "</span>"),
+            _(
+                "<span weight='bold'>" + _("Program\nValidation\nProgress") +
+                "</span>",
+            ),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_("Shows a plot of the total expected time to complete "
-                      "all V&amp;V tasks and the current progress."))
+            tooltip=_(
+                "Shows a plot of the total expected time to complete "
+                "all V&amp;V tasks and the current progress.",
+            ),
+        )
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
@@ -1051,21 +1192,26 @@ class BurndownCurve(RAMSTKWorkView):
                     ymax=1.05 * list(_y_maximum.values())[0],
                     color='m',
                     linewidth=2.5,
-                    linestyle=':')
+                    linestyle=':',
+                )
 
             for _index, _target in enumerate(_targets):
                 self.burndown.axis.annotate(
                     str(self.fmt.format(_target[1])) + "\n" + str(
-                        self.fmt.format(_target[0])),
-                    xy=(_assessment_dates[_index],
-                        0.95 * max(_y_maximum.values())),
+                        self.fmt.format(_target[0]),
+                    ),
+                    xy=(
+                        _assessment_dates[_index],
+                        0.95 * max(_y_maximum.values()),
+                    ),
                     xycoords='data',
                     xytext=(-55, 0),
                     textcoords='offset points',
                     size=12,
                     va="center",
                     bbox=dict(
-                        boxstyle="round", fc='#E5E5E5', ec='None', alpha=0.5),
+                        boxstyle="round", fc='#E5E5E5', ec='None', alpha=0.5,
+                    ),
                     arrowprops=dict(
                         arrowstyle="wedge,tail_width=1.",
                         fc='#E5E5E5',
@@ -1073,20 +1219,26 @@ class BurndownCurve(RAMSTKWorkView):
                         alpha=0.5,
                         patchA=None,
                         patchB=Ellipse((2, -1), 0.5, 0.5),
-                        relpos=(0.2, 0.5)))
+                        relpos=(0.2, 0.5),
+                    ),
+                )
 
         if _y_actual:
             self.burndown.do_add_line(
                 x_values=list(_y_actual.keys()),
                 y_values=list(_y_actual.values()),
-                marker='o')
+                marker='o',
+            )
 
         else:
-            _prompt = _("Actual program status information is not "
-                        "available.  You must calculate the program to make "
-                        "this information available for plotting.")
+            _prompt = _(
+                "Actual program status information is not "
+                "available.  You must calculate the program to make "
+                "this information available for plotting.",
+            )
             _dialog = RAMSTKMessageDialog(
-                _prompt, self._dic_icons['important'], 'warning')
+                _prompt, self._dic_icons['important'], 'warning',
+            )
             _response = _dialog.do_run()
 
             if _response == Gtk.ResponseType.OK:
@@ -1094,9 +1246,12 @@ class BurndownCurve(RAMSTKWorkView):
 
         self.burndown.do_make_title(_("Total Validation Effort"))
         self.burndown.do_make_labels(
-            _("Total Time [hours]"), -0.5, 0, set_x=False)
-        _text = (_("Maximum Expected Time"), _("Mean Expected Time"),
-                 _("Minimum Expected Time"), _("Actual Remaining Time"))
+            _("Total Time [hours]"), -0.5, 0, set_x=False,
+        )
+        _text = (
+            _("Maximum Expected Time"), _("Mean Expected Time"),
+            _("Minimum Expected Time"), _("Actual Remaining Time"),
+        )
         self.burndown.do_make_legend(_text)
         self.burndown.figure.canvas.draw()
 
@@ -1122,19 +1277,22 @@ class BurndownCurve(RAMSTKWorkView):
                 x_values=list(_y_maximum.keys()),
                 y_values=_time_maximum,
                 plot_type='date',
-                marker='r--')
+                marker='r--',
+            )
         if _y_average:
             self.burndown.do_load_plot(
                 x_values=list(_y_average.keys()),
                 y_values=_time_average,
                 plot_type='date',
-                marker='b-')
+                marker='b-',
+            )
         if _y_minimum:
             self.burndown.do_load_plot(
                 x_values=list(_y_minimum.keys()),
                 y_values=_time_minimum,
                 plot_type='date',
-                marker='g--')
+                marker='g--',
+            )
 
     def _do_request_calculate_all(self, __button):
         """

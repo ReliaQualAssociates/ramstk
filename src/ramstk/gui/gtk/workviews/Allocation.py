@@ -213,14 +213,6 @@ class Allocation(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row), )
-        self._lst_handler_id.append(
-            self.treeview.connect(
-                'button_press_event',
-                self._on_button_press,
-            ), )
-
         for i in [
                 self._lst_col_order[3],
                 self._lst_col_order[5],
@@ -537,19 +529,14 @@ class Allocation(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['calculate', 'save', 'save-all']
-            _labels = [_("Calculate"), _("Save"), _("Save All")]
-            _callbacks = [
-                self._do_request_calculate,
-                self._do_request_update,
-                self._do_request_update_all,
-            ]
             RAMSTKWorkView.on_button_press(
                 self,
                 event,
-                icons=_icons,
-                labels=_labels,
-                callbacks=_callbacks,
+                icons=['calculate'],
+                labels=[_("Calculate")],
+                callbacks=[
+                    self._do_request_calculate,
+                ],
             )
 
         treeview.handler_unblock(self._lst_handler_id[1])
@@ -580,6 +567,10 @@ class Allocation(RAMSTKWorkView):
             10: "op_time_factor",
             11: "env_factor",
         }
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
 
         if not self.treeview.do_edit_cell(
                 __cell,
@@ -588,11 +579,6 @@ class Allocation(RAMSTKWorkView):
                 position,
                 model,
         ):
-
-            try:
-                _key = _dic_keys[self._lst_col_order[position]]
-            except KeyError:
-                _key = None
 
             pub.sendMessage(
                 "mvw_editing_allocation",

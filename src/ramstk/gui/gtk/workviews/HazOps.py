@@ -190,14 +190,6 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row), )
-        self._lst_handler_id.append(
-            self.treeview.connect(
-                'button_press_event',
-                self._on_button_press,
-            ), )
-
         for i in self._lst_col_order[3:]:
             _cell = self.treeview.get_column(
                 self._lst_col_order[i], ).get_cells()
@@ -398,27 +390,20 @@ class HazOps(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add', 'remove', 'calculate', 'save', 'save-all']
-            _labels = [
-                _("Add Hazard"),
-                _("Remove Selected Hazard"),
-                _("Calculate HazOp"),
-                _("Save Selected Hazard"),
-                _("Save All Hazards"),
-            ]
-            _callbacks = [
-                self._do_request_insert_sibling,
-                self._do_request_delete,
-                self._do_request_calculate,
-                self._do_request_update,
-                self._do_request_update_all,
-            ]
             RAMSTKWorkView.on_button_press(
                 self,
                 event,
-                icons=_icons,
-                labels=_labels,
-                callbacks=_callbacks,
+                icons=['add', 'remove', 'calculate'],
+                labels=[
+                    _("Add Hazard"),
+                    _("Remove Selected Hazard"),
+                    _("Calculate HazOp"),
+                ],
+                callbacks=[
+                    self._do_request_insert_sibling,
+                    self._do_request_delete,
+                    self._do_request_calculate,
+                ],
             )
 
         treeview.handler_unblock(self._lst_handler_id[1])
@@ -455,6 +440,10 @@ class HazOps(RAMSTKWorkView):
             19: 'system_probability_f',
             21: 'remarks',
         }
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
 
         if not self.treeview.do_edit_cell(
                 __cell,
@@ -463,11 +452,6 @@ class HazOps(RAMSTKWorkView):
                 position,
                 model,
         ):
-
-            try:
-                _key = _dic_keys[self._lst_col_order[position]]
-            except KeyError:
-                _key = ''
 
             pub.sendMessage(
                 "wvw_editing_hazops",
