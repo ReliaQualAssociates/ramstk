@@ -85,7 +85,7 @@ RAMSTK_CRITICALITY = [
         _(
             "Could result in death, permanent total disability, loss exceeding "
             "$1M, or irreversible severe environmental damage that violates law "
-            "or regulation."
+            "or regulation.",
         ),
         "I",
         4,
@@ -97,7 +97,7 @@ RAMSTK_CRITICALITY = [
             "occupational illness that may result in hospitalization of at least "
             "three personnel, loss exceeding $200K but less than $1M, or "
             "reversible environmental damage causing a violation of law or "
-            "regulation."
+            "regulation.",
         ),
         "II",
         3,
@@ -108,7 +108,7 @@ RAMSTK_CRITICALITY = [
             "Could result in injury or occupational illness resulting in one or "
             "more lost work days(s), loss exceeding $10K but less than $200K, or "
             "mitigatible environmental damage without violation of law or "
-            "regulation where restoration activities can be accomplished."
+            "regulation where restoration activities can be accomplished.",
         ),
         "III",
         2,
@@ -118,7 +118,7 @@ RAMSTK_CRITICALITY = [
         _(
             "Could result in injury or illness not resulting in a lost work day, "
             "loss exceeding $2K but less than $10K, or minimal environmental "
-            "damage not violating law or regulation."
+            "damage not violating law or regulation.",
         ),
         "IV",
         1,
@@ -163,7 +163,7 @@ RAMSTK_SW_TEST_METHODS = [
         _("Code Reviews"),
         _(
             "Code review is a systematic examination (often known as peer review) "
-            "of computer source code."
+            "of computer source code.",
         ),
     ],
     [_("Error/Anomaly Detection"), _("")],
@@ -462,9 +462,8 @@ class Configuration:
         ]
         self._lst_format_files = [
             "allocation",
-            "dfmeca",
             "failure_definition",
-            "ffmea",
+            "fmea",
             "function",
             "hardware",
             "hazops",
@@ -662,9 +661,8 @@ class Configuration:
 
         _config.add_section("Files")
         _config.set("Files", "allocation", "Allocation.xml")
-        _config.set("Files", "dfmeca", "DFMECA.xml")
         _config.set("Files", "failure_definition", "FailureDefinition.xml")
-        _config.set("Files", "ffmea", "FFMEA.xml")
+        _config.set("Files", "fmea", "FMEA.xml")
         _config.set("Files", "function", "Function.xml")
         _config.set("Files", "hardware", "Hardware.xml")
         _config.set("Files", "hazops", "HazOps.xml")
@@ -822,7 +820,7 @@ class Configuration:
 
             for _file in self._lst_format_files:
                 _config.set(
-                    "Files", _file, path.basename(self.RAMSTK_FORMAT_FILE[_file])
+                    "Files", _file, path.basename(self.RAMSTK_FORMAT_FILE[_file]),
                 )
 
             _config.add_section("Colors")

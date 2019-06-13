@@ -56,3 +56,4 @@ coverage.xml
 !/requirements_doc.txt
 !/requirements_run.txt
 /.gtm/
+/.project

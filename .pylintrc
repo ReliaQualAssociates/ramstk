@@ -137,7 +137,7 @@ no-docstring-rgx=__.*__
 [FORMAT]
 
 # Maximum number of characters on a single line.
-max-line-length=88
+max-line-length=80
 
 # Maximum number of lines in a module
 max-module-lines=5000
@@ -156,7 +156,7 @@ notes=FIXME,XXX,TODO
 [SIMILARITIES]
 
 # Minimum lines number of a similarity.
-min-similarity-lines=10
+min-similarity-lines=18
 
 # Ignore comments when computing similarities.
 ignore-comments=yes
