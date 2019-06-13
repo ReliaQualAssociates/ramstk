@@ -22,6 +22,31 @@ class MatrixView(Gtk.HBox, RAMSTKBaseMatrix):
 
     Attributes of the Hardware:Requirement Matrix View are:
     """
+    _dic_matrix_labels = {
+        'hrdwr_rqrmnt': [
+            _("Create or refresh the Hardware:Requirement Matrix."),
+            _("Hardware\nRequirement"),
+            _(
+                "Displays hardware/requirement matrix for the selected "
+                "revision.",
+            ),
+        ],
+        'hrdwr_tstng': [
+            _("Create or refresh the Hardware:Testing Matrix."),
+            _("Hardware\nTesting"),
+            _(
+                "Displays hardware/testing matrix for the selected revision.",
+            ),
+        ],
+        'hrdwr_vldtn': [
+            _("Create or refresh the Hardware:Validation Matrix."),
+            _("Hardware\nValidation"),
+            _(
+                "Displays hardware/validation matrix for the selected "
+                "revision.",
+            ),
+        ],
+    }
 
     def __init__(self, configuration, **kwargs):
         """
@@ -34,32 +59,6 @@ class MatrixView(Gtk.HBox, RAMSTKBaseMatrix):
         RAMSTKBaseMatrix.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._dic_matrix_labels = {
-            'hrdwr_rqrmnt': [
-                _("Create or refresh the Hardware:Requirement Matrix."),
-                _("Hardware\nRequirement"),
-                _(
-                    "Displays hardware/requirement matrix for the selected "
-                    "revision.",
-                ),
-            ],
-            'hrdwr_tstng': [
-                _("Create or refresh the Hardware:Testing Matrix."),
-                _("Hardware\nTesting"),
-                _(
-                    "Displays hardware/testing matrix for the selected "
-                    "revision.",
-                ),
-            ],
-            'hrdwr_vldtn': [
-                _("Create or refresh the Hardware:Validation Matrix."),
-                _("Hardware\nValidation"),
-                _(
-                    "Displays hardware/validation matrix for the selected "
-                    "revision.",
-                ),
-            ],
-        }
 
         # Initialize private list attributes.
 

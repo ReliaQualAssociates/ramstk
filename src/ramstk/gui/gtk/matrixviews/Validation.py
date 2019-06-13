@@ -22,6 +22,24 @@ class MatrixView(Gtk.HBox, RAMSTKBaseMatrix):
 
     Attributes of the Validation:Hardware Matrix View are:
     """
+    _dic_matrix_labels = {
+        'vldtn_hrdwr': [
+            _("Create or refresh the Validation:Hardware Matrix."),
+            _("Validation\nHardware"),
+            _(
+                "Displays validation/hardware matrix for the selected "
+                "revision.",
+            ),
+        ],
+        'vldtn_rqrmnt': [
+            _("Create or refresh the Validation:Requirement Matrix."),
+            _("Validation\nRequirement"),
+            _(
+                "Displays validation/requirement matrix for the selected "
+                "revision.",
+            ),
+        ],
+    }
 
     def __init__(self, configuration, **kwargs):
         """
@@ -34,24 +52,6 @@ class MatrixView(Gtk.HBox, RAMSTKBaseMatrix):
         RAMSTKBaseMatrix.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._dic_matrix_labels = {
-            'vldtn_hrdwr': [
-                _("Create or refresh the Validation:Hardware Matrix."),
-                _("Validation\nHardware"),
-                _(
-                    "Displays validation/hardware matrix for the selected "
-                    "revision.",
-                ),
-            ],
-            'vldtn_rqrmnt': [
-                _("Create or refresh the Validation:Requirement Matrix."),
-                _("Validation\nRequirement"),
-                _(
-                    "Displays validation/requirement matrix for the selected "
-                    "revision.",
-                ),
-            ],
-        }
 
         # Initialize private list attributes.
 

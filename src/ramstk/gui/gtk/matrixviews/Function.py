@@ -23,6 +23,17 @@ class MatrixView(Gtk.HBox, RAMSTKBaseMatrix):
     Attributes of the Function:Hardware Matrix View are:
     """
 
+    # Define private dict attributes.
+    _dic_matrix_labels = {
+        'fnctn_hrdwr': [
+            _("Create or refresh the Function:Hardware Matrix."),
+            _("Function\nHardware"),
+            _(
+                "Displays function/hardware matrix for the selected revision.",
+            ),
+        ],
+    }
+
     def __init__(self, configuration, **kwargs):
         """
         Initialize the Function::Hardware Matrix View.
@@ -34,16 +45,6 @@ class MatrixView(Gtk.HBox, RAMSTKBaseMatrix):
         RAMSTKBaseMatrix.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._dic_matrix_labels = {
-            'fnctn_hrdwr_rqrmnt': [
-                _("Create or refresh the Function:Hardware Matrix."),
-                _("Function\nHardware"),
-                _(
-                    "Displays function/hardware matrix for the selected "
-                    "revision.",
-                ),
-            ],
-        }
 
         # Initialize private list attributes.
 

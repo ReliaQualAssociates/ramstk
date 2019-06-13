@@ -22,6 +22,32 @@ class MatrixView(Gtk.HBox, RAMSTKBaseMatrix):
 
     Attributes of the Requirement:Hardware Matrix View are:
     """
+    _dic_matrix_labels = {
+        'rqrmnt_hrdwr': [
+            _("Create or refresh the Requirement:Hardware Matrix."),
+            _("Requirement\nHardware"),
+            _(
+                "Displays requirement/hardware matrix for the selected "
+                "revision.",
+            ),
+        ],
+        'rqrmnt_sftwr': [
+            _("Create or refresh the Requirement:Software Matrix."),
+            _("Requirement\nSoftware"),
+            _(
+                "Displays requirement/software matrix for the selected "
+                "revision.",
+            ),
+        ],
+        'rqrmnt_vldtn': [
+            _("Create or refresh the Requirement:Validation Matrix."),
+            _("Requirement\nValidation"),
+            _(
+                "Displays requirement/validation matrix for the selected "
+                "revision.",
+            ),
+        ],
+    }
 
     def __init__(self, configuration, **kwargs):
         """
@@ -34,32 +60,6 @@ class MatrixView(Gtk.HBox, RAMSTKBaseMatrix):
         RAMSTKBaseMatrix.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._dic_matrix_labels = {
-            'rqrmnt_hrdwr': [
-                _("Create or refresh the Requirement:Hardware Matrix."),
-                _("Requirement\nHardware"),
-                _(
-                    "Displays requirement/hardware matrix for the selected "
-                    "revision.",
-                ),
-            ],
-            'rqrmnt_sftwr': [
-                _("Create or refresh the Requirement:Software Matrix."),
-                _("Requirement\nSoftware"),
-                _(
-                    "Displays requirement/software matrix for the selected "
-                    "revision.",
-                ),
-            ],
-            'rqrmnt_vldtn': [
-                _("Create or refresh the Requirement:Validation Matrix."),
-                _("Requirement\nValidation"),
-                _(
-                    "Displays requirement/validation matrix for the selected "
-                    "revision.",
-                ),
-            ],
-        }
 
         # Initialize private list attributes.
 
