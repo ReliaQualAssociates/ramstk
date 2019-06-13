@@ -179,12 +179,19 @@ class RAMSTKBaseView():
         :return: None
         :rtype: None
         """
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change),
-        )
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press),
-        )
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('cursor_changed', self._on_row_change),
+            )
+        except AttributeError:
+            pass
+
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event', self._on_button_press),
+            )
+        except AttributeError:
+            pass
 
     def do_set_revision_id(self, attributes):
         """Set the Revision ID when a new Revision is selected."""
