@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.components.Connection.py is part of the RAMSTK
+#       gui.gtk.workviews.components.Connection.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Connection Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKComboBox, RAMSTKEntry
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                           AssessmentResults)
+
+# RAMSTK Local Imports
+from .Component import AssessmentInputs, AssessmentResults
 
 
 class ConnectionAssessmentInputs(AssessmentInputs):
@@ -63,6 +65,8 @@ class ConnectionAssessmentInputs(AssessmentInputs):
     +-------+-------------------------------------------+
     | Index | Widget - Signal                           |
     +=======+===========================================+
+    |   0   | cmbQuality - `changed`                    |
+    +-------+-------------------------------------------+
     |   1   | cmbType - `changed`                       |
     +-------+-------------------------------------------+
     |   2   | cmbSpecification - `changed`              |
@@ -86,49 +90,87 @@ class ConnectionAssessmentInputs(AssessmentInputs):
     """
 
     # Define private dict attributes.
+    _dic_keys = {
+        0: 'quality_id',
+        1: 'type_id',
+        2: 'specification_id',
+        3: 'insert_id',
+        4: 'contact_gauge',
+        5: 'n_active_pins',
+        6: 'current_operating',
+        7: 'n_cycles',
+        8: 'n_wave_soldered',
+        9: 'n_hand_soldered',
+        10: 'n_circuit_planes',
+    }
+
     # Quality levels; key is the subcategory ID.
     _dic_quality = {
         1: [["MIL-SPEC"], [_("Lower")]],
         2: [["MIL-SPEC"], [_("Lower")]],
         4: [[_("MIL-SPEC or comparable IPC standards")], [_("Lower")]],
-        5: [[_("Automated")], [_("Manual, Upper")], [_("Manual, Standard")],
-            [_("Manual, Lower")]]
+        5: [
+            [_("Automated")], [_("Manual, Upper")], [_("Manual, Standard")],
+            [_("Manual, Lower")],
+        ],
     }
     # Connector types; key is the subcategory ID.
     _dic_type = {
-        1: [[_("Rack and Panel")], [_("Circular")], [_("Power")],
-            [_("Coaxial")], [_("Triaxial")]],
+        1: [
+            [_("Rack and Panel")], [_("Circular")], [_("Power")],
+            [_("Coaxial")], [_("Triaxial")],
+        ],
         4:
-        [[_("PWA/PCB with PTHs")],
-         [
-             _("Discrete Wiring with Electroless Deposited PTH (<3 Levels of "
-               "Circuitry)")
-         ]],
-        5: [[_("Hand Solder w/o Wrapping")], [_("Hand Solder w/ Wrapping")],
+        [
+            [_("PWA/PCB with PTHs")],
+            [
+                _(
+                    "Discrete Wiring with Electroless Deposited PTH (<3 Levels "
+                    "of Circuitry)",
+                ),
+            ],
+        ],
+        5: [
+            [_("Hand Solder w/o Wrapping")], [_("Hand Solder w/ Wrapping")],
             [_("Crimp")], [_("Weld")], [_("Solderless Wrap")],
-            [_("Clip Termination")], [_("Reflow Solder")]]
+            [_("Clip Termination")], [_("Reflow Solder")],
+        ],
     }
     # Specifications; key is the type ID.
     _dic_specification = {
-        1: [[_("MIL-C-24308")], [_("MIL-C-28748")], [_("MIL-C-28804")],
-            [_("MIL-C-83513")], [_("MIL-C-83733")]],
-        2: [[_("MIL-C-5015")], [_("MIL-C-26482")], [_("MIL-C-28840")],
-            [_("MIL-C-38999")], [_("MIL-C-81511")], [_("MIL-C-83723")]],
+        1: [
+            [_("MIL-C-24308")], [_("MIL-C-28748")], [_("MIL-C-28804")],
+            [_("MIL-C-83513")], [_("MIL-C-83733")],
+        ],
+        2: [
+            [_("MIL-C-5015")], [_("MIL-C-26482")], [_("MIL-C-28840")],
+            [_("MIL-C-38999")], [_("MIL-C-81511")], [_("MIL-C-83723")],
+        ],
         3: [[_("MIL-C-3767")], [_("MIL-C-22992")]],
-        4: [[_("MIL-C-3607")], [_("MIL-C-3643")], [_("MIL-C-3650")],
+        4: [
+            [_("MIL-C-3607")], [_("MIL-C-3643")], [_("MIL-C-3650")],
             [_("MIL-C-3655")], [_("MIL-C-25516")], [_("MIL-C-39012")],
-            [_("MIL-C-55235")], [_("MIL-C-55339")]],
-        5: [[_("MIL-C-49142")]]
+            [_("MIL-C-55235")], [_("MIL-C-55339")],
+        ],
+        5: [[_("MIL-C-49142")]],
     }
-    _lst_insert_A = [[_("Vitreous Glass")], [_("Alumina Ceramic")],
-                     [_("Polyimide")]]
-    _lst_insert_B = [[_("Diallylphtalate")], [_("Melamine")],
-                     [_("Flourosilicone")], [_("Silicone Rubber")],
-                     [_("Polysulfone")], [_("Epoxy Resin")]]
-    _lst_insert_C = [[_("Polytetraflourethylene (Teflon)")],
-                     [_("Chlorotriflourethylene (Kel-f)")]]
-    _lst_insert_D = [[_("Polyamide (Nylon)")],
-                     [_("Polychloroprene (Neoprene)")], [_("Polyethylene")]]
+    _lst_insert_A = [
+        [_("Vitreous Glass")], [_("Alumina Ceramic")],
+        [_("Polyimide")],
+    ]
+    _lst_insert_B = [
+        [_("Diallylphtalate")], [_("Melamine")],
+        [_("Flourosilicone")], [_("Silicone Rubber")],
+        [_("Polysulfone")], [_("Epoxy Resin")],
+    ]
+    _lst_insert_C = [
+        [_("Polytetraflourethylene (Teflon)")],
+        [_("Chlorotriflourethylene (Kel-f)")],
+    ]
+    _lst_insert_D = [
+        [_("Polyamide (Nylon)")],
+        [_("Polychloroprene (Neoprene)")], [_("Polyethylene")],
+    ]
     # Connector insert material; first key is the type ID, second key is the
     # specification ID.
     _dic_insert = {
@@ -137,7 +179,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             2: _lst_insert_B,
             3: _lst_insert_A + _lst_insert_B,
             4: _lst_insert_A + _lst_insert_B,
-            5: _lst_insert_A + _lst_insert_B
+            5: _lst_insert_A + _lst_insert_B,
         },
         2: {
             1: _lst_insert_B + _lst_insert_D,
@@ -145,11 +187,11 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             3: _lst_insert_A + _lst_insert_B,
             4: _lst_insert_A + _lst_insert_B,
             5: _lst_insert_B,
-            6: _lst_insert_B
+            6: _lst_insert_B,
         },
         3: {
             1: _lst_insert_B + _lst_insert_D,
-            2: _lst_insert_B + _lst_insert_D
+            2: _lst_insert_B + _lst_insert_D,
         },
         4: {
             1: _lst_insert_C,
@@ -159,11 +201,11 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             5: _lst_insert_C,
             6: _lst_insert_C,
             7: _lst_insert_C,
-            8: _lst_insert_B + _lst_insert_C
+            8: _lst_insert_B + _lst_insert_C,
         },
         5: {
-            1: _lst_insert_B + _lst_insert_C
-        }
+            1: _lst_insert_B + _lst_insert_C,
+        },
     }
 
     # Define private list attributes.
@@ -178,12 +220,17 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         _("Mating/Unmating Cycles (per 1000 hours):"),
         _("Number of Wave Soldered PTH:"),
         _("Number of Hand Soldered PTH:"),
-        _("Number of Circuit Planes:")
+        _("Number of Circuit Planes:"),
     ]
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Connection assessment input view."""
-        AssessmentInputs.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Connection assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentInputs.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -196,77 +243,158 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbType = ramstk.RAMSTKComboBox(
+
+        self.cmbType = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The type of connector/connection."))
-        self.cmbSpecification = ramstk.RAMSTKComboBox(
+        )
+        self.cmbSpecification = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The governing specification for the connection."))
-        self.cmbInsert = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The connector insert material."))
+        )
+        self.cmbInsert = RAMSTKComboBox(
+            index=0, simple=True,
+        )
 
-        self.txtContactGauge = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The gauge of the contacts in the connector."))
-        self.txtActivePins = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of active pins in the connector."))
-        self.txtAmpsContact = ramstk.RAMSTKEntry(
-            width=125, tooltip=_("The amperes per active contact."))
-        self.txtMating = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of connector mate and unmate cycles per "
-                      "1000 hours of operation."))
-        self.txtNWave = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of wave soldered PTH connections."))
-        self.txtNHand = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of hand soldered PTH connections."))
-        self.txtNPlanes = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of circuit planes for wave soldered "
-                      "connections."))
+        self.txtContactGauge = RAMSTKEntry()
+        self.txtActivePins = RAMSTKEntry()
+        self.txtAmpsContact = RAMSTKEntry()
+        self.txtMating = RAMSTKEntry()
+        self.txtNWave = RAMSTKEntry()
+        self.txtNHand = RAMSTKEntry()
+        self.txtNPlanes = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
-
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbType.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed', self._on_combo_changed,
-                                          2))
-        self._lst_handler_id.append(
-            self.cmbInsert.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.txtContactGauge.connect('changed', self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtActivePins.connect('changed', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtAmpsContact.connect('changed', self._on_focus_out, 6))
-        self._lst_handler_id.append(
-            self.txtMating.connect('changed', self._on_focus_out, 7))
-        self._lst_handler_id.append(
-            self.txtNWave.connect('changed', self._on_focus_out, 8))
-        self._lst_handler_id.append(
-            self.txtNHand.connect('changed', self._on_focus_out, 9))
-        self._lst_handler_id.append(
-            self.txtNPlanes.connect('changed', self._on_focus_out, 10))
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
 
+    def __make_ui(self):
+        """
+        Make the Connection class Gtk.Notebook() assessment input page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for connections.
+        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
+
+        self.put(self.cmbType, _x_pos, _y_pos[1])
+        self.put(self.cmbSpecification, _x_pos, _y_pos[2])
+        self.put(self.cmbInsert, _x_pos, _y_pos[3])
+        self.put(self.txtContactGauge, _x_pos, _y_pos[4])
+        self.put(self.txtActivePins, _x_pos, _y_pos[5])
+        self.put(self.txtAmpsContact, _x_pos, _y_pos[6])
+        self.put(self.txtMating, _x_pos, _y_pos[7])
+        self.put(self.txtNWave, _x_pos, _y_pos[8])
+        self.put(self.txtNHand, _x_pos, _y_pos[9])
+        self.put(self.txtNPlanes, _x_pos, _y_pos[10])
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for Connection assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self._on_combo_changed, 0),
+        )
+        self._lst_handler_id.append(
+            self.cmbType.connect('changed', self._on_combo_changed, 1),
+        )
+        self._lst_handler_id.append(
+            self.cmbSpecification.connect(
+                'changed', self._on_combo_changed,
+                2,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.cmbInsert.connect('changed', self._on_combo_changed, 3),
+        )
+        self._lst_handler_id.append(
+            self.txtContactGauge.connect('changed', self.on_focus_out, 4),
+        )
+        self._lst_handler_id.append(
+            self.txtActivePins.connect('changed', self.on_focus_out, 5),
+        )
+        self._lst_handler_id.append(
+            self.txtAmpsContact.connect('changed', self.on_focus_out, 6),
+        )
+        self._lst_handler_id.append(
+            self.txtMating.connect('changed', self.on_focus_out, 7),
+        )
+        self._lst_handler_id.append(
+            self.txtNWave.connect('changed', self.on_focus_out, 8),
+        )
+        self._lst_handler_id.append(
+            self.txtNHand.connect('changed', self.on_focus_out, 9),
+        )
+        self._lst_handler_id.append(
+            self.txtNPlanes.connect('changed', self.on_focus_out, 10),
+        )
+
+    def __set_properties(self):
+        """
+        Set properties for Connection assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbType.do_set_properties(
+            tooltip=_("The type of connector/connection."),
+        )
+        self.cmbSpecification.do_set_properties(
+            tooltip=_("The governing specification for the connection."),
+        )
+        self.cmbInsert.do_set_properties(
+            tooltip=_("The connector insert material."),
+        )
+
+        self.txtContactGauge.do_set_properties(
+            width=125,
+            tooltip=_("The gauge of the contacts in the connector."),
+        )
+        self.txtActivePins.do_set_properties(
+            width=125,
+            tooltip=_("The number of active pins in the connector."),
+        )
+        self.txtAmpsContact.do_set_properties(
+            width=125, tooltip=_("The amperes per active contact."),
+        )
+        self.txtMating.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The number of connector mate and unmate cycles per "
+                "1000 hours of operation.",
+            ),
+        )
+        self.txtNWave.do_set_properties(
+            width=125,
+            tooltip=_("The number of wave soldered PTH connections."),
+        )
+        self.txtNHand.do_set_properties(
+            width=125,
+            tooltip=_("The number of hand soldered PTH connections."),
+        )
+        self.txtNPlanes.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The number of circuit planes for wave soldered "
+                "connections.",
+            ),
+        )
+
     def _do_load_comboboxes(self, subcategory_id):
         """
         Load the connection RKTComboBox()s.
 
-        :param int subcategory_id: the newly selected connection subcategory
-                                   ID.
+        :param int subcategory_id: the newly selected connection subcategory ID.
         :return: None
         :rtype: None
         """
@@ -287,34 +415,24 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbType.do_load_combo(_data)
 
-        # Clear the remaining ramstk.ComboBox()s.  These are loaded dynamically
-        # based on the selection made in other ramstk.ComboBox()s.
+        # Clear the remaining ComboBox()s.  These are loaded dynamically
+        # based on the selection made in other ComboBox()s.
         _model = self.cmbSpecification.get_model()
         _model.clear()
 
         _model = self.cmbInsert.get_model()
         _model.clear()
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Connection assessment input widgets.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Connection.
+        Connection.
         :return: None
         :rtype: None
         """
-        self._hardware_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        self._do_load_comboboxes(self._subcategory_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        AssessmentInputs.do_load_page(self, attributes)
 
         # We don't block the callback signal otherwise the specification
         # RAMSTKComboBox() will not be loaded and set.
@@ -331,43 +449,48 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
             self.txtContactGauge.handler_block(self._lst_handler_id[4])
             self.txtContactGauge.set_text(
-                str(self.fmt.format(attributes['contact_gauge'])))
+                str(self.fmt.format(attributes['contact_gauge'])),
+            )
             self.txtContactGauge.handler_unblock(self._lst_handler_id[4])
 
             self.txtActivePins.handler_block(self._lst_handler_id[5])
             self.txtActivePins.set_text(
-                str(self.fmt.format(attributes['n_active_pins'])))
+                str(self.fmt.format(attributes['n_active_pins'])),
+            )
             self.txtActivePins.handler_unblock(self._lst_handler_id[5])
 
             self.txtAmpsContact.handler_block(self._lst_handler_id[6])
             self.txtAmpsContact.set_text(
-                str(self.fmt.format(attributes['current_operating'])))
+                str(self.fmt.format(attributes['current_operating'])),
+            )
             self.txtAmpsContact.handler_unblock(self._lst_handler_id[6])
 
             self.txtMating.handler_block(self._lst_handler_id[7])
             self.txtMating.set_text(
-                str(self.fmt.format(attributes['n_cycles'])))
+                str(self.fmt.format(attributes['n_cycles'])),
+            )
             self.txtMating.handler_unblock(self._lst_handler_id[7])
 
             if self._subcategory_id == 4:
                 self.txtNWave.handler_block(self._lst_handler_id[8])
                 self.txtNWave.set_text(
-                    str(self.fmt.format(attributes['n_wave_soldered'])))
+                    str(self.fmt.format(attributes['n_wave_soldered'])),
+                )
                 self.txtNWave.handler_unblock(self._lst_handler_id[8])
 
                 self.txtNHand.handler_block(self._lst_handler_id[9])
                 self.txtNHand.set_text(
-                    str(self.fmt.format(attributes['n_hand_soldered'])))
+                    str(self.fmt.format(attributes['n_hand_soldered'])),
+                )
                 self.txtNHand.handler_unblock(self._lst_handler_id[9])
 
                 self.txtNPlanes.handler_block(self._lst_handler_id[10])
                 self.txtNPlanes.set_text(
-                    str(self.fmt.format(attributes['n_circuit_planes'])))
+                    str(self.fmt.format(attributes['n_circuit_planes'])),
+                )
                 self.txtNPlanes.handler_unblock(self._lst_handler_id[10])
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -421,31 +544,6 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             elif self._subcategory_id == 5:
                 self.cmbType.set_sensitive(True)
 
-        return None
-
-    def _make_page(self):
-        """
-        Make the Connection class Gtk.Notebook() assessment input page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        # Build the container for connections.
-        _x_pos, _y_pos = AssessmentInputs.make_page(self)
-
-        self.put(self.cmbType, _x_pos, _y_pos[1])
-        self.put(self.cmbSpecification, _x_pos, _y_pos[2])
-        self.put(self.cmbInsert, _x_pos, _y_pos[3])
-        self.put(self.txtContactGauge, _x_pos, _y_pos[4])
-        self.put(self.txtActivePins, _x_pos, _y_pos[5])
-        self.put(self.txtAmpsContact, _x_pos, _y_pos[6])
-        self.put(self.txtMating, _x_pos, _y_pos[7])
-        self.put(self.txtNWave, _x_pos, _y_pos[8])
-        self.put(self.txtNHand, _x_pos, _y_pos[9])
-        self.put(self.txtNPlanes, _x_pos, _y_pos[10])
-
-        return None
-
     def _on_combo_changed(self, combo, index):
         """
         Retrieve RAMSTKCombo() changes and assign to Connection attribute.
@@ -455,7 +553,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
             * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
+        :type combo: :class:`gui.gtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
                           with the calling RAMSTKComboBox().  Indices are:
 
@@ -470,23 +568,7 @@ class ConnectionAssessmentInputs(AssessmentInputs):
         :return: None
         :rtype: None
         """
-        _dic_keys = {
-            0: 'quality_id',
-            1: 'type_id',
-            2: 'specification_id',
-            3: 'insert_id',
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
+        AssessmentInputs.on_combo_changed(self, combo, index)
 
         # If the connection type changed, load the specification
         # RAMSTKComboBox().
@@ -509,86 +591,6 @@ class ConnectionAssessmentInputs(AssessmentInputs):
                 _data = []
             self.cmbInsert.do_load_combo(_data)
 
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            pub.sendMessage(
-                'wvw_editing_hardware',
-                module_id=self._hardware_id,
-                key=_key,
-                value=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
-                      method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Widget().  Indices are:
-
-            +---------+---------------------+---------+---------------------+
-            |  Index  | Widget              |  Index  | Widget              |
-            +=========+=====================+=========+=====================+
-            |    4    | txtContactGauge     |    8    | txtNWave            |
-            +---------+---------------------+---------+---------------------+
-            |    5    | txtActivePins       |    9    | txtNHand            |
-            +---------+---------------------+---------+---------------------+
-            |    6    | txtAmpsContact      |   10    | txtNPlanes          |
-            +---------+---------------------+---------+---------------------+
-            |    7    | txtMating           |         |                     |
-            +---------+---------------------+---------+---------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            4: 'contact_gauge',
-            5: 'n_active_pins',
-            6: 'current_operating',
-            7: 'n_cycles',
-            8: 'n_wave_soldered',
-            9: 'n_hand_soldered',
-            10: 'n_circuit_planes'
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        _text = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            if index in [4, 5, 8, 9, 10]:
-                _new_text = int(entry.get_text())
-            elif index in [6, 7]:
-                _new_text = str(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
 
 class ConnectionAssessmentResults(AssessmentResults):
     """
@@ -604,9 +606,14 @@ class ConnectionAssessmentResults(AssessmentResults):
     :ivar txtPiC: displays the construction factor for the connection.
     """
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Connection assessment result view."""
-        AssessmentResults.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Connection assessment result view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentResults.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
         self._dic_part_stress = {
@@ -628,36 +635,70 @@ class ConnectionAssessmentResults(AssessmentResults):
         self._lst_labels.append("\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
-        self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the connection failure "
-              "rate."))
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiK = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The mating/unmating factor for the connection."))
-        self.txtPiP = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The active pins factor for the connection."))
-        self.txtPiC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The complexity factor for the connection."))
+        self.txtPiK = RAMSTKEntry()
+        self.txtPiP = RAMSTKEntry()
+        self.txtPiC = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+
+    def __make_ui(self):
+        """
+        Make the connection Gtk.Notebook() assessment results page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_ui(self)
+
+        self.put(self.txtPiK, _x_pos, _y_pos[3])
+        self.put(self.txtPiP, _x_pos, _y_pos[4])
+        self.put(self.txtPiC, _x_pos, _y_pos[5])
+
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties for Connection assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lblModel.set_tooltip_markup(
+            _(
+                "The assessment model used to calculate the connection hazard "
+                "rate.",
+            ),
+        )
+
+        self.txtPiK.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The mating/unmating factor for the connection."),
+        )
+        self.txtPiP.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The active pins factor for the connection."),
+        )
+        self.txtPiC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The complexity factor for the connection."),
+        )
 
     def _do_load_page(self, attributes):
         """
@@ -679,8 +720,6 @@ class ConnectionAssessmentResults(AssessmentResults):
         self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):
         """
@@ -709,21 +748,3 @@ class ConnectionAssessmentResults(AssessmentResults):
                 self.txtPiQ.set_sensitive(True)
             elif self._subcategory_id == 5:
                 self.txtPiQ.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the connection Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_page(self)
-
-        self.put(self.txtPiK, _x_pos, _y_pos[3])
-        self.put(self.txtPiP, _x_pos, _y_pos[4])
-        self.put(self.txtPiC, _x_pos, _y_pos[5])
-
-        return None

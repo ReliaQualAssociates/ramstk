@@ -6,6 +6,7 @@
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 # RAMSTK Local Imports
+from . import Component
 from .Capacitor import CapacitorAssessmentInputs as wvwCapacitorAI
 from .Capacitor import CapacitorAssessmentResults as wvwCapacitorAR
 from .Connection import ConnectionAssessmentInputs as wvwConnectionAI

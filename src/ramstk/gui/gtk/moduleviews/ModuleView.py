@@ -52,21 +52,6 @@ class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         self.__set_properties()
-        self.__set_callbacks()
-
-    def __set_callbacks(self):
-        """
-        Set common callback methods for the ModuleView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change),
-        )
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press),
-        )
 
     def __set_properties(self):
         """

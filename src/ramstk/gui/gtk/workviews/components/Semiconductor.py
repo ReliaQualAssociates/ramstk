@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.components.Semiconductor.py is part of the RAMSTK
+#       gui.gtk.workviews.components.Semiconductor.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Semiconductor Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKComboBox, RAMSTKEntry
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                           AssessmentResults)
+
+# RAMSTK Local Imports
+from .Component import AssessmentInputs, AssessmentResults
 
 
 class SemiconductorAssessmentInputs(AssessmentInputs):
@@ -79,6 +81,18 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
     """
 
     # Define private dict attributes.
+    _dic_keys = {
+        0: 'quality_id',
+        1: 'application_id',
+        2: 'construction_id',
+        3: 'matching_id',
+        4: 'family_id',
+        5: 'type_id',
+        6: 'frequency_operating',
+        7: 'n_elements',
+        8: 'theta_jc',
+    }
+
     _dic_quality = {
         1: [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]],
         2: [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]],
@@ -92,79 +106,94 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         10: [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]],
         11: [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]],
         12: [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]],
-        13: [[_("Hermetic Package")], [_("Nonhermetic with Facet Coating")],
-             [_("Nonhermetic without Facet Coating")]]
+        13: [
+            [_("Hermetic Package")], [_("Nonhermetic with Facet Coating")],
+            [_("Nonhermetic without Facet Coating")],
+        ],
     }
     # Key is subcategory ID; index is type ID.
     _dic_types = {
         1:
-        [[_("General Purpose Analog")], [_("Switching")],
-         [_("Power Rectifier, Fast Recovery")],
-         [_("Power Rectifier/Schottky Power Diode")],
-         [_("Power Rectifier with High Voltage Stacks")],
-         [_("Transient Suppressor/Varistor")], [_("Current Regulator")],
-         [_("Voltage Regulator and Voltage Reference (Avalanche and Zener)")]
+        [
+            [_("General Purpose Analog")], [_("Switching")],
+            [_("Power Rectifier, Fast Recovery")],
+            [_("Power Rectifier/Schottky Power Diode")],
+            [_("Power Rectifier with High Voltage Stacks")],
+            [_("Transient Suppressor/Varistor")], [_("Current Regulator")],
+            [_("Voltage Regulator and Voltage Reference (Avalanche and Zener)")],
         ],
-        2: [[_("Si IMPATT (<35 GHz)")], [_("Gunn/Bulk Effect")],
+        2: [
+            [_("Si IMPATT (<35 GHz)")], [_("Gunn/Bulk Effect")],
             [_("Tunnel and Back (Including Mixers, Detectors)")], [_("PIN")],
             [
-                _("Schottky Barrier (Including Detectors) and "
-                  "Point Contact (200 MHz < Frequency < 35MHz)")
-            ], [_("Varactor and Step Recovery")]],
+                _(
+                    "Schottky Barrier (Including Detectors) and "
+                    "Point Contact (200 MHz < Frequency < 35MHz)",
+                ),
+            ], [_("Varactor and Step Recovery")],
+        ],
         3: [["NPN/PNP (f < 200MHz)"], [_("Power NPN/PNP (f < 200 MHz)")]],
         4: [["MOSFET"], ["JFET"]],
         7: [[_("Gold Metallization")], [_("Aluminum Metallization")]],
         8: [["GaAs FET (P < 100mW)"], ["GaAs FET (P > 100mW)"]],
         9: [["MOSFET"], ["JFET"]],
-        11: [[_("Photo-Transistor")], [_("Photo-Diode")],
-             [_("Photodiode Output, Single Device")],
-             [_("Phototransistor Output, Single Device")],
-             [_("Photodarlington Output, Single Device")],
-             [_("Light Sensitive Resistor, Single Device")],
-             [_("Photodiode Output, Dual Device")],
-             [_("Phototransistor Output, Dual Device")],
-             [_("Photodarlington Output, Dual Device")],
-             [_("Light Sensitive Resistor, Dual Device")],
-             [_("Infrared Light Emitting Diode (IRLED)")],
-             [_("Light Emitting Diode")]],
+        11: [
+            [_("Photo-Transistor")], [_("Photo-Diode")],
+            [_("Photodiode Output, Single Device")],
+            [_("Phototransistor Output, Single Device")],
+            [_("Photodarlington Output, Single Device")],
+            [_("Light Sensitive Resistor, Single Device")],
+            [_("Photodiode Output, Dual Device")],
+            [_("Phototransistor Output, Dual Device")],
+            [_("Photodarlington Output, Dual Device")],
+            [_("Light Sensitive Resistor, Dual Device")],
+            [_("Infrared Light Emitting Diode (IRLED)")],
+            [_("Light Emitting Diode")],
+        ],
         12: [[_("Segment Display")], [_("Diode Array Display")]],
-        13: [["GaAs/Al GaAs"], ["In GaAs/In GaAsP"]]
+        13: [["GaAs/Al GaAs"], ["In GaAs/In GaAsP"]],
     }
     # Key is subcategory ID; index is application ID.
     _dic_applications = {
-        2: [[_("Varactor, Voltage Control")], [_("Varactor, Multiplier")],
-            [_("All Other Diodes")]],
+        2: [
+            [_("Varactor, Voltage Control")], [_("Varactor, Multiplier")],
+            [_("All Other Diodes")],
+        ],
         3: [[_("Linear Amplification")], [_("Switching")]],
-        4: [[_("Linear Amplification")], [_("Small Signal Switching")],
+        4: [
+            [_("Linear Amplification")], [_("Small Signal Switching")],
             [_("Non-Linear (2W < Pr < 5W)")],
             [_("Non-Linear (5W < Pr < 50W)")],
             [_("Non-Linear (50W < Pr < 250W)")],
-            [_("Non-Linear (Pr > 250W)")]],
+            [_("Non-Linear (Pr > 250W)")],
+        ],
         7: [["CW"], [_("Pulsed")]],
         8: [[_("All Lower Power and Pulsed")], ["CW"]],
-        13: [["CW"], [_("Pulsed")]]
+        13: [["CW"], [_("Pulsed")]],
     }
     # Key is subcategory ID; index is matching ID.
     _dic_matchings = {
         7: [[_("Input and Output")], [_("Input Only")], [_("None")]],
-        8: [[_("Input and Output")], [_("Input Only")], [_("None")]]
+        8: [[_("Input and Output")], [_("Input Only")], [_("None")]],
     }
 
     # Define private list attributes.
-    _lst_packages = [["TO-1"], ["TO-3"], ["TO-5"], ["TO-8"], ["TO-9"],
-                     ["TO-12"], ["TO-18"], ["TO-28"], ["TO-33"], ["TO-39"],
-                     ["TO-41"], ["TO-44"], ["TO-46"], ["TO-52"], ["TO-53"],
-                     ["TO-57"], ["TO-59"], ["TO-60"], ["TO-61"], ["TO-63"],
-                     ["TO-66"], ["TO-71"], ["TO-72"], ["TO-83"], ["TO-89"],
-                     ["TO-92"], ["TO-94"], ["TO-99"], ["TO-126"], ["TO-127"],
-                     ["TO-204"], ["TO-204AA"], ["TO-205AD"], ["TO-205AF"],
-                     ["TO-220"], ["DO-4"], ["DO-5"], ["DO-7"], ["DO-8"],
-                     ["DO-9"], ["DO-13"], ["DO-14"], ["DO-29"], ["DO-35"],
-                     ["DO-41"], ["DO-45"], ["DO-204MB"], ["DO-205AB"],
-                     ["PA-42A,B"], ["PD-36C"], ["PD-50"],
-                     ["PD-77"], ["PD-180"], ["PD-319"], ["PD-262"], ["PD-975"],
-                     ["PD-280"], ["PD-216"], ["PT-2G"], ["PT-2G"], ["PT-6B"],
-                     ["PH-13"], ["PH-16"], ["PH-56"], ["PY-58"], ["PY-373"]]
+    _lst_packages = [
+        ["TO-1"], ["TO-3"], ["TO-5"], ["TO-8"], ["TO-9"],
+        ["TO-12"], ["TO-18"], ["TO-28"], ["TO-33"], ["TO-39"],
+        ["TO-41"], ["TO-44"], ["TO-46"], ["TO-52"], ["TO-53"],
+        ["TO-57"], ["TO-59"], ["TO-60"], ["TO-61"], ["TO-63"],
+        ["TO-66"], ["TO-71"], ["TO-72"], ["TO-83"], ["TO-89"],
+        ["TO-92"], ["TO-94"], ["TO-99"], ["TO-126"], ["TO-127"],
+        ["TO-204"], ["TO-204AA"], ["TO-205AD"], ["TO-205AF"],
+        ["TO-220"], ["DO-4"], ["DO-5"], ["DO-7"], ["DO-8"],
+        ["DO-9"], ["DO-13"], ["DO-14"], ["DO-29"], ["DO-35"],
+        ["DO-41"], ["DO-45"], ["DO-204MB"], ["DO-205AB"],
+        ["PA-42A,B"], ["PD-36C"], ["PD-50"],
+        ["PD-77"], ["PD-180"], ["PD-319"], ["PD-262"], ["PD-975"],
+        ["PD-280"], ["PD-216"], ["PT-2G"], ["PT-2G"], ["PT-6B"],
+        ["PH-13"], ["PH-16"], ["PH-56"], ["PY-58"], ["PY-373"],
+    ]
 
     # Define private list attributes.
     _lst_labels = [
@@ -175,12 +204,17 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         _("Construction:"),
         _("Matching Network:"),
         _("Operating Frequency (GHz):"),
-        _("Number of Characters:"), "\u03B8<sub>JC</sub>:"
+        _("Number of Characters:"), "\u03B8<sub>JC</sub>:",
     ]
 
-    def __init__(self, **kwargs):
-        """Initialize instance of the Semiconductor assessment input view."""
-        AssessmentInputs.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize instance of the Semiconductor assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentInputs.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -193,67 +227,140 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbPackage = ramstk.RAMSTKComboBox(
+        self.cmbPackage = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The package type for the semiconductor."))
-        self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The type of semiconductor."))
-        self.cmbApplication = ramstk.RAMSTKComboBox(
+        )
+        self.cmbType = RAMSTKComboBox(
+            index=0, simple=True,
+        )
+        self.cmbApplication = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The application of the semiconductor."))
-        self.cmbConstruction = ramstk.RAMSTKComboBox(
+        )
+        self.cmbConstruction = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The method of construction of the semiconductor."))
-        self.cmbMatching = ramstk.RAMSTKComboBox(
+        )
+        self.cmbMatching = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The matching network of the semiconductor."))
+        )
 
-        self.txtFrequencyOperating = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The operating frequency of the semiconductor."))
-        self.txtNElements = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_(
-                "The number of characters in the optoelectronic display."))
-        self.txtThetaJC = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_(
-                "The junction-case thermal resistance of the semiconductor."))
+        self.txtFrequencyOperating = RAMSTKEntry()
+        self.txtNElements = RAMSTKEntry()
+        self.txtThetaJC = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
-
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbApplication.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbMatching.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.cmbPackage.connect('changed', self._on_combo_changed, 4))
-        self._lst_handler_id.append(
-            self.cmbType.connect('changed', self._on_combo_changed, 5))
-        self._lst_handler_id.append(
-            self.txtFrequencyOperating.connect('changed', self._on_focus_out,
-                                               6))
-        self._lst_handler_id.append(
-            self.txtNElements.connect('changed', self._on_focus_out, 7))
-        self._lst_handler_id.append(
-            self.txtThetaJC.connect('changed', self._on_focus_out, 8))
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
 
+    def __make_ui(self):
+        """
+        Make the Semiconductor Gtk.Notebook() assessment input page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for inductors.
+        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
+
+        self.put(self.cmbPackage, _x_pos, _y_pos[1])
+        self.put(self.cmbType, _x_pos, _y_pos[2])
+        self.put(self.cmbApplication, _x_pos, _y_pos[3])
+        self.put(self.cmbConstruction, _x_pos, _y_pos[4])
+        self.put(self.cmbMatching, _x_pos, _y_pos[5])
+        self.put(self.txtFrequencyOperating, _x_pos, _y_pos[6])
+        self.put(self.txtNElements, _x_pos, _y_pos[7])
+        self.put(self.txtThetaJC, _x_pos, _y_pos[8])
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for Semiconductor assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self.on_combo_changed, 0),
+        )
+        self._lst_handler_id.append(
+            self.cmbApplication.connect('changed', self.on_combo_changed, 1),
+        )
+        self._lst_handler_id.append(
+            self.cmbConstruction.connect('changed', self.on_combo_changed, 2),
+        )
+        self._lst_handler_id.append(
+            self.cmbMatching.connect('changed', self.on_combo_changed, 3),
+        )
+        self._lst_handler_id.append(
+            self.cmbPackage.connect('changed', self.on_combo_changed, 4),
+        )
+        self._lst_handler_id.append(
+            self.cmbType.connect('changed', self.on_combo_changed, 5),
+        )
+        self._lst_handler_id.append(
+            self.txtFrequencyOperating.connect(
+                'changed', self.on_focus_out,
+                6,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.txtNElements.connect('changed', self.on_focus_out, 7),
+        )
+        self._lst_handler_id.append(
+            self.txtThetaJC.connect('changed', self.on_focus_out, 8),
+        )
+
+    def __set_properties(self):
+        """
+        Set properties for Semiconductor assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbPackage.do_set_properties(
+            tooltip=_("The package type for the semiconductor."),
+        )
+        self.cmbType.do_set_properties(
+            tooltip=_("The type of semiconductor."),
+        )
+        self.cmbApplication.do_set_properties(
+            tooltip=_("The application of the semiconductor."),
+        )
+        self.cmbConstruction.do_set_properties(
+            tooltip=_("The method of construction of the semiconductor."),
+        )
+        self.cmbMatching.do_set_properties(
+            tooltip=_("The matching network of the semiconductor."),
+        )
+
+        self.txtFrequencyOperating.do_set_properties(
+            width=125,
+            tooltip=_("The operating frequency of the semiconductor."),
+        )
+        self.txtNElements.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The number of characters in the optoelectronic display.",
+            ),
+        )
+        self.txtThetaJC.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The junction-case thermal resistance of the semiconductor.",
+            ),
+        )
+
     def _do_load_comboboxes(self, subcategory_id):
         """
-        Load the semiconductor RKTComboBox()s.
+        Load the Semiconductor RKTComboBox()s.
 
         This method is used to load the specification RAMSTKComboBox() whenever
         the semiconductor subcategory is changed.
@@ -266,12 +373,16 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         # Load the quality level RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
             if subcategory_id == 13:
-                _data = [[_("Hermetic Package")],
-                         [_("Nonhermetic with Facet Coating")],
-                         [_("Nonhermetic without Facet Coating")]]
+                _data = [
+                    [_("Hermetic Package")],
+                    [_("Nonhermetic with Facet Coating")],
+                    [_("Nonhermetic without Facet Coating")],
+                ]
             else:
-                _data = [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")],
-                         [_("Plastic")]]
+                _data = [
+                    ["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")],
+                    [_("Plastic")],
+                ]
         else:
             try:
                 _data = self._dic_quality[self._subcategory_id]
@@ -288,8 +399,11 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
 
         # Load the construction RAMSTKComboBox().
         self.cmbConstruction.do_load_combo(
-            [[_("Metallurgically Bonded")],
-             [_("Non-Metallurgically Bonded and Spring Loaded Contacts")]])
+            [
+                [_("Metallurgically Bonded")],
+                [_("Non-Metallurgically Bonded and Spring Loaded Contacts")],
+            ],
+        )
 
         # Load the matching network RAMSTKComboBox().
         try:
@@ -304,34 +418,26 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
         # Load the type RAMSTKComboBox().
         try:
             if (self._hazard_rate_method_id == 1 and subcategory_id == 11):
-                _data = [[_("Photodetector")], [_("Opto-Isolator")],
-                         [_("Emitter")]]
+                _data = [
+                    [_("Photodetector")], [_("Opto-Isolator")],
+                    [_("Emitter")],
+                ]
             else:
                 _data = self._dic_types[self._subcategory_id]
         except KeyError:
             _data = []
         self.cmbType.do_load_combo(_data)
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Semiconductor assesment input widgets.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Semiconductor.
+        Semiconductor.
         :return: None
         :rtype: None
         """
-        self._hardware_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        self._do_load_comboboxes(self._subcategory_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        AssessmentInputs.do_load_page(self, attributes)
 
         self.cmbType.handler_block(self._lst_handler_id[5])
         self.cmbType.set_active(attributes['type_id'])
@@ -356,22 +462,23 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
 
             self.txtFrequencyOperating.handler_block(self._lst_handler_id[6])
             self.txtFrequencyOperating.set_text(
-                str(self.fmt.format(attributes['frequency_operating'])))
+                str(self.fmt.format(attributes['frequency_operating'])),
+            )
             self.txtFrequencyOperating.handler_unblock(self._lst_handler_id[6])
 
             self.txtNElements.handler_block(self._lst_handler_id[7])
             self.txtNElements.set_text(
-                str(self.fmt.format(attributes['n_elements'])))
+                str(self.fmt.format(attributes['n_elements'])),
+            )
             self.txtNElements.handler_unblock(self._lst_handler_id[7])
 
             self.txtThetaJC.handler_block(self._lst_handler_id[8])
             self.txtThetaJC.set_text(
-                str(self.fmt.format(attributes['theta_jc'])))
+                str(self.fmt.format(attributes['theta_jc'])),
+            )
             self.txtThetaJC.handler_unblock(self._lst_handler_id[8])
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -408,138 +515,6 @@ class SemiconductorAssessmentInputs(AssessmentInputs):
                 self.cmbType.set_sensitive(True)
             if self._subcategory_id == 12:
                 self.txtNElements.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the semiconductor Gtk.Notebook() assessment input page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_page(self)
-
-        self.put(self.cmbPackage, _x_pos, _y_pos[1])
-        self.put(self.cmbType, _x_pos, _y_pos[2])
-        self.put(self.cmbApplication, _x_pos, _y_pos[3])
-        self.put(self.cmbConstruction, _x_pos, _y_pos[4])
-        self.put(self.cmbMatching, _x_pos, _y_pos[5])
-        self.put(self.txtFrequencyOperating, _x_pos, _y_pos[6])
-        self.put(self.txtNElements, _x_pos, _y_pos[7])
-        self.put(self.txtThetaJC, _x_pos, _y_pos[8])
-
-        return None
-
-    def _on_combo_changed(self, combo, index):
-        """
-        Retrieve RAMSTKCombo() changes and assign to Semiconductor attribute.
-
-        This method is called by:
-
-            * Gtk.Combo() 'changed' signal
-
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
-                          with the calling RAMSTKComboBox().  Indices are:
-
-            +-------+------------------+-------+------------------+
-            | Index | Widget           | Index | Widget           |
-            +=======+==================+=======+==================+
-            |   1   | cmbApplication   |   4   | cmbPackage       |
-            +-------+------------------+-------+------------------+
-            |   2   | cmbConstruction  |   5   | cmbType          |
-            +-------+------------------+-------+------------------+
-            |   3   | cmbMatching      |       |                  |
-            +-------+------------------+-------+------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            0: 'quality_id',
-            1: 'application_id',
-            2: 'construction_id',
-            3: 'matching_id',
-            4: 'family_id',
-            5: 'type_id'
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            pub.sendMessage(
-                'wvw_editing_hardware',
-                module_id=self._hardware_id,
-                key=_key,
-                value=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
-                      method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Widget().  Indices are:
-
-            +-------+-----------------------+-------+---------------------+
-            | Index | Widget                | Index | Widget              |
-            +=======+=======================+=======+=====================+
-            |   6   | txtFrequencyOperating |   8   | txtThetaJC          |
-            +-------+-----------------------+-------+---------------------+
-            |   7   | txtNElements          |       |                     |
-            +-------+-----------------------+-------+---------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {5: 'resistance', 6: 'n_elements'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = float(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
 
 class SemiconductorAssessmentResults(AssessmentResults):
@@ -588,12 +563,17 @@ class SemiconductorAssessmentResults(AssessmentResults):
         12:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         13:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>I</sub>\u03C0<sub>A</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>I</sub>\u03C0<sub>A</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
     }
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of Semiconductor assessment result view."""
-        AssessmentResults.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of Semiconductor assessment result view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentResults.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -609,60 +589,108 @@ class SemiconductorAssessmentResults(AssessmentResults):
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the semiconductor "
-              "failure rate."))
+            _(
+                "The assessment model used to calculate the semiconductor "
+                "failure rate.",
+            ),
+        )
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiT = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The temperature factor for the semiconductor."))
-        self.txtPiA = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The application factor for the semiconductor."))
-        self.txtPiC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The construction factor for the semiconductor."))
-        self.txtPiR = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The power rating factor for the semiconductor."))
-        self.txtPiM = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The matching network factor for the semiconductor."))
-        self.txtPiI = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The forward current factor for the semiconductor."))
-        self.txtPiP = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The power degradation factor for the semiconductor."))
-        self.txtPiS = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The electrical stress factor for the semiconductor."))
+        self.txtPiT = RAMSTKEntry()
+        self.txtPiA = RAMSTKEntry()
+        self.txtPiC = RAMSTKEntry()
+        self.txtPiR = RAMSTKEntry()
+        self.txtPiM = RAMSTKEntry()
+        self.txtPiI = RAMSTKEntry()
+        self.txtPiP = RAMSTKEntry()
+        self.txtPiS = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+
+    def __make_ui(self):
+        """
+        Make the Semiconductor Gtk.Notebook() assessment results page.
+
+        :return: None
+        :rtype: NOne
+        """
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_ui(self)
+
+        self.put(self.txtPiT, _x_pos, _y_pos[3])
+        self.put(self.txtPiA, _x_pos, _y_pos[4])
+        self.put(self.txtPiC, _x_pos, _y_pos[5])
+        self.put(self.txtPiR, _x_pos, _y_pos[6])
+        self.put(self.txtPiM, _x_pos, _y_pos[7])
+        self.put(self.txtPiI, _x_pos, _y_pos[8])
+        self.put(self.txtPiP, _x_pos, _y_pos[9])
+        self.put(self.txtPiS, _x_pos, _y_pos[10])
+
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties for Semiconductor assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtPiT.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The temperature factor for the semiconductor."),
+        )
+        self.txtPiA.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The application factor for the semiconductor."),
+        )
+        self.txtPiC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The construction factor for the semiconductor."),
+        )
+        self.txtPiR.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The power rating factor for the semiconductor."),
+        )
+        self.txtPiM.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The matching network factor for the semiconductor."),
+        )
+        self.txtPiI.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The forward current factor for the semiconductor."),
+        )
+        self.txtPiP.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The power degradation factor for the semiconductor."),
+        )
+        self.txtPiS.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The electrical stress factor for the semiconductor."),
+        )
 
     def _do_load_page(self, attributes):
         """
@@ -689,8 +717,6 @@ class SemiconductorAssessmentResults(AssessmentResults):
         self.txtPiS.set_text(str(self.fmt.format(attributes['piS'])))
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):
         """
@@ -726,26 +752,3 @@ class SemiconductorAssessmentResults(AssessmentResults):
                 self.txtPiR.set_sensitive(True)
             if self._subcategory_id in [1, 3, 6, 10]:
                 self.txtPiS.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the semiconductor Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: NOne
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_page(self)
-
-        self.put(self.txtPiT, _x_pos, _y_pos[3])
-        self.put(self.txtPiA, _x_pos, _y_pos[4])
-        self.put(self.txtPiC, _x_pos, _y_pos[5])
-        self.put(self.txtPiR, _x_pos, _y_pos[6])
-        self.put(self.txtPiM, _x_pos, _y_pos[7])
-        self.put(self.txtPiI, _x_pos, _y_pos[8])
-        self.put(self.txtPiP, _x_pos, _y_pos[9])
-        self.put(self.txtPiS, _x_pos, _y_pos[10])
-
-        return None

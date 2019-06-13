@@ -8,7 +8,6 @@
 
 # Standard Library Imports
 import locale
-from datetime import date
 
 # Third Party Imports
 from pubsub import pub
@@ -16,17 +15,12 @@ from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
 from ramstk.Configuration import (
-    RAMSTK_ACTIVE_ENVIRONMENTS,
-    RAMSTK_COST_TYPES,
-    RAMSTK_DORMANT_ENVIRONMENTS,
-    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS,
-    RAMSTK_HR_TYPES,
+    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_COST_TYPES, RAMSTK_DORMANT_ENVIRONMENTS,
+    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS, RAMSTK_HR_TYPES,
 )
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKCheckButton, RAMSTKComboBox,
-    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-    RAMSTKScrolledWindow, RAMSTKTextView,
-    do_make_label_group,
+    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKFrame,
+    RAMSTKLabel, RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group,
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 from ramstk.gui.gtk.workviews.components import Component
@@ -34,13 +28,11 @@ from ramstk.Utilities import boolean_to_integer
 
 # RAMSTK Local Imports
 from .components import (
-    wvwCapacitorAI, wvwCapacitorAR, wvwConnectionAI,
-    wvwConnectionAR, wvwInductorAI, wvwInductorAR,
-    wvwIntegratedCircuitAI, wvwIntegratedCircuitAR,
-    wvwMeterAI, wvwMeterAR, wvwMiscellaneousAI,
-    wvwMiscellaneousAR, wvwRelayAI, wvwRelayAR,
-    wvwResistorAI, wvwResistorAR, wvwSemiconductorAI,
-    wvwSemiconductorAR, wvwSwitchAI, wvwSwitchAR,
+    wvwCapacitorAI, wvwCapacitorAR, wvwConnectionAI, wvwConnectionAR,
+    wvwInductorAI, wvwInductorAR, wvwIntegratedCircuitAI,
+    wvwIntegratedCircuitAR, wvwMeterAI, wvwMeterAR, wvwMiscellaneousAI,
+    wvwMiscellaneousAR, wvwRelayAI, wvwRelayAR, wvwResistorAI, wvwResistorAR,
+    wvwSemiconductorAI, wvwSemiconductorAR, wvwSwitchAI, wvwSwitchAR,
 )
 from .WorkView import RAMSTKWorkView
 
@@ -147,6 +139,27 @@ class GeneralData(RAMSTKWorkView):
     +----------+-------------------------------------------+
     """
 
+    # Define private dict attributes.
+    _dic_keys = {
+        6: 'alt_part_num',
+        7: 'attachments',
+        8: 'cage_code',
+        9: 'comp_ref_des',
+        10: 'cost',
+        11: 'description',
+        12: 'figure_number',
+        13: 'lcn',
+        14: 'name',
+        15: 'nsn',
+        16: 'page_number',
+        17: 'part_number',
+        18: 'quantity',
+        19: 'ref_des',
+        20: 'remarks',
+        21: 'specification_number',
+        22: 'year_of_manufacture',
+    }
+
     # Define private list attributes.
     # We add an empty string in the positions where a Gtk.CheckButton() will be
     # placed.
@@ -162,21 +175,24 @@ class GeneralData(RAMSTKWorkView):
             _("Subcategory:"),
             _("Specification:"),
             _("Page Number:"),
-            _("Figure Number:"), "",
+            _("Figure Number:"),
+            "",
             _("LCN:"),
         ],
-                       [
-                           _("Manufacturer:"),
-                           _("CAGE Code:"),
-                           _("NSN:"),
-                           _("Year Made:"),
-                           _("Quantity:"),
-                           _("Unit Cost:"),
-                           _("Cost Method:"),
-                       ], [
-                           "", _("Attachments:"),
-                           _("Remarks:"),
-                       ],
+        [
+            _("Manufacturer:"),
+            _("CAGE Code:"),
+            _("NSN:"),
+            _("Year Made:"),
+            _("Quantity:"),
+            _("Unit Cost:"),
+            _("Cost Method:"),
+        ],
+        [
+            "",
+            _("Attachments:"),
+            _("Remarks:"),
+        ],
     ]
 
     def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
@@ -287,8 +303,7 @@ class GeneralData(RAMSTKWorkView):
                     ),
                 ],
                 callbacks=[self._do_request_make_comp_ref_des],
-            ),
-        )
+            ), )
         self.pack_start(_scrolledwindow, False, False, 0)
 
         # Build the General Data page starting with the left half.
@@ -308,7 +323,8 @@ class GeneralData(RAMSTKWorkView):
         # vertical space needed by the description RAMSTKTextView().
         for _index in range(4, 13):
             _fixed.move(
-                _fixed.get_children()[_index], 5,
+                _fixed.get_children()[_index],
+                5,
                 _y_pos[_index - 1] + 100,
             )
 
@@ -381,8 +397,7 @@ class GeneralData(RAMSTKWorkView):
             justify=Gtk.Justification.CENTER,
             tooltip=_(
                 "Displays general information for the selected hardware "
-                "item.",
-            ),
+                "item.", ),
         )
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
@@ -396,82 +411,129 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.chkRepairable.connect('toggled', self._on_toggled, 0),
-        )
+            self.chkRepairable.connect('toggled', self._on_toggled, 0), )
         self._lst_handler_id.append(
-            self.chkTagged.connect('toggled', self._on_toggled, 1),
-        )
+            self.chkTagged.connect('toggled', self._on_toggled, 1), )
 
         self._lst_handler_id.append(
-            self.cmbCategory.connect('changed', self._on_combo_changed, 2),
-        )
+            self.cmbCategory.connect('changed', self._on_combo_changed, 2), )
         self._lst_handler_id.append(
-            self.cmbCostType.connect('changed', self._on_combo_changed, 3),
-        )
+            self.cmbCostType.connect('changed', self._on_combo_changed, 3), )
         self._lst_handler_id.append(
-            self.cmbManufacturer.connect('changed', self._on_combo_changed, 4),
-        )
+            self.cmbManufacturer.connect(
+                'changed', self._on_combo_changed,
+                4,
+            ), )
         self._lst_handler_id.append(
-            self.cmbSubcategory.connect('changed', self._on_combo_changed, 5),
-        )
+            self.cmbSubcategory.connect(
+                'changed', self._on_combo_changed,
+                5,
+            ), )
 
         self._lst_handler_id.append(
-            self.txtAltPartNum.connect('changed', self._on_focus_out, 6),
-        )
+            self.txtAltPartNum.connect(
+                'changed', self._on_focus_out, 6,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
             self.txtAttachments.do_get_buffer().connect(
-                'changed', self._on_focus_out, 7,
-            ),
-        )
+                'changed',
+                self._on_focus_out,
+                7,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtCAGECode.connect('changed', self._on_focus_out, 8),
-        )
+            self.txtCAGECode.connect(
+                'changed', self.on_focus_out, 8,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtCompRefDes.connect('changed', self._on_focus_out, 9),
-        )
+            self.txtCompRefDes.connect(
+                'changed', self.on_focus_out, 9,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtCost.connect('changed', self._on_focus_out, 10),
-        )
+            self.txtCost.connect(
+                'changed', self.on_focus_out, 10,
+                self._hardware_id, 'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
             self.txtDescription.do_get_buffer().connect(
-                'changed', self._on_focus_out, 11,
-            ),
-        )
+                'changed',
+                self.on_focus_out,
+                11,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtFigureNumber.connect('changed', self._on_focus_out, 12),
-        )
+            self.txtFigureNumber.connect(
+                'changed', self.on_focus_out, 12,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtLCN.connect('changed', self._on_focus_out, 13),
-        )
+            self.txtLCN.connect(
+                'changed', self.on_focus_out, 13,
+                self._hardware_id, 'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtName.connect('changed', self._on_focus_out, 14),
-        )
+            self.txtName.connect(
+                'changed', self.on_focus_out, 14,
+                self._hardware_id, 'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtNSN.connect('changed', self._on_focus_out, 15),
-        )
+            self.txtNSN.connect(
+                'changed', self.on_focus_out, 15,
+                self._hardware_id, 'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtPageNumber.connect('changed', self._on_focus_out, 16),
-        )
+            self.txtPageNumber.connect(
+                'changed', self.on_focus_out, 16,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtPartNumber.connect('changed', self._on_focus_out, 17),
-        )
+            self.txtPartNumber.connect(
+                'changed', self.on_focus_out, 17,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtQuantity.connect('changed', self._on_focus_out, 18),
-        )
+            self.txtQuantity.connect(
+                'changed', self.on_focus_out, 18,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtRefDes.connect('changed', self._on_focus_out, 19),
-        )
+            self.txtRefDes.connect(
+                'changed', self.on_focus_out, 19,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
             self.txtRemarks.do_get_buffer().connect(
-            'changed', self._on_focus_out, 20,
-            ),
-        )
+                'changed',
+                self.on_focus_out,
+                20,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtSpecification.connect('changed', self._on_focus_out, 21),
-        )
+            self.txtSpecification.connect(
+                'changed', self.on_focus_out, 21,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtYearMade.connect('changed', self._on_focus_out, 22),
-        )
+            self.txtYearMade.connect(
+                'changed', self.on_focus_out, 22,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
 
     def __set_properties(self):
         """
@@ -484,36 +546,27 @@ class GeneralData(RAMSTKWorkView):
         self.chkRepairable.do_set_properties(
             tooltip=_(
                 "Indicates whether or not the selected hardware item is "
-                "repairable.",
-            ),
-        )
+                "repairable.", ), )
 
         # ----- ENTRIES
         self.txtAltPartNum.do_set_properties(
             tooltip=_(
                 "The alternate part number (if any) of the selected "
-                "hardware item.",
-            ),
-        )
+                "hardware item.", ), )
         self.txtAttachments.do_set_properties(
             width=600,
             tooltip=_(
                 "Hyperlinks to any documents associated with the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtCAGECode.do_set_properties(
             tooltip=_(
                 "The Commerical and Government Entity (CAGE) Code of "
-                "the selected hardware item.",
-            ),
-        )
+                "the selected hardware item.", ), )
         self.txtCompRefDes.do_set_properties(
             tooltip=_(
                 "The composite reference designator of the selected "
-                "hardware item.",
-            ),
-        )
+                "hardware item.", ), )
         self.txtCost.do_set_properties(
             width=100,
             tooltip=_("The unit cost of the selected hardware item."),
@@ -525,62 +578,47 @@ class GeneralData(RAMSTKWorkView):
         self.txtFigureNumber.do_set_properties(
             tooltip=_(
                 "The figure number in the governing specification for "
-                "the selected hardware item.",
-            ),
-        )
+                "the selected hardware item.", ), )
         self.txtLCN.do_set_properties(
             tooltip=_(
                 "The Logistics Control Number (LCN) of the selected "
-                "hardware item.",
-            ),
-        )
+                "hardware item.", ), )
         self.txtName.do_set_properties(
-            width=600, tooltip=_("The name of the selected hardware item."),
+            width=600,
+            tooltip=_("The name of the selected hardware item."),
         )
         self.txtNSN.do_set_properties(
             tooltip=_(
                 "The National Stock Number (NSN) of the selected "
-                "hardware item.",
-            ),
-        )
+                "hardware item.", ), )
         self.txtPageNumber.do_set_properties(
             tooltip=_(
                 "The page number in the governing specification for the "
-                "selected hardware item.",
-            ),
-        )
+                "selected hardware item.", ), )
         self.txtPartNumber.do_set_properties(
-            tooltip=_("The part number of the selected hardware item."),
-        )
+            tooltip=_("The part number of the selected hardware item."), )
         self.txtQuantity.do_set_properties(
             width=50,
             tooltip=_(
-                "The number of the selected hardware items in the design.",
-            ),
+                "The number of the selected hardware items in the design.", ),
         )
         self.txtRefDes.do_set_properties(
             tooltip=_(
-                "The reference designator of the selected hardware item.",
-            ),
-        )
+                "The reference designator of the selected hardware item.", ), )
         self.txtRemarks.do_set_properties(
             width=600,
             tooltip=_(
                 "Enter any remarks associated with the selected "
-                "hardware item.",
-            ),
+                "hardware item.", ),
         )
         self.txtSpecification.do_set_properties(
             tooltip=_(
                 "The specification (if any) governing the selected "
-                "hardware item.",
-            ),
-        )
+                "hardware item.", ), )
         self.txtYearMade.do_set_properties(
             width=100,
             tooltip=_(
-                "The year the the selected hardware item was manufactured.",
-            ),
+                "The year the the selected hardware item was manufactured.", ),
         )
 
     def _do_clear_page(self):
@@ -639,7 +677,8 @@ class GeneralData(RAMSTKWorkView):
         RAMSTKWorkView.on_select(
             self,
             title=_("Analyzing Hardware {0:s} - {1:s}").format(
-                str(attributes['ref_des']), str(attributes['name']),
+                str(attributes['ref_des']),
+                str(attributes['name']),
             ),
         )
 
@@ -665,10 +704,12 @@ class GeneralData(RAMSTKWorkView):
             _model.clear()
 
         self.chkRepairable.do_update(
-            int(attributes['repairable']), self._lst_handler_id[0],
+            int(attributes['repairable']),
+            self._lst_handler_id[0],
         )
         self.chkTagged.do_update(
-            int(attributes['tagged_part']), self._lst_handler_id[1],
+            int(attributes['tagged_part']),
+            self._lst_handler_id[1],
         )
 
         self.cmbCostType.handler_block(self._lst_handler_id[3])
@@ -680,51 +721,66 @@ class GeneralData(RAMSTKWorkView):
         self.cmbManufacturer.handler_unblock(self._lst_handler_id[4])
 
         self.txtAltPartNum.do_update(
-            str(attributes['alt_part_num']), self._lst_handler_id[6],
+            str(attributes['alt_part_num']),
+            self._lst_handler_id[6],
         )
         self.txtAttachments.do_update(
-            str(attributes['attachments']), self._lst_handler_id[7],
+            str(attributes['attachments']),
+            self._lst_handler_id[7],
         )
         self.txtCAGECode.do_update(
-            str(attributes['cage_code']), self._lst_handler_id[8],
+            str(attributes['cage_code']),
+            self._lst_handler_id[8],
         )
         self.txtCompRefDes.do_update(
-            str(attributes['comp_ref_des']), self._lst_handler_id[9],
+            str(attributes['comp_ref_des']),
+            self._lst_handler_id[9],
         )
         self.txtCost.do_update(
-            str(locale.currency(attributes['cost'])), self._lst_handler_id[10],
+            str(locale.currency(attributes['cost'])),
+            self._lst_handler_id[10],
         )
         self.txtDescription.do_update(
-            str(attributes['description']), self._lst_handler_id[11],
+            str(attributes['description']),
+            self._lst_handler_id[11],
         )
         self.txtFigureNumber.do_update(
-            str(attributes['figure_number']), self._lst_handler_id[12],
+            str(attributes['figure_number']),
+            self._lst_handler_id[12],
         )
         self.txtLCN.do_update(str(attributes['lcn']), self._lst_handler_id[13])
         self.txtName.do_update(
-            str(attributes['name']), self._lst_handler_id[14],
+            str(attributes['name']),
+            self._lst_handler_id[14],
         )
         self.txtNSN.do_update(str(attributes['nsn']), self._lst_handler_id[15])
         self.txtPageNumber.do_update(
-            str(attributes['page_number']), self._lst_handler_id[16],
+            str(attributes['page_number']),
+            self._lst_handler_id[16],
         )
         self.txtPartNumber.do_update(
-            str(attributes['part_number']), self._lst_handler_id[17],
+            str(attributes['part_number']),
+            self._lst_handler_id[17],
         )
         self.txtQuantity.do_update(
-            str(attributes['quantity']), self._lst_handler_id[18],
+            str(attributes['quantity']),
+            self._lst_handler_id[18],
         )
         self.txtRefDes.do_update(
-            str(attributes['ref_des']), self._lst_handler_id[19],
+            str(attributes['ref_des']),
+            self._lst_handler_id[19],
         )
         self.txtRemarks.do_update(
-            str(attributes['remarks']), self._lst_handler_id[20],
+            str(attributes['remarks']),
+            self._lst_handler_id[20],
         )
         self.txtSpecification.do_update(
-            str(attributes['specification_number']), self._lst_handler_id[21],
+            str(attributes['specification_number']),
+            self._lst_handler_id[21],
         )
         self.txtYearMade.do_update(
-            str(attributes['year_of_manufacture']), self._lst_handler_id[22],
+            str(attributes['year_of_manufacture']),
+            self._lst_handler_id[22],
         )
 
     def _do_load_subcategory(self, category_id):
@@ -744,8 +800,7 @@ class GeneralData(RAMSTKWorkView):
 
         if category_id > 0:
             _subcategory = SortedDict(
-                self.RAMSTK_CONFIGURATION.RAMSTK_SUBCATEGORIES[category_id],
-            )
+                self.RAMSTK_CONFIGURATION.RAMSTK_SUBCATEGORIES[category_id], )
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
@@ -843,7 +898,8 @@ class GeneralData(RAMSTKWorkView):
             _model = combo.get_model()
             _row = combo.get_active_iter()
             self.txtCAGECode.do_update(
-                str(_model.get(_row, 2)[0]), self._lst_handler_id[8],
+                str(_model.get(_row, 2)[0]),
+                self._lst_handler_id[8],
             )
         elif index == 5:
             pub.sendMessage('changed_subcategory', subcategory_id=_new_text)
@@ -883,111 +939,6 @@ class GeneralData(RAMSTKWorkView):
 
         (_function, _id) = _dic_switch.get(key)
         _function(value, self._lst_handler_id[_id])
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        This method sends the 'wvwEditedHardware' message.
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
-                      method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Widget().  Indices are:
-
-            +---------+------------------+---------+------------------+
-            |  Index  | Widget           |  Index  | Widget           |
-            +=========+==================+=========+==================+
-            |    6    | txtAltPartNum    |   15    | txtNSN           |
-            +---------+------------------+---------+------------------+
-            |    7    | txtAttachments   |   16    | txtPageNumber    |
-            +---------+------------------+---------+------------------+
-            |    8    | txtCAGECode      |   17    | txtPartNumber    |
-            +---------+------------------+---------+------------------+
-            |    9    | txtCompRefDes    |   18    | txtQuantity      |
-            +---------+------------------+---------+------------------+
-            |   10    | txtCost          |   19    | txtRefDes        |
-            +---------+------------------+---------+------------------+
-            |   11    | txtDescription   |   20    | txtRemarks       |
-            +---------+------------------+---------+------------------+
-            |   12    | txtFigureNumber  |   21    | txtSpecification |
-            +---------+------------------+---------+------------------+
-            |   13    | txtLCN           |   22    | txtYearMade      |
-            +---------+------------------+---------+------------------+
-            |   14    | txtName          |         |                  |
-            +---------+------------------+---------+------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            6: 'alt_part_num',
-            7: 'attachments',
-            8: 'cage_code',
-            9: 'comp_ref_des',
-            10: 'cost',
-            11: 'description',
-            12: 'figure_number',
-            13: 'lcn',
-            14: 'name',
-            15: 'nsn',
-            16: 'page_number',
-            17: 'part_number',
-            18: 'quantity',
-            19: 'ref_des',
-            20: 'remarks',
-            21: 'specification_number',
-            22: 'year_of_manufacture',
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        if index in [6, 7, 8, 9, 12, 13, 14, 15, 16, 17, 19, 21]:
-            try:
-                _new_text = str(entry.get_text())
-            except ValueError:
-                _new_text = ''
-        elif index in [11, 20]:
-            try:
-                _new_text = entry.do_get_text()
-            except ValueError:
-                _new_text = ''
-        elif index == 10:
-            try:
-                _new_text = float(entry.get_text())
-            except ValueError:
-                _new_text = 0.0
-        elif index == 18:
-            try:
-                _new_text = int(entry.get_text())
-            except ValueError:
-                _new_text = 1
-        elif index == 22:
-            try:
-                _new_text = int(entry.get_text())
-            except ValueError:
-                _new_text = date.today().year
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text,
-        )
-
-        entry.handler_unblock(self._lst_handler_id[index])
 
     def _on_toggled(self, togglebutton, index):
         """
@@ -1107,6 +1058,23 @@ class AssessmentInputs(RAMSTKWorkView):
     +----------+-------------------------------------------+
     """
 
+    # Define private dict attributes.
+    _dic_keys = {
+        5: 'temperature_active',
+        6: 'add_adj_factor',
+        7: 'temperature_dormant',
+        8: 'scale_parameter',
+        9: 'shape_parameter',
+        10: 'location_parameter',
+        11: 'mult_adj_factor',
+        12: 'hazard_rate_specified',
+        13: 'hr_specified_variance',
+        14: 'mtbf_specified',
+        15: 'mtbf_spec_variance',
+        16: 'duty_cycle',
+        17: 'mission_time',
+    }
+
     # Define private list attributes.
     _lst_labels = [
         [
@@ -1123,14 +1091,14 @@ class AssessmentInputs(RAMSTKWorkView):
             _("Additive Adjustment Factor:"),
             _("Multiplicative Adjustment Factor:"),
         ],
-                       [
-                           _("Active Environment:"),
-                           _("Dormant Environment:"),
-                           _("Active Temperature (\u00B0C):"),
-                           _("Dormant Temperature (\u00B0C):"),
-                           _("Mission Time:"),
-                           _("Duty Cycle:"),
-                       ],
+        [
+            _("Active Environment:"),
+            _("Dormant Environment:"),
+            _("Active Temperature (\u00B0C):"),
+            _("Dormant Temperature (\u00B0C):"),
+            _("Mission Time:"),
+            _("Duty Cycle:"),
+        ],
     ]
 
     def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
@@ -1234,8 +1202,7 @@ class AssessmentInputs(RAMSTKWorkView):
                     _("Calculate the currently selected Hardware item."),
                 ],
                 callbacks=[self._do_request_calculate],
-            ),
-        )
+            ), )
         self.pack_start(_scrolledwindow, False, False, 0)
 
         # Build the assessment input page starting with the top left half.
@@ -1320,8 +1287,7 @@ class AssessmentInputs(RAMSTKWorkView):
             justify=Gtk.Justification.CENTER,
             tooltip=_(
                 "Displays reliability assessment inputs for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
@@ -1336,68 +1302,106 @@ class AssessmentInputs(RAMSTKWorkView):
         """
         self._lst_handler_id.append(
             self.cmbActiveEnviron.connect(
-                'changed', self._on_combo_changed,
+                'changed',
+                self._on_combo_changed,
                 0,
-            ),
-        )
+            ), )
         self._lst_handler_id.append(
             self.cmbDormantEnviron.connect(
-                'changed', self._on_combo_changed,
+                'changed',
+                self._on_combo_changed,
                 1,
-            ),
-        )
+            ), )
         self._lst_handler_id.append(
-            self.cmbFailureDist.connect('changed', self._on_combo_changed, 2),
-        )
+            self.cmbFailureDist.connect(
+                'changed', self._on_combo_changed,
+                2,
+            ), )
         self._lst_handler_id.append(
-            self.cmbHRType.connect('changed', self._on_combo_changed, 3),
-        )
+            self.cmbHRType.connect('changed', self._on_combo_changed, 3), )
         self._lst_handler_id.append(
-            self.cmbHRMethod.connect('changed', self._on_combo_changed, 4),
-        )
+            self.cmbHRMethod.connect('changed', self._on_combo_changed, 4), )
 
         self._lst_handler_id.append(
-            self.txtActiveTemp.connect('changed', self._on_focus_out, 5),
-        )
+            self.txtActiveTemp.connect(
+                'changed', self.on_focus_out, 5,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtAddAdjFactor.connect('changed', self._on_focus_out, 6),
-        )
+            self.txtAddAdjFactor.connect(
+                'changed', self.on_focus_out, 6,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtDormantTemp.connect('changed', self._on_focus_out, 7),
-        )
+            self.txtDormantTemp.connect(
+                'changed', self.on_focus_out, 7,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtFailScale.connect('changed', self._on_focus_out, 8),
-        )
+            self.txtFailScale.connect(
+                'changed', self.on_focus_out, 8,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtFailShape.connect('changed', self._on_focus_out, 9),
-        )
+            self.txtFailShape.connect(
+                'changed', self.on_focus_out, 9,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtFailLocation.connect('changed', self._on_focus_out, 10),
-        )
+            self.txtFailLocation.connect(
+                'changed', self.on_focus_out, 10,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtMultAdjFactor.connect('changed', self._on_focus_out, 11),
-        )
+            self.txtMultAdjFactor.connect(
+                'changed', self.on_focus_out, 11,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtSpecifiedHt.connect('changed', self._on_focus_out, 12),
-        )
+            self.txtSpecifiedHt.connect(
+                'changed', self.on_focus_out, 12,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtSpecifiedHtVar.connect('changed', self._on_focus_out, 13),
-        )
+            self.txtSpecifiedHtVar.connect(
+                'changed', self.on_focus_out, 13,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtSpecifiedMTBF.connect('changed', self._on_focus_out, 14),
-        )
+            self.txtSpecifiedMTBF.connect(
+                'changed', self.on_focus_out, 14,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
             self.txtSpecifiedMTBFVar.connect(
-                'changed', self._on_focus_out,
+                'changed',
+                self.on_focus_out,
                 15,
-            ),
-        )
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtDutyCycle.connect('changed', self._on_focus_out, 16),
-        )
+            self.txtDutyCycle.connect(
+                'changed', self.on_focus_out, 16,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
         self._lst_handler_id.append(
-            self.txtMissionTime.connect('changed', self._on_focus_out, 17),
-        )
+            self.txtMissionTime.connect(
+                'changed', self.on_focus_out, 17,
+                self._hardware_id,
+                'wvw_editing_hardware',
+            ), )
 
     def __set_properties(self):
         """
@@ -1408,27 +1412,21 @@ class AssessmentInputs(RAMSTKWorkView):
         """
         # ----- COMBOBOXES
         self.cmbActiveEnviron.do_set_properties(
-            tooltip=_("The operating environment for the hardware item."),
-        )
+            tooltip=_("The operating environment for the hardware item."), )
         self.cmbDormantEnviron.do_set_properties(
-            tooltip=_("The storage environment for the hardware item."),
-        )
+            tooltip=_("The storage environment for the hardware item."), )
         self.cmbFailureDist.do_set_properties(
             tooltip=_(
                 "The statistical failure distribution of the hardware item.",
-            ),
-        )
+            ), )
         self.cmbHRType.do_set_properties(
             tooltip=_(
                 "The type of reliability assessment for the selected "
-                "hardware item.",
-            ),
-        )
+                "hardware item.", ), )
         self.cmbHRMethod.do_set_properties(
             tooltip=_(
                 "The assessment method to use for the selected hardware item.",
-            ),
-        )
+            ), )
 
         # ----- ENTRIES
         self.txtActiveTemp.do_set_properties(
@@ -1439,8 +1437,7 @@ class AssessmentInputs(RAMSTKWorkView):
             width=125,
             tooltip=_(
                 "An adjustment factor to add to the assessed hazard rate or "
-                "MTBF.",
-            ),
+                "MTBF.", ),
         )
         self.txtDormantTemp.do_set_properties(
             width=125,
@@ -1466,8 +1463,7 @@ class AssessmentInputs(RAMSTKWorkView):
             width=125,
             tooltip=_(
                 "The location parameter of the statistical failure "
-                "distribution.",
-            ),
+                "distribution.", ),
         )
         self.txtMissionTime.do_set_properties(
             width=125,
@@ -1477,14 +1473,15 @@ class AssessmentInputs(RAMSTKWorkView):
             width=125,
             tooltip=_(
                 "An adjustment factor to multiply the assessed hazard rate "
-                "or MTBF by.",
-            ),
+                "or MTBF by.", ),
         )
         self.txtSpecifiedHt.do_set_properties(
-            width=125, tooltip=_("The stated hazard rate."),
+            width=125,
+            tooltip=_("The stated hazard rate."),
         )
         self.txtSpecifiedHtVar.do_set_properties(
-            width=125, tooltip=_("The variance of the stated hazard rate."),
+            width=125,
+            tooltip=_("The variance of the stated hazard rate."),
         )
         self.txtSpecifiedMTBF.do_set_properties(
             width=125,
@@ -1494,8 +1491,7 @@ class AssessmentInputs(RAMSTKWorkView):
             width=125,
             tooltip=_(
                 "The variance of the stated mean time between failure "
-                "(MTBF).",
-            ),
+                "(MTBF).", ),
         )
 
     def _do_clear_page(self):
@@ -1567,7 +1563,7 @@ class AssessmentInputs(RAMSTKWorkView):
         except KeyError:
             _component_ai = None
 
-        _component_si = Component.StressInputs(fmt=self.fmt)
+        _component_si = Component.StressInputs(self.RAMSTK_CONFIGURATION)
 
         # Clear the component-specific Gtk.ScrolledWindow()s if there are
         # already a component-specific work view objects.
@@ -1592,20 +1588,24 @@ class AssessmentInputs(RAMSTKWorkView):
             _child.add(_component_si)
 
         self.cmbActiveEnviron.do_update(
-            int(attributes['environment_active_id']), self._lst_handler_id[0],
+            int(attributes['environment_active_id']),
+            self._lst_handler_id[0],
         )
         self.cmbDormantEnviron.do_update(
-            int(attributes['environment_dormant_id']), self._lst_handler_id[1],
+            int(attributes['environment_dormant_id']),
+            self._lst_handler_id[1],
         )
         self.cmbFailureDist.do_update(
             int(attributes['failure_distribution_id']),
             self._lst_handler_id[2],
         )
         self.cmbHRType.do_update(
-            int(attributes['hazard_rate_type_id']), self._lst_handler_id[3],
+            int(attributes['hazard_rate_type_id']),
+            self._lst_handler_id[3],
         )
         self.cmbHRMethod.do_update(
-            int(attributes['hazard_rate_method_id']), self._lst_handler_id[4],
+            int(attributes['hazard_rate_method_id']),
+            self._lst_handler_id[4],
         )
         self.txtActiveTemp.do_update(
             self.fmt.format(attributes['temperature_active']),
@@ -1877,82 +1877,6 @@ class AssessmentInputs(RAMSTKWorkView):
         (_function, _id) = _dic_switch.get(key)
         _function(value, self._lst_handler_id[_id])
 
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        This method sends the 'wvwEditedHardware' message.
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
-                      method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Widget().  Indices are:
-
-            +---------+---------------------+---------+---------------------+
-            |  Index  | Widget              |  Index  | Widget              |
-            +=========+=====================+=========+=====================+
-            |    5    | txtActiveTemp       |   12    | txtSpecifiedHt      |
-            +---------+---------------------+---------+---------------------+
-            |    6    | txtAddAdjFactor     |   13    | txtSpecifiedHtVar   |
-            +---------+---------------------+---------+---------------------+
-            |    7    | txtDormantTemp      |   14    | txtSpecifiedMTBF    |
-            +---------+---------------------+---------+---------------------+
-            |    8    | txtFailScale        |   15    | txtSpecifiedMTBFVar |
-            +---------+---------------------+---------+---------------------+
-            |    9    | txtFailShape        |   16    | txtDutyCycle        |
-            +---------+---------------------+---------+---------------------+
-            |   10    | txtFailLocation     |   17    | txtMissionTime      |
-            +---------+---------------------+---------+---------------------+
-            |   11    | txtMultAdjFactor    |         |                     |
-            +---------+---------------------+---------+---------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            5: 'temperature_active',
-            6: 'add_adj_factor',
-            7: 'temperature_dormant',
-            8: 'scale_parameter',
-            9: 'shape_parameter',
-            10: 'location_parameter',
-            11: 'mult_adj_factor',
-            12: 'hazard_rate_specified',
-            13: 'hr_specified_variance',
-            14: 'mtbf_specified',
-            15: 'mtbf_spec_variance',
-            16: 'duty_cycle',
-            17: 'mission_time',
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = float(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text,
-        )
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
 
 class AssessmentResults(RAMSTKWorkView):
     """
@@ -2036,14 +1960,14 @@ class AssessmentResults(RAMSTKWorkView):
             _("Logistics Reliability [R(t)]:"),
             _("Mission R(t):"),
         ],
-                       [
-                           _("Logistics Availability [A(t)]:"),
-                           _("Mission A(t):"),
-                           _("Total Cost:"),
-                           _("Cost/Failure:"),
-                           _("Cost/Hour:"),
-                           _("Total # of Parts:"),
-                       ],
+        [
+            _("Logistics Availability [A(t)]:"),
+            _("Mission A(t):"),
+            _("Total Cost:"),
+            _("Cost/Failure:"),
+            _("Cost/Hour:"),
+            _("Total # of Parts:"),
+        ],
     ]
 
     def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
@@ -2057,16 +1981,16 @@ class AssessmentResults(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_assessment_results = {
-            1: wvwIntegratedCircuitAR(fmt=self.fmt),
-            2: wvwSemiconductorAR(fmt=self.fmt),
-            3: wvwResistorAR(fmt=self.fmt),
-            4: wvwCapacitorAR(fmt=self.fmt),
-            5: wvwInductorAR(fmt=self.fmt),
-            6: wvwRelayAR(fmt=self.fmt),
-            7: wvwSwitchAR(fmt=self.fmt),
-            8: wvwConnectionAR(fmt=self.fmt),
-            9: wvwMeterAR(fmt=self.fmt),
-            10: wvwMiscellaneousAR(fmt=self.fmt),
+            1: wvwIntegratedCircuitAR(self.RAMSTK_CONFIGURATION),
+            2: wvwSemiconductorAR(self.RAMSTK_CONFIGURATION),
+            3: wvwResistorAR(self.RAMSTK_CONFIGURATION),
+            4: wvwCapacitorAR(self.RAMSTK_CONFIGURATION),
+            5: wvwInductorAR(self.RAMSTK_CONFIGURATION),
+            6: wvwRelayAR(self.RAMSTK_CONFIGURATION),
+            7: wvwSwitchAR(self.RAMSTK_CONFIGURATION),
+            8: wvwConnectionAR(self.RAMSTK_CONFIGURATION),
+            9: wvwMeterAR(self.RAMSTK_CONFIGURATION),
+            10: wvwMiscellaneousAR(self.RAMSTK_CONFIGURATION),
         }
 
         # Initialize private list attributes.
@@ -2143,8 +2067,7 @@ class AssessmentResults(RAMSTKWorkView):
                     _("Calculate the currently selected Hardware item."),
                 ],
                 callbacks=[self._do_request_calculate],
-            ),
-        )
+            ), )
         self.pack_start(_scrolledwindow, False, False, 0)
 
         _hbox = Gtk.HBox()
@@ -2238,8 +2161,7 @@ class AssessmentResults(RAMSTKWorkView):
                 "Displays reliability, "
                 "maintainability, and availability "
                 "assessment results for the selected "
-                "{0:s}.",
-            ).format(self._module),
+                "{0:s}.", ).format(self._module),
         )
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
@@ -2258,8 +2180,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the active failure intensity for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtActiveHtVar.do_set_properties(
             width=125,
@@ -2267,24 +2188,21 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the active failure intensity "
-                "for the selected hardware item.",
-            ),
+                "for the selected hardware item.", ),
         )
         self.txtCostFailure.do_set_properties(
             width=125,
             editable=False,
             tooltip=_(
                 "Displays the cost per failure of the selected "
-                "hardware item.",
-            ),
+                "hardware item.", ),
         )
         self.txtCostHour.do_set_properties(
             width=125,
             editable=False,
             tooltip=_(
                 "Displays the failure cost per operating hour for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtDormantHt.do_set_properties(
             width=125,
@@ -2292,8 +2210,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the dormant failure intensity for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtDormantHtVar.do_set_properties(
             width=125,
@@ -2301,8 +2218,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the dormant failure intensity "
-                "for the selected hardware item.",
-            ),
+                "for the selected hardware item.", ),
         )
         self.txtLogisticsAt.do_set_properties(
             width=125,
@@ -2310,8 +2226,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the logistics availability for the selected "
-                "hardware item.",
-            ),
+                "hardware item.", ),
         )
         self.txtLogisticsAtVar.do_set_properties(
             width=125,
@@ -2319,8 +2234,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the logistics availability "
-                "for the selected hardware item.",
-            ),
+                "for the selected hardware item.", ),
         )
         self.txtLogisticsHt.do_set_properties(
             width=125,
@@ -2329,8 +2243,7 @@ class AssessmentResults(RAMSTKWorkView):
             tooltip=_(
                 "Displays the logistics failure intensity for the "
                 "selected hardware item.  This is the sum of the "
-                "active, dormant, and software hazard rates.",
-            ),
+                "active, dormant, and software hazard rates.", ),
         )
         self.txtLogisticsHtVar.do_set_properties(
             width=125,
@@ -2338,8 +2251,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the logistics failure "
-                "intensity for the selected hardware item.",
-            ),
+                "intensity for the selected hardware item.", ),
         )
         self.txtLogisticsMTBF.do_set_properties(
             width=125,
@@ -2347,8 +2259,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the logistics mean time between failure "
-                "(MTBF) for the selected hardware item.",
-            ),
+                "(MTBF) for the selected hardware item.", ),
         )
         self.txtLogisticsMTBFVar.do_set_properties(
             width=125,
@@ -2356,8 +2267,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the logistics MTBF for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtLogisticsRt.do_set_properties(
             width=125,
@@ -2365,8 +2275,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the logistics reliability for the selected "
-                "hardware item.",
-            ),
+                "hardware item.", ),
         )
         self.txtLogisticsRtVar.do_set_properties(
             width=125,
@@ -2374,8 +2283,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the logistics reliability "
-                "for the selected hardware item.",
-            ),
+                "for the selected hardware item.", ),
         )
         self.txtMCMT.do_set_properties(
             width=125,
@@ -2383,8 +2291,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the mean corrective maintenance time (MCMT) "
-                "for the selected hardware item.",
-            ),
+                "for the selected hardware item.", ),
         )
         self.txtMissionAt.do_set_properties(
             width=125,
@@ -2392,8 +2299,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the mission availability for the selected "
-                "hardware item.",
-            ),
+                "hardware item.", ),
         )
         self.txtMissionAtVar.do_set_properties(
             width=125,
@@ -2401,8 +2307,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the mission availability for "
-                "the selected hardware item.",
-            ),
+                "the selected hardware item.", ),
         )
         self.txtMissionHt.do_set_properties(
             width=125,
@@ -2410,8 +2315,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the mission failure intensity for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtMissionHtVar.do_set_properties(
             width=125,
@@ -2419,8 +2323,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the mission failure "
-                "intensity for the selected hardware item.",
-            ),
+                "intensity for the selected hardware item.", ),
         )
         self.txtMissionMTBF.do_set_properties(
             width=125,
@@ -2428,8 +2331,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the mission mean time between failure (MTBF) "
-                "for the selected hardware item.",
-            ),
+                "for the selected hardware item.", ),
         )
         self.txtMissionMTBFVar.do_set_properties(
             width=125,
@@ -2437,8 +2339,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the mission MTBF for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtMissionRt.do_set_properties(
             width=125,
@@ -2446,8 +2347,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the mission reliability for the selected "
-                "hardware item.",
-            ),
+                "hardware item.", ),
         )
         self.txtMissionRtVar.do_set_properties(
             width=125,
@@ -2455,8 +2355,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the variance on the mission reliability for "
-                "the selected hardware item.",
-            ),
+                "the selected hardware item.", ),
         )
         self.txtMMT.do_set_properties(
             width=125,
@@ -2465,8 +2364,7 @@ class AssessmentResults(RAMSTKWorkView):
             tooltip=_(
                 "Displays the mean maintenance time (MMT) for the "
                 "selected hardware item.  This includes preventive and "
-                "corrective maintenance.",
-            ),
+                "corrective maintenance.", ),
         )
         self.txtMPMT.do_set_properties(
             width=125,
@@ -2474,8 +2372,7 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the mean preventive maintenance time (MPMT) "
-                "for the selected hardware item.",
-            ),
+                "for the selected hardware item.", ),
         )
         self.txtMTTR.do_set_properties(
             width=125,
@@ -2483,24 +2380,21 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the mean time to repair (MTTR) for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtPartCount.do_set_properties(
             width=125,
             editable=False,
             tooltip=_(
                 "Displays the total part count for the selected "
-                "hardware item.",
-            ),
+                "hardware item.", ),
         )
         self.txtPercentHt.do_set_properties(
             width=125,
             editable=False,
             tooltip=_(
                 "Displays the percentage of the system failure "
-                "intensity the selected hardware item represents.",
-            ),
+                "intensity the selected hardware item represents.", ),
         )
         self.txtSoftwareHt.do_set_properties(
             width=125,
@@ -2508,16 +2402,14 @@ class AssessmentResults(RAMSTKWorkView):
             bold=True,
             tooltip=_(
                 "Displays the software failure intensity for the "
-                "selected hardware item.",
-            ),
+                "selected hardware item.", ),
         )
         self.txtTotalCost.do_set_properties(
             width=125,
             editable=False,
             tooltip=_(
                 "Displays the total cost of the selected hardware "
-                "item.",
-            ),
+                "item.", ),
         )
 
     def _do_clear_page(self):
@@ -2583,92 +2475,66 @@ class AssessmentResults(RAMSTKWorkView):
         except KeyError:
             _component_ar = None
 
-        _component_sr = Component.StressResults(fmt=self.fmt)
+        _component_sr = Component.StressResults(self.RAMSTK_CONFIGURATION)
 
         self.txtTotalCost.set_text(
-            str(locale.currency(attributes['total_cost'])),
-        )
+            str(locale.currency(attributes['total_cost'])), )
         self.txtCostFailure.set_text(
-            str(locale.currency(attributes['cost_failure'])),
-        )
+            str(locale.currency(attributes['cost_failure'])), )
         self.txtCostHour.set_text(
-            str(locale.currency(attributes['cost_hour'])),
-        )
+            str(locale.currency(attributes['cost_hour'])), )
         self.txtPartCount.set_text(
-            str('{0:d}'.format(attributes['total_part_count'])),
-        )
+            str('{0:d}'.format(attributes['total_part_count'])), )
 
         self.txtActiveHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_active'])),
-        )
+            str(self.fmt.format(attributes['hazard_rate_active'])), )
         self.txtActiveHtVar.set_text(
-            str(self.fmt.format(attributes['hr_active_variance'])),
-        )
+            str(self.fmt.format(attributes['hr_active_variance'])), )
 
         self.txtDormantHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_dormant'])),
-        )
+            str(self.fmt.format(attributes['hazard_rate_dormant'])), )
         self.txtDormantHtVar.set_text(
-            str(self.fmt.format(attributes['hr_dormant_variance'])),
-        )
+            str(self.fmt.format(attributes['hr_dormant_variance'])), )
 
         self.txtSoftwareHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_software'])),
-        )
+            str(self.fmt.format(attributes['hazard_rate_software'])), )
 
         self.txtPercentHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_percent'])),
-        )
+            str(self.fmt.format(attributes['hazard_rate_percent'])), )
 
         self.txtLogisticsAt.set_text(
-            str(self.fmt.format(attributes['availability_logistics'])),
-        )
+            str(self.fmt.format(attributes['availability_logistics'])), )
         self.txtLogisticsAtVar.set_text(
-            str(self.fmt.format(attributes['avail_log_variance'])),
-        )
+            str(self.fmt.format(attributes['avail_log_variance'])), )
         self.txtLogisticsHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_logistics'])),
-        )
+            str(self.fmt.format(attributes['hazard_rate_logistics'])), )
         self.txtLogisticsHtVar.set_text(
-            str(self.fmt.format(attributes['hr_logistics_variance'])),
-        )
+            str(self.fmt.format(attributes['hr_logistics_variance'])), )
         self.txtLogisticsMTBF.set_text(
-            str(self.fmt.format(attributes['mtbf_logistics'])),
-        )
+            str(self.fmt.format(attributes['mtbf_logistics'])), )
         self.txtLogisticsMTBFVar.set_text(
-            str(self.fmt.format(attributes['mtbf_log_variance'])),
-        )
+            str(self.fmt.format(attributes['mtbf_log_variance'])), )
         self.txtLogisticsRt.set_text(
-            str(self.fmt.format(attributes['reliability_logistics'])),
-        )
+            str(self.fmt.format(attributes['reliability_logistics'])), )
         self.txtLogisticsRtVar.set_text(
-            str(self.fmt.format(attributes['reliability_log_variance'])),
-        )
+            str(self.fmt.format(attributes['reliability_log_variance'])), )
 
         self.txtMissionAt.set_text(
-            str(self.fmt.format(attributes['availability_mission'])),
-        )
+            str(self.fmt.format(attributes['availability_mission'])), )
         self.txtMissionAtVar.set_text(
-            str(self.fmt.format(attributes['avail_mis_variance'])),
-        )
+            str(self.fmt.format(attributes['avail_mis_variance'])), )
         self.txtMissionHt.set_text(
-            str(self.fmt.format(attributes['hazard_rate_mission'])),
-        )
+            str(self.fmt.format(attributes['hazard_rate_mission'])), )
         self.txtMissionHtVar.set_text(
-            str(self.fmt.format(attributes['hr_mission_variance'])),
-        )
+            str(self.fmt.format(attributes['hr_mission_variance'])), )
         self.txtMissionMTBF.set_text(
-            str(self.fmt.format(attributes['mtbf_mission'])),
-        )
+            str(self.fmt.format(attributes['mtbf_mission'])), )
         self.txtMissionMTBFVar.set_text(
-            str(self.fmt.format(attributes['mtbf_miss_variance'])),
-        )
+            str(self.fmt.format(attributes['mtbf_miss_variance'])), )
         self.txtMissionRt.set_text(
-            str(self.fmt.format(attributes['reliability_mission'])),
-        )
+            str(self.fmt.format(attributes['reliability_mission'])), )
         self.txtMissionRtVar.set_text(
-            str(self.fmt.format(attributes['reliability_miss_variance'])),
-        )
+            str(self.fmt.format(attributes['reliability_miss_variance'])), )
 
         # Clear the component-specific Gtk.ScrolledWindow()s if it already
         # contains a component-specific work view objects.  Then load the new
