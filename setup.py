@@ -73,7 +73,7 @@ class Install(_install):
     @staticmethod
     def post_install_script():
         """Execute after install."""
-        print("RAMSTK is installed!!")
+        print("\033[92mRAMSTK is installed!!\033[0m")
 
     def run(self):
         """Run the install."""

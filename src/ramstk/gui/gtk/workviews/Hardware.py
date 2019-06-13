@@ -432,14 +432,14 @@ class GeneralData(RAMSTKWorkView):
 
         self._lst_handler_id.append(
             self.txtAltPartNum.connect(
-                'changed', self._on_focus_out, 6,
+                'changed', self.on_focus_out, 6,
                 self._hardware_id,
                 'wvw_editing_hardware',
             ), )
         self._lst_handler_id.append(
             self.txtAttachments.do_get_buffer().connect(
                 'changed',
-                self._on_focus_out,
+                self.on_focus_out,
                 7,
                 self._hardware_id,
                 'wvw_editing_hardware',
