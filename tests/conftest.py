@@ -6,18 +6,21 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK test suite configuration module."""
 
+# Standard Library Imports
+import csv
+import gettext
+import glob
 import os
 import platform
 import sys
 import tempfile
-import glob
-import csv
-import gettext
 import xml.etree.ElementTree as ET
+
+# Third Party Imports
+import pytest
 import xlwt
 
-import pytest
-
+# RAMSTK Package Imports
 import ramstk.Utilities as Utilities
 from ramstk.Configuration import Configuration
 from ramstk.dao import DAO
@@ -35,8 +38,10 @@ except KeyError:
     elif platform.system() == 'Windows':
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
-        print(("The {0:s} system platform is not "
-               "supported.").format(platform.system()))
+        print((
+            "The {0:s} system platform is not "
+            "supported."
+        ).format(platform.system()))
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -57,13 +62,13 @@ IMPORT_LOG = LOG_DIR + '/RAMSTK_import.log'
 HEADERS = {
     'Function': [
         'Revision ID', 'Function ID', 'Level', 'Function Code',
-        'Function Name', 'Parent', 'Remarks', 'Safety Critical', 'Type'
+        'Function Name', 'Parent', 'Remarks', 'Safety Critical', 'Type',
     ],
     'Requirement': [
         'Revision ID', 'Requirement ID', 'Derived?', 'Requirement',
         'Figure Number', 'Owner', 'Page Number', 'Parent ID', 'Priority',
         'Requirement Code', 'Specification', 'Requirement Type', 'Validated?',
-        'Validated Date'
+        'Validated Date',
     ],
     'Hardware': [
         'Revision ID', 'Hardware ID', 'Alt. Part Num.', 'CAGE Code',
@@ -89,7 +94,7 @@ HEADERS = {
         'h(t) Model', 'Specified h(t)', 'h(t) Type', 'Location',
         'Specified MTBF', 'Mult. Adj. Factor', 'Quality', 'R(t) Goal',
         'R(t) Goal Measure', 'Scale Parameter', 'Shape Parameter',
-        'Surv. Analysis'
+        'Surv. Analysis',
     ],
     'Validation': [
         'Revision ID', 'Validation ID', 'Maximum Acceptable',
@@ -97,8 +102,8 @@ HEADERS = {
         's-Confidence', 'Avg. Task Cost', 'Max. Task Cost', 'Min. Task Cost',
         'Start Date', 'Finish Date', 'Description', 'Unit of Measure',
         'Task Name', 'Status', 'Type', 'Task Spec.', 'Average Task Time',
-        'Maximum Task Time', 'Minimum Task Time'
-    ]
+        'Maximum Task Time', 'Minimum Task Time',
+    ],
 }
 
 # Row data for the Function import test file.
@@ -106,13 +111,13 @@ ROW_DATA = [
     [
         1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
         'This is a function that is about system pressure.  This remarks box also needs to be larger.',
-        1, 0
+        1, 0,
     ],
     [
         1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
         'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
-        0, 0
-    ]
+        0, 0,
+    ],
 ]
 
 
@@ -191,7 +196,7 @@ def test_configuration():
     configuration.RAMSTK_TABPOS = {
         'modulebook': 'top',
         'listbook': 'bottom',
-        'workbook': 'bottom'
+        'workbook': 'bottom',
     }
 
     configuration.RAMSTK_BACKEND = 'sqlite'
@@ -208,9 +213,8 @@ def test_configuration():
 
     configuration.RAMSTK_FORMAT_FILE = {
         'allocation': 'Allocation.xml',
-        'dfmeca': 'DFMECA.xml',
         'failure_definition': 'FailureDefinition.xml',
-        'ffmea': 'FFMEA.xml',
+        'fmea': 'FMEA.xml',
         'function': 'Function.xml',
         'hardware': 'Hardware.xml',
         'hazops': 'HazOps.xml',
@@ -219,7 +223,7 @@ def test_configuration():
         'revision': 'Revision.xml',
         'similaritem': 'SimilarItem.xml',
         'stakeholder': 'Stakeholder.xml',
-        'validation': 'Validation.xml'
+        'validation': 'Validation.xml',
     }
     configuration.RAMSTK_COLORS = {
         'functionbg': '#FFFFFF',
@@ -233,7 +237,7 @@ def test_configuration():
         'stakeholderbg': '#FFFFFF',
         'stakeholderfg': '#000000',
         'validationbg': '#FFFFFF',
-        'validationfg': '#000000'
+        'validationfg': '#000000',
     }
 
     configuration.set_user_configuration()
@@ -255,7 +259,8 @@ def test_csv_file_function():
 
     with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
-            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL,
+        )
         filewriter.writerow(HEADERS['Function'])
         filewriter.writerow(ROW_DATA[0])
         filewriter.writerow(ROW_DATA[1])
@@ -270,7 +275,8 @@ def test_csv_file_requirement():
 
     with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
-            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL,
+        )
         filewriter.writerow(HEADERS['Requirement'])
 
     yield _test_file
@@ -283,7 +289,8 @@ def test_csv_file_hardware():
 
     with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
-            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL,
+        )
         filewriter.writerow(HEADERS['Hardware'])
 
     yield _test_file
@@ -296,7 +303,8 @@ def test_csv_file_validation():
 
     with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
-            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL,
+        )
         filewriter.writerow(HEADERS['Validation'])
 
     yield _test_file
@@ -334,17 +342,25 @@ def test_format_file():
     _root = ET.Element('root')
     _tree = ET.SubElement(_root, "tree", name="Test")
     _column = ET.SubElement(_tree, "column")
-    _usertitle = ET.SubElement(_column,
-                               "defaulttitle").text = "Default Title 0"
+    _usertitle = ET.SubElement(
+        _column,
+        "defaulttitle",
+    ).text = "Default Title 0"
     _column = ET.SubElement(_tree, "column")
-    _usertitle = ET.SubElement(_column,
-                               "defaulttitle").text = "Default Title 1"
+    _usertitle = ET.SubElement(
+        _column,
+        "defaulttitle",
+    ).text = "Default Title 1"
     _column = ET.SubElement(_tree, "column")
-    _usertitle = ET.SubElement(_column,
-                               "defaulttitle").text = "Default Title 2"
+    _usertitle = ET.SubElement(
+        _column,
+        "defaulttitle",
+    ).text = "Default Title 2"
     _column = ET.SubElement(_tree, "column")
-    _usertitle = ET.SubElement(_column,
-                               "defaulttitle").text = "Default Title 3"
+    _usertitle = ET.SubElement(
+        _column,
+        "defaulttitle",
+    ).text = "Default Title 3"
 
     _layout = ET.ElementTree(_root)
     _layout.write(_test_file)
