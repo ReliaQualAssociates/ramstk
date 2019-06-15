@@ -10,9 +10,9 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-#from ramstk.gui.gtk.assistants import (
-#    CreateProject, ImportProject, OpenProject, Options, Preferences,
-#)
+from ramstk.gui.gtk.assistants import (
+    CreateProject, ImportProject, OpenProject, Options, Preferences,
+)
 from ramstk.gui.gtk.moduleviews import (
     mvwFunction, mvwHardware, mvwRequirement, mvwRevision, mvwValidation,
 )
@@ -87,7 +87,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("New _Program"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', CreateProject, self._mdcRAMSTK)
+        _menu_item.connect('activate', CreateProject, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -96,7 +96,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("_Open"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', OpenProject, self._mdcRAMSTK)
+        _menu_item.connect('activate', OpenProject, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -105,7 +105,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("_Import Project"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', ImportProject, self._mdcRAMSTK)
+        _menu_item.connect('activate', ImportProject, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -142,7 +142,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("_Preferences"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', Preferences, self._mdcRAMSTK)
+        _menu_item.connect('activate', Preferences, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _mnuEdit = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
@@ -156,7 +156,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("_Options"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', Options, self._mdcRAMSTK)
+        _menu_item.connect('activate', Options, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _mnuTools = Gtk.MenuItem(label=_("_Tools"), use_underline=True)
@@ -185,7 +185,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/new.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', CreateProject, self._mdcRAMSTK)
+        _button.connect('clicked', CreateProject, self.RAMSTK_CONFIGURATION)
         self.toolbar.insert(_button, _position)
         _position += 1
 
@@ -197,7 +197,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', OpenProject, self._mdcRAMSTK)
+        _button.connect('clicked', OpenProject, self.RAMSTK_CONFIGURATION)
         self.toolbar.insert(_button, _position)
         _position += 1
 

@@ -101,8 +101,7 @@ class PoF(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._do_load_page, 'selected_hardware')
-        pub.subscribe(self._do_load_tree, 'retrieved_pof')
+        pub.subscribe(self._do_load_page, 'retrieved_pof')
 
     def __load_combobox(self):
         """

@@ -118,8 +118,8 @@ class DFMECA(FMEA):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, "closed_program")
-        pub.subscribe(self._do_load_missions, "selected_revision")
-        pub.subscribe(self._do_load_missions, "lvw_editing_usage_profile")
+        pub.subscribe(self._do_load_missions, 'retrieved_usage_profile')
+        #pub.subscribe(self._do_load_missions, "lvw_editing_usage_profile")
         pub.subscribe(self.do_load_page, "retrieved_dfmeca")
 
     def __make_ui(self):
@@ -280,24 +280,25 @@ class DFMECA(FMEA):
         except KeyError:
             pass
 
-    def _do_load_missions(self, attributes):
+    def _do_load_missions(self, tree, row=None):    # pylint: disable=unused-argument
         """
-        Respond to `selected_revision` signal from pypubsub.
+        Respond to `retrieved_usage_profile` signal from pypubsub.
 
-        :param int module_id: the ID of the Revision that was selected.
+        :param tree: the treelib Tree() holding the Usage Profile.
+        :type tree: :class:`treelib.Tree`
+        :param row: the parent row in the FMEA Gtk.TreeView() to add the new
+        item.
+        :type row: :class:`Gtk.TreeIter`
         :return: None
         :rtype: None
         """
-        self.dic_controllers["profile"].request_do_select_all(attributes)
-        _tree = self.dic_controllers["profile"].request_tree()
-
-        _missions = _tree.children(0)
+        _missions = tree.children(0)
         for _mission in _missions:
             self._dic_missions[
                 _mission.data.description
             ] = _mission.data.mission_time
             _phases = []
-            for _phase in _tree.children(_mission.identifier):
+            for _phase in tree.children(_mission.identifier):
                 _phases.append(_phase.data.description)
             self._dic_mission_phases[_mission.data.description] = _phases
 
@@ -307,7 +308,7 @@ class DFMECA(FMEA):
 
         try:
             for _mission in self._dic_missions:
-                _model.append((_mission, ))
+                _model.append((_mission.decode('utf-8'), ))
         except KeyError:
             pass
 

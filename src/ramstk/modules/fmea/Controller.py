@@ -57,6 +57,7 @@ class FMEADataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._request_do_select_all, 'selected_function')
         pub.subscribe(self._request_do_select_all, 'selected_hardware')
         pub.subscribe(self.request_do_delete, 'request_delete_fmea')
         pub.subscribe(self._request_do_insert, 'request_insert_fmea')
@@ -71,14 +72,18 @@ class FMEADataController(RAMSTKDataController):
         :return: tree; the FMEA treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        if attributes['functional']:
+        _functional = False
+        try:
             _parent_id = attributes['function_id']
-        else:
+            _functional = True
+        except KeyError:
             _parent_id = attributes['hardware_id']
+        finally:
+            _parent_id = None
 
         return self._dtm_data_model.do_select_all(
             parent_id=_parent_id,
-            functional=attributes['functional'],
+            functional=_functional,
         )
 
     def _request_do_insert(self, entity_id, parent_id, level, **kwargs):  # pylint: disable=unused-argument

@@ -246,7 +246,7 @@ class GeneralData(RAMSTKWorkView):
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = do_make_label_group(
-            self._lst_gendata_labels[0][:2],
+            self._lst_labels[0][:2],
             _fixed, 5, 5,
         )
         _x_pos += 50
@@ -257,7 +257,7 @@ class GeneralData(RAMSTKWorkView):
         _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1])
 
         _x_pos, _y_pos = do_make_label_group(
-            self._lst_gendata_labels[0][2:],
+            self._lst_labels[0][2:],
             _fixed,
             5,
             _y_pos[1] + 110,
@@ -284,7 +284,7 @@ class GeneralData(RAMSTKWorkView):
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = do_make_label_group(
-            self._lst_gendata_labels[1],
+            self._lst_labels[1],
             _fixed, 5, 5,
         )
         _x_pos += 50
@@ -326,7 +326,7 @@ class GeneralData(RAMSTKWorkView):
         _frame.add(_scrollwindow)
 
         _x_pos, _y_pos = do_make_label_group(
-            self._lst_gendata_labels[2],
+            self._lst_labels[2],
             _fixed, 5, 5,
         )
         _x_pos += 50
@@ -947,13 +947,13 @@ class GeneralData(RAMSTKWorkView):
             (_function, _id) = _dic_switch.get(key)
             _function(value, self._lst_handler_id[_id])
 
-    def _on_focus_out(self, entry, __event, index):
+    def _on_focus_out(self, entry, index):
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
         This method is called by:
 
-            * RAMSTKEntry() 'focus-out' signal
+            * RAMSTKEntry() 'focus-out-event' signal
             * RAMSTKTextView() 'changed' signal
 
         This method sends the 'wvw_editing_validation' message.

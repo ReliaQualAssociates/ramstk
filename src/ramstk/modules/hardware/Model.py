@@ -427,6 +427,7 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             # was deleted.
             if not self._test:
                 pub.sendMessage('deleted_hardware', tree=self.tree)
+                pub.sendMessage('request_delete_allocation', node_id=node_id)
                 pub.sendMessage('request_delete_similar_item', node_id=node_id)
 
         return _error_code, _msg
@@ -534,6 +535,7 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             # Hardware was inserted.
             if not self._test:
                 pub.sendMessage('inserted_hardware', tree=self.tree)
+                pub.sendMessage('request_insert_allocation', revision_id=_revision_id, hardware_id=_hardware_id, parent_id=_parent_id)
                 pub.sendMessage('request_insert_similar_item', revision_id=_revision_id, hardware_id=_hardware_id, parent_id=_parent_id)
 
         return _error_code, _msg
