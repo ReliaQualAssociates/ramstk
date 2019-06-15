@@ -917,7 +917,7 @@ class RAMSTK():
         )
 
         if not self.__test:
-            pub.sendMessage('closedProgram')
+            pub.sendMessage('closed_program')
 
         if not self.ramstk_model.do_close_program():
             self.RAMSTK_CONFIGURATION.loaded = False

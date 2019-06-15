@@ -72,14 +72,11 @@ class FMEADataController(RAMSTKDataController):
         :return: tree; the FMEA treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        _functional = False
-        try:
+        _functional = attributes['functional']
+        if _functional:
             _parent_id = attributes['function_id']
-            _functional = True
-        except KeyError:
+        else:
             _parent_id = attributes['hardware_id']
-        finally:
-            _parent_id = None
 
         return self._dtm_data_model.do_select_all(
             parent_id=_parent_id,
