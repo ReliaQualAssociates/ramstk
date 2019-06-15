@@ -57,8 +57,31 @@ class RAMSTKWorkView(Gtk.HBox, RAMSTKBaseView):
 
         # Initialize public scalar attributes.
 
+        self.__set_callbacks()
+
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_select_revision, 'selected_revision')
+
+    def __set_callbacks(self):
+        """
+        Set common callback methods for the ModuleView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('cursor_changed', self._on_row_change),
+            )
+        except AttributeError:
+            pass
+
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event', self._on_button_press),
+            )
+        except AttributeError:
+            pass
 
     def _make_buttonbox(self, **kwargs):
         """
@@ -86,14 +109,14 @@ class RAMSTKWorkView(Gtk.HBox, RAMSTKBaseView):
 
         return _buttonbox
 
-    def _on_select_revision(self, **kwargs):
+    def _on_select_revision(self, attributes):
         """
         Respond to the `selected_revision` signal from pypubsub.
 
         :return: None
         :rtype: None
         """
-        self._revision_id = kwargs['module_id']
+        self._revision_id = attributes['revision_id']
 
     def make_ui(self, **kwargs):
         """
