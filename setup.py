@@ -16,7 +16,7 @@ with open(os.path.join(HERE, 'README.md')) as f:
     __long_description__ = f.read()
 
 __appname__ = 'RAMSTK'
-__version__ = '1.0.5'
+__version__ = '1.0.1'
 __author__ = "Doyle 'weibullguy' Rowland"
 __email__ = "doyle.rowland@reliaqual.com"
 __trove__ = [
@@ -63,7 +63,7 @@ class Install(_install):
     def pre_install_script():
         """Execute before install."""
         _eggfile = os.path.abspath('.') + '/src/RAMSTK.egg-info'
-        print("Removing old egg...")
+        print("\033[1;33mRemoving old rotten RAMSTK egg...\033[0m")
         try:
             if os.path.isfile(_eggfile):
                 os.unlink(_eggfile)
@@ -73,7 +73,7 @@ class Install(_install):
     @staticmethod
     def post_install_script():
         """Execute after install."""
-        print("\033[92mRAMSTK is installed!!\033[0m")
+        print("\033[1;32mYour shiny new RAMSTK-{0:s} is installed!!\033[0m".format(__version__))
 
     def run(self):
         """Run the install."""

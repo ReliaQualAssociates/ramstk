@@ -105,15 +105,14 @@ class RAMSTKEntry(Gtk.Entry):
         Update the RAMSTK Entry with a new value.
 
         :param str value: the information to update the RAMSTKEntry() to
-                          display.
-        :param int handler_id: the handler ID associated with the
-                               RAMSTKEntry().
+        display.
+        :param int handler_id: the handler ID associated with the RAMSTKEntry().
         :return: None
         :rtype: None
         """
-        with self.handler_block(handler_id):
-            self.set_text(str(value))
-            self.handler_unblock(handler_id)
+        self.handler_block(handler_id)
+        self.set_text(str(value))
+        self.handler_unblock(handler_id)
 
 
 class RAMSTKTextView(Gtk.TextView):
@@ -170,7 +169,7 @@ class RAMSTKTextView(Gtk.TextView):
         """
         _buffer = self.do_get_buffer()
 
-        return _buffer.get_text(*_buffer.get_bounds())
+        return _buffer.get_text(*_buffer.get_bounds(), True)
 
     def do_set_properties(self, **kwargs):
         r"""
@@ -219,6 +218,6 @@ class RAMSTKTextView(Gtk.TextView):
         """
         _buffer = self.do_get_buffer()
 
-        with _buffer.handler_block(handler_id):
-            _buffer.set_text(str(value))
-            _buffer.handler_unblock(handler_id)
+        _buffer.handler_block(handler_id)
+        _buffer.set_text(str(value))
+        _buffer.handler_unblock(handler_id)

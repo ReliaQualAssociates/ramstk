@@ -6,14 +6,17 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKAllocation Table."""
 
+# Standard Library Imports
 from math import exp, log
 
+# Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
+# RAMSTK Package Imports
+from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 # Import other RAMSTK modules.
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKAllocation(RAMSTK_BASE):
@@ -30,13 +33,15 @@ class RAMSTKAllocation(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     hardware_id = Column(
         'fld_hardware_id',
         Integer,
         ForeignKey('ramstk_hardware.fld_hardware_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
 
     availability_alloc = Column('fld_availability_alloc', Float, default=0.0)
     duty_cycle = Column('fld_duty_cycle', Float, default=100.0)
@@ -54,7 +59,8 @@ class RAMSTKAllocation(RAMSTK_BASE):
     n_sub_elements = Column('fld_n_sub_elements', Integer, default=1)
     parent_id = Column('fld_parent_id', Integer, default=1)
     percent_weight_factor = Column(
-        'fld_percent_weight_factor', Float, default=0.0)
+        'fld_percent_weight_factor', Float, default=0.0,
+    )
     reliability_alloc = Column('fld_reliability_alloc', Float, default=0.0)
     reliability_goal = Column('fld_reliability_goal', Float, default=1.0)
     op_time_factor = Column('fld_op_time_factor', Integer, default=1)
@@ -66,17 +72,18 @@ class RAMSTKAllocation(RAMSTK_BASE):
 
     def get_attributes(self):
         """
-        Retrieve the current values of the RAMSTKAllocation data model attributes.
+        Retrieve current values of the RAMSTKAllocation data model attributes.
 
-        :return: {hardware_id, availability_alloc, env_factor, goal_measure_id,
-                  hazard_rate_alloc, hazard_rate_goal, included, int_factor,
-                  method_id, mtbf_alloc, mtbf_goal, n_sub_systems,
-                  n_sub_elements, parent_id, percent_wt_factor,
+        :return: {revision_id, hardware_id, availability_alloc, env_factor,
+                  goal_measure_id, hazard_rate_alloc, hazard_rate_goal,
+                  included, int_factor, method_id, mtbf_alloc, mtbf_goal,
+                  n_sub_systems, n_sub_elements, parent_id, percent_wt_factor,
                   reliability_alloc, reliability_goal, op_time_factor,
                   soa_factor, weight_factor} pairs.
         :rtype: dict
         """
         _attributes = {
+            'revision_id': self.revision_id,
             'hardware_id': self.hardware_id,
             'availability_alloc': self.availability_alloc,
             'duty_cycle': self.duty_cycle,
@@ -98,7 +105,7 @@ class RAMSTKAllocation(RAMSTK_BASE):
             'reliability_goal': self.reliability_goal,
             'op_time_factor': self.op_time_factor,
             'soa_factor': self.soa_factor,
-            'weight_factor': self.weight_factor
+            'weight_factor': self.weight_factor,
         }
 
         return _attributes
@@ -118,41 +125,56 @@ class RAMSTKAllocation(RAMSTK_BASE):
 
         try:
             self.availability_alloc = float(
-                none_to_default(attributes['availability_alloc'], 0.0))
+                none_to_default(attributes['availability_alloc'], 0.0),
+            )
             self.duty_cycle = float(
-                none_to_default(attributes['duty_cycle'], 100.0))
+                none_to_default(attributes['duty_cycle'], 100.0),
+            )
             self.env_factor = int(none_to_default(attributes['env_factor'], 1))
             self.goal_measure_id = int(
-                none_to_default(attributes['goal_measure_id'], 0))
+                none_to_default(attributes['goal_measure_id'], 0),
+            )
             self.hazard_rate_alloc = float(
-                none_to_default(attributes['hazard_rate_alloc'], 0.0))
+                none_to_default(attributes['hazard_rate_alloc'], 0.0),
+            )
             self.hazard_rate_goal = float(
-                none_to_default(attributes['hazard_rate_goal'], 0.0))
+                none_to_default(attributes['hazard_rate_goal'], 0.0),
+            )
             self.included = int(none_to_default(attributes['included'], 1))
             self.int_factor = int(none_to_default(attributes['int_factor'], 1))
             self.method_id = int(none_to_default(attributes['method_id'], 1))
             self.mission_time = float(
-                none_to_default(attributes['mission_time'], 100.0))
+                none_to_default(attributes['mission_time'], 100.0),
+            )
             self.mtbf_alloc = float(
-                none_to_default(attributes['mtbf_alloc'], 0.0))
+                none_to_default(attributes['mtbf_alloc'], 0.0),
+            )
             self.mtbf_goal = float(
-                none_to_default(attributes['mtbf_goal'], 0.0))
+                none_to_default(attributes['mtbf_goal'], 0.0),
+            )
             self.n_sub_systems = int(
-                none_to_default(attributes['n_sub_systems'], 1))
+                none_to_default(attributes['n_sub_systems'], 1),
+            )
             self.n_sub_elements = int(
-                none_to_default(attributes['n_sub_elements'], 1))
+                none_to_default(attributes['n_sub_elements'], 1),
+            )
             self.parent_id = int(none_to_default(attributes['parent_id'], 1))
             self.percent_weight_factor = float(
-                none_to_default(attributes['percent_weight_factor'], 0.0))
+                none_to_default(attributes['percent_weight_factor'], 0.0),
+            )
             self.reliability_alloc = float(
-                none_to_default(attributes['reliability_alloc'], 0.0))
+                none_to_default(attributes['reliability_alloc'], 0.0),
+            )
             self.reliability_goal = float(
-                none_to_default(attributes['reliability_goal'], 1.0))
+                none_to_default(attributes['reliability_goal'], 1.0),
+            )
             self.op_time_factor = int(
-                none_to_default(attributes['op_time_factor'], 1))
+                none_to_default(attributes['op_time_factor'], 1),
+            )
             self.soa_factor = int(none_to_default(attributes['soa_factor'], 1))
             self.weight_factor = float(
-                none_to_default(attributes['weight_factor'], 1))
+                none_to_default(attributes['weight_factor'], 1.0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
@@ -178,7 +200,8 @@ class RAMSTKAllocation(RAMSTK_BASE):
             _weight_i = 1.0 / float(n_children)
             self.reliability_alloc = parent_goal**_weight_i
             self.hazard_rate_alloc = (
-                -1.0 * log(self.reliability_alloc) / self.mission_time)
+                -1.0 * log(self.reliability_alloc) / self.mission_time
+            )
             self.mtbf_alloc = 1.0 / self.hazard_rate_alloc
         except (UnboundLocalError, ValueError, ZeroDivisionError):
             self.reliability_alloc = 0.0
@@ -208,7 +231,8 @@ class RAMSTKAllocation(RAMSTK_BASE):
                                (-1.0 * self.n_sub_elements * log(parent_goal)))
             self.hazard_rate_alloc = 1.0 / self.mtbf_alloc
             self.reliability_alloc = exp(
-                -1.0 * self.hazard_rate_alloc * self.mission_time)
+                -1.0 * self.hazard_rate_alloc * self.mission_time,
+            )
         except (ValueError, ZeroDivisionError):
             self.reliability_alloc = 0.0
             self.hazard_rate_alloc = 0.0
@@ -237,7 +261,8 @@ class RAMSTKAllocation(RAMSTK_BASE):
             self.hazard_rate_alloc = self.weight_factor * parent_goal
             self.mtbf_alloc = 1.0 / self.hazard_rate_alloc
             self.reliability_alloc = exp(
-                -1.0 * self.hazard_rate_alloc * self.mission_time)
+                -1.0 * self.hazard_rate_alloc * self.mission_time,
+            )
         except ZeroDivisionError:
             self.weight_factor = 0.0
             self.reliability_alloc = 0.0
@@ -260,16 +285,20 @@ class RAMSTKAllocation(RAMSTK_BASE):
         _return = False
 
         # FIXME: Add range check on input factors (1 - 10) in RAMSTKAllocation.foo_apportionment().
-        self.weight_factor = (self.int_factor * self.soa_factor *
-                              self.op_time_factor * self.env_factor)
+        self.weight_factor = (
+            self.int_factor * self.soa_factor *
+            self.op_time_factor * self.env_factor
+        )
 
         try:
             self.percent_weight_factor = (
-                float(self.weight_factor) / float(cum_weight))
+                float(self.weight_factor) / float(cum_weight)
+            )
             self.hazard_rate_alloc = self.percent_weight_factor * parent_goal
             self.mtbf_alloc = 1.0 / self.hazard_rate_alloc
             self.reliability_alloc = exp(
-                -1.0 * self.hazard_rate_alloc * self.mission_time)
+                -1.0 * self.hazard_rate_alloc * self.mission_time,
+            )
         except ZeroDivisionError:
             self.percent_weight_factor = 0.0
             self.reliability_alloc = 0.0
@@ -291,7 +320,8 @@ class RAMSTKAllocation(RAMSTK_BASE):
         if self.goal_measure_id == 1:  # Reliability goal
             try:
                 self.mtbf_goal = (
-                    -1.0 * self.mission_time / log(self.reliability_goal))
+                    -1.0 * self.mission_time / log(self.reliability_goal)
+                )
                 self.hazard_rate_goal = 1.0 / self.mtbf_goal
             except (ValueError, ZeroDivisionError):
                 self.hazard_rate_goal = 0.0
@@ -302,7 +332,8 @@ class RAMSTKAllocation(RAMSTK_BASE):
             try:
                 self.mtbf_goal = 1.0 / self.hazard_rate_goal
                 self.reliability_goal = exp(
-                    -1.0 * self.mission_time / self.mtbf_goal)
+                    -1.0 * self.mission_time / self.mtbf_goal,
+                )
             except ZeroDivisionError:
                 self.mtbf_goal = 0.0
                 self.reliability_goal = 0.0
@@ -312,7 +343,8 @@ class RAMSTKAllocation(RAMSTK_BASE):
             try:
                 self.hazard_rate_goal = 1.0 / self.mtbf_goal
                 self.reliability_goal = exp(
-                    -1.0 * self.mission_time / self.mtbf_goal)
+                    -1.0 * self.mission_time / self.mtbf_goal,
+                )
             except ZeroDivisionError:
                 self.hazard_rate_goal = 0.0
                 self.reliability_goal = 0.0
