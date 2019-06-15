@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.modules.test_preferences.py is part of The RAMSTK Project
@@ -7,22 +7,21 @@
 # Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Preferences class. """
 
+# Standard Library Imports
+import glob
 import os
 import platform
 import sys
-import glob
 
+# Third Party Imports
 import pytest
 
+# RAMSTK Package Imports
 from ramstk.dao import DAO, RAMSTKUser
-from ramstk.modules.preferences import dtmPreferences, dtcPreferences
-from ramstk.modules.preferences.Model import (SitePreferencesDataModel,
-                                              UserPreferencesDataModel)
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
+from ramstk.modules.preferences import dtcPreferences, dtmPreferences
+from ramstk.modules.preferences.Model import (
+    SitePreferencesDataModel, UserPreferencesDataModel,
+)
 
 ATTRIBUTES = {'revision_id': 1, 'site_dao': '', 'site': True, 'user': True}
 
@@ -34,8 +33,10 @@ except KeyError:
     elif platform.system() == 'Windows':
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
-        print(("The {0:s} system platform is not "
-               "supported.").format(platform.system()))
+        print((
+            "The {0:s} system platform is not "
+            "supported."
+        ).format(platform.system()))
         sys.exit(1)
 
 CONF_DIR = VIRTUAL_ENV + '/share/RAMSTK'
@@ -48,8 +49,10 @@ TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.ramstk'
 
 
 @pytest.mark.integration
-def test_create_preferences_data_model(test_dao, test_common_dao,
-                                       test_configuration):
+def test_create_preferences_data_model(
+        test_dao, test_common_dao,
+        test_configuration,
+):
     """ __init__() should return an instance of the Preferences data model. """
     DUT = dtmPreferences(test_dao, test_common_dao, test_configuration)
 
@@ -62,8 +65,10 @@ def test_create_preferences_data_model(test_dao, test_common_dao,
 
 
 @pytest.mark.integration
-def test_do_select_all_site_preferences(test_dao, test_common_dao,
-                                        test_configuration):
+def test_do_select_all_site_preferences(
+        test_dao, test_common_dao,
+        test_configuration,
+):
     """ do_select_all() should return None on success when selecting site Preferences. """
     DUT = dtmPreferences(test_dao, test_common_dao, test_configuration)
     DUT.do_select_all(site=True, user=False)
@@ -97,8 +102,10 @@ def test_do_select_all_site_preferences(test_dao, test_common_dao,
 
 
 @pytest.mark.integration
-def test_do_select_all_user_preferences(test_dao, test_common_dao,
-                                        test_configuration):
+def test_do_select_all_user_preferences(
+        test_dao, test_common_dao,
+        test_configuration,
+):
     """ do_select_all() should return None on success when selecting program Preferences. """
     DUT = dtmPreferences(test_dao, test_common_dao, test_configuration)
     DUT.do_select_all(site=False, user=True)
@@ -109,7 +116,7 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
         'socket': '3306',
         'database': TEST_COMMON_DB_PATH,
         'user': 'ramstkcom',
-        'password': 'ramstkcom'
+        'password': 'ramstkcom',
     }
     assert DUT.user_preferences['program_db_info'] == {
         'type': 'sqlite',
@@ -117,7 +124,7 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
         'socket': '3306',
         'database': TEST_PROGRAM_DB_PATH,
         'user': 'johnny.tester',
-        'password': 'clear.text.password'
+        'password': 'clear.text.password',
     }
     assert DUT.user_preferences['report_size'] == 'letter'
     assert float(DUT.user_preferences['hr_multiplier']) == 1000000.0
@@ -126,19 +133,19 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
     assert DUT.user_preferences['tabpos'] == {
         'modulebook': 'top',
         'listbook': 'bottom',
-        'workbook': 'bottom'
+        'workbook': 'bottom',
     }
     assert DUT.user_preferences['sitedir'] == VIRTUAL_ENV + '/share/RAMSTK'
     assert DUT.user_preferences['datadir'] == DATA_DIR
     assert DUT.user_preferences[
-        'icondir'] == VIRTUAL_ENV + '/share/RAMSTK/icons'
+        'icondir'
+    ] == VIRTUAL_ENV + '/share/RAMSTK/icons'
     assert DUT.user_preferences['logdir'] == LOG_DIR
     assert DUT.user_preferences['progdir'] == TMP_DIR
     assert DUT.user_preferences['format_files'] == {
         'allocation': 'Allocation.xml',
-        'dfmeca': 'DFMECA.xml',
         'failure_definition': 'FailureDefinition.xml',
-        'ffmea': 'FFMEA.xml',
+        'fmea': 'FMEA.xml',
         'function': 'Function.xml',
         'hardware': 'Hardware.xml',
         'hazops': 'HazOps.xml',
@@ -147,7 +154,7 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
         'revision': 'Revision.xml',
         'similaritem': 'SimilarItem.xml',
         'stakeholder': 'Stakeholder.xml',
-        'validation': 'Validation.xml'
+        'validation': 'Validation.xml',
     }
     assert DUT.user_preferences['colors'] == {
         'functionbg': '#FFFFFF',
@@ -161,13 +168,15 @@ def test_do_select_all_user_preferences(test_dao, test_common_dao,
         'stakeholderbg': '#FFFFFF',
         'stakeholderfg': '#000000',
         'validationbg': '#FFFFFF',
-        'validationfg': '#000000'
+        'validationfg': '#000000',
     }
 
 
 @pytest.mark.integration
-def test_do_update_site_preferences(test_dao, test_common_dao,
-                                    test_configuration):
+def test_do_update_site_preferences(
+        test_dao, test_common_dao,
+        test_configuration,
+):
     """ do_update() should return a zero error code on success when updating site preferences. """
     DUT = dtmPreferences(test_dao, test_common_dao, test_configuration)
     DUT.do_select_all(site=True, user=True)
@@ -178,12 +187,15 @@ def test_do_update_site_preferences(test_dao, test_common_dao,
 
     DUT.do_select_all(site=True, user=True)
     assert DUT.site_preferences['damage_models'][
-        0].description == 'Damage Model #9'
+        0
+    ].description == 'Damage Model #9'
 
 
 @pytest.mark.integration
-def test_do_update_user_preferences(test_dao, test_common_dao,
-                                    test_configuration):
+def test_do_update_user_preferences(
+        test_dao, test_common_dao,
+        test_configuration,
+):
     """ do_update() should return a zero error code on success when updating user preferences. """
     DUT = dtmPreferences(test_dao, test_common_dao, test_configuration)
     DUT.do_select_all(site=True, user=True)
@@ -196,11 +208,14 @@ def test_do_update_user_preferences(test_dao, test_common_dao,
 
 
 @pytest.mark.integration
-def test_create_preferences_data_controller(test_dao, test_common_dao,
-                                            test_configuration):
+def test_create_preferences_data_controller(
+        test_dao, test_common_dao,
+        test_configuration,
+):
     """ __init__() should return instance of Preferences data controller. """
     DUT = dtcPreferences(
-        test_dao, test_configuration, site_dao=test_common_dao, test='True')
+        test_dao, test_configuration, site_dao=test_common_dao, test='True',
+    )
 
     assert isinstance(DUT, dtcPreferences)
     assert isinstance(DUT._dtm_data_model, dtmPreferences)
@@ -210,17 +225,21 @@ def test_create_preferences_data_controller(test_dao, test_common_dao,
 def test_request_do_select_all(test_dao, test_common_dao, test_configuration):
     """ request_do_select_all() should return a Tree of RAMSTKPreferences data models. """
     DUT = dtcPreferences(
-        test_dao, test_configuration, site_dao=test_common_dao, test='True')
+        test_dao, test_configuration, site_dao=test_common_dao, test='True',
+    )
 
     assert not DUT.request_do_select_all(ATTRIBUTES)
 
 
 @pytest.mark.integration
-def test_request_get_preferences_site(test_dao, test_common_dao,
-                                      test_configuration):
+def test_request_get_preferences_site(
+        test_dao, test_common_dao,
+        test_configuration,
+):
     """ request_get_preferences() should return a dict of dicts of site option:value pairs. """
     DUT = dtcPreferences(
-        test_dao, test_configuration, site_dao=test_common_dao, test='True')
+        test_dao, test_configuration, site_dao=test_common_dao, test='True',
+    )
     DUT.request_do_select_all(ATTRIBUTES)
 
     _preferences = DUT.request_get_preferences(site=True, user=False)
@@ -253,11 +272,14 @@ def test_request_get_preferences_site(test_dao, test_common_dao,
 
 
 @pytest.mark.integration
-def test_request_get_preferences_user(test_dao, test_common_dao,
-                                      test_configuration):
+def test_request_get_preferences_user(
+        test_dao, test_common_dao,
+        test_configuration,
+):
     """ request_get_preferences() should return a dict of program option:value pairs. """
     DUT = dtcPreferences(
-        test_dao, test_configuration, site_dao=test_common_dao, test='True')
+        test_dao, test_configuration, site_dao=test_common_dao, test='True',
+    )
     DUT.request_do_select_all(ATTRIBUTES)
 
     _preferences = DUT.request_get_preferences(site=False, user=True)
@@ -283,7 +305,8 @@ def test_request_get_preferences_user(test_dao, test_common_dao,
 def test_request_do_update(test_dao, test_common_dao, test_configuration):
     """ request_do_update() should return False on success. """
     DUT = dtcPreferences(
-        test_dao, test_configuration, site_dao=test_common_dao, test='True')
+        test_dao, test_configuration, site_dao=test_common_dao, test='True',
+    )
     DUT.request_do_select_all(ATTRIBUTES)
 
     DUT.request_get_preferences(site=False, user=True)

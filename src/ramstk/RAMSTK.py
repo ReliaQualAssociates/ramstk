@@ -654,7 +654,7 @@ class RAMSTK():
 
         # Define public scalar attributes.
         self.icoStatus = Gtk.StatusIcon()
-        self.loaded = False
+        self.RAMSTK_CONFIGURATION.loaded = False
 
         # Connect to the RAMSTK Common database.
         _database = None
@@ -714,6 +714,9 @@ class RAMSTK():
         #self.icoStatus.set_tooltip(
         #    _(u"RAMSTK is not currently connected to a "
         #      u"project database."))
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.request_do_open_program, 'request_do_open_program')
 
     def request_do_create_program(self):
         """
@@ -880,7 +883,7 @@ class RAMSTK():
             #      u"{0:s}.".format(
             #          self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'])))
 
-            self.loaded = True
+            self.RAMSTK_CONFIGURATION.loaded = True
 
             self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(_msg)
             if not self.__test:
@@ -914,12 +917,10 @@ class RAMSTK():
         )
 
         if not self.__test:
-            pub.sendMessage('closedProgram')
+            pub.sendMessage('closed_program')
 
         if not self.ramstk_model.do_close_program():
-            self.loaded = False
-
-        return self.loaded
+            self.RAMSTK_CONFIGURATION.loaded = False
 
     def request_do_save_program(self):
         """

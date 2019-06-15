@@ -166,32 +166,9 @@ class RAMSTKBaseView():
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
-        self.__set_callbacks()
-
         # Subscribe to PyPubSub messages.
         # TODO: Change this to self.on_select_revision when everything is updated.
         pub.subscribe(self.do_set_revision_id, 'selected_revision')
-
-    def __set_callbacks(self):
-        """
-        Set common callback methods for the ModuleView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('cursor_changed', self._on_row_change),
-            )
-        except AttributeError:
-            pass
-
-        try:
-            self._lst_handler_id.append(
-                self.treeview.connect('button_press_event', self._on_button_press),
-            )
-        except AttributeError:
-            pass
 
     def do_set_revision_id(self, attributes):
         """Set the Revision ID when a new Revision is selected."""
@@ -211,7 +188,10 @@ class RAMSTKBaseView():
         _model = self.treeview.get_model()
         _model.clear()
 
-        _tag = tree.get_node(0).tag
+        try:
+            _tag = tree.get_node(0).tag
+        except AttributeError:
+            _tag = "UNK"
 
         if self.treeview.do_load_tree(tree):
             _prompt = _(
@@ -221,9 +201,9 @@ class RAMSTKBaseView():
             ).format(self._revision_id, _tag)
             _dialog = RAMSTKMessageDialog(
                 _prompt, self._dic_icons['error'],
-                'error',
+                'error', self,
             )
-            if _dialog.do_run() == self._response_ok:
+            if _dialog.do_run() == Gtk.ResponseType.OK:
                 _dialog.do_destroy()
 
         _row = _model.get_iter_first()

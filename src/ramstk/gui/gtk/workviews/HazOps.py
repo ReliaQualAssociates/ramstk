@@ -267,7 +267,6 @@ class HazOps(RAMSTKWorkView):
         # pylint: disable=attribute-defined-outside-init
         self._revision_id = attributes["revision_id"]
         self._parent_id = attributes["hardware_id"]
-        self._hazard_id = attributes["hazard_id"]
 
         RAMSTKWorkView.on_select(
             self,

@@ -252,8 +252,8 @@ class RAMSTKTreeView(Gtk.TreeView):
         _entity = _node.data
 
         _attributes = []
-        if _entity is not None:
-            # For simple data models that return an RAMSTK database
+        if _entity is not None: # pylint: disable=too-many-nested-blocks
+            # For simple data models that return a RAMSTK database
             # table instance for the data object, the first try
             # statement will create the list of attribute values.
             try:
@@ -262,11 +262,11 @@ class RAMSTKTreeView(Gtk.TreeView):
                     if _key == 'dict':
                         _attributes.append(str(_temp))
                     else:
-                        if isinstance(_temp[_key], datetime.date):
-                            _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
                         try:
+                            if isinstance(_temp[_key], datetime.date):
+                                _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
                             _temp[_key] = _temp[_key].decode('utf-8')
-                        except AttributeError:
+                        except(AttributeError, KeyError):
                             pass
                         _attributes.append(_temp[_key])
             except AttributeError:

@@ -7,7 +7,6 @@
 """Datamodels Package RAMSTKDataController."""
 
 # Third Party Imports
-# Import third party modules.
 from pubsub import pub
 
 __author__ = 'Doyle Rowland'

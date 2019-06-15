@@ -7,6 +7,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Combo Module."""
 
+# RAMSTK Local Imports
 # Import the ramstk.Widget base class.
 from .Widget import GObject, Gtk
 
@@ -29,8 +30,10 @@ class RAMSTKComboBox(Gtk.ComboBox):
         self._index = index
 
         if not simple:
-            _list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
-                                  GObject.TYPE_STRING)
+            _list = Gtk.ListStore(
+                GObject.TYPE_STRING, GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+            )
         else:
             _list = Gtk.ListStore(GObject.TYPE_STRING)
         self.set_model(_list)
@@ -49,20 +52,24 @@ class RAMSTKComboBox(Gtk.ComboBox):
         Retrieve all the options in the RAMSTK Combo.
 
         :return: _options
-        :rtype: list
+        :rtype: dict
         """
-        _options = []
+        _options = {}
 
         _model = self.get_model()
         _iter = _model.get_iter_first()
 
+        i = 0
         while _iter is not None:
-            _options.append(_model.get_value(_iter, self._index))
-            _iter = iter_next(_iter)
+            _options[i] = _model.get_value(_iter, self._index)
+            _iter = _model.iter_next(_iter)
+            i += 1
 
         return _options
 
-    def do_load_combo(self, entries, index=0, simple=True):
+    # TODO: Remove index in calls to this method and then remove index from the
+    # argument list.
+    def do_load_combo(self, entries, index=0, simple=True): # pylint: disable=unused-argument
         """
         Load RAMSTK ComboBox widgets.
 
@@ -101,7 +108,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
                 _model.append([_entry[self._index]])
 
     def do_set_properties(self, **kwargs):
-        """
+        r"""
         Set the properties of the RAMSTK combobox.
 
         :param \**kwargs: See below
@@ -116,7 +123,6 @@ class RAMSTKComboBox(Gtk.ComboBox):
         :return: None
         :rtype: None
         """
-
         try:
             _height = kwargs['height']
         except KeyError:
@@ -139,17 +145,17 @@ class RAMSTKComboBox(Gtk.ComboBox):
         Update the RAMSTK Combo with a new value.
 
         :param str value: the information to update the RAMSTKCombo() to
-                          display.
+        display.
         :param int handler_id: the handler ID associated with the
-                               RAMSTKCombo().
+        RAMSTKCombo().
         :return: None
         :rtype: None
         """
         _options = self.do_get_options()
 
-        with self.handler_block(handler_id):
-            self.set_active(0)
-            for _key, _type in _options.items():
-                if _type[self._index] == value:
-                    self.set_active(int(_key))
-            self.handler_unblock(handler_id)
+        self.handler_block(handler_id)
+        self.set_active(0)
+        for _key, _value in _options.items():
+            if _value == value:
+                self.set_active(int(_key))
+        self.handler_unblock(handler_id)

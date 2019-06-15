@@ -822,13 +822,16 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        for _node in tree.nodes():
-            _attributes = _node.data.get_attributes()
+        for _node in tree.all_nodes():
+            try:
+                _attributes = _node.data
 
-            self._dic_hardware[_attributes['hardware_id']] = [
-                _attributes['name'],
-                _attributes['hazard_rate_logistics'],
-            ]
+                self._dic_hardware[_attributes['hardware_id']] = [
+                    _attributes['name'],
+                    _attributes['hazard_rate_logistics'],
+                ]
+            except TypeError:
+                pass
 
     def _on_button_press(self, treeview, event):
         """

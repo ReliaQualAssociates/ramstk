@@ -109,7 +109,7 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.txtName.connect('changed', self._on_focus_out, 0),
+            self.txtName.connect('focus-out-event', self._on_focus_out, 0),
         )
         self._lst_handler_id.append(
             self.txtRemarks.do_get_buffer().connect(
@@ -117,7 +117,7 @@ class GeneralData(RAMSTKWorkView):
             ),
         )
         self._lst_handler_id.append(
-            self.txtCode.connect('changed', self._on_focus_out, 2),
+            self.txtCode.connect('focus-out-event', self._on_focus_out, 2),
         )
 
     def __set_properties(self):
@@ -177,9 +177,9 @@ class GeneralData(RAMSTKWorkView):
             ),
         )
 
-        self.txtName.do_update(str(attributes['name']), 0)
-        self.txtRemarks.do_update(str(attributes['remarks']), 1)
-        self.txtCode.do_update(str(attributes['revision_code']), 2)
+        self.txtName.do_update(str(attributes['name']), self._lst_handler_id[0])
+        self.txtRemarks.do_update(str(attributes['remarks']), self._lst_handler_id[1])
+        self.txtCode.do_update(str(attributes['revision_code']), self._lst_handler_id[2])
 
     def _do_request_update(self, __button):
         """
@@ -235,13 +235,13 @@ class GeneralData(RAMSTKWorkView):
         (_function, _id) = _dic_switch.get(key)
         _function(value, self._lst_handler_id[_id])
 
-    def _on_focus_out(self, entry, __event, index):
+    def _on_focus_out(self, entry, index):
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
         This method is called by:
 
-            * RAMSTKEntry() 'focus-out' signal
+            * RAMSTKEntry() 'focus-out-event' signal
             * RAMSTKTextView() 'changed' signal
 
         This method sends the 'wvw_editing_revision' message.

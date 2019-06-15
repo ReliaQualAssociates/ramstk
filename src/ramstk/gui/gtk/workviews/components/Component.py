@@ -376,7 +376,7 @@ class StressInputs(Gtk.Fixed):
             ),
         )
         self._lst_handler_id.append(
-            self.txtTemperatureKnee.connect('changed', self.on_focus_out, 1),
+            self.txtTemperatureKnee.connect('changed', self._on_focus_out, 1),
         )
         self._lst_handler_id.append(
             self.txtTemperatureRatedMax.connect(

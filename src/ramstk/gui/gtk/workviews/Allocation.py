@@ -67,11 +67,14 @@ class Allocation(RAMSTKWorkView):
         )
 
         # Initialize private dictionary attributes.
+        self._dic_hardware_attrs = {}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self._allocation_id = None
+        self._allocation_tree = None
+        self._system_hazard_rate = 0.0
         self._hazard_rate_goal = 0.0
         self._measure_id = 0
         self._method_id = 0
@@ -113,8 +116,9 @@ class Allocation(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._do_load_allocation_attrs, 'retrieved_allocations')
+        pub.subscribe(self._do_load_hardware_attrs, 'retrieved_hardware')
         pub.subscribe(self._do_load_page, 'selected_hardware')
-        pub.subscribe(self.do_load_tree, 'retrieved_allocations')
 
     def __load_combobox(self):
         """
@@ -241,35 +245,36 @@ class Allocation(RAMSTKWorkView):
                     self.treeview.get_model(),
                 )
 
+        # Start index at 1 as there is only one callback for the treeview.
         self._lst_handler_id.append(
             self.cmbAllocationMethod.connect(
                 'changed',
                 self._on_combo_changed,
-                2,
+                1,
             ), )
         self._lst_handler_id.append(
             self.cmbAllocationGoal.connect(
                 'changed',
                 self._on_combo_changed,
-                3,
+                2,
             ), )
 
         self._lst_handler_id.append(
             self.txtReliabilityGoal.connect(
                 'focus_out_event',
                 self._on_focus_out,
-                4,
+                3,
             ), )
         self._lst_handler_id.append(
             self.txtHazardRateGoal.connect(
                 'focus_out_event',
                 self._on_focus_out,
-                5,
+                4,
             ), )
         self._lst_handler_id.append(
             self.txtMTBFGoal.connect(
                 'focus_out_event', self._on_focus_out,
-                6,
+                5,
             ), )
 
     def __set_properties(self):
@@ -397,6 +402,40 @@ class Allocation(RAMSTKWorkView):
         self.txtMTBFGoal.do_update("", self._lst_handler_id[5])
         self.txtReliabilityGoal.do_update("", self._lst_handler_id[6])
 
+    def _do_load_allocation_attrs(self, tree):
+        """
+        Load the Allocation class attributes.
+
+        :param tree: the treelib Tree() containing the allocation records.
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        self._allocation_tree = tree
+
+    def _do_load_hardware_attrs(self, tree):
+        """
+        Load the Hardware attributes needed to completely fill in the view.
+
+        :param tree: the Hardware treelib Tree().
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        self._system_hazard_rate = tree.children(tree.root,)[0].data['hazard_rate_logistics']
+
+        for _node in tree.all_nodes():
+            try:
+                self._dic_hardware_attrs[_node.data['hardware_id']] = [
+                    _node.data['name'],
+                    _node.data['availability_logistics'],
+                    _node.data['hazard_rate_logistics'],
+                    _node.data['mtbf_logistics'],
+                    _node.data['reliability_logistics'],
+                ]
+            except TypeError:
+                pass
+
     def _do_load_page(self, attributes):
         """
         Load the Hardware item information for the Allocation.
@@ -408,11 +447,6 @@ class Allocation(RAMSTKWorkView):
         """
         self._revision_id = attributes["revision_id"]
         self._parent_id = attributes["hardware_id"]
-        self._method_id = attributes["method_id"]
-        self._measure_id = attributes["goal_measure_id"]
-        self._hazard_rate_goal = attributes["hazard_rate_goal"]
-        self._mtbf_goal = attributes["mtbf_goal"]
-        self._reliability_goal = attributes["reliability_goal"]
 
         RAMSTKWorkView.on_select(
             self,
@@ -421,19 +455,61 @@ class Allocation(RAMSTKWorkView):
                 "{0:d}", ).format(self._parent_id),
         )
 
+        if self._allocation_tree is not None:
+            self._do_load_tree()
+
+    def _do_load_tree(self):
+        """
+        Load the Hardware allocation information into the RAMSTKTreeView().
+
+        :param tree:
+        :type tree:
+        :return: None
+        :rtype: None
+        """
+        try:
+            _attributes = self._allocation_tree.get_node(self._parent_id).data.get_attributes()
+            self._method_id = _attributes["method_id"]
+            self._measure_id = _attributes["goal_measure_id"]
+            self._hazard_rate_goal = _attributes["hazard_rate_goal"]
+            self._mtbf_goal = _attributes["mtbf_goal"]
+            self._reliability_goal = _attributes["reliability_goal"]
+        except AttributeError:
+            pass
+
+        _model = self.treeview.get_model()
+        _model.clear()
+
+        for _node in self._allocation_tree.children(self._parent_id):
+            _attributes = _node.data.get_attributes()
+            _attributes['name'] = self._dic_hardware_attrs[_attributes['hardware_id']][0]
+            _attributes['availability_logistics'] = self._dic_hardware_attrs[_attributes['hardware_id']][1]
+            _attributes['hazard_rate_logistics'] = self._dic_hardware_attrs[_attributes['hardware_id']][2]
+            _attributes['mtbf_logistics'] = self._dic_hardware_attrs[_attributes['hardware_id']][3]
+            _attributes['reliability_logistics'] = self._dic_hardware_attrs[_attributes['hardware_id']][4]
+
+            _data = []
+            for _key in self.treeview.korder:
+                if _key == 'dict':
+                    _data.append(str(_attributes))
+                else:
+                    _data.append(_attributes[_key])
+
+            _model.append(None, _data)
+
         self.cmbAllocationMethod.set_active(self._method_id)
         self.cmbAllocationGoal.set_active(self._measure_id)
         self.txtReliabilityGoal.do_update(
             str(self.fmt.format(self._reliability_goal)),
-            self._lst_handler_id[4],
+            self._lst_handler_id[3],
         )
         self.txtHazardRateGoal.do_update(
             str(self.fmt.format(self._hazard_rate_goal)),
-            self._lst_handler_id[5],
+            self._lst_handler_id[4],
         )
         self.txtMTBFGoal.do_update(
             str(self.fmt.format(self._mtbf_goal)),
-            self._lst_handler_id[6],
+            self._lst_handler_id[5],
         )
 
     def _do_request_calculate(self, __button):
@@ -599,8 +675,8 @@ class Allocation(RAMSTKWorkView):
         :rtype: None
         """
         _dic_keys = {
-            2: 'method_id',
-            3: 'goal_measure_id',
+            1: 'method_id',
+            2: 'goal_measure_id',
         }
 
         # Key is the allocation method ID:
@@ -734,9 +810,9 @@ class Allocation(RAMSTKWorkView):
         :rtype: None
         """
         _dic_keys = {
-            4: "reliability_goal",
-            5: "hazard_rate_goal",
-            6: "mtbf_goal",
+            3: "reliability_goal",
+            4: "hazard_rate_goal",
+            5: "mtbf_goal",
         }
         try:
             _key = _dic_keys[index]
@@ -750,11 +826,11 @@ class Allocation(RAMSTKWorkView):
         except ValueError:
             _new_text = ''
 
-        if index == 4:
+        if index == 3:
             self._reliability_goal = _new_text
-        elif index == 5:
+        elif index == 4:
             self._hazard_rate_goal = _new_text
-        elif index == 6:
+        elif index == 5:
             self._mtbf_goal = _new_text
 
         pub.sendMessage(

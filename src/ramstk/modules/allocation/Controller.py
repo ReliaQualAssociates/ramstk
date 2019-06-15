@@ -68,10 +68,8 @@ class AllocationDataController(RAMSTKDataController):
             "request_calculate_all_allocations",
         )
         pub.subscribe(self.request_do_delete, "request_delete_allocation")
-        pub.subscribe(self.request_do_delete, 'deleted_hardware')
         pub.subscribe(self.request_do_insert, "request_insert_allocation")
-        pub.subscribe(self.request_do_insert, 'inserted_hardware')
-        pub.subscribe(self._request_do_select_all, "selected_hardware")
+        pub.subscribe(self.request_do_select_all, "selected_revision")
         pub.subscribe(self.request_do_update, "request_update_allocation")
         pub.subscribe(
             self.request_do_update_all,
@@ -96,31 +94,6 @@ class AllocationDataController(RAMSTKDataController):
             hazard_rates=_lst_hazard_rates,
             **kwargs,
         )
-
-    def _request_do_select_all(self, attributes):
-        """
-        Retrieve the treelib Tree() from the Allocation Data Model.
-
-        :return: None
-        :rtype: None
-        """
-        # Select the Hardware BoM tree and retrieve the system hazard rate.
-        self._dtm_hardware_bom.do_select_all(
-            revision_id=attributes['revision_id'], )
-        self.system_hazard_rate = self._dtm_hardware_bom.tree.children(
-            self._dtm_hardware_bom.tree.root,
-        )[0].data['hazard_rate_logistics']
-
-        for _node in self._dtm_hardware_bom.tree.all_nodes()[1:]:
-            self.dic_hardware_data[_node.identifier] = [
-                _node.data['name'],
-                _node.data['availability_logistics'],
-                _node.data['hazard_rate_logistics'],
-                _node.data['mtbf_logistics'],
-                _node.data['reliability_logistics'],
-            ]
-
-        return RAMSTKDataController.request_do_select_all(self, attributes)
 
     def request_do_select_children(self, node_id):
         """

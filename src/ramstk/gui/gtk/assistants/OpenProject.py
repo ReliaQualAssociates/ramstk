@@ -6,6 +6,9 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Open Project Assistant Module."""
 
+# Third Party Imports
+from pubsub import pub
+
 # RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import RAMSTKMessageDialog
 from ramstk.gui.gtk.ramstk.Widget import Gtk, _
@@ -14,27 +17,29 @@ from ramstk.gui.gtk.ramstk.Widget import Gtk, _
 class OpenProject():
     """Assistant to guide user through process of creating RAMSTK Project."""
 
-    def __init__(self, __button, controller):
+    RAMSTK_CONFIGURATION = None
+
+    def __init__(self, __button, configuration):
         """
         Initialize an instance of the Create Project Assistant.
 
         :param Gtk.ToolButton __button: the Gtk.ToolButton() that launched this
                                         class.
-        :param controller: the :class:`RAMSTK.RAMSTK` master data
-                           controller.
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :py:class:`ramstk.Configuration.Configuration`
         """
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._mdcRAMSTK = controller
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.RAMSTK_CONFIGURATION = configuration
 
         self._do_request_open_project()
 
@@ -45,7 +50,7 @@ class OpenProject():
         :return: None
         :rtype: None
         """
-        if self._mdcRAMSTK.loaded:
+        if self.RAMSTK_CONFIGURATION.loaded:
             _prompt = _(
                 "A database is already open.  Only one database can "
                 "be open at a time in RAMSTK.  You must close the "
@@ -53,7 +58,7 @@ class OpenProject():
                 "database can be opened.",
             )
             _icon = (
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
+                self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
                 '/32x32/information.png'
             )
             _dialog = RAMSTKMessageDialog(_prompt, _icon, 'information')
@@ -63,13 +68,14 @@ class OpenProject():
         else:
             _dialog = Gtk.FileChooserDialog(
                 title=_("RAMSTK - Open Program"),
+                parent=None,
                 buttons=(
                     Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
                     Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
                 ),
             )
             _dialog.set_current_folder(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR,
+                self.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR,
             )
 
             # Set some filters to select all files or only some text files.
@@ -84,9 +90,9 @@ class OpenProject():
             _dialog.add_filter(_filter)
 
             if _dialog.run() == Gtk.ResponseType.ACCEPT:
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'] = \
+                self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO['database'] = \
                     _dialog.get_filename()
 
             _dialog.destroy()
 
-            self._mdcRAMSTK.request_do_open_program()
+            pub.sendMessage('request_do_open_program')

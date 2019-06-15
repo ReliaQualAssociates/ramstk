@@ -56,7 +56,6 @@ class ListView(RAMSTKListView):
         self.__make_treeview()
         self.__set_properties()
         self.__make_ui()
-        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_tree, 'deleted_usage_profile')
@@ -72,12 +71,18 @@ class ListView(RAMSTKListView):
         :rtype: :class:`Gtk.ButtonBox`
         """
         _tooltips = [
-            _("Add a new Usage Profile entity at the same level "
-              "as the currently selected entity."),
-            _("Add a new Usage Profile entity one level below the "
-              "currently selected entity."),
-            _("Remove the curently selected entity from the Usage "
-              "Profile.")
+            _(
+                "Add a new Usage Profile entity at the same level "
+                "as the currently selected entity.",
+            ),
+            _(
+                "Add a new Usage Profile entity one level below the "
+                "currently selected entity.",
+            ),
+            _(
+                "Remove the curently selected entity from the Usage "
+                "Profile.",
+            ),
         ]
         _callbacks = [
             self.do_request_insert_sibling,
@@ -97,7 +102,8 @@ class ListView(RAMSTKListView):
             callbacks=_callbacks,
             orientation='vertical',
             height=-1,
-            width=-1)
+            width=-1,
+        )
 
         return _buttonbox
 
@@ -114,7 +120,7 @@ class ListView(RAMSTKListView):
         """
         _cellrenderers = {
             'pixbuf': Gtk.CellRendererPixbuf(),
-            'text': Gtk.CellRendererText()
+            'text': Gtk.CellRendererText(),
         }
 
         _cell = _cellrenderers[cell]
@@ -143,7 +149,8 @@ class ListView(RAMSTKListView):
             GdkPixbuf.Pixbuf, GObject.TYPE_INT, GObject.TYPE_STRING,
             GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_FLOAT,
             GObject.TYPE_FLOAT, GObject.TYPE_FLOAT, GObject.TYPE_FLOAT,
-            GObject.TYPE_INT, GObject.TYPE_INT, GObject.TYPE_STRING)
+            GObject.TYPE_INT, GObject.TYPE_INT, GObject.TYPE_STRING,
+        )
         self.treeview.set_model(_model)
 
         for i in range(10):
@@ -201,25 +208,19 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.tab_label.set_markup("<span weight='bold'>" +
-                                  _("Usage\nProfiles") + "</span>")
+        self.tab_label.set_markup(
+            "<span weight='bold'>" +
+            _("Usage\nProfiles") + "</span>",
+        )
         self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
         self.tab_label.show_all()
         self.tab_label.set_tooltip_text(
-            _("Displays usage profiles for the selected revision."))
+            _("Displays usage profiles for the selected revision."),
+        )
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
         RAMSTKListView._make_ui(self)
-
-    def __set_callbacks(self):
-        """
-        Set callback methods for the Failure Definition ListView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        RAMSTKListView._set_callbacks(self)
 
     def __set_properties(self):
         """
@@ -230,8 +231,11 @@ class ListView(RAMSTKListView):
         """
         RAMSTKListView._set_properties(self)
         self.treeview.set_tooltip_text(
-            _("Displays the list of usage profiles for the selected "
-              "revision."))
+            _(
+                "Displays the list of usage profiles for the selected "
+                "revision.",
+            ),
+        )
 
     def _do_load_environment(self, entity, identifier, row):
         """
@@ -247,31 +251,40 @@ class ListView(RAMSTKListView):
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._dic_icons['environment'], 22, 22)
+            self._dic_icons['environment'], 22, 22,
+        )
         _attributes = [
             _icon, entity.environment_id, entity.name, '', entity.units,
             entity.minimum, entity.maximum, entity.mean, entity.variance,
-            identifier, 1, 'environment'
+            identifier, 1, 'environment',
         ]
 
         try:
             _new_row = _model.append(row, _attributes)
         except TypeError:
-            _user_msg = _("One or more Environments had the wrong data type "
-                          "in it's data package and is not displayed in the "
-                          "Usage Profile.")
+            _user_msg = _(
+                "One or more Environments had the wrong data type "
+                "in it's data package and is not displayed in the "
+                "Usage Profile.",
+            )
             _debug_msg = (
                 "RAMSTK ERROR: Data for Environment ID {0:s} for Revision ID "
                 "{1:s} is the wrong type for one or more columns.".format(
-                    str(entity.environment_id), str(self._revision_id)))
+                    str(entity.environment_id), str(self._revision_id),
+                )
+            )
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Missions was missing some of it's data "
-                          "and is not displayed in the Usage Profile.")
+            _user_msg = _(
+                "One or more Missions was missing some of it's data "
+                "and is not displayed in the Usage Profile.",
+            )
             _debug_msg = (
                 "RAMSTK ERROR: Too few fields for Environment ID {0:s} for "
                 "Revision ID {1:s}.".format(
-                    str(entity.environment_id), str(self._revision_id)))
+                    str(entity.environment_id), str(self._revision_id),
+                )
+            )
             _new_row = None
 
         return _new_row
@@ -289,31 +302,40 @@ class ListView(RAMSTKListView):
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._dic_icons['mission'], 22, 22)
+            self._dic_icons['mission'], 22, 22,
+        )
         _attributes = [
             _icon, entity.mission_id, entity.description, '',
             entity.time_units, 0.0, entity.mission_time, 0.0, 0.0, identifier,
-            0, 'mission'
+            0, 'mission',
         ]
 
         try:
             _new_row = _model.append(row, _attributes)
         except TypeError:
-            _user_msg = _("One or more Missions had the wrong data type in "
-                          "it's data package and is not displayed in the "
-                          "Usage Profile.")
+            _user_msg = _(
+                "One or more Missions had the wrong data type in "
+                "it's data package and is not displayed in the "
+                "Usage Profile.",
+            )
             _debug_msg = (
                 "RAMSTK ERROR: Data for Mission ID {0:s} for Revision ID "
                 "{1:s} is the wrong type for one or more columns.".format(
-                    str(entity.mission_id), str(self._revision_id)))
+                    str(entity.mission_id), str(self._revision_id),
+                )
+            )
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Missions was missing some of it's data "
-                          "and is not displayed in the Usage Profile.")
+            _user_msg = _(
+                "One or more Missions was missing some of it's data "
+                "and is not displayed in the Usage Profile.",
+            )
             _debug_msg = (
                 "RAMSTK ERROR: Too few fields for Mission ID {0:s} for "
                 "Revision ID {1:s}.".format(
-                    str(entity.mission_id), str(self._revision_id)))
+                    str(entity.mission_id), str(self._revision_id),
+                )
+            )
             _new_row = None
 
         return _new_row
@@ -332,32 +354,41 @@ class ListView(RAMSTKListView):
         _model = self.treeview.get_model()
 
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._dic_icons['phase'], 22, 22)
+            self._dic_icons['phase'], 22, 22,
+        )
         _attributes = [
             _icon, entity.phase_id, entity.name, entity.description, '',
             entity.phase_start, entity.phase_end, 0.0, 0.0, identifier, 0,
-            'phase'
+            'phase',
         ]
 
         try:
             _new_row = _model.append(row, _attributes)
         except TypeError:
-            _user_msg = _("One or more Mission Phases had the wrong data type "
-                          "in it's data package and is not displayed in the "
-                          "Usage Profile.")
+            _user_msg = _(
+                "One or more Mission Phases had the wrong data type "
+                "in it's data package and is not displayed in the "
+                "Usage Profile.",
+            )
             _debug_msg = (
                 "RAMSTK ERROR: Data for Mission Phase ID {0:s} for Revision "
                 "ID {1:s} is the wrong type for one or more columns.".format(
-                    str(entity.phase_id), str(self._revision_id)))
+                    str(entity.phase_id), str(self._revision_id),
+                )
+            )
             _new_row = None
         except ValueError:
-            _user_msg = _("One or more Mission Phases was missing some of "
-                          "it's data and is not displayed in the Usage "
-                          "Profile.")
+            _user_msg = _(
+                "One or more Mission Phases was missing some of "
+                "it's data and is not displayed in the Usage "
+                "Profile.",
+            )
             _debug_msg = (
                 "RAMSTK ERROR: Too few fields for Mission Phase ID {0:s} for "
                 "Revision ID {1:s}.".format(
-                    str(entity.phase_id), str(self._revision_id)))
+                    str(entity.phase_id), str(self._revision_id),
+                )
+            )
             _new_row = None
 
         return _new_row
@@ -385,24 +416,32 @@ class ListView(RAMSTKListView):
 
         try:
             if _entity.is_mission:
-                _new_row = self._do_load_mission(_entity, _node.identifier,
-                                                 row)
+                _new_row = self._do_load_mission(
+                    _entity, _node.identifier,
+                    row,
+                )
 
             elif _entity.is_phase:
                 _new_row = self._do_load_phase(_entity, _node.identifier, row)
 
             elif _entity.is_env:
-                _new_row = self._do_load_environment(_entity, _node.identifier,
-                                                     row)
+                _new_row = self._do_load_environment(
+                    _entity, _node.identifier,
+                    row,
+                )
         except AttributeError:
             if _node.identifier != 0:
-                _user_msg = _("One or more Usage Profile line items was "
-                              "missing it's data package and is not "
-                              "displayed in the Usage Profile.")
+                _user_msg = _(
+                    "One or more Usage Profile line items was "
+                    "missing it's data package and is not "
+                    "displayed in the Usage Profile.",
+                )
                 _debug_msg = (
                     "RAMSTK ERROR: There is no data package for Usage "
                     "Profile ID {0:s} for Revision ID {1:s}.".format(
-                        str(_node.identifier), str(self._revision_id)))
+                        str(_node.identifier), str(self._revision_id),
+                    )
+                )
             _new_row = None
 
         for _n in tree.children(_node.identifier):
@@ -429,11 +468,14 @@ class ListView(RAMSTKListView):
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 9)
 
-        _prompt = _("You are about to delete Mission, Mission Phase, or "
-                    "Environment {0:d} and all data associated with it.  Is "
-                    "this really what you want to do?").format(_node_id)
+        _prompt = _(
+            "You are about to delete Mission, Mission Phase, or "
+            "Environment {0:d} and all data associated with it.  Is "
+            "this really what you want to do?",
+        ).format(_node_id)
         _dialog = ramstk.RAMSTKMessageDialog(
-            _prompt, self._dic_icons['question'], 'question')
+            _prompt, self._dic_icons['question'], 'question',
+        )
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
@@ -474,14 +516,16 @@ class ListView(RAMSTKListView):
             except KeyError:
                 _prompt = _("An environmental condition cannot have a child.")
                 _dialog = ramstk.RAMSTKMessageDialog(
-                    _prompt, self._dic_icons['error'], 'error')
+                    _prompt, self._dic_icons['error'], 'error',
+                )
                 _dialog.do_destroy()
 
         pub.sendMessage(
             'request_insert_profile',
             entity_id=_entity_id,
             parent_id=_parent_id,
-            level=_level)
+            level=_level,
+        )
 
     def _do_request_update(self, __button):
         """
@@ -545,15 +589,16 @@ class ListView(RAMSTKListView):
                 _("Add Sibling Entity"),
                 _("Add Child Entity"),
                 _("Remove Selected Entity"),
-                _("Save Usage Profile")
+                _("Save Usage Profile"),
             ]
             _callbacks = [
                 self.do_request_insert_sibling, self.do_request_insert_child,
-                self._do_request_delete, self._do_request_update_all
+                self._do_request_delete, self._do_request_update_all,
             ]
 
             self.on_button_press(
-                event, icons=_icons, labels=_labels, callbacks=_callbacks)
+                event, icons=_icons, labels=_labels, callbacks=_callbacks,
+            )
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -577,13 +622,13 @@ class ListView(RAMSTKListView):
             'mission': {
                 2: 'description',
                 4: 'time_units',
-                6: 'mission_time'
+                6: 'mission_time',
             },
             'phase': {
                 2: 'name',
                 3: 'descriptino',
                 5: 'phase_start',
-                6: 'phase_end'
+                6: 'phase_end',
             },
             'environment': {
                 2: 'name',
@@ -591,12 +636,13 @@ class ListView(RAMSTKListView):
                 5: 'minimum',
                 6: 'maximum',
                 7: 'mean',
-                8: 'variance'
-            }
+                8: 'variance',
+            },
         }
 
-        if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
-                                            model):
+        if not RAMSTKListView._do_edit_cell(
+                __cell, path, new_text, position, model,
+        ):
 
             # Retrieve the Usage Profile data package.
             _node_id = model[path][9]
@@ -608,7 +654,8 @@ class ListView(RAMSTKListView):
                 'lvw_editing_profile',
                 module_id=_node_id,
                 key=_key,
-                value=new_text)
+                value=new_text,
+            )
 
     def _on_row_change(self, treeview):
         """
@@ -644,7 +691,7 @@ class ListView(RAMSTKListView):
                     _("End Time"),
                     _(""),
                     _(""),
-                    _("")
+                    _(""),
                 ]
                 _attributes['mission_id'] = _model.get_value(_row, 0)
                 _attributes['description'] = _model.get_value(_row, 2)
@@ -660,7 +707,7 @@ class ListView(RAMSTKListView):
                     _("End Time"),
                     _(""),
                     _(""),
-                    _("")
+                    _(""),
                 ]
                 _attributes['phase_id'] = _model.get_value(_row, 0)
                 _attributes['name'] = _model.get_value(_row, 2)
@@ -677,7 +724,7 @@ class ListView(RAMSTKListView):
                     _("Maximum Value"),
                     _("Mean Value"),
                     _("Variance"),
-                    _("")
+                    _(""),
                 ]
                 _attributes['environment_id'] = _model.get_value(_row, 0)
                 _attributes['name'] = _model.get_value(_row, 2)
@@ -697,8 +744,10 @@ class ListView(RAMSTKListView):
                 _label.set_line_wrap(True)
                 _label.set_alignment(xalign=0.5, yalign=0.5)
                 _label.set_justify(Gtk.Justification.CENTER)
-                _label.set_markup("<span weight='bold'>" + _heading +
-                                  "</span>")
+                _label.set_markup(
+                    "<span weight='bold'>" + _heading +
+                    "</span>",
+                )
                 _label.set_use_markup(True)
                 _label.show_all()
                 _columns[i].set_widget(_label)
