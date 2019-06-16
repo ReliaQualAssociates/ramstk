@@ -481,6 +481,7 @@ class ModuleView(RAMSTKModuleView):
             self._parent_id = _attributes['parent_id']
             self._revision_id = _attributes['revision_id']
 
+            _attributes['functional'] = False
             pub.sendMessage('selected_hardware', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])

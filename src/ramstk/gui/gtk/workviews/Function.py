@@ -11,7 +11,8 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKCheckButton, RAMSTKEntry, RAMSTKLabel, RAMSTKTextView,
+    RAMSTKCheckButton, RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
+    RAMSTKScrolledWindow, RAMSTKTextView, do_make_label_group,
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 
@@ -95,8 +96,8 @@ class GeneralData(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
-        pub.subscribe(self._on_edit, 'mvw_editing_function')
         pub.subscribe(self._do_load_page, 'selected_function')
+        pub.subscribe(self._on_edit, 'mvw_editing_function')
 
     def __make_ui(self):
         """
@@ -105,10 +106,36 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        (_x_pos, _y_pos, _fixed) = RAMSTKWorkView.make_ui(self, icons=[], tooltips=[], callbacks=[])
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrolledwindow.add_with_viewport(
+            RAMSTKWorkView._make_buttonbox(
+                self,
+                icons=[],
+                tooltips=[],
+                callbacks=[],
+            ),
+        )
+        self.pack_start(_scrolledwindow, False, False, 0)
 
-        _fixed.put(self.txtRemarks, _x_pos, _y_pos[2])
+        _fixed = Gtk.Fixed()
+
+        _scrollwindow = RAMSTKScrolledWindow(_fixed)
+        _frame = RAMSTKFrame(label=_("General Information"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = do_make_label_group(self._lst_labels, _fixed, 5, 5)
+        _x_pos += 50
+
+        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+        _fixed.put(self.txtName, _x_pos, _y_pos[1])
+        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
+
+        self.pack_start(_frame, True, True, 0)
 
         # Create the label for the Gtk.Notebook() tab.
         _label = RAMSTKLabel(
