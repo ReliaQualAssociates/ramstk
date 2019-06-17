@@ -7,9 +7,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKWorkView Meta-Class Module."""
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import (
     RAMSTKBaseView, RAMSTKFrame, RAMSTKScrolledWindow,
@@ -60,7 +57,6 @@ class RAMSTKWorkView(Gtk.HBox, RAMSTKBaseView):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_select_revision, 'selected_revision')
 
     def __set_callbacks(self):
         """
@@ -108,15 +104,6 @@ class RAMSTKWorkView(Gtk.HBox, RAMSTKBaseView):
         )
 
         return _buttonbox
-
-    def _on_select_revision(self, attributes):
-        """
-        Respond to the `selected_revision` signal from pypubsub.
-
-        :return: None
-        :rtype: None
-        """
-        self._revision_id = attributes['revision_id']
 
     def make_ui(self, **kwargs):
         """
