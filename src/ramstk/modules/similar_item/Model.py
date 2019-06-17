@@ -24,6 +24,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
     """
 
     _tag = 'SimilarItems'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """

@@ -37,6 +37,7 @@ class UsageProfileDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Usage Profiles'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -195,7 +196,7 @@ class UsageProfileDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     tag=_mission.description,
                     identifier=_mission.mission_id,
-                    parent='0',
+                    parent=self._root,
                     data=_mission,
                 )
 
@@ -297,6 +298,7 @@ class MissionDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Missions'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -324,13 +326,13 @@ class MissionDataModel(RAMSTKDataModel):
         """
         Retrieve all the RAMSTKMission records from the RAMSTK Program database.
 
-        This method retrieves all the records from the RAMSTKMIssion table in the
-        connected RAMSTK Program database.  It then add each to the Mission data
-        model treelib.Tree().
+        This method retrieves all the records from the RAMSTKMIssion table in
+        the connected RAMSTK Program database.  It then add each to the Mission
+        data model treelib.Tree().
 
         :param int revision_id: the ID of the Revision to retrieve the Mission.
         :return: tree; the treelib Tree() of RAMSTKMission data models that
-                 comprise the Mission tree.
+        comprise the Mission tree.
         :rtype: :class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
@@ -341,7 +343,7 @@ class MissionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mission.description,
                 _mission.mission_id,
-                parent='0',
+                parent=self._root,
                 data=_mission,
             )
 
@@ -377,7 +379,7 @@ class MissionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mission.description,
                 _mission.mission_id,
-                parent='0',
+                parent=self._root,
                 data=_mission,
             )
 
@@ -454,6 +456,7 @@ class MissionPhaseDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Mission Phases'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -493,7 +496,7 @@ class MissionPhaseDataModel(RAMSTKDataModel):
         for _phase in _session.query(RAMSTKMissionPhase).\
                 filter(RAMSTKMissionPhase.mission_id == _mission_id).all():
             self.tree.create_node(
-                _phase.name, _phase.phase_id, parent='0', data=_phase,
+                _phase.name, _phase.phase_id, parent=self._root, data=_phase,
             )
 
             # pylint: disable=attribute-defined-outside-init
@@ -527,7 +530,7 @@ class MissionPhaseDataModel(RAMSTKDataModel):
 
         if _error_code == 0:
             self.tree.create_node(
-                _phase.name, _phase.phase_id, parent='0', data=_phase,
+                _phase.name, _phase.phase_id, parent=self._root, data=_phase,
             )
 
             # pylint: disable=attribute-defined-outside-init
@@ -603,6 +606,7 @@ class EnvironmentDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Environments'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -628,12 +632,12 @@ class EnvironmentDataModel(RAMSTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the RAMSTKEnvironment records from the RAMSTK Program database.
+        Retrieve all RAMSTKEnvironment records from the RAMSTK Program database.
 
         :param int phase_id: the Mission Phase ID to select the Environments
-                             for.
+        for.
         :return: tree; the treelib Tree() of RAMSTKEnvironment data models
-                 that comprise the Environment tree.
+        that comprise the Environment tree.
         :rtype: :py:class:`treelib.Tree`
         """
         _phase_id = kwargs['phase_id']
@@ -644,7 +648,7 @@ class EnvironmentDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _environment.name,
                 _environment.environment_id,
-                parent='0',
+                parent=self._root,
                 data=_environment,
             )
 
@@ -680,7 +684,7 @@ class EnvironmentDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _environment.name,
                 _environment.environment_id,
-                parent='0',
+                parent=self._root,
                 data=_environment,
             )
 

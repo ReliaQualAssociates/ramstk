@@ -98,6 +98,7 @@ class HardwareBoMDataModel(RAMSTKDataModel):
     """
 
     _tag = 'HardwareBoM'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -737,6 +738,7 @@ class HardwareDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Hardware'  # pragma: no cover
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -927,6 +929,7 @@ class DesignElectricDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of an Electrical Design model."""
 
     _tag = 'DesignElectric'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -952,14 +955,14 @@ class DesignElectricDataModel(RAMSTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all RAMSTKDesignElectric records from the RAMSTK Program database.
+        Retrieve all RAMSTKDesignElectric records from RAMSTK Program database.
 
-        This method retrieves all the records from the RAMSTKDesignElectric table
-        in the connected RAMSTK Program database.  It then add each to the
+        This method retrieves all the records from the RAMSTKDesignElectric
+        table in the connected RAMSTK Program database.  It then add each to the
         Design Electric data model treelib.Tree().
 
-        :return: tree; the treelib Tree() of RAMSTKDesignElectric data models that
-                 comprise the DesignElectric tree.
+        :return: tree; the treelib Tree() of RAMSTKDesignElectric data models
+        that comprise the DesignElectric tree.
         :rtype: :class:`treelib.Tree`
         """
         _hardware_id = kwargs['hardware_id']
@@ -977,7 +980,7 @@ class DesignElectricDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     _design.hardware_id,
                     _design.hardware_id,
-                    parent='0',
+                    parent=self._root,
                     data=_design,
                 )
 
@@ -1013,7 +1016,7 @@ class DesignElectricDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _design.hardware_id,
                 _design.hardware_id,
-                parent='0',
+                parent=self._root,
                 data=_design,
             )
 
@@ -1091,6 +1094,7 @@ class DesignMechanicDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a Mechanical Design model."""
 
     _tag = 'DesignMechanic'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -1141,7 +1145,7 @@ class DesignMechanicDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     _design.hardware_id,
                     _design.hardware_id,
-                    parent='0',
+                    parent=self._root,
                     data=_design,
                 )
 
@@ -1177,7 +1181,7 @@ class DesignMechanicDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _design.hardware_id,
                 _design.hardware_id,
-                parent='0',
+                parent=self._root,
                 data=_design,
             )
 
@@ -1255,6 +1259,7 @@ class MilHdbkFDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a MIL-HDBK-217F model."""
 
     _tag = 'MilHdbkF'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -1305,7 +1310,7 @@ class MilHdbkFDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     _milhdbkf.hardware_id,
                     _milhdbkf.hardware_id,
-                    parent='0',
+                    parent=self._root,
                     data=_milhdbkf,
                 )
 
@@ -1341,7 +1346,7 @@ class MilHdbkFDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _milhdbkf.hardware_id,
                 _milhdbkf.hardware_id,
-                parent='0',
+                parent=self._root,
                 data=_milhdbkf,
             )
 
@@ -1419,6 +1424,7 @@ class NSWCDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a NSWC model."""
 
     _tag = 'NSWC'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -1467,7 +1473,7 @@ class NSWCDataModel(RAMSTKDataModel):
                 filter(RAMSTKNSWC.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
-                    _nswc.hardware_id, _nswc.hardware_id, parent='0', data=_nswc,
+                    _nswc.hardware_id, _nswc.hardware_id, parent=self._root, data=_nswc,
                 )
 
                 # pylint: disable=attribute-defined-outside-init
@@ -1500,7 +1506,7 @@ class NSWCDataModel(RAMSTKDataModel):
 
         if _error_code == 0:
             self.tree.create_node(
-                _nswc.hardware_id, _nswc.hardware_id, parent='0', data=_nswc,
+                _nswc.hardware_id, _nswc.hardware_id, parent=self._root, data=_nswc,
             )
 
             # pylint: disable=attribute-defined-outside-init
@@ -1574,6 +1580,7 @@ class ReliabilityDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a Reliability model."""
 
     _tag = 'Reliability'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -1626,7 +1633,7 @@ class ReliabilityDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     _reliability.hardware_id,
                     _reliability.hardware_id,
-                    parent='0',
+                    parent=self._root,
                     data=_reliability,
                 )
 
@@ -1662,7 +1669,7 @@ class ReliabilityDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _reliability.hardware_id,
                 _reliability.hardware_id,
-                parent='0',
+                parent=self._root,
                 data=_reliability,
             )
 

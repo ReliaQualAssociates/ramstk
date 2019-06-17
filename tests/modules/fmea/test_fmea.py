@@ -28,7 +28,7 @@ ATTRIBUTES = {
     'revision_id': 1,
     'function_id': 1,
     'hardware_id': 1,
-    'parent_id': 0,
+    'parent_id': '0',
     'functional': True,
 }
 
@@ -71,7 +71,7 @@ def test_do_select_all_non_existent_hardware_id(test_dao):
     DUT.do_select_all(parent_id=100, functional=False)
 
     assert isinstance(DUT.tree, Tree)
-    assert DUT.tree.get_node(0).tag == 'FMEA'
+    assert DUT.tree.get_node('0').tag == 'FMEA'
     assert DUT.tree.get_node(1) is None
 
 
@@ -82,7 +82,7 @@ def test_do_select_all_non_existent_function_id(test_dao):
     DUT.do_select_all(parent_id=100, functional=True)
 
     assert isinstance(DUT.tree, Tree)
-    assert DUT.tree.get_node(0).tag == 'FMEA'
+    assert DUT.tree.get_node('0').tag == 'FMEA'
     assert DUT.tree.get_node(1) is None
 
 
@@ -182,7 +182,7 @@ def test_do_insert_mode_functional(test_dao):
     DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=True)
 
-    _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='mode')
+    _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=DUT._root, level='mode',)
 
     assert _error_code == 0
     assert _msg == (
@@ -208,7 +208,7 @@ def test_do_insert_mode_hardware(test_dao):
     DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
-    _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='mode')
+    _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=DUT._root, level='mode')
 
     assert _error_code == 0
     assert _msg == (
@@ -234,7 +234,7 @@ def test_do_insert_mode_hardware_non_existant_level(test_dao):
     DUT = dtmFMEA(test_dao, test=True)
     DUT.do_select_all(parent_id=1, functional=False)
 
-    _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=0, level='juice')
+    _error_code, _msg = DUT.do_insert(entity_id=1, parent_id=DUT._root, level='juice')
 
     assert _error_code == 2005
     assert _msg == (
@@ -417,7 +417,7 @@ def test_do_insert_non_existent_type(test_dao):
     DUT.do_select_all(parent_id=1, functional=False)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=100, parent_id=0, level='scadamoosh',
+        entity_id=100, parent_id='0', level='scadamoosh',
     )
 
     assert _error_code == 2005
@@ -636,7 +636,7 @@ def test_request_do_insert_mode_functional(test_dao, test_configuration):
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
     ATTRIBUTES['parent_id'] = ATTRIBUTES['function_id']
     DUT._request_do_select_all(ATTRIBUTES)
-    assert not DUT.request_do_insert(entity_id=1, parent_id=0, level='mode')
+    assert not DUT.request_do_insert(entity_id=1, parent_id='0', level='mode')
 
 
 @pytest.mark.integration
@@ -646,7 +646,7 @@ def test_request_do_insert_mode_hardware(test_dao, test_configuration):
     ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
     DUT._request_do_select_all(ATTRIBUTES)
 
-    assert not DUT.request_do_insert(entity_id=1, parent_id=0, level='mode')
+    assert not DUT.request_do_insert(entity_id=1, parent_id='0', level='mode')
 
 
 @pytest.mark.integration

@@ -23,6 +23,7 @@ class RevisionDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Revisions'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -90,7 +91,7 @@ class RevisionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _revision.name,
                 _revision.revision_id,
-                parent='0',
+                parent=self._root,
                 data=_revision,
             )
 
@@ -122,7 +123,7 @@ class RevisionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _revision.name,
                 _revision.revision_id,
-                parent='0',
+                parent=self._root,
                 data=_revision,
             )
 

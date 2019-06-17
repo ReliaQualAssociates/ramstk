@@ -20,6 +20,7 @@ class PreferencesDataModel(RAMSTKDataModel):
     """Contains the attributes and methods of a user Preferences data model."""
 
     _tag = 'Preferences'
+    _root = 0
 
     def __init__(self, dao, site_dao, configuration):
         """
@@ -93,6 +94,7 @@ class SitePreferencesDataModel(RAMSTKDataModel):
     """Contain the attributes and methods for Site-wide preferences."""
 
     _tag = 'SitePrefs'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -274,6 +276,7 @@ class UserPreferencesDataModel(RAMSTKDataModel):
     """Contains the attributes and methods for Program (user) preferences."""
 
     _tag = 'UserPrefs'
+    _root = 0
 
     def __init__(self, dao, configuration):
         """

@@ -54,7 +54,10 @@ class RAMSTKDataModel():
         # Tree().  Manipulation and viewing of a RAMSTK module tree needs to
         # ignore the root of the tree.
         try:
-            self.tree.create_node(tag=self._tag, identifier='0', parent=None)
+            self.tree.create_node(
+                tag=self._tag, identifier=self._root,
+                parent=None,
+            )
         except (
                 tree.MultipleRootError, tree.NodeIDAbsentError,
                 tree.DuplicatedNodeIdError,

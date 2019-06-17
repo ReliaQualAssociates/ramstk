@@ -57,7 +57,7 @@ def test_do_select_all_non_existent_id(test_dao):
     DUT.do_select_all(hardware_id=100)
 
     assert isinstance(DUT.tree, Tree)
-    assert DUT.tree.get_node(0).tag == 'PhysicsOfFailure'
+    assert DUT.tree.get_node('0').tag == 'PhysicsOfFailure'
     assert DUT.tree.get_node(1) is None
 
 

@@ -133,6 +133,7 @@ class ExportDataModel(RAMSTKDataModel):
     }
 
     _tag = 'Exports'
+    _root = 0
 
     def __init__(self, dao):
         """

@@ -159,6 +159,7 @@ class ImportDataModel(RAMSTKDataModel):
     }
 
     _tag = 'Imports'
+    _root = 0
 
     def __init__(self, dao):
         """

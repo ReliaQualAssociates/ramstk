@@ -25,6 +25,7 @@ class FunctionDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Functions'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """

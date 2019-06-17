@@ -20,6 +20,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a Hazard Analysis."""
 
     _tag = 'HazardAnalysis'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -140,7 +141,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _hazard_analysis.potential_hazard,
                 _hazard_analysis.hardware_id,
-                parent='0',
+                parent=self._root,
                 data=None,
             )
             self.tree.create_node(
@@ -189,7 +190,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
                     'Hardware ID: {0:d}'.format(
                         _hazard_analysis.hardware_id, ),
                     _hazard_analysis.hardware_id,
-                    0,
+                    parent=self._root,
                     data=None,
                 )
             except tree.DuplicatedNodeIdError:

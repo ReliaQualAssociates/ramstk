@@ -15,6 +15,7 @@ class OptionsDataModel(RAMSTKDataModel):
     """Contains the attributes and methods of an Options data model."""
 
     _tag = 'Options'
+    _root = 0
 
     def __init__(self, dao, site_dao):
         """
@@ -78,6 +79,7 @@ class SiteOptionsDataModel(RAMSTKDataModel):
     """Contain the attributes and methods for Site-wide options."""
 
     _tag = 'SiteOpts'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -155,6 +157,7 @@ class ProgramOptionsDataModel(RAMSTKDataModel):
     """Contains the attributes and methods for Program (user) options."""
 
     _tag = 'ProgramOpts'
+    _root = 0
 
     def __init__(self, dao):
         """

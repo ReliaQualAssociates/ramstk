@@ -26,6 +26,7 @@ class StakeholderDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Stakeholders'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -147,7 +148,7 @@ class StakeholderDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _stakeholder.description,
                 _stakeholder.stakeholder_id,
-                parent='0',
+                parent=self._root,
                 data=_stakeholder,
             )
 
@@ -185,7 +186,7 @@ class StakeholderDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _stakeholder.description,
                 _stakeholder.stakeholder_id,
-                parent='0',
+                parent=self._root,
                 data=_stakeholder,
             )
 

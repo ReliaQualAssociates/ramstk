@@ -19,6 +19,7 @@ class AllocationDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a reliability allocation."""
 
     _tag = 'Allocations'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """

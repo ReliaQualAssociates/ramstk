@@ -24,6 +24,7 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Failure Definitions'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -95,7 +96,7 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _definition.definition,
                 _definition.definition_id,
-                parent='0',
+                parent=self._root,
                 data=_definition,
             )
 
@@ -128,7 +129,7 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _definition.definition,
                 _definition.definition_id,
-                parent='0',
+                parent=self._root,
                 data=_definition,
             )
 
