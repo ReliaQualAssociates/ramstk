@@ -167,12 +167,7 @@ class RAMSTKBaseView():
             locale.setlocale(locale.LC_ALL, '')
 
         # Subscribe to PyPubSub messages.
-        # TODO: Change this to self.on_select_revision when everything is updated.
-        pub.subscribe(self.do_set_revision_id, 'selected_revision')
-
-    def do_set_revision_id(self, attributes):
-        """Set the Revision ID when a new Revision is selected."""
-        self._revision_id = attributes['revision_id']
+        pub.subscribe(self.on_select_revision, 'selected_revision')
 
     def do_load_tree(self, tree):
         """
@@ -565,40 +560,11 @@ class RAMSTKBaseView():
 
         return self.do_raise_dialog(severity='warning', **kwargs)
 
-    def on_select_revision(self, **kwargs):
+    def on_select_revision(self, attributes):
         """
-        Load the RAMSTK View Gtk.TreeModel() when a Revision is selected.
+        Set the Revision ID when a new Revision is selected.
 
         :return: None
         :rtype: None
         """
-        _tree = kwargs['tree']
-
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        try:
-            _return = self.treeview.do_load_tree(_tree)
-        except AttributeError:
-            for _node in list(_tree.nodes.values())[1:]:
-                _entity = _node.data
-
-                _attributes = []
-                if _entity is not None:
-                    _temp = _entity.get_attributes()
-
-                    for _key in _temp:
-                        _attributes.append(_temp[_key])
-
-                try:
-                    _row = _model.append(_attributes[:2])
-                except ValueError:
-                    _row = None
-
-        _row = _model.get_iter_first()
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
+        self._revision_id = attributes['revision_id']

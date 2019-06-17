@@ -872,7 +872,7 @@ class RAMSTK():
                     ] = _module
                     _page += 1
 
-            # TODO: Where to put this code for the status icon?
+            # TODO: Move the status icon code out of the RAMSTK controller and into a GUI module.
             _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
                 '/32x32/db-connected.png'
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)

@@ -8,7 +8,6 @@
 """RAMSTK Entry Module."""
 
 # RAMSTK Local Imports
-# Import the ramstk.Widget base class.
 from .Widget import Gdk, GObject, Gtk, Pango
 
 
@@ -22,7 +21,7 @@ class RAMSTKEntry(Gtk.Entry):
         GObject.GObject.__init__(self)
         self.show()
 
-        # TODO: Remove this when all RAMSTK Entrys are refactored.
+        # TODO: Remove the call to do_set_properties() in the RAMSTKEntry.__init__() method when all instances of RAMSTKEntry() have been refactored.
         self.do_set_properties(**kwargs)
 
     def do_set_properties(self, **kwargs):
@@ -148,7 +147,7 @@ class RAMSTKTextView(Gtk.TextView):
 
         self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
 
-        # TODO: Remove this when all RAMSTK TextViews are refactored.
+        # TODO: Remove the call to do_set_properties() in the RAMSTKTextView.__init__() method when all instances of RAMSTKTextView() have been refactored.
         self.do_set_properties(height=height, tooltip=tooltip, width=width)
 
     def do_get_buffer(self):

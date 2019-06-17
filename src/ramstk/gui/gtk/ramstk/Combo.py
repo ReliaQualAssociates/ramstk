@@ -8,7 +8,6 @@
 """RAMSTK Combo Module."""
 
 # RAMSTK Local Imports
-# Import the ramstk.Widget base class.
 from .Widget import GObject, Gtk
 
 
@@ -20,10 +19,9 @@ class RAMSTKComboBox(Gtk.ComboBox):
         Create RAMSTK ComboBox widgets.
 
         :keyword int index: the index in the RAMSTKComboBox Gtk.ListView() to
-                            display.  Default is 0.
+        display.  Default is 0.
         :keyword bool simple: indicates whether to make a simple (one item) or
-                              complex (three item) RAMSTKComboBox.  Default is
-                              True.
+        complex (three item) RAMSTKComboBox.  Default is True.
         """
         GObject.GObject.__init__(self)
 
@@ -44,7 +42,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
         self.show()
 
-        # TODO: Remove this when all RAMSTK Entrys are refactored.
+        # TODO: Remove the call to do_set_properties() in the RAMSTKComboBox.__init__() method when all instances of RAMSTKComboBox() have been refactored.
         self.do_set_properties(**kwargs)
 
     def do_get_options(self):
@@ -67,8 +65,7 @@ class RAMSTKComboBox(Gtk.ComboBox):
 
         return _options
 
-    # TODO: Remove index in calls to this method and then remove index from the
-    # argument list.
+    # TODO: Remove index in calls to the RAMSTKComboBox.do_load_combo() method and then remove index from the argument list.
     def do_load_combo(self, entries, index=0, simple=True): # pylint: disable=unused-argument
         """
         Load RAMSTK ComboBox widgets.

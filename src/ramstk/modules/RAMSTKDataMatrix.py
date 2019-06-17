@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Datamodels Package RAMSTKDataMatrix."""
 
-from pubsub import pub
-
+# Third Party Imports
 import pandas as pd
+from pubsub import pub
 from sqlalchemy import and_, func
 
+# RAMSTK Package Imports
 # Import other RAMSTK modules.
 from ramstk.dao import RAMSTKMatrix
 
@@ -107,24 +108,28 @@ class RAMSTKDataMatrix():
         _dic_column = {}
 
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         # Iterate over the rows (records from the "row" table) and then the
         # columns (records from the "column" table) to create, ultimately, a
         # pandas dataframe representation of the matrix.  Update the RAMSTK
         # Program database with the contents of this dataframe.
         for _row in _session.query(self._row_table).filter(
-                self._row_table.revision_id == revision_id).all():
+                self._row_table.revision_id == revision_id,
+        ).all():
             _attributes = _row.get_attributes()
             _lst_row_id.append(_attributes[rkey])
             _lst_value.append(0)
 
             for _column in _session.query(self._column_table).filter(
-                    self._column_table.revision_id == revision_id).all():
+                    self._column_table.revision_id == revision_id,
+            ).all():
                 _attributes = _column.get_attributes()
                 _column_id = _attributes[ckey]
                 _dic_column[_column_id] = pd.Series(
-                    _lst_value, index=_lst_row_id)
+                    _lst_value, index=_lst_row_id,
+                )
 
         self.dtf_matrix = pd.DataFrame(_dic_column)
 
@@ -197,11 +202,12 @@ class RAMSTKDataMatrix():
             'hrdwr_rqrmnt': 'Hardware',
             'hrdwr_vldtn': 'Hardware',
             'vldtn_rqrmnt': 'Validation',
-            'vldtn_hrdwr': 'Validation'
+            'vldtn_hrdwr': 'Validation',
         }
 
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         _column_id = 0
         _lst_row_id = []
@@ -215,7 +221,8 @@ class RAMSTKDataMatrix():
         # module ID.  The value is the row table field with string data
         # (typically the code, description, or name field).
         for _row in _session.query(self._row_table).filter(
-                self._row_table.revision_id == revision_id).all():
+                self._row_table.revision_id == revision_id,
+        ).all():
             _attributes = _row.get_attributes()
             self.dic_row_hdrs[_attributes[_rkey]] = _attributes[_rheader]
 
@@ -225,25 +232,33 @@ class RAMSTKDataMatrix():
         # table's module ID.  The value is the column table field with string
         # data (typically the code, description, or name field).
         for _column in _session.query(self._column_table).filter(
-                self._column_table.revision_id == revision_id).all():
+                self._column_table.revision_id == revision_id,
+        ).all():
             _attributes = _column.get_attributes()
             try:
                 self.dic_column_hdrs[
-                    _attributes[_ckey]] = _attributes[_cheader]
+                    _attributes[_ckey]
+                ] = _attributes[_cheader]
             except TypeError:
-                print('FIXME: Handle TypeError in ' \
+                # ISSUE: See issue #59 at https://github.com/ReliaQualAssociates/ramstk/issues/59
+                print(
+                    'Handle TypeError in ' \
                       'RAMSTKDataMatrix.do_select_all().  Tuple indices must ' \
                       'be integers, not str.  This will be fixed when all ' \
                       'the RAMSTK database tables are converted to return ' \
                       'dicts from the get_attributes() method.  Matrix {0:s} ' \
-                      'is not working.  See issue #59'.format(matrix_type))
+                      'is not working.  See issue #59'.format(matrix_type),
+                )
 
             self.n_col += 1
 
         # Retrieve the matrix values for the desired Matrix ID.
         for _matrix in _session.query(RAMSTKMatrix).filter(
-                and_(RAMSTKMatrix.revision_id == revision_id,
-                     RAMSTKMatrix.matrix_type == matrix_type)).all():
+                and_(
+                    RAMSTKMatrix.revision_id == revision_id,
+                    RAMSTKMatrix.matrix_type == matrix_type,
+                ),
+        ).all():
             if _matrix.column_item_id == _column_id:
                 _lst_row_id.append(_matrix.row_item_id)
                 _lst_value.append(_matrix.value)
@@ -266,7 +281,8 @@ class RAMSTKDataMatrix():
                 matrix=self.dtf_matrix,
                 column_headings=self.dic_column_hdrs,
                 row_headings=self.dic_row_hdrs,
-                row=_dic_row_title[matrix_type])
+                row=_dic_row_title[matrix_type],
+            )
 
     def do_insert(self, item_id, heading, row=True):
         """
@@ -367,14 +383,17 @@ class RAMSTKDataMatrix():
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         try:
             _matrix_id = _session.query(RAMSTKMatrix).filter(
-                RAMSTKMatrix.matrix_type == matrix_type).first().matrix_id
+                RAMSTKMatrix.matrix_type == matrix_type,
+            ).first().matrix_id
         except AttributeError:
             _matrix_id = _session.query(
-                func.max(RAMSTKMatrix.matrix_id).label("last_id")).one()
+                func.max(RAMSTKMatrix.matrix_id).label("last_id"),
+            ).one()
             try:
                 _matrix_id = int(_matrix_id.last_id) + 1
             except TypeError:
@@ -383,11 +402,15 @@ class RAMSTKDataMatrix():
         for _column_item_id in list(self.dtf_matrix.columns):
             for _row_item_id in list(self.dtf_matrix.index):
                 _entity = _session.query(RAMSTKMatrix).filter(
-                    and_(RAMSTKMatrix.revision_id == revision_id,
-                         RAMSTKMatrix.matrix_type == matrix_type,
-                         RAMSTKMatrix.column_item_id == int(_column_item_id),
-                         RAMSTKMatrix.row_item_id == int(
-                             _row_item_id))).first()
+                    and_(
+                        RAMSTKMatrix.revision_id == revision_id,
+                        RAMSTKMatrix.matrix_type == matrix_type,
+                        RAMSTKMatrix.column_item_id == int(_column_item_id),
+                        RAMSTKMatrix.row_item_id == int(
+                            _row_item_id,
+                        ),
+                    ),
+                ).first()
 
                 try:
                     # If there is no corresponding record in RAMSTKMatrix, then
@@ -401,7 +424,8 @@ class RAMSTKDataMatrix():
                         _entity.row_item_id = int(_row_item_id)
 
                     _entity.value = int(
-                        self.dtf_matrix[_column_item_id][_row_item_id])
+                        self.dtf_matrix[_column_item_id][_row_item_id],
+                    )
                     _session.add(_entity)
                     _error_code, _msg = self.dao.db_update(_session)
 
@@ -411,7 +435,8 @@ class RAMSTKDataMatrix():
                            'entity with Column ID {0:s} and Row ID {1:s} to ' \
                            'Matrix {2:s}.'.format(
                                str(_column_item_id), str(_row_item_id),
-                               matrix_type)
+                               matrix_type,
+                           )
 
         _session.close()
 

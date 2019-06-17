@@ -91,7 +91,6 @@ class RAMSTKImport(Gtk.Assistant):
         :return: _page
         :rtype: :class:`Gtk.ScrolledWindow`
         """
-        # TODO: Implement NSWC (add Design Mechanic to this list).
         self._cmb_select_module.do_load_combo([
             [_("Function")],
             [_("Requirement")],

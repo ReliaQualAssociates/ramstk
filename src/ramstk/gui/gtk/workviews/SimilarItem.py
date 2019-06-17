@@ -534,7 +534,7 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: Move this method to a stand-alone assistant.
+        # TODO: Move the Similar Item Work View _do_request_edit_function() method to a stand-alone assistant.
         (_model, _row) = self.treeview.get_selection().get_selected()
 
         _title = _("RAMSTK - Edit Similar Item Analysis Functions")

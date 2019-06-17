@@ -405,7 +405,6 @@ class ListView(RAMSTKListView):
                 __cell, path, new_text, position, model,
         ):
             if _key == 'group':
-                # FIXME: See issue #60.
                 try:
                     _new_key = max(
                         self.RAMSTK_CONFIGURATION.

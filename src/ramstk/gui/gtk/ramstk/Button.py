@@ -109,11 +109,11 @@ class RAMSTKButton(Gtk.Button):
         Initialize an instance of the RAMSTK Button.
 
         :keyword int height: the height of the Gtk.Button().
-                             Default is 40.
+        Default is 40.
         :keyword int  width: the width of the Gtk.Button().
-                             Default is 200.
+        Default is 200.
         :keyword str label: the text to display on the Gtk.Button().
-                            Default is an ellipsis (...).
+        Default is an ellipsis (...).
         :keyword str icon: the image to display on the Gtk.Button().
         :return: None
         :rtype: None
@@ -121,7 +121,7 @@ class RAMSTKButton(Gtk.Button):
         GObject.GObject.__init__(self, label=label)
         self.show_all()
 
-        # TODO: Remove this when all RAMSTK Buttons are refactored.
+        # TODO: Remove the call to do_set_properties() in the RAMSTKButton.__init__() method when all instances of RAMSTKButton() have been refactored.
         self.do_set_properties(
             height=height, width=width, tooltip=label, icon=icon,
         )

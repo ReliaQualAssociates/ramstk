@@ -15,7 +15,6 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
-# Import other RAMSTK modules.
 from ramstk.Utilities import none_to_default
 
 
@@ -284,7 +283,7 @@ class RAMSTKAllocation(RAMSTK_BASE):
         """
         _return = False
 
-        # FIXME: Add range check on input factors (1 - 10) in RAMSTKAllocation.foo_apportionment().
+        # TODO: Add range check on input factors (1 - 10) in RAMSTKAllocation.foo_apportionment().
         self.weight_factor = (
             self.int_factor * self.soa_factor *
             self.op_time_factor * self.env_factor

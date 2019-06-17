@@ -30,34 +30,46 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     hardware_id = Column(
         'fld_hardware_id',
         Integer,
         ForeignKey('ramstk_hardware.fld_hardware_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
 
     change_description_1 = Column(
-        'fld_change_description_1', BLOB, default=b'')
+        'fld_change_description_1', BLOB, default=b'',
+    )
     change_description_2 = Column(
-        'fld_change_description_2', BLOB, default=b'')
+        'fld_change_description_2', BLOB, default=b'',
+    )
     change_description_3 = Column(
-        'fld_change_description_3', BLOB, default=b'')
+        'fld_change_description_3', BLOB, default=b'',
+    )
     change_description_4 = Column(
-        'fld_change_description_4', BLOB, default=b'')
+        'fld_change_description_4', BLOB, default=b'',
+    )
     change_description_5 = Column(
-        'fld_change_description_5', BLOB, default=b'')
+        'fld_change_description_5', BLOB, default=b'',
+    )
     change_description_6 = Column(
-        'fld_change_description_6', BLOB, default=b'')
+        'fld_change_description_6', BLOB, default=b'',
+    )
     change_description_7 = Column(
-        'fld_change_description_7', BLOB, default=b'')
+        'fld_change_description_7', BLOB, default=b'',
+    )
     change_description_8 = Column(
-        'fld_change_description_8', BLOB, default=b'')
+        'fld_change_description_8', BLOB, default=b'',
+    )
     change_description_9 = Column(
-        'fld_change_description_9', BLOB, default=b'')
+        'fld_change_description_9', BLOB, default=b'',
+    )
     change_description_10 = Column(
-        'fld_change_description_10', BLOB, default=b'')
+        'fld_change_description_10', BLOB, default=b'',
+    )
     change_factor_1 = Column('fld_change_factor_1', Float, default=1.0)
     change_factor_2 = Column('fld_change_factor_2', Float, default=1.0)
     change_factor_3 = Column('fld_change_factor_3', Float, default=1.0)
@@ -181,7 +193,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
             'user_int_2': self.user_int_2,
             'user_int_3': self.user_int_3,
             'user_int_4': self.user_int_4,
-            'user_int_5': self.user_int_5
+            'user_int_5': self.user_int_5,
         }
 
         return _attributes
@@ -201,89 +213,125 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
 
         try:
             self.change_description_1 = none_to_default(
-                attributes['change_description_1'], b'')
+                attributes['change_description_1'], b'',
+            )
             self.change_description_2 = none_to_default(
-                attributes['change_description_2'], b'')
+                attributes['change_description_2'], b'',
+            )
             self.change_description_3 = none_to_default(
-                attributes['change_description_3'], b'')
+                attributes['change_description_3'], b'',
+            )
             self.change_description_4 = none_to_default(
-                attributes['change_description_4'], b'')
+                attributes['change_description_4'], b'',
+            )
             self.change_description_5 = none_to_default(
-                attributes['change_description_5'], b'')
+                attributes['change_description_5'], b'',
+            )
             self.change_description_6 = none_to_default(
-                attributes['change_description_6'], b'')
+                attributes['change_description_6'], b'',
+            )
             self.change_description_7 = none_to_default(
-                attributes['change_description_7'], b'')
+                attributes['change_description_7'], b'',
+            )
             self.change_description_8 = none_to_default(
-                attributes['change_description_8'], b'')
+                attributes['change_description_8'], b'',
+            )
             self.change_description_9 = none_to_default(
-                attributes['change_description_9'], b'')
+                attributes['change_description_9'], b'',
+            )
             self.change_description_10 = none_to_default(
-                attributes['change_description_10'], b'')
+                attributes['change_description_10'], b'',
+            )
             self.change_factor_1 = float(
-                none_to_default(attributes['change_factor_1'], 1.0))
+                none_to_default(attributes['change_factor_1'], 1.0),
+            )
             self.change_factor_2 = float(
-                none_to_default(attributes['change_factor_2'], 1.0))
+                none_to_default(attributes['change_factor_2'], 1.0),
+            )
             self.change_factor_3 = float(
-                none_to_default(attributes['change_factor_3'], 1.0))
+                none_to_default(attributes['change_factor_3'], 1.0),
+            )
             self.change_factor_4 = float(
-                none_to_default(attributes['change_factor_4'], 1.0))
+                none_to_default(attributes['change_factor_4'], 1.0),
+            )
             self.change_factor_5 = float(
-                none_to_default(attributes['change_factor_5'], 1.0))
+                none_to_default(attributes['change_factor_5'], 1.0),
+            )
             self.change_factor_6 = float(
-                none_to_default(attributes['change_factor_6'], 1.0))
+                none_to_default(attributes['change_factor_6'], 1.0),
+            )
             self.change_factor_7 = float(
-                none_to_default(attributes['change_factor_7'], 1.0))
+                none_to_default(attributes['change_factor_7'], 1.0),
+            )
             self.change_factor_8 = float(
-                none_to_default(attributes['change_factor_8'], 1.0))
+                none_to_default(attributes['change_factor_8'], 1.0),
+            )
             self.change_factor_9 = float(
-                none_to_default(attributes['change_factor_9'], 1.0))
+                none_to_default(attributes['change_factor_9'], 1.0),
+            )
             self.change_factor_10 = float(
-                none_to_default(attributes['change_factor_10'], 1.0))
+                none_to_default(attributes['change_factor_10'], 1.0),
+            )
             self.environment_from_id = int(
-                none_to_default(attributes['environment_from_id'], 0))
+                none_to_default(attributes['environment_from_id'], 0),
+            )
             self.environment_to_id = int(
-                none_to_default(attributes['environment_to_id'], 0))
+                none_to_default(attributes['environment_to_id'], 0),
+            )
             self.function_1 = str(
-                none_to_default(attributes['function_1'], ''))
+                none_to_default(attributes['function_1'], ''),
+            )
             self.function_2 = str(
-                none_to_default(attributes['function_2'], ''))
+                none_to_default(attributes['function_2'], ''),
+            )
             self.function_3 = str(
-                none_to_default(attributes['function_3'], ''))
+                none_to_default(attributes['function_3'], ''),
+            )
             self.function_4 = str(
-                none_to_default(attributes['function_4'], ''))
+                none_to_default(attributes['function_4'], ''),
+            )
             self.function_5 = str(
-                none_to_default(attributes['function_5'], ''))
+                none_to_default(attributes['function_5'], ''),
+            )
             self.method_id = int(none_to_default(attributes['method_id'], 0))
             self.parent_id = int(none_to_default(attributes['parent_id'], 0))
             self.quality_from_id = int(
-                none_to_default(attributes['quality_from_id'], 0))
+                none_to_default(attributes['quality_from_id'], 0),
+            )
             self.quality_to_id = int(
-                none_to_default(attributes['quality_to_id'], 0))
+                none_to_default(attributes['quality_to_id'], 0),
+            )
             self.result_1 = float(none_to_default(attributes['result_1'], 0))
             self.result_2 = float(none_to_default(attributes['result_2'], 0))
             self.result_3 = float(none_to_default(attributes['result_3'], 0))
             self.result_4 = float(none_to_default(attributes['result_4'], 0))
             self.result_5 = float(none_to_default(attributes['result_5'], 0))
             self.temperature_from = float(
-                none_to_default(attributes['temperature_from'], 0))
+                none_to_default(attributes['temperature_from'], 0),
+            )
             self.temperature_to = float(
-                none_to_default(attributes['temperature_to'], 0))
+                none_to_default(attributes['temperature_to'], 0),
+            )
             self.user_blob_1 = none_to_default(attributes['user_blob_1'], b'')
             self.user_blob_2 = none_to_default(attributes['user_blob_2'], b'')
             self.user_blob_3 = none_to_default(attributes['user_blob_3'], b'')
             self.user_blob_4 = none_to_default(attributes['user_blob_4'], b'')
             self.user_blob_5 = none_to_default(attributes['user_blob_5'], b'')
             self.user_float_1 = float(
-                none_to_default(attributes['user_float_1'], 0.0))
+                none_to_default(attributes['user_float_1'], 0.0),
+            )
             self.user_float_2 = float(
-                none_to_default(attributes['user_float_2'], 0.0))
+                none_to_default(attributes['user_float_2'], 0.0),
+            )
             self.user_float_3 = float(
-                none_to_default(attributes['user_float_3'], 0.0))
+                none_to_default(attributes['user_float_3'], 0.0),
+            )
             self.user_float_4 = float(
-                none_to_default(attributes['user_float_4'], 0.0))
+                none_to_default(attributes['user_float_4'], 0.0),
+            )
             self.user_float_5 = float(
-                none_to_default(attributes['user_float_5'], 0.0))
+                none_to_default(attributes['user_float_5'], 0.0),
+            )
             self.user_int_1 = int(none_to_default(attributes['user_int_1'], 0))
             self.user_int_2 = int(none_to_default(attributes['user_int_2'], 0))
             self.user_int_3 = int(none_to_default(attributes['user_int_3'], 0))
@@ -295,7 +343,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
                    "dictionary passed to " \
                    "RAMSTKSimilarItem.set_attributes().".format(str(_err))
         except ValueError as _err:
-            # FIXME: Handle ValueError in RAMSTKSimilarItem.set_attributes().
+            # FIXME: Handle ValueError with an error code and error message in RAMSTKSimilarItem.set_attributes().
             print(_err)
 
         return _error_code, _msg
@@ -350,7 +398,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
             (6, 3): 0.3,
             (6, 4): 0.3,
             (6, 5): 0.1,
-            (6, 6): 1.0
+            (6, 6): 1.0,
         }
         _quality_convert = {
             (1, 1): 1.0,
@@ -368,7 +416,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
             (4, 1): 5.0,
             (4, 2): 3.3,
             (4, 3): 2.5,
-            (4, 4): 1.0
+            (4, 4): 1.0,
         }
         _temperature_convert = {
             (10.0, 10.0): 1.0,
@@ -419,7 +467,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
             (70.0, 40.0): 1.8,
             (70.0, 50.0): 1.5,
             (70.0, 60.0): 1.2,
-            (70.0, 70.0): 1.0
+            (70.0, 70.0): 1.0,
         }
 
         # Convert user-supplied temperatures to whole values used in Topic 633.
@@ -427,28 +475,34 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         self.temperature_to = round(self.temperature_to / 10.0) * 10.0
 
         try:
-            self.change_factor_1 = _quality_convert[(self.quality_from_id,
-                                                     self.quality_to_id)]
+            self.change_factor_1 = _quality_convert[(
+                self.quality_from_id,
+                self.quality_to_id,
+            )]
         except KeyError:
             self.change_factor_1 = 1.0
             _return = True
 
         try:
             self.change_factor_2 = _environment_convert[(
-                self.environment_from_id, self.environment_to_id)]
+                self.environment_from_id, self.environment_to_id,
+            )]
         except KeyError:
             self.change_factor_2 = 1.0
             _return = True
 
         try:
-            self.change_factor_3 = _temperature_convert[(self.temperature_from,
-                                                         self.temperature_to)]
+            self.change_factor_3 = _temperature_convert[(
+                self.temperature_from,
+                self.temperature_to,
+            )]
         except KeyError:
             self.change_factor_3 = 1.0
             _return = True
 
         self.result_1 = hazard_rate / (
-            self.change_factor_1 * self.change_factor_2 * self.change_factor_3)
+            self.change_factor_1 * self.change_factor_2 * self.change_factor_3
+        )
 
         return _return
 
@@ -468,7 +522,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
             'hr', 'pi1', 'pi3', 'pi3', 'pi4', 'pi5', 'pi6', 'pi7', 'pi8',
             'pi9', 'pi10', 'uf1', 'uf2', 'uf3', 'uf4', 'uf5', 'ui1', 'ui2',
             'ui3', 'ui4', 'ui5', 'equation1', 'equation2', 'equation3',
-            'equation4', 'equation5', 'res1', 'res2', 'res3', 'res4', 'res5'
+            'equation4', 'equation5', 'res1', 'res2', 'res3', 'res4', 'res5',
         ]
 
         # Use the list to filter the local namespace
@@ -525,36 +579,46 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
 
         # pylint: disable=eval-used
         try:
-            self.result_1 = eval(_sia['equation1'], {"__builtins__": None},
-                                 _sia)
+            self.result_1 = eval(
+                _sia['equation1'], {"__builtins__": None},
+                _sia,
+            )
         except SyntaxError:
             self.result_1 = 0.0
             _return = True
 
         try:
-            self.result_2 = eval(_sia['equation2'], {"__builtins__": None},
-                                 _sia)
+            self.result_2 = eval(
+                _sia['equation2'], {"__builtins__": None},
+                _sia,
+            )
         except SyntaxError:
             self.result_2 = 0.0
             _return = True
 
         try:
-            self.result_3 = eval(_sia['equation3'], {"__builtins__": None},
-                                 _sia)
+            self.result_3 = eval(
+                _sia['equation3'], {"__builtins__": None},
+                _sia,
+            )
         except SyntaxError:
             self.result_3 = 0.0
             _return = True
 
         try:
-            self.result_4 = eval(_sia['equation4'], {"__builtins__": None},
-                                 _sia)
+            self.result_4 = eval(
+                _sia['equation4'], {"__builtins__": None},
+                _sia,
+            )
         except SyntaxError:
             self.result_4 = 0.0
             _return = True
 
         try:
-            self.result_5 = eval(_sia['equation5'], {"__builtins__": None},
-                                 _sia)
+            self.result_5 = eval(
+                _sia['equation5'], {"__builtins__": None},
+                _sia,
+            )
         except SyntaxError:
             self.result_5 = 0.0
             _return = True
@@ -562,9 +626,11 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         # If all the equations are set and _return is True, then there is a
         # real issue.  Otherwise, _return was set just because one or more
         # equations was empty and it is a false True.
-        if (_sia['equation1'] != '' or _sia['equation2'] != ''
+        if (
+                _sia['equation1'] != '' or _sia['equation2'] != ''
                 or _sia['equation3'] != '' or _sia['equation4'] != ''
-                or _sia['equation5'] != ''):
+                or _sia['equation5'] != ''
+        ):
             _return = False
 
         return _return

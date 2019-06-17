@@ -257,10 +257,10 @@ class HardwareBoMDataController(RAMSTKDataController):
         _error_code, _msg = self._dtm_data_model.do_insert(
             revision_id=revision_id, parent_id=parent_id, part=part,
         )
-        # TODO: Move this to seperate method that responds to the 'inserted_hardware' signal.
+
         if _error_code == 0:
             self._configuration.RAMSTK_USER_LOG.info(_msg)
-
+            # TODO: Move the code for adding Hardware:X matrix records to a seperate method that responds to the 'inserted_hardware' signal.
             _hardware_id = self.request_last_id()
             _heading = self.request_do_select(_hardware_id)['ref_des']
 
