@@ -83,7 +83,7 @@ class ModeDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mode.description,
                 _mode.mode_id,
-                parent=0,
+                parent='0',
                 data=_mode,
             )
 
@@ -119,7 +119,7 @@ class ModeDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mode.description,
                 _mode.mode_id,
-                parent=0,
+                parent='0',
                 data=_mode,
             )
 
@@ -247,7 +247,7 @@ class MechanismDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mechanism.description,
                 _mechanism.mechanism_id,
-                parent=0,
+                parent='0',
                 data=_mechanism,
             )
 
@@ -282,7 +282,7 @@ class MechanismDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mechanism.description,
                 _mechanism.mechanism_id,
-                parent=0,
+                parent='0',
                 data=_mechanism,
             )
 
@@ -418,7 +418,7 @@ class CauseDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _cause.description,
                 _cause.cause_id,
-                parent=0,
+                parent='0',
                 data=_cause,
             )
 
@@ -454,7 +454,7 @@ class CauseDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _cause.description,
                 _cause.cause_id,
-                parent=0,
+                parent='0',
                 data=_cause,
             )
 
@@ -585,7 +585,7 @@ class ControlDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _control.description,
                 _control.control_id,
-                parent=0,
+                parent='0',
                 data=_control,
             )
 
@@ -620,7 +620,7 @@ class ControlDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _control.description,
                 _control.control_id,
-                parent=0,
+                parent='0',
                 data=_control,
             )
 
@@ -748,7 +748,7 @@ class ActionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _action.action_status,
                 _action.action_id,
-                parent=0,
+                parent='0',
                 data=_action,
             )
 
@@ -783,7 +783,7 @@ class ActionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _action.action_status,
                 _action.action_id,
-                parent=0,
+                parent='0',
                 data=_action,
             )
 
@@ -945,7 +945,7 @@ class FMEADataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     tag=_mode.description,
                     identifier=_node_id,
-                    parent=0,
+                    parent='0',
                     data=_mode,
                 )
                 if self._functional:

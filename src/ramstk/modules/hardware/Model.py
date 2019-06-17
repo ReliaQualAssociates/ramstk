@@ -977,7 +977,7 @@ class DesignElectricDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     _design.hardware_id,
                     _design.hardware_id,
-                    parent=0,
+                    parent='0',
                     data=_design,
                 )
 
@@ -1013,7 +1013,7 @@ class DesignElectricDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _design.hardware_id,
                 _design.hardware_id,
-                parent=0,
+                parent='0',
                 data=_design,
             )
 
@@ -1141,7 +1141,7 @@ class DesignMechanicDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     _design.hardware_id,
                     _design.hardware_id,
-                    parent=0,
+                    parent='0',
                     data=_design,
                 )
 
@@ -1177,7 +1177,7 @@ class DesignMechanicDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _design.hardware_id,
                 _design.hardware_id,
-                parent=0,
+                parent='0',
                 data=_design,
             )
 
@@ -1305,7 +1305,7 @@ class MilHdbkFDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     _milhdbkf.hardware_id,
                     _milhdbkf.hardware_id,
-                    parent=0,
+                    parent='0',
                     data=_milhdbkf,
                 )
 
@@ -1341,7 +1341,7 @@ class MilHdbkFDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _milhdbkf.hardware_id,
                 _milhdbkf.hardware_id,
-                parent=0,
+                parent='0',
                 data=_milhdbkf,
             )
 
@@ -1467,7 +1467,7 @@ class NSWCDataModel(RAMSTKDataModel):
                 filter(RAMSTKNSWC.hardware_id == _hardware_id).all():
             try:
                 self.tree.create_node(
-                    _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc,
+                    _nswc.hardware_id, _nswc.hardware_id, parent='0', data=_nswc,
                 )
 
                 # pylint: disable=attribute-defined-outside-init
@@ -1500,7 +1500,7 @@ class NSWCDataModel(RAMSTKDataModel):
 
         if _error_code == 0:
             self.tree.create_node(
-                _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc,
+                _nswc.hardware_id, _nswc.hardware_id, parent='0', data=_nswc,
             )
 
             # pylint: disable=attribute-defined-outside-init
@@ -1626,7 +1626,7 @@ class ReliabilityDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     _reliability.hardware_id,
                     _reliability.hardware_id,
-                    parent=0,
+                    parent='0',
                     data=_reliability,
                 )
 
@@ -1662,7 +1662,7 @@ class ReliabilityDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _reliability.hardware_id,
                 _reliability.hardware_id,
-                parent=0,
+                parent='0',
                 data=_reliability,
             )
 

@@ -243,7 +243,7 @@ class ValidationDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _validation.description,
                 _validation.validation_id,
-                parent=0,
+                parent='0',
                 data=_validation,
             )
 
@@ -282,7 +282,7 @@ class ValidationDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _validation.description,
                 _validation.validation_id,
-                parent=0,
+                parent='0',
                 data=_validation,
             )
 
@@ -304,7 +304,7 @@ class ValidationDataModel(RAMSTKDataModel):
                 self.status_tree.create_node(
                     _status.date_status,
                     date_to_ordinal(_status.date_status),
-                    parent=0,
+                    parent='0',
                     data=_status,
                 )
             except tree.DuplicatedNodeIdError:
@@ -326,7 +326,7 @@ class ValidationDataModel(RAMSTKDataModel):
                 self.status_tree.create_node(
                     _status.date_status,
                     date_to_ordinal(_status.date_status),
-                    parent=0,
+                    parent='0',
                     data=_status,
                 )
 

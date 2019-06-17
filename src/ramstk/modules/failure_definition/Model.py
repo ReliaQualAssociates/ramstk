@@ -95,7 +95,7 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _definition.definition,
                 _definition.definition_id,
-                parent=0,
+                parent='0',
                 data=_definition,
             )
 
@@ -128,7 +128,7 @@ class FailureDefinitionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _definition.definition,
                 _definition.definition_id,
-                parent=0,
+                parent='0',
                 data=_definition,
             )
 

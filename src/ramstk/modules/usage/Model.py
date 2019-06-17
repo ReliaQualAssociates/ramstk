@@ -195,7 +195,7 @@ class UsageProfileDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     tag=_mission.description,
                     identifier=_mission.mission_id,
-                    parent=0,
+                    parent='0',
                     data=_mission,
                 )
 
@@ -341,7 +341,7 @@ class MissionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mission.description,
                 _mission.mission_id,
-                parent=0,
+                parent='0',
                 data=_mission,
             )
 
@@ -377,7 +377,7 @@ class MissionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mission.description,
                 _mission.mission_id,
-                parent=0,
+                parent='0',
                 data=_mission,
             )
 
@@ -493,7 +493,7 @@ class MissionPhaseDataModel(RAMSTKDataModel):
         for _phase in _session.query(RAMSTKMissionPhase).\
                 filter(RAMSTKMissionPhase.mission_id == _mission_id).all():
             self.tree.create_node(
-                _phase.name, _phase.phase_id, parent=0, data=_phase,
+                _phase.name, _phase.phase_id, parent='0', data=_phase,
             )
 
             # pylint: disable=attribute-defined-outside-init
@@ -527,7 +527,7 @@ class MissionPhaseDataModel(RAMSTKDataModel):
 
         if _error_code == 0:
             self.tree.create_node(
-                _phase.name, _phase.phase_id, parent=0, data=_phase,
+                _phase.name, _phase.phase_id, parent='0', data=_phase,
             )
 
             # pylint: disable=attribute-defined-outside-init
@@ -644,7 +644,7 @@ class EnvironmentDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _environment.name,
                 _environment.environment_id,
-                parent=0,
+                parent='0',
                 data=_environment,
             )
 
@@ -680,7 +680,7 @@ class EnvironmentDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _environment.name,
                 _environment.environment_id,
-                parent=0,
+                parent='0',
                 data=_environment,
             )
 

@@ -140,7 +140,7 @@ class HazardAnalysisDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _hazard_analysis.potential_hazard,
                 _hazard_analysis.hardware_id,
-                parent=0,
+                parent='0',
                 data=None,
             )
             self.tree.create_node(

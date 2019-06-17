@@ -90,7 +90,7 @@ class RevisionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _revision.name,
                 _revision.revision_id,
-                parent=0,
+                parent='0',
                 data=_revision,
             )
 
@@ -122,7 +122,7 @@ class RevisionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _revision.name,
                 _revision.revision_id,
-                parent=0,
+                parent='0',
                 data=_revision,
             )
 

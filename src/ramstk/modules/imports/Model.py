@@ -658,7 +658,7 @@ class ImportDataModel(RAMSTKDataModel):
         :return: _entity
         :rtype: :class:`ramstk.dao.programdb.RAMSTKHardware.RAMSTKHardware`
         """
-        # TODO: Implement NSWC predictions.  See issue #141.
+        # ISSUE: See issue #141 at https://github.com/ReliaQualAssociates/ramstk/issues/141 and add NSWC support to this method.
         _design_mechanic = RAMSTKDesignMechanic()
 
         _map = self._dic_field_map['Hardware']

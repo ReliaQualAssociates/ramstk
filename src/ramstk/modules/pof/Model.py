@@ -76,7 +76,7 @@ class OpLoadDataModel(RAMSTKDataModel):
             _attributes = _opload.get_attributes()
             _opload.set_attributes(_attributes)
             self.tree.create_node(
-                _opload.description, _opload.load_id, parent=0, data=_opload,
+                _opload.description, _opload.load_id, parent='0', data=_opload,
             )
 
             # pylint: disable=attribute-defined-outside-init
@@ -107,7 +107,7 @@ class OpLoadDataModel(RAMSTKDataModel):
 
         if _error_code == 0:
             self.tree.create_node(
-                _opload.description, _opload.load_id, parent=0, data=_opload,
+                _opload.description, _opload.load_id, parent='0', data=_opload,
             )
 
             # pylint: disable=attribute-defined-outside-init
@@ -229,7 +229,7 @@ class OpStressDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _opstress.description,
                 _opstress.stress_id,
-                parent=0,
+                parent='0',
                 data=_opstress,
             )
 
@@ -263,7 +263,7 @@ class OpStressDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _opstress.description,
                 _opstress.stress_id,
-                parent=0,
+                parent='0',
                 data=_opstress,
             )
 
@@ -386,7 +386,7 @@ class TestMethodDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _testmethod.description,
                 _testmethod.test_id,
-                parent=0,
+                parent='0',
                 data=_testmethod,
             )
 
@@ -420,7 +420,7 @@ class TestMethodDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _testmethod.description,
                 _testmethod.test_id,
-                parent=0,
+                parent='0',
                 data=_testmethod,
             )
 
@@ -562,7 +562,7 @@ class PhysicsOfFailureDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     tag=_mode.description,
                     identifier=_node_id,
-                    parent=0,
+                    parent='0',
                     data=_mode,
                 )
 
