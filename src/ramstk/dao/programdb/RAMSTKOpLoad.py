@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKOpLoad Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKOpLoad(RAMSTK_BASE):
@@ -30,13 +31,15 @@ class RAMSTKOpLoad(RAMSTK_BASE):
         'fld_mechanism_id',
         Integer,
         ForeignKey('ramstk_mechanism.fld_mechanism_id'),
-        nullable=False)
+        nullable=False,
+    )
     load_id = Column(
         'fld_load_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     description = Column('fld_description', String(512), default='')
     damage_model = Column('fld_damage_model', String(512), default='')
@@ -45,9 +48,11 @@ class RAMSTKOpLoad(RAMSTK_BASE):
     # Define the relationships to other tables in the RAMSTK Program database.
     mechanism = relationship('RAMSTKMechanism', back_populates='op_load')
     op_stress = relationship(
-        'RAMSTKOpStress', back_populates='op_load', cascade='all,delete')
+        'RAMSTKOpStress', back_populates='op_load', cascade='all,delete',
+    )
     test_method = relationship(
-        'RAMSTKTestMethod', back_populates='op_load', cascade='all,delete')
+        'RAMSTKTestMethod', back_populates='op_load', cascade='all,delete',
+    )
 
     is_mode = False
     is_mechanism = False
@@ -68,7 +73,7 @@ class RAMSTKOpLoad(RAMSTK_BASE):
             'load_id': self.load_id,
             'description': self.description,
             'damage_model': self.damage_model,
-            'priority_id': self.priority_id
+            'priority_id': self.priority_id,
         }
 
         return _attributes
@@ -87,11 +92,14 @@ class RAMSTKOpLoad(RAMSTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'], ''))
+                none_to_default(attributes['description'], ''),
+            )
             self.damage_model = str(
-                none_to_default(attributes['damage_model'], ''))
+                none_to_default(attributes['damage_model'], ''),
+            )
             self.priority_id = int(
-                none_to_default(attributes['priority_id'], 0))
+                none_to_default(attributes['priority_id'], 0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

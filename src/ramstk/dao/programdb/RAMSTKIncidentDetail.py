@@ -10,12 +10,13 @@ The RAMSTKIncidentDetail Table
 ===============================================================================
 """
 
+# Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKIncidentDetail(RAMSTK_BASE):
@@ -34,14 +35,16 @@ class RAMSTKIncidentDetail(RAMSTK_BASE):
         Integer,
         ForeignKey('ramstk_incident.fld_incident_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
     hardware_id = Column('fld_hardware_id', Integer, default=0)
 
     age_at_incident = Column('fld_age_at_incident', Float, default=0.0)
     cnd_nff = Column('fld_cnd_nff', Integer, default=0)
     failure = Column('fld_failure', Integer, default=0)
     initial_installation = Column(
-        'fld_initial_installation', Integer, default=0)
+        'fld_initial_installation', Integer, default=0,
+    )
     interval_censored = Column('fld_interval_censored', Integer, default=0)
     mode_type_id = Column('fld_mode_type_id', Integer, default=0)
     occ_fault = Column('fld_occ_fault', Integer, default=0)
@@ -64,11 +67,13 @@ class RAMSTKIncidentDetail(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _values = (self.incident_id, self.hardware_id, self.age_at_incident,
-                   self.cnd_nff, self.failure, self.initial_installation,
-                   self.interval_censored, self.mode_type_id, self.occ_fault,
-                   self.suspension, self.ttf, self.use_cal_time,
-                   self.use_op_time)
+        _values = (
+            self.incident_id, self.hardware_id, self.age_at_incident,
+            self.cnd_nff, self.failure, self.initial_installation,
+            self.interval_censored, self.mode_type_id, self.occ_fault,
+            self.suspension, self.ttf, self.use_cal_time,
+            self.use_op_time,
+        )
 
         return _values
 

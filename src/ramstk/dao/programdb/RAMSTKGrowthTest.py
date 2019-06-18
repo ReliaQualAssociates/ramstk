@@ -10,14 +10,16 @@ The RAMSTKGrowthTest Table
 ===============================================================================
 """
 
+# Standard Library Imports
 from datetime import date
 
+# Third Party Imports
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKGrowthTest(RAMSTK_BASE):
@@ -34,13 +36,15 @@ class RAMSTKGrowthTest(RAMSTK_BASE):
         'fld_test_id',
         Integer,
         ForeignKey('ramstk_test.fld_test_id'),
-        nullable=False)
+        nullable=False,
+    )
     phase_id = Column(
         'fld_phase_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     i_mi = Column('fld_i_mi', Float, default=0.0)
     i_mf = Column('fld_i_mf', Float, default=0.0)
@@ -87,15 +91,17 @@ class RAMSTKGrowthTest(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.test_id, self.phase_id, self.i_mi, self.i_mf,
-                       self.i_ma, self.i_num_fails, self.p_growth_rate,
-                       self.p_ms, self.p_fef_avg, self.p_prob, self.p_mi,
-                       self.p_mf, self.p_ma, self.p_test_time,
-                       self.p_num_fails, self.p_start_date, self.p_end_date,
-                       self.p_weeks, self.p_test_units, self.p_tpu,
-                       self.p_tpupw, self.o_growth_rate, self.o_ms,
-                       self.o_fef_avg, self.o_mi, self.o_mf, self.o_ma,
-                       self.o_test_time, self.o_num_fails, self.o_ttff)
+        _attributes = (
+            self.test_id, self.phase_id, self.i_mi, self.i_mf,
+            self.i_ma, self.i_num_fails, self.p_growth_rate,
+            self.p_ms, self.p_fef_avg, self.p_prob, self.p_mi,
+            self.p_mf, self.p_ma, self.p_test_time,
+            self.p_num_fails, self.p_start_date, self.p_end_date,
+            self.p_weeks, self.p_test_units, self.p_tpu,
+            self.p_tpupw, self.o_growth_rate, self.o_ms,
+            self.o_fef_avg, self.o_mi, self.o_mf, self.o_ma,
+            self.o_test_time, self.o_num_fails, self.o_ttff,
+        )
 
         return _attributes
 

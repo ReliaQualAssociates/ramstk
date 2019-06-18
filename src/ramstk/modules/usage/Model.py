@@ -10,7 +10,9 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.dao import RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
+from ramstk.dao.programdb import (
+    RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase,
+)
 from ramstk.modules import RAMSTKDataModel
 
 

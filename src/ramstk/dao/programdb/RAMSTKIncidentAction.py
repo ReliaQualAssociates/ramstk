@@ -10,14 +10,16 @@ The RAMSTKIncidentAction Table
 ===============================================================================
 """
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKIncidentAction(RAMSTK_BASE):
@@ -35,13 +37,15 @@ class RAMSTKIncidentAction(RAMSTK_BASE):
         'fld_incident_id',
         Integer,
         ForeignKey('ramstk_incident.fld_incident_id'),
-        nullable=False)
+        nullable=False,
+    )
     action_id = Column(
         'fld_action_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     action_owner = Column('fld_action_owner', Integer, default=0)
     action_prescribed = Column('fld_action_prescribed', BLOB, default=b'')
@@ -49,13 +53,16 @@ class RAMSTKIncidentAction(RAMSTK_BASE):
     approved = Column('fld_approved', Integer, default=0)
     approved_by = Column('fld_approved_by', Integer, default=0)
     approved_date = Column(
-        'fld_approved_date', Date, default=date.today() + timedelta(days=30))
+        'fld_approved_date', Date, default=date.today() + timedelta(days=30),
+    )
     closed = Column('fld_closed', Integer, default=0)
     closed_by = Column('fld_closed_by', Integer, default=0)
     closed_date = Column(
-        'fld_closed_date', Date, default=date.today() + timedelta(days=30))
+        'fld_closed_date', Date, default=date.today() + timedelta(days=30),
+    )
     due_date = Column(
-        'fld_due_date', Date, default=date.today() + timedelta(days=30))
+        'fld_due_date', Date, default=date.today() + timedelta(days=30),
+    )
     status_id = Column('fld_status_id', Integer, default=0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -73,11 +80,13 @@ class RAMSTKIncidentAction(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _values = (self.incident_id, self.action_id, self.action_owner,
-                   self.action_prescribed, self.action_taken, self.approved,
-                   self.approved_by, self.approved_date, self.closed,
-                   self.closed_by, self.closed_date, self.due_date,
-                   self.status_id)
+        _values = (
+            self.incident_id, self.action_id, self.action_owner,
+            self.action_prescribed, self.action_taken, self.approved,
+            self.approved_by, self.approved_date, self.closed,
+            self.closed_by, self.closed_date, self.due_date,
+            self.status_id,
+        )
 
         return _values
 
@@ -102,13 +111,16 @@ class RAMSTKIncidentAction(RAMSTK_BASE):
             self.approved = int(none_to_default(values[3], 0))
             self.approved_by = int(none_to_default(values[4], 0))
             self.approved_date = none_to_default(
-                values[5], date.today() + timedelta(days=30))
+                values[5], date.today() + timedelta(days=30),
+            )
             self.closed = int(none_to_default(values[6], 0))
             self.closed_by = int(none_to_default(values[7], 0))
             self.closed_date = none_to_default(
-                values[8], date.today() + timedelta(days=30))
+                values[8], date.today() + timedelta(days=30),
+            )
             self.due_date = none_to_default(
-                values[9], date.today() + timedelta(days=30))
+                values[9], date.today() + timedelta(days=30),
+            )
             self.status_id = int(none_to_default(values[10], 0))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

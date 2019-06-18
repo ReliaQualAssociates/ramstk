@@ -73,7 +73,10 @@ class Install(_install):
     @staticmethod
     def post_install_script():
         """Execute after install."""
-        print("\033[1;32mYour shiny new RAMSTK-{0:s} is installed!!\033[0m".format(__version__))
+        print(
+            "\033[1;32mYour shiny new RAMSTK-{0:s} is "
+            "installed!!\033[0m".format(__version__),
+        )
 
     def run(self):
         """Run the install."""

@@ -23,8 +23,7 @@ import xlwt
 # RAMSTK Package Imports
 import ramstk.Utilities as Utilities
 from ramstk.Configuration import Configuration
-from ramstk.dao import DAO
-from ramstk.dao.RAMSTKProgramDB import do_create_test_database
+from ramstk.dao import DAO, do_create_test_database
 
 _ = gettext.gettext
 

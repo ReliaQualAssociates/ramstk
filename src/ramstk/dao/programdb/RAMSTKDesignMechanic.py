@@ -6,13 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKDesignMechanic Table Module."""  # pragma: no cover
 
+# Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer  # pragma: no cover
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE  # pragma: no cover
 
 
 # pylint: disable=R0902
@@ -31,7 +31,8 @@ class RAMSTKDesignMechanic(RAMSTK_BASE):
         Integer,
         ForeignKey('ramstk_hardware.fld_hardware_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
 
     altitude_operating = Column('fld_altitude_operating', Float, default=0.0)
     application_id = Column('fld_application_id', Integer, default=0)
@@ -162,7 +163,7 @@ class RAMSTKDesignMechanic(RAMSTK_BASE):
             'viscosity_design': self.viscosity_design,
             'viscosity_dynamic': self.viscosity_dynamic,
             'water_per_cent': self.water_per_cent,
-            'width_minimum': self.width_minimum
+            'width_minimum': self.width_minimum,
         }
 
         return _attributes
@@ -182,96 +183,135 @@ class RAMSTKDesignMechanic(RAMSTK_BASE):
 
         try:
             self.altitude_operating = float(
-                none_to_default(attributes['altitude_operating'], 0.0))
+                none_to_default(attributes['altitude_operating'], 0.0),
+            )
             self.application_id = int(
-                none_to_default(attributes['application_id'], 0))
+                none_to_default(attributes['application_id'], 0),
+            )
             self.balance_id = int(none_to_default(attributes['balance_id'], 0))
             self.clearance = float(
-                none_to_default(attributes['clearance'], 0.0))
+                none_to_default(attributes['clearance'], 0.0),
+            )
             self.casing_id = int(none_to_default(attributes['casing_id'], 0))
             self.contact_pressure = float(
-                none_to_default(attributes['contact_pressure'], 0.0))
+                none_to_default(attributes['contact_pressure'], 0.0),
+            )
             self.deflection = float(
-                none_to_default(attributes['deflection'], 0.0))
+                none_to_default(attributes['deflection'], 0.0),
+            )
             self.diameter_coil = float(
-                none_to_default(attributes['diameter_coil'], 0.0))
+                none_to_default(attributes['diameter_coil'], 0.0),
+            )
             self.diameter_inner = float(
-                none_to_default(attributes['diameter_inner'], 0.0))
+                none_to_default(attributes['diameter_inner'], 0.0),
+            )
             self.diameter_outer = float(
-                none_to_default(attributes['diameter_outer'], 0.0))
+                none_to_default(attributes['diameter_outer'], 0.0),
+            )
             self.diameter_wire = float(
-                none_to_default(attributes['diameter_wire'], 0.0))
+                none_to_default(attributes['diameter_wire'], 0.0),
+            )
             self.filter_size = float(
-                none_to_default(attributes['filter_size'], 0.0))
+                none_to_default(attributes['filter_size'], 0.0),
+            )
             self.flow_design = float(
-                none_to_default(attributes['flow_design'], 0.0))
+                none_to_default(attributes['flow_design'], 0.0),
+            )
             self.flow_operating = float(
-                none_to_default(attributes['flow_operating'], 0.0))
+                none_to_default(attributes['flow_operating'], 0.0),
+            )
             self.frequency_operating = float(
-                none_to_default(attributes['frequency_operating'], 0.0))
+                none_to_default(attributes['frequency_operating'], 0.0),
+            )
             self.friction = float(none_to_default(attributes['friction'], 0.0))
             self.impact_id = int(none_to_default(attributes['impact_id'], 0))
             self.leakage_allowable = float(
-                none_to_default(attributes['leakage_allowable'], 0.0))
+                none_to_default(attributes['leakage_allowable'], 0.0),
+            )
             self.length = float(none_to_default(attributes['length'], 0.0))
             self.length_compressed = float(
-                none_to_default(attributes['length_compressed'], 0.0))
+                none_to_default(attributes['length_compressed'], 0.0),
+            )
             self.length_relaxed = float(
-                none_to_default(attributes['length_relaxed'], 0.0))
+                none_to_default(attributes['length_relaxed'], 0.0),
+            )
             self.load_design = float(
-                none_to_default(attributes['load_design'], 0.0))
+                none_to_default(attributes['load_design'], 0.0),
+            )
             self.load_id = int(none_to_default(attributes['load_id'], 0))
             self.load_operating = float(
-                none_to_default(attributes['load_operating'], 0.0))
+                none_to_default(attributes['load_operating'], 0.0),
+            )
             self.lubrication_id = int(
-                none_to_default(attributes['lubrication_id'], 0))
+                none_to_default(attributes['lubrication_id'], 0),
+            )
             self.manufacturing_id = int(
-                none_to_default(attributes['manufacturing_id'], 0))
+                none_to_default(attributes['manufacturing_id'], 0),
+            )
             self.material_id = int(
-                none_to_default(attributes['material_id'], 0))
+                none_to_default(attributes['material_id'], 0),
+            )
             self.meyer_hardness = float(
-                none_to_default(attributes['meyer_hardness'], 0.0))
+                none_to_default(attributes['meyer_hardness'], 0.0),
+            )
             self.misalignment_angle = float(
-                none_to_default(attributes['misalignment_angle'], 0.0))
+                none_to_default(attributes['misalignment_angle'], 0.0),
+            )
             self.n_ten = int(none_to_default(attributes['n_ten'], 0))
             self.n_cycles = int(none_to_default(attributes['n_cycles'], 0))
             self.n_elements = int(none_to_default(attributes['n_elements'], 0))
             self.offset = float(none_to_default(attributes['offset'], 0.0))
             self.particle_size = float(
-                none_to_default(attributes['particle_size'], 0.0))
+                none_to_default(attributes['particle_size'], 0.0),
+            )
             self.pressure_contact = float(
-                none_to_default(attributes['pressure_contact'], 0.0))
+                none_to_default(attributes['pressure_contact'], 0.0),
+            )
             self.pressure_delta = float(
-                none_to_default(attributes['pressure_delta'], 0.0))
+                none_to_default(attributes['pressure_delta'], 0.0),
+            )
             self.pressure_downstream = float(
-                none_to_default(attributes['pressure_downstream'], 0.0))
+                none_to_default(attributes['pressure_downstream'], 0.0),
+            )
             self.pressure_rated = float(
-                none_to_default(attributes['pressure_rated'], 0.0))
+                none_to_default(attributes['pressure_rated'], 0.0),
+            )
             self.pressure_upstream = float(
-                none_to_default(attributes['pressure_upstream'], 0.0))
+                none_to_default(attributes['pressure_upstream'], 0.0),
+            )
             self.rpm_design = float(
-                none_to_default(attributes['rpm_design'], 0.0))
+                none_to_default(attributes['rpm_design'], 0.0),
+            )
             self.rpm_operating = float(
-                none_to_default(attributes['rpm_operating'], 0.0))
+                none_to_default(attributes['rpm_operating'], 0.0),
+            )
             self.service_id = int(none_to_default(attributes['service_id'], 0))
             self.spring_index = float(
-                none_to_default(attributes['spring_index'], 0.0))
+                none_to_default(attributes['spring_index'], 0.0),
+            )
             self.surface_finish = float(
-                none_to_default(attributes['surface_finish'], 0.0))
+                none_to_default(attributes['surface_finish'], 0.0),
+            )
             self.technology_id = int(
-                none_to_default(attributes['technology_id'], 0))
+                none_to_default(attributes['technology_id'], 0),
+            )
             self.thickness = float(
-                none_to_default(attributes['thickness'], 0.0))
+                none_to_default(attributes['thickness'], 0.0),
+            )
             self.torque_id = int(none_to_default(attributes['torque_id'], 0))
             self.type_id = int(none_to_default(attributes['type_id'], 0))
             self.viscosity_design = float(
-                none_to_default(attributes['viscosity_design'], 0.0))
+                none_to_default(attributes['viscosity_design'], 0.0),
+            )
             self.viscosity_dynamic = float(
-                none_to_default(attributes['viscosity_dynamic'], 0.0))
+                none_to_default(attributes['viscosity_dynamic'], 0.0),
+            )
             self.water_per_cent = float(
-                none_to_default(attributes['water_per_cent'], 0.0))
+                none_to_default(attributes['water_per_cent'], 0.0),
+            )
             self.width_minimum = float(
-                none_to_default(attributes['width_minimum'], 0.0))
+                none_to_default(attributes['width_minimum'], 0.0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

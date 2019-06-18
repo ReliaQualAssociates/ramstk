@@ -6,13 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the PoF TestMethod class. """
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.modules.pof import dtmTestMethod
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao import RAMSTKTestMethod
+from ramstk.dao.programdb import RAMSTKTestMethod
+from ramstk.modules.pof import dtmTestMethod
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -73,8 +74,10 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(load_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
     # If this script is run stand-alone, it will be 2.
     # If this is run as part of a larger suite, it will be 4.
     try:
@@ -92,8 +95,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -105,8 +110,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent TestMethod "
-                    "ID 300.")
+    assert _msg == (
+        "  RAMSTK ERROR: Attempted to delete non-existent TestMethod "
+        "ID 300."
+    )
 
 
 @pytest.mark.integration
@@ -134,7 +141,8 @@ def test_do_update_non_existent_id(test_dao):
 
     assert _error_code == 2006
     assert _msg == (
-        "RAMSTK ERROR: Attempted to save non-existent TestMethod ID 100.")
+        "RAMSTK ERROR: Attempted to save non-existent TestMethod ID 100."
+    )
 
 
 @pytest.mark.integration
@@ -146,5 +154,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all test methods in the damage "
-                    "modeling worksheet.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all test methods in the damage "
+        "modeling worksheet."
+    )

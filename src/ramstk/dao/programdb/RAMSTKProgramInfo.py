@@ -6,13 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKProgramInfo Table Module."""
 
+# Standard Library Imports
 from datetime import date
 
+# Third Party Imports
 from sqlalchemy import Column, Date, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKProgramInfo(RAMSTK_BASE):
@@ -30,7 +32,8 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     function_active = Column('fld_function_active', Integer, default=1)
     requirement_active = Column('fld_requirement_active', Integer, default=1)
     hardware_active = Column('fld_hardware_active', Integer, default=1)
@@ -78,7 +81,7 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
             'created_by': self.created_by,
             'last_saved': self.last_saved,
             'last_saved_by': self.last_saved_by,
-            'method': self.method
+            'method': self.method,
         }
 
         return _attributes
@@ -96,36 +99,52 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
 
         try:
             self.function_active = int(
-                none_to_default(attributes['function_active'], 1))
+                none_to_default(attributes['function_active'], 1),
+            )
             self.requirement_active = int(
-                none_to_default(attributes['requirement_active'], 1))
+                none_to_default(attributes['requirement_active'], 1),
+            )
             self.hardware_active = int(
-                none_to_default(attributes['hardware_active'], 1))
+                none_to_default(attributes['hardware_active'], 1),
+            )
             self.vandv_active = int(
-                none_to_default(attributes['vandv_active'], 1))
+                none_to_default(attributes['vandv_active'], 1),
+            )
             self.fmea_active = int(
-                none_to_default(attributes['fmea_active'], 1))
+                none_to_default(attributes['fmea_active'], 1),
+            )
             self.software_active = int(
-                none_to_default(attributes['software_active'], 1))
+                none_to_default(attributes['software_active'], 1),
+            )
             self.testing_active = int(
-                none_to_default(attributes['testing_active'], 1))
+                none_to_default(attributes['testing_active'], 1),
+            )
             self.fraca_active = int(
-                none_to_default(attributes['fraca_active'], 1))
+                none_to_default(attributes['fraca_active'], 1),
+            )
             self.survival_active = int(
-                none_to_default(attributes['survival_active'], 1))
+                none_to_default(attributes['survival_active'], 1),
+            )
             self.rcm_active = int(none_to_default(attributes['rcm_active'], 0))
             self.rbd_active = int(none_to_default(attributes['rbd_active'], 0))
             self.fta_active = int(none_to_default(attributes['fta_active'], 0))
-            self.created_on = none_to_default(attributes['created_on'],
-                                              date.today())
+            self.created_on = none_to_default(
+                attributes['created_on'],
+                date.today(),
+            )
             self.created_by = str(
-                none_to_default(attributes['created_by'], ''))
-            self.last_saved = none_to_default(attributes['last_saved'],
-                                              date.today())
+                none_to_default(attributes['created_by'], ''),
+            )
+            self.last_saved = none_to_default(
+                attributes['last_saved'],
+                date.today(),
+            )
             self.last_saved_by = str(
-                none_to_default(attributes['last_saved_by'], ''))
+                none_to_default(attributes['last_saved_by'], ''),
+            )
             self.method = str(
-                none_to_default(attributes['method'], 'STANDARD'))
+                none_to_default(attributes['method'], 'STANDARD'),
+            )
         except KeyError as _err:
             _error_code = 1
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

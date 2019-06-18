@@ -14,13 +14,8 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import OutOfRangeError, none_to_default
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
 
 _ = gettext.gettext
 

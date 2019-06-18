@@ -6,11 +6,12 @@
 # Copyright 2007  2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKCondition Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKCondition(RAMSTK_BASE):
@@ -24,9 +25,11 @@ class RAMSTKCondition(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     description = Column(
-        'fld_description', String(512), default='Condition Decription')
+        'fld_description', String(512), default='Condition Decription',
+    )
     cond_type = Column('fld_type', String(256), default='')
 
     def get_attributes(self):
@@ -39,7 +42,7 @@ class RAMSTKCondition(RAMSTK_BASE):
         _attributes = {
             'condition_id': self.condition_id,
             'description': self.description,
-            'condition_type': self.cond_type
+            'condition_type': self.cond_type,
         }
 
         return _attributes
@@ -58,10 +61,14 @@ class RAMSTKCondition(RAMSTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'],
-                                'Condition Description'))
+                none_to_default(
+                    attributes['description'],
+                    'Condition Description',
+                ),
+            )
             self.cond_type = str(
-                none_to_default(attributes['condition_type'], 'unknown'))
+                none_to_default(attributes['condition_type'], 'unknown'),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

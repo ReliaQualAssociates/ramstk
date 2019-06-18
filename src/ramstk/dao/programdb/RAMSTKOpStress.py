@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKOpStress Table."""
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKOpStress(RAMSTK_BASE):
@@ -28,18 +29,21 @@ class RAMSTKOpStress(RAMSTK_BASE):
         'fld_load_id',
         Integer,
         ForeignKey('ramstk_op_load.fld_load_id'),
-        nullable=False)
+        nullable=False,
+    )
     stress_id = Column(
         'fld_stress_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     description = Column('fld_description', String(512), default='')
     load_history = Column('fld_load_history', String(512), default='')
     measurable_parameter = Column(
-        'fld_measurable_parameter', String(512), default='')
+        'fld_measurable_parameter', String(512), default='',
+    )
     remarks = Column('fld_remarks', BLOB, default=b'')
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -65,7 +69,7 @@ class RAMSTKOpStress(RAMSTK_BASE):
             'description': self.description,
             'load_history': self.load_history,
             'measurable_parameter': self.measurable_parameter,
-            'remarks': self.remarks
+            'remarks': self.remarks,
         }
 
         return _attributes
@@ -85,9 +89,11 @@ class RAMSTKOpStress(RAMSTK_BASE):
         try:
             self.description = str(none_to_default(values['description'], ''))
             self.load_history = str(
-                none_to_default(values['load_history'], ''))
+                none_to_default(values['load_history'], ''),
+            )
             self.measurable_parameter = none_to_default(
-                values['measurable_parameter'], b'')
+                values['measurable_parameter'], b'',
+            )
             self.remarks = none_to_default(values['remarks'], b'')
         except KeyError as _err:
             _error_code = 40

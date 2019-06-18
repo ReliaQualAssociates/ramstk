@@ -10,12 +10,13 @@ The RAMSTKTest Table
 ===============================================================================
 """
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKTest(RAMSTK_BASE):
@@ -33,13 +34,15 @@ class RAMSTKTest(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     test_id = Column(
         'fld_test_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     assess_model_id = Column('fld_assess_model_id', Integer, default=0)
     attachment = Column('fld_attachment', String(512), default='')
@@ -104,20 +107,22 @@ class RAMSTKTest(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.revision_id, self.test_id, self.assess_model_id,
-                       self.attachment, self.avg_fef, self.avg_growth,
-                       self.avg_ms, self.chi_square, self.confidence,
-                       self.consumer_risk, self.cramer_vonmises,
-                       self.cum_failures, self.cum_mean, self.cum_mean_ll,
-                       self.cum_mean_se, self.cum_mean_ul, self.cum_time,
-                       self.description, self.grouped, self.group_interval,
-                       self.inst_mean, self.inst_mean_ll, self.inst_mean_se,
-                       self.inst_mean_ul, self.mg, self.mgp, self.n_phases,
-                       self.name, self.plan_model_id, self.prob,
-                       self.producer_risk, self.scale, self.scale_ll,
-                       self.scale_se, self.scale_ul, self.shape, self.shape_ll,
-                       self.shape_se, self.shape_ul, self.tr, self.ttt,
-                       self.ttff, self.type_id)
+        _attributes = (
+            self.revision_id, self.test_id, self.assess_model_id,
+            self.attachment, self.avg_fef, self.avg_growth,
+            self.avg_ms, self.chi_square, self.confidence,
+            self.consumer_risk, self.cramer_vonmises,
+            self.cum_failures, self.cum_mean, self.cum_mean_ll,
+            self.cum_mean_se, self.cum_mean_ul, self.cum_time,
+            self.description, self.grouped, self.group_interval,
+            self.inst_mean, self.inst_mean_ll, self.inst_mean_se,
+            self.inst_mean_ul, self.mg, self.mgp, self.n_phases,
+            self.name, self.plan_model_id, self.prob,
+            self.producer_risk, self.scale, self.scale_ll,
+            self.scale_se, self.scale_ul, self.shape, self.shape_ll,
+            self.shape_se, self.shape_ul, self.tr, self.ttt,
+            self.ttff, self.type_id,
+        )
 
         return _attributes
 

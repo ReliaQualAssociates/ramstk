@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKMissionPhase Table Module."""
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKMissionPhase(RAMSTK_BASE):
@@ -29,13 +30,15 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
         'fld_mission_id',
         Integer,
         ForeignKey('ramstk_mission.fld_mission_id'),
-        nullable=False)
+        nullable=False,
+    )
     phase_id = Column(
         'fld_phase_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     description = Column('fld_description', BLOB, default=b'')
     name = Column('fld_name', String(256), default='')
@@ -45,7 +48,8 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
     # Define the relationships to other tables in the RAMSTK Program database.
     mission = relationship('RAMSTKMission', back_populates='phase')
     environment = relationship(
-        'RAMSTKEnvironment', back_populates='phase', cascade='delete')
+        'RAMSTKEnvironment', back_populates='phase', cascade='delete',
+    )
 
     is_mission = False
     is_phase = True
@@ -64,7 +68,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
             'description': self.description,
             'name': self.name,
             'phase_start': self.phase_start,
-            'phase_end': self.phase_end
+            'phase_end': self.phase_end,
         }
 
         return _values
@@ -84,9 +88,11 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
             self.description = none_to_default(attributes['description'], b'')
             self.name = str(none_to_default(attributes['name'], ''))
             self.phase_start = float(
-                none_to_default(attributes['phase_start'], 0.0))
+                none_to_default(attributes['phase_start'], 0.0),
+            )
             self.phase_end = float(
-                none_to_default(attributes['phase_end'], 0.0))
+                none_to_default(attributes['phase_end'], 0.0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

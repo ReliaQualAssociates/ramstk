@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKUnit Table"""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKUnits(RAMSTK_BASE):
@@ -26,10 +27,12 @@ class RAMSTKUnits(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     code = Column('fld_code', String(256), default='Unit Code')
     description = Column(
-        'fld_description', String(512), default='Unit Description')
+        'fld_description', String(512), default='Unit Description',
+    )
     unit_type = Column('fld_type', String(256), default='unknown')
 
     def get_attributes(self):
@@ -62,7 +65,8 @@ class RAMSTKUnits(RAMSTK_BASE):
         try:
             self.code = str(none_to_default(attributes[0], 'Unit Code'))
             self.description = str(
-                none_to_default(attributes[2], 'Unit Description'))
+                none_to_default(attributes[2], 'Unit Description'),
+            )
             self.unit_type = str(none_to_default(attributes[2], ''))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

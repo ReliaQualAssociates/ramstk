@@ -10,7 +10,7 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.dao import (
+from ramstk.dao.programdb import (
     RAMSTKHardware, RAMSTKRequirement, RAMSTKSoftware, RAMSTKValidation,
 )
 from ramstk.modules import RAMSTKDataController, RAMSTKDataMatrix

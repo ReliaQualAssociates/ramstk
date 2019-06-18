@@ -6,19 +6,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKCommonDB File."""
 
-# Standard Library Imports
-import gettext
-from typing import Any
-
-# Third Party Imports
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-_ = gettext.gettext
-
-RAMSTK_BASE: Any = declarative_base()
-
 # This file contains all the dictionaries defining the default fields for each
 # of the tables in the RAMSTK Common database.
 RAMSTK_CATEGORIES = {
@@ -38,80 +25,116 @@ RAMSTK_CATEGORIES = {
     13: ('MED', 'Medium', 'risk', 4),
     14: ('HI', 'High', 'risk', 5),
     15: ('MAJ', 'Major', 'risk', 6),
-    16: ('Batch (General)',
-         'Can be run as a normal batch job and makes no unusual '
-         'hardware or input-output actions (e.g., payroll '
-         'program and wind tunnel data analysis program).  '
-         'Small, throwaway programs for preliminary analysis '
-         'also fit in this category.', 'software', 1),
-    17: ('Event Control', 'Does realtime processing of data resulting from '
-         'external events. An example might be a computer '
-         'program that processes telemetry data.', 'software', 1),
-    18: ('Process Control', 'Receives data from an external source and issues '
-         'commands to that source to control its actions '
-         'based on the received data.', 'software', 1),
-    19: ('Procedure Control',
-         'Controls other software; for example, an operating '
-         'system that controls execution of time-shared and '
-         'batch computer programs.', 'software', 1),
-    20: ('Navigation', 'Does computation and modeling to computer '
-         'information required to guide an airplane from '
-         'point of origin to destination.', 'software', 1),
-    21: ('Flight Dynamics',
-         'Uses the functions computed by navigation software '
-         'and augmented by control theory to control the '
-         'entire flight of an aircraft.', 'software', 1),
-    22: ('Orbital Dynamics',
-         'Resembles navigation and flight dynamics software, '
-         'but has the additional complexity required by '
-         'orbital navigation, such as a more complex '
-         'reference system and the inclusion of '
-         'gravitational effects of other heavenly bodies.', 'software', 1),
-    23: ('Message Processing',
-         'Handles input and output mnessages. processing the '
-         'text or information contained therein.', 'software', 1),
-    24: ('Diagnostic Software',
-         'Used to detect and isolate hardware errors in the '
-         'computer in which it resides or in other hardware '
-         'that can communicate with the computer.', 'software', 1),
-    25: ('Sensor and Signal Processing',
-         'Similar to that of message processing, except that '
-         'it required greater processing, analyzing, and '
-         'transforming the input into a usable data '
-         'processing format.', 'software', 1),
-    26: ('Simulation', 'Used to simulate and environment ieseion '
-         'situation. other heavradlwuaatrieo,n aonfd a '
-         'icnopmutps uftreo mpr otghreasme nt o enable a '
-         'more realistic or a piece of hardware.', 'software', 1),
-    27: ('Database Management', 'Manages the storage and access of (typically '
-         'large) groups of data. Such software can also '
-         'often prepare reports in user-defined formats, '
-         'based on the contents of the database.', 'software', 1),
-    28: ('Data Acquisition',
-         'Receives information in real-time and stores it in '
-         'some form suitable format for later processing, '
-         'for example, software that receives data from a '
-         'space probe ,and files.', 'software', 1),
-    29: ('Data Presentation', 'Formats and transforms data, as necessary, for '
-         'convenient and understandable displays for '
-         'humans.  Typically, such displays would be for '
-         'some screen presentation.', 'software', 1),
-    30: ('Decision and Planning Aids',
-         'Uses artificial intelligence techniques to provide '
-         'an expert system to evaluate data and provide '
-         'additional information and consideration for '
-         'decision and policy makers.', 'software', 1),
-    31: ('Pattern and Image Processing',
-         'Used for computer image generation and '
-         'processing.  Such software may analyze terrain '
-         'data and generate images based on stored data.', 'software', 1),
-    32: ('Computer System Software',
-         'Provides services to operational computer '
-         'programs (i.e., problem oriented).', 'software', 1),
-    33: ('Software Development Tools',
-         'Provides services to aid in the development of '
-         'software (e.g., compilers, assemblers, static and '
-         'dynamic analyzers).', 'software', 1),
+    16: (
+        'Batch (General)',
+        'Can be run as a normal batch job and makes no unusual '
+        'hardware or input-output actions (e.g., payroll '
+        'program and wind tunnel data analysis program).  '
+        'Small, throwaway programs for preliminary analysis '
+        'also fit in this category.', 'software', 1,
+    ),
+    17: (
+        'Event Control', 'Does realtime processing of data resulting from '
+        'external events. An example might be a computer '
+        'program that processes telemetry data.', 'software', 1,
+    ),
+    18: (
+        'Process Control', 'Receives data from an external source and issues '
+        'commands to that source to control its actions '
+        'based on the received data.', 'software', 1,
+    ),
+    19: (
+        'Procedure Control',
+        'Controls other software; for example, an operating '
+        'system that controls execution of time-shared and '
+        'batch computer programs.', 'software', 1,
+    ),
+    20: (
+        'Navigation', 'Does computation and modeling to computer '
+        'information required to guide an airplane from '
+        'point of origin to destination.', 'software', 1,
+    ),
+    21: (
+        'Flight Dynamics',
+        'Uses the functions computed by navigation software '
+        'and augmented by control theory to control the '
+        'entire flight of an aircraft.', 'software', 1,
+    ),
+    22: (
+        'Orbital Dynamics',
+        'Resembles navigation and flight dynamics software, '
+        'but has the additional complexity required by '
+        'orbital navigation, such as a more complex '
+        'reference system and the inclusion of '
+        'gravitational effects of other heavenly bodies.', 'software', 1,
+    ),
+    23: (
+        'Message Processing',
+        'Handles input and output mnessages. processing the '
+        'text or information contained therein.', 'software', 1,
+    ),
+    24: (
+        'Diagnostic Software',
+        'Used to detect and isolate hardware errors in the '
+        'computer in which it resides or in other hardware '
+        'that can communicate with the computer.', 'software', 1,
+    ),
+    25: (
+        'Sensor and Signal Processing',
+        'Similar to that of message processing, except that '
+        'it required greater processing, analyzing, and '
+        'transforming the input into a usable data '
+        'processing format.', 'software', 1,
+    ),
+    26: (
+        'Simulation', 'Used to simulate and environment ieseion '
+        'situation. other heavradlwuaatrieo,n aonfd a '
+        'icnopmutps uftreo mpr otghreasme nt o enable a '
+        'more realistic or a piece of hardware.', 'software', 1,
+    ),
+    27: (
+        'Database Management', 'Manages the storage and access of (typically '
+        'large) groups of data. Such software can also '
+        'often prepare reports in user-defined formats, '
+        'based on the contents of the database.', 'software', 1,
+    ),
+    28: (
+        'Data Acquisition',
+        'Receives information in real-time and stores it in '
+        'some form suitable format for later processing, '
+        'for example, software that receives data from a '
+        'space probe ,and files.', 'software', 1,
+    ),
+    29: (
+        'Data Presentation', 'Formats and transforms data, as necessary, for '
+        'convenient and understandable displays for '
+        'humans.  Typically, such displays would be for '
+        'some screen presentation.', 'software', 1,
+    ),
+    30: (
+        'Decision and Planning Aids',
+        'Uses artificial intelligence techniques to provide '
+        'an expert system to evaluate data and provide '
+        'additional information and consideration for '
+        'decision and policy makers.', 'software', 1,
+    ),
+    31: (
+        'Pattern and Image Processing',
+        'Used for computer image generation and '
+        'processing.  Such software may analyze terrain '
+        'data and generate images based on stored data.', 'software', 1,
+    ),
+    32: (
+        'Computer System Software',
+        'Provides services to operational computer '
+        'programs (i.e., problem oriented).', 'software', 1,
+    ),
+    33: (
+        'Software Development Tools',
+        'Provides services to aid in the development of '
+        'software (e.g., compilers, assemblers, static and '
+        'dynamic analyzers).', 'software', 1,
+    ),
     34: ('HW', 'Hardware', 'incident', 1),
     35: ('SW', 'Software', 'incident', 1),
     36: ('PROC', 'Process', 'incident', 1),
@@ -120,7 +143,7 @@ RAMSTK_CATEGORIES = {
     39: ('ENGS', 'Engineering, Systems', 'action', 1),
     40: ('MAN', 'Manufacturing', 'action', 1),
     41: ('TEST', 'Test', 'action', 1),
-    42: ('VANDV', 'Verification & Validation', 'action', 1)
+    42: ('VANDV', 'Verification & Validation', 'action', 1),
 }
 
 RAMSTK_CONDITIONS = {
@@ -179,7 +202,7 @@ RAMSTK_CONDITIONS = {
     52: ('Weather, Rain', 'environmental'),
     53: ('Weather, Sleet', 'environmental'),
     54: ('Weather, Snow', 'environmental'),
-    55: ('Weather, Wind', 'environmental')
+    55: ('Weather, Wind', 'environmental'),
 }
 
 RAMSTK_GROUPS = {
@@ -191,7 +214,7 @@ RAMSTK_GROUPS = {
     6: ('Engineering, Software', 'workgroup'),
     7: ('Reliability', 'affinity'),
     8: ('Durability', 'affinity'),
-    9: ('Cost', 'affinity')
+    9: ('Cost', 'affinity'),
 }
 
 RAMSTK_FAILURE_MODES = {
@@ -199,9 +222,9 @@ RAMSTK_FAILURE_MODES = {
         24: {
             1: ['Open', 0.5, 'FMD-97'],
             2: ['Short', 0.3, 'FMD-97'],
-            3: ['Parameter Change', 0.2, 'FMD-97']
-        }
-    }
+            3: ['Parameter Change', 0.2, 'FMD-97'],
+        },
+    },
 }
 
 RAMSTK_HAZARDS = {
@@ -264,9 +287,11 @@ RAMSTK_HAZARDS = {
     57: ('Ergonomics', 'Inadequate Control/Readout Differentiation'),
     58: ('Ergonomics', 'Inadequate/Improper Illumination'),
     59: ('Ergonomics', 'Inappropriate Control/Readout Location'),
-    60: ('Ergonomics', 'Nonexistent/Inadequate '
-         'Kill'
-         ' Switches'),
+    60: (
+        'Ergonomics', 'Nonexistent/Inadequate '
+        'Kill'
+        ' Switches',
+    ),
     61: ('Explosive Conditions', 'Explosive Dust Present'),
     62: ('Explosive Conditions', 'Explosive Gas Present'),
     63: ('Explosive Conditions', 'Explosive Liquid Present'),
@@ -374,8 +399,10 @@ RAMSTK_HAZARDS = {
     165: ('Pneumatic/Hydraulic', 'Pipe/Hose Whip'),
     166: ('Pneumatic/Hydraulic', 'Pipe/Vessel/Duct Rupture'),
     167: ('Pneumatic/Hydraulic', 'Relief Pressure Improperly Set'),
-    168: ('Thermal', 'Altered Structural Properties (e.g., '
-          'Embrittlement)'),
+    168: (
+        'Thermal', 'Altered Structural Properties (e.g., '
+        'Embrittlement)',
+    ),
     169: ('Thermal', 'Confined Gas/Liquid'),
     170: ('Thermal', 'Elevated Flammability'),
     171: ('Thermal', 'Elevated Reactivity'),
@@ -393,7 +420,7 @@ RAMSTK_HAZARDS = {
     183: ('Unannunciated Utility Outages', 'Heating/Cooling'),
     184: ('Unannunciated Utility Outages', 'Lubrication Drains/Sumps'),
     185: ('Unannunciated Utility Outages', 'Steam'),
-    186: ('Unannunciated Utility Outages', 'Ventilation')
+    186: ('Unannunciated Utility Outages', 'Ventilation'),
 }
 
 RAMSTK_HISTORIES = {
@@ -405,13 +432,13 @@ RAMSTK_HISTORIES = {
     5: ('Time at Level', ),
     6: ('Time at Load', ),
     7: ('Time at Maximum', ),
-    8: ('Time at Minimum', )
+    8: ('Time at Minimum', ),
 }
 
 RAMSTK_MANUFACTURERS = {
     0: ('Sprague', 'New Hampshire', '13606'),
     1: ('Xilinx', '', ''),
-    2: ('National Semiconductor', 'California', '27014')
+    2: ('National Semiconductor', 'California', '27014'),
 }
 
 RAMSTK_MEASUREMENTS = {
@@ -444,7 +471,7 @@ RAMSTK_MEASUREMENTS = {
     26: ('DELTAT', 'Temperature, Differential', 'damage'),
     27: ('TPEAK', 'Temperature, Peak', 'damage'),
     28: ('TEMP', 'Temperature = f(Time)', 'damage'),
-    29: ('T', 'Torque', 'damage')
+    29: ('T', 'Torque', 'damage'),
 }
 
 RAMSTK_METHODS = {
@@ -453,7 +480,7 @@ RAMSTK_METHODS = {
     2: ('Structure Analysis', '', 'detection'),
     3: ('Random Testing', '', 'detection'),
     4: ('Functional Testing', '', 'detection'),
-    5: ('Branch Testing', '', 'detection')
+    5: ('Branch Testing', '', 'detection'),
 }
 
 RAMSTK_MODELS = {
@@ -464,27 +491,39 @@ RAMSTK_MODELS = {
     4: ('Eyring', 'damage'),
     5: ('Inverse Power Law (IPL)', 'damage'),
     6: ('IPL - Arrhenius', 'damage'),
-    7: ('Time Fraction of Damaging Operating Conditions', 'damage')
+    7: ('Time Fraction of Damaging Operating Conditions', 'damage'),
 }
 
 RAMSTK_RPNS = {
     0: ('None', 'No effect.', 'severity', 1),
-    1: ('Very Minor', 'System operable with minimal interference.', 'severity',
-        2),
-    2: ('Minor', 'System operable with some degradation of '
-        'performance.', 'severity', 3),
-    3: ('Very Low', 'System operable with significant degradation of '
-        'performance.', 'severity', 4),
+    1: (
+        'Very Minor', 'System operable with minimal interference.', 'severity',
+        2,
+    ),
+    2: (
+        'Minor', 'System operable with some degradation of '
+        'performance.', 'severity', 3,
+    ),
+    3: (
+        'Very Low', 'System operable with significant degradation of '
+        'performance.', 'severity', 4,
+    ),
     4: ('Low', 'System inoperable without damage.', 'severity', 5),
     5: ('Moderate', 'System inoperable with minor damage.', 'severity', 6),
     6: ('High', 'System inoperable with system damage.', 'severity', 7),
-    7: ('Very High', 'System inoperable with destructive failure '
-        'without compromising safety.', 'severity', 8),
-    8: ('Hazardous, with warning',
-        'Failure effects safe system operation with warning.', 'severity', 9),
+    7: (
+        'Very High', 'System inoperable with destructive failure '
+        'without compromising safety.', 'severity', 8,
+    ),
+    8: (
+        'Hazardous, with warning',
+        'Failure effects safe system operation with warning.', 'severity', 9,
+    ),
     9:
-    ('Hazardous, without warning',
-     'Failure effects safe system operation without warning.', 'severity', 10),
+    (
+        'Hazardous, without warning',
+        'Failure effects safe system operation without warning.', 'severity', 10,
+    ),
     10: ('Remote', 'Failure rate is 1 in 1,500,000.', 'occurrence', 1),
     11: ('Very Low', 'Failure rate is 1 in 150,000.', 'occurrence', 2),
     12: ('Low', 'Failure rate is 1 in 15,000', 'occurrence', 3),
@@ -495,59 +534,89 @@ RAMSTK_RPNS = {
     17: ('Very High', 'Failure rate is 1 in 8.', 'occurrence', 8),
     18: ('Extremely High', 'Failure rate is 1 in 3.', 'occurrence', 9),
     19: ('Dangerously High', 'Failure rate is > 1 in 2.', 'occurrence', 10),
-    20: ('Almost Certain',
-         'Design control will almost certainly detect a potential '
-         'mechanism/cause and subsequent failure mode.', 'detection', 1),
-    21: ('Very High', 'Very high chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 2),
-    22: ('High', 'High chance the existing design controls will or '
-         'can detect a potential mechanism/cause and subsequent '
-         'failure mode.', 'detection', 3),
-    23: ('Moderately High', 'Moderately high chance the existing '
-         'design controls will or can detect a potential '
-         'mechanism/cause and subsequent failure mode.', 'detection', 4),
-    24: ('Moderate', 'Moderate chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 5),
-    25: ('Low', 'Low chance the existing design controls will or can '
-         'detect a potential mechanism/cause and subsequent failure '
-         'mode.', 'detection', 6),
-    26: ('Very Low', 'Very low chance the existing design controls '
-         'will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 7),
-    27: ('Remote', 'Remote chance the existing design controls will '
-         'or can detect a potential mechanism/cause and subsequent '
-         'failure mode.', 'detection', 8),
-    28: ('Very Remote', 'Very remote chance the existing design '
-         'controls will or can detect a potential mechanism/cause and '
-         'subsequent failure mode.', 'detection', 9),
-    29: ('Absolute Uncertainty', 'Existing design controls will not '
-         'or cannot detect a potential mechanism/cause and subsequent '
-         'failure mode; there is no design control.', 'detection', 10)
+    20: (
+        'Almost Certain',
+        'Design control will almost certainly detect a potential '
+        'mechanism/cause and subsequent failure mode.', 'detection', 1,
+    ),
+    21: (
+        'Very High', 'Very high chance the existing design controls '
+        'will or can detect a potential mechanism/cause and '
+        'subsequent failure mode.', 'detection', 2,
+    ),
+    22: (
+        'High', 'High chance the existing design controls will or '
+        'can detect a potential mechanism/cause and subsequent '
+        'failure mode.', 'detection', 3,
+    ),
+    23: (
+        'Moderately High', 'Moderately high chance the existing '
+        'design controls will or can detect a potential '
+        'mechanism/cause and subsequent failure mode.', 'detection', 4,
+    ),
+    24: (
+        'Moderate', 'Moderate chance the existing design controls '
+        'will or can detect a potential mechanism/cause and '
+        'subsequent failure mode.', 'detection', 5,
+    ),
+    25: (
+        'Low', 'Low chance the existing design controls will or can '
+        'detect a potential mechanism/cause and subsequent failure '
+        'mode.', 'detection', 6,
+    ),
+    26: (
+        'Very Low', 'Very low chance the existing design controls '
+        'will or can detect a potential mechanism/cause and '
+        'subsequent failure mode.', 'detection', 7,
+    ),
+    27: (
+        'Remote', 'Remote chance the existing design controls will '
+        'or can detect a potential mechanism/cause and subsequent '
+        'failure mode.', 'detection', 8,
+    ),
+    28: (
+        'Very Remote', 'Very remote chance the existing design '
+        'controls will or can detect a potential mechanism/cause and '
+        'subsequent failure mode.', 'detection', 9,
+    ),
+    29: (
+        'Absolute Uncertainty', 'Existing design controls will not '
+        'or cannot detect a potential mechanism/cause and subsequent '
+        'failure mode; there is no design control.', 'detection', 10,
+    ),
 }
 
 RAMSTK_STAKEHOLDERS = {
     0: ('Customer', ),
     1: ('Service', ),
     2: ('Manufacturing', ),
-    3: ('Management', )
+    3: ('Management', ),
 }
 
 RAMSTK_STATUSES = {
     0: ('Initiated', 'Incident has been initiated.', 'incident'),
     1: ('Reviewed', 'Incident has been reviewed.', 'incident'),
-    2: ('Analysis', 'Incident has been assigned and is being analyzed.',
-        'incident'),
-    3: ('Solution Identified',
-        'A solution to the reported problem has been identified.', 'incident'),
+    2: (
+        'Analysis', 'Incident has been assigned and is being analyzed.',
+        'incident',
+    ),
+    3: (
+        'Solution Identified',
+        'A solution to the reported problem has been identified.', 'incident',
+    ),
     4:
-    ('Solution Implemented',
-     'A solution to the reported problem has been implemented.', 'incident'),
-    5: ('Solution Verified',
-        'A solution to the reported problem has been verified.', 'incident'),
-    6: ('Ready for Approval', 'Incident analysis is ready to be approved.',
-        'incident'),
+    (
+        'Solution Implemented',
+        'A solution to the reported problem has been implemented.', 'incident',
+    ),
+    5: (
+        'Solution Verified',
+        'A solution to the reported problem has been verified.', 'incident',
+    ),
+    6: (
+        'Ready for Approval', 'Incident analysis is ready to be approved.',
+        'incident',
+    ),
     7: ('Approved', 'Incident analysis has been approved.', 'incident'),
     8: ('Ready for Closure', 'Incident is ready to be closed.', 'incident'),
     9: ('Closed', 'Incident has been closed.', 'incident'),
@@ -555,7 +624,7 @@ RAMSTK_STATUSES = {
     11: ('Reviewed', 'Action has been reviewed.', 'action'),
     12: ('Approved', 'Action has been approved.', 'action'),
     13: ('Ready for Closure', 'Action is ready to be closed.', 'action'),
-    14: ('Closed', 'Action has been closed.', 'action')
+    14: ('Closed', 'Action has been closed.', 'action'),
 }
 
 RAMSTK_SUBCATEGORIES = [
@@ -596,8 +665,10 @@ RAMSTK_SUBCATEGORIES = [
     (4, 46, 'Fixed, Mica (CM, CMR)'), (4, 47, 'Fixed, Mica, Button (CB)'),
     (4, 48, 'Fixed, Glass (CY, CYR)'),
     (4, 49, 'Fixed, Ceramic, General Purpose (CK, CKR)'),
-    (4, 50,
-     'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)'),
+    (
+        4, 50,
+        'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)',
+    ),
     (4, 51, 'Fixed, Electrolytic, Tantalum, Solid (CSR)'),
     (4, 52, 'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)'),
     (4, 53, 'Fixed, Electrolytic, Aluminum (CU, CUR)'),
@@ -612,7 +683,7 @@ RAMSTK_SUBCATEGORIES = [
     (8, 75, 'Plated Through Hole (PTH)'), (8, 76, 'Connection, Non-PTH'),
     (9, 77, 'Elapsed Time'), (9, 78, 'Panel'), (10, 80, 'Crystal'),
     (10, 81, 'Filter, Non-Tunable Electronic'), (10, 82, 'Fuse'),
-    (10, 83, 'Lamp')
+    (10, 83, 'Lamp'),
 ]
 
 RAMSTK_TYPES = {
@@ -656,208 +727,5 @@ RAMSTK_TYPES = {
     38: ('SCA', 'System Engineering, Sneak Circuit Analysis', 'validation'),
     39: ('THA', 'System Engineering, Thermal Analysis', 'validation'),
     40: ('TOL', 'System Engineering, Tolerance Analysis', 'validation'),
-    41: ('WCA', 'System Engineering, Worst Case Analysis', 'validation')
+    41: ('WCA', 'System Engineering, Worst Case Analysis', 'validation'),
 }
-
-
-# pylint: disable=too-many-locals
-def create_common_db(**kwargs):
-    """Create and populate the RAMSTK Common database."""
-    import os
-    from datetime import date, timedelta
-
-    from ramstk.dao import (RAMSTKSiteInfo, RAMSTKCategory, RAMSTKCondition,
-                            RAMSTKFailureMode, RAMSTKGroup, RAMSTKHazards,
-                            RAMSTKLoadHistory, RAMSTKManufacturer,
-                            RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel,
-                            RAMSTKRPN, RAMSTKStakeholders, RAMSTKStatus,
-                            RAMSTKSubCategory, RAMSTKType, RAMSTKUser)
-
-    __test = kwargs['test']
-    uri = kwargs['database']
-
-    _cwd = os.getcwd()
-    try:
-        license_file = open(_cwd + '/license.key', 'r')
-        _license_key = license_file.read()[0]
-        _expire_date = license_file.read()[1]
-        license_file.close()
-    except IOError:
-        _license_key = '0000'
-        _expire_date = date.today() + timedelta(days=30)
-
-    # Create and populate the RAMSTK Common test database.
-    engine = create_engine(uri, echo=False)
-    session = scoped_session(sessionmaker())
-
-    session.remove()
-    session.configure(bind=engine, autoflush=False, expire_on_commit=False)
-
-    # Create all the tables in the RAMSTK Common database.
-    RAMSTKSiteInfo.__table__.create(bind=engine)
-    RAMSTKCategory.__table__.create(bind=engine)
-    RAMSTKCondition.__table__.create(bind=engine)
-    RAMSTKFailureMode.__table__.create(bind=engine)
-    RAMSTKGroup.__table__.create(bind=engine)
-    RAMSTKHazards.__table__.create(bind=engine)
-    RAMSTKLoadHistory.__table__.create(bind=engine)
-    RAMSTKManufacturer.__table__.create(bind=engine)
-    RAMSTKMeasurement.__table__.create(bind=engine)
-    RAMSTKMethod.__table__.create(bind=engine)
-    RAMSTKModel.__table__.create(bind=engine)
-    RAMSTKRPN.__table__.create(bind=engine)
-    RAMSTKStakeholders.__table__.create(bind=engine)
-    RAMSTKStatus.__table__.create(bind=engine)
-    RAMSTKSubCategory.__table__.create(bind=engine)
-    RAMSTKType.__table__.create(bind=engine)
-    RAMSTKUser.__table__.create(bind=engine)
-
-    # Add the product key and expiration date to the site info table.
-    _site_info = RAMSTKSiteInfo()
-    _site_info.product_key = _license_key
-    _site_info.expire_on = _expire_date
-    session.add(_site_info)
-
-    for __, _value in list(RAMSTK_CATEGORIES.items()):
-        _record = RAMSTKCategory()
-        _record.name = _value[0]
-        _record.description = _value[1]
-        _record.cat_type = _value[2]
-        _record.value = _value[3]
-        session.add(_record)
-
-    for __, _value in enumerate(RAMSTK_SUBCATEGORIES):
-        _record = RAMSTKSubCategory()
-        _record.category_id = _value[0]
-        _record.description = _value[2]
-        session.add(_record)
-
-    # Default failure modes.
-    for _ckey in RAMSTK_FAILURE_MODES:
-        _record = RAMSTKFailureMode()
-        _record.category_id = _ckey
-        for _skey in RAMSTK_FAILURE_MODES[_ckey]:
-            _record.subcategory_id = _skey
-            for _mkey in RAMSTK_FAILURE_MODES[_ckey][_skey]:
-                _record.mode_id = _mkey
-                _record.description = RAMSTK_FAILURE_MODES[_ckey][_skey][
-                    _mkey][0]
-                _record.mode_ratio = RAMSTK_FAILURE_MODES[_ckey][_skey][_mkey][
-                    1]
-                _record.source = RAMSTK_FAILURE_MODES[_ckey][_skey][_mkey][2]
-                session.add(_record)
-
-    # Environmental conditions, operating conditions and load histories for
-    # PoF analysis.
-    for __, _value in list(RAMSTK_CONDITIONS.items()):
-        _record = RAMSTKCondition()
-        _record.description = _value[0]
-        _record.cond_type = _value[1]
-        session.add(_record)
-    for __, _value in list(RAMSTK_HISTORIES.items()):
-        _record = RAMSTKLoadHistory()
-        _record.description = _value[0]
-        session.add(_record)
-
-    # Workgroups and affinity groups.
-    for __, _value in list(RAMSTK_GROUPS.items()):
-        _record = RAMSTKGroup()
-        _record.description = _value[0]
-        _record.group_type = _value[1]
-        session.add(_record)
-
-    # Hazards for hazard analysis.
-    for __, _value in list(RAMSTK_HAZARDS.items()):
-        _record = RAMSTKHazards()
-        _record.category = _value[0]
-        _record.subcategory = _value[1]
-        session.add(_record)
-
-    # Manufacturers.
-    for __, _value in list(RAMSTK_MANUFACTURERS.items()):
-        _record = RAMSTKManufacturer()
-        _record.description = _value[0]
-        _record.location = _value[1]
-        _record.cage_code = _value[2]
-        session.add(_record)
-
-    # Units of measure, damage measurements.
-    for __, _value in list(RAMSTK_MEASUREMENTS.items()):
-        _record = RAMSTKMeasurement()
-        _record.code = _value[0]
-        _record.description = _value[1]
-        _record.measurement_type = _value[2]
-        session.add(_record)
-
-    # Detection methods for incident reports.
-    for __, _value in list(RAMSTK_METHODS.items()):
-        _record = RAMSTKMethod()
-        _record.name = _value[0]
-        _record.description = _value[1]
-        _record.method_type = _value[2]
-        session.add(_record)
-
-    # Damage models.
-    for __, _value in list(RAMSTK_MODELS.items()):
-        _record = RAMSTKModel()
-        _record.description = _value[0]
-        _record.model_type = _value[1]
-        session.add(_record)
-
-    # This table needs to be moved to the RAMSTK Program database.
-    for __, _value in list(RAMSTK_RPNS.items()):
-        _record = RAMSTKRPN()
-        _record.name = _value[0]
-        _record.description = _value[1]
-        _record.rpn_type = _value[2]
-        _record.value = _value[3]
-        session.add(_record)
-
-    # Stakeholders.
-    for __, _value in list(RAMSTK_STAKEHOLDERS.items()):
-        _record = RAMSTKStakeholders()
-        _record.stakeholder = _value[0]
-        session.add(_record)
-
-    # Action and incident statuses.
-    for __, _value in list(RAMSTK_STATUSES.items()):
-        _record = RAMSTKStatus()
-        _record.name = _value[0]
-        _record.description = _value[1]
-        _record.status_type = _value[2]
-        session.add(_record)
-
-    # Incident, requirement, and validation types.
-    for __, _value in list(RAMSTK_TYPES.items()):
-        _record = RAMSTKType()
-        _record.code = _value[0]
-        _record.description = _value[1]
-        _record.type_type = _value[2]
-        session.add(_record)
-
-    _user = RAMSTKUser()
-    if not __test:
-        _yn = input(
-            _("Would you like to add a RAMSTK Administrator? ([y]/n): ")
-        ) or 'y'
-
-        if _yn.lower() == 'y':
-            _user.user_lname = input(
-                _("Enter the RAMSTK Administrator's last name (surname): "))
-            _user.user_fname = input(
-                _("Enter the RAMSTK Administrator's first name (given name): ")
-            )
-            _user.user_email = input(
-                _("Enter the RAMSTK Administrator's e-mail address: "))
-            _user.user_phone = input(
-                _("Enter the RAMSTK Administrator's phone number: "))
-            _user.user_group_id = '1'
-    else:
-        _user.user_lname = 'Tester'
-        _user.user_fname = 'Johnny'
-        _user.user_email = 'tester.johnny@reliaqual.com'
-        _user.user_phone = '+1.269.867.5309'
-        _user.user_group_id = '1'
-    session.add(_user)
-
-    session.commit()

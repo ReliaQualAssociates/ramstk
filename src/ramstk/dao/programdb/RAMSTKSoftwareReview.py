@@ -10,12 +10,13 @@ The RAMSTKSoftwareReview Table
 ===============================================================================
 """
 
+# Third Party Imports
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKSoftwareReview(RAMSTK_BASE):
@@ -36,13 +37,15 @@ class RAMSTKSoftwareReview(RAMSTK_BASE):
         'fld_software_id',
         Integer,
         ForeignKey('ramstk_software.fld_software_id'),
-        nullable=False)
+        nullable=False,
+    )
     question_id = Column(
         'fld_question_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     answer = Column('fld_answer', Integer, default=0)
     value = Column('fld_value', Integer, default=0)
     review_type = Column('fld_type', String(256), default='')
@@ -59,8 +62,10 @@ class RAMSTKSoftwareReview(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.software_id, self.question_id, self.answer,
-                       self.value, self.review_type)
+        _attributes = (
+            self.software_id, self.question_id, self.answer,
+            self.value, self.review_type,
+        )
 
         return _attributes
 

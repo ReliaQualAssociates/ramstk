@@ -15,7 +15,7 @@ from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.analyses.prediction import Component
-from ramstk.dao import (
+from ramstk.dao.programdb import (
     RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability,
 )

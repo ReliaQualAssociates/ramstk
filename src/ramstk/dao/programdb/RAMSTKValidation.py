@@ -6,15 +6,17 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKValidation Table."""
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.statistics import calculate_beta_bounds
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKValidation(RAMSTK_BASE):
@@ -31,13 +33,15 @@ class RAMSTKValidation(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     validation_id = Column(
         'fld_validation_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     acceptable_maximum = Column('fld_acceptable_maximum', Float, default=0.0)
     acceptable_mean = Column('fld_acceptable_mean', Float, default=0.0)
@@ -52,7 +56,8 @@ class RAMSTKValidation(RAMSTK_BASE):
     cost_ul = Column('fld_cost_ul', Float, default=0.0)
     cost_variance = Column('fld_cost_variance', Float, default=0.0)
     date_end = Column(
-        'fld_date_end', Date, default=date.today() + timedelta(days=30))
+        'fld_date_end', Date, default=date.today() + timedelta(days=30),
+    )
     date_start = Column('fld_date_start', Date, default=date.today())
     description = Column('fld_description', BLOB, default=b'')
     measurement_unit = Column('fld_measurement_unit', String(256), default='')
@@ -60,7 +65,8 @@ class RAMSTKValidation(RAMSTK_BASE):
     status = Column('fld_status', Float, default=0.0)
     task_type = Column('fld_type', String(256), default='')
     task_specification = Column(
-        'fld_task_specification', String(512), default='')
+        'fld_task_specification', String(512), default='',
+    )
     time_average = Column('fld_time_average', Float, default=0.0)
     time_ll = Column('fld_time_ll', Float, default=0.0)
     time_maximum = Column('fld_time_maximum', Float, default=0.0)
@@ -114,7 +120,7 @@ class RAMSTKValidation(RAMSTK_BASE):
             'time_mean': self.time_mean,
             'time_minimum': self.time_minimum,
             'time_ul': self.time_ul,
-            'time_variance': self.time_variance
+            'time_variance': self.time_variance,
         }
 
         return _attributes
@@ -134,51 +140,72 @@ class RAMSTKValidation(RAMSTK_BASE):
 
         try:
             self.acceptable_maximum = float(
-                none_to_default(attributes['acceptable_maximum'], 0.0))
+                none_to_default(attributes['acceptable_maximum'], 0.0),
+            )
             self.acceptable_mean = float(
-                none_to_default(attributes['acceptable_mean'], 0.0))
+                none_to_default(attributes['acceptable_mean'], 0.0),
+            )
             self.acceptable_minimum = float(
-                none_to_default(attributes['acceptable_minimum'], 0.0))
+                none_to_default(attributes['acceptable_minimum'], 0.0),
+            )
             self.acceptable_variance = float(
-                none_to_default(attributes['acceptable_variance'], 0.0))
+                none_to_default(attributes['acceptable_variance'], 0.0),
+            )
             self.confidence = float(
-                none_to_default(attributes['confidence'], 95.0))
+                none_to_default(attributes['confidence'], 95.0),
+            )
             self.cost_average = float(
-                none_to_default(attributes['cost_average'], 0.0))
+                none_to_default(attributes['cost_average'], 0.0),
+            )
             self.cost_ll = float(none_to_default(attributes['cost_ll'], 0.0))
             self.cost_maximum = float(
-                none_to_default(attributes['cost_maximum'], 0.0))
+                none_to_default(attributes['cost_maximum'], 0.0),
+            )
             self.cost_mean = float(
-                none_to_default(attributes['cost_mean'], 0.0))
+                none_to_default(attributes['cost_mean'], 0.0),
+            )
             self.cost_minimum = float(
-                none_to_default(attributes['cost_minimum'], 0.0))
+                none_to_default(attributes['cost_minimum'], 0.0),
+            )
             self.cost_ul = float(none_to_default(attributes['cost_ul'], 0.0))
             self.cost_variance = float(
-                none_to_default(attributes['cost_variance'], 0.0))
-            self.date_end = none_to_default(attributes['date_end'],
-                                            date.today() + timedelta(days=30))
-            self.date_start = none_to_default(attributes['date_start'],
-                                              date.today())
+                none_to_default(attributes['cost_variance'], 0.0),
+            )
+            self.date_end = none_to_default(
+                attributes['date_end'],
+                date.today() + timedelta(days=30),
+            )
+            self.date_start = none_to_default(
+                attributes['date_start'],
+                date.today(),
+            )
             self.description = none_to_default(attributes['description'], b'')
             self.measurement_unit = str(
-                none_to_default(attributes['measurement_unit'], ''))
+                none_to_default(attributes['measurement_unit'], ''),
+            )
             self.name = str(none_to_default(attributes['name'], ''))
             self.status = float(none_to_default(attributes['status'], 0.0))
             self.task_type = str(none_to_default(attributes['task_type'], ''))
             self.task_specification = str(
-                none_to_default(attributes['task_specification'], ''))
+                none_to_default(attributes['task_specification'], ''),
+            )
             self.time_average = float(
-                none_to_default(attributes['time_average'], 0.0))
+                none_to_default(attributes['time_average'], 0.0),
+            )
             self.time_ll = float(none_to_default(attributes['time_ll'], 0.0))
             self.time_maximum = float(
-                none_to_default(attributes['time_maximum'], 0.0))
+                none_to_default(attributes['time_maximum'], 0.0),
+            )
             self.time_mean = float(
-                none_to_default(attributes['time_mean'], 0.0))
+                none_to_default(attributes['time_mean'], 0.0),
+            )
             self.time_minimum = float(
-                none_to_default(attributes['time_minimum'], 0.0))
+                none_to_default(attributes['time_minimum'], 0.0),
+            )
             self.time_ul = float(none_to_default(attributes['time_ul'], 0.0))
             self.time_variance = float(
-                none_to_default(attributes['time_variance'], 0.0))
+                none_to_default(attributes['time_variance'], 0.0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
@@ -199,9 +226,13 @@ class RAMSTKValidation(RAMSTK_BASE):
         """
         _return = False
 
-        (self.time_ll, self.time_mean, self.time_ul,
-         _sd) = calculate_beta_bounds(self.time_minimum, self.time_average,
-                                      self.time_maximum, self.confidence)
+        (
+            self.time_ll, self.time_mean, self.time_ul,
+            _sd,
+        ) = calculate_beta_bounds(
+            self.time_minimum, self.time_average,
+            self.time_maximum, self.confidence,
+        )
 
         self.time_variance = _sd**2.0
 
@@ -219,9 +250,13 @@ class RAMSTKValidation(RAMSTK_BASE):
         """
         _return = False
 
-        (self.cost_ll, self.cost_mean, self.cost_ul,
-         _sd) = calculate_beta_bounds(self.cost_minimum, self.cost_average,
-                                      self.cost_maximum, self.confidence)
+        (
+            self.cost_ll, self.cost_mean, self.cost_ul,
+            _sd,
+        ) = calculate_beta_bounds(
+            self.cost_minimum, self.cost_average,
+            self.cost_maximum, self.confidence,
+        )
 
         self.cost_variance = _sd**2.0
 

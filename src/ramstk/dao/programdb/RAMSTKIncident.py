@@ -10,14 +10,16 @@ The RAMSTKIncident Table
 ===============================================================================
 """
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 # pylint: disable=R0902
@@ -37,13 +39,15 @@ class RAMSTKIncident(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     incident_id = Column(
         'fld_incident_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     accepted = Column('fld_accepted', Integer, default=0)
     approved = Column('fld_approved', Integer, default=0)
@@ -66,15 +70,19 @@ class RAMSTKIncident(RAMSTK_BASE):
     cost = Column('fld_cost', Float, default=0.0)
     criticality_id = Column('fld_criticality_id', Integer, default=0)
     date_approved = Column(
-        'fld_date_approved', Date, default=date.today() + timedelta(days=30))
+        'fld_date_approved', Date, default=date.today() + timedelta(days=30),
+    )
     date_complete = Column(
-        'fld_date_complete', Date, default=date.today() + timedelta(days=30))
+        'fld_date_complete', Date, default=date.today() + timedelta(days=30),
+    )
     date_requested = Column('fld_date_requested', Date, default=date.today())
     date_reviewed = Column(
-        'fld_date_reviewed', Date, default=date.today() + timedelta(days=30))
+        'fld_date_reviewed', Date, default=date.today() + timedelta(days=30),
+    )
     description_long = Column('fld_description_long', BLOB, default=b'')
     description_short = Column(
-        'fld_description_short', String(512), default='')
+        'fld_description_short', String(512), default='',
+    )
     detection_method_id = Column('fld_detection_method_id', Integer, default=0)
     execution_time = Column('fld_execution_time', Float, default=0)
     hardware_id = Column('fld_hardware_id', Integer, default=0)
@@ -115,9 +123,11 @@ class RAMSTKIncident(RAMSTK_BASE):
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='incident')
     incident_detail = relationship(
-        'RAMSTKIncidentDetail', back_populates='incident')
+        'RAMSTKIncidentDetail', back_populates='incident',
+    )
     incident_action = relationship(
-        'RAMSTKIncidentAction', back_populates='incident')
+        'RAMSTKIncidentAction', back_populates='incident',
+    )
 
     def get_attributes(self):
         """
@@ -161,7 +171,8 @@ class RAMSTKIncident(RAMSTK_BASE):
             self.relevant_16, self.relevant_17, self.relevant_18,
             self.relevant_19, self.relevant_20, self.remarks, self.request_by,
             self.reviewed, self.reviewed_by, self.software_id, self.status_id,
-            self.test_case, self.test_found, self.type_id, self.unit)
+            self.test_case, self.test_found, self.type_id, self.unit,
+        )
 
         return _attributes
 
@@ -202,14 +213,17 @@ class RAMSTKIncident(RAMSTK_BASE):
             self.criticality_id = int(none_to_default(attributes[19], 0))
             self.date_approved = none_to_default(
                 attributes[20],
-                date.today() + timedelta(days=30))
+                date.today() + timedelta(days=30),
+            )
             self.date_complete = none_to_default(
                 attributes[21],
-                date.today() + timedelta(days=30))
+                date.today() + timedelta(days=30),
+            )
             self.date_requested = none_to_default(attributes[22], date.today())
             self.date_reviewed = none_to_default(
                 attributes[23],
-                date.today() + timedelta(days=30))
+                date.today() + timedelta(days=30),
+            )
             self.description_long = none_to_default(attributes[24], b'')
             self.description_short = str(none_to_default(attributes[25], ''))
             self.detection_method_id = int(none_to_default(attributes[26], 0))

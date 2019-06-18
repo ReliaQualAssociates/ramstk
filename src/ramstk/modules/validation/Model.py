@@ -15,7 +15,7 @@ from sortedcontainers import SortedDict
 from treelib import Tree, tree
 
 # RAMSTK Package Imports
-from ramstk.dao import RAMSTKProgramStatus, RAMSTKValidation
+from ramstk.dao.programdb import RAMSTKProgramStatus, RAMSTKValidation
 from ramstk.modules import RAMSTKDataModel
 from ramstk.statistics.Bounds import calculate_beta_bounds
 from ramstk.Utilities import date_to_ordinal

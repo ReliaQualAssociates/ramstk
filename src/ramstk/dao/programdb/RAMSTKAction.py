@@ -6,14 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKAction Table Module."""
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKAction(RAMSTK_BASE):
@@ -30,31 +32,36 @@ class RAMSTKAction(RAMSTK_BASE):
         'fld_cause_id',
         Integer,
         ForeignKey('ramstk_cause.fld_cause_id'),
-        nullable=False)
+        nullable=False,
+    )
     action_id = Column(
         'fld_action_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     action_recommended = Column('fld_action_recommended', BLOB, default=b'')
     action_category = Column('fld_action_category', String(512), default='')
     action_owner = Column('fld_action_owner', String(512), default='')
     action_due_date = Column(
-        'fld_action_due_date', Date, default=date.today() + timedelta(days=30))
+        'fld_action_due_date', Date, default=date.today() + timedelta(days=30),
+    )
     action_status = Column('fld_action_status', String(512), default='')
     action_taken = Column('fld_action_taken', BLOB, default=b'')
     action_approved = Column('fld_action_approved', Integer, default=0)
     action_approve_date = Column(
         'fld_action_approve_date',
         Date,
-        default=date.today() + timedelta(days=30))
+        default=date.today() + timedelta(days=30),
+    )
     action_closed = Column('fld_action_closed', Integer, default=0)
     action_close_date = Column(
         'fld_action_close_date',
         Date,
-        default=date.today() + timedelta(days=30))
+        default=date.today() + timedelta(days=30),
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
     cause = relationship('RAMSTKCause', back_populates='action')
@@ -88,7 +95,7 @@ class RAMSTKAction(RAMSTK_BASE):
             'action_approved': self.action_approved,
             'action_approve_date': self.action_approve_date,
             'action_closed': self.action_closed,
-            'action_close_date': self.action_close_date
+            'action_close_date': self.action_close_date,
         }
 
         return _attributes
@@ -108,29 +115,42 @@ class RAMSTKAction(RAMSTK_BASE):
 
         try:
             self.action_recommended = none_to_default(
-                attributes['action_recommended'], b'')
+                attributes['action_recommended'], b'',
+            )
             self.action_category = str(
-                none_to_default(attributes['action_category'], ''))
+                none_to_default(attributes['action_category'], ''),
+            )
             self.action_owner = str(
-                none_to_default(attributes['action_owner'], 0))
+                none_to_default(attributes['action_owner'], 0),
+            )
             self.action_due_date = none_to_default(
-                attributes['action_due_date'], _date)
+                attributes['action_due_date'], _date,
+            )
             self.action_status = str(
-                none_to_default(attributes['action_status'], 0))
-            self.action_taken = none_to_default(attributes['action_taken'],
-                                                b'')
+                none_to_default(attributes['action_status'], 0),
+            )
+            self.action_taken = none_to_default(
+                attributes['action_taken'],
+                b'',
+            )
             self.action_approved = int(
-                none_to_default(attributes['action_approved'], 0))
+                none_to_default(attributes['action_approved'], 0),
+            )
             self.action_approve_date = none_to_default(
-                attributes['action_approve_date'], _date)
+                attributes['action_approve_date'], _date,
+            )
             self.action_closed = int(
-                none_to_default(attributes['action_closed'], 0))
+                none_to_default(attributes['action_closed'], 0),
+            )
             self.action_close_date = none_to_default(
-                attributes['action_close_date'], _date)
+                attributes['action_close_date'], _date,
+            )
         except KeyError as _err:
             _error_code = 40
-            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                    "dictionary passed to "
-                    "RAMSTKAction.set_attributes().").format(str(_err))
+            _msg = (
+                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                "dictionary passed to "
+                "RAMSTKAction.set_attributes()."
+            ).format(str(_err))
 
         return _error_code, _msg

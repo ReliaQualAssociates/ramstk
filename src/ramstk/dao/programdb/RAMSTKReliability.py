@@ -6,13 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKReliability Table Module."""  # pragma: no cover
 
-from sqlalchemy import Column, Float, ForeignKey, Integer, String  # pragma: no cover
+# Third Party Imports
+from sqlalchemy import (  # pragma: no cover
+    Column, Float, ForeignKey, Integer, String,
+)
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE  # pragma: no cover
 
 
 class RAMSTKReliability(RAMSTK_BASE):
@@ -30,31 +32,40 @@ class RAMSTKReliability(RAMSTK_BASE):
         Integer,
         ForeignKey('ramstk_hardware.fld_hardware_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
 
     add_adj_factor = Column('fld_add_adj_factor', Float, default=0.0)
     availability_logistics = Column(
-        'fld_availability_logistics', Float, default=1.0)
+        'fld_availability_logistics', Float, default=1.0,
+    )
     availability_mission = Column(
-        'fld_availability_mission', Float, default=1.0)
+        'fld_availability_mission', Float, default=1.0,
+    )
     avail_log_variance = Column('fld_avail_log_variance', Float, default=0.0)
     avail_mis_variance = Column('fld_avail_mis_variance', Float, default=0.0)
     failure_distribution_id = Column(
-        'fld_failure_distribution_id', Integer, default=0)
+        'fld_failure_distribution_id', Integer, default=0,
+    )
     hazard_rate_active = Column('fld_hazard_rate_active', Float, default=0.0)
     hazard_rate_dormant = Column('fld_hazard_rate_dormant', Float, default=0.0)
     hazard_rate_logistics = Column(
-        'fld_hazard_rate_logistics', Float, default=0.0)
+        'fld_hazard_rate_logistics', Float, default=0.0,
+    )
     hazard_rate_method_id = Column(
-        'fld_hazard_rate_method_id', Integer, default=0)
+        'fld_hazard_rate_method_id', Integer, default=0,
+    )
     hazard_rate_mission = Column('fld_hazard_rate_mission', Float, default=0.0)
     hazard_rate_model = Column(
-        'fld_hazard_rate_model', String(512), default='')
+        'fld_hazard_rate_model', String(512), default='',
+    )
     hazard_rate_percent = Column('fld_hazard_rate_percent', Float, default=0.0)
     hazard_rate_software = Column(
-        'fld_hazard_rate_software', Float, default=0.0)
+        'fld_hazard_rate_software', Float, default=0.0,
+    )
     hazard_rate_specified = Column(
-        'fld_hazard_rate_specified', Float, default=0.0)
+        'fld_hazard_rate_specified', Float, default=0.0,
+    )
     hazard_rate_type_id = Column('fld_hazard_rate_type_id', Integer, default=0)
     hr_active_variance = Column('fld_hr_active_variance', Float, default=0.0)
     hr_dormant_variance = Column('fld_hr_dormant_variance', Float, default=0.0)
@@ -73,22 +84,28 @@ class RAMSTKReliability(RAMSTK_BASE):
     quality_id = Column('fld_quality_id', Integer, default=0)
     reliability_goal = Column('fld_reliability_goal', Float, default=0.0)
     reliability_goal_measure_id = Column(
-        'fld_reliability_goal_measure_id', Integer, default=0)
+        'fld_reliability_goal_measure_id', Integer, default=0,
+    )
     reliability_logistics = Column(
-        'fld_reliability_logistics', Float, default=1.0)
+        'fld_reliability_logistics', Float, default=1.0,
+    )
     reliability_mission = Column('fld_reliability_mission', Float, default=1.0)
     reliability_log_variance = Column(
-        'fld_reliability_log_variance', Float, default=0.0)
+        'fld_reliability_log_variance', Float, default=0.0,
+    )
     reliability_miss_variance = Column(
-        'fld_reliability_mis_variance', Float, default=0.0)
+        'fld_reliability_mis_variance', Float, default=0.0,
+    )
     scale_parameter = Column('fld_scale_parameter', Float, default=0.0)
     shape_parameter = Column('fld_shape_parameter', Float, default=0.0)
     survival_analysis_id = Column(
-        'fld_survival_analysis_id', Integer, default=0)
+        'fld_survival_analysis_id', Integer, default=0,
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
     hardware = relationship(
-        'RAMSTKHardware', back_populates='reliability')  # pragma: no cover
+        'RAMSTKHardware', back_populates='reliability',
+    )  # pragma: no cover
 
     def get_attributes(self):
         """
@@ -154,7 +171,7 @@ class RAMSTKReliability(RAMSTK_BASE):
             'scale_parameter': self.scale_parameter,
             'shape_parameter': self.shape_parameter,
             'survival_analysis_id': self.survival_analysis_id,
-            'lambda_b': self.lambda_b
+            'lambda_b': self.lambda_b,
         }
 
         return _attributes
@@ -174,82 +191,120 @@ class RAMSTKReliability(RAMSTK_BASE):
 
         try:
             self.add_adj_factor = float(
-                none_to_default(attributes['add_adj_factor'], 0.0))
+                none_to_default(attributes['add_adj_factor'], 0.0),
+            )
             self.availability_logistics = float(
-                none_to_default(attributes['availability_logistics'], 1.0))
+                none_to_default(attributes['availability_logistics'], 1.0),
+            )
             self.availability_mission = float(
-                none_to_default(attributes['availability_mission'], 1.0))
+                none_to_default(attributes['availability_mission'], 1.0),
+            )
             self.avail_log_variance = float(
-                none_to_default(attributes['avail_log_variance'], 0.0))
+                none_to_default(attributes['avail_log_variance'], 0.0),
+            )
             self.avail_mis_variance = float(
-                none_to_default(attributes['avail_mis_variance'], 0.0))
+                none_to_default(attributes['avail_mis_variance'], 0.0),
+            )
             self.failure_distribution_id = int(
-                none_to_default(attributes['failure_distribution_id'], 0))
+                none_to_default(attributes['failure_distribution_id'], 0),
+            )
             self.hazard_rate_active = float(
-                none_to_default(attributes['hazard_rate_active'], 0.0))
+                none_to_default(attributes['hazard_rate_active'], 0.0),
+            )
             self.hazard_rate_dormant = float(
-                none_to_default(attributes['hazard_rate_dormant'], 0.0))
+                none_to_default(attributes['hazard_rate_dormant'], 0.0),
+            )
             self.hazard_rate_logistics = float(
-                none_to_default(attributes['hazard_rate_logistics'], 0.0))
+                none_to_default(attributes['hazard_rate_logistics'], 0.0),
+            )
             self.hazard_rate_method_id = int(
-                none_to_default(attributes['hazard_rate_method_id'], 0))
+                none_to_default(attributes['hazard_rate_method_id'], 0),
+            )
             self.hazard_rate_mission = float(
-                none_to_default(attributes['hazard_rate_mission'], 0.0))
+                none_to_default(attributes['hazard_rate_mission'], 0.0),
+            )
             self.hazard_rate_model = str(
-                none_to_default(attributes['hazard_rate_model'], ''))
+                none_to_default(attributes['hazard_rate_model'], ''),
+            )
             self.hazard_rate_percent = float(
-                none_to_default(attributes['hazard_rate_percent'], 0.0))
+                none_to_default(attributes['hazard_rate_percent'], 0.0),
+            )
             self.hazard_rate_software = float(
-                none_to_default(attributes['hazard_rate_software'], 0.0))
+                none_to_default(attributes['hazard_rate_software'], 0.0),
+            )
             self.hazard_rate_specified = float(
-                none_to_default(attributes['hazard_rate_specified'], 0.0))
+                none_to_default(attributes['hazard_rate_specified'], 0.0),
+            )
             self.hazard_rate_type_id = int(
-                none_to_default(attributes['hazard_rate_type_id'], 0))
+                none_to_default(attributes['hazard_rate_type_id'], 0),
+            )
             self.hr_active_variance = float(
-                none_to_default(attributes['hr_active_variance'], 0.0))
+                none_to_default(attributes['hr_active_variance'], 0.0),
+            )
             self.hr_dormant_variance = float(
-                none_to_default(attributes['hr_dormant_variance'], 0.0))
+                none_to_default(attributes['hr_dormant_variance'], 0.0),
+            )
             self.hr_logistics_variance = float(
-                none_to_default(attributes['hr_logistics_variance'], 0.0))
+                none_to_default(attributes['hr_logistics_variance'], 0.0),
+            )
             self.hr_mission_variance = float(
-                none_to_default(attributes['hr_mission_variance'], 0.0))
+                none_to_default(attributes['hr_mission_variance'], 0.0),
+            )
             self.hr_specified_variance = float(
-                none_to_default(attributes['hr_specified_variance'], 0.0))
+                none_to_default(attributes['hr_specified_variance'], 0.0),
+            )
             self.location_parameter = float(
-                none_to_default(attributes['location_parameter'], 0.0))
+                none_to_default(attributes['location_parameter'], 0.0),
+            )
             self.mtbf_logistics = float(
-                none_to_default(attributes['mtbf_logistics'], 0.0))
+                none_to_default(attributes['mtbf_logistics'], 0.0),
+            )
             self.mtbf_mission = float(
-                none_to_default(attributes['mtbf_mission'], 0.0))
+                none_to_default(attributes['mtbf_mission'], 0.0),
+            )
             self.mtbf_specified = float(
-                none_to_default(attributes['mtbf_specified'], 0.0))
+                none_to_default(attributes['mtbf_specified'], 0.0),
+            )
             self.mtbf_log_variance = float(
-                none_to_default(attributes['mtbf_log_variance'], 0.0))
+                none_to_default(attributes['mtbf_log_variance'], 0.0),
+            )
             self.mtbf_miss_variance = float(
-                none_to_default(attributes['mtbf_miss_variance'], 0.0))
+                none_to_default(attributes['mtbf_miss_variance'], 0.0),
+            )
             self.mtbf_spec_variance = float(
-                none_to_default(attributes['mtbf_spec_variance'], 0.0))
+                none_to_default(attributes['mtbf_spec_variance'], 0.0),
+            )
             self.mult_adj_factor = float(
-                none_to_default(attributes['mult_adj_factor'], 1.0))
+                none_to_default(attributes['mult_adj_factor'], 1.0),
+            )
             self.quality_id = int(none_to_default(attributes['quality_id'], 0))
             self.reliability_goal = float(
-                none_to_default(attributes['reliability_goal'], 0.0))
+                none_to_default(attributes['reliability_goal'], 0.0),
+            )
             self.reliability_goal_measure_id = int(
-                none_to_default(attributes['reliability_goal_measure_id'], 0))
+                none_to_default(attributes['reliability_goal_measure_id'], 0),
+            )
             self.reliability_logistics = float(
-                none_to_default(attributes['reliability_logistics'], 1.0))
+                none_to_default(attributes['reliability_logistics'], 1.0),
+            )
             self.reliability_mission = float(
-                none_to_default(attributes['reliability_mission'], 1.0))
+                none_to_default(attributes['reliability_mission'], 1.0),
+            )
             self.reliability_log_variance = float(
-                none_to_default(attributes['reliability_log_variance'], 0.0))
+                none_to_default(attributes['reliability_log_variance'], 0.0),
+            )
             self.reliability_miss_variance = float(
-                none_to_default(attributes['reliability_miss_variance'], 0.0))
+                none_to_default(attributes['reliability_miss_variance'], 0.0),
+            )
             self.scale_parameter = float(
-                none_to_default(attributes['scale_parameter'], 0.0))
+                none_to_default(attributes['scale_parameter'], 0.0),
+            )
             self.shape_parameter = float(
-                none_to_default(attributes['shape_parameter'], 0.0))
+                none_to_default(attributes['shape_parameter'], 0.0),
+            )
             self.survival_analysis_id = int(
-                none_to_default(attributes['survival_analysis_id'], 0.0))
+                none_to_default(attributes['survival_analysis_id'], 0.0),
+            )
             self.lambda_b = float(none_to_default(attributes['lambda_b'], 0.0))
         except KeyError as _err:
             _error_code = 40

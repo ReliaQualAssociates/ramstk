@@ -13,7 +13,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.dao import DAO, RAMSTKRevision
+from ramstk.dao import DAO
+from ramstk.dao.programdb import RAMSTKRevision
 from ramstk.modules.revision import dtcRevision, dtmRevision
 
 __author__ = 'Doyle Rowland'

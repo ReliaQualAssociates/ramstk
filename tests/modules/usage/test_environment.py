@@ -7,13 +7,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Environment class."""
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.modules.usage import dtmEnvironment
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao import RAMSTKEnvironment
+from ramstk.dao.programdb import RAMSTKEnvironment
+from ramstk.modules.usage import dtmEnvironment
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -85,8 +86,10 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(phase_id=1)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -99,8 +102,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -112,8 +117,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(100)
 
     assert _error_code == 2005
-    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
-                    'Environment ID 100.')
+    assert _msg == (
+        '  RAMSTK ERROR: Attempted to delete non-existent '
+        'Environment ID 100.'
+    )
 
 
 @pytest.mark.integration
@@ -140,8 +147,10 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Environment ID '
-                    '100.')
+    assert _msg == (
+        'RAMSTK ERROR: Attempted to save non-existent Environment ID '
+        '100.'
+    )
 
 
 @pytest.mark.integration
@@ -153,5 +162,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the usage profile "
-                    "environment table.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the usage profile "
+        "environment table."
+    )

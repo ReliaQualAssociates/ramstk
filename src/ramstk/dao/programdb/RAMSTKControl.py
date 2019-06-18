@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKControl Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKControl(RAMSTK_BASE):
@@ -28,13 +29,15 @@ class RAMSTKControl(RAMSTK_BASE):
         'fld_cause_id',
         Integer,
         ForeignKey('ramstk_cause.fld_cause_id'),
-        nullable=False)
+        nullable=False,
+    )
     control_id = Column(
         'fld_control_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     description = Column('fld_description', String(512), default='')
     type_id = Column('fld_type_id', String(512), default='')
@@ -59,7 +62,7 @@ class RAMSTKControl(RAMSTK_BASE):
             'cause_id': self.cause_id,
             'control_id': self.control_id,
             'description': self.description,
-            'type_id': self.type_id
+            'type_id': self.type_id,
         }
 
         return _attributes
@@ -78,7 +81,8 @@ class RAMSTKControl(RAMSTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'], ''))
+                none_to_default(attributes['description'], ''),
+            )
             self.type_id = str(none_to_default(attributes['type_id'], ''))
         except KeyError as _err:
             _error_code = 40

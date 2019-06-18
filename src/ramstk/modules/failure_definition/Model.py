@@ -10,7 +10,7 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.dao import RAMSTKFailureDefinition
+from ramstk.dao.programdb import RAMSTKFailureDefinition
 from ramstk.modules import RAMSTKDataModel
 
 

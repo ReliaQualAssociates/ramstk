@@ -11,7 +11,7 @@ from pubsub import pub
 from treelib import tree
 
 # RAMSTK Package Imports
-from ramstk.dao import (
+from ramstk.dao.programdb import (
     RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode,
 )
 from ramstk.modules import RAMSTKDataModel

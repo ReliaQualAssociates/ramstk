@@ -12,7 +12,7 @@ import pytest
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.dao import (
+from ramstk.dao.programdb import (
     RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
     RAMSTKOpStress, RAMSTKTestMethod,
 )

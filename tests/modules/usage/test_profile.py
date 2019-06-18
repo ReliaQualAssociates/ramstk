@@ -7,13 +7,18 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for Usage Profile algorithms and models."""
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.dao import (RAMSTKMission, RAMSTKMissionPhase, RAMSTKEnvironment)
-from ramstk.modules.usage import (dtmEnvironment, dtmMission, dtmMissionPhase,
-                                  dtmUsageProfile, dtcUsageProfile)
+# RAMSTK Package Imports
+from ramstk.dao.programdb import (
+    RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase,
+)
+from ramstk.modules.usage import (
+    dtcUsageProfile, dtmEnvironment, dtmMission,
+    dtmMissionPhase, dtmUsageProfile,
+)
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -25,7 +30,7 @@ ATTRIBUTES = {
     'revision_id': 1,
     'mission_time': 72.0,
     'description': b'Test Mission',
-    'time_units': 'minutes'
+    'time_units': 'minutes',
 }
 
 
@@ -85,12 +90,14 @@ def test_do_insert_mission(test_dao):
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id=0, level='mission')
+        entity_id=1, parent_id=0, level='mission',
+    )
 
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+        "database."
+    )
     assert isinstance(DUT.do_select(2), RAMSTKMission)
 
 
@@ -105,7 +112,8 @@ def test_do_insert_phase(test_dao):
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+        "database."
+    )
     assert isinstance(DUT.do_select(12), RAMSTKMissionPhase)
 
 
@@ -116,12 +124,14 @@ def test_do_insert_environment(test_dao):
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=2, parent_id=11, level='environment')
+        entity_id=2, parent_id=11, level='environment',
+    )
 
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+        "database."
+    )
     assert isinstance(DUT.tree.get_node(112).data, RAMSTKEnvironment)
 
 
@@ -132,13 +142,16 @@ def test_do_insert_non_existent_type(test_dao):
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id=0, level='scadamoosh')
+        entity_id=1, parent_id=0, level='scadamoosh',
+    )
 
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to add an item to the Usage "
-                    "Profile with an undefined indenture level.  Level "
-                    "scadamoosh was requested.  Must be one of mission, "
-                    "phase, or environment.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to add an item to the Usage "
+        "Profile with an undefined indenture level.  Level "
+        "scadamoosh was requested.  Must be one of mission, "
+        "phase, or environment."
+    )
 
 
 @pytest.mark.integration
@@ -152,8 +165,10 @@ def test_do_delete_environment(test_dao):
     _error_code, _msg = DUT.do_delete(223)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -165,8 +180,10 @@ def test_do_delete_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_delete(4)
 
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to delete non-existent Mission, "
-                    "Mission Phase, or Environment ID 4.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to delete non-existent Mission, "
+        "Mission Phase, or Environment ID 4."
+    )
 
 
 @pytest.mark.integration
@@ -192,7 +209,8 @@ def test_do_update_non_existent_node_id(test_dao):
     assert _error_code == 2005
     assert _msg == (
         "RAMSTK ERROR: Attempted to save non-existent Usage Profile "
-        "entity with Node ID 100.")
+        "entity with Node ID 100."
+    )
 
 
 @pytest.mark.integration
@@ -204,8 +222,10 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all line items in the usage "
-                    "profile.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all line items in the usage "
+        "profile."
+    )
 
 
 @pytest.mark.integration
@@ -272,7 +292,8 @@ def test_request_set_attributes(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     _error_code, _msg = DUT.request_set_attributes(
-        module_id=1, key='description', value='New Mission')
+        module_id=1, key='description', value='New Mission',
+    )
 
     assert _error_code == 0
     assert _msg == ('RAMSTK SUCCESS: Updating RAMSTKMission 1 attributes.')

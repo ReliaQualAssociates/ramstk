@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKStakeholder Table Module."""
 
-from sqlalchemy import TEXT, BLOB, Column, Float, ForeignKey, Integer, String
+# Third Party Imports
+from sqlalchemy import TEXT, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKStakeholder(RAMSTK_BASE):
@@ -28,13 +29,15 @@ class RAMSTKStakeholder(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     stakeholder_id = Column(
         'fld_stakeholder_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     customer_rank = Column('fld_customer_rank', Integer, default=1)
     description = Column('fld_description', TEXT, default=b'Stakeholder Input')
@@ -80,7 +83,7 @@ class RAMSTKStakeholder(RAMSTK_BASE):
             'user_float_2': self.user_float_2,
             'user_float_3': self.user_float_3,
             'user_float_4': self.user_float_4,
-            'user_float_5': self.user_float_5
+            'user_float_5': self.user_float_5,
         }
 
         return _attributes
@@ -100,36 +103,51 @@ class RAMSTKStakeholder(RAMSTK_BASE):
 
         try:
             self.customer_rank = int(
-                none_to_default(float(attributes['customer_rank']), 1))
+                none_to_default(float(attributes['customer_rank']), 1),
+            )
             try:
                 self.description = none_to_default(
-                    attributes['description'].encode('utf-8'), b'')
+                    attributes['description'].encode('utf-8'), b'',
+                )
             except AttributeError:
-                self.description = none_to_default(attributes['description'],
-                                                   b'')
+                self.description = none_to_default(
+                    attributes['description'],
+                    b'',
+                )
             self.group = str(none_to_default(attributes['group'], ''))
             self.improvement = float(
-                none_to_default(attributes['improvement'], 0.0))
+                none_to_default(attributes['improvement'], 0.0),
+            )
             self.overall_weight = float(
-                none_to_default(attributes['overall_weight'], 0.0))
+                none_to_default(attributes['overall_weight'], 0.0),
+            )
             self.planned_rank = int(
-                none_to_default(float(attributes['planned_rank']), 1))
+                none_to_default(float(attributes['planned_rank']), 1),
+            )
             self.priority = int(
-                none_to_default(float(attributes['priority']), 1))
+                none_to_default(float(attributes['priority']), 1),
+            )
             self.requirement_id = int(
-                none_to_default(attributes['requirement_id'], 0))
+                none_to_default(attributes['requirement_id'], 0),
+            )
             self.stakeholder = str(
-                none_to_default(attributes['stakeholder'], ''))
+                none_to_default(attributes['stakeholder'], ''),
+            )
             self.user_float_1 = float(
-                none_to_default(attributes['user_float_1'], 0.0))
+                none_to_default(attributes['user_float_1'], 0.0),
+            )
             self.user_float_2 = float(
-                none_to_default(attributes['user_float_2'], 0.0))
+                none_to_default(attributes['user_float_2'], 0.0),
+            )
             self.user_float_3 = float(
-                none_to_default(attributes['user_float_3'], 0.0))
+                none_to_default(attributes['user_float_3'], 0.0),
+            )
             self.user_float_4 = float(
-                none_to_default(attributes['user_float_4'], 0.0))
+                none_to_default(attributes['user_float_4'], 0.0),
+            )
             self.user_float_5 = float(
-                none_to_default(attributes['user_float_5'], 0.0))
+                none_to_default(attributes['user_float_5'], 0.0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.test_stakeholder.py is part of The RAMSTK Project
@@ -7,13 +7,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Stakeholder module algorithms and models."""
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.modules.stakeholder import dtmStakeholder, dtcStakeholder
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao import RAMSTKStakeholder
+from ramstk.dao.programdb import RAMSTKStakeholder
+from ramstk.modules.stakeholder import dtcStakeholder, dtmStakeholder
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -36,7 +37,7 @@ ATTRIBUTES = {
     'user_float_2': 2.0,
     'user_float_3': 3.0,
     'user_float_4': 4.0,
-    'user_float_5': 5.0
+    'user_float_5': 5.0,
 }
 
 
@@ -92,7 +93,8 @@ def test_do_insert(test_dao):
     assert _error_code == 0
     assert _msg == (
         'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-        'database.')
+        'database.'
+    )
     assert DUT.last_id == 2
 
 
@@ -105,8 +107,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(2)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -118,8 +122,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
-                    'Stakeholder ID 300.')
+    assert _msg == (
+        '  RAMSTK ERROR: Attempted to delete non-existent '
+        'Stakeholder ID 300.'
+    )
 
 
 @pytest.mark.integration
@@ -148,7 +154,8 @@ def test_do_update_non_existent_id(test_dao):
     assert _error_code == 2006
     assert _msg == (
         'RAMSTK ERROR: Attempted to save non-existent Stakeholder ID '
-        '100.')
+        '100.'
+    )
 
 
 @pytest.mark.integration
@@ -160,8 +167,10 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the stakeholder "
-                    "table.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the stakeholder "
+        "table."
+    )
 
 
 @pytest.mark.integration
@@ -222,7 +231,8 @@ def test_request_do_select_all(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert isinstance(
-        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKStakeholder)
+        DUT._dtm_data_model.tree.get_node(1).data, RAMSTKStakeholder,
+    )
 
 
 @pytest.mark.integration

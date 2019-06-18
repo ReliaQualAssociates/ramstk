@@ -14,7 +14,7 @@ from os.path import basename
 import defusedxml.lxml as lxml
 
 # RAMSTK Package Imports
-from ramstk.dao import (
+from ramstk.dao.commondb import (
     RAMSTKRPN, RAMSTKCondition, RAMSTKGroup,
     RAMSTKLoadHistory, RAMSTKMeasurement, RAMSTKUser,
 )

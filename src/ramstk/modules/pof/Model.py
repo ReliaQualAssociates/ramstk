@@ -11,7 +11,7 @@ from pubsub import pub
 from treelib import tree
 
 # RAMSTK Package Imports
-from ramstk.dao import RAMSTKOpLoad, RAMSTKOpStress, RAMSTKTestMethod
+from ramstk.dao.programdb import RAMSTKOpLoad, RAMSTKOpStress, RAMSTKTestMethod
 from ramstk.modules import RAMSTKDataModel
 from ramstk.modules.fmea import dtmMechanism, dtmMode
 

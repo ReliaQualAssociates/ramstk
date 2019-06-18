@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.modules.test_allocation.py is part of The RAMSTK Project
@@ -7,12 +7,14 @@
 # Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Allocation class. """
 
+# Third Party Imports
 import pytest
-
 from treelib import Tree
 
-from ramstk.dao import DAO, RAMSTKAllocation
-from ramstk.modules.allocation import dtmAllocation, dtcAllocation
+# RAMSTK Package Imports
+from ramstk.dao import DAO
+from ramstk.dao.programdb import RAMSTKAllocation
+from ramstk.modules.allocation import dtcAllocation, dtmAllocation
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -42,7 +44,7 @@ ATTRIBUTES = {
     'reliability_goal': 1.0,
     'op_time_factor': 1,
     'soa_factor': 1,
-    'weight_factor': 1
+    'weight_factor': 1,
 }
 
 
@@ -110,11 +112,14 @@ def test_do_insert(test_dao):
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        revision_id=1, hardware_id=9, parent_id=1)
+        revision_id=1, hardware_id=9, parent_id=1,
+    )
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
     assert DUT.last_id == 9
 
 
@@ -127,8 +132,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
     assert DUT.last_id == 8
 
 
@@ -143,7 +150,8 @@ def test_do_delete_non_existent_id(test_dao):
     assert _error_code == 1
     assert _msg == (
         "\n  RAMSTK ERROR: Attempted to delete non-existent Allocation "
-        "ID 300.")
+        "ID 300."
+    )
 
 
 @pytest.mark.integration
@@ -170,8 +178,10 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2207
-    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent Allocation "
-                    "ID 100.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to save non-existent Allocation "
+        "ID 100."
+    )
 
 
 @pytest.mark.integration
@@ -185,7 +195,8 @@ def test_do_update_all(test_dao):
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Updating all line items in the reliability "
-        "allocation analysis worksheet.")
+        "allocation analysis worksheet."
+    )
 
 
 @pytest.mark.integration
@@ -318,7 +329,8 @@ def test_request_do_select_all(test_dao, test_configuration):
 
     assert isinstance(DUT._dtm_data_model.tree, Tree)
     assert isinstance(
-        DUT._dtm_data_model.tree.get_node(2).data, RAMSTKAllocation)
+        DUT._dtm_data_model.tree.get_node(2).data, RAMSTKAllocation,
+    )
 
 
 @pytest.mark.integration
@@ -346,7 +358,8 @@ def test_request_do_insert(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(
-        revision_id=1, hardware_id=10, parent_id=1)
+        revision_id=1, hardware_id=10, parent_id=1,
+    )
 
 
 @pytest.mark.integration

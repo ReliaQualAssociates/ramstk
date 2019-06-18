@@ -6,13 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the FMEA and PoF failure Mechanism class."""
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.modules.fmea import dtmMechanism
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao import RAMSTKMechanism
+from ramstk.dao.programdb import RAMSTKMechanism
+from ramstk.modules.fmea import dtmMechanism
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -72,8 +73,10 @@ def test_do_insert_1(test_dao):
     _error_code, _msg = DUT.do_insert(mode_id=4)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
 
 
 @pytest.mark.integration
@@ -85,8 +88,10 @@ def test_do_insert_2(test_dao):
     _error_code, _msg = DUT.do_insert(mode_id=4)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
 
 
 def test_do_insert_3(test_dao):
@@ -97,8 +102,10 @@ def test_do_insert_3(test_dao):
     _error_code, _msg = DUT.do_insert(mode_id=4)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
 
 
 @pytest.mark.integration
@@ -111,8 +118,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -124,8 +133,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Mechanism "
-                    "ID 300.")
+    assert _msg == (
+        "  RAMSTK ERROR: Attempted to delete non-existent Mechanism "
+        "ID 300."
+    )
 
 
 @pytest.mark.integration
@@ -153,7 +164,8 @@ def test_do_update_non_existent_id(test_dao):
 
     assert _error_code == 2006
     assert _msg == (
-        "RAMSTK ERROR: Attempted to save non-existent Mechanism ID 100.")
+        "RAMSTK ERROR: Attempted to save non-existent Mechanism ID 100."
+    )
 
 
 @pytest.mark.integration
@@ -165,5 +177,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the FMEA mechanisms "
-                    "table.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the FMEA mechanisms "
+        "table."
+    )

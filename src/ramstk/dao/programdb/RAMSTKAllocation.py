@@ -14,7 +14,7 @@ from sqlalchemy import Column, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
 
 
