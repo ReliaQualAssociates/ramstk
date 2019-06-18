@@ -787,7 +787,8 @@ class DAO():
         except (
                 IOError, exc.SQLAlchemyError, exc.DBAPIError,
                 exc.OperationalError,
-        ):
+        ) as _error:
+            print(_error)
             return True
         except ArgumentError:  # pylint: disable=undefined-variable # noqa
             print("Bad common database URI: {0:s}".format(database))
