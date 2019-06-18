@@ -934,8 +934,8 @@ class FMEADataModel(RAMSTKDataModel):
         :return: None
         :rtype: None
         """
-        _parent_id = kwargs['parent_id']
         self._functional = kwargs['functional']
+        _parent_id = kwargs['parent_id']
 
         RAMSTKDataModel.do_select_all(self)
 
@@ -962,13 +962,24 @@ class FMEADataModel(RAMSTKDataModel):
         # If we're not running a test and there were allocations returned,
         # let anyone who cares know the Allocations have been selected.
         if not self._test and self.tree.size() > 1:
-            pub.sendMessage(
-                'retrieved_ffmea',
-                attributes={
-                    'tree': self.tree,
-                    'row': None,
-                },
-            )
+            if self._functional:
+                pub.sendMessage(
+                    'retrieved_ffmea',
+                    attributes={
+                        'tree': self.tree,
+                        'row': None,
+                        'parent_id': _parent_id,
+                    },
+                )
+            else:
+                pub.sendMessage(
+                    'retrieved_dfmeca',
+                    attributes={
+                        'tree': self.tree,
+                        'row': None,
+                        'parent_id': _parent_id,
+                    },
+                )
 
     def _do_add_mechanisms(self, mode_id, parent_id):
         """

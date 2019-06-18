@@ -49,6 +49,7 @@ class FMEADataController(RAMSTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._functional = kwargs['functional']
 
         # Initialize public dictionary attributes.
 
@@ -57,12 +58,18 @@ class FMEADataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._request_do_select_all, 'selected_function')
-        pub.subscribe(self._request_do_select_all, 'selected_hardware')
-        pub.subscribe(self.request_do_delete, 'request_delete_fmea')
-        pub.subscribe(self._request_do_insert, 'request_insert_fmea')
-        pub.subscribe(self.request_do_update, 'request_update_fmea')
-        pub.subscribe(self.request_set_attributes, 'wvw_editing_fmea')
+        if self._functional:
+            pub.subscribe(self._request_do_select_all, 'selected_function')
+            pub.subscribe(self.request_set_attributes, 'wvw_editing_ffmea')
+            pub.subscribe(self.request_do_delete, 'request_delete_ffmea')
+            pub.subscribe(self._request_do_insert, 'request_insert_ffmea')
+            pub.subscribe(self.request_do_update, 'request_update_ffmea')
+        else:
+            pub.subscribe(self._request_do_select_all, 'selected_hardware')
+            pub.subscribe(self.request_set_attributes, 'wvw_editing_dfmeca')
+            pub.subscribe(self.request_do_delete, 'request_delete_dfmeca')
+            pub.subscribe(self._request_do_insert, 'request_insert_dfmeca')
+            pub.subscribe(self.request_do_update, 'request_update_dfmeca')
 
     def _request_do_select_all(self, attributes):
         """
@@ -72,15 +79,14 @@ class FMEADataController(RAMSTKDataController):
         :return: tree; the FMEA treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        _functional = attributes['functional']
-        if _functional:
+        if self._functional:
             _parent_id = attributes['function_id']
         else:
             _parent_id = attributes['hardware_id']
 
         return self._dtm_data_model.do_select_all(
             parent_id=_parent_id,
-            functional=_functional,
+            functional=self._functional,
         )
 
     def _request_do_insert(self, entity_id, parent_id, level, **kwargs):  # pylint: disable=unused-argument

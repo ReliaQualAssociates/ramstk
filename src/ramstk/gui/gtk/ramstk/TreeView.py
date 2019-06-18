@@ -148,7 +148,7 @@ class RAMSTKTreeView(Gtk.TreeView):
             self.headings.append('')
             self.order.append(len(self.order))
             self.pixbuf_col = int(len(self.datatypes)) - 1
-            self.visible.append(1)
+            self.visible.append(True)
             self.widgets.append('pixbuf')
 
         # We may want to add a column to hold indexing information for program
@@ -159,7 +159,7 @@ class RAMSTKTreeView(Gtk.TreeView):
             self.editable.append(0)
             self.headings.append('')
             self.order.append(len(self.order))
-            self.visible.append(0)
+            self.visible.append(False)
             self.widgets.append('text')
             self.index_col = int(len(self.datatypes)) - 1
 
@@ -182,7 +182,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.headings.append('Attributes')
         self.korder.append('dict')
         self.order.append(len(self.order))
-        self.visible.append(0)
+        self.visible.append(False)
         self.widgets.append('text')
 
     def do_set_visible_columns(self, **kwargs):

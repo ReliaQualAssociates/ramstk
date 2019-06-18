@@ -349,15 +349,15 @@ class RAMSTKBaseView():
         :return: None
         :rtype: None
         """
-        self._mdcRAMSTK.dic_books['listbook'].get_window().set_cursor(
+        self.get_parent_window().set_cursor(
             Gdk.Cursor.new(cursor),
         )
-        self._mdcRAMSTK.dic_books['modulebook'].get_window().set_cursor(
-            Gdk.Cursor.new(cursor),
-        )
-        self._mdcRAMSTK.dic_books['workbook'].get_window().set_cursor(
-            Gdk.Cursor.new(cursor),
-        )
+        #self._mdcRAMSTK.dic_books['modulebook'].get_window().set_cursor(
+        #    Gdk.Cursor.new(cursor),
+        #)
+        #self._mdcRAMSTK.dic_books['workbook'].get_window().set_cursor(
+        #    Gdk.Cursor.new(cursor),
+        #)
 
         Gdk.flush()
 

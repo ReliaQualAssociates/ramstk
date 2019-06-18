@@ -11,6 +11,7 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
+from ramstk import Configuration
 from ramstk.Configuration import (
     RAMSTK_CONTROL_TYPES, RAMSTK_FAILURE_PROBABILITY,
 )
@@ -42,7 +43,10 @@ class FMEA(RAMSTKWorkView):
     """
 
     # Define private list attributes.
-    _lst_control_type = [_("Prevention"), _("Detection"),]
+    _lst_control_type = [
+        _("Prevention"),
+        _("Detection"),
+    ]
     _lst_fmea_data = [
         0,
         "",
@@ -58,7 +62,7 @@ class FMEA(RAMSTKWorkView):
         "",
         "",
         "",
-        0.0,
+        "",
         0.0,
         0.0,
         0.0,
@@ -88,6 +92,336 @@ class FMEA(RAMSTKWorkView):
         "",
         None,
         "",
+        "",
+    ]
+    _lst_functional_mode_mask = [
+        True,
+        True,
+        False,
+        False,
+        True,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+    ]
+    _lst_hardware_mode_mask = [
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        False,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        True,
+        True,
+        False,
+        False,
+    ]
+    _lst_functional_mechanism_mask = [
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+    ]
+    _lst_hardware_mechanism_mask = [
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        True,
+        False,
+        False,
+        True,
+        False,
+        True,
+        False,
+        False,
+    ]
+    _lst_cause_mask = [
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+    ]
+    _lst_control_mask = [
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
+    ]
+    _lst_action_mask = [
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
+        False,
+        False,
     ]
 
     def __init__(self, configuration, **kwargs):
@@ -123,6 +457,8 @@ class FMEA(RAMSTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._function_id = None
+        self._hardware_id = None
         if _module == "FFMEA":
             self._functional = True
         else:
@@ -241,12 +577,14 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        # Always hide the column containing the attributes dict.
+        _model = self.treeview.get_model()
+        _columns = self.treeview.get_columns()
+        _columns[44].set_visible(False)
+
         # Hide the columns that are only associated with Hardware (D)FME(C)A if
         # this is a Functional FMEA.
         if self._functional:
-            _model = self.treeview.get_model()
-            _columns = self.treeview.get_columns()
-
             for _column in [
                     2,
                     3,
@@ -339,25 +677,44 @@ class FMEA(RAMSTKWorkView):
             _mission = ""
             _node_id = 0
 
+        _set_visible = self.treeview.visible
         if self._get_level(_node_id) == "mode":
             self.treeview.headings[self._lst_col_order[0]] = _("Mode ID")
             self.treeview.headings[self._lst_col_order[1]] = _("Failure\nMode")
-            self._do_load_mission_phases(_mission)
+            if not self._functional:
+                self._do_load_mission_phases(_mission)
+                _set_visible = _set_visible and self._lst_hardware_mode_mask
+            else:
+                _set_visible = _set_visible and self._lst_functional_mode_mask
         elif self._get_level(_node_id) == "mechanism":
             self.treeview.headings[self._lst_col_order[0]] = _("Mechanism ID")
-            self.treeview.headings[self._lst_col_order[1]] = _("Failure\nMechanism")
+            self.treeview.headings[self._lst_col_order[1]] = _(
+                "Failure\nMechanism",
+            )
+            if not self._functional:
+                _set_visible = _set_visible and self._lst_hardware_mechanism_mask
+            else:
+                _set_visible = _set_visible and self._lst_functional_mechanism_mask
         elif self._get_level(_node_id) == "cause":
             self.treeview.headings[self._lst_col_order[0]] = _("Cause ID")
-            self.treeview.headings[self._lst_col_order[1]] = _("Failure\nCause")
+            self.treeview.headings[self._lst_col_order[1]] = _(
+                "Failure\nCause",
+            )
+            _set_visible = _set_visible and self._lst_cause_mask
         elif self._get_level(_node_id) == "control":
             self.treeview.headings[self._lst_col_order[0]] = _("Control ID")
-            self.treeview.headings[self._lst_col_order[1]] = _("Existing\nControl")
+            self.treeview.headings[self._lst_col_order[1]] = _(
+                "Existing\nControl",
+            )
+            _set_visible = _set_visible and self._lst_control_mask
         elif self._get_level(_node_id) == "action":
-            self.treeview.headings[self._lst_col_order[0]] = _("Mechanism ID")
-            self.treeview.headings[self._lst_col_order[1]] = _("Recommended\nAction")
+            self.treeview.headings[self._lst_col_order[0]] = _("Action ID")
+            self.treeview.headings[self._lst_col_order[1]] = _(
+                "Recommended\nAction",
+            )
+            _set_visible = _set_visible and self._lst_action_mask
 
         _columns = self.treeview.get_columns()
-
         i = 0
         for _heading in self.treeview.headings:
             _label = RAMSTKLabel(
@@ -368,15 +725,171 @@ class FMEA(RAMSTKWorkView):
             )
             _label.show_all()
             _columns[i].set_widget(_label)
-
-            if _heading == "":
-                _columns[i].set_visible(False)
-            else:
-                _columns[i].set_visible(True)
+            _columns[i].set_visible(_set_visible[self._lst_col_order[i]])
 
             i += 1
 
         treeview.handler_unblock(self._lst_handler_id[0])
+
+    def _do_load_action(self, entity):
+        """
+        Load an action record into the RAMSTKTreeView().
+
+        :param entity: the FMEA entity containing the data to load.
+        :type entity: :class:`ramstk.dao.programdb.RAMSTKAction`
+        :return: None
+        :rtype: None
+        """
+        self._lst_fmea_data = [
+            0, "", "", "", "", "", "", "", "", "", "", "", "", "", "", 0.0,
+            0.0, 0.0, 0.0, 0.0, "", "", "", "", 0, "", "", "", "", "", 0, "",
+            0, "", "", "", "", 0, 0, 0, 0, "", None, "", "",
+        ]
+        self._lst_fmea_data[0] = entity.action_id
+        self._lst_fmea_data[1] = entity.action_recommended.decode('utf-8')
+        self._lst_fmea_data[25] = entity.action_category
+        self._lst_fmea_data[26] = entity.action_owner
+        self._lst_fmea_data[27] = entity.action_due_date.strftime('%Y-%m-%d')
+        self._lst_fmea_data[28] = entity.action_status
+        self._lst_fmea_data[29] = entity.action_taken.decode('utf-8')
+        self._lst_fmea_data[30] = entity.action_approved
+        self._lst_fmea_data[31] = entity.action_approve_date.strftime(
+            '%Y-%m-%d',
+        )
+        self._lst_fmea_data[32] = entity.action_closed
+        self._lst_fmea_data[33] = entity.action_close_date.strftime('%Y-%m-%d')
+        self._lst_fmea_data[42] = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons["action"],
+            22,
+            22,
+        )
+
+    def _do_load_cause(self, entity):
+        """
+        Load a failure cause record into the RAMSTKTreeView().
+
+        :param entity: the FMEA entity containing the data to load.
+        :type entity: :class:`ramstk.dao.programdb.RAMSTKCause`
+        :return: None
+        :rtype: None
+        """
+        self._lst_fmea_data = [
+            0, "", "", "", "", "", "", "", "", "", "", "", "", "", "", 0.0,
+            0.0, 0.0, 0.0, 0.0, "", "", "", "", 0, "", "", "", "", "", 0, "",
+            0, "", "", "", "", 0, 0, 0, 0, "", None, "", "",
+        ]
+        self._lst_fmea_data[0] = entity.cause_id
+        self._lst_fmea_data[1] = entity.description
+        self._lst_fmea_data[42] = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons["cause"],
+            22,
+            22,
+        )
+
+        if not self._functional:
+            self._lst_fmea_data[24] = entity.rpn
+            self._lst_fmea_data[37] = entity.rpn_new
+
+    def _do_load_control(self, entity):
+        """
+        Load a control record into the RAMSTKTreeView().
+
+        :param entity: the FMEA entity containing the data to load.
+        :type entity: :class:`ramstk.dao.programdb.RAMSTKControl`
+        :return: None
+        :rtype: None
+        """
+        self._lst_fmea_data = [
+            0, "", "", "", "", "", "", "", "", "", "", "", "", "", "", 0.0,
+            0.0, 0.0, 0.0, 0.0, "", "", "", "", 0, "", "", "", "", "", 0, "",
+            0, "", "", "", "", 0, 0, 0, 0, "", None, "", "",
+        ]
+        self._lst_fmea_data[0] = entity.control_id
+        self._lst_fmea_data[1] = entity.description
+        self._lst_fmea_data[20] = entity.type_id
+        self._lst_fmea_data[42] = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons["control"],
+            22,
+            22,
+        )
+
+    def _do_load_mechanism(self, entity):
+        """
+        Load a failure mechanism record into the RAMSTKTreeView().
+
+        :param entity: the FMEA entity containing the data to load.
+        :type entity: :class:`ramstk.dao.programdb.RAMSTKMechanism`
+        :return: None
+        :rtype: None
+        """
+        self._lst_fmea_data = [
+            0, "", "", "", "", "", "", "", "", "", "", "", "", "", "", 0.0,
+            0.0, 0.0, 0.0, 0.0, "", "", "", "", 0, "", "", "", "", "", 0, "",
+            0, "", "", "", "", 0, 0, 0, 0, "", None, "", "",
+        ]
+        self._lst_fmea_data[0] = entity.mechanism_id
+        self._lst_fmea_data[1] = entity.description
+        self._lst_fmea_data[42] = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons["mechanism"],
+            22,
+            22,
+        )
+
+        if not self._functional:
+            self._lst_fmea_data[22] = Configuration.RAMSTK_RPN_OCCURRENCE[entity.rpn_occurrence][1]
+            self._lst_fmea_data[23] = Configuration.RAMSTK_RPN_DETECTION[entity.rpn_detection][1]
+            self._lst_fmea_data[24] = entity.rpn
+            self._lst_fmea_data[35] = Configuration.RAMSTK_RPN_OCCURRENCE[entity.rpn_occurrence_new][1]
+            self._lst_fmea_data[36] = Configuration.RAMSTK_RPN_DETECTION[entity.rpn_detection_new][1]
+            self._lst_fmea_data[37] = entity.rpn_new
+            self._lst_fmea_data[40] = entity.pof_include
+
+    def _do_load_mode(self, entity):
+        """
+        Load a failure mode record into the RAMSTKTreeView().
+
+        :param entity: the FMEA entity containing the data to load.
+        :type entity: :class:`ramstk.dao.programdb.RAMSTKMode`
+        :return: None
+        :rtype: None
+        """
+        self._lst_fmea_data = [
+            0, "", "", "", "", "", "", "", "", "", "", "", "", "", "", 0.0,
+            0.0, 0.0, 0.0, 0.0, "", "", "", "", 0, "", "", "", "", "", 0, "",
+            0, "", "", "", "", 0, 0, 0, 0, "", None, "", "",
+        ]
+        self._lst_fmea_data[0] = entity.mode_id
+        self._lst_fmea_data[1] = entity.description
+        self._lst_fmea_data[4] = entity.effect_local
+        self._lst_fmea_data[5] = entity.effect_next
+        self._lst_fmea_data[6] = entity.effect_end
+        self._lst_fmea_data[10] = entity.design_provisions.decode('utf-8')
+        self._lst_fmea_data[11] = entity.operator_actions.decode('utf-8')
+        self._lst_fmea_data[12] = entity.severity_class
+        self._lst_fmea_data[41] = entity.remarks.decode('utf-8')
+        self._lst_fmea_data[42] = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons["mode"],
+            22,
+            22,
+        )
+
+        if not self._functional:
+            self._lst_fmea_data[2] = entity.mission
+            self._lst_fmea_data[3] = entity.mission_phase
+            self._lst_fmea_data[7] = entity.detection_method
+            self._lst_fmea_data[8] = entity.other_indications
+            self._lst_fmea_data[9] = entity.isolation_method
+            self._lst_fmea_data[13] = entity.hazard_rate_source
+            self._lst_fmea_data[14] = entity.mode_probability
+            self._lst_fmea_data[15] = entity.effect_probability
+            self._lst_fmea_data[16] = entity.mode_ratio
+            self._lst_fmea_data[17] = entity.mode_hazard_rate
+            self._lst_fmea_data[18] = entity.mode_op_time
+            self._lst_fmea_data[19] = entity.mode_criticality
+            self._lst_fmea_data[21] = Configuration.RAMSTK_RPN_SEVERITY[entity.rpn_severity][1]
+            self._lst_fmea_data[34] = Configuration.RAMSTK_RPN_SEVERITY[entity.rpn_severity_new][1]
+            self._lst_fmea_data[38] = entity.critical_item
+            self._lst_fmea_data[39] = entity.single_point
 
     def _do_refresh_view(self, model, __path, row):
         """
@@ -477,207 +990,64 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self._parent_id = attributes['parent_id']
         _tree = attributes["tree"]
         _row = attributes["row"]
-
-        if self._functional:
-            _type = "Functional"
-            _parent_id = self._function_id
-        else:
-            _type = "Hardware"
-            _parent_id = self._hardware_id
+        _new_row = None
 
         _model = self.treeview.get_model()
 
         _node = _tree.nodes[list(SortedDict(_tree.nodes).keys())[0]]
         _entity = _node.data
 
-        # Load the mission and RPN information if this is a Hardware (D)FME(C)A.
-        if _entity is not None and not self._functional:
-            try:
-                self._dic_missions[_entity.mission]
-            except KeyError:
-                _entity.mission = ""
+        if self._functional:
+            _type = "Functional"
+            self._function_id = self._parent_id
+        else:
+            _type = "Hardware"
+            self._hardware_id = self._parent_id
+            self._get_mission_criticality(_entity)
 
-            try:
-                self._lst_fmea_data[21] = self._get_rpn_severity(
-                    _entity.rpn_severity,
-                    score=False,
-                )
-                self._lst_fmea_data[34] = self._get_rpn_severity(
-                    _entity.rpn_severity_new,
-                    score=False,
-                )
-            except AttributeError:
-                pass
-
-            try:
-                self._lst_fmea_data[22] = self._get_rpn_occurrence(
-                    _entity.rpn_occurrence,
-                    score=False,
-                )
-                self._lst_fmea_data[35] = self._get_rpn_occurrence(
-                    _entity.rpn_occurrence_new,
-                    score=False,
-                )
-            except AttributeError:
-                pass
-
-            try:
-                self._lst_fmea_data[23] = self._get_rpn_detection(
-                    _entity.rpn_detection,
-                    score=False,
-                )
-                self._lst_fmea_data[36] = self._get_rpn_detection(
-                    _entity.rpn_detection_new,
-                    score=False,
-                )
-            except AttributeError:
-                pass
-
-        try:
+        if _entity is not None:
             if _entity.is_mode:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons["mode"],
-                    22,
-                    22,
-                )
-                self._lst_fmea_data[0] = _entity.mode_id
-                self._lst_fmea_data[1] = _entity.description
-                self._lst_fmea_data[4] = _entity.effect_local
-                self._lst_fmea_data[5] = _entity.effect_next
-                self._lst_fmea_data[6] = _entity.effect_end
-                self._lst_fmea_data[10] = _entity.design_provisions
-                self._lst_fmea_data[11] = _entity.operator_actions
-                self._lst_fmea_data[12] = _entity.severity_class
-                self._lst_fmea_data[41] = _entity.remarks
-
-                if not self._functional:
-                    self._lst_fmea_data[2] = _entity.mission
-                    self._lst_fmea_data[3] = _entity.mission_phase
-                    self._lst_fmea_data[7] = _entity.detection_method
-                    self._lst_fmea_data[8] = _entity.other_indications
-                    self._lst_fmea_data[9] = _entity.isolation_method
-                    self._lst_fmea_data[13] = _entity.hazard_rate_source
-                    self._lst_fmea_data[14] = _entity.mode_probability
-                    self._lst_fmea_data[15] = _entity.effect_probability
-                    self._lst_fmea_data[16] = _entity.mode_ratio
-                    self._lst_fmea_data[17] = _entity.mode_hazard_rate
-                    self._lst_fmea_data[18] = _entity.mode_op_time
-                    self._lst_fmea_data[19] = _entity.mode_criticality
-                    self._lst_fmea_data[38] = _entity.critical_item
-                    self._lst_fmea_data[39] = _entity.single_point
-
+                self._do_load_mode(_entity)
                 _row = None
 
             elif _entity.is_mechanism:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons["mechanism"],
-                    22,
-                    22,
-                )
-                self._lst_fmea_data[0] = _entity.mechanism_id
-                self._lst_fmea_data[1] = _entity.description
-                self._lst_fmea_data[24] = _entity.rpn
-                self._lst_fmea_data[37] = _entity.rpn_new
-                self._lst_fmea_data[40] = _entity.pof_include
+                self._do_load_mechanism(_entity)
 
             elif _entity.is_cause and _row is not None:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons["cause"],
-                    22,
-                    22,
-                )
-                self._lst_fmea_data[0] = _entity.cause_id
-                self._lst_fmea_data[1] = _entity.description
-
-                if not self._functional:
-                    self._lst_fmea_data[24] = _entity.rpn
-                    self._lst_fmea_data[37] = _entity.rpn_new
+                self._do_load_cause(_entity)
 
             elif _entity.is_control and _row is not None:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons["control"],
-                    22,
-                    22,
-                )
-                self._lst_fmea_data[0] = _entity.control_id
-                self._lst_fmea_data[1] = _entity.description
-                self._lst_fmea_data[20] = _entity.type_id
+                self._do_load_control(_entity)
 
             elif _entity.is_action and _row is not None:
-                _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                    self._dic_icons["action"],
-                    22,
-                    22,
-                )
-                self._lst_fmea_data[0] = _entity.action_id
-                self._lst_fmea_data[1] = _entity.action_recommended
-                self._lst_fmea_data[25] = _entity.action_category
-                self._lst_fmea_data[26] = _entity.action_owner
-                self._lst_fmea_data[27] = _entity.action_due_date
-                self._lst_fmea_data[28] = _entity.action_status
-                self._lst_fmea_data[29] = _entity.action_taken
-                self._lst_fmea_data[30] = _entity.action_approved
-                self._lst_fmea_data[31] = _entity.action_approve_date
-                self._lst_fmea_data[32] = _entity.action_closed
-                self._lst_fmea_data[33] = _entity.action_close_date
+                self._do_load_action(_entity)
 
-            self._lst_fmea_data[42] = _icon
             self._lst_fmea_data[43] = _node.identifier
+            self._lst_fmea_data[44] = str(_entity.get_attributes())
 
             try:
                 _new_row = _model.append(_row, self._lst_fmea_data)
-            except TypeError:
+            except ValueError as _error:
                 self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(
                     _(
                         "One or more {0:s} FMEA line items had "
                         "the wrong data type in it's data package and "
-                        "is not displayed in the FMEA form.", ).format(_type),
-                )
+                        "is not displayed in the FMEA form.  Error was: "
+                        "{1:s}", ).format(_type, str(_error)), )
                 self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
                     _(
                         "RAMSTK ERROR: Data for FMEA ID {0:s} for {2:s} "
                         "ID {1:s} is the wrong type for one or more "
-                        "columns.".format(
+                        "columns.  Error was: {3:s}".format(
                             str(_node.identifier),
-                            str(_parent_id),
+                            str(self._parent_id),
                             _type,
+                            str(_error),
                         ), ), )
                 _new_row = None
-            except ValueError:
-                self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(
-                    _(
-                        "One or more {0:s} FMEA line items was missing some "
-                        "of it's data and is not displayed in the FMEA form.",
-                    ).format(_type), )
-                self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
-                    _(
-                        "RAMSTK ERROR: Too few fields for FMEA ID {0:s} for "
-                        "{2:s} ID {1:s}.".format(
-                            str(_node.identifier),
-                            str(_parent_id),
-                            _type,
-                        ), ), )
-                _new_row = None
-
-        except AttributeError:
-            if _node.identifier != 0:
-                self.RAMSTK_CONFIGURATION.RAMSTK_USER_LOG.info(
-                    _(
-                        "One or more {0:s} FMEA line items was "
-                        "missing it's data package and is not "
-                        "displayed in the FMEA form.", ).format(_type), )
-                self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
-                    _(
-                        "RAMSTK ERROR: There is no data package for FMEA "
-                        "ID {0:s} for {2:s} "
-                        "ID {1:s}.".format(
-                            str(_node.identifier),
-                            str(_parent_id),
-                            _type,
-                        ), ), )
-            _new_row = None
 
         for _n in _tree.children(_node.identifier):
             _child_tree = _tree.subtree(_n.identifier)
@@ -685,6 +1055,7 @@ class FMEA(RAMSTKWorkView):
                 attributes={
                     "tree": _child_tree,
                     "row": _new_row,
+                    "parent_id": self._parent_id,
                 }, )
 
         _row = _model.get_iter_first()
@@ -693,7 +1064,7 @@ class FMEA(RAMSTKWorkView):
         RAMSTKWorkView.on_select(
             self,
             title=_("Analyzing Failure Modes for {1:s} ID {0:d}").format(
-                _parent_id,
+                self._parent_id,
                 _type,
             ),
         )
@@ -830,9 +1201,9 @@ class FMEA(RAMSTKWorkView):
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 43)
 
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage("request_update_fmea", node_id=_node_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -843,9 +1214,9 @@ class FMEA(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage("request_update_all_fmea")
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _get_cell_model(self, column):
         """
@@ -861,6 +1232,64 @@ class FMEA(RAMSTKWorkView):
         _model.clear()
 
         return _model
+
+    def _get_mission_criticality(self, entity):
+        """
+        Retrieve the mission and criticality information.
+
+        :param entity: the FMEA entity to get the mission and criticality
+        information for.
+        :return: None
+        :rtype: None
+        """
+        if not self._functional:
+            try:
+                self._lst_fmea_data[2] = self._dic_missions[entity.mission]
+            except(AttributeError, KeyError):
+                self._lst_fmea_data[2] = ""
+
+            try:
+                self._lst_fmea_data[3] = self._dic_mission_phases[
+                    entity.mission_phase
+                ]
+            except(AttributeError, KeyError):
+                self._lst_fmea_data[3] = ""
+
+            try:
+                self._lst_fmea_data[21] = self._get_rpn_severity(
+                    entity.rpn_severity,
+                    score=False,
+                )
+                self._lst_fmea_data[34] = self._get_rpn_severity(
+                    entity.rpn_severity_new,
+                    score=False,
+                )
+            except AttributeError:
+                pass
+
+            try:
+                self._lst_fmea_data[22] = self._get_rpn_occurrence(
+                    entity.rpn_occurrence,
+                    score=False,
+                )
+                self._lst_fmea_data[35] = self._get_rpn_occurrence(
+                    entity.rpn_occurrence_new,
+                    score=False,
+                )
+            except AttributeError:
+                pass
+
+            try:
+                self._lst_fmea_data[23] = self._get_rpn_detection(
+                    entity.rpn_detection,
+                    score=False,
+                )
+                self._lst_fmea_data[36] = self._get_rpn_detection(
+                    entity.rpn_detection_new,
+                    score=False,
+                )
+            except AttributeError:
+                pass
 
     def _on_button_press(self, treeview, event):
         """
@@ -938,7 +1367,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _node_id = model.get_value(model.get_iter(path), 0)
+        _node_id = model.get_value(model.get_iter(path), 43)
         try:
             _key = self._dic_keys[position]
         except KeyError:
@@ -952,11 +1381,20 @@ class FMEA(RAMSTKWorkView):
                 model,
         ):
 
+
             self.do_set_cursor(Gdk.CursorType.WATCH)
-            pub.sendMessage(
-                'wvw_editing_fmea',
-                module_id=_node_id,
-                key=_key,
-                value=new_text,
-            )
+            if self._functional:
+                pub.sendMessage(
+                    'wvw_editing_ffmea',
+                    module_id=_node_id,
+                    key=_key,
+                    value=new_text,
+                )
+            else:
+                pub.sendMessage(
+                    'wvw_editing_dfmeca',
+                    module_id=_node_id,
+                    key=_key,
+                    value=new_text,
+                )
             self.do_set_cursor(Gdk.CursorType.LEFT_PTR)

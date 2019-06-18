@@ -332,8 +332,8 @@ class MissionDataModel(RAMSTKDataModel):
 
         :param int revision_id: the ID of the Revision to retrieve the Mission.
         :return: tree; the treelib Tree() of RAMSTKMission data models that
-        comprise the Mission tree.
-        :rtype: :class:`treelib.Tree`
+            comprise the Mission tree.
+        :rtype: :py:class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
         _session = RAMSTKDataModel.do_select_all(self, **kwargs)
@@ -634,8 +634,8 @@ class EnvironmentDataModel(RAMSTKDataModel):
         """
         Retrieve all RAMSTKEnvironment records from the RAMSTK Program database.
 
-        :param int phase_id: the Mission Phase ID to select the Environments
-        for.
+        :param int phase_id: the Mission Phase ID to select the Environments \
+            for.
         :return: tree; the treelib Tree() of RAMSTKEnvironment data models
         that comprise the Environment tree.
         :rtype: :py:class:`treelib.Tree`

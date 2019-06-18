@@ -7,13 +7,11 @@
 """Physics of Failure Data Model."""
 
 # Third Party Imports
-# Import third party packages.
 from pubsub import pub
 from treelib import tree
 
 # RAMSTK Package Imports
 from ramstk.dao import RAMSTKOpLoad, RAMSTKOpStress, RAMSTKTestMethod
-# Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
 from ramstk.modules.fmea import dtmMechanism, dtmMode
 
