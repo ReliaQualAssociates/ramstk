@@ -1,10 +1,12 @@
 repos:
-    - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
-      sha: v1.0.4
+    - repo: local
       hooks:
-          - id: python-bandit-vulnerability-check
-            args: [-b, .bandit.baseline, -x, tests/]
-            files: .py$
+          - id: bandit
+            name: bandit
+            entry: bandit
+            args: [-b, .bandit.baseline, --ini, setup.cfg, --recursive, src/]
+            language: system
+            files: .py
     - repo: https://github.com/asottile/add-trailing-comma
       rev: v1.0.0
       hooks:

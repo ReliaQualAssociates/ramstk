@@ -529,7 +529,7 @@ def test_do_calculate_criticality(test_dao):
     _mode.mode_op_time = 100.0
     _mode.effect_probability = 1.0
     _error_code, _msg = DUT.do_calculate(
-        '0.4', item_hr=0.00001, criticality=True, rpn=False,
+        item_hr=0.00001, criticality=True, rpn=False,
     )
 
     assert _error_code == 0
@@ -560,7 +560,7 @@ def test_do_calculate_mechanism_rpn(test_dao):
             pass
 
     _error_code, _msg = DUT.do_calculate(
-        '0.4.1', item_hr=0.0, criticality=False, rpn=True,
+        item_hr=0.0, criticality=False, rpn=True,
     )
     _node = DUT.tree.get_node('0.4.1').data
 
@@ -592,7 +592,7 @@ def test_do_calculate_cause_rpn(test_dao):
             pass
 
     _error_code, _msg = DUT.do_calculate(
-        '0.4.1.4', item_hr=0.0, rpn=True, criticality=False,
+        item_hr=0.0, rpn=True, criticality=False,
     )
     _node = DUT.tree.get_node('0.4.1.4').data
 
