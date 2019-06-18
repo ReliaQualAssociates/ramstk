@@ -932,24 +932,6 @@ class FMEA(RAMSTKWorkView):
         #    self.txtItemCriticality.do_get_buffer().set_text(
         #        str(_str_item_crit), )
 
-    def _do_request_calculate(self, __button):
-        """
-        Calculate the FMEA RPN or criticality.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        :rtype: None
-        """
-        _criticality = self.chkCriticality.get_active()
-        _rpn = self.chkRPN.get_active()
-
-        pub.sendMessage(
-            "request_calculate_fmea",
-            item_hr=self._item_hazard_rate,
-            criticality=_criticality,
-            rpn=_rpn,
-        )
-
     def _do_request_delete(self, __button):
         """
         Request to delete the selected entity from the FMEA.
@@ -1380,7 +1362,12 @@ class FMEA(RAMSTKWorkView):
                 position,
                 model,
         ):
-
+            if position in [21, 34]:
+                new_text = self._get_rpn_severity(new_text)
+            elif position in [22, 35]:
+                new_text = self._get_rpn_occurrence(new_text)
+            elif position in [23, 36]:
+                new_text = self._get_rpn_detection(new_text)
 
             self.do_set_cursor(Gdk.CursorType.WATCH)
             if self._functional:

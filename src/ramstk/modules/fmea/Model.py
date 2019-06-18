@@ -1253,7 +1253,7 @@ class FMEADataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
+    def do_calculate(self, item_hr, criticality, rpn):
         """
         Calculate the RPN or criticality for the selected Node ID.
 
@@ -1262,16 +1262,13 @@ class FMEADataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _criticality = kwargs['criticality']
-        _rpn = kwargs['rpn']
-        _item_hr = kwargs['item_hr']
         _error_code = 0
         _msg = ''
 
-        if _criticality:
-            (_error_code, _msg) = self._do_calculate_criticality(_item_hr)
+        if criticality:
+            (_error_code, _msg) = self._do_calculate_criticality(item_hr)
 
-        if _rpn:
+        if rpn:
             (_error_code, _msg) = self._do_calculate_rpn()
 
         return (_error_code, _msg)

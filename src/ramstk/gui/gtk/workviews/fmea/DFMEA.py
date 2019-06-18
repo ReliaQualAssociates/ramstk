@@ -139,13 +139,18 @@ class DFMECA(FMEA):
                     "Add a new (D)FME(C)A entity one level below the currently "
                     "selected entity.", ),
                 _("Remove the selected entity from the (D)FME(C)A."),
+                _(
+                    "Calculate the Task 102 criticality and/or risk priority "
+                    "number (RPN).",
+                ),
             ],
             callbacks=[
                 self.do_request_insert_sibling,
                 self.do_request_insert_child,
                 self._do_request_delete,
+                self._do_request_calculate,
             ],
-            icons=["insert_sibling", "insert_child", "remove"],
+            icons=["insert_sibling", "insert_child", "remove", "calculate"],
         )
 
         self.pack_start(_buttonbox, False, True, 0)
@@ -311,6 +316,24 @@ class DFMECA(FMEA):
                 _model.append((_mission.decode('utf-8'), ))
         except KeyError:
             pass
+
+    def _do_request_calculate(self, __button):
+        """
+        Calculate the FMEA RPN or criticality.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        _model, _row = self.treeview.get_selection().get_selected()
+
+        pub.sendMessage(
+            "request_calculate_dfmeca",
+            node_id=_model.get_value(_row, 43),
+            item_hr=self._item_hazard_rate,
+            criticality=self.chkCriticality.get_active(),
+            rpn=self.chkRPN.get_active(),
+        )
 
     @staticmethod
     def _get_level(node_id):

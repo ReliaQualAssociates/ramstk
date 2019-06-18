@@ -59,17 +59,18 @@ class FMEADataController(RAMSTKDataController):
 
         # Subscribe to PyPubSub messages.
         if self._functional:
-            pub.subscribe(self._request_do_select_all, 'selected_function')
-            pub.subscribe(self.request_set_attributes, 'wvw_editing_ffmea')
             pub.subscribe(self.request_do_delete, 'request_delete_ffmea')
             pub.subscribe(self._request_do_insert, 'request_insert_ffmea')
             pub.subscribe(self.request_do_update, 'request_update_ffmea')
+            pub.subscribe(self._request_do_select_all, 'selected_function')
+            pub.subscribe(self.request_set_attributes, 'wvw_editing_ffmea')
         else:
-            pub.subscribe(self._request_do_select_all, 'selected_hardware')
-            pub.subscribe(self.request_set_attributes, 'wvw_editing_dfmeca')
+            pub.subscribe(self._request_do_calculate, 'request_calculate_dfmeca')
             pub.subscribe(self.request_do_delete, 'request_delete_dfmeca')
             pub.subscribe(self._request_do_insert, 'request_insert_dfmeca')
             pub.subscribe(self.request_do_update, 'request_update_dfmeca')
+            pub.subscribe(self._request_do_select_all, 'selected_hardware')
+            pub.subscribe(self.request_set_attributes, 'wvw_editing_dfmeca')
 
     def _request_do_select_all(self, attributes):
         """
@@ -87,6 +88,39 @@ class FMEADataController(RAMSTKDataController):
         return self._dtm_data_model.do_select_all(
             parent_id=_parent_id,
             functional=self._functional,
+        )
+
+    def _request_do_calculate(self, item_hr, criticality, rpn):
+        """
+        Request the (D)FME(C)A be calculated.
+
+        :param float item_hr:
+        :param bool criticality:
+        :param bool rpn:
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code = 0
+        _msg = 'RAMSTK SUCCESS: Calculating (D)FME(C)A.'
+
+        try:
+            _error_code, _msg = self._dtm_data_model.do_calculate(
+                item_hr,
+                criticality,
+                rpn,
+            )
+        except OutOfRangeError:
+            _error_code = 50
+            _msg = (
+                "RAMSTK WARNING: OutOfRangeError raised when calculating "
+                "(D)FME(C)A."
+            )
+
+        return RAMSTKDataController.do_handle_results(
+            self,
+            _error_code,
+            _msg,
+            None,
         )
 
     def _request_do_insert(self, entity_id, parent_id, level, **kwargs):  # pylint: disable=unused-argument
@@ -112,35 +146,6 @@ class FMEADataController(RAMSTKDataController):
             _msg = _msg + '  Failed to add a new {0:s} to the RAMSTK ' \
                 'Program database.'.format(level)
             self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
-
-        return RAMSTKDataController.do_handle_results(
-            self,
-            _error_code,
-            _msg,
-            None,
-        )
-
-    def request_do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
-        """
-        Request the (D)FME(C)A be calculated.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code = 0
-        _msg = 'RAMSTK SUCCESS: Calculating (D)FME(C)A.'
-
-        try:
-            _error_code, _msg = self._dtm_data_model.do_calculate(
-                node_id,
-                **kwargs,
-            )
-        except OutOfRangeError:
-            _error_code = 50
-            _msg = (
-                "RAMSTK WARNING: OutOfRangeError raised when calculating "
-                "(D)FME(C)A."
-            )
 
         return RAMSTKDataController.do_handle_results(
             self,

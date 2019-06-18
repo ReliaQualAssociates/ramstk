@@ -604,7 +604,7 @@ def test_do_calculate_cause_rpn(test_dao):
 @pytest.mark.integration
 def test_create_data_controller(test_dao, test_configuration):
     """ __init__() should return instance of FMEA data controller. """
-    DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    DUT = dtcFMEA(test_dao, test_configuration, test=True, functional=False)
 
     assert isinstance(DUT, dtcFMEA)
     assert isinstance(DUT._dtm_data_model, dtmFMEA)
@@ -613,7 +613,7 @@ def test_create_data_controller(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_do_select_all_hardware(test_dao, test_configuration):
     """ request_do_select_all() should return a treelib Tree() with the hardware FMEA. """
-    DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    DUT = dtcFMEA(test_dao, test_configuration, test=True, functional=False)
     ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
     DUT._request_do_select_all(ATTRIBUTES)
 
@@ -623,7 +623,7 @@ def test_request_do_select_all_hardware(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_do_select_all_functional(test_dao, test_configuration):
     """ request_do_select_all() should return a treelib Tree() with the functional FMEA. """
-    DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    DUT = dtcFMEA(test_dao, test_configuration, test=True, functional=True)
     ATTRIBUTES['parent_id'] = ATTRIBUTES['function_id']
     DUT._request_do_select_all(ATTRIBUTES)
 
@@ -633,7 +633,7 @@ def test_request_do_select_all_functional(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_do_insert_mode_functional(test_dao, test_configuration):
     """ request_do_insert() should return False on success when adding a mode to a functional FMEA. """
-    DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    DUT = dtcFMEA(test_dao, test_configuration, test=True, functional=True)
     ATTRIBUTES['parent_id'] = ATTRIBUTES['function_id']
     DUT._request_do_select_all(ATTRIBUTES)
     assert not DUT.request_do_insert(entity_id=1, parent_id='0', level='mode')
@@ -642,7 +642,7 @@ def test_request_do_insert_mode_functional(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_do_insert_mode_hardware(test_dao, test_configuration):
     """ request_do_insert() should return False on success when addin a mode to a hardware FMEA. """
-    DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    DUT = dtcFMEA(test_dao, test_configuration, test=True, functional=False)
     ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
     DUT._request_do_select_all(ATTRIBUTES)
 
@@ -652,7 +652,7 @@ def test_request_do_insert_mode_hardware(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_do_insert_mechanism(test_dao, test_configuration):
     """ request_do_insert() should return a False on success when adding a new Mechanism to a Hardware FMEA. """
-    DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    DUT = dtcFMEA(test_dao, test_configuration, test=True, functional=False)
     ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
     ATTRIBUTES['functional'] = False
     DUT._request_do_select_all(ATTRIBUTES)
@@ -665,7 +665,7 @@ def test_request_do_insert_mechanism(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_do_delete_control_functional(test_dao, test_configuration):
     """ request_do_delete() should return False on success when removing a Control from a functional FMEA. """
-    DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    DUT = dtcFMEA(test_dao, test_configuration, test=True, functional=True)
     ATTRIBUTES['parent_id'] = ATTRIBUTES['function_id']
     ATTRIBUTES['functional'] = True
     DUT._request_do_select_all(ATTRIBUTES)
@@ -677,7 +677,7 @@ def test_request_do_delete_control_functional(test_dao, test_configuration):
 @pytest.mark.integration
 def test_request_do_update_all(test_dao, test_configuration):
     """ request_do_update_all() should return False on success. """
-    DUT = dtcFMEA(test_dao, test_configuration, test=True)
+    DUT = dtcFMEA(test_dao, test_configuration, test=True, functional=False)
     ATTRIBUTES['parent_id'] = ATTRIBUTES['hardware_id']
     ATTRIBUTES['functional'] = False
     DUT._request_do_select_all(ATTRIBUTES)
