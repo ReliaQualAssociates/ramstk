@@ -13,10 +13,13 @@
 *.tox
 *.e5s
 *.geany
+*:p
+tags
 
 # Python specific directories and files to ignore
 build/
 dist/
+.mypy_cache/
 .pytest_cache/
 target/
 *.egg*
@@ -53,3 +56,4 @@ coverage.xml
 !/requirements_doc.txt
 !/requirements_run.txt
 /.gtm/
+/.project

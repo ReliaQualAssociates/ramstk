@@ -6,9 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Controller."""
 
-# Import other RAMSTK modules.
-from ramstk.Utilities import OutOfRangeError
+# Third Party Imports
+from pubsub import pub
+
+# RAMSTK Package Imports
 from ramstk.modules import RAMSTKDataController
+from ramstk.Utilities import OutOfRangeError
+
+# RAMSTK Local Imports
 from . import dtmFMEA
 
 
@@ -36,13 +41,15 @@ class FMEADataController(RAMSTKDataController):
             configuration,
             model=dtmFMEA(dao, **kwargs),
             ramstk_module='FMEA',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._functional = kwargs['functional']
 
         # Initialize public dictionary attributes.
 
@@ -50,91 +57,46 @@ class FMEADataController(RAMSTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_do_select_all(self, attributes):
+        # Subscribe to PyPubSub messages.
+        if self._functional:
+            pub.subscribe(self.request_do_delete, 'request_delete_ffmea')
+            pub.subscribe(self._request_do_insert, 'request_insert_ffmea')
+            pub.subscribe(self.request_do_update, 'request_update_ffmea')
+            pub.subscribe(self._request_do_select_all, 'selected_function')
+            pub.subscribe(self.request_set_attributes, 'wvw_editing_ffmea')
+        else:
+            pub.subscribe(self._request_do_calculate, 'request_calculate_dfmeca')
+            pub.subscribe(self.request_do_delete, 'request_delete_dfmeca')
+            pub.subscribe(self._request_do_insert, 'request_insert_dfmeca')
+            pub.subscribe(self.request_do_update, 'request_update_dfmeca')
+            pub.subscribe(self._request_do_select_all, 'selected_hardware')
+            pub.subscribe(self.request_set_attributes, 'wvw_editing_dfmeca')
+
+    def _request_do_select_all(self, attributes):
         """
         Load the entire FMEA for a Function or Hardware item.
 
-        :param int parent_id: the Function ID (functional FMEA) or Hardware ID
-                              (hardware FMEA) to retrieve the FMEA and build
-                              trees for.
+        :param dict attributes: the key:value pairs of the FMEA attributes.
         :return: tree; the FMEA treelib Tree().
         :rtype: :class:`treelib.Tree`
         """
-        if attributes['functional']:
+        if self._functional:
             _parent_id = attributes['function_id']
         else:
             _parent_id = attributes['hardware_id']
 
         return self._dtm_data_model.do_select_all(
-            parent_id=_parent_id, functional=attributes['functional'])
+            parent_id=_parent_id,
+            functional=self._functional,
+        )
 
-    def request_do_insert(self, **kwargs):
-        """
-        Request to add a FMEA table record.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _entity_id = kwargs['entity_id']
-        _parent_id = kwargs['parent_id']
-        _level = kwargs['level']
-
-        _error_code, _msg = self._dtm_data_model.do_insert(
-            entity_id=_entity_id, parent_id=_parent_id, level=_level)
-
-        if _error_code == 0:
-            self._configuration.RAMSTK_USER_LOG.info(_msg)
-        else:
-            _msg = _msg + '  Failed to add a new {0:s} to the RAMSTK ' \
-                'Program database.'.format(_level)
-            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_delete(self, node_id):
-        """
-        Request entity and it's children be deleted from the FMEA.
-
-        :param str node_id: the Mode, Mechanism, Cause, Controle, or Action ID
-                            to delete.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_delete(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_update(self, node_id):
-        """
-        Request to update an RAMSTKFunction table record.
-
-        :param int node_id: the PyPubSub Tree() ID of the Function to save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update(node_id)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_update_all(self, **kwargs):
-        """
-        Request all (D)FME(C)A entities be saved to the RAMSTK Program database.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = self._dtm_data_model.do_update_all(**kwargs)
-
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
-
-    def request_do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
+    def _request_do_calculate(self, item_hr, criticality, rpn):
         """
         Request the (D)FME(C)A be calculated.
 
+        :param float item_hr:
+        :param bool criticality:
+        :param bool rpn:
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -143,14 +105,54 @@ class FMEADataController(RAMSTKDataController):
 
         try:
             _error_code, _msg = self._dtm_data_model.do_calculate(
-                node_id, **kwargs)
+                item_hr,
+                criticality,
+                rpn,
+            )
         except OutOfRangeError:
             _error_code = 50
-            _msg = ("RAMSTK WARNING: OutOfRangeError raised when calculating "
-                    "(D)FME(C)A.")
+            _msg = (
+                "RAMSTK WARNING: OutOfRangeError raised when calculating "
+                "(D)FME(C)A."
+            )
 
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
+        return RAMSTKDataController.do_handle_results(
+            self,
+            _error_code,
+            _msg,
+            None,
+        )
+
+    def _request_do_insert(self, entity_id, parent_id, level, **kwargs):  # pylint: disable=unused-argument
+        """
+        Request to add a FMEA table record.
+
+        :param int entity_id: the ID of the new element to insert.
+        :param int parent_id: the ID of the parent element in the FMEA.
+        :param str level: the level in the FMEA the new insert will be.  Levels
+                          are mode, mechanism, cause, control, and action.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.do_insert(
+            entity_id=entity_id,
+            parent_id=parent_id,
+            level=level,
+        )
+
+        if _error_code == 0:
+            self._configuration.RAMSTK_USER_LOG.info(_msg)
+        else:
+            _msg = _msg + '  Failed to add a new {0:s} to the RAMSTK ' \
+                'Program database.'.format(level)
+            self._configuration.RAMSTK_DEBUG_LOG.error(_msg)
+
+        return RAMSTKDataController.do_handle_results(
+            self,
+            _error_code,
+            _msg,
+            None,
+        )
 
     def request_item_criticality(self):
         """

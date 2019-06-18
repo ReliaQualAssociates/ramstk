@@ -6,13 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Similar Item Analysis Data Model."""
 
-# Import third party packages.
+# Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
+from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataModel
+# RAMSTK Package Imports
 from ramstk.dao import RAMSTKSimilarItem
+from ramstk.modules import RAMSTKDataModel
 
 
 class SimilarItemDataModel(RAMSTKDataModel):
@@ -24,6 +24,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
     """
 
     _tag = 'SimilarItems'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -48,98 +49,36 @@ class SimilarItemDataModel(RAMSTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def do_select_all(self, **kwargs):
+    def do_calculate(self, node_id, **kwargs):
         """
-        Retrieve all the SimilarItems from the RAMSTK Program database.
+        Calculate and allocate the goals for the selected hardware item.
 
-        This method retrieves all the records from the RAMSTKSimilarItem table
-        in the connected RAMSTK Program database.  It then adds each to the
-        SimilarItem data model treelib.Tree().
-
-        :param int revision_id: the Revision ID the SimilarItems are associated
-                                with.
-        :return: tree; the Tree() of RAMSTKSimilarItem data models.
-        :rtype: :class:`treelib.Tree`
+        :param int node_id: the Node (Hardware) ID of the hardware item whose
+                            goal is to be allocated.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
-        _revision_id = kwargs['revision_id']
-        _session = RAMSTKDataModel.do_select_all(self)
+        _hazard_rate = kwargs['hazard_rate']
+        _return = False
 
-        for _similar_item in _session.query(RAMSTKSimilarItem).filter(
-                RAMSTKSimilarItem.revision_id == _revision_id).all():
-            # We get and then set the attributes to replace any None values
-            # (NULL fields in the database) with their default value.
-            _attributes = _similar_item.get_attributes()
-            _similar_item.set_attributes(_attributes)
-            self.tree.create_node(
-                'SimilarItem ID: {0:d}'.format(_similar_item.hardware_id),
-                _similar_item.hardware_id,
-                parent=_similar_item.parent_id,
-                data=_similar_item)
+        _sia = self.do_select(node_id)
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
-            try:
-                self.last_id = max(self.last_id, _similar_item.hardware_id)
-            except TypeError:
-                self.last_id = _similar_item.hardware_id
+        if _sia.method_id == 1:
+            _return = _sia.topic_633(_hazard_rate)
+        elif _sia.method_id == 2:
+            _return = _sia.user_defined(_hazard_rate)
+        else:
+            _return = True
 
-        _session.close()
+        if not self._test and not _return:
+            _attributes = _sia.get_attributes()
+            pub.sendMessage('calculated_similar_item', attributes=_attributes)
 
-        # If we're not running a test and there were requirements returned,
-        # let anyone who cares know the Requirements have been selected.
-        if not self._test and self.tree.size() > 1:
-            pub.sendMessage('retrieved_similar_items', tree=self.tree)
-
-        return None
-
-    def do_select_children(self, node_id):
-        """
-        Select a list containing the immediate child nodes.
-
-        :param int node_id: the Node (Hardware) ID to select the subtree for.
-        :return: a list of the immediate child nodes of the passed Node
-                 (Hardware) ID.
-        :rtype: list
-        """
-        try:
-            _children = self.tree.children(node_id)
-        except NodeIDAbsentError:
-            _children = None
-
-        return _children
-
-    def do_insert(self, **kwargs):
-        """
-        Add a record to the RAMSTKSimilarItem table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _similar_item = RAMSTKSimilarItem()
-        _similar_item.revision_id = kwargs['revision_id']
-        _similar_item.hardware_id = kwargs['hardware_id']
-        _similar_item.parent_id = kwargs['parent_id']
-        _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
-                _similar_item,
-            ])
-
-        self.tree.create_node(
-            'SimilarItem ID: {0:d}'.format(_similar_item.hardware_id),
-            _similar_item.hardware_id,
-            parent=_similar_item.parent_id,
-            data=_similar_item)
-
-        try:
-            self.last_id = max(self.last_id, _similar_item.hardware_id)
-        except TypeError:
-            self.last_id = _similar_item.hardware_id
-
-        return _error_code, _msg
+        return _return
 
     def do_delete(self, node_id):
         """
-        Remove a record from the RAMSTKFailureDefinition table.
+        Remove a record from the RAMSTKSimilarItem table.
 
         :param int node_id: the PyPubSub Tree() ID of the Similar Item to be
                             removed.
@@ -157,25 +96,129 @@ class SimilarItemDataModel(RAMSTKDataModel):
         else:
             self.last_id = max(self.tree.nodes.keys())
 
-        return _error_code, _msg
-
-    def do_update(self, node_id):
-        """
-        Update the record in the RAMSTKSimilarItem table.
-
-        :param int node_id: the SimilarItem ID to save to the RAMSTK Program
-                            database.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
-
-        if _error_code != 0 and node_id is not None:
-            _error_code = 2207
-            _msg = 'RAMSTK ERROR: Attempted to save non-existent SimilarItem ' \
-                   'ID {0:d}.'.format(node_id)
+            # If we're not running a test, let anyone who cares know a
+            # Similar Item was deleted.
+            if not self._test:
+                pub.sendMessage('deleted_similar_item', tree=self.tree)
 
         return _error_code, _msg
+
+    def do_insert(self, **kwargs):
+        """
+        Add a record to the RAMSTKSimilarItem table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _similar_item = RAMSTKSimilarItem()
+        _similar_item.revision_id = kwargs['revision_id']
+        _similar_item.hardware_id = kwargs['hardware_id']
+        _similar_item.parent_id = kwargs['parent_id']
+        _error_code, _msg = RAMSTKDataModel.do_insert(
+            self,
+            entities=[
+                _similar_item,
+            ],
+        )
+
+        if _error_code == 0:
+            try:
+                self.tree.create_node(
+                    'SimilarItem ID: {0:d}'.format(
+                        _similar_item.hardware_id,
+                    ),
+                    _similar_item.hardware_id,
+                    parent=_similar_item.parent_id,
+                    data=_similar_item,
+                )
+                try:
+                    self.last_id = max(self.last_id, _similar_item.hardware_id)
+                except TypeError:
+                    self.last_id = _similar_item.hardware_id
+
+            except DuplicatedNodeIdError:
+                _error_code = 1
+                _msg = (
+                    'RAMSTK ERROR: Node ID {0:s} already exists in the '
+                    'Similar Item tree for Hardware ID {1:s}'
+                ).format(
+                    str(_similar_item.hardware_id),
+                    str(_similar_item.parent_id),
+                )
+
+            # If we're not running a test, let anyone who cares know a new
+            # Allocation was inserted.
+            if not self._test:
+                pub.sendMessage('inserted_similar_item', tree=self.tree)
+
+        return _error_code, _msg
+
+    def do_select_all(self, **kwargs):
+        """
+        Retrieve all the SimilarItems from the RAMSTK Program database.
+
+        This method retrieves all the records from the RAMSTKSimilarItem table
+        in the connected RAMSTK Program database.  It then adds each to the
+        SimilarItem data model treelib.Tree().
+
+        :param int revision_id: the Revision ID the SimilarItems are associated
+                                with.
+        :return: None
+        :rtype: None
+        """
+        _revision_id = kwargs['revision_id']
+        _session = RAMSTKDataModel.do_select_all(self)
+
+        for _similar_item in _session.query(RAMSTKSimilarItem).filter(
+                RAMSTKSimilarItem.revision_id == _revision_id,
+        ).all():
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _similar_item.get_attributes()
+            _similar_item.set_attributes(_attributes)
+            self.tree.create_node(
+                'SimilarItem ID: {0:d}'.format(
+                    _similar_item.hardware_id,
+                ),
+                _similar_item.hardware_id,
+                parent=_similar_item.parent_id,
+                data=_similar_item,
+            )
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RAMSTKDataModel.__init__
+            try:
+                self.last_id = max(self.last_id, _similar_item.hardware_id)
+            except TypeError:
+                self.last_id = _similar_item.hardware_id
+
+        _session.close()
+
+        # If we're not running a test and there were allocations returned,
+        # let anyone who cares know the Allocations have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_similar_items', tree=self.tree)
+
+    def do_select_children(self, node_id):
+        """
+        Select a subtree containing the immediate child nodes.
+
+        :param int node_id: the Node ID to select the children for.
+        :return: a list of treelib Node()s that are child nodes of node_id.
+        :rtype: list
+        """
+        try:
+            _children = self.tree.children(node_id)
+        except NodeIDAbsentError:
+            _children = []
+
+        if _children is not None:
+            pub.sendMessage(
+                'retrieved_similar_item_children',
+                children=_children,
+            )
+
+        return _children
 
     def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -195,64 +238,49 @@ class SimilarItemDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more line items in the similar "
-                        "item analysis worksheet did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more line items in the similar "
+                    "item analysis worksheet did not update."
+                )
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all line items in the similar item "
-                "analysis worksheet.")
+                "analysis worksheet."
+            )
 
         return _error_code, _msg
 
-    def do_calculate(self, node_id, **kwargs):
+    def do_update(self, node_id):
         """
-        Calculate and allocate the goals for the selected hardware item.
+        Update the record in the RAMSTKSimilarItem table.
 
-        :param int node_id: the Node (Hardware) ID of the hardware item whose
-                            goal is to be allocated.
+        :param int node_id: the SimilarItem ID to save to the RAMSTK Program
+                            database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _hazard_rate = kwargs['hazard_rate']
-        _return = False
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
 
-        _sia = self.do_select(node_id)
-
-        if _sia.method_id == 1:
-            _return = (_return or _sia.topic_633(_hazard_rate))
-        elif _sia.method_id == 2:
-            _return = (_return or _sia.user_defined(_hazard_rate))
+        if _error_code == 0:
+            if not self._test:
+                _attributes = self.do_select(node_id).get_atributes()
+                pub.sendMessage('updated_similar_item', attributes=_attributes)
         else:
-            _return = True
+            _error_code = 2207
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent SimilarItem ' \
+                   'ID {0:d}.'.format(node_id)
 
-        return _return
-
-    def do_calculate_all(self, **kwargs):
-        """
-        Calculate metrics for all Similar Item analysis.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        # Calculate all Similar Items, skipping the top node in the tree.
-        for _node in self.tree.all_nodes():
-            if _node.identifier != 0:
-                self.do_calculate(_node.identifier, **kwargs)
-
-        return _return
+        return _error_code, _msg
 
     def do_roll_up(self, node_id):
         """
         Concatenate the descriptions for lower indenture level items.
 
         :param int node_id: the Node ID to roll the child descriptions up to.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
         _description = [b'', b'', b'', b'', b'', b'', b'', b'', b'', b'']
 
         # Retrieve the change descriptions from all the child elements and
@@ -297,5 +325,3 @@ class SimilarItemDataModel(RAMSTKDataModel):
         _attributes['change_description_10'] = _description[9]
         _entity.set_attributes(_attributes)
         self.do_update(node_id)
-
-        return _return

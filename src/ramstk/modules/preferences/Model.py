@@ -6,19 +6,21 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Preferences Data Model."""
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk.dao import (
+    RAMSTKRPN, RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode,
+    RAMSTKGroup, RAMSTKHazards, RAMSTKLoadHistory,
+    RAMSTKManufacturer, RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel,
+    RAMSTKStakeholders, RAMSTKStatus, RAMSTKType, RAMSTKUser,
+)
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import (RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode,
-                        RAMSTKGroup, RAMSTKHazards, RAMSTKLoadHistory,
-                        RAMSTKManufacturer, RAMSTKMeasurement, RAMSTKMethod,
-                        RAMSTKModel, RAMSTKRPN, RAMSTKStakeholders,
-                        RAMSTKStatus, RAMSTKType, RAMSTKUser)
 
 
 class PreferencesDataModel(RAMSTKDataModel):
     """Contains the attributes and methods of a user Preferences data model."""
 
     _tag = 'Preferences'
+    _root = 0
 
     def __init__(self, dao, site_dao, configuration):
         """
@@ -45,7 +47,8 @@ class PreferencesDataModel(RAMSTKDataModel):
         # Initialize public scalar attributes.
         self.dtm_site_preferences = SitePreferencesDataModel(site_dao)
         self.dtm_user_preferences = UserPreferencesDataModel(
-            dao, configuration)
+            dao, configuration,
+        )
 
     def do_select_all(self, **kwargs):
         """
@@ -61,8 +64,6 @@ class PreferencesDataModel(RAMSTKDataModel):
             self.site_preferences = self.dtm_site_preferences.do_select_all()
         if _user:
             self.user_preferences = self.dtm_user_preferences.do_select_all()
-
-        return None
 
     def do_delete(self, entity):  # pylint: disable=arguments-differ
         """
@@ -83,7 +84,8 @@ class PreferencesDataModel(RAMSTKDataModel):
         """
         _return = self.dtm_site_preferences.do_update(self.site_preferences)
         _return = _return or self.dtm_user_preferences.do_update(
-            self.user_preferences)
+            self.user_preferences,
+        )
 
         return _return
 
@@ -92,6 +94,7 @@ class SitePreferencesDataModel(RAMSTKDataModel):
     """Contain the attributes and methods for Site-wide preferences."""
 
     _tag = 'SitePrefs'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -128,58 +131,86 @@ class SitePreferencesDataModel(RAMSTKDataModel):
         :rtype: None
         """
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         self._site_preferences['action_category'] = _session.query(
-            RAMSTKCategory).filter(RAMSTKCategory.cat_type == 'action').all()
+            RAMSTKCategory,
+        ).filter(RAMSTKCategory.cat_type == 'action').all()
         self._site_preferences['incident_category'] = _session.query(
-            RAMSTKCategory).filter(
-                RAMSTKCategory.cat_type == 'incident').all()
+            RAMSTKCategory,
+        ).filter(
+            RAMSTKCategory.cat_type == 'incident',
+        ).all()
         self._site_preferences['damaging_conditions'] = _session.query(
-            RAMSTKCondition).filter(
-                RAMSTKCondition.cond_type == 'operating').all()
+            RAMSTKCondition,
+        ).filter(
+            RAMSTKCondition.cond_type == 'operating',
+        ).all()
         self._site_preferences['environment_conditions'] = _session.query(
-            RAMSTKCondition).filter(
-                RAMSTKCondition.cond_type == 'environment').all()
+            RAMSTKCondition,
+        ).filter(
+            RAMSTKCondition.cond_type == 'environment',
+        ).all()
         self._site_preferences['failure_modes'] = _session.query(
-            RAMSTKFailureMode).all()
+            RAMSTKFailureMode,
+        ).all()
         self._site_preferences['workgroups'] = _session.query(
-            RAMSTKGroup).filter(RAMSTKGroup.group_type == 'workgroup').all()
+            RAMSTKGroup,
+        ).filter(RAMSTKGroup.group_type == 'workgroup').all()
         self._site_preferences['affinity_groups'] = _session.query(
-            RAMSTKGroup).filter(RAMSTKGroup.group_type == 'affinity').all()
+            RAMSTKGroup,
+        ).filter(RAMSTKGroup.group_type == 'affinity').all()
         self._site_preferences['hazards'] = _session.query(RAMSTKHazards).all()
         self._site_preferences['load_history'] = _session.query(
-            RAMSTKLoadHistory).all()
+            RAMSTKLoadHistory,
+        ).all()
         self._site_preferences['manufacturers'] = _session.query(
-            RAMSTKManufacturer).all()
+            RAMSTKManufacturer,
+        ).all()
         self._site_preferences['measurement_units'] = _session.query(
-            RAMSTKMeasurement).filter(
-                RAMSTKMeasurement.measurement_type == 'unit').all()
+            RAMSTKMeasurement,
+        ).filter(
+            RAMSTKMeasurement.measurement_type == 'unit',
+        ).all()
         self._site_preferences['measureable_parameters'] = _session.query(
-            RAMSTKMeasurement).filter(
-                RAMSTKMeasurement.measurement_type == 'damage').all()
+            RAMSTKMeasurement,
+        ).filter(
+            RAMSTKMeasurement.measurement_type == 'damage',
+        ).all()
         self._site_preferences['detection_methods'] = _session.query(
-            RAMSTKMethod).all()
+            RAMSTKMethod,
+        ).all()
         self._site_preferences['damage_models'] = _session.query(
-            RAMSTKModel).all()
+            RAMSTKModel,
+        ).all()
         self._site_preferences['rpn_detection'] = _session.query(
-            RAMSTKRPN).filter(RAMSTKRPN.rpn_type == 'detection').all()
+            RAMSTKRPN,
+        ).filter(RAMSTKRPN.rpn_type == 'detection').all()
         self._site_preferences['rpn_occurrence'] = _session.query(
-            RAMSTKRPN).filter(RAMSTKRPN.rpn_type == 'occurrence').all()
+            RAMSTKRPN,
+        ).filter(RAMSTKRPN.rpn_type == 'occurrence').all()
         self._site_preferences['rpn_severity'] = _session.query(
-            RAMSTKRPN).filter(RAMSTKRPN.rpn_type == 'severity').all()
+            RAMSTKRPN,
+        ).filter(RAMSTKRPN.rpn_type == 'severity').all()
         self._site_preferences['stakeholders'] = _session.query(
-            RAMSTKStakeholders).all()
+            RAMSTKStakeholders,
+        ).all()
         self._site_preferences['action_status'] = _session.query(
-            RAMSTKStatus).filter(RAMSTKStatus.status_type == 'action').all()
+            RAMSTKStatus,
+        ).filter(RAMSTKStatus.status_type == 'action').all()
         self._site_preferences['incident_status'] = _session.query(
-            RAMSTKStatus).filter(RAMSTKStatus.status_type == 'incident').all()
+            RAMSTKStatus,
+        ).filter(RAMSTKStatus.status_type == 'incident').all()
         self._site_preferences['incident_types'] = _session.query(
-            RAMSTKType).filter(RAMSTKType.type_type == 'incident').all()
+            RAMSTKType,
+        ).filter(RAMSTKType.type_type == 'incident').all()
         self._site_preferences['requirement_types'] = _session.query(
-            RAMSTKType).filter(RAMSTKType.type_type == 'requirement').all()
+            RAMSTKType,
+        ).filter(RAMSTKType.type_type == 'requirement').all()
         self._site_preferences['validation_types'] = _session.query(
-            RAMSTKType).filter(RAMSTKType.type_type == 'validation').all()
+            RAMSTKType,
+        ).filter(RAMSTKType.type_type == 'validation').all()
         self._site_preferences['users'] = _session.query(RAMSTKUser).all()
 
         _session.close()
@@ -200,7 +231,8 @@ class SitePreferencesDataModel(RAMSTKDataModel):
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         _error_code, _msg = self.dao.db_delete(entity, _session)
 
@@ -224,7 +256,8 @@ class SitePreferencesDataModel(RAMSTKDataModel):
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         for _key in preferences:
             for _entity in preferences[_key]:
@@ -243,6 +276,7 @@ class UserPreferencesDataModel(RAMSTKDataModel):
     """Contains the attributes and methods for Program (user) preferences."""
 
     _tag = 'UserPrefs'
+    _root = 0
 
     def __init__(self, dao, configuration):
         """
@@ -281,37 +315,51 @@ class UserPreferencesDataModel(RAMSTKDataModel):
             _temp = {'type': self._configuration.RAMSTK_COM_BACKEND}
             self._user_preferences['common_db_info'] = _temp.copy()
             self._user_preferences['common_db_info'].update(
-                self._configuration.RAMSTK_COM_INFO)
+                self._configuration.RAMSTK_COM_INFO,
+            )
 
         if not self._configuration.get_user_configuration():
             _temp = {'type': self._configuration.RAMSTK_BACKEND}
             self._user_preferences['program_db_info'] = _temp.copy()
             self._user_preferences['program_db_info'].update(
-                self._configuration.RAMSTK_PROG_INFO)
+                self._configuration.RAMSTK_PROG_INFO,
+            )
             self._user_preferences[
-                'report_size'] = self._configuration.RAMSTK_REPORT_SIZE
+                'report_size'
+            ] = self._configuration.RAMSTK_REPORT_SIZE
             self._user_preferences[
-                'hr_multiplier'] = self._configuration.RAMSTK_HR_MULTIPLIER
+                'hr_multiplier'
+            ] = self._configuration.RAMSTK_HR_MULTIPLIER
             self._user_preferences[
-                'decimal'] = self._configuration.RAMSTK_DEC_PLACES
+                'decimal'
+            ] = self._configuration.RAMSTK_DEC_PLACES
             self._user_preferences[
-                'calcreltime'] = self._configuration.RAMSTK_MTIME
+                'calcreltime'
+            ] = self._configuration.RAMSTK_MTIME
             self._user_preferences[
-                'tabpos'] = self._configuration.RAMSTK_TABPOS
+                'tabpos'
+            ] = self._configuration.RAMSTK_TABPOS
             self._user_preferences[
-                'sitedir'] = self._configuration.RAMSTK_SITE_DIR
+                'sitedir'
+            ] = self._configuration.RAMSTK_SITE_DIR
             self._user_preferences[
-                'datadir'] = self._configuration.RAMSTK_DATA_DIR
+                'datadir'
+            ] = self._configuration.RAMSTK_DATA_DIR
             self._user_preferences[
-                'icondir'] = self._configuration.RAMSTK_ICON_DIR
+                'icondir'
+            ] = self._configuration.RAMSTK_ICON_DIR
             self._user_preferences[
-                'logdir'] = self._configuration.RAMSTK_LOG_DIR
+                'logdir'
+            ] = self._configuration.RAMSTK_LOG_DIR
             self._user_preferences[
-                'progdir'] = self._configuration.RAMSTK_PROG_DIR
+                'progdir'
+            ] = self._configuration.RAMSTK_PROG_DIR
             self._user_preferences[
-                'format_files'] = self._configuration.RAMSTK_FORMAT_FILE
+                'format_files'
+            ] = self._configuration.RAMSTK_FORMAT_FILE
             self._user_preferences[
-                'colors'] = self._configuration.RAMSTK_COLORS
+                'colors'
+            ] = self._configuration.RAMSTK_COLORS
 
         return self._user_preferences
 
@@ -323,30 +371,42 @@ class UserPreferencesDataModel(RAMSTKDataModel):
         :rtype: bool
         """
         self._configuration.RAMSTK_COM_BACKEND = preferences['common_db_info'][
-            'type']
+            'type'
+        ]
         self._configuration.RAMSTK_COM_INFO['host'] = preferences[
-            'common_db_info']['host']
+            'common_db_info'
+        ]['host']
         self._configuration.RAMSTK_COM_INFO['socket'] = preferences[
-            'common_db_info']['socket']
+            'common_db_info'
+        ]['socket']
         self._configuration.RAMSTK_COM_INFO['database'] = preferences[
-            'common_db_info']['database']
+            'common_db_info'
+        ]['database']
         self._configuration.RAMSTK_COM_INFO['user'] = preferences[
-            'common_db_info']['user']
+            'common_db_info'
+        ]['user']
         self._configuration.RAMSTK_COM_INFO['password'] = preferences[
-            'common_db_info']['password']
+            'common_db_info'
+        ]['password']
 
         self._configuration.RAMSTK_BACKEND = preferences['program_db_info'][
-            'type']
+            'type'
+        ]
         self._configuration.RAMSTK_PROG_INFO['host'] = preferences[
-            'program_db_info']['host']
+            'program_db_info'
+        ]['host']
         self._configuration.RAMSTK_PROG_INFO['socket'] = preferences[
-            'program_db_info']['socket']
+            'program_db_info'
+        ]['socket']
         self._configuration.RAMSTK_PROG_INFO['database'] = preferences[
-            'program_db_info']['database']
+            'program_db_info'
+        ]['database']
         self._configuration.RAMSTK_PROG_INFO['user'] = preferences[
-            'program_db_info']['user']
+            'program_db_info'
+        ]['user']
         self._configuration.RAMSTK_PROG_INFO['password'] = preferences[
-            'program_db_info']['password']
+            'program_db_info'
+        ]['password']
 
         self._configuration.RAMSTK_REPORT_SIZE = preferences['report_size']
         self._configuration.RAMSTK_HR_MULTIPLIER = preferences['hr_multiplier']

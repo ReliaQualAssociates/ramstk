@@ -6,23 +6,26 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Package Data Model."""
 
+# Third Party Imports
 # Import third party packages.
 from pubsub import pub
 
+# RAMSTK Package Imports
+from ramstk.dao import RAMSTKRequirement
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import RAMSTKRequirement
 
 
 class RequirementDataModel(RAMSTKDataModel):
     """
     Contains the attributes and methods of a Requirement.
 
-    An RAMSTK Project will consist of one or more Requirements.  The attributes of
-    a Requirement are:
+    An RAMSTK Project will consist of one or more Requirements.  The attributes
+    of a Requirement are inherited from the meta-class.
     """
 
     _tag = 'Requirements'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -87,14 +90,16 @@ class RequirementDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _requirement,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _requirement.requirement_code,
                 _requirement.requirement_id,
                 parent=_requirement.parent_id,
-                data=_requirement)
+                data=_requirement,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -115,14 +120,15 @@ class RequirementDataModel(RAMSTKDataModel):
         in the connected RAMSTK Program database.  It then adds each to the
         Requirement data model treelib.Tree().
 
-        :return: tree; the Tree() of RAMSTKRequirement data models.
-        :rtype: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
         _revision_id = kwargs['revision_id']
         _session = RAMSTKDataModel.do_select_all(self)
 
         for _requirement in _session.query(RAMSTKRequirement).filter(
-                RAMSTKRequirement.revision_id == _revision_id).all():
+                RAMSTKRequirement.revision_id == _revision_id,
+        ).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _requirement.get_attributes()
@@ -131,7 +137,8 @@ class RequirementDataModel(RAMSTKDataModel):
                 _requirement.requirement_code,
                 _requirement.requirement_id,
                 parent=_requirement.parent_id,
-                data=_requirement)
+                data=_requirement,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -146,8 +153,6 @@ class RequirementDataModel(RAMSTKDataModel):
         # let anyone who cares know the Requirements have been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_requirements', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """
@@ -167,7 +172,8 @@ class RequirementDataModel(RAMSTKDataModel):
             _error_code = 2005
             _msg = (
                 'RAMSTK ERROR: Attempted to save non-existent Requirement ID '
-                '{0:s}.'.format(str(node_id)))
+                '{0:s}.'.format(str(node_id))
+            )
 
         return _error_code, _msg
 
@@ -189,12 +195,16 @@ class RequirementDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the requirement "
-                        "table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the requirement "
+                    "table did not update."
+                )
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the requirement "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the requirement "
+                "table."
+            )
 
         return _error_code, _msg
 

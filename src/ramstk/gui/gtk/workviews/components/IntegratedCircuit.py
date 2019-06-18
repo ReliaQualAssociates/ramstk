@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.components.IntegratedCircuit.py is part of the
+#       gui.gtk.workviews.components.IntegratedCircuit.py is part of the
 #       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKComboBox, RAMSTKEntry
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                           AssessmentResults)
+
+# RAMSTK Local Imports
+from .Component import AssessmentInputs, AssessmentResults
 
 
 class ICAssessmentInputs(AssessmentInputs):
@@ -103,23 +105,45 @@ class ICAssessmentInputs(AssessmentInputs):
     """
 
     # Define private dict attributes.
+    _dic_keys = {
+        0: 'quality_id',
+        1: 'application_id',
+        2: 'construction_id',
+        3: 'type_id',
+        4: 'manufacturing_id',
+        5: 'package_id',
+        6: 'technology_id',
+        7: 'type_id',
+        8: 'area',
+        9: 'feature_size',
+        10: 'n_active_pins',
+        11: 'n_cycles',
+        12: 'n_elements',
+        13: 'operating_life',
+        14: 'theta_jc',
+        15: 'voltage_esd',
+        16: 'years_in_production',
+    }
+
     _dic_technology = {
         1: [["MOS"], [_("Bipolar")]],
-        2: [["TTL"], ["ASTTL"], ["CML"], ["HTTL"], ["FTTL"], ["DTL"], ["ECL"],
+        2: [
+            ["TTL"], ["ASTTL"], ["CML"], ["HTTL"], ["FTTL"], ["DTL"], ["ECL"],
             ["ALSTTL"], ["FLTTL"], ["STTL"], ["BiCMOS"], ["LSTTL"], ["III"],
-            ["IIIL"], ["ISL"]],
+            ["IIIL"], ["ISL"],
+        ],
         3: [["MOS"], [_("Bipolar")]],
         4: [["MOS"], [_("Bipolar")]],
         5: [["MOS"], [_("Bipolar")]],
         6: [["MOS"], [_("Bipolar")]],
         7: [["MOS"], [_("Bipolar")]],
         8: [["MOS"], [_("Bipolar")]],
-        9: [["MMIC"], [_("Digital")]]
+        9: [["MMIC"], [_("Digital")]],
     }
 
     _dic_types = {
         9: [["MMIC"], [_("Digital")]],
-        10: [[_("Logic and Custom")], [_("Gate Array")]]
+        10: [[_("Logic and Custom")], [_("Gate Array")]],
     }
 
     # Define private list attributes.
@@ -140,12 +164,17 @@ class ICAssessmentInputs(AssessmentInputs):
         _("Device Type:"),
         _("Feature Size:"),
         _("Manufacturing Process:"),
-        _("ESD Threshold Voltage:")
+        _("ESD Threshold Voltage:"),
     ]
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the IC assessment input view."""
-        AssessmentInputs.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the IC assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentInputs.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -158,148 +187,273 @@ class ICAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbApplication = ramstk.RAMSTKComboBox(
+        self.cmbApplication = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The application of the integrated circuit."))
-        self.cmbConstruction = ramstk.RAMSTKComboBox(
+        )
+        self.cmbConstruction = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The integrated circuit method "
-                      "of construction."))
-        self.cmbECC = ramstk.RAMSTKComboBox(
+        )
+        self.cmbECC = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The error correction code used by the EEPROM."))
-        self.cmbManufacturing = ramstk.RAMSTKComboBox(
+        )
+        self.cmbManufacturing = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The manufacturing process for the VLSI device."))
-        self.cmbPackage = ramstk.RAMSTKComboBox(
+        )
+        self.cmbPackage = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The method of construction of the integrated "
-                      "circuit."))
-        self.cmbTechnology = ramstk.RAMSTKComboBox(
+        )
+        self.cmbTechnology = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The technology used to construct the integrated "
-                      "circuit."))
-        self.cmbType = ramstk.RAMSTKComboBox(
+        )
+        self.cmbType = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The type of GaAs or VLSI device."))
+        )
 
-        self.txtArea = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The die area (in mil<sup>2</sup>) of the integrated "
-                      "circuit."))
-        self.txtFeatureSize = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The feature size (in microns) of the VLSI device."))
-        self.txtNActivePins = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of active pins on the integrated circuit."))
-        self.txtNCycles = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The total number of programming cycles over the "
-                      "EEPROM life."))
-        self.txtNElements = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of active elements in the integrated "
-                      "circuit."))
-        self.txtOperatingLife = ramstk.RAMSTKEntry(
-            width=125, tooltip=_("The system lifetime operating hours."))
-        self.txtThetaJC = ramstk.RAMSTKEntry(
-            width=125, tooltip=_("The junction to case thermal resistance."))
-        self.txtVoltageESD = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The ESD susceptibility threshold voltage of the VLSI "
-                      "device."))
-        self.txtYearsInProduction = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of years the generic device type has been "
-                      "in production."))
+        self.txtArea = RAMSTKEntry()
+        self.txtFeatureSize = RAMSTKEntry()
+        self.txtNActivePins = RAMSTKEntry()
+        self.txtNCycles = RAMSTKEntry()
+        self.txtNElements = RAMSTKEntry()
+        self.txtOperatingLife = RAMSTKEntry()
+        self.txtThetaJC = RAMSTKEntry()
+        self.txtVoltageESD = RAMSTKEntry()
+        self.txtYearsInProduction = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
-
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbApplication.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbECC.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.cmbManufacturing.connect('changed', self._on_combo_changed,
-                                          4))
-        self._lst_handler_id.append(
-            self.cmbPackage.connect('changed', self._on_combo_changed, 5))
-        self._lst_handler_id.append(
-            self.cmbTechnology.connect('changed', self._on_combo_changed, 6))
-        self._lst_handler_id.append(
-            self.cmbType.connect('changed', self._on_combo_changed, 7))
-
-        self._lst_handler_id.append(
-            self.txtArea.connect('changed', self._on_focus_out, 8))
-        self._lst_handler_id.append(
-            self.txtFeatureSize.connect('changed', self._on_focus_out, 9))
-        self._lst_handler_id.append(
-            self.txtNActivePins.connect('changed', self._on_focus_out, 10))
-        self._lst_handler_id.append(
-            self.txtNCycles.connect('changed', self._on_focus_out, 11))
-        self._lst_handler_id.append(
-            self.txtNElements.connect('changed', self._on_focus_out, 12))
-        self._lst_handler_id.append(
-            self.txtOperatingLife.connect('changed', self._on_focus_out, 13))
-        self._lst_handler_id.append(
-            self.txtThetaJC.connect('changed', self._on_focus_out, 14))
-        self._lst_handler_id.append(
-            self.txtVoltageESD.connect('changed', self._on_focus_out, 15))
-        self._lst_handler_id.append(
-            self.txtYearsInProduction.connect('changed', self._on_focus_out,
-                                              16))
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+
+    def __make_ui(self):
+        """
+        Make the integrated circuit class Gtk.Notebook() assessment input page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for inductors.
+        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
+
+        self.put(self.cmbPackage, _x_pos, _y_pos[1])
+        self.put(self.txtArea, _x_pos, _y_pos[2])
+        self.put(self.txtNElements, _x_pos, _y_pos[3])
+        self.put(self.txtThetaJC, _x_pos, _y_pos[4])
+        self.put(self.txtNActivePins, _x_pos, _y_pos[5])
+        self.put(self.cmbTechnology, _x_pos, _y_pos[6])
+        self.put(self.txtYearsInProduction, _x_pos, _y_pos[7])
+        self.put(self.cmbConstruction, _x_pos, _y_pos[8])
+        self.put(self.txtNCycles, _x_pos, _y_pos[9])
+        self.put(self.txtOperatingLife, _x_pos, _y_pos[10])
+        self.put(self.cmbECC, _x_pos, _y_pos[11])
+        self.put(self.cmbApplication, _x_pos, _y_pos[12])
+        self.put(self.cmbType, _x_pos, _y_pos[13])
+        self.put(self.txtFeatureSize, _x_pos, _y_pos[14])
+        self.put(self.cmbManufacturing, _x_pos, _y_pos[15])
+        self.put(self.txtVoltageESD, _x_pos, _y_pos[16])
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for Integrated Circuit assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self.on_combo_changed, 0),
+        )
+        self._lst_handler_id.append(
+            self.cmbApplication.connect('changed', self.on_combo_changed, 1),
+        )
+        self._lst_handler_id.append(
+            self.cmbConstruction.connect('changed', self.on_combo_changed, 2),
+        )
+        self._lst_handler_id.append(
+            self.cmbECC.connect('changed', self.on_combo_changed, 3),
+        )
+        self._lst_handler_id.append(
+            self.cmbManufacturing.connect(
+                'changed', self.on_combo_changed,
+                4,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.cmbPackage.connect('changed', self.on_combo_changed, 5),
+        )
+        self._lst_handler_id.append(
+            self.cmbTechnology.connect('changed', self.on_combo_changed, 6),
+        )
+        self._lst_handler_id.append(
+            self.cmbType.connect('changed', self.on_combo_changed, 7),
+        )
+
+        self._lst_handler_id.append(
+            self.txtArea.connect('changed', self.on_focus_out, 8),
+        )
+        self._lst_handler_id.append(
+            self.txtFeatureSize.connect('changed', self.on_focus_out, 9),
+        )
+        self._lst_handler_id.append(
+            self.txtNActivePins.connect('changed', self.on_focus_out, 10),
+        )
+        self._lst_handler_id.append(
+            self.txtNCycles.connect('changed', self.on_focus_out, 11),
+        )
+        self._lst_handler_id.append(
+            self.txtNElements.connect('changed', self.on_focus_out, 12),
+        )
+        self._lst_handler_id.append(
+            self.txtOperatingLife.connect('changed', self.on_focus_out, 13),
+        )
+        self._lst_handler_id.append(
+            self.txtThetaJC.connect('changed', self.on_focus_out, 14),
+        )
+        self._lst_handler_id.append(
+            self.txtVoltageESD.connect('changed', self.on_focus_out, 15),
+        )
+        self._lst_handler_id.append(
+            self.txtYearsInProduction.connect(
+                'changed', self.on_focus_out,
+                16,
+            ),
+        )
+
+    def __set_properties(self):
+        """
+        Set properties for Integrated Circuit assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbApplication.do_set_properties(
+            tooltip=_("The application of the integrated circuit."),
+        )
+        self.cmbConstruction.do_set_properties(
+            tooltip=_(
+                "The integrated circuit method of construction.",
+            ),
+        )
+        self.cmbECC.do_set_properties(
+            tooltip=_("The error correction code used by the EEPROM."),
+        )
+        self.cmbManufacturing.do_set_properties(
+            tooltip=_("The manufacturing process for the VLSI device."),
+        )
+        self.cmbPackage.do_set_properties(
+            tooltip=_(
+                "The method of construction of the integrated circuit.",
+            ),
+        )
+        self.cmbTechnology.do_set_properties(
+            tooltip=_(
+                "The technology used to construct the integrated circuit.",
+            ),
+        )
+        self.cmbType.do_set_properties(
+            tooltip=_("The type of GaAs or VLSI device."),
+        )
+
+        self.txtArea.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The die area (in mil<sup>2</sup>) of the integrated circuit.",
+            ),
+        )
+        self.txtFeatureSize.do_set_properties(
+            width=125,
+            tooltip=_("The feature size (in microns) of the VLSI device."),
+        )
+        self.txtNActivePins.do_set_properties(
+            width=125,
+            tooltip=_("The number of active pins on the integrated circuit."),
+        )
+        self.txtNCycles.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The total number of programming cycles over the EEPROM life.",
+            ),
+        )
+        self.txtNElements.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The number of active elements in the integrated circuit.",
+            ),
+        )
+        self.txtOperatingLife.do_set_properties(
+            width=125, tooltip=_("The system lifetime operating hours."),
+        )
+        self.txtThetaJC.do_set_properties(
+            width=125, tooltip=_("The junction to case thermal resistance."),
+        )
+        self.txtVoltageESD.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The ESD susceptibility threshold voltage of the VLSI device.",
+            ),
+        )
+        self.txtYearsInProduction.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The number of years the generic device type has been in "
+                "production.",
+            ),
+        )
 
     def _do_load_comboboxes(self, subcategory_id):
         """
         Load the integrated circuit RKTComboBox()s.
 
         :param int subcategory_id: the newly selected integrated circuit
-                                   subcategory ID.
+        subcategory ID.
         :return: None
         :rtype: None
         """
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([[_("Class S")], [_("Class B")],
-                                       [_("Class B-1")]])
+        self.cmbQuality.do_load_combo([
+            [_("Class S")], [_("Class B")],
+            [_("Class B-1")],
+        ])
 
         # Load the Construction RAMSTKComboBox().
         self.cmbConstruction.do_load_combo([["FLOTOX"], [_("Textured Poly")]])
 
         # Load the error correction code RAMSTKComboBox().
         self.cmbECC.do_load_combo(
-            [[_("No on-chip ECC")], [_("On-chip Hamming code")],
-             [_("Two-Needs-One redundant cell approach")]])
+            [
+                [_("No on-chip ECC")], [_("On-chip Hamming code")],
+                [_("Two-Needs-One redundant cell approach")],
+            ],
+        )
 
         # Load the manufacturing process RAMSTKComboBox().
-        self.cmbManufacturing.do_load_combo([["QML or QPL"],
-                                             ["Non-QML or non-QPL"]])
+        self.cmbManufacturing.do_load_combo([
+            ["QML or QPL"],
+            ["Non-QML or non-QPL"],
+        ])
 
         # Load the package RAMSTKComboBox().
         self.cmbPackage.do_load_combo(
-            [[_("Hermetic DIP w/ Solder or Weld Seal")],
-             [_("Hermetic Pin Grid Array (PGA)")],
-             [_("Hermetic SMT (Leaded and Nonleaded)")],
-             [_("DIP w/ Glass Seal")], [_("Flatpacks w/ Axial Leads")],
-             ["Can"], [_("Nonhermetic DIP")],
-             [_("Nonhermetic Pin Grid Array (PGA)")],
-             [_("Nonhermetic SMT")]])
+            [
+                [_("Hermetic DIP w/ Solder or Weld Seal")],
+                [_("Hermetic Pin Grid Array (PGA)")],
+                [_("Hermetic SMT (Leaded and Nonleaded)")],
+                [_("DIP w/ Glass Seal")], [_("Flatpacks w/ Axial Leads")],
+                ["Can"], [_("Nonhermetic DIP")],
+                [_("Nonhermetic Pin Grid Array (PGA)")],
+                [_("Nonhermetic SMT")],
+            ],
+        )
 
         # Load the technology RAMSTKComboBox().
         try:
@@ -321,31 +475,24 @@ class ICAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbType.do_load_combo(_data)
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Integrated Circuit assesment input widgets.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Integrated Circuit.
+        Integrated Circuit.
         :return: None
         :rtype: None
         """
-        self._hardware_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        self._do_load_comboboxes(self._subcategory_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        AssessmentInputs.do_load_page(self, attributes)
 
         if attributes['construction_id'] == 1:
             self.cmbApplication.do_load_combo(
-                [[_("Low Noise and Low Power (\u2264 100mW)")],
-                 [_("Driver and High Power (> 100mW)")], [_("Unknown")]])
+                [
+                    [_("Low Noise and Low Power (\u2264 100mW)")],
+                    [_("Driver and High Power (> 100mW)")], [_("Unknown")],
+                ],
+            )
         else:
             self.cmbApplication.do_load_combo([[_("All digital devices")]])
 
@@ -364,12 +511,14 @@ class ICAssessmentInputs(AssessmentInputs):
 
             self.txtFeatureSize.handler_block(self._lst_handler_id[9])
             self.txtFeatureSize.set_text(
-                str(self.fmt.format(attributes['feature_size'])))
+                str(self.fmt.format(attributes['feature_size'])),
+            )
             self.txtFeatureSize.handler_unblock(self._lst_handler_id[9])
 
             self.txtVoltageESD.handler_block(self._lst_handler_id[15])
             self.txtVoltageESD.set_text(
-                str(self.fmt.format(attributes['voltage_esd'])))
+                str(self.fmt.format(attributes['voltage_esd'])),
+            )
             self.txtVoltageESD.handler_unblock(self._lst_handler_id[15])
 
         if self._hazard_rate_method_id == 1:
@@ -397,7 +546,8 @@ class ICAssessmentInputs(AssessmentInputs):
 
             self.txtThetaJC.handler_block(self._lst_handler_id[14])
             self.txtThetaJC.set_text(
-                str(self.fmt.format(attributes['theta_jc'])))
+                str(self.fmt.format(attributes['theta_jc'])),
+            )
             self.txtThetaJC.handler_unblock(self._lst_handler_id[14])
 
             if self._subcategory_id in [1, 2, 3, 4]:
@@ -410,11 +560,14 @@ class ICAssessmentInputs(AssessmentInputs):
                 self.txtNActivePins.handler_unblock(self._lst_handler_id[10])
 
                 self.txtYearsInProduction.handler_block(
-                    self._lst_handler_id[16])
+                    self._lst_handler_id[16],
+                )
                 self.txtYearsInProduction.set_text(
-                    str(attributes['years_in_production']))
+                    str(attributes['years_in_production']),
+                )
                 self.txtYearsInProduction.handler_unblock(
-                    self._lst_handler_id[16])
+                    self._lst_handler_id[16],
+                )
             elif self._subcategory_id in [5, 7, 8]:
                 self.cmbTechnology.handler_block(self._lst_handler_id[6])
                 self.cmbTechnology.set_active(attributes['technology_id'])
@@ -438,7 +591,8 @@ class ICAssessmentInputs(AssessmentInputs):
 
                 self.txtOperatingLife.handler_block(self._lst_handler_id[13])
                 self.txtOperatingLife.set_text(
-                    str(self.fmt.format(attributes['operating_life'])))
+                    str(self.fmt.format(attributes['operating_life'])),
+                )
                 self.txtOperatingLife.handler_unblock(self._lst_handler_id[13])
             elif self._subcategory_id == 9:
                 self.cmbApplication.handler_block(self._lst_handler_id[1])
@@ -450,15 +604,16 @@ class ICAssessmentInputs(AssessmentInputs):
                 self.cmbType.handler_unblock(self._lst_handler_id[7])
 
                 self.txtYearsInProduction.handler_block(
-                    self._lst_handler_id[16])
+                    self._lst_handler_id[16],
+                )
                 self.txtYearsInProduction.set_text(
-                    str(attributes['years_in_production']))
+                    str(attributes['years_in_production']),
+                )
                 self.txtYearsInProduction.handler_unblock(
-                    self._lst_handler_id[16])
+                    self._lst_handler_id[16],
+                )
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -501,7 +656,8 @@ class ICAssessmentInputs(AssessmentInputs):
                     'wvw_editing_hardware',
                     module_id=self._hardware_id,
                     key='technology_id',
-                    value=2)
+                    value=2,
+                )
                 self.txtNElements.set_sensitive(True)
         else:
             self.cmbPackage.set_sensitive(True)
@@ -527,168 +683,6 @@ class ICAssessmentInputs(AssessmentInputs):
                 self.cmbType.set_sensitive(True)
                 self.txtNActivePins.set_sensitive(True)
                 self.txtYearsInProduction.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the integrated circuit class Gtk.Notebook() assessment input page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_page(self)
-
-        self.put(self.cmbPackage, _x_pos, _y_pos[1])
-        self.put(self.txtArea, _x_pos, _y_pos[2])
-        self.put(self.txtNElements, _x_pos, _y_pos[3])
-        self.put(self.txtThetaJC, _x_pos, _y_pos[4])
-        self.put(self.txtNActivePins, _x_pos, _y_pos[5])
-        self.put(self.cmbTechnology, _x_pos, _y_pos[6])
-        self.put(self.txtYearsInProduction, _x_pos, _y_pos[7])
-        self.put(self.cmbConstruction, _x_pos, _y_pos[8])
-        self.put(self.txtNCycles, _x_pos, _y_pos[9])
-        self.put(self.txtOperatingLife, _x_pos, _y_pos[10])
-        self.put(self.cmbECC, _x_pos, _y_pos[11])
-        self.put(self.cmbApplication, _x_pos, _y_pos[12])
-        self.put(self.cmbType, _x_pos, _y_pos[13])
-        self.put(self.txtFeatureSize, _x_pos, _y_pos[14])
-        self.put(self.cmbManufacturing, _x_pos, _y_pos[15])
-        self.put(self.txtVoltageESD, _x_pos, _y_pos[16])
-
-        return None
-
-    def _on_combo_changed(self, combo, index):
-        """
-        Retrieve RAMSTKCombo() changes and assign to Integrated Circuit attribute.
-
-        This method is called by:
-
-            * Gtk.Combo() 'changed' signal
-
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
-                          with the calling RAMSTKComboBox().  Indices are:
-
-            +-------+------------------+-------+------------------+
-            | Index | Widget           | Index | Widget           |
-            +=======+==================+=======+==================+
-            |   1   | cmbApplication   |   5   | cmbPackage       |
-            +-------+------------------+-------+------------------+
-            |   2   | cmbConstruction  |   6   | cmbTechnology    |
-            +-------+------------------+-------+------------------+
-            |   3   | cmbECC           |   7   | cmbType          |
-            +-------+------------------+-------+------------------+
-            |   4   | cmbManufacturing |       |                  |
-            +-------+------------------+-------+------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            0: 'quality_id',
-            1: 'application_id',
-            2: 'construction_id',
-            3: 'type_id',
-            4: 'manufacturing_id',
-            5: 'package_id',
-            6: 'technology_id',
-            7: 'type_id'
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            pub.sendMessage(
-                'wvw_editing_hardware',
-                module_id=self._hardware_id,
-                key=_key,
-                value=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the integrated circuit class
-                          Gtk.TreeModel() associated with the data from the
-                          calling Gtk.Widget().  Indices are:
-
-            +---------+--------------------+---------+----------------------+
-            |  Index  | Widget             |  Index  | Widget               |
-            +=========+====================+=========+======================+
-            |    8    | txtArea            |    13   | txtOperatingLife     |
-            +---------+--------------------+---------+----------------------+
-            |    9    | txtFeatureSize     |    14   | txtThetaJC           |
-            +---------+--------------------+---------+----------------------+
-            |   10    | txtNActivePins     |    15   | txtVoltageESD        |
-            +---------+--------------------+---------+----------------------+
-            |   11    | txtNCycles         |    16   | txtYearsInProduction |
-            +---------+--------------------+---------+----------------------+
-            |   12    | txtNElements       |         |                      |
-            +---------+--------------------+---------+----------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            8: 'area',
-            9: 'feature_size',
-            10: 'n_active_pins',
-            11: 'n_cycles',
-            12: 'n_elements',
-            13: 'operating_life',
-            14: 'theta_jc',
-            15: 'voltage_esd',
-            16: 'years_in_production'
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            if index in [10, 11, 12]:
-                _new_text = int(entry.get_text())
-            else:
-                _new_text = float(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
 
 class ICAssessmentResults(AssessmentResults):
@@ -745,12 +739,17 @@ class ICAssessmentResults(AssessmentResults):
         9:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = (C<sub>1</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>L</sub>\u03C0<sub>Q</sub></span>",
         10:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub>CD</sub> + \u03BB<sub>BP</sub>\u03C0<sub>E</sub>\u03C0<sub>Q</sub>\u03C0<sub>PT</sub> + \u03BB<sub>EOS</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub>CD</sub> + \u03BB<sub>BP</sub>\u03C0<sub>E</sub>\u03C0<sub>Q</sub>\u03C0<sub>PT</sub> + \u03BB<sub>EOS</sub></span>",
     }
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the IC assessment result view."""
-        AssessmentResults.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the IC assessment result view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentResults.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -770,99 +769,171 @@ class ICAssessmentResults(AssessmentResults):
 
         # Initialize private scalar attributes.
         self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the integrated circuit "
-              "failure rate."))
+            _(
+                "The assessment model used to calculate the integrated circuit "
+                "failure rate.",
+            ),
+        )
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtC1 = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The die complexity hazard rate of the integrated "
-                      "circuit."))
-        self.txtPiT = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The temperature factor for the integrated circuit."))
-        self.txtC2 = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The package hazard rate for the integrated circuit."))
-        self.txtPiC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The construction factor for the integrated circuit."))
-        self.txtPiL = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The learning factor for the integrated circuit."))
-        self.txtLambdaCYC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The read/write cycling induced hazard rate for the "
-                      "EEPROM."))
-        self.txtLambdaBD = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The die base hazard rate for the VLSI device."))
-        self.txtPiMFG = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The manufacturing process correction factor for the "
-                      "VLSI device."))
-        self.txtPiCD = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The die complexity correction factor for the VLSI "
-                      "device."))
-        self.txtLambdaBP = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The package base hazard rate for the VLSI device."))
-        self.txtPiPT = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The package type correction factor for the VLSI "
-                      "device."))
-        self.txtLambdaEOS = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The electrical overstress hazard rate for the VLSI "
-                      "device."))
-        self.txtPiA = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The application correction factor for the GaAs "
-                      "device."))
+        self.txtC1 = RAMSTKEntry()
+        self.txtPiT = RAMSTKEntry()
+        self.txtC2 = RAMSTKEntry()
+        self.txtPiC = RAMSTKEntry()
+        self.txtPiL = RAMSTKEntry()
+        self.txtLambdaCYC = RAMSTKEntry()
+        self.txtLambdaBD = RAMSTKEntry()
+        self.txtPiMFG = RAMSTKEntry()
+        self.txtPiCD = RAMSTKEntry()
+        self.txtLambdaBP = RAMSTKEntry()
+        self.txtPiPT = RAMSTKEntry()
+        self.txtLambdaEOS = RAMSTKEntry()
+        self.txtPiA = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+
+    def __make_ui(self):
+        """
+        Make the integrated circuit Gtk.Notebook() assessment results page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_ui(self)
+
+        self.put(self.txtC1, _x_pos, _y_pos[3])
+        self.put(self.txtPiT, _x_pos, _y_pos[4])
+        self.put(self.txtC2, _x_pos, _y_pos[5])
+        self.put(self.txtPiL, _x_pos, _y_pos[6])
+        self.put(self.txtLambdaCYC, _x_pos, _y_pos[7])
+        self.put(self.txtLambdaBD, _x_pos, _y_pos[8])
+        self.put(self.txtPiMFG, _x_pos, _y_pos[9])
+        self.put(self.txtPiCD, _x_pos, _y_pos[10])
+        self.put(self.txtLambdaBP, _x_pos, _y_pos[11])
+        self.put(self.txtPiPT, _x_pos, _y_pos[12])
+        self.put(self.txtLambdaEOS, _x_pos, _y_pos[13])
+        self.put(self.txtPiA, _x_pos, _y_pos[14])
+
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties for Integrated Circuit assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtC1.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(
+                "The die complexity hazard rate of the integrated "
+                "circuit.",
+            ),
+        )
+        self.txtPiT.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The temperature factor for the integrated circuit."),
+        )
+        self.txtC2.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The package hazard rate for the integrated circuit."),
+        )
+        self.txtPiC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The construction factor for the integrated circuit."),
+        )
+        self.txtPiL.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The learning factor for the integrated circuit."),
+        )
+        self.txtLambdaCYC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(
+                "The read/write cycling induced hazard rate for the "
+                "EEPROM.",
+            ),
+        )
+        self.txtLambdaBD.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The die base hazard rate for the VLSI device."),
+        )
+        self.txtPiMFG.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(
+                "The manufacturing process correction factor for the "
+                "VLSI device.",
+            ),
+        )
+        self.txtPiCD.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(
+                "The die complexity correction factor for the VLSI device.",
+            ),
+        )
+        self.txtLambdaBP.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The package base hazard rate for the VLSI device."),
+        )
+        self.txtPiPT.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(
+                "The package type correction factor for the VLSI device.",
+            ),
+        )
+        self.txtLambdaEOS.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(
+                "The electrical overstress hazard rate for the VLSI device.",
+            ),
+        )
+        self.txtPiA.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(
+                "The application correction factor for the GaAs device.",
+            ),
+        )
 
     def _do_load_page(self, attributes):
         """
         Load the integrated circuit assessment results page.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Integrated Circuit.
+        Integrated Circuit.
         :return: None
         :rtype: None
         """
@@ -877,19 +948,19 @@ class ICAssessmentResults(AssessmentResults):
         self.txtC2.set_text(str(self.fmt.format(attributes['C2'])))
         self.txtPiL.set_text(str(self.fmt.format(attributes['piL'])))
         self.txtLambdaCYC.set_text(
-            str(self.fmt.format(attributes['lambdaCYC'])))
+            str(self.fmt.format(attributes['lambdaCYC'])),
+        )
         self.txtLambdaBD.set_text(str(self.fmt.format(attributes['lambdaBD'])))
         self.txtPiMFG.set_text(str(self.fmt.format(attributes['piMFG'])))
         self.txtPiCD.set_text(str(self.fmt.format(attributes['piCD'])))
         self.txtLambdaBP.set_text(str(self.fmt.format(attributes['lambdaBP'])))
         self.txtPiPT.set_text(str(self.fmt.format(attributes['piPT'])))
         self.txtLambdaEOS.set_text(
-            str(self.fmt.format(attributes['lambdaEOS'])))
+            str(self.fmt.format(attributes['lambdaEOS'])),
+        )
         self.txtPiA.set_text(str(self.fmt.format(attributes['piA'])))
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -942,30 +1013,3 @@ class ICAssessmentResults(AssessmentResults):
 
             if self._subcategory_id == 9:
                 self.txtPiA.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the integrated circuit Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_page(self)
-
-        self.put(self.txtC1, _x_pos, _y_pos[3])
-        self.put(self.txtPiT, _x_pos, _y_pos[4])
-        self.put(self.txtC2, _x_pos, _y_pos[5])
-        self.put(self.txtPiL, _x_pos, _y_pos[6])
-        self.put(self.txtLambdaCYC, _x_pos, _y_pos[7])
-        self.put(self.txtLambdaBD, _x_pos, _y_pos[8])
-        self.put(self.txtPiMFG, _x_pos, _y_pos[9])
-        self.put(self.txtPiCD, _x_pos, _y_pos[10])
-        self.put(self.txtLambdaBP, _x_pos, _y_pos[11])
-        self.put(self.txtPiPT, _x_pos, _y_pos[12])
-        self.put(self.txtLambdaEOS, _x_pos, _y_pos[13])
-        self.put(self.txtPiA, _x_pos, _y_pos[14])
-
-        return None

@@ -11,7 +11,7 @@
 from .Widget import GObject, Gtk, Pango
 
 
-def make_label_group(text, container, x_pos, y_pos, **kwargs):
+def do_make_label_group(text, container, x_pos, y_pos, **kwargs):
     r"""
     Make and place a group of labels.
 

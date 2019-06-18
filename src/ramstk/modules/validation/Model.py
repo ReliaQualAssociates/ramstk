@@ -6,18 +6,19 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Package Data Model."""
 
+# Standard Library Imports
 from datetime import date
 
-# Import third party packages.
+# Third Party Imports
 from pubsub import pub
 from sortedcontainers import SortedDict
-from treelib import tree, Tree
+from treelib import Tree, tree
 
-# Import other RAMSTK modules.
-from ramstk.Utilities import date_to_ordinal
-from ramstk.modules import RAMSTKDataModel
+# RAMSTK Package Imports
 from ramstk.dao import RAMSTKProgramStatus, RAMSTKValidation
+from ramstk.modules import RAMSTKDataModel
 from ramstk.statistics.Bounds import calculate_beta_bounds
+from ramstk.Utilities import date_to_ordinal
 
 
 class ValidationDataModel(RAMSTKDataModel):
@@ -29,6 +30,7 @@ class ValidationDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Validations'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -61,9 +63,12 @@ class ValidationDataModel(RAMSTKDataModel):
         # to ignore the root of the tree.
         try:
             self.status_tree.create_node(
-                tag='Program Status', identifier=0, parent=None)
-        except (tree.MultipleRootError, tree.NodeIDAbsentError,
-                tree.DuplicatedNodeIdError):
+                tag='Program Status', identifier=0, parent=None,
+            )
+        except (
+                tree.MultipleRootError, tree.NodeIDAbsentError,
+                tree.DuplicatedNodeIdError,
+        ):
             pass
 
     def do_calculate(self, node_id, **kwargs):
@@ -75,18 +80,19 @@ class ValidationDataModel(RAMSTKDataModel):
 
         :param int node_id: the PyPubSub Tree() ID of the Validation to
                             calculate.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         _metric = kwargs['metric']
         _validation = self.tree.get_node(node_id).data
 
         if _metric == 'cost':
-            _return = _validation.calculate_task_cost()
+            _validation.calculate_task_cost()
         elif _metric == 'time':
-            _return = _validation.calculate_task_time()
+            _validation.calculate_task_time()
 
-        return _return
+        if not self._test:
+            pub.sendMessage('calculated_validation', node_id=node_id)
 
     def do_calculate_all(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -140,7 +146,7 @@ class ValidationDataModel(RAMSTKDataModel):
             'targets':
             None,
             'y_actual':
-            None
+            None,
         }
 
         for _node in self.tree.children(0):
@@ -153,27 +159,38 @@ class ValidationDataModel(RAMSTKDataModel):
             _attributes['time_average'] += _node.data.time_average
             _attributes['time_maximum'] += _node.data.time_maximum
             _attributes['time_remaining'] += _node.data.time_average * (
-                1.0 - _node.data.status / 100.0)
+                1.0 - _node.data.status / 100.0
+            )
 
         _attributes['status'].time_remaining = _attributes['time_remaining']
 
-        (_attributes['cost_ll'], _attributes['cost_mean'],
-         _attributes['cost_ul'],
-         _attributes['time_variance']) = calculate_beta_bounds(
-             _attributes['cost_minimum'], _attributes['cost_average'],
-             _attributes['cost_maximum'], 0.95)
-        (_attributes['time_ll'], _attributes['time_mean'],
-         _attributes['time_ul'], __) = calculate_beta_bounds(
-             _attributes['time_minimum'], _attributes['time_average'],
-             _attributes['time_maximum'], 0.95)
+        (
+            _attributes['cost_ll'], _attributes['cost_mean'],
+            _attributes['cost_ul'],
+            _attributes['time_variance'],
+        ) = calculate_beta_bounds(
+            _attributes['cost_minimum'], _attributes['cost_average'],
+            _attributes['cost_maximum'], 0.95,
+        )
+        (
+            _attributes['time_ll'], _attributes['time_mean'],
+            _attributes['time_ul'], __,
+        ) = calculate_beta_bounds(
+            _attributes['time_minimum'], _attributes['time_average'],
+            _attributes['time_maximum'], 0.95,
+        )
 
         _attributes['time_variance'] = _attributes['time_variance']**2
         _attributes['cost_variance'] = _attributes['cost_variance']**2
 
-        (_attributes['y_minimum'], _attributes['y_average'],
-         _attributes['y_maximum']) = self.get_planned_burndown()
-        (_attributes['assessment_dates'],
-         _attributes['targets']) = self.get_assessment_points()
+        (
+            _attributes['y_minimum'], _attributes['y_average'],
+            _attributes['y_maximum'],
+        ) = self.get_planned_burndown()
+        (
+            _attributes['assessment_dates'],
+            _attributes['targets'],
+        ) = self.get_assessment_points()
         _attributes['y_actual'] = self.get_actual_burndown()
 
         if not self._test:
@@ -201,8 +218,8 @@ class ValidationDataModel(RAMSTKDataModel):
         else:
             self.last_id = max(self.tree.nodes.keys())
 
-            # If we're not running a test, let anyone who cares know a Function
-            # was deleted.
+            # If we're not running a test, let anyone who cares know a
+            # Validation Task was deleted.
             if not self._test:
                 pub.sendMessage('deleted_validation', tree=self.tree)
 
@@ -220,14 +237,16 @@ class ValidationDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _validation,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _validation.description,
                 _validation.validation_id,
-                parent=0,
-                data=_validation)
+                parent=self._root,
+                data=_validation,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -255,7 +274,8 @@ class ValidationDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         for _validation in _session.query(RAMSTKValidation).filter(
-                RAMSTKValidation.revision_id == _revision_id).all():
+                RAMSTKValidation.revision_id == _revision_id,
+        ).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _validation.get_attributes()
@@ -263,8 +283,9 @@ class ValidationDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _validation.description,
                 _validation.validation_id,
-                parent=0,
-                data=_validation)
+                parent=self._root,
+                data=_validation,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -276,15 +297,17 @@ class ValidationDataModel(RAMSTKDataModel):
         # Now select all the status updates.
         _today = False
         for _status in _session.query(RAMSTKProgramStatus).filter(
-                RAMSTKProgramStatus.revision_id == _revision_id).all():
+                RAMSTKProgramStatus.revision_id == _revision_id,
+        ).all():
             _attributes = _status.get_attributes()
             _status.set_attributes(_attributes)
             try:
                 self.status_tree.create_node(
                     _status.date_status,
                     date_to_ordinal(_status.date_status),
-                    parent=0,
-                    data=_status)
+                    parent=self._root,
+                    data=_status,
+                )
             except tree.DuplicatedNodeIdError:
                 pass
             if _status.date_status == date.today():
@@ -297,14 +320,16 @@ class ValidationDataModel(RAMSTKDataModel):
             _error_code, _msg = RAMSTKDataModel.do_insert(
                 self, entities=[
                     _status,
-                ])
+                ],
+            )
 
             if _error_code == 0:
                 self.status_tree.create_node(
                     _status.date_status,
                     date_to_ordinal(_status.date_status),
-                    parent=0,
-                    data=_status)
+                    parent=self._root,
+                    data=_status,
+                )
 
         _session.close()
 
@@ -312,8 +337,6 @@ class ValidationDataModel(RAMSTKDataModel):
         # let anyone who cares know the Validation tasks have been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_validations', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """
@@ -333,35 +356,27 @@ class ValidationDataModel(RAMSTKDataModel):
                 pub.sendMessage('updated_validation', attributes=_attributes)
         else:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to save non-existent "
-                    "Validation ID {0:d}.").format(node_id)
+            _msg = (
+                "RAMSTK ERROR: Attempted to save non-existent "
+                "Validation ID {0:d}."
+            ).format(node_id)
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKValidation table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the validation "
-                        "table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the validation "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the validation "
+                "table."
+            )
 
         return _error_code, _msg
 
@@ -381,7 +396,8 @@ class ValidationDataModel(RAMSTKDataModel):
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         try:
             _entity = self.status_tree.get_node(_node_id).data
@@ -416,8 +432,11 @@ class ValidationDataModel(RAMSTKDataModel):
 
         for _key in _dates:
             _entity = self.status_tree.get_node(_key).data
-            _time_remaining[date_to_ordinal(
-                _entity.date_status)] = _entity.time_remaining
+            _time_remaining[
+                date_to_ordinal(
+                    _entity.date_status,
+                )
+            ] = _entity.time_remaining
 
         return _time_remaining
 
@@ -436,7 +455,7 @@ class ValidationDataModel(RAMSTKDataModel):
                 _assessment_dates.append(date_to_ordinal(_node.data.date_end))
                 _targets.append([
                     _node.data.acceptable_minimum,
-                    _node.data.acceptable_maximum
+                    _node.data.acceptable_maximum,
                 ])
 
         return _assessment_dates, _targets
@@ -464,7 +483,8 @@ class ValidationDataModel(RAMSTKDataModel):
 
         for _node in self.tree.children(0):
             _date_minimum = min(
-                date_to_ordinal(_node.data.date_start), _date_minimum)
+                date_to_ordinal(_node.data.date_start), _date_minimum,
+            )
             _time_minimum = min(_node.data.time_minimum, _time_minimum)
             _time_average = min(_node.data.time_average, _time_average)
             _time_maximum = min(_node.data.time_maximum, _time_maximum)
@@ -472,25 +492,44 @@ class ValidationDataModel(RAMSTKDataModel):
             _y_average[_date_minimum] = _time_average
             _y_maximum[_date_minimum] = _time_maximum
             try:
-                _y_minimum[date_to_ordinal(
-                    _node.data.date_end)] += _node.data.time_minimum
+                _y_minimum[
+                    date_to_ordinal(
+                        _node.data.date_end,
+                    )
+                ] += _node.data.time_minimum
             except KeyError:
-                _y_minimum[date_to_ordinal(
-                    _node.data.date_end)] = _node.data.time_minimum
+                _y_minimum[
+                    date_to_ordinal(
+                        _node.data.date_end,
+                    )
+                ] = _node.data.time_minimum
 
             try:
-                _y_average[date_to_ordinal(
-                    _node.data.date_end)] += _node.data.time_average
+                _y_average[
+                    date_to_ordinal(
+                        _node.data.date_end,
+                    )
+                ] += _node.data.time_average
             except KeyError:
-                _y_average[date_to_ordinal(
-                    _node.data.date_end)] = _node.data.time_average
+                _y_average[
+                    date_to_ordinal(
+                        _node.data.date_end,
+                    )
+                ] = _node.data.time_average
 
             try:
-                _y_maximum[date_to_ordinal(
-                    _node.data.date_end)] += _node.data.time_maximum
+                _y_maximum[
+                    date_to_ordinal(
+                        _node.data.date_end,
+                    )
+                ] += _node.data.time_maximum
             except KeyError:
-                _y_maximum[date_to_ordinal(
-                    _node.data.date_end)] = _node.data.time_maximum
+                _y_maximum[
+                    date_to_ordinal(
+                        _node.data.date_end,
+                    )
+                ] = _node.data.time_maximum
 
         return SortedDict(_y_minimum), SortedDict(_y_average), SortedDict(
-            _y_maximum)
+            _y_maximum,
+        )

@@ -7,17 +7,26 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Entry Module."""
 
-# Import the ramstk.Widget base class.
+# RAMSTK Local Imports
 from .Widget import Gdk, GObject, Gtk, Pango
 
 
 class RAMSTKEntry(Gtk.Entry):
     """This is the RAMSTK Entry class."""
 
-    # pylint: disable=R0913
     def __init__(self, **kwargs):
         r"""
-        Create RAMSTK Entry widgets.
+        Create a RAMSTK Entry widget.
+        """
+        GObject.GObject.__init__(self)
+        self.show()
+
+        # TODO: Remove the call to do_set_properties() in the RAMSTKEntry.__init__() method when all instances of RAMSTKEntry() have been refactored.
+        self.do_set_properties(**kwargs)
+
+    def do_set_properties(self, **kwargs):
+        r"""
+        Set the properties of the RAMSTK Entry.
 
         :param \**kwargs: See below
 
@@ -36,9 +45,9 @@ class RAMSTKEntry(Gtk.Entry):
                                Default is #BBDDFF (light blue).
             * *tooltip* (str) -- the tooltip, if any, for the entry.
                                  Default is an empty string.
+        :return: None
+        :rtype: None
         """
-        GObject.GObject.__init__(self)
-
         try:
             _bold = kwargs['bold']
         except KeyError:
@@ -76,18 +85,33 @@ class RAMSTKEntry(Gtk.Entry):
                 red=float(int(_color[1:3], 16)),
                 green=float(int(_color[3:5], 16)),
                 blue=float(int(_color[5:7], 16)),
-                alpha=1.0)
+                alpha=1.0,
+            )
             self.override_background_color(Gtk.StateFlags.NORMAL, _bg_color)
             self.override_background_color(Gtk.StateFlags.ACTIVE, _bg_color)
             self.override_background_color(Gtk.StateFlags.PRELIGHT, _bg_color)
             self.override_background_color(Gtk.StateFlags.SELECTED, _bg_color)
-            self.override_background_color(Gtk.StateFlags.INSENSITIVE,
-                                           Gdk.RGBA(191.0, 191.0, 191.0, 1.0))
+            self.override_background_color(
+                Gtk.StateFlags.INSENSITIVE,
+                Gdk.RGBA(191.0, 191.0, 191.0, 1.0),
+            )
             self.modify_font(Pango.FontDescription('bold'))
 
         self.set_tooltip_markup(_tooltip)
 
-        self.show()
+    def do_update(self, value, handler_id):
+        """
+        Update the RAMSTK Entry with a new value.
+
+        :param str value: the information to update the RAMSTKEntry() to
+        display.
+        :param int handler_id: the handler ID associated with the RAMSTKEntry().
+        :return: None
+        :rtype: None
+        """
+        self.handler_block(handler_id)
+        self.set_text(str(value))
+        self.handler_unblock(handler_id)
 
 
 class RAMSTKTextView(Gtk.TextView):
@@ -111,19 +135,20 @@ class RAMSTKTextView(Gtk.TextView):
         """
         GObject.GObject.__init__(self)
 
-        self.set_tooltip_markup(tooltip)
-
         self.set_buffer(txvbuffer)
         self.set_wrap_mode(Gtk.WrapMode.WORD)
 
         self.scrollwindow = Gtk.ScrolledWindow()
-        self.scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                     Gtk.PolicyType.AUTOMATIC)
-        self.scrollwindow.props.width_request = width
-        self.scrollwindow.props.height_request = height
+        self.scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC,
+        )
         self.scrollwindow.add_with_viewport(self)
 
         self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
+
+        # TODO: Remove the call to do_set_properties() in the RAMSTKTextView.__init__() method when all instances of RAMSTKTextView() have been refactored.
+        self.do_set_properties(height=height, tooltip=tooltip, width=width)
 
     def do_get_buffer(self):
         """
@@ -143,4 +168,55 @@ class RAMSTKTextView(Gtk.TextView):
         """
         _buffer = self.do_get_buffer()
 
-        return _buffer.get_text(*_buffer.get_bounds())
+        return _buffer.get_text(*_buffer.get_bounds(), True)
+
+    def do_set_properties(self, **kwargs):
+        r"""
+        Set the properties of the RAMSTK TextView.
+
+        :param \**kwargs: See below
+
+        :Keyword Arguments:
+            * *height* (int) -- height of the Gtk.TextView() widget.
+                                Default is 25.
+            * *tooltip* (str) -- the tooltip, if any, for the entry.
+                                 Default is an empty string.
+            * *width* (int) -- width of the Gtk.TextView() widget.
+                               Default is 200.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _height = kwargs['height']
+        except KeyError:
+            _height = 25
+        try:
+            _tooltip = kwargs['tooltip']
+        except KeyError:
+            _tooltip = ''
+        try:
+            _width = kwargs['width']
+        except KeyError:
+            _width = 200
+
+        self.scrollwindow.props.width_request = _width
+        self.scrollwindow.props.height_request = _height
+        self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        self.set_tooltip_markup(_tooltip)
+
+    def do_update(self, value, handler_id):
+        """
+        Update the RAMSTK TextView with a new value.
+
+        :param str value: the information to update the RAMSTKTextView() to
+                          display.
+        :param int handler_id: the handler ID associated with the
+                               RAMSTKTextView().
+        :return: None
+        :rtype: None
+        """
+        _buffer = self.do_get_buffer()
+
+        _buffer.handler_block(handler_id)
+        _buffer.set_text(str(value))
+        _buffer.handler_unblock(handler_id)

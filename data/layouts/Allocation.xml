@@ -19,6 +19,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>revision_id</key>
         </column>
         <column>
             <defaulttitle>Hardware ID</defaulttitle>
@@ -28,6 +29,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hardware_id</key>
         </column>
         <column>
             <defaulttitle>Assembly</defaulttitle>
@@ -37,6 +39,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>name</key>
         </column>
         <column>
             <defaulttitle>Included?</defaulttitle>
@@ -46,6 +49,7 @@
             <widget>toggle</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>included</key>
         </column>
         <column>
             <defaulttitle>Number of Sub-Systems</defaulttitle>
@@ -55,6 +59,7 @@
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>n_sub_systems</key>
         </column>
         <column>
             <defaulttitle>Number of Sub-Elements</defaulttitle>
@@ -64,6 +69,7 @@
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>n_sub_elements</key>
         </column>
         <column>
             <defaulttitle>Operating Time</defaulttitle>
@@ -73,6 +79,7 @@
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>mission_time</key>
         </column>
         <column>
             <defaulttitle>Duty Cycle</defaulttitle>
@@ -82,6 +89,7 @@
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>duty_cycle</key>
         </column>
         <column>
             <defaulttitle>Intricacy (1-10)</defaulttitle>
@@ -91,6 +99,7 @@
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>int_factor</key>
         </column>
         <column>
             <defaulttitle>State of the Art (1-10)</defaulttitle>
@@ -100,6 +109,7 @@
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>soa_factor</key>
         </column>
         <column>
             <defaulttitle>Operating Time (1-10)</defaulttitle>
@@ -109,6 +119,7 @@
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>op_time_factor</key>
         </column>
         <column>
             <defaulttitle>Environment (1-10)</defaulttitle>
@@ -118,6 +129,7 @@
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>env_factor</key>
         </column>
         <column>
             <defaulttitle>Weighting Factor</defaulttitle>
@@ -127,6 +139,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>weight_factor</key>
         </column>
         <column>
             <defaulttitle>Percent Weighting Factor</defaulttitle>
@@ -136,6 +149,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>percent_weight_factor</key>
         </column>
         <column>
             <defaulttitle>Current Hazard Rate</defaulttitle>
@@ -145,6 +159,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>hazard_rate_logistics</key>
         </column>
         <column>
             <defaulttitle>Allocated Hazard Rate</defaulttitle>
@@ -154,6 +169,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>hazard_rate_alloc</key>
         </column>
         <column>
             <defaulttitle>Current MTBF</defaulttitle>
@@ -163,6 +179,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>mtbf_logistics</key>
         </column>
         <column>
             <defaulttitle>Allocated MTBF</defaulttitle>
@@ -172,6 +189,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>mtbf_alloc</key>
         </column>
         <column>
             <defaulttitle>Current Reliability</defaulttitle>
@@ -181,6 +199,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>reliability_logistics</key>
         </column>
         <column>
             <defaulttitle>Allocated Reliability</defaulttitle>
@@ -190,6 +209,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>reliability_alloc</key>
         </column>
         <column>
             <defaulttitle>Current Availability</defaulttitle>
@@ -199,6 +219,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>availability_logistics</key>
         </column>
         <column>
             <defaulttitle>Allocated Availability</defaulttitle>
@@ -208,6 +229,7 @@
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>availability_alloc</key>
         </column>
     </tree>
 </root>

@@ -1,9 +1,9 @@
 <!--
 -*- coding: utf-8 -*-
 
-      DFMECA.xml is part of the RAMSTK Project
+      FMEA.xml is part of the RAMSTK Project
 
-      Copyright 2010-2014 Doyle "weibullguy" Rowland
+      Copyright 2010-2019 Doyle "weibullguy" Rowland
                           <doyle.rowland@reliaqual.com>
 
 All rights reserved.
@@ -14,10 +14,10 @@ various widgets.  These values can be changed by the user to personalize their
 experience. -->
 
 <root>
-    <tree name="DFMECA">
+    <tree name="FMEA">
         <column>
-            <defaulttitle>Mode ID</defaulttitle>
-            <usertitle>Mode ID</usertitle>
+            <defaulttitle>Entity ID</defaulttitle>
+            <usertitle>Entity ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
             <widget>text</widget>
@@ -25,8 +25,8 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Failure Mode</defaulttitle>
-            <usertitle>Failure Mode</usertitle>
+            <defaulttitle>Description</defaulttitle>
+            <usertitle>Description</usertitle>
             <datatype>gchararray</datatype>
             <position>1</position>
             <widget>text</widget>
@@ -374,7 +374,7 @@ experience. -->
             <widget>toggle</widget>
             <editable>1</editable>
             <visible>1</visible>
-		    </column>
+            </column>
         <column>
             <defaulttitle>Include in PoF</defaulttitle>
             <usertitle>Include in PoF</usertitle>

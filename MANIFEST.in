@@ -1,8 +1,21 @@
 include *
 
 exclude .bandit
-exclude .commitmessage.git
+exclude .bandit.baseline
 exclude .coverage
+exclude .coveragerc
+exclude .gitattributes
+exclude .gitcommitmessage.txt
+exclude .gitignore
+exclude .isort.cfg
+exclude .pre-commit-config.yaml
+exclude .pylintrc
+exclude .travis.yml
+exclude appveyor.yml*
+exclude bump_version.sh
+exclude coverage.xml
+exclude pytest.ini
+exclude tags
 
 graft src
 graft data

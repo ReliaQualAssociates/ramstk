@@ -7,9 +7,10 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKListView Meta-Class Module."""
 
+# RAMSTK Package Imports
+from ramstk.gui.gtk import ramstk
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
-from ramstk.gui.gtk import ramstk
 
 
 class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
@@ -19,27 +20,23 @@ class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
     This is the meta class for all RAMSTK List View classes.  Attributes of the
     RAMSTKListView are:
 
-    :ivar list _lst_col_order: list containing the order of the columns in the
-                               List View RAMSTKTreeView().
-    :ivar str _module: the capitalized name of the RAMSTK module the List View is
-                       associated with.
-    :ivar hbx_tab_label: the :class:`Gtk.HBox` used for the label in the
-                         ListBook.
-    :ivar treeview: the :class:`Gtk.TreeView` displaying the list of items
-                    in the selected module.
+    :ivar str _module: the capitalized name of the RAMSTK module the List View
+                       is associated with.
+    :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
+    :type tab_label: :class:`Gtk.Label`
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, configuration, **kwargs):
         """
         Initialize the List View.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
         _module = kwargs['module']
 
         GObject.GObject.__init__(self)
-        ramstk.RAMSTKBaseView.__init__(self, controller, **kwargs)
+        ramstk.RAMSTKBaseView.__init__(self, configuration, **kwargs)
 
         self._module = None
         for __, char in enumerate(_module):
@@ -57,6 +54,30 @@ class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.tab_label = Gtk.Label()
+
+        self.__set_callbacks()
+
+    def __set_callbacks(self):
+        """
+        Set common callback methods for the ModuleView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('cursor_changed', self._on_row_change),
+            )
+        except AttributeError:
+            pass
+
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event', self._on_button_press),
+            )
+        except AttributeError:
+            pass
 
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model):
@@ -71,11 +92,9 @@ class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
                              Gtk.CellRenderer().
         :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
                                     belongs to.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         _type = GObject.type_name(model.get_column_type(position))
         if _type == 'gchararray':
             model[path][position] = str(new_text)
@@ -84,4 +103,28 @@ class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
         elif _type == 'gfloat':
             model[path][position] = float(new_text)
 
-        return _return
+    def _make_ui(self):
+        """
+        Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.hbx_tab_label.pack_end(self.tab_label, True, True, 0)
+        self.hbx_tab_label.show_all()
+
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.add(self.treeview)
+
+        self.pack_end(_scrolledwindow, True, True, 0)
+
+        self.show_all()
+
+    def _set_properties(self):
+        """
+        Set common properties of the ListView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.treeview.set_rubber_banding(True)

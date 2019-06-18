@@ -6,12 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Stakeholder Package Data Model Module."""
 
+# Third Party Imports
 # Import third party packages.
 from pubsub import pub
 
+# RAMSTK Package Imports
+from ramstk.dao import RAMSTKStakeholder
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import RAMSTKStakeholder
 
 
 class StakeholderDataModel(RAMSTKDataModel):
@@ -24,6 +26,7 @@ class StakeholderDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Stakeholders'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -60,7 +63,8 @@ class StakeholderDataModel(RAMSTKDataModel):
         _stakeholder = self.tree.get_node(node_id).data
 
         _stakeholder.improvement = 1.0 + 0.2 * (
-            _stakeholder.planned_rank - _stakeholder.customer_rank)
+            _stakeholder.planned_rank - _stakeholder.customer_rank
+        )
         _stakeholder.overall_weight = float(_stakeholder.priority) * \
             _stakeholder.improvement * _stakeholder.user_float_1 * \
             _stakeholder.user_float_2 * _stakeholder.user_float_3 * \
@@ -73,8 +77,9 @@ class StakeholderDataModel(RAMSTKDataModel):
                 'calculated_stakeholder',
                 node_id=node_id,
                 results=[
-                    _stakeholder.improvement, _stakeholder.overall_weight
-                ])
+                    _stakeholder.improvement, _stakeholder.overall_weight,
+                ],
+            )
 
         return _return
 
@@ -136,14 +141,16 @@ class StakeholderDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _stakeholder,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _stakeholder.description,
                 _stakeholder.stakeholder_id,
-                parent=0,
-                data=_stakeholder)
+                parent=self._root,
+                data=_stakeholder,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -153,7 +160,7 @@ class StakeholderDataModel(RAMSTKDataModel):
                 self.last_id = _stakeholder.stakeholder_id
 
             # If we're not running a test, let anyone who cares know a new
-            # Function was inserted.
+            # Stakeholder input was inserted.
             if not self._test:
                 pub.sendMessage('inserted_stakeholder', tree=self.tree)
 
@@ -174,12 +181,14 @@ class StakeholderDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self, **kwargs)
 
         for _stakeholder in _session.query(RAMSTKStakeholder).filter(
-                RAMSTKStakeholder.revision_id == _revision_id).all():
+                RAMSTKStakeholder.revision_id == _revision_id,
+        ).all():
             self.tree.create_node(
                 _stakeholder.description,
                 _stakeholder.stakeholder_id,
-                parent=0,
-                data=_stakeholder)
+                parent=self._root,
+                data=_stakeholder,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -194,8 +203,6 @@ class StakeholderDataModel(RAMSTKDataModel):
         # let anyone who cares know the Stakeholders have been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_stakeholders', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """
@@ -228,6 +235,7 @@ class StakeholderDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
+        # pylint: disable=duplicate-code
         _error_code = 0
         _msg = ''
 
@@ -239,11 +247,15 @@ class StakeholderDataModel(RAMSTKDataModel):
 
             except AttributeError:
                 _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the stakeholder "
-                        "table did not update.")
+                _msg = (
+                    "RAMSTK ERROR: One or more records in the stakeholder "
+                    "table did not update."
+                )
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the stakeholder "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the stakeholder "
+                "table."
+            )
 
         return _error_code, _msg

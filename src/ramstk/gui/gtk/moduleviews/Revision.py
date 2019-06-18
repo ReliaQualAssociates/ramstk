@@ -3,14 +3,19 @@
 #       ramstk.gui.gtk.moduleviews.Revision.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Revision Module View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import (
+    RAMSTKLabel, RAMSTKMessageDialog, do_make_buttonbox,
+)
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
+
+# RAMSTK Local Imports
 from .ModuleView import RAMSTKModuleView
 
 
@@ -19,23 +24,22 @@ class ModuleView(RAMSTKModuleView):
     Display Revision attribute data in the RAMSTK Module Book.
 
     The Revision Module View displays all the Revisions associated with the
-    connected RAMSTK Program in a flat list.  The attributes of a Revision Module
-    View are:
+    connected RAMSTK Program in a flat list.  All attributes of a Revision
+    Module View are inherited.
 
-    :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, configuration, **kwargs):
         """
         Initialize the Revision Module View.
 
-        :param controller: the RAMSTK Master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKModuleView.__init__(self, controller, module='revision')
+        RAMSTKModuleView.__init__(self, configuration, module='revision')
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
+        self._dic_icons['tab'] = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
             '/32x32/revision.png'
 
         # Initialize private list attributes.
@@ -63,22 +67,40 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        RAMSTKModuleView._make_ui(self)
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrolledwindow.add_with_viewport(
+            do_make_buttonbox(
+                self,
+                icons=['add', 'remove'],
+                tooltips=[
+                    _("Add a new Revision."),
+                    _("Remove the currently selected Revision."),
+                ],
+                callbacks=[
+                    self.do_request_insert_sibling, self._do_request_delete,
+                ],
+            ),
+        )
+        self.pack_start(_scrolledwindow, False, False, 0)
 
         self.make_treeview()
         self.treeview.set_tooltip_text(_("Displays the list of revisions."))
 
-        _label = ramstk.RAMSTKLabel(
+        RAMSTKModuleView.make_ui(self)
+
+        _label = RAMSTKLabel(
             _("Revisions"),
             width=-1,
             height=-1,
-            tooltip=_("Displays the program revisions."))
-
+            tooltip=_("Displays the program revisions."),
+        )
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
         self.show_all()
-
-        return None
 
     def _do_request_delete(self, __button):
         """
@@ -89,20 +111,22 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _prompt = _("You are about to delete Revision {0:d} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(self._revision_id)
-        _dialog = ramstk.RAMSTKMessageDialog(
-            _prompt, self._dic_icons['question'], 'question')
+        _prompt = _(
+            "You are about to delete Revision {0:d} and all "
+            "data associated with it.  Is this really what "
+            "you want to do?",
+        ).format(self._revision_id)
+        _dialog = RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question',
+        )
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage(
-                'request_delete_revision', node_id=self._revision_id)
+                'request_delete_revision', node_id=self._revision_id,
+            )
 
         _dialog.do_destroy()
-
-        return None
 
     def _do_request_insert(self, **kwargs):
         """
@@ -115,9 +139,8 @@ class ModuleView(RAMSTKModuleView):
 
         if _sibling:
             pub.sendMessage(
-                'request_insert_revision', revision_id=self._revision_id)
-
-        return None
+                'request_insert_revision', revision_id=self._revision_id,
+            )
 
     def _do_request_update(self, __button):
         """
@@ -132,8 +155,6 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage('request_update_revision', node_id=self._revision_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-        return None
-
     def _do_request_update_all(self, __button):
         """
         Send request to save all the records to the RAMSTKRevision table.
@@ -146,34 +167,6 @@ class ModuleView(RAMSTKModuleView):
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_revisions')
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
-
-    def _make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Create the Gtk.ButtonBox() for the Revision Module View.
-
-        :return: _buttonbox; the Gtk.ButtonBox() for the Revision class Module
-                 View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = [
-            _("Add a new Revision."),
-            _("Remove the currently selected Revision.")
-        ]
-        _callbacks = [self.do_request_insert_sibling, self._do_request_delete]
-        _icons = ['add', 'remove']
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
 
     def _on_button_press(self, treeview, event):
         """
@@ -193,8 +186,8 @@ class ModuleView(RAMSTKModuleView):
                                     * 9 =
 
         :type event: :class:`Gdk.Event`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         treeview.handler_block(self._lst_handler_id[1])
 
@@ -203,27 +196,24 @@ class ModuleView(RAMSTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add', 'remove', 'save', 'save-all']
+            _icons = ['add']
             _labels = [
                 _("Add Revision"),
                 _("Remove the Selected Revision"),
                 _("Save Selected Revision"),
-                _("Save All Revisions")
+                _("Save All Revisions"),
             ]
-            _callbacks = [
-                self._do_request_insert_sibling, self._do_request_delete,
-                self._do_request_update, self._do_request_update_all
-            ]
+            _callbacks = [self._do_request_insert_sibling]
+
             RAMSTKModuleView.on_button_press(
                 self,
                 event,
                 icons=_icons,
                 labels=_labels,
-                callbacks=_callbacks)
+                callbacks=_callbacks,
+            )
 
         treeview.handler_unblock(self._lst_handler_id[1])
-
-        return False
 
     def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
@@ -242,22 +232,22 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
-            if self._lst_col_order[position] == 17:
-                _key = 'name'
-            elif self._lst_col_order[position] == 20:
-                _key = 'remarks'
-            elif self._lst_col_order[position] == 22:
-                _key = 'revision_code'
+        _dic_keys = {17: 'name', 20: 'remarks', 22: 'revision_code'}
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
+
+        if not self.treeview.do_edit_cell(
+                __cell, path, new_text, position, model,
+        ):
 
             pub.sendMessage(
                 'mvw_editing_revision',
                 module_id=self._revision_id,
                 key=_key,
-                value=new_text)
-
-        return None
+                value=new_text,
+            )
 
     def _on_row_change(self, treeview):
         """
@@ -277,59 +267,84 @@ class ModuleView(RAMSTKModuleView):
 
         _model, _row = treeview.get_selection().get_selected()
 
-        _attributes['revision_id'] = _model.get_value(_row,
-                                                      self._lst_col_order[0])
+        _attributes['revision_id'] = _model.get_value(
+            _row,
+            self._lst_col_order[0],
+        )
         _attributes['availability_logistics'] = _model.get_value(
-            _row, self._lst_col_order[1])
+            _row, self._lst_col_order[1],
+        )
         _attributes['availability_mission'] = _model.get_value(
-            _row, self._lst_col_order[2])
+            _row, self._lst_col_order[2],
+        )
         _attributes['cost'] = _model.get_value(_row, self._lst_col_order[3])
         _attributes['cost_per_failure'] = _model.get_value(
-            _row, self._lst_col_order[4])
+            _row, self._lst_col_order[4],
+        )
         _attributes['cost_per_hour'] = _model.get_value(
-            _row, self._lst_col_order[5])
+            _row, self._lst_col_order[5],
+        )
         _attributes['hazard_rate_active'] = _model.get_value(
-            _row, self._lst_col_order[6])
+            _row, self._lst_col_order[6],
+        )
         _attributes['hazard_rate_dormant'] = _model.get_value(
-            _row, self._lst_col_order[7])
+            _row, self._lst_col_order[7],
+        )
         _attributes['hazard_rate_logistics'] = _model.get_value(
-            _row, self._lst_col_order[8])
+            _row, self._lst_col_order[8],
+        )
         _attributes['hazard_rate_mission'] = _model.get_value(
-            _row, self._lst_col_order[9])
+            _row, self._lst_col_order[9],
+        )
         _attributes['hazard_rate_software'] = _model.get_value(
-            _row, self._lst_col_order[10])
+            _row, self._lst_col_order[10],
+        )
         _attributes['mmt'] = _model.get_value(_row, self._lst_col_order[11])
         _attributes['mcmt'] = _model.get_value(_row, self._lst_col_order[12])
         _attributes['mpmt'] = _model.get_value(_row, self._lst_col_order[13])
         _attributes['mtbf_logistics'] = _model.get_value(
-            _row, self._lst_col_order[14])
-        _attributes['mtbf_mission'] = _model.get_value(_row,
-                                                       self._lst_col_order[15])
+            _row, self._lst_col_order[14],
+        )
+        _attributes['mtbf_mission'] = _model.get_value(
+            _row,
+            self._lst_col_order[15],
+        )
         _attributes['mttr'] = _model.get_value(_row, self._lst_col_order[16])
         _attributes['name'] = _model.get_value(_row, self._lst_col_order[17])
         _attributes['reliability_logistics'] = _model.get_value(
-            _row, self._lst_col_order[18])
+            _row, self._lst_col_order[18],
+        )
         _attributes['reliability_mission'] = _model.get_value(
-            _row, self._lst_col_order[19])
-        _attributes['remarks'] = _model.get_value(_row,
-                                                  self._lst_col_order[20])
-        _attributes['n_parts'] = _model.get_value(_row,
-                                                  self._lst_col_order[21])
+            _row, self._lst_col_order[19],
+        )
+        _attributes['remarks'] = _model.get_value(
+            _row,
+            self._lst_col_order[20],
+        )
+        _attributes['n_parts'] = _model.get_value(
+            _row,
+            self._lst_col_order[21],
+        )
         _attributes['revision_code'] = _model.get_value(
-            _row, self._lst_col_order[22])
-        _attributes['program_time'] = _model.get_value(_row,
-                                                       self._lst_col_order[23])
+            _row, self._lst_col_order[22],
+        )
+        _attributes['program_time'] = _model.get_value(
+            _row,
+            self._lst_col_order[23],
+        )
         _attributes['program_time_sd'] = _model.get_value(
-            _row, self._lst_col_order[24])
-        _attributes['program_cost'] = _model.get_value(_row,
-                                                       self._lst_col_order[25])
+            _row, self._lst_col_order[24],
+        )
+        _attributes['program_cost'] = _model.get_value(
+            _row,
+            self._lst_col_order[25],
+        )
         _attributes['program_cost_sd'] = _model.get_value(
-            _row, self._lst_col_order[26])
+            _row, self._lst_col_order[26],
+        )
 
         self._revision_id = _attributes['revision_id']
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
         pub.sendMessage('selected_revision', attributes=_attributes)
-
-        return None

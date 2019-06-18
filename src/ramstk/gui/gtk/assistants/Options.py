@@ -1,21 +1,16 @@
 # pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.assistants.Options.py is part of The RAMSTK Project
+#       gui.gtk.assistants.Options.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Configuration Options Module."""
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKButton, RAMSTKCheckButton
+from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, _
 from ramstk.Utilities import boolean_to_integer, integer_to_boolean
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk
-from ramstk.gui.gtk import ramstk
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 Doyle "weibullguy" Rowland'
 
 
 class Options(Gtk.Window):
@@ -36,7 +31,7 @@ class Options(Gtk.Window):
 
         :param Gtk.Widget __widget: the Gtk.Widget() that called this class.
         :param controller: the RAMSTK master data controller.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :type controller: :class:`RAMSTK.RAMSTK`
         """
         GObject.GObject.__init__(self)
 
@@ -47,7 +42,7 @@ class Options(Gtk.Window):
             '/32x32/save.png',
             'cancel':
             controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/cancel.png'
+            '/32x32/cancel.png',
         }
 
         # Initialize private list attributes.
@@ -64,34 +59,27 @@ class Options(Gtk.Window):
 
         # Initialize public scalar attributes.
         self.notebook = Gtk.Notebook()
-        self.btnSave = ramstk.RAMSTKButton(
-            icon=self._dic_icons['save'], height=-1, width=-1)
-        self.btnQuit = ramstk.RAMSTKButton(
-            icon=self._dic_icons['cancel'], height=-1, width=-1)
-        self.chkFunctions = ramstk.RAMSTKCheckButton(
+        self.btnSave = RAMSTKButton(
+            icon=self._dic_icons['save'], height=-1, width=-1,
+        )
+        self.btnQuit = RAMSTKButton(
+            icon=self._dic_icons['cancel'], height=-1, width=-1,
+        )
+        self.chkFunctions = RAMSTKCheckButton(
             label=_("Function Module Active"),
-            tooltip=_(
-                "Activates/deactivates the Function module for this program.")
         )
-        self.chkRequirements = ramstk.RAMSTKCheckButton(
+        self.chkRequirements = RAMSTKCheckButton(
             label=_("Requirements Module Active"),
-            tooltip=_("Activates/deactivates the Requirements module for "
-                      "this program."))
-        self.chkHardware = ramstk.RAMSTKCheckButton(
-            label=_("Hardware Module Active"),
-            tooltip=_(
-                "Activates/deactivates the Hardware module for this program.")
         )
-        self.chkValidation = ramstk.RAMSTKCheckButton(
+        self.chkHardware = RAMSTKCheckButton(
+            label=_("Hardware Module Active"),
+        )
+        self.chkValidation = RAMSTKCheckButton(
             label=_("Validation Module Active"),
-            tooltip=_(
-                "Activates/deactivates the Validation module for this program."
-            ))
-        self.chkFMEA = ramstk.RAMSTKCheckButton(
+        )
+        self.chkFMEA = RAMSTKCheckButton(
             label=_("(D)FME(C)A Module Active"),
-            tooltip=_(
-                "Activates/deactivates the (D)FME(C)A module for this program."
-            ))
+        )
 
         self.__make_ui()
 
@@ -114,8 +102,6 @@ class Options(Gtk.Window):
         _label.set_tooltip_text(_("Select active RAMSTK modules."))
         self.notebook.insert_page(_fixed, tab_label=_label, position=-1)
 
-        return None
-
     def __make_ui(self):
         """
         Build the user interface.
@@ -133,15 +119,20 @@ class Options(Gtk.Window):
         self.btnQuit.connect('clicked', self._do_quit)
 
         self._lst_handler_id.append(
-            self.chkFunctions.connect('toggled', self._on_toggled, 0))
+            self.chkFunctions.connect('toggled', self._on_toggled, 0),
+        )
         self._lst_handler_id.append(
-            self.chkRequirements.connect('toggled', self._on_toggled, 1))
+            self.chkRequirements.connect('toggled', self._on_toggled, 1),
+        )
         self._lst_handler_id.append(
-            self.chkHardware.connect('toggled', self._on_toggled, 2))
+            self.chkHardware.connect('toggled', self._on_toggled, 2),
+        )
         self._lst_handler_id.append(
-            self.chkValidation.connect('toggled', self._on_toggled, 3))
+            self.chkValidation.connect('toggled', self._on_toggled, 3),
+        )
         self._lst_handler_id.append(
-            self.chkFMEA.connect('toggled', self._on_toggled, 4))
+            self.chkFMEA.connect('toggled', self._on_toggled, 4),
+        )
 
         self.__make_page()
 
@@ -158,12 +149,45 @@ class Options(Gtk.Window):
         self.add(_vbox)
 
         self._dtc_data_controller.request_do_select_all(
-            site=False, program=True)
+            site=False, program=True,
+        )
         self._load_page()
 
         self.show_all()
 
-        return None
+    def __set_properties(self):
+        """
+        Set the properties of the Options assistance widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.chkFunctions.do_set_properties(
+            tooltip=_(
+                "Activates/deactivates the Function module for this program.",
+            ),
+        )
+        self.chkRequirements.do_set_properties(
+            tooltip=_(
+                "Activates/deactivates the Requirements module for "
+                "this program.",
+            ),
+        )
+        self.chkHardware.do_set_properties(
+            tooltip=_(
+                "Activates/deactivates the Hardware module for this program.",
+            ),
+        )
+        self.chkValidation.do_set_properties(
+            tooltip=_(
+                "Activates/deactivates the Validation module for this program.",
+            ),
+        )
+        self.chkFMEA.do_set_properties(
+            tooltip=_(
+                "Activates/deactivates the (D)FME(C)A module for this program.",
+            ),
+        )
 
     def _do_quit(self, __button):
         """
@@ -196,27 +220,31 @@ class Options(Gtk.Window):
         :rtype: None
         """
         _program_options = self._dtc_data_controller.request_get_options(
-            site=False, program=True)
+            site=False, program=True,
+        )
 
         self.chkFunctions.set_active(
-            integer_to_boolean(_program_options['function_active']))
+            integer_to_boolean(_program_options['function_active']),
+        )
         self.chkRequirements.set_active(
-            integer_to_boolean(_program_options['requirement_active']))
+            integer_to_boolean(_program_options['requirement_active']),
+        )
         self.chkHardware.set_active(
-            integer_to_boolean(_program_options['hardware_active']))
+            integer_to_boolean(_program_options['hardware_active']),
+        )
         self.chkValidation.set_active(
-            integer_to_boolean(_program_options['vandv_active']))
+            integer_to_boolean(_program_options['vandv_active']),
+        )
         self.chkFMEA.set_active(
-            integer_to_boolean(_program_options['fmea_active']))
-
-        return None
+            integer_to_boolean(_program_options['fmea_active']),
+        )
 
     def _on_toggled(self, togglebutton, index):
         """
         Handle RAMSTKCheckButton() 'toggle' signals.
 
         :param togglebutton: the RAMSTKToggleButton() that called this method.
-        :type: :class:`ramstk.gui.gtk.ramstk.Button.RAMSTKToggleButton`
+        :type: :class:`gui.gtk.ramstk.Button.RAMSTKToggleButton`
         :param int index: the index in the signal handler ID list.
         :return: None
         :rtype: None
@@ -225,7 +253,8 @@ class Options(Gtk.Window):
 
         if self._dtc_data_controller is not None:
             _program_options = self._dtc_data_controller.request_get_options(
-                site=False, program=True)
+                site=False, program=True,
+            )
 
             if index == 0:
                 _text = boolean_to_integer(self.chkFunctions.get_active())
@@ -244,8 +273,7 @@ class Options(Gtk.Window):
                 _program_options['fmea_active'] = _text
 
             self._dtc_data_controller.request_set_options(
-                _program_options, site=False, program=True)
+                _program_options, site=False, program=True,
+            )
 
         togglebutton.handler_unblock(self._lst_handler_id[index])
-
-        return None

@@ -6,13 +6,20 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Requirement Work View."""
 
-# Import third party modules.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import (
+    RAMSTKButton, RAMSTKCheckButton,
+    RAMSTKComboBox, RAMSTKDateSelect,
+    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
+    RAMSTKScrolledWindow, do_make_label_group,
+)
+from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, Pango, _
 from ramstk.Utilities import boolean_to_integer
-from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk, Pango
+
+# RAMSTK Local Imports
 from .WorkView import RAMSTKWorkView
 
 
@@ -75,29 +82,30 @@ class GeneralData(RAMSTKWorkView):
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    _lst_labels = [
+        _("Requirement Code:"),
+        _("Requirement Description:"),
+        _("Requirement Type:"), "",
+        _("Specification:"),
+        _("Page Number:"),
+        _("Figure Number:"),
+        _("Priority:"),
+        _("Owner:"), "",
+        _("Validated Date:"),
+    ]
+
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Requirement Work View.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKWorkView.__init__(self, controller, module='Requirement')
+        RAMSTKWorkView.__init__(self, configuration, module='Requirement')
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_gendata_labels = [
-            _("Requirement Code:"),
-            _("Requirement Description:"),
-            _("Requirement Type:"), "",
-            _("Specification:"),
-            _("Page Number:"),
-            _("Figure Number:"),
-            _("Priority:"),
-            _("Owner:"), "",
-            _("Validated Date:")
-        ]
 
         # Initialize private scalar attributes.
         self._requirement_id = None
@@ -107,65 +115,28 @@ class GeneralData(RAMSTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.btnValidateDate = ramstk.RAMSTKButton(
-            height=25, width=25, label="...")
+        self.btnValidateDate = RAMSTKButton(label="...")
 
-        self.chkDerived = ramstk.RAMSTKCheckButton(
-            label=_("Requirement is derived."),
-            tooltip=_("Indicates whether or not the selected requirement is "
-                      "derived."))
-        self.chkValidated = ramstk.RAMSTKCheckButton(
+        self.chkDerived = RAMSTKCheckButton(label=_("Requirement is derived."))
+        self.chkValidated = RAMSTKCheckButton(
             label=_("Requirement is validated."),
-            tooltip=_("Indicates whether or not the selected requirement is "
-                      "validated."))
+        )
 
-        self.cmbOwner = ramstk.RAMSTKComboBox()
-        self.cmbRequirementType = ramstk.RAMSTKComboBox(index=1, simple=False)
-        self.cmbPriority = ramstk.RAMSTKComboBox(width=50)
+        self.cmbOwner = RAMSTKComboBox()
+        self.cmbRequirementType = RAMSTKComboBox(index=1, simple=False)
+        self.cmbPriority = RAMSTKComboBox()
 
-        self.txtCode = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("A unique code for the selected requirement."))
-        self.txtFigNum = ramstk.RAMSTKEntry()
-        self.txtName = ramstk.RAMSTKEntry(
-            width=800,
-            tooltip=_("The description of the selected requirement."))
-        self.txtPageNum = ramstk.RAMSTKEntry()
-        self.txtSpecification = ramstk.RAMSTKEntry()
-        self.txtValidatedDate = ramstk.RAMSTKEntry()
+        self.txtCode = RAMSTKEntry()
+        self.txtFigNum = RAMSTKEntry()
+        self.txtName = RAMSTKEntry()
+        self.txtPageNum = RAMSTKEntry()
+        self.txtSpecification = RAMSTKEntry()
+        self.txtValidatedDate = RAMSTKEntry()
 
-        # Connect to callback requirements for editable Gtk.Widgets().
-        self._lst_handler_id.append(
-            self.txtCode.connect('changed', self._on_focus_out, 0))
-        self._lst_handler_id.append(
-            self.txtName.connect('changed', self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.cmbRequirementType.connect('changed', self._on_combo_changed,
-                                            2))
-        self._lst_handler_id.append(
-            self.chkDerived.connect('toggled', self._on_toggled, 3))
-        self._lst_handler_id.append(
-            self.txtSpecification.connect('changed', self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtPageNum.connect('changed', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtFigNum.connect('changed', self._on_focus_out, 6))
-        self._lst_handler_id.append(
-            self.cmbPriority.connect('changed', self._on_combo_changed, 7))
-        self._lst_handler_id.append(
-            self.cmbOwner.connect('changed', self._on_combo_changed, 8))
-        self._lst_handler_id.append(
-            self.chkValidated.connect('toggled', self._on_toggled, 9))
-        self._lst_handler_id.append(
-            self.txtValidatedDate.connect('changed', self._on_focus_out, 10))
-        self._lst_handler_id.append(
-            self.btnValidateDate.connect('button-release-event',
-                                         self._do_select_date,
-                                         self.txtValidatedDate))
-
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_start(self.__make_page(), True, True, 0)
-        self.show_all()
+        self.__set_properties()
+        self.__load_combobox()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
@@ -173,67 +144,70 @@ class GeneralData(RAMSTKWorkView):
         pub.subscribe(self._do_load_code, 'created_requirement_code')
         pub.subscribe(self._on_edit, 'mvw_editing_requirement')
 
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+    def __load_combobox(self):
         """
-        Make the Gtk.ButtonBox() for the Requirement Work View.
+        Load the RAMSTK ComboBox widgets with lists of information.
 
-        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement Work View.
-        :rtype: :class:`Gtk.ButtonBox`
-        """
-        _tooltips = []
-        _callbacks = []
-        _icons = []
-
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def __make_page(self):
-        """
-        Make the Requirement Work View General Data Gtk.Notebook() page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         # Load the requirement type Gtk.ComboBox(); each _type is
         # (Code, Description, Type).
         _types = []
         for _index, _key in enumerate(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE):
-            _types.append(self._mdcRAMSTK.RAMSTK_CONFIGURATION.
-                          RAMSTK_REQUIREMENT_TYPE[_key])
+                self.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE,
+        ):
+            _types.append(
+                self.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[_key],
+            )
         self.cmbRequirementType.do_load_combo(
-            list(_types), index=1, simple=False)
+            list(_types),
+            index=1,
+            simple=False,
+        )
 
         # Load the owner Gtk.ComboBox(); each _owner is
         # (Description, Group Type).
         _owners = []
         for _index, _key in enumerate(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS):
-            _owners.append(
-                self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS[_key])
+                self.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS,
+        ):
+            _owners.append(self.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS[_key])
         self.cmbOwner.do_load_combo(list(_owners))
 
         # Load the priority Gtk.Combo().
         _priorities = [["1"], ["2"], ["3"], ["4"], ["5"]]
         self.cmbPriority.do_load_combo(_priorities)
 
-        # Build the General Data page.
+    def __make_ui(self):
+        """
+        Make the Requirement Work View General Data Gtk.Notebook() page.
+
+        :return: None
+        :rtype: None
+        """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrolledwindow.add_with_viewport(
+            RAMSTKWorkView._make_buttonbox(
+                self,
+                icons=[],
+                tooltips=[],
+                callbacks=[],
+            ),
+        )
+        self.pack_start(_scrolledwindow, False, False, 0)
+
         _fixed = Gtk.Fixed()
 
-        _scrollwindow = ramstk.RAMSTKScrolledWindow(_fixed)
-        _frame = ramstk.RAMSTKFrame(label=_("General Information"))
+        _scrollwindow = RAMSTKScrolledWindow(_fixed)
+        _frame = RAMSTKFrame(label=_("General Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = ramstk.make_label_group(self._lst_gendata_labels,
-                                                 _fixed, 5, 5)
+        _x_pos, _y_pos = do_make_label_group(self._lst_labels, _fixed, 5, 5)
         _x_pos += 50
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])
@@ -249,19 +223,110 @@ class GeneralData(RAMSTKWorkView):
         _fixed.put(self.txtValidatedDate, _x_pos, _y_pos[10])
         _fixed.put(self.btnValidateDate, _x_pos + 205, _y_pos[10])
 
-        _fixed.show_all()
+        self.pack_start(_frame, True, True, 0)
 
         # Create the label for the Gtk.Notebook() tab.
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("General\nData"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_("Displays general information for the selected "
-                      "requirement."))
+            tooltip=_(
+                "Displays general information for the selected "
+                "requirement.",
+            ),
+        )
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        return _frame
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set the callback methods and functions.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.txtCode.connect('changed', self._on_focus_out, 0),
+        )
+        self._lst_handler_id.append(
+            self.txtName.connect('changed', self._on_focus_out, 1),
+        )
+        self._lst_handler_id.append(
+            self.cmbRequirementType.connect(
+                'changed', self._on_combo_changed,
+                2,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.chkDerived.connect('toggled', self._on_toggled, 3),
+        )
+        self._lst_handler_id.append(
+            self.txtSpecification.connect('changed', self._on_focus_out, 4),
+        )
+        self._lst_handler_id.append(
+            self.txtPageNum.connect('changed', self._on_focus_out, 5),
+        )
+        self._lst_handler_id.append(
+            self.txtFigNum.connect('changed', self._on_focus_out, 6),
+        )
+        self._lst_handler_id.append(
+            self.cmbPriority.connect('changed', self._on_combo_changed, 7),
+        )
+        self._lst_handler_id.append(
+            self.cmbOwner.connect('changed', self._on_combo_changed, 8),
+        )
+        self._lst_handler_id.append(
+            self.chkValidated.connect('toggled', self._on_toggled, 9),
+        )
+        self._lst_handler_id.append(
+            self.txtValidatedDate.connect('changed', self._on_focus_out, 10),
+        )
+        self._lst_handler_id.append(
+            self.btnValidateDate.connect(
+                'button-release-event',
+                self._do_select_date,
+                self.txtValidatedDate,
+            ),
+        )
+
+    def __set_properties(self):
+        """
+        Set the properties of the General Data Work View and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        # ----- BUTTONS
+        self.btnValidateDate.do_set_properties(height=25, width=25)
+
+        self.chkDerived.do_set_properties(
+            tooltip=_(
+                "Indicates whether or not the selected requirement is "
+                "derived.",
+            ),
+        )
+        self.chkValidated.do_set_properties(
+            tooltip=_(
+                "Indicates whether or not the selected requirement is "
+                "validated.",
+            ),
+        )
+
+        # ----- COMBOBOXES
+        self.cmbPriority.do_set_properties(width=50)
+
+        # ----- ENTRIES
+        self.txtCode.do_set_properties(
+            width=125,
+            tooltip=_("A unique code for the selected requirement."),
+        )
+        self.txtName.do_set_properties(
+            height=100,
+            width=800,
+            tooltip=_("The description of the selected requirement."),
+        )
 
     def _do_clear_page(self):
         """
@@ -270,33 +335,17 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text('')
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text('')
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        self.chkDerived.handler_block(self._lst_handler_id[3])
-        self.chkDerived.set_active(False)
-        self.chkDerived.handler_unblock(self._lst_handler_id[3])
+        self.txtCode.do_update('', self._lst_handler_id[0])
+        self.txtName.do_update('', self._lst_handler_id[1])
 
         self.cmbRequirementType.handler_block(self._lst_handler_id[2])
         self.cmbRequirementType.set_active(0)
         self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
 
-        self.txtSpecification.handler_block(self._lst_handler_id[4])
-        self.txtSpecification.set_text('')
-        self.txtSpecification.handler_unblock(self._lst_handler_id[4])
-
-        self.txtPageNum.handler_block(self._lst_handler_id[5])
-        self.txtPageNum.set_text('')
-        self.txtPageNum.handler_unblock(self._lst_handler_id[5])
-
-        self.txtFigNum.handler_block(self._lst_handler_id[6])
-        self.txtFigNum.set_text('')
-        self.txtFigNum.handler_unblock(self._lst_handler_id[6])
+        self.chkDerived.do_update(False, self._lst_handler_id[3])
+        self.txtSpecification.do_update('', self._lst_handler_id[4])
+        self.txtPageNum.do_update('', self._lst_handler_id[5])
+        self.txtFigNum.do_update('', self._lst_handler_id[6])
 
         self.cmbPriority.handler_block(self._lst_handler_id[7])
         self.cmbPriority.set_active(0)
@@ -306,15 +355,8 @@ class GeneralData(RAMSTKWorkView):
         self.cmbOwner.set_active(0)
         self.cmbOwner.handler_unblock(self._lst_handler_id[8])
 
-        self.chkValidated.handler_block(self._lst_handler_id[9])
-        self.chkValidated.set_active(False)
-        self.chkValidated.handler_unblock(self._lst_handler_id[9])
-
-        self.txtValidatedDate.handler_block(self._lst_handler_id[10])
-        self.txtValidatedDate.set_text('')
-        self.txtValidatedDate.handler_unblock(self._lst_handler_id[10])
-
-        return None
+        self.chkValidated.do_update(False, self._lst_handler_id[9])
+        self.txtValidatedDate.do_update('', self._lst_handler_id[10])
 
     def _do_load_code(self, code):
         """
@@ -324,11 +366,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(code))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        return None
+        self.txtCode.do_update(str(code), self._lst_handler_id[0])
 
     def _do_load_page(self, attributes):
         """
@@ -339,71 +377,62 @@ class GeneralData(RAMSTKWorkView):
         """
         self._revision_id = attributes['revision_id']
         self._requirement_id = attributes['requirement_id']
+
         RAMSTKWorkView.on_select(
             self,
             title=_("Analyzing Requirement {0:s} - {1:s}").format(
                 str(attributes['requirement_code']),
-                str(attributes['description'])))
+                str(attributes['description']),
+            ),
+        )
 
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(attributes['requirement_code']))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(str(attributes['description']))
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        self.chkDerived.handler_block(self._lst_handler_id[3])
-        self.chkDerived.set_active(attributes['derived'])
-        self.chkDerived.handler_unblock(self._lst_handler_id[3])
-
-        self.cmbRequirementType.handler_block(self._lst_handler_id[2])
-        _types = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE
-        self.cmbRequirementType.set_active(0)
-        _idx = 1
-        for _key, _type in _types.items():
-            if _type[1] == attributes['requirement_type']:
-                self.cmbRequirementType.set_active(_idx)
-            else:
-                _idx += 1
-        self.cmbRequirementType.handler_unblock(self._lst_handler_id[2])
-
-        self.txtSpecification.handler_block(self._lst_handler_id[4])
-        self.txtSpecification.set_text(str(attributes['specification']))
-        self.txtSpecification.handler_unblock(self._lst_handler_id[4])
-
-        self.txtPageNum.handler_block(self._lst_handler_id[5])
-        self.txtPageNum.set_text(str(attributes['page_number']))
-        self.txtPageNum.handler_unblock(self._lst_handler_id[5])
-
-        self.txtFigNum.handler_block(self._lst_handler_id[6])
-        self.txtFigNum.set_text(str(attributes['figure_number']))
-        self.txtFigNum.handler_unblock(self._lst_handler_id[6])
-
-        self.cmbPriority.handler_block(self._lst_handler_id[7])
-        self.cmbPriority.set_active(int(attributes['priority']))
-        self.cmbPriority.handler_unblock(self._lst_handler_id[7])
-
-        self.cmbOwner.handler_block(self._lst_handler_id[8])
-        _groups = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_WORKGROUPS
-        self.cmbOwner.set_active(0)
-        for _key, _group in _groups.items():
-            if _group[0] == attributes['owner']:
-                self.cmbOwner.set_property('active', int(_key))
-        self.cmbOwner.handler_unblock(self._lst_handler_id[8])
-
-        self.chkValidated.handler_block(self._lst_handler_id[9])
-        self.chkValidated.set_active(int(attributes['validated']))
-        self.chkValidated.handler_unblock(self._lst_handler_id[9])
-
-        self.txtValidatedDate.handler_block(self._lst_handler_id[10])
+        self.txtCode.do_update(
+            str(attributes['requirement_code']),
+            self._lst_handler_id[0],
+        )
+        self.txtName.do_update(
+            str(attributes['description']),
+            self._lst_handler_id[1],
+        )
+        self.chkDerived.do_update(
+            int(attributes['derived']),
+            self._lst_handler_id[3],
+        )
+        self.cmbRequirementType.do_update(
+            attributes['requirement_type'],
+            self._lst_handler_id[2],
+        )
+        self.txtSpecification.do_update(
+            str(attributes['specification']),
+            self._lst_handler_id[4],
+        )
+        self.txtPageNum.do_update(
+            str(attributes['page_number']),
+            self._lst_handler_id[5],
+        )
+        self.txtFigNum.do_update(
+            str(attributes['figure_number']),
+            self._lst_handler_id[6],
+        )
+        self.cmbPriority.do_update(
+            int(attributes['priority']),
+            self._lst_handler_id[7],
+        )
+        self.cmbOwner.do_update(
+            str(attributes['owner']),
+            self._lst_handler_id[8],
+        )
+        self.chkValidated.do_update(
+            int(attributes['validated']),
+            self._lst_handler_id[9],
+        )
         if attributes['validated']:
-            self.txtValidatedDate.set_text(str(attributes['validated_date']))
+            self.txtValidatedDate.do_update(
+                str(attributes['validated_date']),
+                self._lst_handler_id[10],
+            )
         else:
-            self.txtValidatedDate.set_text("")
-        self.txtValidatedDate.handler_unblock(self._lst_handler_id[10])
-
-        return None
+            self.txtValidatedDate.do_update("", self._lst_handler_id[10])
 
     def _do_request_update(self, __button):
         """
@@ -414,12 +443,12 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
-            'request_update_requirement', node_id=self._requirement_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
+            'request_update_requirement',
+            node_id=self._requirement_id,
+        )
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -430,11 +459,9 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_requirements')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     @staticmethod
     def _do_select_date(__button, __event, entry):
@@ -452,7 +479,7 @@ class GeneralData(RAMSTKWorkView):
         :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
         :rtype: str
         """
-        _dialog = ramstk.RAMSTKDateSelect()
+        _dialog = RAMSTKDateSelect()
 
         _date = _dialog.do_run()
         _dialog.do_destroy()
@@ -501,11 +528,10 @@ class GeneralData(RAMSTKWorkView):
             'wvw_editing_requirement',
             module_id=self._requirement_id,
             key=_key,
-            value=_new_text)
+            value=_new_text,
+        )
 
         combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
     def _on_edit(self, module_id, key, value):  # pylint: disable=unused-argument
         """
@@ -526,36 +552,18 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        if key == 'derived':
-            self.chkDerived.handler_block(self._lst_handler_id[2])
-            self.chkDerived.set_active(int(value))
-            self.chkDerived.handler_unblock(self._lst_handler_id[2])
-        elif key == 'description':
-            self.txtName.handler_block(self._lst_handler_id[3])
-            self.txtName.set_text(str(value))
-            self.txtName.handler_unblock(self._lst_handler_id[3])
-        elif key == 'figure_number':
-            self.txtFigNum.handler_block(self._lst_handler_id[4])
-            self.txtFigNum.set_text(str(value))
-            self.txtFigNum.handler_unblock(self._lst_handler_id[4])
-        elif key == 'page_number':
-            self.txtPageNum.handler_block(self._lst_handler_id[6])
-            self.txtPageNum.set_text(str(value))
-            self.txtPageNum.handler_unblock(self._lst_handler_id[6])
-        elif key == 'specification':
-            self.txtSpecification.handler_block(self._lst_handler_id[10])
-            self.txtSpecification.set_text(str(value))
-            self.txtSpecification.handler_unblock(self._lst_handler_id[10])
-        elif key == 'validated':
-            self.chkValidated.handler_block(self._lst_handler_id[12])
-            self.chkValidated.set_active(int(value))
-            self.chkValidated.handler_unblock(self._lst_handler_id[12])
-        elif key == 'validated_date':
-            self.txtValidatedDate.handler_block(self._lst_handler_id[13])
-            self.txtValidatedDate.set_text(str(value))
-            self.txtValidatedDate.handler_unblock(self._lst_handler_id[13])
+        _dic_switch = {
+            'derived': [self.chkDerived.do_update, 2],
+            'description': [self.txtName.do_update, 3],
+            'figure_number': [self.txtFigNum.do_update, 4],
+            'page_number': [self.txtPageNum.do_update, 6],
+            'specification': [self.txtSpecification.do_update, 10],
+            'validated': [self.chkValidated.do_update, 12],
+            'validated_date': [self.txtValidatedDate.do_update, 13],
+        }
 
-        return None
+        (_function, _id) = _dic_switch.get(key)
+        _function(value, self._lst_handler_id[_id])
 
     def _on_focus_out(self, entry, index):
         """
@@ -577,39 +585,34 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _key = ''
-        _text = ''
+        _dic_keys = {
+            0: 'requirement_code',
+            1: 'description',
+            4: 'specification',
+            5: 'page_number',
+            6: 'figure_number',
+            10: 'validate_date',
+        }
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index == 0:
-            _key = 'requirement_code'
+        try:
             _new_text = str(entry.get_text())
-        elif index == 1:
-            _key = 'description'
-            _new_text = str(entry.get_text())
-        elif index == 4:
-            _key = 'specification'
-            _new_text = str(entry.get_text())
-        elif index == 5:
-            _key = 'page_number'
-            _new_text = str(entry.get_text())
-        elif index == 6:
-            _key = 'figure_number'
-            _new_text = str(entry.get_text())
-        elif index == 10:
-            _key = 'validate_date'
-            _new_text = str(entry.get_text())
+        except ValueError:
+            _new_text = ''
 
         pub.sendMessage(
-            'editing_requirement',
+            'wvw_editing_requirement',
             module_id=self._requirement_id,
             key=_key,
-            value=_new_text)
+            value=_new_text,
+        )
 
         entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
     def _on_toggled(self, togglebutton, index):
         """
@@ -623,27 +626,24 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _key = ''
-        _text = ''
+        _dic_keys = {3: 'dervied', 9: 'validate'}
+        try:
+            _key = _dic_keys[index]
+        except KeyError:
+            _key = ''
 
         togglebutton.handler_block(self._lst_handler_id[index])
 
-        if index == 3:
-            _key = 'derived'
-            _new_text = int(togglebutton.get_active())
-        elif index == 9:
-            _key = 'validate'
-            _new_text = int(togglebutton.get_active())
+        _new_text = int(togglebutton.get_active())
 
         pub.sendMessage(
             'wvw_editing_requirement',
             module_id=self._requirement_id,
             key=_key,
-            value=_new_text)
+            value=_new_text,
+        )
 
         togglebutton.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
 
 class RequirementAnalysis(RAMSTKWorkView):
@@ -674,14 +674,153 @@ class RequirementAnalysis(RAMSTKWorkView):
                          Verifiability questions and answers.
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    _lst_clear = [
+        _(
+            "1. The requirement clearly states what is needed or "
+            "desired.",
+        ),
+        _(
+            "2. The requirement is unambiguous and not open to "
+            "interpretation.",
+        ),
+        _(
+            "3. All terms that can have more than one meaning are "
+            "qualified so that the desired meaning is readily "
+            "apparent.",
+        ),
+        _(
+            "4. Diagrams, drawings, etc. are used to increase "
+            "understanding of the requirement.",
+        ),
+        _(
+            "5. The requirement is free from spelling and "
+            "grammatical errors.",
+        ),
+        _(
+            "6. The requirement is written in non-technical "
+            "language using the vocabulary of the stakeholder.",
+        ),
+        _("7. Stakeholders understand the requirement as written."),
+        _(
+            "8. The requirement is clear enough to be turned over "
+            "to an independent group and still be understood.",
+        ),
+        _(
+            "9. The requirement avoids stating how the problem is "
+            "to be solved or what techniques are to be used.",
+        ),
+    ]
+    _lst_complete = [
+        _(
+            "1. Performance objectives are properly documented "
+            "from the user's point of view.",
+        ),
+        _(
+            "2. No necessary information is missing from the "
+            "requirement.",
+        ),
+        _("3. The requirement has been assigned a priority."),
+        _(
+            "4. The requirement is realistic given the technology "
+            "that will used to implement the system.",
+        ),
+        _(
+            "5. The requirement is feasible to implement given the "
+            "defined project time frame, scope, structure and "
+            "budget.",
+        ),
+        _(
+            "6. If the requirement describes something as a "
+            "'standard' the specific source is cited.",
+        ),
+        _(
+            "7. The requirement is relevant to the problem and its "
+            "solution.",
+        ),
+        _("8. The requirement contains no implied design details."),
+        _(
+            "9. The requirement contains no implied implementation "
+            "constraints.",
+        ),
+        _(
+            "10. The requirement contains no implied project "
+            "management constraints.",
+        ),
+    ]
+    _lst_consistent = [
+        _(
+            "1. The requirement describes a single need or want; "
+            "it could not be broken into several different "
+            "requirements.",
+        ),
+        _(
+            "2. The requirement requires non-standard hardware or "
+            "must use software to implement.",
+        ),
+        _(
+            "3. The requirement can be implemented within known "
+            "constraints.",
+        ),
+        _(
+            "4. The requirement provides an adequate basis for "
+            "design and testing.",
+        ),
+        _(
+            "5. The requirement adequately supports the business "
+            "goal of the project.",
+        ),
+        _(
+            "6. The requirement does not conflict with some "
+            "constraint, policy or regulation.",
+        ),
+        _(
+            "7. The requirement does not conflict with another "
+            "requirement.",
+        ),
+        _(
+            "8. The requirement is not a duplicate of another "
+            "requirement.",
+        ),
+        _("9. The requirement is in scope for the project."),
+    ]
+    _lst_verifiable = [
+        _(
+            "1. The requirement is verifiable by testing, "
+            "demonstration, review, or analysis.",
+        ),
+        _(
+            "2. The requirement lacks 'weasel words' (e.g. "
+            "various, mostly, suitable, integrate, maybe, "
+            "consistent, robust, modular, user-friendly, "
+            "superb, good).",
+        ),
+        _(
+            "3. Any performance criteria are quantified such that "
+            "they are testable.",
+        ),
+        _(
+            "4. Independent testing would be able to determine "
+            "whether the requirement has been satisfied.",
+        ),
+        _(
+            "5. The task(s) that will validate and verify the "
+            "final design satisfies the requirement have been "
+            "identified.",
+        ),
+        _(
+            "6. The identified V&amp;V task(s) have been added to "
+            "the validation plan (e.g., DVP)",
+        ),
+    ]
+
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the Requirement package.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKWorkView.__init__(self, controller, module='Requirement')
+        RAMSTKWorkView.__init__(self, configuration, module='Requirement')
 
         # Initialize private dictionary attributes.
 
@@ -704,125 +843,86 @@ class RequirementAnalysis(RAMSTKWorkView):
         self.tvwConsistent = Gtk.TreeView()
         self.tvwVerifiable = Gtk.TreeView()
 
-        self.pack_start(self.__make_buttonbox(), False, False, 0)
-        self.pack_start(self.__make_page(), True, True, 0)
-        self.show_all()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_page, 'closed_program')
         pub.subscribe(self._do_load_page, 'selected_requirement')
 
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+    def __make_treeview(self, index):
         """
-        Make the Gtk.ButtonBox() for the Requirement Work View.
+        Build the Gtk.TreeView() for the Requirements Analyses.
 
-        :return: _buttonbox; the Gtk.ButtonBox() for the Requirement Work View.
-        :rtype: :class:`Gtk.ButtonBox`
+        :param int index: the index of the Gtk.TreeView() being built.  Used in
+                          callback methods.
+        :return: (_model, _column); the Gtk.ListStore() and
+                                    Gtk.TreeViewColumn() to apply to the RAMSTK
+                                    TreeView().
+        :rtype: tuple
         """
-        _tooltips = []
-        _callbacks = []
-        _icons = []
+        _model = Gtk.ListStore(
+            GObject.TYPE_INT, GObject.TYPE_STRING,
+            GObject.TYPE_INT,
+        )
 
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
+        _column = Gtk.TreeViewColumn()
 
-        return _buttonbox
+        _cell = Gtk.CellRendererText()
+        _cell.set_property('editable', 0)
+        _cell.set_property('visible', 0)
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, text=0)
 
-    def __make_page(self):
+        _cell = Gtk.CellRendererText()
+        _cell.set_property(
+            'background_rgba', Gdk.RGBA(
+                229.0, 229.0, 229.0,
+                1.0,
+            ),
+        )
+        _cell.set_property('editable', 0)
+        _cell.set_property('wrap-width', 650)
+        _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
+        _cell.set_property('yalign', 0.1)
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, markup=1)
+
+        _cell = Gtk.CellRendererToggle()
+        _cell.set_property('activatable', 1)
+        _cell.set_property(
+            'cell-background-rgba',
+            Gdk.RGBA(229.0, 229.0, 229.0, 1.0),
+        )
+        _cell.connect('toggled', self._on_cell_edit, None, 2, _model, index)
+        _column.pack_start(_cell, True)
+        _column.set_attributes(_cell, active=2)
+
+        _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+
+        return (_model, _column)
+
+    def __make_ui(self):
         """
-        Make the Requirement Analysis Work View page.
+        Build the Requirement Analysis Work View page.
 
-        :return: _hpaned
-        :rtype: :class:`Gtk.HPaned`
+        :return: None
+        :rtype: None
         """
-        _lst_clear = [
-            _("1. The requirement clearly states what is needed or "
-              "desired."),
-            _("2. The requirement is unambiguous and not open to "
-              "interpretation."),
-            _("3. All terms that can have more than one meaning are "
-              "qualified so that the desired meaning is readily "
-              "apparent."),
-            _("4. Diagrams, drawings, etc. are used to increase "
-              "understanding of the requirement."),
-            _("5. The requirement is free from spelling and "
-              "grammatical errors."),
-            _("6. The requirement is written in non-technical "
-              "language using the vocabulary of the stakeholder."),
-            _("7. Stakeholders understand the requirement as written."),
-            _("8. The requirement is clear enough to be turned over "
-              "to an independent group and still be understood."),
-            _("9. The requirement avoids stating how the problem is "
-              "to be solved or what techniques are to be used.")
-        ]
-        _lst_complete = [
-            _("1. Performance objectives are properly documented "
-              "from the user's point of view."),
-            _("2. No necessary information is missing from the "
-              "requirement."),
-            _("3. The requirement has been assigned a priority."),
-            _("4. The requirement is realistic given the technology "
-              "that will used to implement the system."),
-            _("5. The requirement is feasible to implement given the "
-              "defined project time frame, scope, structure and "
-              "budget."),
-            _("6. If the requirement describes something as a "
-              "'standard' the specific source is cited."),
-            _("7. The requirement is relevant to the problem and its "
-              "solution."),
-            _("8. The requirement contains no implied design details."),
-            _("9. The requirement contains no implied implementation "
-              "constraints."),
-            _("10. The requirement contains no implied project "
-              "management constraints.")
-        ]
-        _lst_consistent = [
-            _("1. The requirement describes a single need or want; "
-              "it could not be broken into several different "
-              "requirements."),
-            _("2. The requirement requires non-standard hardware or "
-              "must use software to implement."),
-            _("3. The requirement can be implemented within known "
-              "constraints."),
-            _("4. The requirement provides an adequate basis for "
-              "design and testing."),
-            _("5. The requirement adequately supports the business "
-              "goal of the project."),
-            _("6. The requirement does not conflict with some "
-              "constraint, policy or regulation."),
-            _("7. The requirement does not conflict with another "
-              "requirement."),
-            _("8. The requirement is not a duplicate of another "
-              "requirement."),
-            _("9. The requirement is in scope for the project.")
-        ]
-        _lst_verifiable = [
-            _("1. The requirement is verifiable by testing, "
-              "demonstration, review, or analysis."),
-            _("2. The requirement lacks 'weasel words' (e.g. "
-              "various, mostly, suitable, integrate, maybe, "
-              "consistent, robust, modular, user-friendly, "
-              "superb, good)."),
-            _("3. Any performance criteria are quantified such that "
-              "they are testable."),
-            _("4. Independent testing would be able to determine "
-              "whether the requirement has been satisfied."),
-            _("5. The task(s) that will validate and verify the "
-              "final design satisfies the requirement have been "
-              "identified."),
-            _("6. The identified V&amp;V task(s) have been added to "
-              "the validation plan (e.g., DVP)")
-        ]
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrolledwindow.add_with_viewport(
+            RAMSTKWorkView._make_buttonbox(
+                self,
+                icons=[],
+                tooltips=[],
+                callbacks=[],
+            ),
+        )
+        self.pack_start(_scrolledwindow, False, False, 0)
 
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _hpaned = Gtk.HPaned()
 
         # Create quadrant #1 (upper left) for determining if the
@@ -830,126 +930,19 @@ class RequirementAnalysis(RAMSTKWorkView):
         _vpaned = Gtk.VPaned()
         _hpaned.pack1(_vpaned, resize=False)
 
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.tvwClear)
-
-        _frame = ramstk.RAMSTKFrame(label=_("Clarity of Requirement"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _vpaned.pack1(_frame, resize=False)
-
-        # Create quadrant #3 (lower left) for determining if the
-        # requirement is complete.
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.tvwComplete)
-
-        _frame = ramstk.RAMSTKFrame(label=_("Completeness of Requirement"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _vpaned.pack2(_frame, resize=False)
+        _vpaned.pack1(self.__make_ui_clear(), resize=False)
+        _vpaned.pack2(self.__make_ui_complete(), resize=False)
 
         # Create quadrant #2 (upper right) for determining if the
         # requirement is consistent.
         _vpaned = Gtk.VPaned()
         _hpaned.pack2(_vpaned, resize=False)
 
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.tvwConsistent)
+        _vpaned.pack1(self.__make_ui_consistent(), resize=False)
+        _vpaned.pack2(self.__make_ui_verifiable(), resize=False)
 
-        _frame = ramstk.RAMSTKFrame(label=_("Consistency of Requirement"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
+        self.pack_start(_hpaned, True, True, 0)
 
-        _vpaned.pack1(_frame, resize=False)
-
-        # Create quadrant #4 (lower right) for determining if the
-        # requirement is verifiable.
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.tvwVerifiable)
-
-        _frame = ramstk.RAMSTKFrame(label=_("Verifiability of Requirement"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _vpaned.pack2(_frame, resize=False)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display requirements analysis       #
-        # information.                                                  #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        for _index, _treeview in enumerate([
-                self.tvwClear, self.tvwComplete, self.tvwConsistent,
-                self.tvwVerifiable
-        ]):
-            _model = Gtk.ListStore(GObject.TYPE_INT, GObject.TYPE_STRING,
-                                   GObject.TYPE_INT)
-            _treeview.set_model(_model)
-            _treeview.set_headers_visible(False)
-
-            _column = Gtk.TreeViewColumn()
-
-            _cell = Gtk.CellRendererText()
-            _cell.set_property('editable', 0)
-            _cell.set_property('visible', 0)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=0)
-
-            _cell = Gtk.CellRendererText()
-            _cell.set_property('cell-background', '#E5E5E5')
-            _cell.set_property('editable', 0)
-            _cell.set_property('wrap-width', 650)
-            _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
-            _cell.set_property('yalign', 0.1)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, markup=1)
-
-            _cell = Gtk.CellRendererToggle()
-            _cell.set_property('activatable', 1)
-            _cell.set_property('cell-background', '#E5E5E5')
-            _cell.connect('toggled', self._on_cell_edit, None, 2, _model,
-                          _index)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, active=2)
-
-            _column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-
-            _treeview.append_column(_column)
-
-        _model = self.tvwClear.get_model()
-        _model.clear()
-        for _index, _answer in enumerate(_lst_clear):
-            _model.append(
-                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
-
-        _model = self.tvwComplete.get_model()
-        _model.clear()
-        for _index, _answer in enumerate(_lst_complete):
-            _model.append(
-                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
-
-        _model = self.tvwConsistent.get_model()
-        _model.clear()
-        for _index, _answer in enumerate(_lst_consistent):
-            _model.append(
-                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
-
-        _model = self.tvwVerifiable.get_model()
-        _model.clear()
-        for _index, _answer in enumerate(_lst_verifiable):
-            _model.append(
-                [_index, "<span weight='bold'>" + _answer + "</span>", 0])
-
-        # Insert the tab.
         _label = Gtk.Label()
         _label.set_markup("<span weight='bold'>" + _("Analysis") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -958,7 +951,134 @@ class RequirementAnalysis(RAMSTKWorkView):
         _label.show_all()
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        return _hpaned
+        self.show_all()
+
+    def __make_ui_clear(self):
+        """
+        Build the Gtk.TreeView() to display the questions about clarity.
+
+        :return: _frame; the RAMSTK Frame() containing the clarity questions.
+        :rtype: :class:`ramstk.gui.gtk.ramstk.RAMSTKFrame`
+        """
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrollwindow.add(self.tvwClear)
+
+        _frame = RAMSTKFrame(label=_("Clarity of Requirement"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        (_model, _column) = self.__make_treeview(0)
+        self.tvwClear.set_model(_model)
+        self.tvwClear.set_headers_visible(False)
+        self.tvwClear.append_column(_column)
+
+        _model.clear()
+        for _index, _answer in enumerate(self._lst_clear):
+            _model.append(
+                [_index, "<span weight='bold'>" + _answer + "</span>", 0],
+            )
+
+        return _frame
+
+    def __make_ui_complete(self):
+        """
+        Build the Gtk.TreeView() to display questions about completeness.
+
+        :return: _frame; the RAMSTK Frame() containing the completeness
+                         questions.
+        :rtype: :class:`ramstk.gui.gtk.ramstk.RAMSTKFrame`
+        """
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrollwindow.add(self.tvwComplete)
+
+        _frame = RAMSTKFrame(label=_("Completeness of Requirement"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        (_model, _column) = self.__make_treeview(1)
+        self.tvwComplete.set_model(_model)
+        self.tvwComplete.set_headers_visible(False)
+        self.tvwComplete.append_column(_column)
+
+        _model.clear()
+        for _index, _answer in enumerate(self._lst_complete):
+            _model.append(
+                [_index, "<span weight='bold'>" + _answer + "</span>", 0],
+            )
+
+        return _frame
+
+    def __make_ui_consistent(self):
+        """
+        Build the Gtk.TreeView() to display the questions about consistency.
+
+        :return: _frame; the RAMSTK Frame() containing the consistency
+                         questions.
+        :rtype: :class:`ramstk.gui.gtk.ramstk.RAMSTKFrame`
+        """
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrollwindow.add(self.tvwConsistent)
+
+        _frame = RAMSTKFrame(label=_("Consistency of Requirement"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        (_model, _column) = self.__make_treeview(2)
+        self.tvwConsistent.set_model(_model)
+        self.tvwConsistent.set_headers_visible(False)
+        self.tvwConsistent.append_column(_column)
+
+        _model.clear()
+        for _index, _answer in enumerate(self._lst_consistent):
+            _model.append(
+                [_index, "<span weight='bold'>" + _answer + "</span>", 0],
+            )
+
+        return _frame
+
+    def __make_ui_verifiable(self):
+        """
+        Build the Gtk.TreeView() to display questions about verifiability.
+
+        :return: _frame; the RAMSTK Frame() containing the verifiability
+                         questions.
+        :rtype: :class:`ramstk.gui.gtk.ramstk.RAMSTKFrame`
+        """
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrollwindow.add(self.tvwVerifiable)
+
+        _frame = RAMSTKFrame(label=_("Verifiability of Requirement"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        (_model, _column) = self.__make_treeview(3)
+        self.tvwVerifiable.set_model(_model)
+        self.tvwVerifiable.set_headers_visible(False)
+        self.tvwVerifiable.append_column(_column)
+
+        _model.clear()
+        for _index, _answer in enumerate(self._lst_verifiable):
+            _model.append(
+                [_index, "<span weight='bold'>" + _answer + "</span>", 0],
+            )
+
+        return _frame
 
     def _do_clear_page(self):
         """
@@ -969,7 +1089,7 @@ class RequirementAnalysis(RAMSTKWorkView):
         """
         for _treeview in [
                 self.tvwClear, self.tvwComplete, self.tvwConsistent,
-                self.tvwVerifiable
+                self.tvwVerifiable,
         ]:
             _model = _treeview.get_model()
             _columns = _treeview.get_columns()
@@ -977,8 +1097,6 @@ class RequirementAnalysis(RAMSTKWorkView):
                 _treeview.remove_column(_column)
 
             _model.clear()
-
-        return None
 
     def _do_load_page(self, attributes):
         """
@@ -989,11 +1107,14 @@ class RequirementAnalysis(RAMSTKWorkView):
         """
         self._revision_id = attributes['revision_id']
         self._requirement_id = attributes['requirement_id']
+
         RAMSTKWorkView.on_select(
             self,
             title=_("Analyzing Requirement {0:s} - {1:s}").format(
                 str(attributes['requirement_code']),
-                str(attributes['description'])))
+                str(attributes['description']),
+            ),
+        )
 
         # Load the Requirement analyses answers.  It's easiest to pack the
         # answers into a list and iterate for each tree.
@@ -1002,7 +1123,7 @@ class RequirementAnalysis(RAMSTKWorkView):
             attributes['q_clarity_2'], attributes['q_clarity_3'],
             attributes['q_clarity_4'], attributes['q_clarity_5'],
             attributes['q_clarity_6'], attributes['q_clarity_7'],
-            attributes['q_clarity_8']
+            attributes['q_clarity_8'],
         ]
         _model = self.tvwClear.get_model()
         _row = _model.get_iter_first()
@@ -1015,7 +1136,7 @@ class RequirementAnalysis(RAMSTKWorkView):
             attributes['q_complete_2'], attributes['q_complete_3'],
             attributes['q_complete_4'], attributes['q_complete_5'],
             attributes['q_complete_6'], attributes['q_complete_7'],
-            attributes['q_complete_8'], attributes['q_complete_9']
+            attributes['q_complete_8'], attributes['q_complete_9'],
         ]
         _model = self.tvwComplete.get_model()
         _row = _model.get_iter_first()
@@ -1028,7 +1149,7 @@ class RequirementAnalysis(RAMSTKWorkView):
             attributes['q_consistent_2'], attributes['q_consistent_3'],
             attributes['q_consistent_4'], attributes['q_consistent_5'],
             attributes['q_consistent_6'], attributes['q_consistent_7'],
-            attributes['q_consistent_8']
+            attributes['q_consistent_8'],
         ]
         _model = self.tvwConsistent.get_model()
         _row = _model.get_iter_first()
@@ -1039,15 +1160,13 @@ class RequirementAnalysis(RAMSTKWorkView):
         self._lst_verifiable_a = [
             attributes['q_verifiable_0'], attributes['q_verifiable_1'],
             attributes['q_verifiable_2'], attributes['q_verifiable_3'],
-            attributes['q_verifiable_4'], attributes['q_verifiable_5']
+            attributes['q_verifiable_4'], attributes['q_verifiable_5'],
         ]
         _model = self.tvwVerifiable.get_model()
         _row = _model.get_iter_first()
         for _answer in self._lst_verifiable_a:
             _model.set_value(_row, 2, _answer)
             _row = _model.iter_next(_row)
-
-        return None
 
     def _do_request_update(self, __button):
         """
@@ -1058,12 +1177,12 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
-            'request_update_requirement', node_id=self._requirement_id)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
+            'request_update_requirement',
+            node_id=self._requirement_id,
+        )
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -1074,11 +1193,9 @@ class RequirementAnalysis(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_requirements')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return None
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _on_cell_edit(self, cell, path, new_text, position, model, index):
         """
@@ -1121,16 +1238,17 @@ class RequirementAnalysis(RAMSTKWorkView):
                 self._lst_verifiable_a[position] = new_text
                 _key = 'q_verifiable_{0:d}'.format(position)
         except IndexError:
-            _debug_msg = ("RAMSTK ERROR: No position {0:d} in Requirements "
-                          "Analysis question list for index {1:d}.").format(
-                              position, index)
-            self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(
-                _debug_msg)
+            _debug_msg = (
+                "RAMSTK ERROR: No position {0:d} in Requirements "
+                "Analysis question list for index {1:d}."
+            ).format(
+                position, index,
+            )
+            self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_debug_msg)
 
         pub.sendMessage(
             'wvw_editing_requirement',
             module_id=self._requirement_id,
             key=_key,
-            value=new_text)
-
-        return None
+            value=new_text,
+        )

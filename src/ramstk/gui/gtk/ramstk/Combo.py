@@ -7,77 +7,66 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Combo Module."""
 
-# Import the ramstk.Widget base class.
+# RAMSTK Local Imports
 from .Widget import GObject, Gtk
 
 
 class RAMSTKComboBox(Gtk.ComboBox):
     """This is the RAMSTK ComboBox class."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, index=0, simple=True, **kwargs):
         r"""
         Create RAMSTK ComboBox widgets.
 
-        :param \**kwargs: See below
-
-        :Keyword Arguments:
-            * *height* (int) -- height of the Gtk.ComboBox() widget.
-                                Default is 30.
-            * *index* (int) -- the index in the RAMSTKComboBox Gtk.ListView()
-                               to display.  Only needed with complex
-                               RAMSTKComboBox.
-                               Default is 0.
-            * *simple* (bool) -- indicates whether to make a simple (one item)
-                                 or complex (three item) RAMSTKComboBox.
-                                 Default is True.
-            * *tooltip* (str) -- the tooltip, if any, for the combobox.
-                                 Default is an empty string.
-            * *width* (int) -- width of the Gtk.ComboBox() widget.
-                               Default is 200.
+        :keyword int index: the index in the RAMSTKComboBox Gtk.ListView() to
+        display.  Default is 0.
+        :keyword bool simple: indicates whether to make a simple (one item) or
+        complex (three item) RAMSTKComboBox.  Default is True.
         """
         GObject.GObject.__init__(self)
 
-        try:
-            _height = kwargs['height']
-        except KeyError:
-            _height = 30
-        try:
-            _index = kwargs['index']
-        except KeyError:
-            _index = 0
-        try:
-            _simple = kwargs['simple']
-        except KeyError:
-            _simple = True
-        try:
-            _tooltip = kwargs['tooltip']
-        except KeyError:
-            _tooltip = ''
-        try:
-            _width = kwargs['width']
-        except KeyError:
-            _width = 200
+        self._index = index
 
-        # Set widget properties.
-        self.props.width_request = _width
-        self.props.height_request = _height
-
-        if not _simple:
-            _list = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
-                                  GObject.TYPE_STRING)
+        if not simple:
+            _list = Gtk.ListStore(
+                GObject.TYPE_STRING, GObject.TYPE_STRING,
+                GObject.TYPE_STRING,
+            )
         else:
             _list = Gtk.ListStore(GObject.TYPE_STRING)
+        self.set_model(_list)
 
         _cell = Gtk.CellRendererText()
         self.pack_start(_cell, True)
-        self.add_attribute(_cell, 'text', _index)
-
-        self.set_model(_list)
-        self.set_tooltip_markup(_tooltip)
+        self.add_attribute(_cell, 'text', self._index)
 
         self.show()
 
-    def do_load_combo(self, entries, index=0, simple=True):
+        # TODO: Remove the call to do_set_properties() in the RAMSTKComboBox.__init__() method when all instances of RAMSTKComboBox() have been refactored.
+        self.do_set_properties(**kwargs)
+
+    def do_get_options(self):
+        """
+        Retrieve all the options in the RAMSTK Combo.
+
+        :return: _options
+        :rtype: dict
+        """
+        _options = {}
+
+        _model = self.get_model()
+        _iter = _model.get_iter_first()
+
+        i = 0
+        while _iter is not None:
+            _options[i] = _model.get_value(_iter, self._index)
+            _iter = _model.iter_next(_iter)
+            i += 1
+
+        return _options
+
+    # TODO: Remove index in calls to the RAMSTKComboBox.do_load_combo() method and then remove index from the argument list.
+    def do_load_combo(self, entries, index=0, simple=True): # pylint: disable=unused-argument
         """
         Load RAMSTK ComboBox widgets.
 
@@ -100,11 +89,9 @@ class RAMSTKComboBox(Gtk.ComboBox):
                               two fields might contain a code and an index.
                               These could be extracted for use in the RAMSTK
                               Views.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         _model = self.get_model()
         _model.clear()
 
@@ -115,6 +102,57 @@ class RAMSTKComboBox(Gtk.ComboBox):
         else:
             _model.append([""])
             for __, _entry in enumerate(entries):
-                _model.append([_entry[index]])
+                _model.append([_entry[self._index]])
 
-        return _return
+    def do_set_properties(self, **kwargs):
+        r"""
+        Set the properties of the RAMSTK combobox.
+
+        :param \**kwargs: See below
+
+        :Keyword Arguments:
+            * *height* (int) -- height of the Gtk.ComboBox() widget.
+                                Default is 30.
+            * *tooltip* (str) -- the tooltip, if any, for the combobox.
+                                 Default is an empty string.
+            * *width* (int) -- width of the Gtk.ComboBox() widget.
+                               Default is 200.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _height = kwargs['height']
+        except KeyError:
+            _height = 30
+        try:
+            _tooltip = kwargs['tooltip']
+        except KeyError:
+            _tooltip = ''
+        try:
+            _width = kwargs['width']
+        except KeyError:
+            _width = 200
+
+        self.props.width_request = _width
+        self.props.height_request = _height
+        self.set_tooltip_markup(_tooltip)
+
+    def do_update(self, value, handler_id):
+        """
+        Update the RAMSTK Combo with a new value.
+
+        :param str value: the information to update the RAMSTKCombo() to
+        display.
+        :param int handler_id: the handler ID associated with the
+        RAMSTKCombo().
+        :return: None
+        :rtype: None
+        """
+        _options = self.do_get_options()
+
+        self.handler_block(handler_id)
+        self.set_active(0)
+        for _key, _value in _options.items():
+            if _value == value:
+                self.set_active(int(_key))
+        self.handler_unblock(handler_id)

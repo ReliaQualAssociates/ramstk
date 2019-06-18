@@ -6,20 +6,15 @@
 # Copyright 2007, 2018 Doyle "weibullguy" Rowland
 """Export Assistant Module."""
 
+# Standard Library Imports
 import os
 
-# Export other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk import RAMSTKMessageDialog
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk, set_cursor
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007, 2018 Doyle "weibullguy" Rowland'
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKFileChooser, RAMSTKMessageDialog
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 
 
-class RAMSTKExport(ramstk.RAMSTKFileChooser):
+class RAMSTKExport(RAMSTKFileChooser):
     """Assistant to walk user through the process of exporting records."""
 
     def __init__(self, controller, module, tree):
@@ -30,9 +25,10 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
         :type controller: :class:`ramstk.RAMSTK.RAMSTK`
         :param str module: the RAMSTK module to export.
         """
-        ramstk.RAMSTKFileChooser.__init__(
+        RAMSTKFileChooser.__init__(
             self, _("RAMSTK Export"),
-            controller.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR)
+            controller.RAMSTK_CONFIGURATION.RAMSTK_PROG_DIR,
+        )
 
         # Initialize private dict variables.
 
@@ -61,8 +57,6 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
         """
         self.destroy()
 
-        return None
-
     def _do_request_export(self, filetype, filename):
         """
         Request the data controller insert new records.
@@ -77,15 +71,14 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
         :return: None
         :rtype: None
         """
-        set_cursor(self._mdcRAMSTK, Gdk.CursorType.WATCH)
+        self.set_cursor(Gdk.CursorType.WATCH)
 
         self._dtc_data_controller.request_do_load_output(
-            self._module, self._tree)
+            self._module, self._tree,
+        )
         self._dtc_data_controller.request_do_export(filetype, filename)
 
-        set_cursor(self._mdcRAMSTK, Gdk.CursorType.LEFT_PTR)
-
-        return None
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_select_file(self):
         """
@@ -106,8 +99,10 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
                 _filetype = 'excel'
 
             if os.path.exists(_filename):
-                _prompt = _("File {0:s} already exists.  "
-                            "Overwrite?").format(_filename)
+                _prompt = _(
+                    "File {0:s} already exists.  "
+                    "Overwrite?",
+                ).format(_filename)
                 _icon = self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
                         '/32x32/warning.png'
                 _dialog = RAMSTKMessageDialog(_prompt, _icon, 'question')
@@ -126,5 +121,3 @@ class RAMSTKExport(ramstk.RAMSTKFileChooser):
                 self._do_select_file()
 
         self._do_quit()
-
-        return None

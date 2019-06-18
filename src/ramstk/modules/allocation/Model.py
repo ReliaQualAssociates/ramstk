@@ -6,19 +6,20 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Allocation Package Data Models."""
 
-# Import third party packages.
+# Third Party Imports
 from pubsub import pub
 from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataModel
+# RAMSTK Package Imports
 from ramstk.dao import RAMSTKAllocation
+from ramstk.modules import RAMSTKDataModel
 
 
 class AllocationDataModel(RAMSTKDataModel):
     """Contain the attributes and methods of a reliability allocation."""
 
     _tag = 'Allocations'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -42,166 +43,6 @@ class AllocationDataModel(RAMSTKDataModel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-
-    def do_select_all(self, **kwargs):
-        """
-        Retrieve all the Allocations from the RAMSTK Program database.
-
-        This method retrieves all the records from the RAMSTKAllocation table in
-        the connected RAMSTK Program database.  It then adds each to the
-        Allocation data model treelib.Tree().
-
-        :return: tree; the Tree() of RAMSTKAllocation data models.
-        :rtype: :class:`treelib.Tree`
-        """
-        _revision_id = kwargs['revision_id']
-        _session = RAMSTKDataModel.do_select_all(self)
-
-        for _allocation in _session.query(RAMSTKAllocation).filter(
-                RAMSTKAllocation.revision_id == _revision_id).all():
-            # We get and then set the attributes to replace any None values
-            # (NULL fields in the database) with their default value.
-            _attributes = _allocation.get_attributes()
-            _allocation.set_attributes(_attributes)
-            self.tree.create_node(
-                'Allocation ID: {0:d}'.format(_allocation.hardware_id),
-                _allocation.hardware_id,
-                parent=_allocation.parent_id,
-                data=_allocation)
-
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RAMSTKDataModel.__init__
-            try:
-                self.last_id = max(self.last_id, _allocation.hardware_id)
-            except TypeError:
-                self.last_id = _allocation.hardware_id
-
-        _session.close()
-
-        # If we're not running a test and there were allocations returned,
-        # let anyone who cares know the Allocations have been selected.
-        if not self._test and self.tree.size() > 1:
-            pub.sendMessage('retrieved_allocations', tree=self.tree)
-
-        return None
-
-    def do_select_children(self, node_id):
-        """
-        Select a list containing the immediate child nodes.
-
-        :param int node_id: the Node (Hardware) ID to select the subtree for.
-        :return: a list of the immediate child nodes of the passed Node
-                 (Hardware) ID.
-        :rtype: list
-        """
-        try:
-            _children = self.tree.children(node_id)
-        except NodeIDAbsentError:
-            _children = None
-
-        return _children
-
-    def do_insert(self, **kwargs):
-        """
-        Add a record to the RAMSTKAllocation table.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _allocation = RAMSTKAllocation()
-        _allocation.revision_id = kwargs['revision_id']
-        _allocation.hardware_id = kwargs['hardware_id']
-        _allocation.parent_id = kwargs['parent_id']
-        _error_code, _msg = RAMSTKDataModel.do_insert(
-            self, entities=[
-                _allocation,
-            ])
-
-        if _error_code == 0:
-            try:
-                self.tree.create_node(
-                    'Allocation ID: {0:d}'.format(_allocation.hardware_id),
-                    _allocation.hardware_id,
-                    parent=_allocation.parent_id,
-                    data=_allocation)
-                self.last_id = max(self.last_id, _allocation.hardware_id)
-            except DuplicatedNodeIdError:
-                _error_code = 1
-                _msg = ('RAMSTK ERROR: Node ID {0:s} already exists in the '
-                        'Allocation tree for Hardware ID {1:s}').format(
-                            str(_allocation.hardware_id),
-                            str(_allocation.parent_id))
-
-        return _error_code, _msg
-
-    def do_delete(self, node_id):
-        """
-        Remove a record from the RAMSTKFailureDefinition table.
-
-        :param int node_id: the PyPubSub Tree() ID of the Allocation to be
-                            removed.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
-
-        # pylint: disable=attribute-defined-outside-init
-        # It is defined in RAMSTKDataModel.__init__
-        if _error_code != 0:
-            _error_code = 1
-            _msg = _msg + (
-                '\n  RAMSTK ERROR: Attempted to delete non-existent '
-                'Allocation ID {0:d}.').format(node_id)
-        else:
-            self.last_id = max(self.tree.nodes.keys())
-
-        return _error_code, _msg
-
-    def do_update(self, node_id):
-        """
-        Update the record in the RAMSTKAllocation table.
-
-        :param int node_id: the PyPubSub Tree() ID of the Allocation to save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
-
-        if _error_code != 0:
-            _error_code = 2207
-            _msg = 'RAMSTK ERROR: Attempted to save non-existent Allocation ' \
-                   'ID {0:d}.'.format(node_id)
-
-        return _error_code, _msg
-
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Update all RAMSTKAllocation records.
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more line items in the reliability "
-                    "allocation analysis worksheet did not update.")
-
-        if _error_code == 0:
-            _msg = (
-                "RAMSTK SUCCESS: Updating all line items in the reliability "
-                "allocation analysis worksheet.")
-
-        return _error_code, _msg
 
     def do_calculate(self, node_id, **kwargs):
         """
@@ -240,21 +81,49 @@ class AllocationDataModel(RAMSTKDataModel):
             ])
             for _child in _children:
                 if _parent.method_id == 1:
-                    _return = (_return or _child.data.equal_apportionment(
-                        _parent.n_sub_systems, _parent.reliability_goal))
+                    _return = (
+                        _return or _child.data.equal_apportionment(
+                            _parent.n_sub_systems,
+                            _parent.reliability_goal,
+                        )
+                    )
                 elif _parent.method_id == 2:
-                    _return = (_return or _child.data.agree_apportionment(
-                        _parent.n_sub_systems, _parent.reliability_goal))
+                    _return = (
+                        _return or _child.data.agree_apportionment(
+                            _parent.n_sub_systems,
+                            _parent.reliability_goal,
+                        )
+                    )
                 elif _parent.method_id == 3:
-                    _return = (_return or _child.data.arinc_apportionment(
-                        _hazard_rates[0], _parent.hazard_rate_goal,
-                        _hazard_rates[_idx]))
+                    _return = (
+                        _return or _child.data.arinc_apportionment(
+                            _hazard_rates[0],
+                            _parent.hazard_rate_goal,
+                            _hazard_rates[_idx],
+                        )
+                    )
                     _idx += 1
                 elif _parent.method_id == 4:
-                    _return = (_return or _child.data.foo_apportionment(
-                        _parent.weight_factor, _parent.hazard_rate_goal))
+                    _return = (
+                        _return or _child.data.foo_apportionment(
+                            _parent.weight_factor,
+                            _parent.hazard_rate_goal,
+                        )
+                    )
         else:
             _return = True
+
+        if not self._test and not _return:
+            _attributes = {
+                'revision_id': _parent.revision_id,
+                'hardware_id': _parent.hardware_id,
+                'method_id': _parent.method_id,
+                'goal_measure_id': _parent.goal_measure_id,
+                'hazard_rate_goal': _parent.hazard_rate_goal,
+                'mtbf_goal': _parent.mtbf_goal,
+                'reliability_goal': _parent.reliability_goal,
+            }
+            pub.sendMessage('calculated_allocation', attributes=_attributes)
 
         return _return
 
@@ -273,3 +142,171 @@ class AllocationDataModel(RAMSTKDataModel):
                 self.do_calculate(_node.identifier, **kwargs)
 
         return _return
+
+    def do_delete(self, node_id):
+        """
+        Remove a record from the RAMSTKFailureDefinition table.
+
+        :param int node_id: the PyPubSub Tree() ID of the Allocation to be
+                            removed.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RAMSTKDataModel.do_delete(self, node_id)
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RAMSTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 1
+            _msg = _msg + (
+                '\n  RAMSTK ERROR: Attempted to delete non-existent '
+                'Allocation ID {0:d}.'
+            ).format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
+
+            # If we're not running a test, let anyone who cares know an
+            # Allocation was deleted.
+            if not self._test:
+                pub.sendMessage('deleted_allocation', tree=self.tree)
+
+        return _error_code, _msg
+
+    def do_insert(self, **kwargs):
+        """
+        Add a record to the RAMSTKAllocation table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _allocation = RAMSTKAllocation()
+        _allocation.revision_id = kwargs['revision_id']
+        _allocation.hardware_id = kwargs['hardware_id']
+        _allocation.parent_id = kwargs['parent_id']
+        _error_code, _msg = RAMSTKDataModel.do_insert(
+            self,
+            entities=[
+                _allocation,
+            ],
+        )
+
+        if _error_code == 0:
+            try:
+                self.tree.create_node(
+                    'Allocation ID: {0:d}'.format(_allocation.hardware_id, ),
+                    _allocation.hardware_id,
+                    parent=_allocation.parent_id,
+                    data=_allocation,
+                )
+                self.last_id = max(self.last_id, _allocation.hardware_id)
+            except DuplicatedNodeIdError:
+                _error_code = 1
+                _msg = (
+                    'RAMSTK ERROR: Node ID {0:s} already exists in the '
+                    'Allocation tree for Hardware ID {1:s}'
+                ).format(
+                    str(_allocation.hardware_id),
+                    str(_allocation.parent_id),
+                )
+
+            # If we're not running a test, let anyone who cares know a new
+            # Allocation was inserted.
+            if not self._test:
+                pub.sendMessage('inserted_allocation', tree=self.tree)
+
+        return _error_code, _msg
+
+    def do_select_all(self, **kwargs):
+        """
+        Retrieve all the Allocations from the RAMSTK Program database.
+
+        This method retrieves all the records from the RAMSTKAllocation table in
+        the connected RAMSTK Program database.  It then adds each to the
+        Allocation data model treelib.Tree().
+
+        :return: None
+        :rtype: None
+        """
+        _revision_id = kwargs['revision_id']
+        _session = RAMSTKDataModel.do_select_all(self)
+
+        for _allocation in _session.query(RAMSTKAllocation).filter(
+                RAMSTKAllocation.revision_id == _revision_id, ).all():
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _allocation.get_attributes()
+            _allocation.set_attributes(_attributes)
+            self.tree.create_node(
+                'Allocation ID: {0:d}'.format(_allocation.hardware_id, ),
+                _allocation.hardware_id,
+                parent=_allocation.parent_id,
+                data=_allocation,
+            )
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RAMSTKDataModel.__init__
+            try:
+                self.last_id = max(self.last_id, _allocation.hardware_id)
+            except TypeError:
+                self.last_id = _allocation.hardware_id
+
+        _session.close()
+
+        # If we're not running a test and there were allocations returned,
+        # let anyone who cares know the Allocations have been selected.
+        if not self._test and self.tree.size() > 1:
+            pub.sendMessage('retrieved_allocations', tree=self.tree)
+
+    def do_select_children(self, node_id):
+        """
+        Select a list containing the immediate child nodes.
+
+        :param int node_id: the Node (Hardware) ID to select the subtree for.
+        :return: a list of the immediate child nodes of the passed Node
+                 (Hardware) ID.
+        :rtype: list
+        """
+        try:
+            _children = self.tree.children(node_id)
+        except NodeIDAbsentError:
+            _children = None
+
+        return _children
+
+    def do_update(self, node_id):
+        """
+        Update the record in the RAMSTKAllocation table.
+
+        :param int node_id: the PyPubSub Tree() ID of the Allocation to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = RAMSTKDataModel.do_update(self, node_id)
+
+        if _error_code == 0:
+            if not self._test:
+                _attributes = self.do_select(node_id).get_attributes()
+                pub.sendMessage('updated_allocation', attributes=_attributes)
+        else:
+            _error_code = 2207
+            _msg = 'RAMSTK ERROR: Attempted to save non-existent Allocation ' \
+                   'ID {0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def do_update_all(self, **kwargs):
+        """
+        Update all RAMSTKAllocation records.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
+
+        if _error_code == 0:
+            _msg = (
+                "RAMSTK SUCCESS: Updating all line items in the reliability "
+                "allocation analysis worksheet."
+            )
+
+        return _error_code, _msg

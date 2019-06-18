@@ -156,7 +156,7 @@ notes=FIXME,XXX,TODO
 [SIMILARITIES]
 
 # Minimum lines number of a similarity.
-min-similarity-lines=10
+min-similarity-lines=18
 
 # Ignore comments when computing similarities.
 ignore-comments=yes
@@ -244,7 +244,6 @@ min-public-methods=2
 
 # Maximum number of public methods for a class (see R0904).
 max-public-methods=20
-
 
 [IMPORTS]
 

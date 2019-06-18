@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.components.Relay.py is part of the RAMSTK
+#       gui.gtk.workviews.components.Relay.py is part of the RAMSTK
 #       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Relay Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKComboBox, RAMSTKEntry
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                           AssessmentResults)
+
+# RAMSTK Local Imports
+from .Component import AssessmentInputs, AssessmentResults
 
 
 class RelayAssessmentInputs(AssessmentInputs):
@@ -66,77 +68,110 @@ class RelayAssessmentInputs(AssessmentInputs):
     """
 
     # Define private dict attributes.
+    _dic_keys = {
+        0: 'quality_id',
+        1: 'type_id',
+        2: 'technology_id',
+        3: 'contact_form_id',
+        4: 'contact_rating_id',
+        5: 'application_id',
+        6: 'construction_id',
+        7: 'n_cycles',
+    }
+
     _dic_quality = {
         1: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
-        2: [["MIL-SPEC"], [_("Lower")]]
+        2: [["MIL-SPEC"], [_("Lower")]],
     }
     # Key is subcategory ID.  Index is type ID.
     _dic_pc_types = {
-        1: [[_("General Purpose")], [_("Contactor, High Current")],
+        1: [
+            [_("General Purpose")], [_("Contactor, High Current")],
             [_("Latching")], [_("Reed")], [_("Thermal, Bi-Metal")],
-            [_("Meter Movement")]],
-        2: [[_("Solid State")], [_("Hybrid and Solid State Time Delay")]]
+            [_("Meter Movement")],
+        ],
+        2: [[_("Solid State")], [_("Hybrid and Solid State Time Delay")]],
     }
     # Key is subcategory ID, index is type ID.
     _dic_types = {
         1: [[_("85C Rated")], [_("125C Rated")]],
-        2: [[_("Solid State")], [_("Solid State Time Delay")],
-            [_("Hybrid")]]
+        2: [
+            [_("Solid State")], [_("Solid State Time Delay")],
+            [_("Hybrid")],
+        ],
     }
     # Key is contact rating ID.  Index is application ID.
     _dic_application = {
         1: [[_("Dry Circuit")]],
-        2: [[_("General Purpose")], [_("Sensitve (0 - 100mW)")],
+        2: [
+            [_("General Purpose")], [_("Sensitve (0 - 100mW)")],
             [_("Polarized")], [_("Vibrating Reed")], [_("High Speed")],
             [_("Thermal Time Delay")],
             [_("Electronic Time Delay, Non-Thermal")],
-            [_("Latching, Magnetic")]],
+            [_("Latching, Magnetic")],
+        ],
         3: [[_("High Voltage")], [_("Medium Power")]],
-        4: [[_("Contactors, High Current")]]
+        4: [[_("Contactors, High Current")]],
     }
     # First key is contact rating ID, second key is application ID.  Index is
     # construction ID.
     _dic_construction = {
         1: {
-            1: [[_("Armature (Long)")], [_("Dry Reed")],
+            1: [
+                [_("Armature (Long)")], [_("Dry Reed")],
                 [_("Mercury Wetted")], [_("Magnetic Latching")],
-                [_("Balanced Armature")], [_("Solenoid")]]
+                [_("Balanced Armature")], [_("Solenoid")],
+            ],
         },
         2: {
-            1: [[_("Armature (Long)")], [_("Balanced Armature")],
-                [_("Solenoid")]],
-            2: [[_("Armature (LOng and Short)")], [_("Mercury Wetted")],
+            1: [
+                [_("Armature (Long)")], [_("Balanced Armature")],
+                [_("Solenoid")],
+            ],
+            2: [
+                [_("Armature (LOng and Short)")], [_("Mercury Wetted")],
                 [_("Magnetic Latching")], [_("Meter Movement")],
-                [_("Balanced Armature")]],
+                [_("Balanced Armature")],
+            ],
             3: [[_("Armature (Short)")], [_("Meter Movement")]],
             4: [[_("Dry Reed")], [_("Mercury Wetted")]],
             5: [[_("Armature (Balanced and Short)")], [_("Dry Reed")]],
             6: [[_("Bimetal")]],
-            8: [[_("Dry Reed")], [_("Mercury Wetted")],
-                [_("Balanced Armature")]]
+            8: [
+                [_("Dry Reed")], [_("Mercury Wetted")],
+                [_("Balanced Armature")],
+            ],
         },
         3: {
             1: [[_("Vacuum (Glass)")], [_("Vacuum (Ceramic)")]],
-            2: [[_("Armature (Long and Short)")], [_("Mercury Wetted")],
+            2: [
+                [_("Armature (Long and Short)")], [_("Mercury Wetted")],
                 [_("Magnetic Latching")], [_("Mechanical Latching")],
-                [_("Balanced Armature")], [_("Solenoid")]]
+                [_("Balanced Armature")], [_("Solenoid")],
+            ],
         },
         4: {
-            1: [[_("Armature (Short)")], [_("Mechanical Latching")],
-                [_("Balanced Armature")], [_("Solenoid")]]
-        }
+            1: [
+                [_("Armature (Short)")], [_("Mechanical Latching")],
+                [_("Balanced Armature")], [_("Solenoid")],
+            ],
+        },
     }
 
     # Define private list attributes.
     # Index is the technology ID (load type).
     _lst_technology = [[_("Resistive")], [_("Inductive")], [_("Lamp")]]
     # Index is the contact form ID.
-    _lst_contact_form = [["SPST"], ["DPST"], ["SPDT"], ["3PST"], ["4PST"],
-                         ["DPDT"], ["3PDT"], ["4PDT"], ["6PDT"]]
+    _lst_contact_form = [
+        ["SPST"], ["DPST"], ["SPDT"], ["3PST"], ["4PST"],
+        ["DPDT"], ["3PDT"], ["4PDT"], ["6PDT"],
+    ]
     # Index is contact rating ID.
-    _lst_contact_rating = [[_("Signal Current (low mV and mA)")],
-                           [_("0 - 5 Amp")], [_("5 - 20 Amp")],
-                           [_("20 - 600 Amp")]]
+    _lst_contact_rating = [
+        [_("Signal Current (low mV and mA)")],
+        [_("0 - 5 Amp")], [_("5 - 20 Amp")],
+        [_("20 - 600 Amp")],
+    ]
     _lst_labels = [
         _("Quality Level:"),
         _("Type:"),
@@ -145,12 +180,17 @@ class RelayAssessmentInputs(AssessmentInputs):
         _("Contact Rating:"),
         _("Application:"),
         _("Construction:"),
-        _("Number of Cycles/Hour:")
+        _("Number of Cycles/Hour:"),
     ]
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Relay assessment input view."""
-        AssessmentInputs.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Relay assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentInputs.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -163,53 +203,122 @@ class RelayAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The relay type."))
-        self.cmbLoadType = ramstk.RAMSTKComboBox(
+        self.cmbType = RAMSTKComboBox(
+            index=0, simple=True,
+        )
+        self.cmbLoadType = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The type of load the relay is switching."))
-        self.cmbContactForm = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The contact form of the relay."))
-        self.cmbContactRating = ramstk.RAMSTKComboBox(
+        )
+        self.cmbContactForm = RAMSTKComboBox(
+            index=0, simple=True,
+        )
+        self.cmbContactRating = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The rating of the relay contacts."))
-        self.cmbApplication = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The type of relay appliction."))
-        self.cmbConstruction = ramstk.RAMSTKComboBox(
+        )
+        self.cmbApplication = RAMSTKComboBox(
+            index=0, simple=True,
+        )
+        self.cmbConstruction = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The method of construction of the relay."))
-        self.txtCycles = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of relay on/off cycles per hour."))
+        )
+        self.txtCycles = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
-
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbType.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.cmbLoadType.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbContactForm.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.cmbContactRating.connect('changed', self._on_combo_changed,
-                                          4))
-        self._lst_handler_id.append(
-            self.cmbApplication.connect('changed', self._on_combo_changed, 5))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 6))
-
-        self._lst_handler_id.append(
-            self.txtCycles.connect('changed', self._on_focus_out, 7))
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+
+    def __make_ui(self):
+        """
+        Make the Hardware class Gtk.Notebook() assessment input page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for inductors.
+        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
+
+        self.put(self.cmbType, _x_pos, _y_pos[1])
+        self.put(self.cmbLoadType, _x_pos, _y_pos[2])
+        self.put(self.cmbContactForm, _x_pos, _y_pos[3])
+        self.put(self.cmbContactRating, _x_pos, _y_pos[4])
+        self.put(self.cmbApplication, _x_pos, _y_pos[5])
+        self.put(self.cmbConstruction, _x_pos, _y_pos[6])
+        self.put(self.txtCycles, _x_pos, _y_pos[7])
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for Relay assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self._on_combo_changed, 0),
+        )
+        self._lst_handler_id.append(
+            self.cmbType.connect('changed', self._on_combo_changed, 1),
+        )
+        self._lst_handler_id.append(
+            self.cmbLoadType.connect('changed', self._on_combo_changed, 2),
+        )
+        self._lst_handler_id.append(
+            self.cmbContactForm.connect('changed', self._on_combo_changed, 3),
+        )
+        self._lst_handler_id.append(
+            self.cmbContactRating.connect(
+                'changed', self._on_combo_changed,
+                4,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.cmbApplication.connect('changed', self._on_combo_changed, 5),
+        )
+        self._lst_handler_id.append(
+            self.cmbConstruction.connect('changed', self._on_combo_changed, 6),
+        )
+
+        self._lst_handler_id.append(
+            self.txtCycles.connect('changed', self.on_focus_out, 7),
+        )
+
+    def __set_properties(self):
+        """
+        Set properties for Relay assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbType.do_set_properties(
+            tooltip=_("The relay type."),
+        )
+        self.cmbLoadType.do_set_properties(
+            tooltip=_("The type of load the relay is switching."),
+        )
+        self.cmbContactForm.do_set_properties(
+            tooltip=_("The contact form of the relay."),
+        )
+        self.cmbContactRating.do_set_properties(
+            tooltip=_("The rating of the relay contacts."),
+        )
+        self.cmbApplication.do_set_properties(
+            tooltip=_("The type of relay appliction."),
+        )
+        self.cmbConstruction.do_set_properties(
+            tooltip=_("The method of construction of the relay."),
+        )
+        self.txtCycles.do_set_properties(
+            width=125,
+            tooltip=_("The number of relay on/off cycles per hour."),
+        )
 
     def _do_load_comboboxes(self, subcategory_id):
         """
@@ -219,14 +328,16 @@ class RelayAssessmentInputs(AssessmentInputs):
         the relay subcategory is changed.
 
         :param int subcategory_id: the newly selected miscellaneous hardware
-                                   item subcategory ID.
+        item subcategory ID.
         :return: None
         :rtype: None
         """
         # Load the quality level RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
-            _data = [[_("Established Reliability")], ["MIL-SPEC"],
-                     [_("Lower")]]
+            _data = [
+                [_("Established Reliability")], ["MIL-SPEC"],
+                [_("Lower")],
+            ]
         else:
             try:
                 _data = self._dic_quality[subcategory_id]
@@ -256,26 +367,16 @@ class RelayAssessmentInputs(AssessmentInputs):
         # Load the contact rating RAMSTKComboBox().
         self.cmbContactRating.do_load_combo(self._lst_contact_rating)
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Relay assesment input widgets.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Relay.
+        Relay.
         :return: None
         :rtype: None
         """
-        self._hardware_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        self._do_load_comboboxes(self._subcategory_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        AssessmentInputs.do_load_page(self, attributes)
 
         self.cmbType.handler_block(self._lst_handler_id[1])
         self.cmbType.set_active(attributes['type_id'])
@@ -304,8 +405,11 @@ class RelayAssessmentInputs(AssessmentInputs):
             self.cmbApplication.set_active(attributes['application_id'])
             # Load the construction RAMSTKComboBox().
             try:
-                _data = self._dic_construction[attributes[
-                    'contact_rating_id']][attributes['application_id']]
+                _data = self._dic_construction[
+                    attributes[
+                        'contact_rating_id'
+                    ]
+                ][attributes['application_id']]
             except KeyError:
                 _data = []
             self.cmbConstruction.do_load_combo(_data)
@@ -317,12 +421,11 @@ class RelayAssessmentInputs(AssessmentInputs):
 
             self.txtCycles.handler_block(self._lst_handler_id[7])
             self.txtCycles.set_text(
-                str(self.fmt.format(attributes['n_cycles'])))
+                str(self.fmt.format(attributes['n_cycles'])),
+            )
             self.txtCycles.handler_unblock(self._lst_handler_id[7])
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -348,28 +451,6 @@ class RelayAssessmentInputs(AssessmentInputs):
                 self.cmbConstruction.set_sensitive(True)
                 self.txtCycles.set_sensitive(True)
 
-        return None
-
-    def _make_page(self):
-        """
-        Make the Hardware class Gtk.Notebook() assessment input page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_page(self)
-
-        self.put(self.cmbType, _x_pos, _y_pos[1])
-        self.put(self.cmbLoadType, _x_pos, _y_pos[2])
-        self.put(self.cmbContactForm, _x_pos, _y_pos[3])
-        self.put(self.cmbContactRating, _x_pos, _y_pos[4])
-        self.put(self.cmbApplication, _x_pos, _y_pos[5])
-        self.put(self.cmbConstruction, _x_pos, _y_pos[6])
-        self.put(self.txtCycles, _x_pos, _y_pos[7])
-
-        return None
-
     def _on_combo_changed(self, combo, index):
         """
         Retrieve RAMSTKCombo() changes and assign to Relay attribute.
@@ -379,7 +460,7 @@ class RelayAssessmentInputs(AssessmentInputs):
             * Gtk.Combo() 'changed' signal
 
         :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
+        :type combo: :class:`gui.gtk.RAMSTKCombo`
         :param int index: the position in the signal handler list associated
                           with the calling RAMSTKComboBox().  Indices are:
 
@@ -396,26 +477,7 @@ class RelayAssessmentInputs(AssessmentInputs):
         :return: None
         :rtype: None
         """
-        _dic_keys = {
-            0: 'quality_id',
-            1: 'type_id',
-            2: 'technology_id',
-            3: 'contact_form_id',
-            4: 'contact_rating_id',
-            5: 'application_id',
-            6: 'construction_id'
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
+        AssessmentInputs.on_combo_changed(self, combo, index)
 
         if index == 4:
             # Load the application RAMSTKComboBox().
@@ -431,70 +493,11 @@ class RelayAssessmentInputs(AssessmentInputs):
             _contact_rating_id = int(self.cmbContactRating.get_active())
             try:
                 _data = self._dic_construction[_contact_rating_id][
-                    _application_id]
+                    _application_id
+                ]
             except KeyError:
                 _data = []
             self.cmbConstruction.do_load_combo(_data)
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            pub.sendMessage(
-                'wvw_editing_hardware',
-                module_id=self._hardware_id,
-                key=_key,
-                value=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Widget().  Indices are:
-
-            +---------+-----------+---------+-----------+
-            |  Index  | Widget    |  Index  | Widget    |
-            +=========+===========+=========+===========+
-            |    7    | txtcycles |         |           |
-            +---------+-----------+---------+-----------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {7: 'n_cycles'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = float(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
 
 class RelayAssessmentResults(AssessmentResults):
@@ -510,7 +513,7 @@ class RelayAssessmentResults(AssessmentResults):
     :ivar txtPiCYC: displays the cycling factor for the relay.
     :ivar txtPiL: displays the load stress factor for the relay.
     :ivar txtPiF: displays the application and construction factor for the
-                  relay.
+    relay.
     """
 
     # Define private dict attributes.
@@ -518,12 +521,17 @@ class RelayAssessmentResults(AssessmentResults):
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
     }
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Relay assessment result view."""
-        AssessmentResults.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Relay assessment result view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentResults.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -534,49 +542,87 @@ class RelayAssessmentResults(AssessmentResults):
         self._lst_labels.append("\u03C0<sub>L</sub>:")
 
         # Initialize private scalar attributes.
-        self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the relay's failure "
-              "rate."))
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The contact form factor for the relay."))
-        self.txtPiCYC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The cycling factor for the relay."))
-        self.txtPiF = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The application and construction factor for the "
-                      "relay."))
-        self.txtPiL = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The load stress factor for the relay."))
+        self.txtPiC = RAMSTKEntry()
+        self.txtPiCYC = RAMSTKEntry()
+        self.txtPiF = RAMSTKEntry()
+        self.txtPiL = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+
+    def __make_ui(self):
+        """
+        Make the relay Gtk.Notebook() assessment results page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_ui(self)
+
+        self.put(self.txtPiC, _x_pos, _y_pos[3])
+        self.put(self.txtPiCYC, _x_pos, _y_pos[4])
+        self.put(self.txtPiF, _x_pos, _y_pos[5])
+        self.put(self.txtPiL, _x_pos, _y_pos[6])
+
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties for Relay assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lblModel.set_tooltip_markup(
+            _(
+                "The assessment model used to calculate the relay's failure "
+                "rate.",
+            ),
+        )
+        self.txtPiC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The contact form factor for the relay."),
+        )
+        self.txtPiCYC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The cycling factor for the relay."),
+        )
+        self.txtPiF.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(
+                "The application and construction factor for the "
+                "relay.",
+            ),
+        )
+        self.txtPiL.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The load stress factor for the relay."),
+        )
 
     def _do_load_page(self, attributes):
         """
         Load the Relay assessment results wodgets.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Relay.
+        Relay.
         :return: None
         :rtype: None
         """
@@ -592,8 +638,6 @@ class RelayAssessmentResults(AssessmentResults):
         self.txtPiL.set_text(str(self.fmt.format(attributes['piL'])))
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):
         """
@@ -616,22 +660,3 @@ class RelayAssessmentResults(AssessmentResults):
                 self.txtPiCYC.set_sensitive(True)
                 self.txtPiF.set_sensitive(True)
                 self.txtPiL.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the relay Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_page(self)
-
-        self.put(self.txtPiC, _x_pos, _y_pos[3])
-        self.put(self.txtPiCYC, _x_pos, _y_pos[4])
-        self.put(self.txtPiF, _x_pos, _y_pos[5])
-        self.put(self.txtPiL, _x_pos, _y_pos[6])
-
-        return None

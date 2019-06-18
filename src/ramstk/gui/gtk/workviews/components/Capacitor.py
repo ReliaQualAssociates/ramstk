@@ -7,13 +7,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Capacitor Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKComboBox, RAMSTKEntry
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                           AssessmentResults)
+
+# RAMSTK Local Imports
+from .Component import AssessmentInputs, AssessmentResults
 
 
 class CapacitorAssessmentInputs(AssessmentInputs):
@@ -68,51 +70,61 @@ class CapacitorAssessmentInputs(AssessmentInputs):
     """
 
     # Define private dict attributes.
+    _dic_keys = {
+        0: 'quality_id',
+        1: 'specification_id',
+        2: 'type_id',
+        3: 'configuration_id',
+        4: 'construction_id',
+        5: 'capacitance',
+        6: 'resistance',
+    }
+
     _dic_quality = {
         1: [["MIL-SPEC"], [_("Lower")]],
         2: [["M"], [_("Non-Established Reliability")], [_("Lower")]],
         3: [
             "S", "R", "P", "M", "L",
-            [_("MIL-C-19978 Non-Established Reliability")], [_("Lower")]
+            [_("MIL-C-19978 Non-Established Reliability")], [_("Lower")],
         ],
         4: [
             "S", "R", "P", "M", "L",
-            [_("MIL-C-18312 Non-Established Reliability")], [_("Lower")]
+            [_("MIL-C-18312 Non-Established Reliability")], [_("Lower")],
         ],
         5: ["S", "R", "P", "M", [_("Lower")]],
         6: ["S", "R", "P", "M", [_("Lower")]],
         7: [
             "T", "S", "R", "P", "M", "L",
             [_("MIL-C-5 Non-Established Reliability, Dipped")],
-            [_("MIL-C-5 Non-Established Reliability, Molded")], [_("Lower")]
+            [_("MIL-C-5 Non-Established Reliability, Molded")], [_("Lower")],
         ],
         8: [["MIL-C-10950"], [_("Lower")]],
         9: [
             "S", "R", "P", "M", "L",
-            [_("MIL-C-11272 Non-Established Reliability")], [_("Lower")]
+            [_("MIL-C-11272 Non-Established Reliability")], [_("Lower")],
         ],
         10: [
             "S", "R", "P", "M", "L",
-            [_("MIL-C-11015 Non-Established Reliability")], [_("Lower")]
+            [_("MIL-C-11015 Non-Established Reliability")], [_("Lower")],
         ],
         11: [
             "S", "R", "P", "M", [_("Non-Established Reliability")],
-            [_("Lower")]
+            [_("Lower")],
         ],
         12: ["D", "C", "S", "B", "R", "P", "M", "L", [_("Lower")]],
         13: [
             "S", "R", "P", "M", "L",
-            [_("MIL-C-3965 Non-Established Reliability")], [_("Lower")]
+            [_("MIL-C-3965 Non-Established Reliability")], [_("Lower")],
         ],
         14: [
             "S", "R", "P", "M", [_("Non-Established Reliability")],
-            [_("Lower")]
+            [_("Lower")],
         ],
         15: [["MIL-SPEC"], [_("Lower")]],
         16: [["MIL-SPEC"], [_("Lower")]],
         17: [["MIL-SPEC"], [_("Lower")]],
         18: [["MIL-SPEC"], [_("Lower")]],
-        19: [["MIL-SPEC"], [_("Lower")]]
+        19: [["MIL-SPEC"], [_("Lower")]],
     }
 
     _dic_specifications = {
@@ -134,78 +146,122 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         16: [["MIL-C-81"]],
         17: [["MIL-C-14409"]],
         18: [["MIL-C-92"]],
-        19: [["MIL-C-23183"]]
+        19: [["MIL-C-23183"]],
     }
 
     _dic_styles = {
-        1: [[["CP4"], ["CP5"], ["CP8"], ["CP9"], ["CP10"], ["CP11"], ["CP12"],
-             ["CP13"], ["CP25"], ["CP26"], ["CP27"], ["CP28"], ["CP29"],
-             ["CP40"], ["CP41"], ["CP67"], ["CP69"], ["CP70"], ["CP72"],
-             ["CP75"], ["CP76"], ["CP77"], ["CP78"], ["CP80"], ["CP81"],
-             ["CP82"]], [["CA"]]],
-        2: [[_("Characteristic E")], [_("Characteristic K")],
-            [_("Characteristic P")], [_("Characteristic W")]],
-        3: [[["CPV07"], ["CPV09"], ["CPV17"]],
-            [[_("Characteristic E")], [_("Characteristic F")],
-             [_("Characteristic G")], [_("Characteristic K")],
-             [_("Characteristic L")], [_("Characteristic M")],
-             [_("Characteristic P")], [_("Characteristic Q")],
-             [_("Characteristic S")], [_("Characteristic T")]]],
-        4: [[[_("Characteristic N")], [_("Characteristic R")]],
-            [[_("Characteristic 1")], [_("Characteristic 9")],
-             [_("Characteristic 10")], [_("Characteristic 12")],
-             [_("Characteristic 19")], [_("Characteristic 29")],
-             [_("Characteristic 49")], [_("Characteristic 59")]]],
-        5: [[_("Characteristic M")], [_("Characteristic N")],
+        1: [
+            [
+                ["CP4"], ["CP5"], ["CP8"], ["CP9"], ["CP10"], ["CP11"], ["CP12"],
+                ["CP13"], ["CP25"], ["CP26"], ["CP27"], ["CP28"], ["CP29"],
+                ["CP40"], ["CP41"], ["CP67"], ["CP69"], ["CP70"], ["CP72"],
+                ["CP75"], ["CP76"], ["CP77"], ["CP78"], ["CP80"], ["CP81"],
+                ["CP82"],
+            ], [["CA"]],
+        ],
+        2: [
+            [_("Characteristic E")], [_("Characteristic K")],
+            [_("Characteristic P")], [_("Characteristic W")],
+        ],
+        3: [
+            [["CPV07"], ["CPV09"], ["CPV17"]],
+            [
+                [_("Characteristic E")], [_("Characteristic F")],
+                [_("Characteristic G")], [_("Characteristic K")],
+                [_("Characteristic L")], [_("Characteristic M")],
+                [_("Characteristic P")], [_("Characteristic Q")],
+                [_("Characteristic S")], [_("Characteristic T")],
+            ],
+        ],
+        4: [
+            [[_("Characteristic N")], [_("Characteristic R")]],
+            [
+                [_("Characteristic 1")], [_("Characteristic 9")],
+                [_("Characteristic 10")], [_("Characteristic 12")],
+                [_("Characteristic 19")], [_("Characteristic 29")],
+                [_("Characteristic 49")], [_("Characteristic 59")],
+            ],
+        ],
+        5: [
+            [_("Characteristic M")], [_("Characteristic N")],
             [_("Characteristic Q")], [_("Characteristic R")],
-            [_("Characteristic S")]],
+            [_("Characteristic S")],
+        ],
         6: [["CRH"]],
-        7: [[[_("Temperature Range M")], [_("Temperature Range N")],
-             [_("Temperature Range O")], [_("Temperature Range P")]],
-            [[_("Temperature Range O")], [_("Temperature Range P")]]],
+        7: [
+            [
+                [_("Temperature Range M")], [_("Temperature Range N")],
+                [_("Temperature Range O")], [_("Temperature Range P")],
+            ],
+            [[_("Temperature Range O")], [_("Temperature Range P")]],
+        ],
         8: [["CB50"], [_("Other")]],
-        9: [[[_("Temperature Range C")], [_("Temperature Range D")]],
-            [[_("All")]]],
+        9: [
+            [[_("Temperature Range C")], [_("Temperature Range D")]],
+            [[_("All")]],
+        ],
         10:
-        [[[_("Type A Rated Temperature")], [_("Type B Rated Temperature")],
-          [_("Type C Rated Temperature")]],
-         [["CKR05"], ["CKR06"], ["CKR07"], ["CKR08"], ["CKR09"], ["CKR10"],
-          ["CKR11"], ["CKR12"], ["CKR13"], ["CKR14"], ["CKR15"], ["CKR16"],
-          ["CKR17"], ["CKR18"], ["CKR19"], ["CKR48"], ["CKR64"], ["CKR72"],
-          ["CKR73"], ["CKR74"]]],
-        11: [[["CC5"], ["CC6"], ["CC7"], ["CC8"], ["CC9"], ["CC13"], ["CC14"],
-              ["CC15"], ["CC16"], ["CC17"], ["CC18"], ["CC19"], ["CC20"],
-              ["CC21"], ["CC22"], ["CC25"], ["CC26"], ["CC27"], ["CC30"],
-              ["CC31"], ["CC32"], ["CC33"], ["CC35"], ["CC36"], ["CC37"],
-              ["CC45"], ["CC47"], ["CC50"], ["CC51"], ["CC52"], ["CC53"],
-              ["CC54"], ["CC55"], ["CC56"], ["CC57"], ["CC75"], ["CC76"],
-              ["CC77"], ["CC78"], ["CC79"], ["CC81"], ["CC82"], ["CC83"],
-              ["CC85"], ["CC95"], ["CC96"], ["CC97"], ["CCR05"], ["CCR06"],
-              ["CCR07"], ["CCR08"], ["CCR09"], ["CCR13"], ["CCR14"], ["CCR15"],
-              ["CCR16"], ["CCR17"], ["CCR18"], ["CCR19"], ["CCR54"], ["CCR55"],
-              ["CCR56"], ["CCR57"], ["CCR75"], ["CCR76"], ["CCR77"], ["CCR78"],
-              ["CCR79"], ["CCR81"], ["CCR82"], ["CCR83"], ["CCR90"]],
-             [["CDR"]]],
+        [
+            [
+                [_("Type A Rated Temperature")], [_("Type B Rated Temperature")],
+                [_("Type C Rated Temperature")],
+            ],
+            [
+                ["CKR05"], ["CKR06"], ["CKR07"], ["CKR08"], ["CKR09"], ["CKR10"],
+                ["CKR11"], ["CKR12"], ["CKR13"], ["CKR14"], ["CKR15"], ["CKR16"],
+                ["CKR17"], ["CKR18"], ["CKR19"], ["CKR48"], ["CKR64"], ["CKR72"],
+                ["CKR73"], ["CKR74"],
+            ],
+        ],
+        11: [
+            [
+                ["CC5"], ["CC6"], ["CC7"], ["CC8"], ["CC9"], ["CC13"], ["CC14"],
+                ["CC15"], ["CC16"], ["CC17"], ["CC18"], ["CC19"], ["CC20"],
+                ["CC21"], ["CC22"], ["CC25"], ["CC26"], ["CC27"], ["CC30"],
+                ["CC31"], ["CC32"], ["CC33"], ["CC35"], ["CC36"], ["CC37"],
+                ["CC45"], ["CC47"], ["CC50"], ["CC51"], ["CC52"], ["CC53"],
+                ["CC54"], ["CC55"], ["CC56"], ["CC57"], ["CC75"], ["CC76"],
+                ["CC77"], ["CC78"], ["CC79"], ["CC81"], ["CC82"], ["CC83"],
+                ["CC85"], ["CC95"], ["CC96"], ["CC97"], ["CCR05"], ["CCR06"],
+                ["CCR07"], ["CCR08"], ["CCR09"], ["CCR13"], ["CCR14"], ["CCR15"],
+                ["CCR16"], ["CCR17"], ["CCR18"], ["CCR19"], ["CCR54"], ["CCR55"],
+                ["CCR56"], ["CCR57"], ["CCR75"], ["CCR76"], ["CCR77"], ["CCR78"],
+                ["CCR79"], ["CCR81"], ["CCR82"], ["CCR83"], ["CCR90"],
+            ],
+            [["CDR"]],
+        ],
         12: [["CSR"]],
-        13: [[["CL10"], ["CL13"], ["CL14"], ["CL16"], ["CL17"], ["CL18"],
-              ["CL24"], ["CL25"], ["CL26"], ["CL27"], ["CL30"], ["CL31"],
-              ["CL32"], ["CL33"], ["CL34"], ["CL35"], ["CL36"], ["CL37"],
-              ["CL40"], ["CL41"], ["CL42"], ["CL43"], ["CL46"], ["CL47"],
-              ["CL48"], ["CL49"], ["CL50"], ["CL51"], ["CL52"], ["CL53"],
-              ["CL54"], ["CL55"], ["CL56"], ["CL64"], ["CL65"], ["CL66"],
-              ["CL67"], ["CL70"], ["CL71"], ["CL72"], ["CL73"]], [["CLR"]]],
-        14: [[_("Style 16")], [_("Style 17")], [_("Style 71")],
-             [_("All Others")]],
+        13: [
+            [
+                ["CL10"], ["CL13"], ["CL14"], ["CL16"], ["CL17"], ["CL18"],
+                ["CL24"], ["CL25"], ["CL26"], ["CL27"], ["CL30"], ["CL31"],
+                ["CL32"], ["CL33"], ["CL34"], ["CL35"], ["CL36"], ["CL37"],
+                ["CL40"], ["CL41"], ["CL42"], ["CL43"], ["CL46"], ["CL47"],
+                ["CL48"], ["CL49"], ["CL50"], ["CL51"], ["CL52"], ["CL53"],
+                ["CL54"], ["CL55"], ["CL56"], ["CL64"], ["CL65"], ["CL66"],
+                ["CL67"], ["CL70"], ["CL71"], ["CL72"], ["CL73"],
+            ], [["CLR"]],
+        ],
+        14: [
+            [_("Style 16")], [_("Style 17")], [_("Style 71")],
+            [_("All Others")],
+        ],
         15: [["CE"]],
-        16: [["CV11"], ["CV14"], ["CV21"], ["CV31"], ["CV32"], ["CV34"],
-             ["CV35"], ["CV36"], ["CV40"], ["CV41"]],
-        17: [[_("Style G")], [_("Style H")], [_("Style J")],
-             [_("Style L")], [_("Style Q")], [_("Style T")]],
+        16: [
+            ["CV11"], ["CV14"], ["CV21"], ["CV31"], ["CV32"], ["CV34"],
+            ["CV35"], ["CV36"], ["CV40"], ["CV41"],
+        ],
+        17: [
+            [_("Style G")], [_("Style H")], [_("Style J")],
+            [_("Style L")], [_("Style Q")], [_("Style T")],
+        ],
         18: [["CT"]],
-        19: [["CG20"], ["CG21"], ["CG30"], ["CG31"], ["CG32"], ["CG40"],
-             ["CG41"], ["CG42"], ["CG43"], ["CG44"], ["CG50"], ["CG51"],
-             ["CG60"], ["CG61"], ["CG62"], ["CG63"], ["CG64"], ["CG65"],
-             ["CG66"], ["CG67"]]
+        19: [
+            ["CG20"], ["CG21"], ["CG30"], ["CG31"], ["CG32"], ["CG40"],
+            ["CG41"], ["CG42"], ["CG43"], ["CG44"], ["CG50"], ["CG51"],
+            ["CG60"], ["CG61"], ["CG62"], ["CG63"], ["CG64"], ["CG65"],
+            ["CG66"], ["CG67"],
+        ],
     }
 
     # Define private list attributes.
@@ -216,12 +272,17 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         _("Style:"),
         _("Configuration:"),
         _("Construction:"),
-        _("Equivalent Series Resistance (\u03A9):")
+        _("Equivalent Series Resistance (\u03A9):"),
     ]
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Capacitor assessment input view."""
-        AssessmentInputs.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Capacitor assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
+        """
+        AssessmentInputs.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -234,51 +295,112 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbSpecification = ramstk.RAMSTKComboBox(
+        self.cmbSpecification = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The governing specification for the capacitor."))
-        self.cmbStyle = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The style of the capacitor."))
-        self.cmbConfiguration = ramstk.RAMSTKComboBox(
+        )
+        self.cmbStyle = RAMSTKComboBox(
+            index=0, simple=True,
+        )
+        self.cmbConfiguration = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The configuration of the capacitor."))
-        self.cmbConstruction = ramstk.RAMSTKComboBox(
+        )
+        self.cmbConstruction = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The method of construction of the capacitor."))
+        )
 
-        self.txtCapacitance = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The capacitance rating (in farads) of the capacitor."))
-        self.txtESR = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The equivalent series resistance of the capacitor."))
+        self.txtCapacitance = RAMSTKEntry()
+        self.txtESR = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
-
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed', self._on_combo_changed,
-                                          1))
-        self._lst_handler_id.append(
-            self.cmbStyle.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbConfiguration.connect('changed', self._on_combo_changed,
-                                          3))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 4))
-        self._lst_handler_id.append(
-            self.txtCapacitance.connect('changed', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtESR.connect('changed', self._on_focus_out, 6))
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+
+    def __make_ui(self):
+        """
+        Make the Capacitor class Gtk.Notebook() assessment input page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
+
+        self.put(self.txtCapacitance, _x_pos, _y_pos[1])
+        self.put(self.cmbSpecification, _x_pos, _y_pos[2])
+        self.put(self.cmbStyle, _x_pos, _y_pos[3])
+        self.put(self.cmbConfiguration, _x_pos, _y_pos[4])
+        self.put(self.cmbConstruction, _x_pos, _y_pos[5])
+        self.put(self.txtESR, _x_pos, _y_pos[6])
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for Capacitor assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self._on_combo_changed, 0),
+        )
+        self._lst_handler_id.append(
+            self.cmbSpecification.connect(
+                'changed', self._on_combo_changed,
+                1,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.cmbStyle.connect('changed', self._on_combo_changed, 2),
+        )
+        self._lst_handler_id.append(
+            self.cmbConfiguration.connect(
+                'changed', self._on_combo_changed,
+                3,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.cmbConstruction.connect('changed', self._on_combo_changed, 4),
+        )
+        self._lst_handler_id.append(
+            self.txtCapacitance.connect('changed', self.on_focus_out, 5),
+        )
+        self._lst_handler_id.append(
+            self.txtESR.connect('changed', self.on_focus_out, 6),
+        )
+
+    def __set_properties(self):
+        """
+        Set properties for Capacitor assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbSpecification.do_set_properties(
+            tooltip=_("The governing specification for the capacitor."),
+        )
+        self.cmbStyle.do_set_properties(
+            tooltip=_("The style of the capacitor."),
+        )
+        self.cmbConfiguration.do_set_properties(
+            tooltip=_("The configuration of the capacitor."),
+        )
+        self.cmbConstruction.do_set_properties(
+            tooltip=_("The method of construction of the capacitor."),
+        )
+        self.txtCapacitance.do_set_properties(
+            width=125,
+            tooltip=_("The capacitance rating (in farads) of the capacitor."),
+        )
+        self.txtESR.do_set_properties(
+            width=125,
+            tooltip=_("The equivalent series resistance of the capacitor."),
+        )
 
     def _do_load_comboboxes(self, subcategory_id):
         """
@@ -303,41 +425,33 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbSpecification.do_load_combo(_data)
 
-        self.cmbConstruction.do_load_combo([[_("Slug, All Tantalum")],
-                                            [_("Foil, Hermetic")],
-                                            [_("Slug, Hermetic")],
-                                            [_("Foil, Non-Hermetic")],
-                                            [_("Slug, Non-Hermetic")]])
+        self.cmbConstruction.do_load_combo([
+            [_("Slug, All Tantalum")],
+            [_("Foil, Hermetic")],
+            [_("Slug, Hermetic")],
+            [_("Foil, Non-Hermetic")],
+            [_("Slug, Non-Hermetic")],
+        ])
 
         self.cmbConfiguration.do_load_combo([[_("Fixed")], [_("Variable")]])
 
         _model = self.cmbStyle.get_model()
         _model.clear()
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Capacitor Assessment Inputs page.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Capacitor.
+        Capacitor.
         :return: None
         :rtype: None
         """
-        self._hardware_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        self._do_load_comboboxes(self._subcategory_id)
+        AssessmentInputs.do_load_page(self, attributes)
 
         # We don't block the callback signal otherwise the style
         # RAMSTKComboBox() will not be loaded and set.
         self.cmbSpecification.set_active(attributes['specification_id'])
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
 
         if self._hazard_rate_method_id != 1:
             self.cmbStyle.handler_block(self._lst_handler_id[2])
@@ -354,17 +468,17 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
             self.txtCapacitance.handler_block(self._lst_handler_id[5])
             self.txtCapacitance.set_text(
-                str(self.fmt.format(attributes['capacitance'])))
+                str(self.fmt.format(attributes['capacitance'])),
+            )
             self.txtCapacitance.handler_unblock(self._lst_handler_id[5])
 
             self.txtESR.handler_block(self._lst_handler_id[6])
             self.txtESR.set_text(
-                str(self.fmt.format(attributes['resistance'])))
+                str(self.fmt.format(attributes['resistance'])),
+            )
             self.txtESR.handler_unblock(self._lst_handler_id[6])
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -405,27 +519,6 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             else:
                 self.cmbConfiguration.set_sensitive(False)
 
-        return None
-
-    def _make_page(self):
-        """
-        Make the Capacitor class Gtk.Notebook() assessment input page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentInputs.make_page(self)
-
-        self.put(self.txtCapacitance, _x_pos, _y_pos[1])
-        self.put(self.cmbSpecification, _x_pos, _y_pos[2])
-        self.put(self.cmbStyle, _x_pos, _y_pos[3])
-        self.put(self.cmbConfiguration, _x_pos, _y_pos[4])
-        self.put(self.cmbConstruction, _x_pos, _y_pos[5])
-        self.put(self.txtESR, _x_pos, _y_pos[6])
-
-        return None
-
     def _on_combo_changed(self, combo, index):
         """
         Retrieve RAMSTKCombo() changes and assign to Capacitor attribute.
@@ -452,24 +545,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         :return: None
         :rtype: None
         """
-        _dic_keys = {
-            0: 'quality_id',
-            1: 'specification_id',
-            2: 'type_id',
-            3: 'configuration_id',
-            4: 'construction_id',
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
+        AssessmentInputs.on_combo_changed(self, combo, index)
 
         # If the capacitor specification changed, load the capacitor style
         # RAMSTKComboBox().
@@ -483,67 +559,6 @@ class CapacitorAssessmentInputs(AssessmentInputs):
             except KeyError:
                 _data = []
             self.cmbStyle.do_load_combo(_data)
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            pub.sendMessage(
-                'wvw_editing_hardware',
-                module_id=self._hardware_id,
-                key=_key,
-                value=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
-                      method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Widget().  Indices are:
-
-            +---------+---------------------+---------+---------------------+
-            |  Index  | Widget              |  Index  | Widget              |
-            +=========+=====================+=========+=====================+
-            |    5    | txtCapacitance      |    6    | txtESR              |
-            +---------+---------------------+---------+---------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {5: 'capacitance', 6: 'resistance'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = float(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
 
 class CapacitorAssessmentResults(AssessmentResults):
@@ -564,9 +579,14 @@ class CapacitorAssessmentResults(AssessmentResults):
     :ivar txtPiC: displays the construction factor for the capacitor.
     """
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Capacitor assessment result view."""
-        AssessmentResults.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Capacitor assessment result view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`ramstk.Configuration.Configuration`
+        """
+        AssessmentResults.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
         self._dic_part_stress = {
@@ -616,36 +636,70 @@ class CapacitorAssessmentResults(AssessmentResults):
         self._lst_labels.append("\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
-        self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the capacitor failure "
-              "rate."))
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiCV = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The capacitance factor for the capacitor."))
-        self.txtPiCF = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The configuration factor for the capacitor."))
-        self.txtPiC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The construction factor for the capacitor."))
+        self.txtPiCV = RAMSTKEntry()
+        self.txtPiCF = RAMSTKEntry()
+        self.txtPiC = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+
+    def __make_ui(self):
+        """
+        Make the capacitor Gtk.Notebook() assessment results page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_ui(self)
+
+        self.put(self.txtPiCV, _x_pos, _y_pos[3])
+        self.put(self.txtPiCF, _x_pos, _y_pos[4])
+        self.put(self.txtPiC, _x_pos, _y_pos[5])
+
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties for Capacitor assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lblModel.set_tooltip_markup(
+            _(
+                "The assessment model used to calculate the capacitor failure "
+                "rate.",
+            ),
+        )
+
+        self.txtPiCV.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The capacitance factor for the capacitor."),
+        )
+        self.txtPiCF.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The configuration factor for the capacitor."),
+        )
+        self.txtPiC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The construction factor for the capacitor."),
+        )
 
     def _do_load_page(self, attributes):
         """
@@ -668,8 +722,6 @@ class CapacitorAssessmentResults(AssessmentResults):
 
         self._do_set_sensitive()
 
-        return None
-
     def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected capacitor.
@@ -689,21 +741,3 @@ class CapacitorAssessmentResults(AssessmentResults):
             self.txtPiCF.set_sensitive(True)
             self.txtPiC.set_sensitive(True)
             self.txtPiE.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the capacitor Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_page(self)
-
-        self.put(self.txtPiCV, _x_pos, _y_pos[3])
-        self.put(self.txtPiCF, _x_pos, _y_pos[4])
-        self.put(self.txtPiC, _x_pos, _y_pos[5])
-
-        return None

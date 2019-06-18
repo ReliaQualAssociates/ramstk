@@ -6,14 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKMechanism Table Module."""
 
+# Standard Library Imports
 import gettext
 
+# Third Party Imports
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
-from ramstk.Utilities import none_to_default, OutOfRangeError
+# RAMSTK Package Imports
 from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
+from ramstk.Utilities import OutOfRangeError, none_to_default
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -39,13 +41,15 @@ class RAMSTKMechanism(RAMSTK_BASE):
         'fld_mode_id',
         Integer,
         ForeignKey('ramstk_mode.fld_mode_id'),
-        nullable=False)
+        nullable=False,
+    )
     mechanism_id = Column(
         'fld_mechanism_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     description = Column('fld_description', String(512), default='')
     pof_include = Column('fld_pof_include', Integer, default=1)
@@ -59,9 +63,11 @@ class RAMSTKMechanism(RAMSTK_BASE):
     # Define the relationships to other tables in the RAMSTK Program database.
     mode = relationship('RAMSTKMode', back_populates='mechanism')
     cause = relationship(
-        'RAMSTKCause', back_populates='mechanism', cascade='all,delete')
+        'RAMSTKCause', back_populates='mechanism', cascade='all,delete',
+    )
     op_load = relationship(
-        'RAMSTKOpLoad', back_populates='mechanism', cascade='all,delete')
+        'RAMSTKOpLoad', back_populates='mechanism', cascade='all,delete',
+    )
 
     is_mode = False
     is_mechanism = True
@@ -91,7 +97,7 @@ class RAMSTKMechanism(RAMSTK_BASE):
             'rpn_detection_new': self.rpn_detection_new,
             'rpn_new': self.rpn_new,
             'rpn_occurrence': self.rpn_occurrence,
-            'rpn_occurrence_new': self.rpn_occurrence_new
+            'rpn_occurrence_new': self.rpn_occurrence_new,
         }
 
         return _attributes
@@ -110,19 +116,25 @@ class RAMSTKMechanism(RAMSTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'], ''))
+                none_to_default(attributes['description'], ''),
+            )
             self.pof_include = int(
-                none_to_default(attributes['pof_include'], 1))
+                none_to_default(attributes['pof_include'], 1),
+            )
             self.rpn = int(none_to_default(attributes['rpn'], 0))
             self.rpn_detection = int(
-                none_to_default(attributes['rpn_detection'], 1))
+                none_to_default(attributes['rpn_detection'], 1),
+            )
             self.rpn_detection_new = int(
-                none_to_default(attributes['rpn_detection_new'], 1))
+                none_to_default(attributes['rpn_detection_new'], 1),
+            )
             self.rpn_new = int(none_to_default(attributes['rpn_new'], 0))
             self.rpn_occurrence = int(
-                none_to_default(attributes['rpn_occurrence'], 1))
+                none_to_default(attributes['rpn_occurrence'], 1),
+            )
             self.rpn_occurrence_new = int(
-                none_to_default(attributes['rpn_occurrence_new'], 1))
+                none_to_default(attributes['rpn_occurrence_new'], 1),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
@@ -183,13 +195,19 @@ class RAMSTKMechanism(RAMSTK_BASE):
             _error_code = 2020
             _msg = 'Failure mechanism RPN has a value less than 1.'
             raise OutOfRangeError(
-                _("Failure mechanism RPN has a value less "
-                  "than 1."))
+                _(
+                    "Failure mechanism RPN has a value less "
+                    "than 1.",
+                ),
+            )
         if self.rpn_new > 1000:
             _error_code = 2020
             _msg = 'Failure mechanism RPN has a value greater than 1000.'
             raise OutOfRangeError(
-                _("Failure mechanism RPN has a value "
-                  "greater than 1000."))
+                _(
+                    "Failure mechanism RPN has a value "
+                    "greater than 1000.",
+                ),
+            )
 
         return _error_code, _msg
