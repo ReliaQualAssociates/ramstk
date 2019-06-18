@@ -3,7 +3,7 @@
 #       ramstk.gui.gtk.moduleviews.Hardware.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Module View."""
 
 # Standard Library Imports
@@ -13,7 +13,9 @@ from ast import literal_eval
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.gui.gtk import ramstk
+from ramstk.gui.gtk.ramstk import (
+    RAMSTKLabel, RAMSTKMessageDialog, do_make_buttonbox,
+)
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 
 # RAMSTK Local Imports
@@ -73,55 +75,75 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
         _scrolledwindow.add_with_viewport(
-            RAMSTKModuleView._make_buttonbox(
+            do_make_buttonbox(
                 self,
                 icons=[
                     'insert_sibling', 'insert_child', 'insert_part',
-                    'insert_part', 'remove', 'calculate_all', 'export'
+                    'insert_part', 'remove', 'calculate_all', 'export',
                 ],
                 tooltips=[
-                    _("Adds a new Hardware assembly at the same hierarchy "
-                      "level as the selected Hardware (i.e., a sibling "
-                      "Hardware)."),
-                    _("Adds a new Hardware assembly one level subordinate to "
-                      "the selected Hardware (i.e., a child hardware)."),
-                    _("Adds a new Hardware component/piece-part at the same "
-                      "hierarchy level as the selected Hardware "
-                      "component/piece-part (i.e., a sibling "
-                      "component/piece-part)."),
-                    _("Adds a new Hardware component/piece-part one level "
-                      "subordinate to selected Hardware component/piece-part "
-                      "(i.e., a child component/piece-part)."),
-                    _("Remove the currently selected Hardware item and any "
-                      "children."),
+                    _(
+                        "Adds a new Hardware assembly at the same hierarchy "
+                        "level as the selected Hardware (i.e., a sibling "
+                        "Hardware).",
+                    ),
+                    _(
+                        "Adds a new Hardware assembly one level subordinate to "
+                        "the selected Hardware (i.e., a child hardware).",
+                    ),
+                    _(
+                        "Adds a new Hardware component/piece-part at the same "
+                        "hierarchy level as the selected Hardware "
+                        "component/piece-part (i.e., a sibling "
+                        "component/piece-part).",
+                    ),
+                    _(
+                        "Adds a new Hardware component/piece-part one level "
+                        "subordinate to selected Hardware component/piece-part "
+                        "(i.e., a child component/piece-part).",
+                    ),
+                    _(
+                        "Remove the currently selected Hardware item and any "
+                        "children.",
+                    ),
                     _("Calculate the entire system."),
-                    _("Exports Hardware to an external file (CSV, Excel, and "
-                      "text files are supported).")
+                    _(
+                        "Exports Hardware to an external file (CSV, Excel, and "
+                        "text files are supported).",
+                    ),
                 ],
                 callbacks=[
                     self._do_request_insert_sibling,
                     self._do_request_insert_child,
                     self._do_request_insert_sibling,
                     self._do_request_insert_child, self._do_request_delete,
-                    self._do_request_calculate_all, self._do_request_export
-                ]))
+                    self._do_request_calculate_all, self._do_request_export,
+                ],
+            ),
+        )
         self.pack_start(_scrolledwindow, False, False, 0)
 
         self.make_treeview()
         self.treeview.set_tooltip_text(
-            _("Displays the hierarchical list of "
-              "hardware items."))
+            _(
+                "Displays the hierarchical list of "
+                "hardware items.",
+            ),
+        )
 
-        RAMSTKModuleView._make_ui(self)
+        RAMSTKModuleView.make_ui(self)
 
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Hardware"),
             width=-1,
             height=-1,
-            tooltip=_("Displays the hierarchical list of hardware items."))
+            tooltip=_("Displays the hierarchical list of hardware items."),
+        )
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
@@ -160,7 +182,7 @@ class ModuleView(RAMSTKModuleView):
                 'mtbf_miss_variance', 'hr_active_variance', 'mtbf_mission',
                 'piMFG', 'Cgl', 'piI', 'Cdc', 'Cdl', 'hr_dormant_variance',
                 'Cdt', 'Cdw', 'Cdp', 'Cds', 'availability_logistics', 'Cdy',
-                'temperature_rise'
+                'temperature_rise',
         ]:
             self.do_refresh_tree(self._hardware_id, _key, attributes[_key])
 
@@ -175,7 +197,8 @@ class ModuleView(RAMSTKModuleView):
         """
         pub.sendMessage(
             'request_calculate_all_hardware',
-            node_id=self._hardware_id)
+            node_id=self._hardware_id,
+        )
 
     def _do_request_delete(self, __button):
         """
@@ -186,16 +209,20 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _prompt = _("You are about to delete Hardware {0:d} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(self._hardware_id)
-        _dialog = ramstk.RAMSTKMessageDialog(
-            _prompt, self._dic_icons['question'], 'question')
+        _prompt = _(
+            "You are about to delete Hardware {0:d} and all "
+            "data associated with it.  Is this really what "
+            "you want to do?",
+        ).format(self._hardware_id)
+        _dialog = RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question',
+        )
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage(
-                'request_delete_hardware', node_id=self._hardware_id)
+                'request_delete_hardware', node_id=self._hardware_id,
+            )
 
         _dialog.do_destroy()
 
@@ -235,7 +262,8 @@ class ModuleView(RAMSTKModuleView):
             'request_insert_hardware',
             revision_id=self._revision_id,
             parent_id=_parent_id,
-            part=_part)
+            part=_part,
+        )
 
     def _do_request_insert_child(self, button, **kwargs):
         """
@@ -325,7 +353,7 @@ class ModuleView(RAMSTKModuleView):
         if event.button == 3:
             _icons = [
                 'insert_sibling', 'insert_child', 'insert_part', 'insert_part',
-                'calculate_all'
+                'calculate_all',
             ]
             _labels = [
                 _("Add Sibling Assembly"),
@@ -335,12 +363,12 @@ class ModuleView(RAMSTKModuleView):
                 _("Calculate the System"),
                 _("Remove the Selected Hardware"),
                 _("Save Selected Hardware"),
-                _("Save All Hardware")
+                _("Save All Hardware"),
             ]
             _callbacks = [
                 self._do_request_insert_sibling, self._do_request_insert_child,
                 self._do_request_insert_sibling, self._do_request_insert_child,
-                self._do_request_calculate_all
+                self._do_request_calculate_all,
             ]
 
             RAMSTKModuleView.on_button_press(
@@ -348,7 +376,8 @@ class ModuleView(RAMSTKModuleView):
                 event,
                 icons=_icons,
                 labels=_labels,
-                callbacks=_callbacks)
+                callbacks=_callbacks,
+            )
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -403,11 +432,12 @@ class ModuleView(RAMSTKModuleView):
             54: 'mult_adj_factor',
             55: 'reliability_goal',
             60: 'scale_parameter',
-            61: 'shape_parameter'
+            61: 'shape_parameter',
         }
 
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
+        if not self.treeview.do_edit_cell(
+                __cell, path, new_text, position, model,
+        ):
             try:
                 _key = _dic_keys[self._lst_col_order[position]]
             except KeyError:
@@ -417,7 +447,8 @@ class ModuleView(RAMSTKModuleView):
                 'mvw_editing_hardware',
                 module_id=self._hardware_id,
                 key=_key,
-                value=new_text)
+                value=new_text,
+            )
 
     def _on_row_change(self, treeview):
         """
@@ -439,14 +470,18 @@ class ModuleView(RAMSTKModuleView):
 
         if _row is not None:
             _attributes = literal_eval(
-                _model.get_value(_row,
-                                 _model.get_n_columns() - 1))
+                _model.get_value(
+                    _row,
+                    _model.get_n_columns() - 1,
+                ),
+            )
 
             # pylint: disable=attribute-defined-outside-init
             self._hardware_id = _attributes['hardware_id']
             self._parent_id = _attributes['parent_id']
             self._revision_id = _attributes['revision_id']
 
+            _attributes['functional'] = False
             pub.sendMessage('selected_hardware', attributes=_attributes)
 
         treeview.handler_unblock(self._lst_handler_id[0])

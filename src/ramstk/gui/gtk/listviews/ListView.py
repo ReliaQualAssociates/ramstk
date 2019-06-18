@@ -7,9 +7,10 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKListView Meta-Class Module."""
 
+# RAMSTK Package Imports
+from ramstk.gui.gtk import ramstk
 # Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
-from ramstk.gui.gtk import ramstk
 
 
 class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
@@ -55,6 +56,29 @@ class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
         # Initialize public scalar attributes.
         self.tab_label = Gtk.Label()
 
+        self.__set_callbacks()
+
+    def __set_callbacks(self):
+        """
+        Set common callback methods for the ModuleView and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('cursor_changed', self._on_row_change),
+            )
+        except AttributeError:
+            pass
+
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event', self._on_button_press),
+            )
+        except AttributeError:
+            pass
+
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model):
         """
@@ -95,18 +119,6 @@ class RAMSTKListView(Gtk.HBox, ramstk.RAMSTKBaseView):
         self.pack_end(_scrolledwindow, True, True, 0)
 
         self.show_all()
-
-    def _set_callbacks(self):
-        """
-        Set common callback methods for the ListView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
 
     def _set_properties(self):
         """

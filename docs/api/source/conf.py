@@ -8,6 +8,8 @@
 
 # -- Path setup --------------------------------------------------------------
 
+# Standard Library Imports
+import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -16,18 +18,24 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 import sys
-import os
+
+# Third Party Imports
 from mock import Mock as MagicMock
+
 
 class Mock(MagicMock):
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
 
+
 MOCK_MODULES = ['pango']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
-sys.path.insert(0, os.path.abspath('../../src/ramstk/'), )
+sys.path.insert(
+    0,
+    os.path.abspath('../../src/ramstk/'),
+)
 sys.path.append(os.path.join(os.path.dirname(__name__), '../../'))
 
 # -- Project information -----------------------------------------------------
@@ -40,7 +48,6 @@ author = u'Doyle Rowland'
 version = u''
 # The full version, including alpha/beta/rc tags
 release = u'2.0.0'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -87,13 +94,12 @@ exclude_patterns = []
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None
 
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
+# html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -117,12 +123,10 @@ html_static_path = ['_static']
 #
 # html_sidebars = {}
 
-
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'RAMSTKdoc'
-
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -148,20 +152,17 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'RAMSTK.tex', u'RAMSTK Documentation',
-     u'Doyle Rowland', 'manual'),
+    (
+        master_doc, 'RAMSTK.tex', u'RAMSTK Documentation', u'Doyle Rowland',
+        'manual',
+    ),
 ]
-
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'ramstk', u'RAMSTK Documentation',
-     [author], 1)
-]
-
+man_pages = [(master_doc, 'ramstk', u'RAMSTK Documentation', [author], 1)]
 
 # -- Options for Texinfo output ----------------------------------------------
 
@@ -169,11 +170,11 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'RAMSTK', u'RAMSTK Documentation',
-     author, 'RAMSTK', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc, 'RAMSTK', u'RAMSTK Documentation', author, 'RAMSTK',
+        'One line description of project.', 'Miscellaneous',
+    ),
 ]
-
 
 # -- Options for Epub output -------------------------------------------------
 
@@ -192,10 +193,15 @@ epub_title = project
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
-
 # -- Extension configuration -------------------------------------------------
 
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'NumPy': ('http://docs.scipy.org/doc/numpy/', None),
+    'SciPy': ('http://docs.scipy.org/doc/scipy/reference', None),
+    'matplotlib': ('http://matplotlib.org', None),
+    'treelib': ('https://treelib.readthedocs.io/en/latest', None),
+}

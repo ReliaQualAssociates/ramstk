@@ -148,7 +148,7 @@ class RAMSTKTreeView(Gtk.TreeView):
             self.headings.append('')
             self.order.append(len(self.order))
             self.pixbuf_col = int(len(self.datatypes)) - 1
-            self.visible.append(1)
+            self.visible.append(True)
             self.widgets.append('pixbuf')
 
         # We may want to add a column to hold indexing information for program
@@ -159,7 +159,7 @@ class RAMSTKTreeView(Gtk.TreeView):
             self.editable.append(0)
             self.headings.append('')
             self.order.append(len(self.order))
-            self.visible.append(0)
+            self.visible.append(False)
             self.widgets.append('text')
             self.index_col = int(len(self.datatypes)) - 1
 
@@ -182,7 +182,7 @@ class RAMSTKTreeView(Gtk.TreeView):
         self.headings.append('Attributes')
         self.korder.append('dict')
         self.order.append(len(self.order))
-        self.visible.append(0)
+        self.visible.append(False)
         self.widgets.append('text')
 
     def do_set_visible_columns(self, **kwargs):
@@ -252,8 +252,8 @@ class RAMSTKTreeView(Gtk.TreeView):
         _entity = _node.data
 
         _attributes = []
-        if _entity is not None:
-            # For simple data models that return an RAMSTK database
+        if _entity is not None: # pylint: disable=too-many-nested-blocks
+            # For simple data models that return a RAMSTK database
             # table instance for the data object, the first try
             # statement will create the list of attribute values.
             try:
@@ -262,11 +262,11 @@ class RAMSTKTreeView(Gtk.TreeView):
                     if _key == 'dict':
                         _attributes.append(str(_temp))
                     else:
-                        if isinstance(_temp[_key], datetime.date):
-                            _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
                         try:
+                            if isinstance(_temp[_key], datetime.date):
+                                _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
                             _temp[_key] = _temp[_key].decode('utf-8')
-                        except AttributeError:
+                        except(AttributeError, KeyError):
                             pass
                         _attributes.append(_temp[_key])
             except AttributeError:

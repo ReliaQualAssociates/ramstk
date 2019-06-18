@@ -8,7 +8,6 @@
 """RAMSTK Button Module."""
 
 # RAMSTK Local Imports
-# Import the ramstk.Widget base class.
 from .Widget import GdkPixbuf, GObject, Gtk, _
 
 
@@ -22,22 +21,44 @@ def do_make_buttonbox(self, **kwargs):
     :return: _buttonbox
     :rtype: :class:`Gtk.ButtonBox`
     """
-    _icons = kwargs['icons']
-    _tooltips = kwargs['tooltips']
-    _callbacks = kwargs['callbacks']
-    _orientation = kwargs['orientation']
-    _height = kwargs['height']
-    _width = kwargs['width']
+    try:
+        _icons = kwargs['icons']
+    except KeyError:
+        _icons = []
+    try:
+        _tooltips = kwargs['tooltips']
+    except KeyError:
+        _tooltips = []
+    try:
+        _callbacks = kwargs['callbacks']
+    except KeyError:
+        _callbacks = []
+    try:
+        _orientation = kwargs['orientation']
+    except KeyError:
+        _orientation = 'vertical'
+    try:
+        _height = kwargs['height']
+    except KeyError:
+        _height = -1
+    try:
+        _width = kwargs['width']
+    except KeyError:
+        _width = -1
 
     # Append the default save and save-all buttons found on all toolbars to
     # List Views, Module Views, and Work Views.
     try:
         _icons.extend(['save', 'save-all'])
         _tooltips.extend(
-            [_("Save the currently selected item."),
-             _("Save all items.")])
+            [
+                _("Save the currently selected item."),
+                _("Save all items."),
+            ],
+        )
         _callbacks.extend(
-            [self._do_request_update, self._do_request_update_all])
+            [self._do_request_update, self._do_request_update_all],
+        )
     except AttributeError:
         pass
 
@@ -51,8 +72,10 @@ def do_make_buttonbox(self, **kwargs):
     i = 0
     for _icon in _icons:
         _image = Gtk.Image()
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self._dic_icons[_icon],
-                                                       _height, _width)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self._dic_icons[_icon],
+            _height, _width,
+        )
         _image.set_from_pixbuf(_icon)
 
         _button = Gtk.Button()
@@ -86,11 +109,11 @@ class RAMSTKButton(Gtk.Button):
         Initialize an instance of the RAMSTK Button.
 
         :keyword int height: the height of the Gtk.Button().
-                             Default is 40.
+        Default is 40.
         :keyword int  width: the width of the Gtk.Button().
-                             Default is 200.
+        Default is 200.
         :keyword str label: the text to display on the Gtk.Button().
-                            Default is an ellipsis (...).
+        Default is an ellipsis (...).
         :keyword str icon: the image to display on the Gtk.Button().
         :return: None
         :rtype: None
@@ -98,9 +121,10 @@ class RAMSTKButton(Gtk.Button):
         GObject.GObject.__init__(self, label=label)
         self.show_all()
 
-        # TODO: Remove this when all RAMSTK Buttons are refactored.
+        # TODO: Remove the call to do_set_properties() in the RAMSTKButton.__init__() method when all instances of RAMSTKButton() have been refactored.
         self.do_set_properties(
-            height=height, width=width, tooltip=label, icon=icon)
+            height=height, width=width, tooltip=label, icon=icon,
+        )
 
     def do_set_properties(self, **kwargs):
         r"""
@@ -143,7 +167,8 @@ class RAMSTKButton(Gtk.Button):
         if _icon is not None:
             _image = Gtk.Image()
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                _icon, _height, _width)
+                _icon, _height, _width,
+            )
             _image.set_from_pixbuf(_icon)
             self.set_image(_image)
 
@@ -194,8 +219,10 @@ class RAMSTKCheckButton(Gtk.CheckButton):
         try:
             _tooltip = kwargs['tooltip']
         except KeyError:
-            _tooltip = ("RAMSTK WARNING: Missing tooltip.  Please register "
-                        "an Enhancement type bug.")
+            _tooltip = (
+                "RAMSTK WARNING: Missing tooltip.  Please register "
+                "an Enhancement type bug."
+            )
         try:
             _width = kwargs['width']
         except KeyError:

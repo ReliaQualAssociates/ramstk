@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.components.Resistor.py is part of the RAMSTK Project
+#       gui.gtk.workviews.components.Resistor.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Resistor Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKComboBox, RAMSTKEntry
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                           AssessmentResults)
+
+# RAMSTK Local Imports
+from .Component import AssessmentInputs, AssessmentResults
 
 
 class ResistorAssessmentInputs(AssessmentInputs):
@@ -61,10 +63,22 @@ class ResistorAssessmentInputs(AssessmentInputs):
     """
 
     # Define private dict attributes.
+    _dic_keys = {
+        0: 'quality_id',
+        1: 'specification_id',
+        2: 'type_id',
+        3: 'family_id',
+        4: 'construction_id',
+        5: 'resistance',
+        6: 'n_elements',
+    }
+
     _dic_quality = {
         1: [["S"], ["R"], ["P"], ["M"], ["MIL-R-11"], [_("Lower")]],
-        2: [["S"], ["R"], ["P"], ["M"], ["MIL-R-10509"], ["MIL-R-22684"],
-            [_("Lower")]],
+        2: [
+            ["S"], ["R"], ["P"], ["M"], ["MIL-R-10509"], ["MIL-R-22684"],
+            [_("Lower")],
+        ],
         3: [["MIL-SPEC"], [_("Lower")]],
         4: [["MIL-SPEC"], [_("Lower")]],
         5: [["S"], ["R"], ["P"], ["M"], ["MIL-R-93"], [_("Lower")]],
@@ -77,15 +91,17 @@ class ResistorAssessmentInputs(AssessmentInputs):
         12: [["MIL-SPEC"], [_("Lower")]],
         13: [["S"], ["R"], ["P"], ["M"], ["MIL-R-22097"], [_("Lower")]],
         14: [["MIL-SPEC"], [_("Lower")]],
-        15: [["MIL-SPEC"], [_("Lower")]]
+        15: [["MIL-SPEC"], [_("Lower")]],
     }
     # Key is subcategory ID; index is specification ID.
     _dic_specifications = {
-        2: [["MIL-R-10509"], ["MIL-R-22684"], ["MIL-R-39017"],
-            ["MIL-R-55182"]],
+        2: [
+            ["MIL-R-10509"], ["MIL-R-22684"], ["MIL-R-39017"],
+            ["MIL-R-55182"],
+        ],
         6: [["MIL-R-26"], ["MIL-R-39007"]],
         7: [["MIL-R-18546"], ["MIL-R-39009"]],
-        15: [["MIL-R-23285"], ["MIL-R-39023"]]
+        15: [["MIL-R-23285"], ["MIL-R-39023"]],
     }
     # Key is subcategory ID, index is type ID.
     _dic_types = {
@@ -97,34 +113,44 @@ class ResistorAssessmentInputs(AssessmentInputs):
         9: [["RTR"], ["RT"]],
         11: [["RA"], ["RK"]],
         13: [["RJR"], ["RJ"]],
-        15: [["RO"], ["RVC"]]
+        15: [["RO"], ["RVC"]],
     }
     # First key is subcategory ID; second key is specification ID.
     # Index is style ID.
     _dic_styles = {
         6: {
-            1: [["RWR 71"], ["RWR 74"], ["RWR 78"], ["RWR 80"], ["RWR 81"],
-                ["RWR 82"], ["RWR 84"], ["RWR 89"]],
+            1: [
+                ["RWR 71"], ["RWR 74"], ["RWR 78"], ["RWR 80"], ["RWR 81"],
+                ["RWR 82"], ["RWR 84"], ["RWR 89"],
+            ],
             2:
-            [["RW 10"], ["RW 11"], ["RW 12"], ["RW 13"], ["RW 14"], ["RW 15"],
-             ["RW 16"], ["RW 20"], ["RW 21 "], ["RW 22"], ["RW 23"], ["RW 24"],
-             ["RW 29"], ["RW 30"], ["RW 31"], ["RW 32"], ["RW 33"], ["RW 34"],
-             ["RW 35"], ["RW 36"], ["RW 37"], ["RW 38"], ["RW 39"], ["RW 47"],
-             ["RW 55"], ["RW 56"], ["RW 67"], ["RW 68"], ["RW 69"], ["RW 70"],
-             ["RW 74"], ["RW 78"], ["RW 79"], ["RW 80"], ["RW 81"]]
+            [
+                ["RW 10"], ["RW 11"], ["RW 12"], ["RW 13"], ["RW 14"], ["RW 15"],
+                ["RW 16"], ["RW 20"], ["RW 21 "], ["RW 22"], ["RW 23"], ["RW 24"],
+                ["RW 29"], ["RW 30"], ["RW 31"], ["RW 32"], ["RW 33"], ["RW 34"],
+                ["RW 35"], ["RW 36"], ["RW 37"], ["RW 38"], ["RW 39"], ["RW 47"],
+                ["RW 55"], ["RW 56"], ["RW 67"], ["RW 68"], ["RW 69"], ["RW 70"],
+                ["RW 74"], ["RW 78"], ["RW 79"], ["RW 80"], ["RW 81"],
+            ],
         },
         7: {
-            1: [["RE 60/RER 60"], ["RE 65/RER 65"], ["RE 70/RER 70"],
-                ["RE 75/RER 75"], ["RE 77"], ["RE 80"]],
-            2: [["RE 60/RER40"], ["RE 65/RER 45"], ["RE 70/ RER 50"],
-                ["RE 75/RER 55"], ["RE 77"], ["RE 80"]]
-        }
+            1: [
+                ["RE 60/RER 60"], ["RE 65/RER 65"], ["RE 70/RER 70"],
+                ["RE 75/RER 75"], ["RE 77"], ["RE 80"],
+            ],
+            2: [
+                ["RE 60/RER40"], ["RE 65/RER 45"], ["RE 70/ RER 50"],
+                ["RE 75/RER 55"], ["RE 77"], ["RE 80"],
+            ],
+        },
     }
     # Key is subcategory ID; index is construction ID.
     _dic_construction = {
-        10: [["RR0900A2A9J103"], ["RR0900A3A9J103"], ["RR0900A4A9J103"],
-             ["RR0900A5A9J103"]],
-        12: [[_("Enclosed")], [_("Unenclosed")]]
+        10: [
+            ["RR0900A2A9J103"], ["RR0900A3A9J103"], ["RR0900A4A9J103"],
+            ["RR0900A5A9J103"],
+        ],
+        12: [[_("Enclosed")], [_("Unenclosed")]],
     }
 
     # Define private list attributes.
@@ -135,12 +161,17 @@ class ResistorAssessmentInputs(AssessmentInputs):
         _("Type:"),
         _("Style:"),
         _("Construction:"),
-        _("Number of Elements:")
+        _("Number of Elements:"),
     ]
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Resistor assessment input view."""
-        AssessmentInputs.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Resistor assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentInputs.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -153,48 +184,111 @@ class ResistorAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbSpecification = ramstk.RAMSTKComboBox(
+        self.cmbSpecification = RAMSTKComboBox(
+            tooltip=_("The governing specification for the resistor."),
+        )
+        self.cmbType = RAMSTKComboBox(
+            index=0, simple=True,
+        )
+        self.cmbStyle = RAMSTKComboBox(
+            index=0, simple=True,
+        )
+        self.cmbConstruction = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The governing specification for the resistor."))
-        self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The type of thermistor."))
-        self.cmbStyle = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The style of resistor."))
-        self.cmbConstruction = ramstk.RAMSTKComboBox(
-            index=0,
-            simple=True,
-            tooltip=_("The method of construction of the resistor."))
-        self.txtResistance = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The resistance (in \u03A9) of the resistor."))
-        self.txtNElements = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of active resistors in a resistor network "
-                      "or the number of potentiometer taps."))
+        )
+        self.txtResistance = RAMSTKEntry()
+        self.txtNElements = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
-
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed', self._on_combo_changed,
-                                          1))
-        self._lst_handler_id.append(
-            self.cmbType.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbStyle.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 4))
-        self._lst_handler_id.append(
-            self.txtResistance.connect('changed', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtNElements.connect('changed', self._on_focus_out, 6))
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+
+    def __make_ui(self):
+        """
+        Make the Resistor class Gtk.Notebook() assessment input page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for inductors.
+        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
+
+        self.put(self.txtResistance, _x_pos, _y_pos[1])
+        self.put(self.cmbSpecification, _x_pos, _y_pos[2])
+        self.put(self.cmbType, _x_pos, _y_pos[3])
+        self.put(self.cmbStyle, _x_pos, _y_pos[4])
+        self.put(self.cmbConstruction, _x_pos, _y_pos[5])
+        self.put(self.txtNElements, _x_pos, _y_pos[6])
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for Resistor assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self.on_combo_changed, 0),
+        )
+        self._lst_handler_id.append(
+            self.cmbSpecification.connect(
+                'changed', self.on_combo_changed,
+                1,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.cmbType.connect('changed', self.on_combo_changed, 2),
+        )
+        self._lst_handler_id.append(
+            self.cmbStyle.connect('changed', self.on_combo_changed, 3),
+        )
+        self._lst_handler_id.append(
+            self.cmbConstruction.connect('changed', self.on_combo_changed, 4),
+        )
+        self._lst_handler_id.append(
+            self.txtResistance.connect('changed', self.on_focus_out, 5),
+        )
+        self._lst_handler_id.append(
+            self.txtNElements.connect('changed', self.on_focus_out, 6),
+        )
+
+    def __set_properties(self):
+        """
+        Set properties for Resistor assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbSpecification.do_set_properties(
+            tooltip=_("The governing specification for the resistor."),
+        )
+        self.cmbType.do_set_properties(
+            tooltip=_("The type of thermistor."),
+        )
+        self.cmbStyle.do_set_properties(
+            tooltip=_("The style of resistor."),
+        )
+        self.cmbConstruction.do_set_properties(
+            tooltip=_("The method of construction of the resistor."),
+        )
+        self.txtResistance.do_set_properties(
+            width=125,
+            tooltip=_("The resistance (in \u03A9) of the resistor."),
+        )
+        self.txtNElements.do_set_properties(
+            width=125,
+            tooltip=_(
+                "The number of active resistors in a resistor network "
+                "or the number of potentiometer taps.",
+            ),
+        )
 
     def _do_load_comboboxes(self, subcategory_id):
         """
@@ -246,26 +340,16 @@ class ResistorAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbConstruction.do_load_combo(_data)
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Resistor assesment input widgets.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Resistor.
+        Resistor.
         :return: None
         :rtype: None
         """
-        self._hardware_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        self._do_load_comboboxes(self._subcategory_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        AssessmentInputs.do_load_page(self, attributes)
 
         self.cmbType.handler_block(self._lst_handler_id[2])
         self.cmbType.set_active(attributes['type_id'])
@@ -286,17 +370,17 @@ class ResistorAssessmentInputs(AssessmentInputs):
 
             self.txtResistance.handler_block(self._lst_handler_id[5])
             self.txtResistance.set_text(
-                str(self.fmt.format(attributes['resistance'])))
+                str(self.fmt.format(attributes['resistance'])),
+            )
             self.txtResistance.handler_unblock(self._lst_handler_id[5])
 
             self.txtNElements.handler_block(self._lst_handler_id[6])
             self.txtNElements.set_text(
-                str(self.fmt.format(attributes['n_elements'])))
+                str(self.fmt.format(attributes['n_elements'])),
+            )
             self.txtNElements.handler_unblock(self._lst_handler_id[6])
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -333,131 +417,6 @@ class ResistorAssessmentInputs(AssessmentInputs):
             else:
                 self.txtNElements.set_sensitive(False)
 
-        return None
-
-    def _make_page(self):
-        """
-        Make the Hardware class Gtk.Notebook() assessment input page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_page(self)
-
-        self.put(self.txtResistance, _x_pos, _y_pos[1])
-        self.put(self.cmbSpecification, _x_pos, _y_pos[2])
-        self.put(self.cmbType, _x_pos, _y_pos[3])
-        self.put(self.cmbStyle, _x_pos, _y_pos[4])
-        self.put(self.cmbConstruction, _x_pos, _y_pos[5])
-        self.put(self.txtNElements, _x_pos, _y_pos[6])
-
-        self.show_all()
-
-        return None
-
-    def _on_combo_changed(self, combo, index):
-        """
-        Retrieve RAMSTKCombo() changes and assign to Resistor attribute.
-
-        This method is called by:
-
-            * Gtk.Combo() 'changed' signal
-
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
-                          with the calling RAMSTKComboBox().  Indices are:
-
-            +---------+------------------+---------+------------------+
-            |  Index  | Widget           |  Index  | Widget           |
-            +=========+==================+=========+==================+
-            |    1    | cmbSpecification |    3    | cmbStyle         |
-            +---------+------------------+---------+------------------+
-            |    2    | cmbType          |    4    | cmbConstruction  |
-            +---------+------------------+---------+------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            0: 'quality_id',
-            1: 'specification_id',
-            2: 'type_id',
-            3: 'family_id',
-            4: 'construction_id'
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            pub.sendMessage(
-                'wvw_editing_hardware',
-                module_id=self._hardware_id,
-                key=_key,
-                value=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Widget().  Indices are:
-
-            +---------+---------------------+---------+---------------------+
-            |  Index  | Widget              |  Index  | Widget              |
-            +=========+=====================+=========+=====================+
-            |    5    | txtResistance       |    6    | txtNElements        |
-            +---------+---------------------+---------+---------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {5: 'resistance', 6: 'n_elements'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = float(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
 
 class ResistorAssessmentResults(AssessmentResults):
@@ -508,12 +467,17 @@ class ResistorAssessmentResults(AssessmentResults):
         14:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         15:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
     }
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Resistor assessment result view."""
-        AssessmentResults.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Resistor assessment result view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentResults.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -526,51 +490,94 @@ class ResistorAssessmentResults(AssessmentResults):
         self._lst_labels.append("\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
-        self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the resistor "
-              "failure rate."))
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiR = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The resistance factor for the resistor."))
-        self.txtPiT = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The temperature factor for the resistor."))
-        self.txtPiNR = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The number of resistors factor for the resistor."))
-        self.txtPiTAPS = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The potentiometer taps factor for the resistor."))
-        self.txtPiV = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The voltage factor for the resistor."))
-        self.txtPiC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The construction class factor for the resistor."))
+        self.txtPiR = RAMSTKEntry()
+        self.txtPiT = RAMSTKEntry()
+        self.txtPiNR = RAMSTKEntry()
+        self.txtPiTAPS = RAMSTKEntry()
+        self.txtPiV = RAMSTKEntry()
+        self.txtPiC = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+
+    def __make_ui(self):
+        """
+        Make the resistor Gtk.Notebook() assessment results page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for resistors.
+        _x_pos, _y_pos = AssessmentResults.make_ui(self)
+
+        self.put(self.txtPiR, _x_pos, _y_pos[3])
+        self.put(self.txtPiT, _x_pos, _y_pos[4])
+        self.put(self.txtPiNR, _x_pos, _y_pos[5])
+        self.put(self.txtPiTAPS, _x_pos, _y_pos[6])
+        self.put(self.txtPiV, _x_pos, _y_pos[7])
+        self.put(self.txtPiC, _x_pos, _y_pos[8])
+
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties for Resistor assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lblModel.set_tooltip_markup(
+            _(
+                "The assessment model used to calculate the resistor "
+                "failure rate.",
+            ),
+        )
+
+        self.txtPiR.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The resistance factor for the resistor."),
+        )
+        self.txtPiT.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The temperature factor for the resistor."),
+        )
+        self.txtPiNR.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The number of resistors factor for the resistor."),
+        )
+        self.txtPiTAPS.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The potentiometer taps factor for the resistor."),
+        )
+        self.txtPiV.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The voltage factor for the resistor."),
+        )
+        self.txtPiC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The construction class factor for the resistor."),
+        )
 
     def _do_load_page(self, attributes):
         """
@@ -595,8 +602,6 @@ class ResistorAssessmentResults(AssessmentResults):
         self.txtPiC.set_text(str(self.fmt.format(attributes['piC'])))
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):
         """
@@ -626,24 +631,3 @@ class ResistorAssessmentResults(AssessmentResults):
                 self.txtPiV.set_sensitive(True)
             if self._subcategory_id in [10, 12]:
                 self.txtPiC.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the resistor Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for resistors.
-        _x_pos, _y_pos = AssessmentResults.make_page(self)
-
-        self.put(self.txtPiR, _x_pos, _y_pos[3])
-        self.put(self.txtPiT, _x_pos, _y_pos[4])
-        self.put(self.txtPiNR, _x_pos, _y_pos[5])
-        self.put(self.txtPiTAPS, _x_pos, _y_pos[6])
-        self.put(self.txtPiV, _x_pos, _y_pos[7])
-        self.put(self.txtPiC, _x_pos, _y_pos[8])
-
-        return None

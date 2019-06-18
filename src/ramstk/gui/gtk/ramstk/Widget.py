@@ -6,11 +6,11 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Widget Module."""
 
+# Standard Library Imports
+import gettext
 import sys
 
-import gettext
-
-# Modules required for the GUI.
+# Third Party Imports
 # Disable the unused-import because Gtk, Gdk, GObject, and Pango are all
 # imported from this module by all the other GUI modules.
 try:
@@ -20,12 +20,9 @@ try:
 except ImportError:
     print("Failed to import package gi; exiting.")
     sys.exit(1)
-from gi.repository import Gdk, GdkPixbuf, GObject, Gtk, Pango
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+from gi.repository import (  # pylint: disable=unused-import
+    Gdk, GdkPixbuf, GObject, Gtk, Pango,
+)
 
 _ = gettext.gettext
 
@@ -73,12 +70,13 @@ def set_cursor(controller, cursor):
     :rtype: None
     """
     controller.dic_books['listbook'].get_window().set_cursor(
-        Gdk.Cursor.new(cursor))
+        Gdk.Cursor.new(cursor),
+    )
     controller.dic_books['modulebook'].get_window().set_cursor(
-        Gdk.Cursor.new(cursor))
+        Gdk.Cursor.new(cursor),
+    )
     controller.dic_books['workbook'].get_window().set_cursor(
-        Gdk.Cursor.new(cursor))
+        Gdk.Cursor.new(cursor),
+    )
 
     Gdk.flush()
-
-    return None

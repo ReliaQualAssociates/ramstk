@@ -8,7 +8,6 @@
 """RAMSTK Entry Module."""
 
 # RAMSTK Local Imports
-# Import the ramstk.Widget base class.
 from .Widget import Gdk, GObject, Gtk, Pango
 
 
@@ -22,7 +21,7 @@ class RAMSTKEntry(Gtk.Entry):
         GObject.GObject.__init__(self)
         self.show()
 
-        # TODO: Remove this when all RAMSTK Entrys are refactored.
+        # TODO: Remove the call to do_set_properties() in the RAMSTKEntry.__init__() method when all instances of RAMSTKEntry() have been refactored.
         self.do_set_properties(**kwargs)
 
     def do_set_properties(self, **kwargs):
@@ -105,15 +104,14 @@ class RAMSTKEntry(Gtk.Entry):
         Update the RAMSTK Entry with a new value.
 
         :param str value: the information to update the RAMSTKEntry() to
-                          display.
-        :param int handler_id: the handler ID associated with the
-                               RAMSTKEntry().
+        display.
+        :param int handler_id: the handler ID associated with the RAMSTKEntry().
         :return: None
         :rtype: None
         """
-        with self.handler_block(handler_id):
-            self.set_text(str(value))
-            self.handler_unblock(handler_id)
+        self.handler_block(handler_id)
+        self.set_text(str(value))
+        self.handler_unblock(handler_id)
 
 
 class RAMSTKTextView(Gtk.TextView):
@@ -149,7 +147,7 @@ class RAMSTKTextView(Gtk.TextView):
 
         self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
 
-        # TODO: Remove this when all RAMSTK TextViews are refactored.
+        # TODO: Remove the call to do_set_properties() in the RAMSTKTextView.__init__() method when all instances of RAMSTKTextView() have been refactored.
         self.do_set_properties(height=height, tooltip=tooltip, width=width)
 
     def do_get_buffer(self):
@@ -170,7 +168,7 @@ class RAMSTKTextView(Gtk.TextView):
         """
         _buffer = self.do_get_buffer()
 
-        return _buffer.get_text(*_buffer.get_bounds())
+        return _buffer.get_text(*_buffer.get_bounds(), True)
 
     def do_set_properties(self, **kwargs):
         r"""
@@ -219,6 +217,6 @@ class RAMSTKTextView(Gtk.TextView):
         """
         _buffer = self.do_get_buffer()
 
-        with _buffer.handler_block(handler_id):
-            _buffer.set_text(str(value))
-            _buffer.handler_unblock(handler_id)
+        _buffer.handler_block(handler_id)
+        _buffer.set_text(str(value))
+        _buffer.handler_unblock(handler_id)

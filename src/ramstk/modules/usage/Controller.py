@@ -6,11 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Usage Profile Package Data Controller."""
 
-# Import third party modules.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.modules import RAMSTKDataController
+
+# RAMSTK Local Imports
 from . import dtmUsageProfile
 
 
@@ -39,7 +41,8 @@ class UsageProfileDataController(RAMSTKDataController):
             configuration,
             model=dtmUsageProfile(dao, **kwargs),
             ramstk_module='usage_profile',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -58,11 +61,13 @@ class UsageProfileDataController(RAMSTKDataController):
         pub.subscribe(self._request_do_insert, 'request_insert_profile')
         pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_update, 'request_update_profile')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_profiles')
+        pub.subscribe(
+            self.request_do_update_all,
+            'request_update_all_profiles',
+        )
         pub.subscribe(self.request_set_attributes, 'editing_profile')
 
-    def _request_do_insert(self, entity_id, parent_id, level, **kwargs):
+    def _request_do_insert(self, entity_id, parent_id, level, **kwargs):    # pylint: disable=unused-argument
         """
         Request to add a record.
 
@@ -85,10 +90,13 @@ class UsageProfileDataController(RAMSTKDataController):
         :rtype: bool
         """
         _error_code, _msg = self._dtm_data_model.do_insert(
-            entity_id=entity_id, parent_id=parent_id, level=level)
+            entity_id=entity_id, parent_id=parent_id, level=level,
+        )
 
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
+        return RAMSTKDataController.do_handle_results(
+            self, _error_code, _msg,
+            None,
+        )
 
     def request_last_id(self, **kwargs):
         """

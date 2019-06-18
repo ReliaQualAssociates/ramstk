@@ -6,7 +6,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Plot Module."""
 
-# pylint: disable=E0401
 try:
     from matplotlib.backends.backend_gtk3cairo \
         import FigureCanvasGTK3Cairo as FigureCanvas
@@ -16,11 +15,11 @@ except RuntimeError:
     # This is necessary to have the tests pass on headless servers.
     pass
 
-# Import other RAMSTK Widget classes.
-from .Widget import _, Gtk  # pylint: disable=E0401
+# RAMSTK Local Imports
+from .Widget import Gtk, _
 
 
-class RAMSTKPlot(object):
+class RAMSTKPlot():
     """
     The RAMSTKPlot class.
 
@@ -59,7 +58,8 @@ class RAMSTKPlot(object):
                              Default is a solid green line.
         """
         _line, = self.axis.plot_date(
-            x_values, y_values, marker, xdate=True, linewidth=2)
+            x_values, y_values, marker, xdate=True, linewidth=2,
+        )
         self._lst_min.append(min(y_values))
         self._lst_max.append(max(y_values))
 
@@ -76,7 +76,8 @@ class RAMSTKPlot(object):
         """
         self.axis.grid(False, which='both')
         _values, _edges, __ = self.axis.hist(
-            x_values, bins=y_values, color=marker)
+            x_values, bins=y_values, color=marker,
+        )
         self._lst_min.append(min(_values))
         self._lst_max.append(max(_values) + 1)
 
@@ -114,11 +115,13 @@ class RAMSTKPlot(object):
 
         return _line
 
-    def do_load_plot(self,
-                     x_values,
-                     y_values=None,
-                     plot_type='scatter',
-                     marker='g-'):
+    def do_load_plot(
+            self,
+            x_values,
+            y_values=None,
+            plot_type='scatter',
+            marker='g-',
+    ):
         """
         Load the RAMSTKPlot.
 
@@ -143,7 +146,8 @@ class RAMSTKPlot(object):
                 self._do_make_scatter_plot(x_values, y_values, marker)
             elif plot_type == 'histogram':
                 _values, _edges = self._do_make_histogram(
-                    x_values, y_values, marker)
+                    x_values, y_values, marker,
+                )
             elif plot_type == 'date':
                 self._do_make_date_plot(x_values, y_values, marker)
 
@@ -183,7 +187,8 @@ class RAMSTKPlot(object):
             lw=0.0,
             color=color,
             marker=marker,
-            markersize=10)
+            markersize=10,
+        )
         self.axis.add_line(_line)
         self.figure.canvas.draw()
 
@@ -278,8 +283,9 @@ class RAMSTKPlot(object):
                     'verticalalignment': 'center',
                     'horizontalalignment': 'center',
                     'x': x_pos,
-                    'y': y_pos
-                })
+                    'y': y_pos,
+                },
+            )
         else:
             _label = self.axis.set_ylabel(
                 label, {
@@ -287,8 +293,9 @@ class RAMSTKPlot(object):
                     'fontweight': _fontweight,
                     'verticalalignment': 'center',
                     'horizontalalignment': 'center',
-                    'rotation': 'vertical'
-                })
+                    'rotation': 'vertical',
+                },
+            )
 
         return _label
 
@@ -369,14 +376,15 @@ class RAMSTKPlot(object):
             loc=_location,
             ncol=_ncol,
             shadow=_shadow,
-            title=_title)
+            title=_title,
+        )
 
         for _text in _legend.get_texts():
             _text.set_fontsize(_fontsize)
         for _line in _legend.get_lines():
             _line.set_linewidth(_lwd)
 
-        return None
+
 
     def do_make_title(self, title, fontsize=16, fontweight='bold'):
         """
@@ -393,5 +401,6 @@ class RAMSTKPlot(object):
                 'fontsize': fontsize,
                 'fontweight': fontweight,
                 'verticalalignment': 'baseline',
-                'horizontalalignment': 'center'
-            })
+                'horizontalalignment': 'center',
+            },
+        )

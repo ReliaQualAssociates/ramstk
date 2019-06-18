@@ -6,11 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Defintion Package Data Controller Module."""
 
-# Import third party modules.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.modules import RAMSTKDataController
+
+# RAMSTK Local Imports
 from . import dtmFailureDefinition
 
 
@@ -37,7 +39,8 @@ class FailureDefinitionDataController(RAMSTKDataController):
             configuration,
             model=dtmFailureDefinition(dao, **kwargs),
             ramstk_module='failure_definition',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -56,6 +59,8 @@ class FailureDefinitionDataController(RAMSTKDataController):
         pub.subscribe(self.request_do_insert, 'request_insert_definition')
         pub.subscribe(self.request_do_select_all, 'selected_revision')
         pub.subscribe(self.request_do_update, 'request_update_definition')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_definitions')
+        pub.subscribe(
+            self.request_do_update_all,
+            'request_update_all_definitions',
+        )
         pub.subscribe(self.request_set_attributes, 'editing_definition')

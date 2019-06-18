@@ -12,14 +12,11 @@ import ast
 import locale
 
 # Third Party Imports
-# Import third party modules.
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.gui.gtk.ramstk import RAMSTKMessageDialog, RAMSTKTreeView
 from ramstk.gui.gtk.ramstk.Widget import Gdk, GdkPixbuf, Gtk, _
-# Import other RAMSTK Widget classes.
-from ramstk.Utilities import none_to_default
 
 
 class RAMSTKBaseView():
@@ -62,7 +59,7 @@ class RAMSTKBaseView():
         'left': Gtk.PositionType.LEFT,
         'right': Gtk.PositionType.RIGHT,
         'top': Gtk.PositionType.TOP,
-        'bottom': Gtk.PositionType.BOTTOM
+        'bottom': Gtk.PositionType.BOTTOM,
     }
 
     def __init__(self, configuration, **kwargs):
@@ -133,18 +130,25 @@ class RAMSTKBaseView():
             self.treeview = None
         else:
             try:
-                _bg_color = self.RAMSTK_CONFIGURATION.RAMSTK_COLORS[_module +
-                                                                    'bg']
-                _fg_color = self.RAMSTK_CONFIGURATION.RAMSTK_COLORS[_module +
-                                                                    'fg']
+                _bg_color = self.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
+                    _module +
+                    'bg'
+                ]
+                _fg_color = self.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
+                    _module +
+                    'fg'
+                ]
                 _fmt_file = (
                     self.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-                    self.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
+                    self.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module]
+                )
                 _fmt_path = "/root/tree[@name='" + _module.title(
                 ) + "']/column"
 
-                self.treeview = RAMSTKTreeView(_fmt_path, 0, _fmt_file,
-                                               _bg_color, _fg_color)
+                self.treeview = RAMSTKTreeView(
+                    _fmt_path, 0, _fmt_file,
+                    _bg_color, _fg_color,
+                )
                 self._lst_col_order = self.treeview.order
             except KeyError:
                 self.treeview = Gtk.TreeView()
@@ -155,18 +159,15 @@ class RAMSTKBaseView():
         self.hbx_tab_label = Gtk.HBox()
 
         try:
-            locale.setlocale(locale.LC_ALL,
-                             self.RAMSTK_CONFIGURATION.RAMSTK_LOCALE)
+            locale.setlocale(
+                locale.LC_ALL,
+                self.RAMSTK_CONFIGURATION.RAMSTK_LOCALE,
+            )
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
         # Subscribe to PyPubSub messages.
-        # TODO: Change this to self.on_select_revision when everything is updated.
-        pub.subscribe(self.do_set_revision_id, 'selected_revision')
-
-    def do_set_revision_id(self, attributes):
-        """Set the Revision ID when a new Revision is selected."""
-        self._revision_id = attributes['revision_id']
+        pub.subscribe(self.on_select_revision, 'selected_revision')
 
     def do_load_tree(self, tree):
         """
@@ -182,15 +183,22 @@ class RAMSTKBaseView():
         _model = self.treeview.get_model()
         _model.clear()
 
-        _tag = tree.get_node(0).tag
+        try:
+            _tag = tree.get_node(0).tag
+        except AttributeError:
+            _tag = "UNK"
 
         if self.treeview.do_load_tree(tree):
-            _prompt = _("An error occured while loading the {1:s} "
-                        "records for Revision ID {0:d} into the "
-                        "view.").format(self._revision_id, _tag)
-            _dialog = RAMSTKMessageDialog(_prompt, self._dic_icons['error'],
-                                          'error')
-            if _dialog.do_run() == self._response_ok:
+            _prompt = _(
+                "An error occured while loading the {1:s} "
+                "records for Revision ID {0:d} into the "
+                "view.",
+            ).format(self._revision_id, _tag)
+            _dialog = RAMSTKMessageDialog(
+                _prompt, self._dic_icons['error'],
+                'error', self,
+            )
+            if _dialog.do_run() == Gtk.ResponseType.OK:
                 _dialog.do_destroy()
 
         _row = _model.get_iter_first()
@@ -233,7 +241,8 @@ class RAMSTKBaseView():
         if _error_code != 0:
             self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_debug_msg)
             _dialog = RAMSTKMessageDialog(
-                _user_msg, self._dic_icons[_severity], _severity)
+                _user_msg, self._dic_icons[_severity], _severity,
+            )
             if _dialog.do_run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
 
@@ -255,10 +264,13 @@ class RAMSTKBaseView():
             try:
                 _model.set_value(_row, _column, value)
             except AttributeError:
-                _prompt = _("An error occurred while refreshing column {0:d} "
-                            "for record {1:d}.").format(_column, module_id)
+                _prompt = _(
+                    "An error occurred while refreshing column {0:d} "
+                    "for record {1:d}.",
+                ).format(_column, module_id)
                 _dialog = RAMSTKMessageDialog(
-                    _prompt, self._dic_icons['error'], 'error')
+                    _prompt, self._dic_icons['error'], 'error',
+                )
                 if _dialog.do_run() == self._response_ok:
                     _dialog.do_destroy()
         except IndexError:
@@ -266,8 +278,11 @@ class RAMSTKBaseView():
 
         # Update the attributes dict in the last column.
         _attributes = ast.literal_eval(
-            _model.get_value(_row,
-                             _model.get_n_columns() - 1))
+            _model.get_value(
+                _row,
+                _model.get_n_columns() - 1,
+            ),
+        )
         _attributes[key] = value
         _model.set_value(_row, _model.get_n_columns() - 1, str(_attributes))
 
@@ -334,20 +349,25 @@ class RAMSTKBaseView():
         :return: None
         :rtype: None
         """
-        self._mdcRAMSTK.dic_books['listbook'].get_window().set_cursor(
-            Gdk.Cursor.new(cursor))
-        self._mdcRAMSTK.dic_books['modulebook'].get_window().set_cursor(
-            Gdk.Cursor.new(cursor))
-        self._mdcRAMSTK.dic_books['workbook'].get_window().set_cursor(
-            Gdk.Cursor.new(cursor))
+        self.get_parent_window().set_cursor(
+            Gdk.Cursor.new(cursor),
+        )
+        #self._mdcRAMSTK.dic_books['modulebook'].get_window().set_cursor(
+        #    Gdk.Cursor.new(cursor),
+        #)
+        #self._mdcRAMSTK.dic_books['workbook'].get_window().set_cursor(
+        #    Gdk.Cursor.new(cursor),
+        #)
 
         Gdk.flush()
 
-    def _make_toolbar(self,
-                      icons,
-                      orientation='horizontal',
-                      height=60,
-                      width=60):
+    def _make_toolbar(
+            self,
+            icons,
+            orientation='horizontal',
+            height=60,
+            width=60,
+    ):
         """
         Create the toolbar for RAMSTK Views.
 
@@ -376,7 +396,8 @@ class RAMSTKBaseView():
                 _image = Gtk.Image()
                 _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                     self._dic_icons[_icon], int(_scale * height),
-                    int(_scale * width))
+                    int(_scale * width),
+                )
                 _image.set_from_pixbuf(_icon)
 
                 _button = Gtk.ToolButton()
@@ -414,12 +435,16 @@ class RAMSTKBaseView():
                 _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
                 try:
                     _cell.set_property('editable', True)
-                    _cell.connect('edited', self._on_cell_edit, _index,
-                                  self.treeview.get_model())
+                    _cell.connect(
+                        'edited', self._on_cell_edit, _index,
+                        self.treeview.get_model(),
+                    )
                 except TypeError:
                     _cell.set_property('activatable', True)
-                    _cell.connect('toggled', self._on_cell_edit, _index,
-                                  self.treeview.get_model())
+                    _cell.connect(
+                        'toggled', self._on_cell_edit, _index,
+                        self.treeview.get_model(),
+                    )
             else:
                 _color = Gdk.RGBA(238.0, 238.0, 238.0, 1.0)
                 try:
@@ -466,56 +491,53 @@ class RAMSTKBaseView():
             _menu_item.show()
             _menu.append(_menu_item)
 
-    def on_focus_out(self, entry, index, **kwargs):
+    def on_focus_out(self, entry, index, module_id, message):
         """
-        Retrieve changes made in RTKEntry() widgets..
+        Retrieve changes made in RAMSTKEntry() widgets.
 
         This method is called by:
 
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
+            * RAMSTKEntry() 'changed' signal
+            * RAMSTKTextView() 'changed' signal
 
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
-        :param int index: the index in the signal handler list for the entry
-                          that called this method.
-        :return: (_error_code, _msg); a tuple containing the error code and
-                                      associated error message.
-        :rtype: (int, str)
+        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the
+        method.
+        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
+        :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
+        :param int index: the position in the Hardware class Gtk.TreeModel()
+        associated with the data from the calling Gtk.Widget().
+        :param int module_id: the ID of the RAMSTK<MODULE> whose entry is being
+        changed.
+        :param str message: the PyPubSub message to publish.
+        :return: None
+        :rtype: None
         """
-        _node_id = kwargs['node_id']
-        _default = kwargs['default']
-        _key = kwargs['key']
-        _value = ''
-        _error_code = 0
-        _msg = ''
+        try:
+            _key = self._dic_keys[index]
+        except KeyError:
+            _key = ''
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                _node_id)
-
+        try:
+            _new_text = int(entry.get_text())
+        except ValueError:
             try:
-                _value = float(entry.get_text())
+                _new_text = float(entry.get_text())
             except ValueError:
-                _value = none_to_default(None, _default)
-                _error_code = 1
-                _msg = ('RAMSTK ERROR: Failed to convert {0:s} to float '
-                        'value.').format(entry.get_text())
-
-            try:
-                _attributes[_key] = _value
-                self._dtc_data_controller.request_set_attributes(
-                    _node_id, _attributes)
-            except KeyError:
-                _error_code = 2
-                _msg = 'RAMSTK ERROR: No attribute {0:s} exists.'.format(_key)
+                try:
+                    _new_text = str(entry.get_text())
+                except ValueError:
+                    _new_text = None
 
         entry.handler_unblock(self._lst_handler_id[index])
 
-        return (_error_code, _msg)
+        pub.sendMessage(
+            message,
+            module_id=module_id,
+            key=_key,
+            value=_new_text,
+        )
 
     def on_select(self, **kwargs):
         """
@@ -538,40 +560,11 @@ class RAMSTKBaseView():
 
         return self.do_raise_dialog(severity='warning', **kwargs)
 
-    def on_select_revision(self, **kwargs):
+    def on_select_revision(self, attributes):
         """
-        Load the RAMSTK View Gtk.TreeModel() when a Revision is selected.
+        Set the Revision ID when a new Revision is selected.
 
         :return: None
         :rtype: None
         """
-        _tree = kwargs['tree']
-
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        try:
-            _return = self.treeview.do_load_tree(_tree)
-        except AttributeError:
-            for _node in list(_tree.nodes.values())[1:]:
-                _entity = _node.data
-
-                _attributes = []
-                if _entity is not None:
-                    _temp = _entity.get_attributes()
-
-                    for _key in _temp:
-                        _attributes.append(_temp[_key])
-
-                try:
-                    _row = _model.append(_attributes[:2])
-                except ValueError:
-                    _row = None
-
-        _row = _model.get_iter_first()
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
+        self._revision_id = attributes['revision_id']

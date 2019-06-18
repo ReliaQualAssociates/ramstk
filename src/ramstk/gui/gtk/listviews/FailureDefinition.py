@@ -7,12 +7,16 @@
 # Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Definition List View Module."""
 
+# Third Party Imports
 # Import third party modules.
 from pubsub import pub
 
+# RAMSTK Package Imports
 # Import other RAMSTK modules.
 from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk, Pango
+from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, Pango, _
+
+# RAMSTK Local Imports
 from .ListView import RAMSTKListView
 
 
@@ -34,7 +38,8 @@ class ListView(RAMSTKListView):
         :type configuration: :py:class:`ramstk.Configuration.Configuration`
         """
         RAMSTKListView.__init__(
-            self, configuration, module='failure_definition')
+            self, configuration, module='failure_definition',
+        )
 
         # Initialize private dictionary attributes.
 
@@ -52,7 +57,6 @@ class ListView(RAMSTKListView):
         self.__make_treeview()
         self.__set_properties()
         self.__make_ui()
-        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_tree, 'deleted_definition')
@@ -81,7 +85,8 @@ class ListView(RAMSTKListView):
             callbacks=_callbacks,
             orientation='vertical',
             height=-1,
-            width=-1)
+            width=-1,
+        )
 
         return _buttonbox
 
@@ -92,8 +97,10 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _model = Gtk.ListStore(GObject.TYPE_INT, GObject.TYPE_INT,
-                               GObject.TYPE_STRING)
+        _model = Gtk.ListStore(
+            GObject.TYPE_INT, GObject.TYPE_INT,
+            GObject.TYPE_STRING,
+        )
         self.treeview.set_model(_model)
 
         _cell = Gtk.CellRendererText()
@@ -164,26 +171,22 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self.tab_label.set_markup("<span weight='bold'>" +
-                                  _("Failure\nDefinitions") + "</span>")
+        self.tab_label.set_markup(
+            "<span weight='bold'>" +
+            _("Failure\nDefinitions") + "</span>",
+        )
         self.tab_label.set_alignment(xalign=0.5, yalign=0.5)
         self.tab_label.set_justify(Gtk.Justification.CENTER)
         self.tab_label.show_all()
         self.tab_label.set_tooltip_text(
-            _("Displays failure definitions for the "
-              "selected revision."))
+            _(
+                "Displays failure definitions for the "
+                "selected revision.",
+            ),
+        )
 
         self.pack_start(self.__make_buttonbox(), False, False, 0)
         RAMSTKListView._make_ui(self)
-
-    def __set_callbacks(self):
-        """
-        Set callback methods for the Failure Definition ListView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        RAMSTKListView._set_callbacks(self)
 
     def __set_properties(self):
         """
@@ -194,8 +197,11 @@ class ListView(RAMSTKListView):
         """
         RAMSTKListView._set_properties(self)
         self.treeview.set_tooltip_text(
-            _("Displays the list of failure definitions for the selected "
-              "revision."))
+            _(
+                "Displays the list of failure definitions for the selected "
+                "revision.",
+            ),
+        )
 
     def _do_load_tree(self, tree):
         """
@@ -216,7 +222,7 @@ class ListView(RAMSTKListView):
             if _entity is not None:
                 _attributes = [
                     _entity.revision_id, _entity.definition_id,
-                    _entity.definition
+                    _entity.definition,
                 ]
 
             try:
@@ -240,16 +246,20 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        _prompt = _("You are about to delete Failure Definition {0:d} and "
-                    "all data associated with it.  Is this really what you "
-                    "want to do?").format(self._definition_id)
+        _prompt = _(
+            "You are about to delete Failure Definition {0:d} and "
+            "all data associated with it.  Is this really what you "
+            "want to do?",
+        ).format(self._definition_id)
         _dialog = ramstk.RAMSTKMessageDialog(
-            _prompt, self._dic_icons['question'], 'question')
+            _prompt, self._dic_icons['question'], 'question',
+        )
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage(
-                'request_delete_definition', node_id=self._definition_id)
+                'request_delete_definition', node_id=self._definition_id,
+            )
 
         _dialog.do_destroy()
 
@@ -263,7 +273,8 @@ class ListView(RAMSTKListView):
         _sibling = kwargs['sibling']
 
         pub.sendMessage(
-            'request_insert_definition', revision_id=self._revision_id)
+            'request_insert_definition', revision_id=self._revision_id,
+        )
 
     def _do_request_update(self, __button):
         """
@@ -276,7 +287,8 @@ class ListView(RAMSTKListView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
-            'request_update_definition', node_id=self._definition_id)
+            'request_update_definition', node_id=self._definition_id,
+        )
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
@@ -324,15 +336,16 @@ class ListView(RAMSTKListView):
                 _("Add New Definition"),
                 _("Remove Selected Definition"),
                 _("Save Selected Definition"),
-                _("Save All Definitions")
+                _("Save All Definitions"),
             ]
             _callbacks = [
                 self._do_request_insert, self._do_request_delete,
-                self._do_request_update, self._do_request_update_all
+                self._do_request_update, self._do_request_update_all,
             ]
 
             self.on_button_press(
-                event, icons=_icons, labels=_labels, callbacks=_callbacks)
+                event, icons=_icons, labels=_labels, callbacks=_callbacks,
+            )
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -352,14 +365,16 @@ class ListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        if not RAMSTKListView._do_edit_cell(__cell, path, new_text, position,
-                                            model):
+        if not RAMSTKListView._do_edit_cell(
+                __cell, path, new_text, position, model,
+        ):
 
             pub.sendMessage(
                 'lvw_editing_definition',
                 module_id=self._definition_id,
                 key='definition',
-                value=new_text)
+                value=new_text,
+            )
 
     def _on_row_change(self, treeview):
         """

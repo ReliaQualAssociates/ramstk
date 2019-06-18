@@ -6,13 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK HazOps Work View."""
 
-from sortedcontainers import SortedDict
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
 from ramstk.Configuration import RAMSTK_FAILURE_PROBABILITY
-from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+from ramstk.gui.gtk.ramstk import RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
+
+# RAMSTK Local Imports
 from .WorkView import RAMSTKWorkView
 
 
@@ -38,56 +40,80 @@ class HazOps(RAMSTKWorkView):
     +-------+-------------------------------------------+
     """
 
-    def __init__(self, controller, **kwargs):  # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize the Work View for the HazOps.
 
-        :param controller: the RAMSTK master data controller instance.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :param configuration: the instance of the RAMSTK Configuration() class.
+        :type controller: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKWorkView.__init__(self, controller, module='HazOps')
+        RAMSTKWorkView.__init__(
+            self,
+            configuration,
+            module='HazOps',
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._hardware_id = None
-        self._hazops_id = None
+        self._hazard_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _bg_color = '#FFFFFF'
-        _fg_color = '#000000'
+
         _fmt_file = (
-            controller.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
-            controller.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['hazops'])
+            self.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/' +
+            self.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE['hazops']
+        )
         _fmt_path = "/root/tree[@name='HazOps']/column"
-        _tooltip = _("Displays the HazOps Analysis for the currently "
-                     "selected Hardware item.")
 
-        self.treeview = ramstk.RAMSTKTreeView(
-            _fmt_path, 0, _fmt_file, _bg_color, _fg_color, pixbuf=False)
+        self.treeview = RAMSTKTreeView(
+            _fmt_path,
+            0,
+            _fmt_file,
+            "#FFFFFF",
+            "#000000",
+            pixbuf=False,
+        )
         self._lst_col_order = self.treeview.order
-        self.treeview.set_tooltip_text(_tooltip)
 
+        self.__set_properties()
+        self.__make_ui()
+        self.__load_combobox()
+        self.__set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_clear_page, 'closed_program')
+        pub.subscribe(self._do_load_page, 'selected_hardware')
+        pub.subscribe(self.do_load_tree, 'retrieved_hazops')
+
+    def __load_combobox(self):
+        """
+        Load the RAMSTKComboBox() widgets.
+
+        :return: None
+        :rtype: None
+        """
         # Load the potential hazards into the Gtk.CellRendererCombo().
         _model = self._get_cell_model(3)
-        for _key in controller.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS:
+        for _key in self.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS:
             _hazard = '{0:s}, {1:s}'.format(
-                controller.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS[_key][0],
-                controller.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS[_key][1])
+                self.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS[_key][0],
+                self.RAMSTK_CONFIGURATION.RAMSTK_HAZARDS[_key][1],
+            )
             _model.append((_hazard, ))
 
         # Load the severity classes into the Gtk.CellRendererCombo().
         for i in [6, 10, 14, 18]:
             _model = self._get_cell_model(i)
-            for _key in controller.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
-                _severity = controller.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[
-                    _key][1]
+            for _key in self.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY:
+                _severity = self.RAMSTK_CONFIGURATION.RAMSTK_SEVERITY[_key][1]
                 _model.append((_severity, ))
 
         # Load the failure probabilities into the Gtk.CellRendererCombo().
@@ -96,88 +122,126 @@ class HazOps(RAMSTKWorkView):
             for _item in RAMSTK_FAILURE_PROBABILITY:
                 _model.append((_item[0], ))
 
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._do_change_row))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
+    def __make_ui(self):
+        """
+        Make the HazOps RAMSTKTreeview().
 
-        for i in self._lst_col_order[3:]:
-            _cell = self.treeview.get_column(
-                self._lst_col_order[i]).get_cells()
-            try:
-                _cell[0].connect('edited', self._do_edit_cell, i,
-                                 self.treeview.get_model())
-            except TypeError:
-                _cell[0].connect('toggled', self._do_edit_cell, 'new text', i,
-                                 self.treeview.get_model())
+        :return: None
+        :rtype: None
+        """
+        _scrolledwindow = Gtk.ScrolledWindow()
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrolledwindow.add_with_viewport(
+            RAMSTKWorkView._make_buttonbox(
+                self,
+                icons=[
+                    'calculate',
+                    'add',
+                    'remove',
+                ],
+                tooltips=[
+                    _("Calculate the HazOps analysis."),
+                    _("Add a hazard to the HazOps analysis."),
+                    _(
+                        "Remove the selected hazard and all associated data "
+                        "from the HazOps analysis.", ),
+                ],
+                callbacks=[
+                    self._do_request_calculate,
+                    self.do_request_insert_sibling,
+                    self._do_request_delete,
+                ],
+            ), )
+        self.pack_start(_scrolledwindow, False, False, 0)
 
-        _label = ramstk.RAMSTKLabel(
+        _scrollwindow = Gtk.ScrolledWindow()
+        _scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC,
+        )
+        _scrollwindow.add(self.treeview)
+
+        _frame = RAMSTKFrame(label=_("HazOps Analysis"))
+        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        self.pack_end(_frame, True, True, 0)
+
+        _label = RAMSTKLabel(
             _("HazOps"),
             height=30,
             width=-1,
             justify=Gtk.Justification.CENTER,
-            tooltip=_("Displays the HazOps analysis for the selected "
-                      "hardware item."))
+            tooltip=_(
+                "Displays the HazOps analysis for the selected "
+                "hardware item.", ),
+        )
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
-        self.pack_start(self.__make_buttonbox(), False, True, 0)
-        self.pack_end(self.__make_page(), True, True, 0)
         self.show_all()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_select, 'selectedHardware')
-        pub.subscribe(self._on_select, 'insertedHazardAnalysis')
-        pub.subscribe(self._do_clear_page, 'closedProgram')
-
-    def __make_buttonbox(self, **kwargs):  # pylint: disable=unused-argument
+    def __set_callbacks(self):
         """
-        Make the Gtk.ButtonBox() for the HazOps class Work View.
+        Set the callback functions and methods for the HazOps widgets.
 
-        :return: _buttonbox; the Gtk.ButtonBox() for the HazOps Work View.
-        :rtype: :class:`Gtk.ButtonBox`
+        :return: None
+        :rtype: None
         """
-        _tooltips = [
-            _("Calculate the HazOps analysis."),
-            _("Add a hazard to the HazOps analysis."),
-            _("Remove the selected hazard and all associated data from the "
-              "HazOps analysis.")
-        ]
-        _callbacks = [
-            self._do_request_calculate, self._do_request_insert_sibling,
-            self._do_request_delete
-        ]
-        _icons = ['calculate', 'add', 'remove']
+        for i in self._lst_col_order[3:]:
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i], ).get_cells()
+            try:
+                _cell[0].connect(
+                    'edited',
+                    self._on_cell_edit,
+                    i,
+                    self.treeview.get_model(),
+                )
+            except TypeError:
+                _cell[0].connect(
+                    'toggled',
+                    self._on_cell_edit,
+                    'new text',
+                    i,
+                    self.treeview.get_model(),
+                )
 
-        _buttonbox = ramstk.do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
-
-        return _buttonbox
-
-    def __make_page(self):
+    def __set_properties(self):
         """
-        Make the HazOps RAMSTKTreeview().
+        Set the properties of the HazOps widgets.
 
-        :return: a Gtk.Frame() containing the instance of Gtk.Treeview().
-        :rtype: :class:`Gtk.Frame`
+        :return: None
+        :rtype: None
         """
-        _scrollwindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
-        _scrollwindow.add(self.treeview)
-
-        _frame = ramstk.RAMSTKFrame(label=_("HazOps Analysis"))
-        _frame.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
         self.treeview.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
+        self.treeview.set_tooltip_text(
+            _(
+                "Displays the HazOps Analysis for the currently "
+                "selected Hardware item.", ), )
 
-        return _frame
+    def _do_change_row(self, treeview):
+        """
+        Handle events for the HazOps Tree View RAMSTKTreeView().
+
+        This method is called whenever a Tree View row is activated.
+
+        :param treeview: the HazOps RAMSTKTreeView().
+        :type treeview: :class:`ramstk.gui.gtk.ramstk.RAMSTKTreeView`
+        :return: None
+        :rtype: None
+        """
+        treeview.handler_block(self._lst_handler_id[0])
+
+        _model, _row = treeview.get_selection().get_selected()
+        try:
+            self._hazard_id = _model.get_value(_row, 2)
+        except TypeError:
+            self._hazard_id = None
+
+        treeview.handler_unblock(self._lst_handler_id[0])
 
     def _do_clear_page(self):
         """
@@ -193,100 +257,22 @@ class HazOps(RAMSTKWorkView):
 
         _model.clear()
 
-        return None
-
-    def _do_change_row(self, treeview):
+    def _do_load_page(self, attributes):
         """
-        Handle events for the HazOps Tree View RAMSTKTreeView().
+        Load the HazOps RAMSTKTreeView().
 
-        This method is called whenever a Tree View row is activated.
-
-        :param treeview: the HazOps RAMSTKTreeView().
-        :type treeview: :class:`ramstk.gui.gtk.ramstk.TreeViewRAMSTKTreeView`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        # pylint: disable=attribute-defined-outside-init
+        self._revision_id = attributes["revision_id"]
+        self._parent_id = attributes["hardware_id"]
 
-        treeview.handler_block(self._lst_handler_id[0])
-
-        _model, _row = treeview.get_selection().get_selected()
-        try:
-            self._revision_id = _model.get_value(_row, 0)
-            self._hardware_id = _model.get_value(_row, 1)
-            self._hazops_id = _model.get_value(_row, 2)
-        except TypeError:
-            self._hazops_id = None
-
-        treeview.handler_unblock(self._lst_handler_id[0])
-
-        return _return
-
-    def _do_edit_cell(self, __cell, path, new_text, position, model):
-        """
-        Handle edits of the HazOps Work View RAMSTKTreeview().
-
-        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
-        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-                         that was edited.
-        :param str new_text: the new text in the edited Gtk.CellRenderer().
-        :param int position: the column position of the edited
-                             Gtk.CellRenderer().
-        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
-                                    belongs to.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
-
-            _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazops_id)
-            _hazops = self._dtc_data_controller.request_do_select(_node_id)
-
-            if position == self._lst_col_order[3]:
-                _hazops.potential_hazard = model[path][self._lst_col_order[3]]
-            elif position == self._lst_col_order[4]:
-                _hazops.potential_cause = model[path][self._lst_col_order[4]]
-            elif position == self._lst_col_order[5]:
-                _hazops.assembly_effect = model[path][self._lst_col_order[5]]
-            elif position == self._lst_col_order[6]:
-                _hazops.assembly_severity = model[path][self._lst_col_order[6]]
-            elif position == self._lst_col_order[7]:
-                _hazops.assembly_probability = model[path][self.
-                                                           _lst_col_order[7]]
-            elif position == self._lst_col_order[9]:
-                _hazops.assembly_mitigation = model[path][self.
-                                                          _lst_col_order[9]]
-            elif position == self._lst_col_order[10]:
-                _hazops.assembly_severity_f = model[path][self.
-                                                          _lst_col_order[10]]
-            elif position == self._lst_col_order[11]:
-                _hazops.assembly_probability_f = model[path][
-                    self._lst_col_order[11]]
-            elif position == self._lst_col_order[13]:
-                _hazops.system_effect = model[path][self._lst_col_order[13]]
-            elif position == self._lst_col_order[14]:
-                _hazops.system_severity = model[path][self._lst_col_order[14]]
-            elif position == self._lst_col_order[15]:
-                _hazops.system_probability = model[path][self.
-                                                         _lst_col_order[15]]
-            elif position == self._lst_col_order[17]:
-                _hazops.system_mitigation = model[path][self.
-                                                        _lst_col_order[17]]
-            elif position == self._lst_col_order[18]:
-                _hazops.system_severity_f = model[path][self.
-                                                        _lst_col_order[18]]
-            elif position == self._lst_col_order[19]:
-                _hazops.system_probability_f = model[path][self.
-                                                           _lst_col_order[19]]
-            elif position == self._lst_col_order[21]:
-                _hazops.remarks = model[path][self._lst_col_order[21]]
-        else:
-            _return = True
-
-        return _return
+        RAMSTKWorkView.on_select(
+            self,
+            title=_("Hazards analysis for Hardware ID {0:d}", ).format(
+                self._parent_id, ),
+        )
 
     def _get_cell_model(self, column):
         """
@@ -303,106 +289,19 @@ class HazOps(RAMSTKWorkView):
 
         return _model
 
-    def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
-        """
-        Iterate through the tree and load the HazOps RAMSTKTreeView().
-
-        :return: (_error_code, _user_msg, _debug_msg); the error code, message
-                 to be displayed to the user, and the message to be written to
-                 the debug log.
-        :rtype: (int, str, str)
-        """
-        _tree = None
-        _error_code = 0
-        _user_msg = ""
-        _debug_msg = ""
-
-        _data = []
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        _tree = self._dtc_data_controller.request_do_select_children(
-            self._hardware_id)
-
-        if _tree is not None:
-            i = 1
-            for _node in _tree.children(list(SortedDict(_tree.nodes).keys())[0]):
-                _entity = _node.data
-
-                _data = [
-                    _entity.revision_id, _entity.hardware_id,
-                    _entity.hazard_id, _entity.potential_hazard,
-                    _entity.potential_cause, _entity.assembly_effect,
-                    _entity.assembly_severity, _entity.assembly_probability,
-                    _entity.assembly_hri, _entity.assembly_mitigation,
-                    _entity.assembly_severity_f,
-                    _entity.assembly_probability_f, _entity.assembly_hri_f,
-                    _entity.system_effect, _entity.system_severity,
-                    _entity.system_probability, _entity.system_hri,
-                    _entity.system_mitigation, _entity.system_severity_f,
-                    _entity.system_probability_f, _entity.system_hri_f,
-                    _entity.remarks, _entity.function_1, _entity.function_2,
-                    _entity.function_3, _entity.function_4, _entity.function_5,
-                    _entity.result_1, _entity.result_2, _entity.result_3,
-                    _entity.result_4, _entity.result_5, _entity.user_blob_1,
-                    _entity.user_blob_2, _entity.user_blob_3,
-                    _entity.user_float_1, _entity.user_float_2,
-                    _entity.user_float_3, _entity.user_int_1,
-                    _entity.user_int_2, _entity.user_int_3
-                ]
-
-                try:
-                    _model.append(None, _data)
-                except TypeError:
-                    _error_code = 1
-                    _user_msg = _("One or more HazOp line items had the "
-                                  "wrong data type in it's data package and "
-                                  "is not displayed in the HazOp analysis.")
-                    _debug_msg = ("RAMSTK ERROR: Data for HazOp ID {0:s} for "
-                                  "Hardware ID {1:s} is the wrong type for "
-                                  "one or more columns.".format(
-                                      str(_node.identifier),
-                                      str(self._hardware_id)))
-                except ValueError:
-                    _error_code = 1
-                    _user_msg = _("One or more HazOp line items was missing "
-                                  "some of it's data and is not displayed in "
-                                  "the HazOp analysis.")
-                    _debug_msg = ("RAMSTK ERROR: Too few fields for HazOp ID "
-                                  "{0:s} for Hardware ID {1:s}.".format(
-                                      str(_node.identifier),
-                                      str(self._hardware_id)))
-
-                i += 1
-
-        return (_error_code, _user_msg, _debug_msg)
-
     def _do_request_calculate(self, __button):
         """
         Request to calculate the HazOps HRI.
 
         :param __button: the Gtk.ToolButton() that called this method.
-        :return: False if sucessful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
+        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
 
-        _model = self.treeview.get_model()
-        _row = _model.get_iter_first()
-
-        # Iterate through the hazards and calculate the HRIs.
-        while _row is not None:
-            _node_id = '{0:d}.{1:d}'.format(
-                _model.get_value(_row, 1), _model.get_value(_row, 2))
-            _return = (
-                _return
-                or self._dtc_data_controller.request_do_calculate(_node_id))
-            _row = _model.iter_next(_row)
-
-        if not _return:
-            self._do_load_page()
-
-        return _return
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_calculate_hazop', node_id=_node_id)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_delete(self, __button):
         """
@@ -410,10 +309,14 @@ class HazOps(RAMSTKWorkView):
 
         :param __button: the Gtk.ToolButton() that called this method.
         :type __button: :class:`Gtk.ToolButton`.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        return self._dtc_data_controller.request_do_delete(self._hazops_id)
+        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
+
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage('request_delete_hazop', node_id=_node_id)
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_insert(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -422,19 +325,13 @@ class HazOps(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._dtc_data_controller.request_do_insert(
-            revision_id=self._revision_id, hardware_id=self._hardware_id)
-
-    def _do_request_insert_sibling(self, __button, **kwargs):
-        """
-        Request to insert a new hazard into the HazOps.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        return self._do_request_insert(**kwargs)
+        self.set_cursor(Gdk.CursorType.WATCH)
+        pub.sendMessage(
+            'request_insert_hazop',
+            revision_id=self._revision_id,
+            hardware_id=self._hardware_id,
+        )
+        self.set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button):
         """
@@ -445,13 +342,11 @@ class HazOps(RAMSTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazops_id)
+        _node_id = '{0:d}.{1:d}'.format(self._hardware_id, self._hazard_id)
 
         self.set_cursor(Gdk.CursorType.WATCH)
-        _return = self._dtc_data_controller.request_do_update(_node_id)
+        pub.sendMessage('request_update_hazop', node_id=_node_id)
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return _return
 
     def _do_request_update_all(self, __button):
         """
@@ -463,11 +358,8 @@ class HazOps(RAMSTKWorkView):
         :rtype: bool
         """
         self.set_cursor(Gdk.CursorType.WATCH)
-        _return = self._dtc_data_controller.request_do_update_all(
-            hardware_id=self._hardware_id)
+        pub.sendMessage('request_update_all_hazops')
         self.set_cursor(Gdk.CursorType.LEFT_PTR)
-
-        return _return
 
     def _on_button_press(self, treeview, event):
         """
@@ -487,11 +379,9 @@ class HazOps(RAMSTKWorkView):
                       * 9 =
 
         :type event: :class:`Gdk.Event`.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
@@ -499,55 +389,72 @@ class HazOps(RAMSTKWorkView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            _icons = ['add', 'remove', 'calculate', 'save', 'save-all']
-            _labels = [
-                _("Add Hazard"),
-                _("Remove Selected Hazard"),
-                _("Calculate HazOp"),
-                _("Save Selected Hazard"),
-                _("Save All Hazards")
-            ]
-            _callbacks = [
-                self._do_request_insert_sibling, self._do_request_delete,
-                self._do_request_calculate, self._do_request_update,
-                self._do_request_update_all
-            ]
             RAMSTKWorkView.on_button_press(
                 self,
                 event,
-                icons=_icons,
-                labels=_labels,
-                callbacks=_callbacks)
+                icons=['add', 'remove', 'calculate'],
+                labels=[
+                    _("Add Hazard"),
+                    _("Remove Selected Hazard"),
+                    _("Calculate HazOp"),
+                ],
+                callbacks=[
+                    self._do_request_insert_sibling,
+                    self._do_request_delete,
+                    self._do_request_calculate,
+                ],
+            )
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
-        return _return
-
-    def _on_select(self, module_id, **kwargs):  # pylint: disable=unused-argument
+    def _on_cell_edit(self, __cell, path, new_text, position, model):
         """
-        Respond to the `selectedHardware` signal from pypubsub.
+        Handle edits of the HazOps Work View RAMSTKTreeview().
 
+        :param Gtk.CellRenderer __cell: the Gtk.CellRenderer() that was edited.
+        :param str path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+                         that was edited.
+        :param str new_text: the new text in the edited Gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             Gtk.CellRenderer().
+        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()
+                                    belongs to.
         :return: None
         :rtype: None
         """
-        self._hardware_id = module_id
+        _dic_keys = {
+            3: 'potential_hazard',
+            4: 'potential_cause',
+            5: 'assembly_effect',
+            6: 'assembly_severity',
+            7: 'assembly_probability',
+            9: 'assembly_mitigation',
+            10: 'assembly_severity_f',
+            11: 'assembly_probability_f',
+            13: 'system_effect',
+            14: 'system_severity',
+            15: 'system_probability',
+            17: 'system_mitigation',
+            18: 'system_severity_f',
+            19: 'system_probability_f',
+            21: 'remarks',
+        }
+        try:
+            _key = _dic_keys[self._lst_col_order[position]]
+        except KeyError:
+            _key = ''
 
-        if self._dtc_data_controller is None:
-            self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-                'hazops']
-            self._dtc_data_controller.request_do_select_all({
-                'revision_id':
-                self._revision_id
-            })
+        if not self.treeview.do_edit_cell(
+                __cell,
+                path,
+                new_text,
+                position,
+                model,
+        ):
 
-        (_error_code, _user_msg, _debug_msg) = self._do_load_page()
-
-        RAMSTKWorkView.on_select(
-            self,
-            title=_("Analyzing Hazards for Hardware ID {0:d}").format(
-                self._hardware_id),
-            error_code=_error_code,
-            user_msg=_user_msg,
-            debug_msg=_debug_msg)
-
-        return None
+            pub.sendMessage(
+                "wvw_editing_hazops",
+                module_id=self._hazard_id,
+                key=_key,
+                value=new_text,
+            )

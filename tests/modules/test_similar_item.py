@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.modules.test_similar_item.py is part of The RAMSTK Project
@@ -7,13 +7,14 @@
 # Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the SimilarItem class. """
 
+# Third Party Imports
 import pytest
-
+from pubsub import pub
 from treelib import Tree
 
-from ramstk.dao import DAO
-from ramstk.dao import RAMSTKSimilarItem
-from ramstk.modules.similar_item import dtmSimilarItem, dtcSimilarItem
+# RAMSTK Package Imports
+from ramstk.dao import DAO, RAMSTKSimilarItem
+from ramstk.modules.similar_item import dtcSimilarItem, dtmSimilarItem
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -75,7 +76,7 @@ ATTRIBUTES = {
     'user_int_2': 0,
     'user_int_3': 0,
     'user_int_4': 0,
-    'user_int_5': 0
+    'user_int_5': 0,
 }
 
 
@@ -128,13 +129,14 @@ def test_do_select_non_existent_id(test_dao):
 def test_do_select_children(test_dao):
     """ do_select_children() should return the immediate subtree of the passed node ID. """
     DUT = dtmSimilarItem(test_dao, test=True)
+    def on_message(children):
+        assert isinstance(children, list)
+        assert isinstance(children[0].data, RAMSTKSimilarItem)
+        assert children[0].identifier == 2
+    pub.subscribe(on_message, 'retrieved_similar_item_children')
+
     DUT.do_select_all(revision_id=1)
-
-    _nodes = DUT.do_select_children(1)
-
-    assert isinstance(_nodes, list)
-    assert isinstance(_nodes[0].data, RAMSTKSimilarItem)
-    assert _nodes[0].identifier == 2
+    DUT.do_select_children(1)
 
 
 @pytest.mark.integration
@@ -144,11 +146,14 @@ def test_do_insert(test_dao):
     DUT.do_select_all(revision_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        revision_id=1, hardware_id=15, parent_id=1)
+        revision_id=1, hardware_id=15, parent_id=1,
+    )
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
     assert DUT.last_id == 15
 
 
@@ -161,8 +166,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -176,7 +183,8 @@ def test_do_delete_non_existent_id(test_dao):
     assert _error_code == 2005
     assert _msg == (
         "  RAMSTK ERROR: Attempted to delete non-existent SimilarItem "
-        "ID 300.")
+        "ID 300."
+    )
 
 
 @pytest.mark.integration
@@ -203,8 +211,10 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2207
-    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent SimilarItem "
-                    "ID 100.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to save non-existent SimilarItem "
+        "ID 100."
+    )
 
 
 @pytest.mark.integration
@@ -218,7 +228,8 @@ def test_do_update_all(test_dao):
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Updating all line items in the similar item "
-        "analysis worksheet.")
+        "analysis worksheet."
+    )
 
 
 @pytest.mark.integration
@@ -271,8 +282,10 @@ def test_do_roll_up(test_dao):
         _attributes = _node.data.get_attributes()
         _attributes['change_description_1'] = ((
             'This is change description 1 '
-            'for Node ID: {0:d}').format(
-                _attributes['hardware_id'])).encode('utf-8')
+            'for Node ID: {0:d}'
+        ).format(
+            _attributes['hardware_id'],
+        )).encode('utf-8')
         _node.data.set_attributes(_attributes)
 
     DUT.do_update_all()
@@ -282,7 +295,8 @@ def test_do_roll_up(test_dao):
     assert DUT.do_select(1).get_attributes()['change_description_1'] == (
         b'This is change description 1 for Node ID: 2\n\nThis is change '
         b'description 1 for Node ID: 3\n\nThis is change description 1 for '
-        b'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n')
+        b'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n'
+    )
 
 
 @pytest.mark.integration
@@ -302,7 +316,8 @@ def test_request_do_select_all(test_dao, test_configuration):
 
     assert isinstance(DUT._dtm_data_model.tree, Tree)
     assert isinstance(
-        DUT._dtm_data_model.tree.get_node(2).data, RAMSTKSimilarItem)
+        DUT._dtm_data_model.tree.get_node(2).data, RAMSTKSimilarItem,
+    )
 
 
 @pytest.mark.integration
@@ -330,7 +345,8 @@ def test_request_do_insert(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(
-        revision_id=1, hardware_id=10, parent_id=1)
+        revision_id=1, hardware_id=10, parent_id=1,
+    )
 
 
 @pytest.mark.integration
@@ -414,8 +430,10 @@ def test_request_do_roll_up(test_dao, test_configuration):
         _attributes = _node.data.get_attributes()
         _attributes['change_description_1'] = ((
             'This is change description 1 '
-            'for Node ID: {0:d}').format(
-                _attributes['hardware_id'])).encode('utf-8')
+            'for Node ID: {0:d}'
+        ).format(
+            _attributes['hardware_id'],
+        )).encode('utf-8')
         _node.data.set_attributes(_attributes)
 
     DUT.request_do_update_all()
@@ -426,4 +444,5 @@ def test_request_do_roll_up(test_dao, test_configuration):
     )['change_description_1'] == (
         b'This is change description 1 for Node ID: 2\n\nThis is change '
         b'description 1 for Node ID: 3\n\nThis is change description 1 for '
-        b'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n')
+        b'Node ID: 4\n\nThis is change description 1 for Node ID: 5\n\n'
+    )

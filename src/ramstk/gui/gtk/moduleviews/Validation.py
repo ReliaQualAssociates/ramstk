@@ -3,14 +3,19 @@
 #       ramstk.gui.gtk.moduleviews.Validation.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Module View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import (
+    RAMSTKLabel, RAMSTKMessageDialog, do_make_buttonbox,
+)
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
+
+# RAMSTK Local Imports
 from .ModuleView import RAMSTKModuleView
 
 
@@ -67,47 +72,57 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER,
+            Gtk.PolicyType.AUTOMATIC,
+        )
         _scrolledwindow.add_with_viewport(
-            RAMSTKModuleView._make_buttonbox(
+            do_make_buttonbox(
                 self,
                 icons=['add', 'remove', 'calculate_all', 'export'],
                 tooltips=[
                     _("Add a new Validation task."),
                     _("Remove the currently selected Validation task."),
                     _("Calculate the entire validation program."),
-                    _("Exports Verification tasks to an external file (CSV, "
-                      "Excel, and text files are supported).")
+                    _(
+                        "Exports Verification tasks to an external file (CSV, "
+                        "Excel, and text files are supported).",
+                    ),
                 ],
                 callbacks=[
                     self.do_request_insert_sibling, self._do_request_delete,
-                    self._do_request_calculate_all, self._do_request_export
-                ]))
+                    self._do_request_calculate_all, self._do_request_export,
+                ],
+            ),
+        )
         self.pack_start(_scrolledwindow, False, False, 0)
 
         self.make_treeview(editable=[2, 4])
         self.treeview.set_tooltip_text(
-            _("Displays the list of validation tasks."))
+            _("Displays the list of validation tasks."),
+        )
 
-        RAMSTKModuleView._make_ui(self)
+        RAMSTKModuleView.make_ui(self)
 
         i = 0
         for _column in self.treeview.get_columns():
             _cell = _column.get_cells()[0]
             try:
                 if _cell.get_property('editable'):
-                    _cell.connect('edited', self._on_cell_edit, i,
-                                  self.treeview.get_model())
+                    _cell.connect(
+                        'edited', self._on_cell_edit, i,
+                        self.treeview.get_model(),
+                    )
             except TypeError:
                 pass
             i += 1
 
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Validation"),
             width=-1,
             height=-1,
-            tooltip=_("Displays the list of validation tasks."))
+            tooltip=_("Displays the list of validation tasks."),
+        )
 
         self.hbx_tab_label.pack_end(_label, True, True, 0)
 
@@ -122,7 +137,7 @@ class ModuleView(RAMSTKModuleView):
         """
         for _key in [
                 'cost_ll', 'cost_mean', 'cost_ul', 'cost_variance', 'time_ll',
-                'time_mean', 'time_ul', 'time_variance'
+                'time_mean', 'time_ul', 'time_variance',
         ]:
             self.do_refresh_tree(self._validation_id, _key, attributes[_key])
 
@@ -138,7 +153,8 @@ class ModuleView(RAMSTKModuleView):
         :rtype: None
         """
         pub.sendMessage(
-            'request_calculate_validation', node_id=self._validation_id)
+            'request_calculate_validation', node_id=self._validation_id,
+        )
 
     def _do_request_delete(self, __button):
         """
@@ -149,16 +165,20 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        _prompt = _("You are about to delete Validation {0:d} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(self._validation_id)
-        _dialog = ramstk.RAMSTKMessageDialog(
-            _prompt, self._dic_icons['question'], 'question')
+        _prompt = _(
+            "You are about to delete Validation {0:d} and all "
+            "data associated with it.  Is this really what "
+            "you want to do?",
+        ).format(self._validation_id)
+        _dialog = RAMSTKMessageDialog(
+            _prompt, self._dic_icons['question'], 'question',
+        )
         _response = _dialog.do_run()
 
         if _response == Gtk.ResponseType.YES:
             pub.sendMessage(
-                'request_delete_validation', node_id=self._validation_id)
+                'request_delete_validation', node_id=self._validation_id,
+            )
 
         _dialog.do_destroy()
 
@@ -194,7 +214,8 @@ class ModuleView(RAMSTKModuleView):
             _parent_id = self._validation_id
 
         pub.sendMessage(
-            'request_insert_validation', revision_id=self._revision_id)
+            'request_insert_validation', revision_id=self._revision_id,
+        )
 
     def _do_request_update(self, __button):
         """
@@ -207,7 +228,8 @@ class ModuleView(RAMSTKModuleView):
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
-            'request_update_validation', node_id=self._validation_id)
+            'request_update_validation', node_id=self._validation_id,
+        )
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
@@ -255,10 +277,10 @@ class ModuleView(RAMSTKModuleView):
                 _("Remove the Selected Validation Task"),
                 _("Calculate the entire validation program."),
                 _("Save Selected Validation Task"),
-                _("Save All Validation Tasks")
+                _("Save All Validation Tasks"),
             ]
             _callbacks = [
-                self.do_request_insert_sibling, self._do_request_calculate_all
+                self.do_request_insert_sibling, self._do_request_calculate_all,
             ]
 
             RAMSTKModuleView.on_button_press(
@@ -266,7 +288,8 @@ class ModuleView(RAMSTKModuleView):
                 event,
                 icons=_icons,
                 labels=_labels,
-                callbacks=_callbacks)
+                callbacks=_callbacks,
+            )
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
@@ -304,11 +327,12 @@ class ModuleView(RAMSTKModuleView):
             18: 'cost_minimum',
             19: 'cost_average',
             20: 'cost_maximum',
-            23: 'confidence'
+            23: 'confidence',
         }
 
-        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
-                                          model):
+        if not self.treeview.do_edit_cell(
+                __cell, path, new_text, position, model,
+        ):
             try:
                 _key = _dic_keys[self._lst_col_order[position]]
             except KeyError:
@@ -318,7 +342,8 @@ class ModuleView(RAMSTKModuleView):
                 'mvw_editing_validation',
                 module_id=self._validation_id,
                 key=_key,
-                value=new_text)
+                value=new_text,
+            )
 
     def _on_row_change(self, treeview):
         """
@@ -340,61 +365,95 @@ class ModuleView(RAMSTKModuleView):
 
         if _row is not None:
             _attributes['revision_id'] = _model.get_value(
-                _row, self._lst_col_order[0])
+                _row, self._lst_col_order[0],
+            )
             _attributes['validation_id'] = _model.get_value(
-                _row, self._lst_col_order[1])
+                _row, self._lst_col_order[1],
+            )
             _attributes['description'] = _model.get_value(
-                _row, self._lst_col_order[2])
+                _row, self._lst_col_order[2],
+            )
             _attributes['task_type'] = _model.get_value(
-                _row, self._lst_col_order[3])
+                _row, self._lst_col_order[3],
+            )
             _attributes['task_specification'] = _model.get_value(
-                _row, self._lst_col_order[4])
+                _row, self._lst_col_order[4],
+            )
             _attributes['measurement_unit'] = _model.get_value(
-                _row, self._lst_col_order[5])
+                _row, self._lst_col_order[5],
+            )
             _attributes['acceptable_minimum'] = _model.get_value(
-                _row, self._lst_col_order[6])
+                _row, self._lst_col_order[6],
+            )
             _attributes['acceptable_mean'] = _model.get_value(
-                _row, self._lst_col_order[7])
+                _row, self._lst_col_order[7],
+            )
             _attributes['acceptable_maximum'] = _model.get_value(
-                _row, self._lst_col_order[8])
+                _row, self._lst_col_order[8],
+            )
             _attributes['acceptable_variance'] = _model.get_value(
-                _row, self._lst_col_order[9])
+                _row, self._lst_col_order[9],
+            )
             _attributes['date_start'] = _model.get_value(
-                _row, self._lst_col_order[10])
-            _attributes['date_end'] = _model.get_value(_row,
-                                                       self._lst_col_order[11])
-            _attributes['status'] = _model.get_value(_row,
-                                                     self._lst_col_order[12])
+                _row, self._lst_col_order[10],
+            )
+            _attributes['date_end'] = _model.get_value(
+                _row,
+                self._lst_col_order[11],
+            )
+            _attributes['status'] = _model.get_value(
+                _row,
+                self._lst_col_order[12],
+            )
             _attributes['time_minimum'] = _model.get_value(
-                _row, self._lst_col_order[13])
+                _row, self._lst_col_order[13],
+            )
             _attributes['time_average'] = _model.get_value(
-                _row, self._lst_col_order[14])
+                _row, self._lst_col_order[14],
+            )
             _attributes['time_maximum'] = _model.get_value(
-                _row, self._lst_col_order[15])
+                _row, self._lst_col_order[15],
+            )
             _attributes['cost_minimum'] = _model.get_value(
-                _row, self._lst_col_order[18])
+                _row, self._lst_col_order[18],
+            )
             _attributes['cost_average'] = _model.get_value(
-                _row, self._lst_col_order[19])
+                _row, self._lst_col_order[19],
+            )
             _attributes['cost_maximum'] = _model.get_value(
-                _row, self._lst_col_order[20])
+                _row, self._lst_col_order[20],
+            )
             _attributes['confidence'] = _model.get_value(
-                _row, self._lst_col_order[23])
-            _attributes['time_ll'] = _model.get_value(_row,
-                                                      self._lst_col_order[24])
+                _row, self._lst_col_order[23],
+            )
+            _attributes['time_ll'] = _model.get_value(
+                _row,
+                self._lst_col_order[24],
+            )
             _attributes['time_mean'] = _model.get_value(
-                _row, self._lst_col_order[25])
-            _attributes['time_ul'] = _model.get_value(_row,
-                                                      self._lst_col_order[26])
+                _row, self._lst_col_order[25],
+            )
+            _attributes['time_ul'] = _model.get_value(
+                _row,
+                self._lst_col_order[26],
+            )
             _attributes['time_variance'] = _model.get_value(
-                _row, self._lst_col_order[27])
-            _attributes['cost_ll'] = _model.get_value(_row,
-                                                      self._lst_col_order[28])
+                _row, self._lst_col_order[27],
+            )
+            _attributes['cost_ll'] = _model.get_value(
+                _row,
+                self._lst_col_order[28],
+            )
             _attributes['cost_mean'] = _model.get_value(
-                _row, self._lst_col_order[29])
-            _attributes['cost_ul'] = _model.get_value(_row,
-                                                      self._lst_col_order[30])
+                _row, self._lst_col_order[29],
+            )
+            _attributes['cost_ul'] = _model.get_value(
+                _row,
+                self._lst_col_order[30],
+            )
             _attributes['cost_variance'] = _model.get_value(
-                _row, self._lst_col_order[31])
+                _row, self._lst_col_order[31],
+            )
 
             # pylint: disable=attribute-defined-outside-init
             self._revision_id = _attributes['revision_id']

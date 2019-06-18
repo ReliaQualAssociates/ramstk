@@ -11,8 +11,9 @@ from pubsub import pub
 from treelib import tree
 
 # RAMSTK Package Imports
-from ramstk.dao import (RAMSTKAction, RAMSTKCause, RAMSTKControl,
-                        RAMSTKMechanism, RAMSTKMode)
+from ramstk.dao import (
+    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode,
+)
 from ramstk.modules import RAMSTKDataModel
 from ramstk.Utilities import OutOfRangeError
 
@@ -22,10 +23,11 @@ class ModeDataModel(RAMSTKDataModel):
     Contain the attributes and methods of a failure Mode.
 
     An RAMSTK Project will consist of one or more Modes.  The attributes of a
-    Mode are:
+    Mode are inherited.
     """
 
     _tag = 'Modes'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -58,9 +60,9 @@ class ModeDataModel(RAMSTKDataModel):
         model treelib.Tree().
 
         :param int parent_id: the Function ID or Hardware ID the failure Modes
-                              are associated with.
+        are associated with.
         :return: tree; the Tree() of RAMSTKMode data models.
-        :rtype: :class:`treelib.Tree`
+        :rtype: :py:class:`treelib.Tree`
         """
         _parent_id = kwargs['parent_id']
         _functional = kwargs['functional']
@@ -82,7 +84,7 @@ class ModeDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mode.description,
                 _mode.mode_id,
-                parent=0,
+                parent=self._root,
                 data=_mode,
             )
 
@@ -118,13 +120,16 @@ class ModeDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mode.description,
                 _mode.mode_id,
-                parent=0,
+                parent=self._root,
                 data=_mode,
             )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _mode.mode_id)
+            try:
+                self.last_id = max(self.last_id, _mode.mode_id)
+            except TypeError:
+                self.last_id = self.last_id
 
         return _error_code, _msg
 
@@ -163,33 +168,24 @@ class ModeDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKMode table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA modes "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA modes "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA modes "
+                "table did not update."
             )
 
         return _error_code, _msg
@@ -199,11 +195,12 @@ class MechanismDataModel(RAMSTKDataModel):
     """
     Contain the attributes and methods of a failure Mechanism.
 
-    An RAMSTK Project will consist of one or more Mechanisms.  The attributes of a
-    Mechanism are:
+    An RAMSTK Project will consist of one or more Mechanisms.  The attributes of
+    a Mechanism are inherited.
     """
 
     _tag = 'Mechanisms'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -252,7 +249,7 @@ class MechanismDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mechanism.description,
                 _mechanism.mechanism_id,
-                parent=0,
+                parent=self._root,
                 data=_mechanism,
             )
 
@@ -287,13 +284,16 @@ class MechanismDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mechanism.description,
                 _mechanism.mechanism_id,
-                parent=0,
+                parent=self._root,
                 data=_mechanism,
             )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _mechanism.mechanism_id)
+            try:
+                self.last_id = max(self.last_id, _mechanism.mechanism_id)
+            except TypeError:
+                self.last_id = self.last_id
 
         return _error_code, _msg
 
@@ -332,33 +332,24 @@ class MechanismDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKMechanism table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA "
-                    "mechanisms table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA mechanisms "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA "
+                "mechanisms table did not update."
             )
 
         return _error_code, _msg
@@ -373,6 +364,7 @@ class CauseDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Causes'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -429,7 +421,7 @@ class CauseDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _cause.description,
                 _cause.cause_id,
-                parent=0,
+                parent=self._root,
                 data=_cause,
             )
 
@@ -465,13 +457,16 @@ class CauseDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _cause.description,
                 _cause.cause_id,
-                parent=0,
+                parent=self._root,
                 data=_cause,
             )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _cause.cause_id)
+            try:
+                self.last_id = max(self.last_id, _cause.cause_id)
+            except TypeError:
+                self.last_id = self.last_id
 
         return _error_code, _msg
 
@@ -510,33 +505,24 @@ class CauseDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKCause table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA causes "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA causes "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA causes "
+                "table did not update."
             )
 
         return _error_code, _msg
@@ -547,10 +533,11 @@ class ControlDataModel(RAMSTKDataModel):
     Contain the attributes and methods of a FMEA Control.
 
     An RAMSTK Project will consist of one or more Controls.  The attributes of a
-    Control are:
+    Control are inherited.
     """
 
     _tag = 'Controls'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -602,7 +589,7 @@ class ControlDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _control.description,
                 _control.control_id,
-                parent=0,
+                parent=self._root,
                 data=_control,
             )
 
@@ -637,13 +624,16 @@ class ControlDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _control.description,
                 _control.control_id,
-                parent=0,
+                parent=self._root,
                 data=_control,
             )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _control.control_id)
+            try:
+                self.last_id = max(self.last_id, _control.control_id)
+            except TypeError:
+                self.last_id = self.last_id
 
         return _error_code, _msg
 
@@ -682,33 +672,24 @@ class ControlDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKControl table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA controls "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA controls "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA controls "
+                "table did not update."
             )
 
         return _error_code, _msg
@@ -719,10 +700,11 @@ class ActionDataModel(RAMSTKDataModel):
     Contain the attributes and methods of a FMEA Action.
 
     An RAMSTK Project will consist of one or more Actions.  The attributes of a
-    Action are:
+    Action are inherited.
     """
 
     _tag = 'Actions'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -771,7 +753,7 @@ class ActionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _action.action_status,
                 _action.action_id,
-                parent=0,
+                parent=self._root,
                 data=_action,
             )
 
@@ -806,13 +788,16 @@ class ActionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _action.action_status,
                 _action.action_id,
-                parent=0,
+                parent=self._root,
                 data=_action,
             )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
-            self.last_id = max(self.last_id, _action.action_id)
+            try:
+                self.last_id = max(self.last_id, _action.action_id)
+            except TypeError:
+                self.last_id = self.last_id
 
         return _error_code, _msg
 
@@ -855,33 +840,24 @@ class ActionDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKAction table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the FMEA actions "
-                    "table did not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the FMEA actions "
                 "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the FMEA actions "
+                "table did not update."
             )
 
         return _error_code, _msg
@@ -916,6 +892,7 @@ class FMEADataModel(RAMSTKDataModel):
     """
 
     _tag = 'FMEA'
+    _root = '0'
 
     def __init__(self, dao, **kwargs):
         """
@@ -954,11 +931,11 @@ class FMEADataModel(RAMSTKDataModel):
         The Parent ID is one of Function ID (functional FMEA) or Hardware ID
         (hardware FMEA).
 
-        :return: tree; the FMEA treelib Tree().
-        :rtype: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
-        _parent_id = kwargs['parent_id']
         self._functional = kwargs['functional']
+        _parent_id = kwargs['parent_id']
 
         RAMSTKDataModel.do_select_all(self)
 
@@ -974,7 +951,7 @@ class FMEADataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     tag=_mode.description,
                     identifier=_node_id,
-                    parent=0,
+                    parent=self._root,
                     data=_mode,
                 )
                 if self._functional:
@@ -985,13 +962,24 @@ class FMEADataModel(RAMSTKDataModel):
         # If we're not running a test and there were allocations returned,
         # let anyone who cares know the Allocations have been selected.
         if not self._test and self.tree.size() > 1:
-            pub.sendMessage(
-                'retrieved_ffmea',
-                attributes={
-                    'tree': self.tree,
-                    'row': None,
-                },
-            )
+            if self._functional:
+                pub.sendMessage(
+                    'retrieved_ffmea',
+                    attributes={
+                        'tree': self.tree,
+                        'row': None,
+                        'parent_id': _parent_id,
+                    },
+                )
+            else:
+                pub.sendMessage(
+                    'retrieved_dfmeca',
+                    attributes={
+                        'tree': self.tree,
+                        'row': None,
+                        'parent_id': _parent_id,
+                    },
+                )
 
     def _do_add_mechanisms(self, mode_id, parent_id):
         """
@@ -1198,8 +1186,9 @@ class FMEADataModel(RAMSTKDataModel):
             )
         except tree.NodeIDAbsentError:
             _error_code = 2005
-            _msg = 'RAMSTK ERROR: Attempted to add an item under non-existent ' \
-                   'Node ID: {0:s}.'.format(str(_parent_id))
+            _msg = 'RAMSTK ERROR: Attempted to add an item under ' \
+                   'non-existent Node ID {0:s} in Failure Mode and Effects ' \
+                   'Analysis.'.format(str(_parent_id))
 
         return _error_code, _msg
 
@@ -1245,55 +1234,41 @@ class FMEADataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all FMEA table records in the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _err_code, _debug_msg = self.do_update(_node.identifier)
-
-                if _err_code != 0:
-                    _error_code = 1
-                    _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more line items in the FMEA did "
-                    "not update."
-                )
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = ("RAMSTK SUCCESS: Updating all line items in the FMEA.")
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more line items in the FMEA did not "
+                "update."
+            )
 
         return _error_code, _msg
 
-    def do_calculate(self, node_id, **kwargs):  # pylint: disable=unused-argument
+    def do_calculate(self, item_hr, criticality, rpn):  # pylint: disable=arguments-differ
         """
         Calculate the RPN or criticality for the selected Node ID.
 
         :param str node_id: the PyPubSub Tree() ID of the failure Mode to
-                            calculate.
+        calculate.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _criticality = kwargs['criticality']
-        _rpn = kwargs['rpn']
-        _item_hr = kwargs['item_hr']
         _error_code = 0
         _msg = ''
 
-        if _criticality:
-            (_error_code, _msg) = self._do_calculate_criticality(_item_hr)
+        if criticality:
+            (_error_code, _msg) = self._do_calculate_criticality(item_hr)
 
-        if _rpn:
+        if rpn:
             (_error_code, _msg) = self._do_calculate_rpn()
 
         return (_error_code, _msg)
@@ -1303,12 +1278,12 @@ class FMEADataModel(RAMSTKDataModel):
         Calculate the FMEA MIL-STD-1629b, Task 102 criticality.
 
         :param float item_hr: the hazard rate of the item the criticality is
-                              being calculated for.
+        being calculated for.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         self.item_criticality = {}
-        for _node in self.tree.children(0):
+        for _node in self.tree.children(self._root):
             _error_code, _msg = _node.data.calculate_criticality(item_hr)
             try:
                 self.item_criticality[
@@ -1327,16 +1302,16 @@ class FMEADataModel(RAMSTKDataModel):
 
         :param int node_id: the ID of the treelib Node to calculate the RPN.
         :param int severity: the severity of the failure Mode the Mechanism is
-                             associated with.
+        associated with.
         :param int severity_new: the severity of the failure Mode after
-                                 corrective action.
+        corrective action.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _error_code = 0
         _msg = 'RAMSTK INFO: Success calculating (D)FME(C)A.'
 
-        for _node in self.tree.children(0):
+        for _node in self.tree.children(self._root):
             if _node.data is None:
                 _msg = "Node ID: {0:s} has no data package.".format(
                     str(_node.identifier), )
@@ -1352,8 +1327,7 @@ class FMEADataModel(RAMSTKDataModel):
                         _msg = _error.message
                     except AttributeError:
                         _msg = (
-                            "Node ID: {0:s} is not a Mechanism or "
-                            "Cause."
+                            "Node ID: {0:s} is not a Mechanism or Cause."
                         ).format(str(_child.identifier))
 
         return _error_code, _msg

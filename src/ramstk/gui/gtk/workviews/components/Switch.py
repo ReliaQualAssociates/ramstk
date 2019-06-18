@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.components.Switch.py is part of the RAMSTK Project
+#       gui.gtk.workviews.components.Switch.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Switch Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKComboBox, RAMSTKEntry
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                           AssessmentResults)
+
+# RAMSTK Local Imports
+from .Component import AssessmentInputs, AssessmentResults
 
 
 class SwitchAssessmentInputs(AssessmentInputs):
@@ -59,28 +61,43 @@ class SwitchAssessmentInputs(AssessmentInputs):
     """
 
     # Define private dict attributes.
+    _dic_keys = {
+        0: 'quality_id',
+        1: 'application_id',
+        2: 'construction_id',
+        3: 'contact_form_id',
+        4: 'n_cycles',
+        5: 'n_elements',
+    }
+
     # Key is subcategory ID; index is application ID.
     _dic_applications = {
         1: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
         2: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
         3: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
         4: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
-        5: [[_("Not Used as a Power On/Off Switch")],
-            [_("Also Used as a Power On/Off Switch")]]
+        5: [
+            [_("Not Used as a Power On/Off Switch")],
+            [_("Also Used as a Power On/Off Switch")],
+        ],
     }
     # Key is subcategory ID; index is construction ID.
     _dic_constructions = {
         1: [[_("Snap Action")], [_("Non-Snap Action")]],
-        2: [[_("Actuation Differential > 0.002 inches")],
-            [_("Actuation Differential < 0.002 inches")]],
+        2: [
+            [_("Actuation Differential > 0.002 inches")],
+            [_("Actuation Differential < 0.002 inches")],
+        ],
         3: [[_("Ceramic RF Wafers")], [_("Medium Power Wafers")]],
-        5: [[_("Magnetic")], [_("Thermal")], [_("Thermal-Magnetic")]]
+        5: [[_("Magnetic")], [_("Thermal")], [_("Thermal-Magnetic")]],
     }
     # Key is subcategory ID; index is contact form ID.
     _dic_contact_forms = {
-        1: [["SPST"], ["DPST"], ["SPDT"], ["3PST"], ["4PST"], ["DPDT"],
-            ["3PDT"], ["4PDT"], ["6PDT"]],
-        5: [["SPST"], ["DPST"], ["3PST"], ["4PST"]]
+        1: [
+            ["SPST"], ["DPST"], ["SPDT"], ["3PST"], ["4PST"], ["DPDT"],
+            ["3PDT"], ["4PDT"], ["6PDT"],
+        ],
+        5: [["SPST"], ["DPST"], ["3PST"], ["4PST"]],
     }
 
     # Define private list attributes.
@@ -90,12 +107,17 @@ class SwitchAssessmentInputs(AssessmentInputs):
         _("Construction:"),
         _("Contact Form:"),
         _("Number of Cycles/Hour:"),
-        _("Number of Active Contacts:")
+        _("Number of Active Contacts:"),
     ]
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Switch assessment input view."""
-        AssessmentInputs.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Switch assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentInputs.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -108,43 +130,98 @@ class SwitchAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbApplication = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The application of the switch."))
-        self.cmbConstruction = ramstk.RAMSTKComboBox(
+        self.cmbApplication = RAMSTKComboBox(
+            index=0, simple=True,
+        )
+        self.cmbConstruction = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The construction method for "
-                      "the switch."))
-        self.cmbContactForm = ramstk.RAMSTKComboBox(
+        )
+        self.cmbContactForm = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The contact form and quantity of the switch."))
-        self.txtNCycles = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of cycles per hour of the switch."))
-        self.txtNElements = ramstk.RAMSTKEntry(
-            width=125,
-            tooltip=_("The number of active contacts in the switch."))
+        )
+        self.txtNCycles = RAMSTKEntry()
+        self.txtNElements = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
-
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbApplication.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbContactForm.connect('changed', self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.txtNCycles.connect('changed', self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtNElements.connect('changed', self._on_focus_out, 5))
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+
+    def __make_ui(self):
+        """
+        Make the Switch class Gtk.Notebook() assessment input page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for inductors.
+        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
+
+        self.put(self.cmbApplication, _x_pos, _y_pos[1])
+        self.put(self.cmbConstruction, _x_pos, _y_pos[2])
+        self.put(self.cmbContactForm, _x_pos, _y_pos[3])
+        self.put(self.txtNCycles, _x_pos, _y_pos[4])
+        self.put(self.txtNElements, _x_pos, _y_pos[5])
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for Switch assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self.on_combo_changed, 0),
+        )
+        self._lst_handler_id.append(
+            self.cmbApplication.connect('changed', self.on_combo_changed, 1),
+        )
+        self._lst_handler_id.append(
+            self.cmbConstruction.connect('changed', self.on_combo_changed, 2),
+        )
+        self._lst_handler_id.append(
+            self.cmbContactForm.connect('changed', self.on_combo_changed, 3),
+        )
+        self._lst_handler_id.append(
+            self.txtNCycles.connect('changed', self.on_focus_out, 4),
+        )
+        self._lst_handler_id.append(
+            self.txtNElements.connect('changed', self.on_focus_out, 5),
+        )
+
+    def __set_properties(self):
+        """
+        Set properties for Switch assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbApplication.do_set_properties(
+            tooltip=_("The application of the switch."),
+        )
+        self.cmbConstruction.do_set_properties(
+            tooltip=_(
+                "The construction method for the switch.",
+            ),
+        )
+        self.cmbContactForm.do_set_properties(
+            tooltip=_("The contact form and quantity of the switch."),
+        )
+        self.txtNCycles.do_set_properties(
+            width=125,
+            tooltip=_("The number of cycles per hour of the switch."),
+        )
+        self.txtNElements.do_set_properties(
+            width=125,
+            tooltip=_("The number of active contacts in the switch."),
+        )
 
     def _do_load_comboboxes(self, subcategory_id):  # pylint: disable=unused-argument
         """
@@ -154,7 +231,7 @@ class SwitchAssessmentInputs(AssessmentInputs):
         the switch subcategory is changed.
 
         :param int subcategory_id: the newly selected semiconductor subcategory
-                                   ID.
+        ID.
         :return: None
         :rtype: None
         """
@@ -185,26 +262,16 @@ class SwitchAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbContactForm.do_load_combo(_data)
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Switch assessment input widgets.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Switch.
+        Switch.
         :return: None
         :rtype: None
         """
-        self._hardware_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        self._do_load_comboboxes(self._subcategory_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        AssessmentInputs.do_load_page(self, attributes)
 
         if self._hazard_rate_method_id == 2:
             self.cmbApplication.handler_block(self._lst_handler_id[1])
@@ -221,17 +288,17 @@ class SwitchAssessmentInputs(AssessmentInputs):
 
             self.txtNCycles.handler_block(self._lst_handler_id[4])
             self.txtNCycles.set_text(
-                str(self.fmt.format(attributes['n_cycles'])))
+                str(self.fmt.format(attributes['n_cycles'])),
+            )
             self.txtNCycles.handler_unblock(self._lst_handler_id[4])
 
             self.txtNElements.handler_block(self._lst_handler_id[5])
             self.txtNElements.set_text(
-                str(self.fmt.format(attributes['n_elements'])))
+                str(self.fmt.format(attributes['n_elements'])),
+            )
             self.txtNElements.handler_unblock(self._lst_handler_id[5])
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -261,130 +328,6 @@ class SwitchAssessmentInputs(AssessmentInputs):
             if self._subcategory_id in [2, 3, 4]:
                 self.txtNElements.set_sensitive(True)
 
-        return None
-
-    def _make_page(self):
-        """
-        Make the Switch class Gtk.Notebook() assessment input page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_page(self)
-
-        self.put(self.cmbApplication, _x_pos, _y_pos[1])
-        self.put(self.cmbConstruction, _x_pos, _y_pos[2])
-        self.put(self.cmbContactForm, _x_pos, _y_pos[3])
-        self.put(self.txtNCycles, _x_pos, _y_pos[4])
-        self.put(self.txtNElements, _x_pos, _y_pos[5])
-
-        self.show_all()
-
-        return None
-
-    def _on_combo_changed(self, combo, index):
-        """
-        Retrieve RAMSTKCombo() changes and assign to Switch attribute.
-
-        This method is called by:
-
-            * Gtk.Combo() 'changed' signal
-
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
-                          with the calling RAMSTKComboBox().  Indices are:
-
-            +-------+------------------+-------+------------------+
-            | Index | Widget           | Index | Widget           |
-            +=======+==================+=======+==================+
-            |   1   | cmbApplication   |   3   | cmbContactForm   |
-            +-------+------------------+-------+------------------+
-            |   2   | cmbConstruction  |       |                  |
-            +-------+------------------+-------+------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {
-            0: 'quality_id',
-            1: 'application_id',
-            2: 'construction_id',
-            3: 'contact_form_id'
-        }
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            pub.sendMessage(
-                'wvw_editing_hardware',
-                module_id=self._hardware_id,
-                key=_key,
-                value=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RAMSTKEntry() widgets..
-
-        This method is called by:
-
-            * RAMSTKEntry() 'changed' signal
-            * RAMSTKTextView() 'changed' signal
-
-        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the method.
-        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or
-                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`
-        :param int index: the position in the Hardware class Gtk.TreeModel()
-                          associated with the data from the calling
-                          Gtk.Widget().  Indices are:
-
-            +---------+---------------------+---------+---------------------+
-            |  Index  | Widget              |  Index  | Widget              |
-            +=========+=====================+=========+=====================+
-            |    4    | txtNCycles          |    5    | txtNElements        |
-            +---------+---------------------+---------+---------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {4: 'n_cycles', 5: 'n_elements'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = float(entry.get_text())
-        except ValueError:
-            _new_text = 0.0
-
-        pub.sendMessage(
-            'wvw_editing_hardware',
-            module_id=self._hardware_id,
-            key=_key,
-            value=_new_text)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return None
-
 
 class SwitchAssessmentResults(AssessmentResults):
     """
@@ -413,12 +356,17 @@ class SwitchAssessmentResults(AssessmentResults):
         4:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = (\u03BB<sub>b1</sub> + \u03C0<sub>N</sub>\u03BB<sub>b2</sub>)\u03C0<sub>CYC</sub>\u03C0<sub>L</sub>\u03C0<sub>E</sub></span>",
         5:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>U</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>U</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
     }
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Switch assessment result view."""
-        AssessmentResults.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Switch assessment result view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentResults.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -430,46 +378,86 @@ class SwitchAssessmentResults(AssessmentResults):
         self._lst_labels.append("\u03C0<sub>U</sub>:")
 
         # Initialize private scalar attributes.
-        self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the switch failure "
-              "rate."))
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiCYC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The cycling factor for the switch."))
-        self.txtPiL = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The load stress factor for the switch."))
-        self.txtPiC = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The contact form and quantity factor for the switch."))
-        self.txtPiN = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The number of active contacts factor for the switch."))
-        self.txtPiU = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The use factor for the breaker."))
+        self.txtPiCYC = RAMSTKEntry()
+        self.txtPiL = RAMSTKEntry()
+        self.txtPiC = RAMSTKEntry()
+        self.txtPiN = RAMSTKEntry()
+        self.txtPiU = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+
+    def __make_ui(self):
+        """
+        Make the switch Gtk.Notebook() assessment results page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_ui(self)
+
+        self.put(self.txtPiCYC, _x_pos, _y_pos[3])
+        self.put(self.txtPiL, _x_pos, _y_pos[4])
+        self.put(self.txtPiC, _x_pos, _y_pos[5])
+        self.put(self.txtPiN, _x_pos, _y_pos[6])
+        self.put(self.txtPiU, _x_pos, _y_pos[7])
+
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties for Switch assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lblModel.set_tooltip_markup(
+            _(
+                "The assessment model used to calculate the switch failure "
+                "rate.",
+            ),
+        )
+
+        self.txtPiCYC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The cycling factor for the switch."),
+        )
+        self.txtPiL.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The load stress factor for the switch."),
+        )
+        self.txtPiC.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The contact form and quantity factor for the switch."),
+        )
+        self.txtPiN.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The number of active contacts factor for the switch."),
+        )
+        self.txtPiU.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The use factor for the breaker."),
+        )
 
     def _do_load_page(self, attributes):
         """
@@ -487,8 +475,6 @@ class SwitchAssessmentResults(AssessmentResults):
         self.txtPiU.set_text(str(self.fmt.format(attributes['piU'])))
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):
         """
@@ -519,23 +505,3 @@ class SwitchAssessmentResults(AssessmentResults):
                 self.txtPiU.set_sensitive(True)
             if self._subcategory_id in [1, 5]:
                 self.txtPiC.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the switch Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_page(self)
-
-        self.put(self.txtPiCYC, _x_pos, _y_pos[3])
-        self.put(self.txtPiL, _x_pos, _y_pos[4])
-        self.put(self.txtPiC, _x_pos, _y_pos[5])
-        self.put(self.txtPiN, _x_pos, _y_pos[6])
-        self.put(self.txtPiU, _x_pos, _y_pos[7])
-
-        return None

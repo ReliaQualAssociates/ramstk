@@ -6,7 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Datamodels Package RAMSTKDataController."""
 
-# Import third party modules.
+# Third Party Imports
 from pubsub import pub
 
 __author__ = 'Doyle Rowland'
@@ -157,7 +157,8 @@ class RAMSTKDataController():
                 'deleted_matrix',
                 matrix_type=matrix_type,
                 item_id=item_id,
-                row=row)
+                row=row,
+            )
 
         return self.do_handle_results(_error_code, _msg, None)
 
@@ -172,8 +173,10 @@ class RAMSTKDataController():
 
         return self.do_handle_results(_error_code, _msg, None)
 
-    def request_do_insert_matrix(self, matrix_type, item_id, heading,
-                                 row=True):
+    def request_do_insert_matrix(
+            self, matrix_type, item_id, heading,
+            row=True,
+    ):
         """
         Request the to add a new row or column to the Data Matrix.
 
@@ -187,9 +190,15 @@ class RAMSTKDataController():
         :rtype: bool
         """
         try:
+            _matrix_insert_method = self._dic_inserts[matrix_type]
+        except KeyError:
+            _matrix_insert_method = None
+
+        try:
             # pylint: disable=not-callable
-            _error_code, _msg = self._matrix_insert_method(
-                item_id, heading, row=row)
+            _error_code, _msg = _matrix_insert_method(
+                item_id, heading, row=row,
+            )
         except TypeError:
             _error_code = 6
             _msg = 'RAMSTK ERROR: Attempted to insert into non-existent ' \
@@ -200,7 +209,8 @@ class RAMSTKDataController():
                 'inserted_matrix',
                 matrix_type=matrix_type,
                 item_id=item_id,
-                row=row)
+                row=row,
+            )
 
         return self.do_handle_results(_error_code, _msg, None)
 
@@ -224,7 +234,19 @@ class RAMSTKDataController():
         :rtype: None
         """
         return self._dtm_data_model.do_select_all(
-            revision_id=attributes['revision_id'])
+            revision_id=attributes['revision_id'],
+        )
+
+    def request_do_select_children(self, node_id):
+        """
+        Request the child nodes of the selected Hardware ID.
+
+        :param int node_id: the PyPubSub Tree() ID of the Similar Item to
+                            select the child nodes for.
+        :return: a list of the immediate child nodes of the passed Hardware ID.
+        :rtype: list
+        """
+        return self._dtm_data_model.do_select_children(node_id)
 
     def request_do_update(self, node_id):
         """
@@ -262,7 +284,8 @@ class RAMSTKDataController():
         try:
             # pylint: disable=not-callable
             _error_code, _msg = self._matrix_update_method(
-                revision_id, matrix_type)
+                revision_id, matrix_type,
+            )
         except TypeError:
             _error_code = 6
             _msg = 'RAMSTK ERROR: Attempted to update non-existent matrix ' \

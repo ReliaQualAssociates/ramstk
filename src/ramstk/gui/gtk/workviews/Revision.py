@@ -6,13 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Revision Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk import (RAMSTKEntry, RAMSTKFrame, RAMSTKLabel,
-                                   RAMSTKScrolledWindow, RAMSTKTextView,
-                                   do_make_label_group)
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, Gtk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKEntry, RAMSTKLabel, RAMSTKTextView
+from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
+
+# RAMSTK Local Imports
 from .WorkView import RAMSTKWorkView
 
 # from Assistants import AddRevision
@@ -83,27 +84,9 @@ class GeneralData(RAMSTKWorkView):
         :return: _frame; the Gtk.Frame() to embed in the notebook page.
         :rtype: :class:`Gtk.Frame`
         """
-        _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER,
-                                   Gtk.PolicyType.AUTOMATIC)
-        _scrolledwindow.add_with_viewport(
-            RAMSTKWorkView._make_buttonbox(
-                self, icons=[], tooltips=[], callbacks=[]))
-        self.pack_start(_scrolledwindow, False, False, 0)
+        (_x_pos, _y_pos, _fixed) = RAMSTKWorkView.make_ui(self, icons=[], tooltips=[], callbacks=[])
 
-        _fixed = Gtk.Fixed()
-
-        _scrollwindow = RAMSTKScrolledWindow(_fixed)
-        _frame = RAMSTKFrame(label=_("General Information"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = do_make_label_group(self._lst_labels, _fixed, 5, 5)
-        _x_pos += 50
-
-        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-        _fixed.put(self.txtName, _x_pos, _y_pos[1])
         _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
-        self.pack_end(_scrollwindow, True, True, 0)
 
         _label = RAMSTKLabel(
             _("General\nData"),
@@ -111,7 +94,9 @@ class GeneralData(RAMSTKWorkView):
             width=-1,
             justify=Gtk.Justification.CENTER,
             tooltip=_(
-                "Displays general information for the selected Revision"))
+                "Displays general information for the selected Revision",
+            ),
+        )
         self.hbx_tab_label.pack_start(_label, True, True, 0)
 
         self.show_all()
@@ -124,11 +109,16 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.txtName.connect('changed', self._on_focus_out, 0))
-        self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
-            'changed', self._on_focus_out, 1))
+            self.txtName.connect('focus-out-event', self._on_focus_out, 0),
+        )
         self._lst_handler_id.append(
-            self.txtCode.connect('changed', self._on_focus_out, 2))
+            self.txtRemarks.do_get_buffer().connect(
+                'changed', self._on_focus_out, 1,
+            ),
+        )
+        self._lst_handler_id.append(
+            self.txtCode.connect('focus-out-event', self._on_focus_out, 2),
+        )
 
     def __set_properties(self):
         """
@@ -139,14 +129,19 @@ class GeneralData(RAMSTKWorkView):
         """
         # ----- ENTRIES
         self.txtCode.do_set_properties(
-            width=125, tooltip=_("A unique code for the selected revision."))
+            width=125, tooltip=_("A unique code for the selected revision."),
+        )
         self.txtName.do_set_properties(
-            width=800, tooltip=_("The name of the selected revision."))
+            width=800, tooltip=_("The name of the selected revision."),
+        )
         self.txtRemarks.do_set_properties(
             height=100,
             width=800,
-            tooltip=_("Enter any remarks associated with the "
-                      "selected revision."))
+            tooltip=_(
+                "Enter any remarks associated with the "
+                "selected revision.",
+            ),
+        )
 
     def _do_clear_page(self):
         """
@@ -178,11 +173,13 @@ class GeneralData(RAMSTKWorkView):
         RAMSTKWorkView.on_select(
             self,
             title=_("Analyzing Revision {0:s} - {1:s}").format(
-                str(attributes['revision_code']), str(attributes['name'])))
+                str(attributes['revision_code']), str(attributes['name']),
+            ),
+        )
 
-        self.txtName.do_update(str(attributes['name']), 0)
-        self.txtRemarks.do_update(str(attributes['remarks']), 1)
-        self.txtCode.do_update(str(attributes['revision_code']), 2)
+        self.txtName.do_update(str(attributes['name']), self._lst_handler_id[0])
+        self.txtRemarks.do_update(str(attributes['remarks']), self._lst_handler_id[1])
+        self.txtCode.do_update(str(attributes['revision_code']), self._lst_handler_id[2])
 
     def _do_request_update(self, __button):
         """
@@ -232,19 +229,19 @@ class GeneralData(RAMSTKWorkView):
         _dic_switch = {
             'name': [self.txtName.do_update, 0],
             'remarks': [self.txtRemarks.do_update, 1],
-            'revision_code': [self.txtCode.do_update, 2]
+            'revision_code': [self.txtCode.do_update, 2],
         }
 
         (_function, _id) = _dic_switch.get(key)
         _function(value, self._lst_handler_id[_id])
 
-    def _on_focus_out(self, entry, __event, index):
+    def _on_focus_out(self, entry, index):
         """
         Handle changes made in RAMSTKEntry() and RAMSTKTextView() widgets.
 
         This method is called by:
 
-            * RAMSTKEntry() 'focus-out' signal
+            * RAMSTKEntry() 'focus-out-event' signal
             * RAMSTKTextView() 'changed' signal
 
         This method sends the 'wvw_editing_revision' message.
@@ -282,6 +279,7 @@ class GeneralData(RAMSTKWorkView):
             'wvw_editing_revision',
             module_id=self._revision_id,
             key=_key,
-            value=_new_text)
+            value=_new_text,
+        )
 
         entry.handler_unblock(self._lst_handler_id[index])

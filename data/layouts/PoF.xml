@@ -3,10 +3,8 @@
 
       PoF.xml is part of the RAMSTK Project
 
-      Copyright 2011-2013 Doyle "weibullguy" Rowland <doyle.rowland@reliaqual.com>
-
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 -->
 
 <!-- This file contains information used by the RAMSTK application to draw
@@ -16,8 +14,8 @@ experience. -->
 <root>
     <tree name="PoF">
         <column>
-            <defaulttitle>Mode ID</defaulttitle>
-            <usertitle>Mode ID</usertitle>
+            <defaulttitle>Entity ID</defaulttitle>
+            <usertitle>Entity ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
             <widget>text</widget>
@@ -60,15 +58,15 @@ experience. -->
             <editable>1</editable>
             <visible>1</visible>
         </column>
-				<column>
-				    <defaulttitle>Damage Model</defaulttitle>
-				    <usertitle>Damage Model</usertitle>
-				    <datatype>gchararray</datatype>
-				    <position>5</position>
-				    <widget>combo</widget>
-				    <editable>1</editable>
-				    <visible>1</visible>
-			  </column>
+        <column>
+            <defaulttitle>Damage Model</defaulttitle>
+            <usertitle>Damage Model</usertitle>
+            <datatype>gchararray</datatype>
+            <position>5</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
         <column>
             <defaulttitle>Measureable Parameter</defaulttitle>
             <usertitle>Measureable Parameter</usertitle>

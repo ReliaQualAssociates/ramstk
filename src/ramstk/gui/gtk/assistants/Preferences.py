@@ -1,28 +1,31 @@
 # pylint: disable=non-parent-init-called
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.assistants.Preferences.py is part of The RAMSTK Project
+#       gui.gtk.assistants.Preferences.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Configuration Preferences Module."""
 
+# Standard Library Imports
 from os.path import basename
+
+# Third Party Imports
 import defusedxml.lxml as lxml
 
-# Import other RAMSTK modules.
-from ramstk.dao import (RAMSTKCondition, RAMSTKGroup, RAMSTKLoadHistory,
-                        RAMSTKMeasurement, RAMSTKRPN, RAMSTKUser)
-from ramstk.gui.gtk.ramstk.Widget import _, Gdk, GObject, Gtk, Pango
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.dao import (
+    RAMSTKRPN, RAMSTKCondition, RAMSTKGroup,
+    RAMSTKLoadHistory, RAMSTKMeasurement, RAMSTKUser,
+)
+from ramstk.gui.gtk.ramstk import (
+    RAMSTKBaseView, RAMSTKCheckButton, RAMSTKComboBox,
+    RAMSTKEntry, RAMSTKFrame, RAMSTKLabel, RAMSTKMessageDialog,
+)
+from ramstk.gui.gtk.ramstk.Widget import Gdk, GObject, Gtk, Pango, _
 
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007-2018 Doyle "weibullguy" Rowland'
 
-
-class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
+class Preferences(Gtk.Window, RAMSTKBaseView):
     """
     Assistant to provide a GUI to set various RAMSTK config preferences.
 
@@ -39,15 +42,16 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         :param Gtk.Widget __widget: the Gtk.Widget() that called this class.
         :param controller: the RAMSTK master data controller.
-        :type controller: :class:`ramstk.RAMSTK.RAMSTK`
+        :type controller: :class:`RAMSTK.RAMSTK`
         """
         GObject.GObject.__init__(self)
-        ramstk.RAMSTKBaseView.__init__(self, controller, module='preferences')
+        RAMSTKBaseView.__init__(self, controller, module='preferences')
 
         # Initialize private dictionary attributes.
         self._dic_icons['save-layout'] = (
             controller.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR +
-            '/32x32/save-layout.png')
+            '/32x32/save-layout.png'
+        )
         self._site_preferences = {}
         self._user_preferences = {}
 
@@ -55,7 +59,8 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         # Initialize private scalar attributes.
         self._dtc_data_controller = self._mdcRAMSTK.dic_controllers[
-            'preferences']
+            'preferences'
+        ]
         self._fmt_file = None
 
         # Initialize public dictionary attributes.
@@ -66,53 +71,51 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         self.notebook = Gtk.Notebook()
 
         # Which modules are enabled for this RAMSTK program?
-        self.chkFunctions = ramstk.RAMSTKCheckButton(
+        self.chkFunctions = RAMSTKCheckButton(
             label=_("Function Module Active"),
-            tooltip=_(
-                "Enables/disables the Function module for this program."))
-        self.chkRequirements = ramstk.RAMSTKCheckButton(
+        )
+        self.chkRequirements = RAMSTKCheckButton(
             label=_("Requirements Module Active"),
-            tooltip=_(
-                "Enables/disables the Requirements module for this program."))
-        self.chkHardware = ramstk.RAMSTKCheckButton(
+        )
+        self.chkHardware = RAMSTKCheckButton(
             label=_("Hardware Module Active"),
-            tooltip=_(
-                "Enables/disables the Hardware module for this program."))
-        self.chkValidation = ramstk.RAMSTKCheckButton(
+        )
+        self.chkValidation = RAMSTKCheckButton(
             label=_("Validation Module Active"),
-            tooltip=_(
-                "Enables/disables the Validation module for this program."))
-        self.chkFMEA = ramstk.RAMSTKCheckButton(
+        )
+        self.chkFMEA = RAMSTKCheckButton(
             label=_("(D)FME(C)A Module Active"),
-            tooltip=_(
-                "Enables/disables the (D)FME(C)A module for this program."))
+        )
 
         # What are the general user preferences?
         self.btnConfDir = Gtk.FileChooserButton(
-            _("RAMSTK Configuration File Directory"))
+            _("RAMSTK Configuration File Directory"),
+        )
         self.btnDataDir = Gtk.FileChooserButton(_("RAMSTK Data Directory"))
         self.btnIconDir = Gtk.FileChooserButton(_("RAMSTK Icon Directory"))
         self.btnLogDir = Gtk.FileChooserButton(_("RAMSTK Log Directory"))
         self.btnProgramDir = Gtk.FileChooserButton(
-            _("RAMSTK Program Directory"))
+            _("RAMSTK Program Directory"),
+        )
 
-        self.cmbModuleBookTabPosition = ramstk.RAMSTKComboBox(simple=True)
-        self.cmbWorkBookTabPosition = ramstk.RAMSTKComboBox(simple=True)
-        self.cmbListBookTabPosition = ramstk.RAMSTKComboBox(simple=True)
-        self.cmbReportSize = ramstk.RAMSTKComboBox(simple=True)
+        self.cmbModuleBookTabPosition = RAMSTKComboBox(simple=True)
+        self.cmbWorkBookTabPosition = RAMSTKComboBox(simple=True)
+        self.cmbListBookTabPosition = RAMSTKComboBox(simple=True)
+        self.cmbReportSize = RAMSTKComboBox(simple=True)
 
-        self.txtFRMultiplier = ramstk.RAMSTKEntry()
-        self.txtDecimalPlaces = ramstk.RAMSTKEntry(width=75)
-        self.txtMissionTime = ramstk.RAMSTKEntry(width=75)
+        self.txtFRMultiplier = RAMSTKEntry()
+        self.txtDecimalPlaces = RAMSTKEntry(width=75)
+        self.txtMissionTime = RAMSTKEntry(width=75)
 
         # What are the names and, optionally, paths to the format files and the
         # layout of each one?
-        self.cmbFormatFiles = ramstk.RAMSTKComboBox(
-            tooltip=_("Select the Module View layout to edit."), simple=False)
+        self.cmbFormatFiles = RAMSTKComboBox(
+            tooltip=_("Select the Module View layout to edit."), simple=False,
+        )
         self.tvwFormatFile = Gtk.TreeView()
 
         # What are the desired background and foreground colors for the
-        # various RAMSTK ramstk.TreeView()?
+        # various RAMSTK TreeView()?
         self.btnRevisionBGColor = Gtk.ColorButton()
         self.btnRevisionFGColor = Gtk.ColorButton()
         self.btnFunctionBGColor = Gtk.ColorButton()
@@ -131,8 +134,9 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         self.btnTestingFGColor = Gtk.ColorButton()
 
         # What RAMSTK global lists are available to edit?
-        self.cmbLists = ramstk.RAMSTKComboBox(
-            tooltip=_("Select global RAMSTK list to edit."), simple=False)
+        self.cmbLists = RAMSTKComboBox(
+            tooltip=_("Select global RAMSTK list to edit."), simple=False,
+        )
         self.tvwListEditor = Gtk.TreeView()
 
         self.__make_ui()
@@ -147,8 +151,10 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         :rtype: bool
         """
         _tooltips = [
-            _("Save the active modules used in this RAMSTK "
-              "program."),
+            _(
+                "Save the active modules used in this RAMSTK "
+                "program.",
+            ),
         ]
         _callbacks = [
             self._do_request_update,
@@ -156,14 +162,15 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _icons = [
             'save',
         ]
-        _buttonbox = ramstk.RAMSTKBaseView._make_buttonbox(
+        _buttonbox = RAMSTKBaseView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
             callbacks=_callbacks,
             orientation='vertical',
             height=-1,
-            width=-1)
+            width=-1,
+        )
         _button = _buttonbox.get_children()[0]
         _button.set_property('name', 'modules')
 
@@ -178,12 +185,11 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _fixed.put(self.chkValidation, 5, 95)
         _fixed.put(self.chkFMEA, 5, 125)
 
-        _label = ramstk.RAMSTKLabel(
-            _("Active RAMSTK Modules"), justify=Gtk.Justification.CENTER)
+        _label = RAMSTKLabel(
+            _("Active RAMSTK Modules"), justify=Gtk.Justification.CENTER,
+        )
         _label.set_tooltip_text(_("Select active RAMSTK modules."))
         self.notebook.insert_page(_hbox, tab_label=_label, position=-1)
-
-        return None
 
     def __make_general_preferences_page(self):
         """
@@ -201,14 +207,15 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _icons = [
             'save',
         ]
-        _buttonbox = ramstk.RAMSTKBaseView._make_buttonbox(
+        _buttonbox = RAMSTKBaseView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
             callbacks=_callbacks,
             orientation='vertical',
             height=-1,
-            width=-1)
+            width=-1,
+        )
         _button = _buttonbox.get_children()[0]
         _button.set_property('name', 'general')
 
@@ -225,75 +232,96 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _sizes = [["A4"], ["Letter"]]
         self.cmbReportSize.do_load_combo(_sizes)
 
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Module Book tab position:"),
             tooltip=_("Set the position of the RAMSTK Module Book tabs."),
-            width=-1)
+            width=-1,
+        )
         _fixed.put(_label, 5, 5)
         _fixed.put(self.cmbModuleBookTabPosition, 310, 5)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Work Book tab position:"),
             tooltip=_("Set the position of the RAMSTK Work Book tabs."),
-            width=-1)
+            width=-1,
+        )
         _fixed.put(_label, 5, 35)
         _fixed.put(self.cmbWorkBookTabPosition, 310, 35)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("List Book tab position:"),
             tooltip=_("Set the position of the RAMSTK List Book tabs."),
-            width=-1)
+            width=-1,
+        )
         _fixed.put(_label, 5, 65)
         _fixed.put(self.cmbListBookTabPosition, 310, 65)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Report size:"),
             tooltip=_("Set the default paper size of RAMSK reports."),
-            width=-1)
+            width=-1,
+        )
         _fixed.put(_label, 5, 125)
         _fixed.put(self.cmbReportSize, 310, 125)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Failure rate multiplier:"),
             tooltip=_("Set the failure rate multiplier."),
-            width=-1)
+            width=-1,
+        )
         _fixed.put(_label, 5, 155)
         _fixed.put(self.txtFRMultiplier, 310, 155)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Decimal places:"),
-            tooltip=_("Set the default number of decimal places displayed "
-                      "in RAMSTK."),
-            width=-1)
+            tooltip=_(
+                "Set the default number of decimal places displayed "
+                "in RAMSTK.",
+            ),
+            width=-1,
+        )
         _fixed.put(_label, 5, 185)
         _fixed.put(self.txtDecimalPlaces, 310, 185)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Reliability estimation time:"),
             tooltip=_("Set the time at which reliabilities are calculated."),
-            width=-1)
+            width=-1,
+        )
         _fixed.put(_label, 5, 215)
         _fixed.put(self.txtMissionTime, 310, 215)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Path to RAMSTK configuration files:"),
-            tooltip=_("Set the path to the directory where RAMSTK looks for "
-                      "configuration files."),
-            width=-1)
+            tooltip=_(
+                "Set the path to the directory where RAMSTK looks for "
+                "configuration files.",
+            ),
+            width=-1,
+        )
         _fixed.put(_label, 5, 245)
         _fixed.put(self.btnConfDir, 310, 245)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Path to RAMSTK data files:"),
-            tooltip=_("Set the path to the directory where RAMSTK looks for "
-                      "data files (e.g., layout formats, icons, etc.)."),
-            width=-1)
+            tooltip=_(
+                "Set the path to the directory where RAMSTK looks for "
+                "data files (e.g., layout formats, icons, etc.).",
+            ),
+            width=-1,
+        )
         _fixed.put(_label, 5, 275)
         _fixed.put(self.btnDataDir, 310, 275)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Path to RAMSTK log files:"),
-            tooltip=_("Set the path to the directory where RAMSTK writes "
-                      "log files."),
-            width=-1)
+            tooltip=_(
+                "Set the path to the directory where RAMSTK writes "
+                "log files.",
+            ),
+            width=-1,
+        )
         _fixed.put(_label, 5, 305)
         _fixed.put(self.btnLogDir, 310, 305)
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("Path to RAMSTK analyses:"),
-            tooltip=_("Set the path to the directory where RAMSTK stores "
-                      "analyses databases."),
-            width=-1)
+            tooltip=_(
+                "Set the path to the directory where RAMSTK stores "
+                "analyses databases.",
+            ),
+            width=-1,
+        )
         _fixed.put(_label, 5, 335)
         _fixed.put(self.btnProgramDir, 310, 335)
 
@@ -303,15 +331,15 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         self.btnLogDir.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
         self.btnProgramDir.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
 
-        _label = ramstk.RAMSTKLabel(
+        _label = RAMSTKLabel(
             _("General\nPreferences"),
             height=-1,
-            justify=Gtk.Justification.CENTER)
+            justify=Gtk.Justification.CENTER,
+        )
         _label.set_tooltip_text(
-            _("Allows setting general user preferences for RAMSTK."))
+            _("Allows setting general user preferences for RAMSTK."),
+        )
         self.notebook.insert_page(_hbox, tab_label=_label, position=-1)
-
-        return None
 
     def __make_global_lists_page(self):
         """
@@ -327,27 +355,28 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         ]
         _callbacks = [
             self._do_request_list_add, self._do_request_list_remove,
-            self._do_request_update
+            self._do_request_update,
         ]
         _icons = [
             'add',
             'remove',
             'save',
         ]
-        _buttonbox = ramstk.RAMSTKBaseView._make_buttonbox(
+        _buttonbox = RAMSTKBaseView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
             callbacks=_callbacks,
             orientation='vertical',
             height=-1,
-            width=-1)
+            width=-1,
+        )
         _button = _buttonbox.get_children()[0]
         _button.set_property('name', 'globallists')
 
         _hbox = Gtk.HBox()
         _vbox = Gtk.VBox()
-        _frame = ramstk.RAMSTKFrame(_("Edit RAMSTK Lists"))
+        _frame = RAMSTKFrame(_("Edit RAMSTK Lists"))
         _frame.add(_vbox)
         _fixed = Gtk.Fixed()
         _scrollwindow = Gtk.ScrolledWindow()
@@ -356,15 +385,18 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _vbox.pack_start(_fixed, False, True, 0)
         _vbox.pack_end(_scrollwindow, True, True, 0)
 
-        _label = ramstk.RAMSTKLabel(
-            _("Select RAMSTK list to load:"), width=-1)
+        _label = RAMSTKLabel(
+            _("Select RAMSTK list to load:"), width=-1,
+        )
         _fixed.put(_label, 5, 5)
         _fixed.put(self.cmbLists, 225, 5)
         _scrollwindow.add(self.tvwListEditor)
 
-        _model = Gtk.ListStore(GObject.TYPE_INT, GObject.TYPE_STRING,
-                               GObject.TYPE_STRING, GObject.TYPE_STRING,
-                               GObject.TYPE_STRING)
+        _model = Gtk.ListStore(
+            GObject.TYPE_INT, GObject.TYPE_STRING,
+            GObject.TYPE_STRING, GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+        )
         for _idx in [0, 1, 2, 3]:
             _cell = Gtk.CellRendererText()
             _cell.set_property('cell-background', '#FFFFFF')
@@ -382,25 +414,29 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
             self.tvwListEditor.append_column(_column)
         self.tvwListEditor.set_model(_model)
 
-        _lists = [[
-            _("Damaging Operating Conditions"), 'damaging_conditions', ''
-        ], [_("Means for Classifying Load Histories"), 'load_history', ''],
-                  [_("Measureable Parameters"), 'measureable_parameters', ''],
-                  [_("RPN Detection"), 'rpn_detection', ''],
-                  [_("RPN Occurrence"), 'rpn_occurrence', ''],
-                  [_("RPN Severity"), 'rpn_severity', ''],
-                  [_("RAMSTK Work Groups"), 'workgroups', ''],
-                  [_("RAMSTK Users"), 'users', '']]
+        _lists = [
+            [
+                _("Damaging Operating Conditions"), 'damaging_conditions', '',
+            ], [_("Means for Classifying Load Histories"), 'load_history', ''],
+            [_("Measureable Parameters"), 'measureable_parameters', ''],
+            [_("RPN Detection"), 'rpn_detection', ''],
+            [_("RPN Occurrence"), 'rpn_occurrence', ''],
+            [_("RPN Severity"), 'rpn_severity', ''],
+            [_("RAMSTK Work Groups"), 'workgroups', ''],
+            [_("RAMSTK Users"), 'users', ''],
+        ]
         self.cmbLists.do_load_combo(_lists, simple=False)
 
-        _label = ramstk.RAMSTKLabel(
-            _("Global RAMSTK Lists"), justify=Gtk.Justification.CENTER)
+        _label = RAMSTKLabel(
+            _("Global RAMSTK Lists"), justify=Gtk.Justification.CENTER,
+        )
         _label.set_tooltip_text(
-            _("Edit global RAMSTK lists; lists available "
-              "to all RAMSTK Programs."))
+            _(
+                "Edit global RAMSTK lists; lists available "
+                "to all RAMSTK Programs.",
+            ),
+        )
         self.notebook.insert_page(_hbox, tab_label=_label, position=-1)
-
-        return None
 
     def __make_look_and_feel_page(self):
         """
@@ -421,14 +457,15 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
             'save-layout',
             'save',
         ]
-        _buttonbox = ramstk.RAMSTKBaseView._make_buttonbox(
+        _buttonbox = RAMSTKBaseView._make_buttonbox(
             self,
             icons=_icons,
             tooltips=_tooltips,
             callbacks=_callbacks,
             orientation='vertical',
             height=-1,
-            width=-1)
+            width=-1,
+        )
         _button = _buttonbox.get_children()[0]
         _button.set_property('name', 'format')
         _button = _buttonbox.get_children()[1]
@@ -436,8 +473,9 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         _hbox_outer = Gtk.HBox()
         _hbox_inner = Gtk.HBox()
-        _frame = ramstk.RAMSTKFrame(
-            label=_("Edit Module View Layout and Colors"))
+        _frame = RAMSTKFrame(
+            label=_("Edit Module View Layout and Colors"),
+        )
         _frame.add(_hbox_inner)
         _fixed = Gtk.Fixed()
         _scrollwindow = Gtk.ScrolledWindow()
@@ -446,80 +484,93 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _hbox_inner.pack_start(_fixed, False, True, 0)
         _hbox_inner.pack_end(_scrollwindow, True, True, 0)
 
-        _formats = [[_("Allocation"), 'allocation', ''],
-                    [_("(D)FME(C)A"), 'dfmeca', ''],
-                    [_("Functional FMEA"), 'ffmea', ''],
-                    [_("Function"), 'function', ''],
-                    [_("Hardware"), 'hardware', ''],
-                    [_("HazOps"), 'hazops', ''],
-                    [_("Physics of Failure Analysis"), 'pof', ''],
-                    [_("Requirement"), 'requirement', ''],
-                    [_("Revision"), 'revision', ''],
-                    [_("Similar Item Analysis"), 'similaritem', ''],
-                    [_("Stakeholder Input"), 'stakeholder', ''],
-                    [_("Validation"), 'validation', '']]
+        _formats = [
+            [_("Allocation"), 'allocation', ''],
+            [_("(D)FME(C)A"), 'dfmeca', ''],
+            [_("Functional FMEA"), 'ffmea', ''],
+            [_("Function"), 'function', ''],
+            [_("Hardware"), 'hardware', ''],
+            [_("HazOps"), 'hazops', ''],
+            [_("Physics of Failure Analysis"), 'pof', ''],
+            [_("Requirement"), 'requirement', ''],
+            [_("Revision"), 'revision', ''],
+            [_("Similar Item Analysis"), 'similaritem', ''],
+            [_("Stakeholder Input"), 'stakeholder', ''],
+            [_("Validation"), 'validation', ''],
+        ]
         self.cmbFormatFiles.do_load_combo(_formats, 0, False)
 
-        _label = ramstk.RAMSTKLabel(
-            _("Select format file to edit:"), width=350)
+        _label = RAMSTKLabel(
+            _("Select format file to edit:"), width=350,
+        )
         _fixed.put(_label, 5, 5)
         _fixed.put(self.cmbFormatFiles, 310, 5)
-        _label = ramstk.RAMSTKLabel(
-            _("Revision Tree Background Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Revision Tree Background Color:"), width=350,
+        )
         _fixed.put(_label, 5, 95)
         _fixed.put(self.btnRevisionBGColor, 340, 95)
-        _label = ramstk.RAMSTKLabel(
-            _("Revision Tree Foreground Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Revision Tree Foreground Color:"), width=350,
+        )
         _fixed.put(_label, 5, 125)
         _fixed.put(self.btnRevisionFGColor, 340, 125)
-        _label = ramstk.RAMSTKLabel(
-            _("Function Tree Background Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Function Tree Background Color:"), width=350,
+        )
         _fixed.put(_label, 5, 155)
         _fixed.put(self.btnFunctionBGColor, 340, 155)
-        _label = ramstk.RAMSTKLabel(
-            _("Function Tree Foreground Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Function Tree Foreground Color:"), width=350,
+        )
         _fixed.put(_label, 5, 185)
         _fixed.put(self.btnFunctionFGColor, 340, 185)
-        _label = ramstk.RAMSTKLabel(
-            _("Requirements Tree Background Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Requirements Tree Background Color:"), width=350,
+        )
         _fixed.put(_label, 5, 215)
         _fixed.put(self.btnRequirementsBGColor, 340, 215)
-        _label = ramstk.RAMSTKLabel(
-            _("Requirements Tree Foreground Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Requirements Tree Foreground Color:"), width=350,
+        )
         _fixed.put(_label, 5, 245)
         _fixed.put(self.btnRequirementsFGColor, 340, 245)
-        _label = ramstk.RAMSTKLabel(
-            _("Hardware Tree Background Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Hardware Tree Background Color:"), width=350,
+        )
         _fixed.put(_label, 5, 275)
         _fixed.put(self.btnHardwareBGColor, 340, 275)
-        _label = ramstk.RAMSTKLabel(
-            _("Hardware Tree Foreground Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Hardware Tree Foreground Color:"), width=350,
+        )
         _fixed.put(_label, 5, 305)
         _fixed.put(self.btnHardwareFGColor, 340, 305)
-        # _label = ramstk.RAMSTKLabel(_(u"Software Tree Background Color:"), width=350)
+        # _label = RAMSTKLabel(_(u"Software Tree Background Color:"), width=350)
         # _fixed.put(_label, 5, 335)
         # _fixed.put(self.btnSoftwareBGColor, 340, 335)
-        # _label = ramstk.RAMSTKLabel(_(u"Software Tree Foreground Color:"), width=350)
+        # _label = RAMSTKLabel(_(u"Software Tree Foreground Color:"), width=350)
         # _fixed.put(_label, 5, 365)
         # _fixed.put(self.btnSoftwareFGColor, 340, 365)
-        _label = ramstk.RAMSTKLabel(
-            _("Validation  Tree Background Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Validation  Tree Background Color:"), width=350,
+        )
         _fixed.put(_label, 5, 335)
         _fixed.put(self.btnValidationBGColor, 340, 335)
-        _label = ramstk.RAMSTKLabel(
-            _("Validation Tree Foreground Color:"), width=350)
+        _label = RAMSTKLabel(
+            _("Validation Tree Foreground Color:"), width=350,
+        )
         _fixed.put(_label, 5, 365)
         _fixed.put(self.btnValidationFGColor, 340, 365)
-        # _label = ramstk.RAMSTKLabel(_(u"Incident Tree Background Color:"), width=350)
+        # _label = RAMSTKLabel(_(u"Incident Tree Background Color:"), width=350)
         # _fixed.put(_label, 5, 455)
         # _fixed.put(self.btnIncidentBGColor, 340, 455)
-        # _label = ramstk.RAMSTKLabel(_(u"Incident Tree Foreground Color:"), width=350)
+        # _label = RAMSTKLabel(_(u"Incident Tree Foreground Color:"), width=350)
         # _fixed.put(_label, 5, 485)
         # _fixed.put(self.btnIncidentFGColor, 340, 485)
-        # _label = ramstk.RAMSTKLabel(_(u"Testing Tree Background Color:"), width=350)
+        # _label = RAMSTKLabel(_(u"Testing Tree Background Color:"), width=350)
         # _fixed.put(_label, 5, 515)
         # _fixed.put(self.btnTestingBGColor, 340, 515)
-        # _label = ramstk.RAMSTKLabel(_(u"Testing Tree Foreground Color:"), width=350)
+        # _label = RAMSTKLabel(_(u"Testing Tree Foreground Color:"), width=350)
         # _fixed.put(_label, 5, 545)
         # _fixed.put(self.btnTestingFGColor, 340, 545)
 
@@ -528,14 +579,16 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
             _("User\nTitle"),
             _("Column\nPosition"),
             _("Can\nEdit?"),
-            _("Is\nVisible?")
+            _("Is\nVisible?"),
         ]
 
         self.tvwFormatFile = Gtk.TreeView()
-        _model = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING,
-                               GObject.TYPE_INT, GObject.TYPE_INT,
-                               GObject.TYPE_INT, GObject.TYPE_STRING,
-                               GObject.TYPE_STRING, GObject.TYPE_STRING)
+        _model = Gtk.ListStore(
+            GObject.TYPE_STRING, GObject.TYPE_STRING,
+            GObject.TYPE_INT, GObject.TYPE_INT,
+            GObject.TYPE_INT, GObject.TYPE_STRING,
+            GObject.TYPE_STRING, GObject.TYPE_STRING,
+        )
         self.tvwFormatFile.set_model(_model)
 
         for i in range(5):
@@ -548,7 +601,7 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
                 _cell.set_property('weight-set', True)
                 _cell.set_property('wrap-width', 250)
                 _cell.set_property('wrap-mode', Pango.WrapMode.WORD)
-            elif i > 0 and i < 3:
+            elif i in [1, 2]:
                 _cell = Gtk.CellRendererText()
                 _cell.set_property('background', '#FFFFFF')
                 _cell.set_property('editable', 1)
@@ -586,13 +639,13 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         _scrollwindow.add(self.tvwFormatFile)
 
-        _label = ramstk.RAMSTKLabel(
-            _("Look &amp; Feel"), justify=Gtk.Justification.CENTER)
+        _label = RAMSTKLabel(
+            _("Look &amp; Feel"), justify=Gtk.Justification.CENTER,
+        )
         _label.set_tooltip_text(
-            _("Allows setting user interface preferences for RAMSTK."))
+            _("Allows setting user interface preferences for RAMSTK."),
+        )
         self.notebook.insert_page(_hbox_outer, tab_label=_label, position=-1)
-
-        return None
 
     def __make_ui(self):
         """
@@ -616,56 +669,100 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         self.btnLogDir.connect('file-set', self._do_select_path, 3)
         self.btnProgramDir.connect('file-set', self._do_select_path, 4)
 
-        self.btnRevisionBGColor.connect('color-set', self._do_set_color,
-                                        'revisionbg')
-        self.btnRevisionFGColor.connect('color-set', self._do_set_color,
-                                        'revisionfg')
-        self.btnFunctionBGColor.connect('color-set', self._do_set_color,
-                                        'functionbg')
-        self.btnFunctionFGColor.connect('color-set', self._do_set_color,
-                                        'functionfg')
-        self.btnRequirementsBGColor.connect('color-set', self._do_set_color,
-                                            'requirementbg')
-        self.btnRequirementsFGColor.connect('color-set', self._do_set_color,
-                                            'requirementfg')
-        self.btnHardwareBGColor.connect('color-set', self._do_set_color,
-                                        'hardwarebg')
-        self.btnHardwareFGColor.connect('color-set', self._do_set_color,
-                                        'hardwarefg')
-        self.btnSoftwareBGColor.connect('color-set', self._do_set_color,
-                                        'softwarebg')
-        self.btnSoftwareFGColor.connect('color-set', self._do_set_color,
-                                        'softwarefg')
-        self.btnValidationBGColor.connect('color-set', self._do_set_color,
-                                          'validationbg')
-        self.btnValidationFGColor.connect('color-set', self._do_set_color,
-                                          'validationfg')
-        self.btnIncidentBGColor.connect('color-set', self._do_set_color,
-                                        'incidentbg')
-        self.btnIncidentFGColor.connect('color-set', self._do_set_color,
-                                        'incidentfg')
-        self.btnTestingBGColor.connect('color-set', self._do_set_color,
-                                       'testingbg')
-        self.btnTestingFGColor.connect('color-set', self._do_set_color,
-                                       'testingfg')
+        self.btnRevisionBGColor.connect(
+            'color-set', self._do_set_color,
+            'revisionbg',
+        )
+        self.btnRevisionFGColor.connect(
+            'color-set', self._do_set_color,
+            'revisionfg',
+        )
+        self.btnFunctionBGColor.connect(
+            'color-set', self._do_set_color,
+            'functionbg',
+        )
+        self.btnFunctionFGColor.connect(
+            'color-set', self._do_set_color,
+            'functionfg',
+        )
+        self.btnRequirementsBGColor.connect(
+            'color-set', self._do_set_color,
+            'requirementbg',
+        )
+        self.btnRequirementsFGColor.connect(
+            'color-set', self._do_set_color,
+            'requirementfg',
+        )
+        self.btnHardwareBGColor.connect(
+            'color-set', self._do_set_color,
+            'hardwarebg',
+        )
+        self.btnHardwareFGColor.connect(
+            'color-set', self._do_set_color,
+            'hardwarefg',
+        )
+        self.btnSoftwareBGColor.connect(
+            'color-set', self._do_set_color,
+            'softwarebg',
+        )
+        self.btnSoftwareFGColor.connect(
+            'color-set', self._do_set_color,
+            'softwarefg',
+        )
+        self.btnValidationBGColor.connect(
+            'color-set', self._do_set_color,
+            'validationbg',
+        )
+        self.btnValidationFGColor.connect(
+            'color-set', self._do_set_color,
+            'validationfg',
+        )
+        self.btnIncidentBGColor.connect(
+            'color-set', self._do_set_color,
+            'incidentbg',
+        )
+        self.btnIncidentFGColor.connect(
+            'color-set', self._do_set_color,
+            'incidentfg',
+        )
+        self.btnTestingBGColor.connect(
+            'color-set', self._do_set_color,
+            'testingbg',
+        )
+        self.btnTestingFGColor.connect(
+            'color-set', self._do_set_color,
+            'testingfg',
+        )
 
         self._lst_handler_id.append(
-            self.cmbFormatFiles.connect('changed', self._on_combo_changed, 0))
+            self.cmbFormatFiles.connect('changed', self._on_combo_changed, 0),
+        )
         self._lst_handler_id.append(
-            self.cmbLists.connect('changed', self._on_combo_changed, 1))
+            self.cmbLists.connect('changed', self._on_combo_changed, 1),
+        )
         self._lst_handler_id.append(
-            self.cmbModuleBookTabPosition.connect('changed',
-                                                  self._on_combo_changed, 2))
+            self.cmbModuleBookTabPosition.connect(
+                'changed',
+                self._on_combo_changed, 2,
+            ),
+        )
         self._lst_handler_id.append(
-            self.cmbWorkBookTabPosition.connect('changed',
-                                                self._on_combo_changed, 3))
+            self.cmbWorkBookTabPosition.connect(
+                'changed',
+                self._on_combo_changed, 3,
+            ),
+        )
         self._lst_handler_id.append(
-            self.cmbListBookTabPosition.connect('changed',
-                                                self._on_combo_changed, 4))
+            self.cmbListBookTabPosition.connect(
+                'changed',
+                self._on_combo_changed, 4,
+            ),
+        )
         self._lst_handler_id.append(
-            self.cmbReportSize.connect('changed', self._on_combo_changed, 5))
+            self.cmbReportSize.connect('changed', self._on_combo_changed, 5),
+        )
 
-        _buttonbox = ramstk.RAMSTKBaseView._make_buttonbox(
+        _buttonbox = RAMSTKBaseView._make_buttonbox(
             self,
             icons=[
                 'cancel',
@@ -678,7 +775,8 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
             ],
             orientation='horizontal',
             height=-1,
-            width=-1)
+            width=-1,
+        )
         _buttonbox.set_layout(Gtk.ButtonBoxStyle.END)
 
         _vbox = Gtk.VBox()
@@ -695,7 +793,38 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         self.show_all()
 
-        return None
+    def __set_properties(self):
+        """
+        Set the properties of the Preferences assistance widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.chkFunctions.do_set_properties(
+            tooltip=_(
+                "Enables/disables the Function module for this program.",
+            ),
+        )
+        self.chkRequirements.do_set_properties(
+            tooltip=_(
+                "Enables/disables the Requirements module for this program.",
+            ),
+        )
+        self.chkHardware.do_set_properties(
+            tooltip=_(
+                "Enables/disables the Hardware module for this program.",
+            ),
+        )
+        self.chkValidation.do_set_properties(
+            tooltip=_(
+                "Enables/disables the Validation module for this program.",
+            ),
+        )
+        self.chkFMEA.do_set_properties(
+            tooltip=_(
+                "Enables/disables the (D)FME(C)A module for this program.",
+            ),
+        )
 
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model):
@@ -738,7 +867,8 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         self._fmt_file = (
             self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_CONF_DIR + '/layouts/'
-            + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module])
+            + self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_FORMAT_FILE[_module]
+        )
         if _module == 'dfmeca':
             _fmt_path = "/root/tree[@name='DFMECA']/column"
         elif _module == 'ffmea':
@@ -796,11 +926,11 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
                 int(_position[_index].text),
                 int(_editable[_index].text),
                 int(_visible[_index].text), _datatype[_index].text,
-                _widget[_index].text, _key
+                _widget[_index].text, _key,
             ]
             _model.append(_data)
 
-        return None
+
 
     def _do_load_list(self, combo):
         """
@@ -865,7 +995,7 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
                 _("Last Name"),
                 _("User E-Mail"),
                 _("User Phone"),
-            ]
+            ],
         }
         # Retrieve the name of the list to display; this name is the key for
         # the dict above.
@@ -880,11 +1010,12 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         # Clear out any existing models and columns.
         i = 0
         for _column in self.tvwListEditor.get_columns():
-            _label = ramstk.RAMSTKLabel(
+            _label = RAMSTKLabel(
                 _headers[i],
                 width=-1,
                 height=-1,
-                justify=Gtk.Justification.CENTER)
+                justify=Gtk.Justification.CENTER,
+            )
             _column.set_widget(_label)
             if _headers[i] == '':
                 _column.set_visible(False)
@@ -903,23 +1034,23 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
                     _entity.get_attributes()['user_fname'],
                     _entity.get_attributes()['user_lname'],
                     _entity.get_attributes()['user_email'],
-                    _entity.get_attributes()['user_phone']
+                    _entity.get_attributes()['user_phone'],
                 ]
             elif _list in ['rpn_detection', 'rpn_occurrence', 'rpn_severity']:
                 _data = [
                     i,
                     _entity.get_attributes()[1],
                     _entity.get_attributes()[2],
-                    _entity.get_attributes()[4], ''
+                    _entity.get_attributes()[4], '',
                 ]
             else:
                 _data = [
-                    i, _entity.get_attributes()['description'], '', '', ''
+                    i, _entity.get_attributes()['description'], '', '', '',
                 ]
             _model.append(_data)
             i += 1
 
-        return None
+
 
     def _do_load_page(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -934,9 +1065,11 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _papersize = {'a4': 1, 'letter': 2}
 
         self._site_preferences = self._dtc_data_controller.request_get_preferences(
-            site=True, user=False)
+            site=True, user=False,
+        )
         self._user_preferences = self._dtc_data_controller.request_get_preferences(
-            site=False, user=True)
+            site=False, user=True,
+        )
 
         # if self._mdcRAMSTK.loaded:
         # self.chkFunctions.set_active(_results[0][1])
@@ -948,13 +1081,17 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         # self.chkSurvivalAnalysis.set_active(_results[0][10])
 
         self.cmbModuleBookTabPosition.set_active(
-            _positions[self._user_preferences['tabpos']['modulebook'].lower()])
+            _positions[self._user_preferences['tabpos']['modulebook'].lower()],
+        )
         self.cmbWorkBookTabPosition.set_active(
-            _positions[self._user_preferences['tabpos']['workbook'].lower()])
+            _positions[self._user_preferences['tabpos']['workbook'].lower()],
+        )
         self.cmbListBookTabPosition.set_active(
-            _positions[self._user_preferences['tabpos']['listbook'].lower()])
+            _positions[self._user_preferences['tabpos']['listbook'].lower()],
+        )
         self.cmbReportSize.set_active(
-            _papersize[self._user_preferences['report_size'].lower()])
+            _papersize[self._user_preferences['report_size'].lower()],
+        )
 
         self.txtFRMultiplier.set_text(self._user_preferences['hr_multiplier'])
         self.txtDecimalPlaces.set_text(self._user_preferences['decimal'])
@@ -965,46 +1102,57 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         self.btnIconDir.set_current_folder(self._user_preferences['icondir'])
         self.btnLogDir.set_current_folder(self._user_preferences['logdir'])
         self.btnProgramDir.set_current_folder(
-            self._user_preferences['progdir'])
+            self._user_preferences['progdir'],
+        )
 
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['revisionbg'])
+            self._user_preferences['colors']['revisionbg'],
+        )
         self.btnRevisionBGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['revisionfg'])
+            self._user_preferences['colors']['revisionfg'],
+        )
         self.btnRevisionFGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['functionbg'])
+            self._user_preferences['colors']['functionbg'],
+        )
         self.btnFunctionBGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['functionfg'])
+            self._user_preferences['colors']['functionfg'],
+        )
         self.btnFunctionFGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['requirementbg'])
+            self._user_preferences['colors']['requirementbg'],
+        )
         self.btnRequirementsBGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['requirementfg'])
+            self._user_preferences['colors']['requirementfg'],
+        )
         self.btnRequirementsFGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['hardwarebg'])
+            self._user_preferences['colors']['hardwarebg'],
+        )
         self.btnHardwareBGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['hardwarefg'])
+            self._user_preferences['colors']['hardwarefg'],
+        )
         self.btnHardwareFGColor.set_color(_color)
         # self.btnSoftwareBGColor.set_color(_color)
         # self.btnSoftwareFGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['validationbg'])
+            self._user_preferences['colors']['validationbg'],
+        )
         self.btnValidationBGColor.set_color(_color)
         _color = Gdk.color_parse(
-            self._user_preferences['colors']['validationfg'])
+            self._user_preferences['colors']['validationfg'],
+        )
         self.btnValidationFGColor.set_color(_color)
         # self.btnIncidentBGColor.set_color(_color)
         # self.btnIncidentFGColor.set_color(_color)
         # self.btnTestingBGColor.set_color(_color)
         # self.btnTestingFGColor.set_color(_color)
 
-        return None
+
 
     def _do_quit(self, __button):
         """
@@ -1073,12 +1221,12 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
             _entity = RAMSTKUser()
             _entity.user_lname = 'New RAMSTK User Last Name'
             _entity.user_fname = 'New RAMSTK User First Name'
-            _entity.user_email = 'new@ramstk.user'
+            _entity.user_email = 'new@user'
             _entity.user_phane = '867.5309'
 
         self._site_preferences[_list].append(_entity)
 
-        return None
+
 
     def _do_request_list_remove(self, __button):
         """
@@ -1098,18 +1246,21 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         _record = self._site_preferences[_list].pop(_id)
         if self._dtc_data_controller.request_do_delete(_record):
-            _prompt = _("There was an error removing an item from the {0:s} "
-                        "RAMSTK global list.").format(_list)
+            _prompt = _(
+                "There was an error removing an item from the {0:s} "
+                "RAMSTK global list.",
+            ).format(_list)
             _icon = self._dic_icons['error']
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, _icon, 'error', parent=self)
+            _dialog = RAMSTKMessageDialog(
+                _prompt, _icon, 'error', parent=self,
+            )
 
             if _dialog.run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
         else:
             self._do_load_list(self.cmbLists)
 
-        return None
+
 
     def _do_request_update(self, button):
         """
@@ -1133,26 +1284,31 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
             self._do_save_tree_layout()
         elif button.get_property('name') == 'globallists':
             self._dtc_data_controller.request_set_preferences(
-                self._site_preferences, site=True, user=False)
+                self._site_preferences, site=True, user=False,
+            )
         else:
             self._dtc_data_controller.request_set_preferences(
-                self._user_preferences, site=False, user=True)
+                self._user_preferences, site=False, user=True,
+            )
 
         if self._dtc_data_controller.request_do_update():
-            _prompt = _("There was an error saving user and program "
-                        "preferences.")
+            _prompt = _(
+                "There was an error saving user and program "
+                "preferences.",
+            )
             _icon = self._dic_icons['error']
-            _dialog = ramstk.RAMSTKMessageDialog(
-                _prompt, _icon, 'error', parent=self)
+            _dialog = RAMSTKMessageDialog(
+                _prompt, _icon, 'error', parent=self,
+            )
 
             if _dialog.run() == Gtk.ResponseType.OK:
                 _dialog.destroy()
 
-        return None
+
 
     def _do_save_tree_layout(self):
         """
-        Save the Module View ramstk.RAMSTKTreeView() layout file.
+        Save the Module View RAMSTKTreeView() layout file.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1169,14 +1325,21 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _file.write("<!--\n")
         _file.write("-*- coding: utf-8 -*-\n\n")
         _file.write(
-            "{0:s} is part of the RAMSTK Project\n\n".format(_basename))
-        _file.write('Copyright 2011-2018 Doyle "weibullguy" Rowland '
-                    '<doyle DOT rowland AT reliaqual DOT com>\n\n')
+            "{0:s} is part of the RAMSTK Project\n\n".format(_basename),
+        )
+        _file.write(
+            'Copyright 2011-2018 Doyle "weibullguy" Rowland '
+            '<doyle DOT rowland AT reliaqual DOT com>\n\n',
+        )
         _file.write("All rights reserved.-->\n\n")
-        _file.write("<!-- This file contains information used by the RAMSTK "
-                    "application to draw\n")
-        _file.write("various widgets.  These values can be changed by the "
-                    "user to personalize\n")
+        _file.write(
+            "<!-- This file contains information used by the RAMSTK "
+            "application to draw\n",
+        )
+        _file.write(
+            "various widgets.  These values can be changed by the "
+            "user to personalize\n",
+        )
         _file.write("their experience. -->\n\n")
 
         _file.write("<root>\n")
@@ -1186,20 +1349,41 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         _row = _model.get_iter_first()
         while _row is not None:
             _file.write("<column>\n")
-            _file.write("<defaulttitle>{0:s}</defaulttitle>\n".format(
-                _model.get_value(_row, 0)))
-            _file.write("<usertitle>{0:s}</usertitle>\n".format(
-                _model.get_value(_row, 1)))
-            _file.write("<datatype>{0:s}</datatype>\n".format(
-                _model.get_value(_row, 5)))
-            _file.write("<position>{0:d}</position>\n".format(
-                _model.get_value(_row, 2)))
-            _file.write("<widget>{0:s}</widget>\n".format(
-                _model.get_value(_row, 6)))
-            _file.write("<editable>{0:d}</editable>\n".format(
-                _model.get_value(_row, 3)))
-            _file.write("<visible>{0:d}</visible>\n".format(
-                _model.get_value(_row, 4)))
+            _file.write(
+                "<defaulttitle>{0:s}</defaulttitle>\n".format(
+                    _model.get_value(_row, 0),
+                ),
+            )
+            _file.write(
+                "<usertitle>{0:s}</usertitle>\n".format(
+                    _model.get_value(_row, 1),
+                ),
+            )
+            _file.write(
+                "<datatype>{0:s}</datatype>\n".format(
+                    _model.get_value(_row, 5),
+                ),
+            )
+            _file.write(
+                "<position>{0:d}</position>\n".format(
+                    _model.get_value(_row, 2),
+                ),
+            )
+            _file.write(
+                "<widget>{0:s}</widget>\n".format(
+                    _model.get_value(_row, 6),
+                ),
+            )
+            _file.write(
+                "<editable>{0:d}</editable>\n".format(
+                    _model.get_value(_row, 3),
+                ),
+            )
+            _file.write(
+                "<visible>{0:d}</visible>\n".format(
+                    _model.get_value(_row, 4),
+                ),
+            )
             _file.write("<key>{0:s}</key>\n".format(_model.get_value(_row, 7)))
             _file.write("</column>\n")
 
@@ -1233,7 +1417,7 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
         elif index == 4:
             self._preferences['progdir'] = button.get_current_folder()
 
-        return None
+
 
     def _do_set_color(self, colorbutton, ramstk_colors):
         """
@@ -1263,7 +1447,8 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
         # Set the color variable.
         self._mdcRAMSTK.RAMSTK_CONFIGURATION.RAMSTK_COLORS[
-            ramstk_colors] = _color
+            ramstk_colors
+        ] = _color
 
         return False
 
@@ -1286,12 +1471,12 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
 
     def _on_combo_changed(self, combo, index):
         """
-        Edit ramstk.RAMSTKTreeView() layouts.
+        Edit RAMSTKTreeView() layouts.
 
-        :param combo: the ramstk.RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
+        :param combo: the RAMSTKCombo() that called this method.
+        :type combo: :class:`gui.gtk.RAMSTKCombo`
         :param int index: the index in the signal handler list associated with
-                          the ramstk.RAMSTKCombo() calling this method.
+                          the RAMSTKCombo() calling this method.
         :return: None
         :rtype: None
         """
@@ -1303,16 +1488,17 @@ class Preferences(Gtk.Window, ramstk.RAMSTKBaseView):
             self._do_load_list(combo)
         elif index == 2:
             self._user_preferences['tabpos'][
-                'modulebook'] = combo.get_active_text()
+                'modulebook'
+            ] = combo.get_active_text()
         elif index == 3:
             self._user_preferences['tabpos'][
-                'workbook'] = combo.get_active_text()
+                'workbook'
+            ] = combo.get_active_text()
         elif index == 4:
             self._user_preferences['tabpos'][
-                'listbook'] = combo.get_active_text()
+                'listbook'
+            ] = combo.get_active_text()
         elif index == 5:
             self._user_preferences['report_size'] = combo.get_active_text()
 
         combo.handler_unblock(self._lst_handler_id[index])
-
-        return None

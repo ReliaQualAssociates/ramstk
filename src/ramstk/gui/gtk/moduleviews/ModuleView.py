@@ -4,13 +4,13 @@
 #       ramstk.gui.gtk.moduleviews.ModuleView.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKModuleView Module."""
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk.assistants import ExportModule
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKBaseView
+#from ramstk.gui.gtk.assistants import ExportModule
 from ramstk.gui.gtk.ramstk.Widget import GObject, Gtk
-from ramstk.gui.gtk.ramstk import RAMSTKBaseView, do_make_buttonbox
 
 
 class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
@@ -51,29 +51,53 @@ class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
 
         # Initialize public scalar attributes.
 
-    def _make_buttonbox(self, **kwargs):
+        self.__set_properties()
+        self.__set_callbacks()
+
+    def __set_callbacks(self):
         """
-        Create the Gtk.ButtonBox() for the Module Views.
+        Set common callback methods for the ModuleView and widgets.
 
-        :return: _buttonbox; the Gtk.ButtonBox() for the Module View.
-        :rtype: :class:`Gtk.ButtonBox`
+        :return: None
+        :rtype: None
         """
-        _icons = kwargs['icons']
-        _tooltips = kwargs['tooltips']
-        _callbacks = kwargs['callbacks']
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('cursor_changed', self._on_row_change),
+            )
+        except AttributeError:
+            pass
 
-        _buttonbox = do_make_buttonbox(
-            self,
-            icons=_icons,
-            tooltips=_tooltips,
-            callbacks=_callbacks,
-            orientation='vertical',
-            height=-1,
-            width=-1)
+        try:
+            self._lst_handler_id.append(
+                self.treeview.connect('button_press_event', self._on_button_press),
+            )
+        except AttributeError:
+            pass
 
-        return _buttonbox
+    def __set_properties(self):
+        """
+        Set common properties of the ModuleView and widgets.
 
-    def _make_ui(self):
+        :return: None
+        :rtype: None
+        """
+        self.treeview.set_rubber_banding(True)
+
+    def do_request_export(self, module):
+        """
+        Launch the Export assistant.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:`Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        #_tree = self._dtc_data_controller.request_do_select_all(
+        #    revision_id=self._revision_id)
+        #ExportModule(self._mdcRAMSTK, module, _tree)
+
+    def make_ui(self):
         """
         Build the user interface.
 
@@ -118,44 +142,11 @@ class RAMSTKModuleView(Gtk.HBox, RAMSTKBaseView):
             _icons.extend(['remove', 'save', 'save-all'])
             _callbacks.extend([
                 self._do_request_delete, self._do_request_update,
-                self._do_request_update_all
+                self._do_request_update_all,
             ])
         except AttributeError:
             pass
 
         RAMSTKBaseView.on_button_press(
-            self, event, icons=_icons, labels=_labels, callbacks=_callbacks)
-
-    def _set_callbacks(self):
-        """
-        Set common callback methods for the ListView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_change))
-        self._lst_handler_id.append(
-            self.treeview.connect('button_press_event', self._on_button_press))
-
-    def _set_properties(self):
-        """
-        Set common properties of the ListView and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.treeview.set_rubber_banding(True)
-
-    def do_request_export(self, module):
-        """
-        Launch the Export assistant.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :type __button: :class:`Gtk.ToolButton`
-        :return: None
-        :rtype: None
-        """
-        #_tree = self._dtc_data_controller.request_do_select_all(
-        #    revision_id=self._revision_id)
-        #ExportModule(self._mdcRAMSTK, module, _tree)
+            self, event, icons=_icons, labels=_labels, callbacks=_callbacks,
+        )

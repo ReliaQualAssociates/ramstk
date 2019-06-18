@@ -3,19 +3,20 @@
 #       ramstk.gui.gtk.mwi.ListBook.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK List Book Module."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk import RAMSTKBook
-from ramstk.gui.gtk.listviews import (lvwUsageProfile, lvwFailureDefinition,
-                                      lvwStakeholder)
+# RAMSTK Package Imports
+from ramstk.gui.gtk.listviews import (
+    lvwFailureDefinition, lvwStakeholder, lvwUsageProfile,
+)
 from ramstk.gui.gtk.matrixviews import (
-    FunctionHardware, RequirementHardware, RequirementValidation,
-    HardwareRequirement, HardwareValidation, ValidationRequirement,
-    ValidationHardware)
+    mtxFunction, mtxHardware, mtxRequirement, mtxValidation,
+)
+from ramstk.gui.gtk.ramstk import RAMSTKBook
 from ramstk.gui.gtk.ramstk.Widget import _
 
 
@@ -54,25 +55,23 @@ class ListBook(RAMSTKBook):
         self.dic_list_view = {
             'revision': [
                 lvwUsageProfile(configuration),
-                lvwFailureDefinition(configuration)
+                lvwFailureDefinition(configuration),
             ],
             'function':
-            [FunctionHardware(configuration, matrix_type='fnctn_hrdwr')],
+            [mtxFunction(configuration, matrix_type='fnctn_hrdwr')],
             'requirement': [
                 lvwStakeholder(configuration),
-                RequirementHardware(configuration, matrix_type='rqrmnt_hrdwr'),
-                RequirementValidation(
-                    configuration, matrix_type='rqrmnt_vldtn')
+                mtxRequirement(configuration, matrix_type='rqrmnt_hrdwr'),
+                mtxRequirement(configuration, matrix_type='rqrmnt_vldtn'),
             ],
             'hardware': [
-                HardwareRequirement(configuration, matrix_type='hrdwr_rqrmnt'),
-                HardwareValidation(configuration, matrix_type='hrdwr_vldtn')
+                mtxHardware(configuration, matrix_type='hrdwr_rqrmnt'),
+                mtxHardware(configuration, matrix_type='hrdwr_vldtn'),
             ],
             'validation': [
-                ValidationRequirement(
-                    configuration, matrix_type='vldtn_rqrmnt'),
-                ValidationHardware(configuration, matrix_type='vldtn_hrdwr')
-            ]
+                mtxValidation(configuration, matrix_type='vldtn_rqrmnt'),
+                mtxValidation(configuration, matrix_type='vldtn_hrdwr'),
+            ],
         }
 
         # Initialize public list attributes.
@@ -105,7 +104,8 @@ class ListBook(RAMSTKBook):
         """
         try:
             _tab_position = self.dic_tab_position[
-                self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS['listbook'].lower()]
+                self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS['listbook'].lower()
+            ]
         except KeyError:
             _tab_position = self._bottom_tab
         self.notebook.set_tab_pos(_tab_position)

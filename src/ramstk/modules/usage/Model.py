@@ -6,12 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Usage Profile Package Data Models."""
 
-# Import third party packages.
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataModel
+# RAMSTK Package Imports
 from ramstk.dao import RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
+from ramstk.modules import RAMSTKDataModel
 
 
 class UsageProfileDataModel(RAMSTKDataModel):
@@ -37,6 +37,7 @@ class UsageProfileDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Usage Profiles'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -78,9 +79,11 @@ class UsageProfileDataModel(RAMSTKDataModel):
         # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to delete non-existent Mission, "
-                    "Mission Phase, or Environment ID "
-                    "{0:s}.").format(str(node_id))
+            _msg = (
+                "RAMSTK ERROR: Attempted to delete non-existent Mission, "
+                "Mission Phase, or Environment ID "
+                "{0:s}."
+            ).format(str(node_id))
         else:
             self.last_id = max(self.tree.nodes.keys())
 
@@ -131,7 +134,8 @@ class UsageProfileDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _entity,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             if _level == 'mission':
@@ -145,7 +149,8 @@ class UsageProfileDataModel(RAMSTKDataModel):
                 _node_id = int(str(_parent_id) + str(_entity.environment_id))
 
             self.tree.create_node(
-                _tag, _node_id, parent=_parent_id, data=_entity)
+                _tag, _node_id, parent=_parent_id, data=_entity,
+            )
 
             # If we're not running a test, let anyone who cares know a Function
             # was deleted.
@@ -153,10 +158,12 @@ class UsageProfileDataModel(RAMSTKDataModel):
                 pub.sendMessage('inserted_usage_profile', tree=self.tree)
         else:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to add an item to the Usage "
-                    "Profile with an undefined indenture level.  Level "
-                    "{0:s} was requested.  Must be one of mission, "
-                    "phase, or environment.").format(_level)
+            _msg = (
+                "RAMSTK ERROR: Attempted to add an item to the Usage "
+                "Profile with an undefined indenture level.  Level "
+                "{0:s} was requested.  Must be one of mission, "
+                "phase, or environment."
+            ).format(_level)
 
         return _error_code, _msg
 
@@ -166,8 +173,8 @@ class UsageProfileDataModel(RAMSTKDataModel):
 
         :param int revision_id: the Revision ID to retrieve the Usage Profile
                                 and build trees for.
-        :return: tree; the Usage Profile treelib Tree().
-        :rtype: :py:class:`treelib.Tree`
+        :return: None
+        :rtype: None
         """
         _revision_id = kwargs['revision_id']
         RAMSTKDataModel.do_select_all(self, **kwargs)
@@ -179,7 +186,8 @@ class UsageProfileDataModel(RAMSTKDataModel):
         # same for the environment by concatenating the Environment ID with the
         # Mission ID and Phase ID.
         _missions = self.dtm_mission.do_select_all(
-            revision_id=_revision_id).nodes
+            revision_id=_revision_id,
+        ).nodes
 
         # pylint: disable=too-many-nested-blocks
         for _mkey in _missions:
@@ -188,33 +196,39 @@ class UsageProfileDataModel(RAMSTKDataModel):
                 self.tree.create_node(
                     tag=_mission.description,
                     identifier=_mission.mission_id,
-                    parent=0,
-                    data=_mission)
+                    parent=self._root,
+                    data=_mission,
+                )
 
                 # Add the phases, if any, to the mission.
                 _phases = self.dtm_phase.do_select_all(
-                    mission_id=_mission.mission_id).nodes
+                    mission_id=_mission.mission_id,
+                ).nodes
                 for _pkey in _phases:
                     _phase = _phases[_pkey].data
                     if _phase is not None:
                         _phase_id = int(
-                            str(_mission.mission_id) + str(_phase.phase_id))
+                            str(_mission.mission_id) + str(_phase.phase_id),
+                        )
                         self.tree.create_node(
                             tag=_phase.description,
                             identifier=_phase_id,
                             parent=_mission.mission_id,
-                            data=_phase)
+                            data=_phase,
+                        )
 
                         # Add the environments, if any, to the phase.
                         _environments = self.dtm_environment.do_select_all(
-                            phase_id=_phase.phase_id).nodes
+                            phase_id=_phase.phase_id,
+                        ).nodes
                         for _ekey in _environments:
                             _environment = _environments[_ekey].data
                             if _environment is not None:
                                 _env_id = int(
                                     str(_mission.mission_id) +
                                     str(_phase.phase_id) +
-                                    str(_environment.environment_id))
+                                    str(_environment.environment_id),
+                                )
                                 # The parent must be the concatenated phase ID
                                 # used in the tree above, not the Phase ID
                                 # attribute of the RAMSTKPhase object.
@@ -222,14 +236,13 @@ class UsageProfileDataModel(RAMSTKDataModel):
                                     tag=_environment.name,
                                     identifier=_env_id,
                                     parent=_phase_id,
-                                    data=_environment)
+                                    data=_environment,
+                                )
 
         # If we're not running a test and there were requirements returned,
         # let anyone who cares know the Requirements have been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_usage_profile', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """
@@ -246,37 +259,31 @@ class UsageProfileDataModel(RAMSTKDataModel):
             if not self._test:
                 _attributes = self.do_select(node_id).get_attributes()
                 pub.sendMessage(
-                    'updated_usage_profile', attributes=_attributes)
+                    'updated_usage_profile', attributes=_attributes,
+                )
         else:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to save non-existent Usage "
-                    "Profile entity with Node ID {0:d}.").format(node_id)
+            _msg = (
+                "RAMSTK ERROR: Attempted to save non-existent Usage "
+                "Profile entity with Node ID {0:d}."
+            ).format(node_id)
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all Usage Profile entities to the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more line items in the usage "
-                        "profile did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all line items in the usage "
-                    "profile.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all line items in the usage "
+                "profile."
+            )
 
         return _error_code, _msg
 
@@ -291,6 +298,7 @@ class MissionDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Missions'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -318,14 +326,14 @@ class MissionDataModel(RAMSTKDataModel):
         """
         Retrieve all the RAMSTKMission records from the RAMSTK Program database.
 
-        This method retrieves all the records from the RAMSTKMIssion table in the
-        connected RAMSTK Program database.  It then add each to the Mission data
-        model treelib.Tree().
+        This method retrieves all the records from the RAMSTKMIssion table in
+        the connected RAMSTK Program database.  It then add each to the Mission
+        data model treelib.Tree().
 
         :param int revision_id: the ID of the Revision to retrieve the Mission.
         :return: tree; the treelib Tree() of RAMSTKMission data models that
-                 comprise the Mission tree.
-        :rtype: :class:`treelib.Tree`
+            comprise the Mission tree.
+        :rtype: :py:class:`treelib.Tree`
         """
         _revision_id = kwargs['revision_id']
         _session = RAMSTKDataModel.do_select_all(self, **kwargs)
@@ -335,8 +343,9 @@ class MissionDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _mission.description,
                 _mission.mission_id,
-                parent=0,
-                data=_mission)
+                parent=self._root,
+                data=_mission,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -363,14 +372,16 @@ class MissionDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _mission,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _mission.description,
                 _mission.mission_id,
-                parent=0,
-                data=_mission)
+                parent=self._root,
+                data=_mission,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -417,32 +428,20 @@ class MissionDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKMission records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the usage profile "
-                    "mission table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the usage profile "
-                "mission table.")
+                "mission table."
+            )
 
         return _error_code, _msg
 
@@ -457,6 +456,7 @@ class MissionPhaseDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Mission Phases'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -496,7 +496,8 @@ class MissionPhaseDataModel(RAMSTKDataModel):
         for _phase in _session.query(RAMSTKMissionPhase).\
                 filter(RAMSTKMissionPhase.mission_id == _mission_id).all():
             self.tree.create_node(
-                _phase.name, _phase.phase_id, parent=0, data=_phase)
+                _phase.name, _phase.phase_id, parent=self._root, data=_phase,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -524,11 +525,13 @@ class MissionPhaseDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _phase,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
-                _phase.name, _phase.phase_id, parent=0, data=_phase)
+                _phase.name, _phase.phase_id, parent=self._root, data=_phase,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -575,32 +578,20 @@ class MissionPhaseDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKMissionPhase records.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the usage profile "
-                    "mission phase table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the usage profile "
-                "mission phase table.")
+                "mission phase table."
+            )
 
         return _error_code, _msg
 
@@ -615,6 +606,7 @@ class EnvironmentDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Environments'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -640,12 +632,12 @@ class EnvironmentDataModel(RAMSTKDataModel):
 
     def do_select_all(self, **kwargs):
         """
-        Retrieve all the RAMSTKEnvironment records from the RAMSTK Program database.
+        Retrieve all RAMSTKEnvironment records from the RAMSTK Program database.
 
-        :param int phase_id: the Mission Phase ID to select the Environments
-                             for.
+        :param int phase_id: the Mission Phase ID to select the Environments \
+            for.
         :return: tree; the treelib Tree() of RAMSTKEnvironment data models
-                 that comprise the Environment tree.
+        that comprise the Environment tree.
         :rtype: :py:class:`treelib.Tree`
         """
         _phase_id = kwargs['phase_id']
@@ -656,8 +648,9 @@ class EnvironmentDataModel(RAMSTKDataModel):
             self.tree.create_node(
                 _environment.name,
                 _environment.environment_id,
-                parent=0,
-                data=_environment)
+                parent=self._root,
+                data=_environment,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -684,14 +677,16 @@ class EnvironmentDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _environment,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _environment.name,
                 _environment.environment_id,
-                parent=0,
-                data=_environment)
+                parent=self._root,
+                data=_environment,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -738,31 +733,19 @@ class EnvironmentDataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_update_all(self, **kwargs):  # pylint: disable=unused-argument
+    def do_update_all(self, **kwargs):
         """
         Update all RAMSTKEnvironment records to the RAMSTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = (
-                    "RAMSTK ERROR: One or more records in the usage profile "
-                    "environment table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
             _msg = (
                 "RAMSTK SUCCESS: Updating all records in the usage profile "
-                "environment table.")
+                "environment table."
+            )
 
         return _error_code, _msg

@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.modules.pof.test_pof.py is part of The RAMSTK Project
@@ -7,15 +7,19 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Physics of Failure (PoF) class."""
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.dao import (RAMSTKMode, RAMSTKMechanism, RAMSTKOpLoad,
-                        RAMSTKOpStress, RAMSTKTestMethod)
-from ramstk.modules.pof import (dtcPoF, dtmOpLoad, dtmOpStress, dtmTestMethod,
-                                dtmPoF)
+# RAMSTK Package Imports
+from ramstk.dao import (
+    RAMSTKMechanism, RAMSTKMode, RAMSTKOpLoad,
+    RAMSTKOpStress, RAMSTKTestMethod,
+)
 from ramstk.modules.fmea import dtmMechanism
+from ramstk.modules.pof import (
+    dtcPoF, dtmOpLoad, dtmOpStress, dtmPoF, dtmTestMethod,
+)
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -53,7 +57,7 @@ def test_do_select_all_non_existent_id(test_dao):
     DUT.do_select_all(hardware_id=100)
 
     assert isinstance(DUT.tree, Tree)
-    assert DUT.tree.get_node(0).tag == 'PhysicsOfFailure'
+    assert DUT.tree.get_node('0').tag == 'PhysicsOfFailure'
     assert DUT.tree.get_node(1) is None
 
 
@@ -121,7 +125,8 @@ def test_do_insert_opload(test_dao):
     DUT.do_select_all(hardware_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id='0.4.1', level='opload')
+        entity_id=1, parent_id='0.4.1', level='opload',
+    )
 
     # Verify the insert went well.
     assert _error_code == 0
@@ -143,7 +148,8 @@ def test_do_insert_opstress(test_dao):
     DUT.do_select_all(hardware_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id='0.4.1.1', level='opstress')
+        entity_id=1, parent_id='0.4.1.1', level='opstress',
+    )
 
     # Verify the insert went well.
     assert _error_code == 0
@@ -165,7 +171,8 @@ def test_do_insert_test_method(test_dao):
     DUT.do_select_all(hardware_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id='0.4.1.1', level='testmethod')
+        entity_id=1, parent_id='0.4.1.1', level='testmethod',
+    )
 
     # Verify the insert went well.
     assert _error_code == 0
@@ -187,14 +194,17 @@ def test_do_insert_non_existent_type(test_dao):
     DUT.do_select_all(hardware_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id='0.4.1.1', level='scadamoosh')
+        entity_id=1, parent_id='0.4.1.1', level='scadamoosh',
+    )
 
     # Verify the insert went well.
     assert _error_code == 2005
-    assert _msg == ("RAMSTK ERROR: Attempted to add an item to the Physics of "
-                    "Failure with an undefined indenture level.  Level "
-                    "scadamoosh was requested.  Must be one of opload, "
-                    "opstress, or testmethod.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to add an item to the Physics of "
+        "Failure with an undefined indenture level.  Level "
+        "scadamoosh was requested.  Must be one of opload, "
+        "opstress, or testmethod."
+    )
 
 
 @pytest.mark.integration
@@ -204,12 +214,14 @@ def test_do_insert_no_parent_in_tree(test_dao):
     DUT.do_select_all(hardware_id=1)
 
     _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id='mechanism_1', level='opload')
+        entity_id=1, parent_id='mechanism_1', level='opload',
+    )
 
     assert _error_code == 2005
     assert _msg == (
-        "RAMSTK ERROR: Attempted to add an item under non-existent "
-        "Node ID: mechanism_1.")
+        "RAMSTK ERROR: Attempted to add an item under non-existent Node ID "
+        "mechanism_1 in Physics of Failure analysis."
+    )
 
 
 @pytest.mark.integration
@@ -223,8 +235,10 @@ def test_do_delete_opload(test_dao):
     _error_code, _msg = DUT.do_delete(_node_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -236,8 +250,10 @@ def test_do_delete_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_delete('scadamoosh_1')
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent entity "
-                    "with Node ID scadamoosh_1 from the Physics of Failure.")
+    assert _msg == (
+        "  RAMSTK ERROR: Attempted to delete non-existent entity "
+        "with Node ID scadamoosh_1 from the Physics of Failure."
+    )
 
 
 @pytest.mark.integration
@@ -261,8 +277,10 @@ def test_do_update_non_existent_node_id(test_dao):
     _error_code, _msg = DUT.do_update('mode_1000')
 
     assert _error_code == 2006
-    assert _msg == ("RAMSTK ERROR: Attempted to save non-existent entity with "
-                    "Node ID mode_1000.")
+    assert _msg == (
+        "RAMSTK ERROR: Attempted to save non-existent entity with "
+        "Node ID mode_1000."
+    )
 
 
 @pytest.mark.integration
@@ -274,8 +292,10 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all line items in the damage "
-                    "modeling worksheet.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all line items in the damage "
+        "modeling worksheet."
+    )
 
 
 @pytest.mark.integration
@@ -303,7 +323,8 @@ def test_request_do_insert_opload(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(
-        entity_id=1, parent_id='0.4.1', level='opload')
+        entity_id=1, parent_id='0.4.1', level='opload',
+    )
 
 
 @pytest.mark.integration
@@ -313,7 +334,8 @@ def test_request_do_insert_opstress(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(
-        entity_id=1, parent_id='0.4.1.1', level='opstress')
+        entity_id=1, parent_id='0.4.1.1', level='opstress',
+    )
 
 
 @pytest.mark.integration
@@ -323,7 +345,8 @@ def test_request_do_insert_test_method(test_dao, test_configuration):
     DUT.request_do_select_all(ATTRIBUTES)
 
     assert not DUT.request_do_insert(
-        entity_id=1, parent_id='0.4.1.1', level='testmethod')
+        entity_id=1, parent_id='0.4.1.1', level='testmethod',
+    )
 
 
 @pytest.mark.integration

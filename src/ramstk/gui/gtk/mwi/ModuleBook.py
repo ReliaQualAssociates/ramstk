@@ -6,15 +6,18 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Module Book Module."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk.ramstk import RAMSTKBook, destroy
+# RAMSTK Package Imports
+from ramstk.gui.gtk.assistants import (
+    CreateProject, ImportProject, OpenProject, Options, Preferences,
+)
 from ramstk.gui.gtk.moduleviews import (
-    mvwRevision, mvwFunction, mvwRequirement, mvwHardware, mvwValidation)
-from ramstk.gui.gtk.assistants import (CreateProject, OpenProject, Options,
-                                       Preferences, ImportProject)
-from ramstk.gui.gtk.ramstk.Widget import _, Gtk
+    mvwFunction, mvwHardware, mvwRequirement, mvwRevision, mvwValidation,
+)
+from ramstk.gui.gtk.ramstk import RAMSTKBook, destroy
+from ramstk.gui.gtk.ramstk.Widget import Gtk, _
 
 
 class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
@@ -46,7 +49,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
             'requirement': mvwRequirement(configuration),
             'function': mvwFunction(configuration),
             'hardware': mvwHardware(configuration),
-            'validation': mvwValidation(configuration)
+            'validation': mvwValidation(configuration),
         }
 
         # Initialize private list attributes.
@@ -71,7 +74,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         """
         Make the menu for the Module Book.
 
-        :return None
+        :
         :type None
         """
         _icon_dir = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR
@@ -84,7 +87,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("New _Program"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', CreateProject, self._mdcRAMSTK)
+        _menu_item.connect('activate', CreateProject, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -93,7 +96,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("_Open"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', OpenProject, self._mdcRAMSTK)
+        _menu_item.connect('activate', OpenProject, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -102,7 +105,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("_Import Project"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', ImportProject, self._mdcRAMSTK)
+        _menu_item.connect('activate', ImportProject, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _menu_item = Gtk.ImageMenuItem()
@@ -139,7 +142,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("_Preferences"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', Preferences, self._mdcRAMSTK)
+        _menu_item.connect('activate', Preferences, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _mnuEdit = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
@@ -153,7 +156,7 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _menu_item.set_label(_("_Options"))
         _menu_item.set_image(_image)
         _menu_item.set_property('use_underline', True)
-        #_menu_item.connect('activate', Options, self._mdcRAMSTK)
+        _menu_item.connect('activate', Options, self.RAMSTK_CONFIGURATION)
         _menu.append(_menu_item)
 
         _mnuTools = Gtk.MenuItem(label=_("_Tools"), use_underline=True)
@@ -182,18 +185,19 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/new.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', CreateProject, self._mdcRAMSTK)
+        _button.connect('clicked', CreateProject, self.RAMSTK_CONFIGURATION)
         self.toolbar.insert(_button, _position)
         _position += 1
 
         # Connect button
         _button = Gtk.ToolButton()
         _button.set_tooltip_text(
-            _("Connect to an existing RAMSTK Program Database."))
+            _("Connect to an existing RAMSTK Program Database."),
+        )
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', OpenProject, self._mdcRAMSTK)
+        _button.connect('clicked', OpenProject, self.RAMSTK_CONFIGURATION)
         self.toolbar.insert(_button, _position)
         _position += 1
 
@@ -213,8 +217,11 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         # Save button
         _button = Gtk.ToolButton()
         _button.set_tooltip_text(
-            _("Save the currently open RAMSTK Project "
-              "Database."))
+            _(
+                "Save the currently open RAMSTK Project "
+                "Database.",
+            ),
+        )
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/save.png')
         _button.set_icon_widget(_image)
@@ -228,8 +235,11 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         # Save and quit button
         _button = Gtk.ToolButton()
         _button.set_tooltip_text(
-            _("Save the currently open RAMSTK Program "
-              "Database then quits."))
+            _(
+                "Save the currently open RAMSTK Program "
+                "Database then quits.",
+            ),
+        )
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/save-exit.png')
         _button.set_icon_widget(_image)
@@ -240,8 +250,11 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         # Quit without saving button
         _button = Gtk.ToolButton()
         _button.set_tooltip_text(
-            _("Quits without saving the currently open "
-              "RAMSTK Program Database."))
+            _(
+                "Quits without saving the currently open "
+                "RAMSTK Program Database.",
+            ),
+        )
         _image = Gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/exit.png')
         _button.set_icon_widget(_image)
@@ -263,7 +276,8 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         self.notebook.insert_page(
             self._dic_module_views['revision'],
             tab_label=self._dic_module_views['revision'].hbx_tab_label,
-            position=0)
+            position=0,
+        )
 
         self.statusbar.add(self.progressbar)
         _vbox = Gtk.VBox()
@@ -288,7 +302,8 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         """
         try:
             _tab_position = self.dic_tab_position[
-                self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS['modulebook'].lower()]
+                self.RAMSTK_CONFIGURATION.RAMSTK_TABPOS['modulebook'].lower()
+            ]
         except KeyError:
             _tab_position = self._bottom_tab
         self.notebook.set_tab_pos(_tab_position)
@@ -315,9 +330,11 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         :rtype: None
         """
         self._lst_handler_id.append(
-            self.notebook.connect('select-page', self._on_switch_page))
+            self.notebook.connect('select-page', self._on_switch_page),
+        )
         self._lst_handler_id.append(
-            self.notebook.connect('switch-page', self._on_switch_page))
+            self.notebook.connect('switch-page', self._on_switch_page),
+        )
 
     def _on_close(self):
         """
@@ -347,7 +364,8 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
             _mkey = self.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
             self.notebook.insert_page(
-                _module, tab_label=_module.hbx_tab_label, position=_key)
+                _module, tab_label=_module.hbx_tab_label, position=_key,
+            )
 
         self.statusbar.pop(1)
 
@@ -378,14 +396,14 @@ class ModuleBook(RAMSTKBook):  # pylint: disable=R0904
         # that case, select the Revision page to load.
         try:
             _module = self.RAMSTK_CONFIGURATION.RAMSTK_PAGE_NUMBER[
-                page_num]
+                page_num
+            ]
         except KeyError:
             _module = 'revision'
 
         pub.sendMessage('mvwSwitchedPage', module=_module)
 
-    @staticmethod
-    def _do_request_save_project(widget, end=False):
+    def _do_request_save_project(self, widget, end=False):
         """
         Request to save the open RAMSTK Program.
 

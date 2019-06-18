@@ -6,12 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Package Data Model."""
 
+# Third Party Imports
 # Import third party packages.
 from pubsub import pub
 
+# RAMSTK Package Imports
+from ramstk.dao import RAMSTKFunction
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import RAMSTKFunction
 
 
 class FunctionDataModel(RAMSTKDataModel):
@@ -23,6 +25,7 @@ class FunctionDataModel(RAMSTKDataModel):
     """
 
     _tag = 'Functions'
+    _root = 0
 
     def __init__(self, dao, **kwargs):
         """
@@ -62,8 +65,10 @@ class FunctionDataModel(RAMSTKDataModel):
         # It is defined in RAMSTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to delete non-existent Function "
-                    "ID {0:s}.").format(str(node_id))
+            _msg = (
+                "RAMSTK ERROR: Attempted to delete non-existent Function "
+                "ID {0:s}."
+            ).format(str(node_id))
         else:
             self.last_id = max(self.tree.nodes.keys())
 
@@ -87,14 +92,16 @@ class FunctionDataModel(RAMSTKDataModel):
         _error_code, _msg = RAMSTKDataModel.do_insert(
             self, entities=[
                 _function,
-            ])
+            ],
+        )
 
         if _error_code == 0:
             self.tree.create_node(
                 _function.name,
                 _function.function_id,
                 parent=_function.parent_id,
-                data=_function)
+                data=_function,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -115,7 +122,6 @@ class FunctionDataModel(RAMSTKDataModel):
         the connected RAMSTK Program database.  It then add each to the
         Function data model treelib.Tree().
 
-        :param int revision_id: the Revision ID to select the Functions for.
         :return: None
         :rtype: None
         """
@@ -123,7 +129,8 @@ class FunctionDataModel(RAMSTKDataModel):
         _session = RAMSTKDataModel.do_select_all(self)
 
         for _function in _session.query(RAMSTKFunction).filter(
-                RAMSTKFunction.revision_id == _revision_id).all():
+                RAMSTKFunction.revision_id == _revision_id,
+        ).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _function.get_attributes()
@@ -132,7 +139,8 @@ class FunctionDataModel(RAMSTKDataModel):
                 tag=_function.name,
                 identifier=_function.function_id,
                 parent=_function.parent_id,
-                data=_function)
+                data=_function,
+            )
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RAMSTKDataModel.__init__
@@ -147,8 +155,6 @@ class FunctionDataModel(RAMSTKDataModel):
         # let anyone who cares know the Functions have been selected.
         if not self._test and self.tree.size() > 1:
             pub.sendMessage('retrieved_functions', tree=self.tree)
-
-        return None
 
     def do_update(self, node_id):
         """
@@ -168,8 +174,10 @@ class FunctionDataModel(RAMSTKDataModel):
                 pub.sendMessage('updated_function', attributes=_attributes)
         else:
             _error_code = 2005
-            _msg = ("RAMSTK ERROR: Attempted to save non-existent "
-                    "Function ID {0:d}.").format(node_id)
+            _msg = (
+                "RAMSTK ERROR: Attempted to save non-existent "
+                "Function ID {0:d}."
+            ).format(node_id)
 
         return _error_code, _msg
 
@@ -180,22 +188,17 @@ class FunctionDataModel(RAMSTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg = ''
-
-        for _node in self.tree.all_nodes():
-            try:
-                _error_code, _debug_msg = self.do_update(_node.identifier)
-
-                _msg = _msg + _debug_msg + '\n'
-
-            except AttributeError:
-                _error_code = 1
-                _msg = ("RAMSTK ERROR: One or more records in the function "
-                        "table did not update.")
+        _error_code, _msg = RAMSTKDataModel.do_update_all(self, **kwargs)
 
         if _error_code == 0:
-            _msg = ("RAMSTK SUCCESS: Updating all records in the function "
-                    "table.")
+            _msg = (
+                "RAMSTK SUCCESS: Updating all records in the function "
+                "table."
+            )
+        elif _error_code == 1:
+            _msg = (
+                "RAMSTK ERROR: One or more records in the function "
+                "table did not update."
+            )
 
         return _error_code, _msg

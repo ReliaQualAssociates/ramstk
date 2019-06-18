@@ -6,13 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Data Access Object (DAO) Package."""
 
+# Standard Library Imports
 import gettext
 
-from sqlalchemy import create_engine, exc, MetaData
+# Third Party Imports
+from sqlalchemy import MetaData, create_engine, exc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Import tables objects for the RAMSTK Common database.
+# RAMSTK Local Imports
 from .RAMSTKCommonDB import create_common_db
 from .RAMSTKProgramDB import create_program_db
 
@@ -21,13 +23,8 @@ RAMSTK_BASE = declarative_base()
 # Add localization support.
 _ = gettext.gettext
 
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
 
-
-class DAO(object):
+class DAO():
     """This is the data access controller class."""
 
     RAMSTK_SESSION = sessionmaker()
@@ -69,7 +66,8 @@ class DAO(object):
             bind=self.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         return False
 
@@ -100,8 +98,9 @@ class DAO(object):
         """
         _return = False
 
-        if not self.engine.dialect.has_table(self.engine.connect(),
-                                             str(table)):
+        if not self.engine.dialect.has_table(
+                self.engine.connect(), str(table),
+        ):
             table.create(bind=self.engine)
 
         return _return
@@ -119,8 +118,10 @@ class DAO(object):
         _test = kwargs['test']
         try:
             return create_common_db(database=database, test=_test)
-        except (IOError, exc.SQLAlchemyError, exc.DBAPIError,
-                exc.OperationalError):
+        except (
+                IOError, exc.SQLAlchemyError, exc.DBAPIError,
+                exc.OperationalError,
+        ):
             return True
         except ArgumentError:  # pylint: disable=undefined-variable # noqa
             print("Bad common database URI: {0:s}".format(database))
@@ -136,23 +137,27 @@ class DAO(object):
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
+        _return = False
+
         try:
-            return create_program_db(database=database)
+            create_program_db(database=database)
         except IOError:
             print("IOError")
-            return True
+            _return = True
         except exc.SQLAlchemyError:
             print("SQLAlchemyError")
-            return True
+            _return = True
         except exc.DBAPIError:
             print("DBAPIError")
-            return True
+            _return = True
         except exc.OperationalError:
             print("OperationalError")
-            return True
+            _return = True
         except ArgumentError:  # pylint: disable=undefined-variable  # noqa
             print("Bad program database URI: {0:s}".format(database))
-            return True
+            _return = True
+
+        return _return
 
     @staticmethod
     def db_add(item, session):
@@ -168,9 +173,9 @@ class DAO(object):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program " \
-               "database."
-        # TODO: Determine if the add_many option can work with Foreign Keys.
+        _msg = "RAMSTK SUCCESS: Adding one or more items to the RAMSTK " \
+               "Program database."
+
         for _item in item:
             try:
                 session.add(_item)
@@ -180,27 +185,37 @@ class DAO(object):
                 session.rollback()
                 if 'Could not locate a bind' in _error:
                     _error_code = 2
-                    _msg = ('RAMSTK ERROR: No database open when attempting '
-                            'to insert record.')
+                    _msg = (
+                        'RAMSTK ERROR: No database open when attempting '
+                        'to insert record.'
+                    )
                 elif ('PRIMARY KEY must be unique' in _error) or (
-                        'UNIQUE constraint failed:' in _error):
+                        'UNIQUE constraint failed:' in _error
+                ):
                     _error_code = 3
-                    _msg = ('RAMSTK ERROR: Primary key error: '
-                            '{0:s}').format(_error)
+                    _msg = (
+                        'RAMSTK ERROR: Primary key error: '
+                        '{0:s}'
+                    ).format(_error)
                 elif 'Date type only accepts Python date objects as input' in _error:
                     _error_code = 4
-                    _msg = ('RAMSTK ERROR: Date field did not contain Python '
-                            'date object: {0:s}').format(_error)
+                    _msg = (
+                        'RAMSTK ERROR: Date field did not contain Python '
+                        'date object: {0:s}'
+                    ).format(_error)
                 else:
                     print(_error)
                     _error_code = 1
                     _msg = (
                         'RAMSTK ERROR: Adding one or more items to the RAMSTK '
-                        'Program database.')
+                        'Program database.'
+                    )
             except ValueError as _error:
                 _error_code = 4
-                _msg = ('RAMSTK ERROR: Date field did not contain Python '
-                        'date object: {0:s}').format(_error)
+                _msg = (
+                    'RAMSTK ERROR: Date field did not contain Python '
+                    'date object: {0:s}'
+                ).format(_error)
 
         return _error_code, _msg
 
@@ -271,6 +286,7 @@ class DAO(object):
         """
         return session.execute(query)
 
+    # TODO: Implement a DAO.db_last_id() method to retrieve the value of the last ID from the database.
     @property
     def db_last_id(self):
         """
@@ -280,5 +296,5 @@ class DAO(object):
         :rtype: int
         """
         _last_id = 0
-        # TODO: Write the db_last_id method if needed, else remove from file.
+
         return _last_id

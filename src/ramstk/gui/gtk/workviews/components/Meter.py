@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.gui.gtk.workviews.components.Meter.py is part of the RAMSTK
-#       Project
+#       gui.gtk.workviews.components.Meter.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Meter Work View."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.gui.gtk import ramstk
+# RAMSTK Package Imports
+from ramstk.gui.gtk.ramstk import RAMSTKComboBox, RAMSTKEntry
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews.components.Component import (AssessmentInputs,
-                                                           AssessmentResults)
+
+# RAMSTK Local Imports
+from .Component import AssessmentInputs, AssessmentResults
 
 
 class MeterAssessmentInputs(AssessmentInputs):
@@ -54,6 +55,8 @@ class MeterAssessmentInputs(AssessmentInputs):
     """
 
     # Define private dict attributes.
+    _dic_keys = {0: 'quality_id', 1: 'application_id', 2: 'type_id'}
+
     # Quality levels; key is the subcategory ID.
     _dic_quality = {
         2: [["MIL-SPEC"], [_("Lower")]],
@@ -62,19 +65,24 @@ class MeterAssessmentInputs(AssessmentInputs):
     # Meter types; key is the subcategory ID.
     _dic_types = {
         1: [[_("AC")], [_("Inverter Driver")], [_("Commutator DC")]],
-        2: [[_("Direct Current")], [_("Alternating Current")]]
+        2: [[_("Direct Current")], [_("Alternating Current")]],
     }
 
     # Define private list attributes.
     _lst_labels = [
         _("Quality Level:"),
         _("Meter Type:"),
-        _("Meter Function:")
+        _("Meter Function:"),
     ]
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Meter assessment input view."""
-        AssessmentInputs.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Meter assessment input view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentInputs.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -87,26 +95,67 @@ class MeterAssessmentInputs(AssessmentInputs):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbApplication = ramstk.RAMSTKComboBox(
+        self.cmbApplication = RAMSTKComboBox(
             index=0,
             simple=True,
-            tooltip=_("The appliction of the panel meter."))
-        self.cmbType = ramstk.RAMSTKComboBox(
-            index=0, simple=True, tooltip=_("The type of meter."))
+        )
+        self.cmbType = RAMSTKComboBox(
+            index=0, simple=True,
+        )
 
-        self._make_page()
-        self.show_all()
-
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.cmbApplication.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.cmbType.connect('changed', self._on_combo_changed, 2))
+        self.__set_properties()
+        self.__make_ui()
+        self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_comboboxes, 'changed_subcategory')
         pub.subscribe(self._do_load_page, 'loaded_hardware_inputs')
+
+    def __make_ui(self):
+        """
+        Make the Meter class Gtk.Notebook() assessment input page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        # Build the container for inductors.
+        _x_pos, _y_pos = AssessmentInputs.make_ui(self)
+
+        self.put(self.cmbType, _x_pos, _y_pos[1])
+        self.put(self.cmbApplication, _x_pos, _y_pos[2])
+
+        self.show_all()
+
+    def __set_callbacks(self):
+        """
+        Set callback methods for Meter assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self.on_combo_changed, 0),
+        )
+        self._lst_handler_id.append(
+            self.cmbApplication.connect('changed', self.on_combo_changed, 1),
+        )
+        self._lst_handler_id.append(
+            self.cmbType.connect('changed', self.on_combo_changed, 2),
+        )
+
+    def __set_properties(self):
+        """
+        Set properties for Meter assessment input widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbApplication.do_set_properties(
+            tooltip=_("The appliction of the panel meter."),
+        )
+        self.cmbType.do_set_properties(
+            tooltip=_("The type of meter."),
+        )
 
     def _do_load_comboboxes(self, subcategory_id):
         """
@@ -130,8 +179,10 @@ class MeterAssessmentInputs(AssessmentInputs):
         self.cmbQuality.do_load_combo(_data)
 
         # Load the meter appliction RAMSTKComboBox().
-        self.cmbApplication.do_load_combo([[_("Ammeter")], [_("Voltmeter")],
-                                           [_("Other")]])
+        self.cmbApplication.do_load_combo([
+            [_("Ammeter")], [_("Voltmeter")],
+            [_("Other")],
+        ])
 
         # Load the meter type RAMSTKComboBox().
         try:
@@ -140,26 +191,16 @@ class MeterAssessmentInputs(AssessmentInputs):
             _data = []
         self.cmbType.do_load_combo(_data)
 
-        return None
-
     def _do_load_page(self, attributes):
         """
         Load the Meter assesment input widgets.
 
         :param dict attributes: the attributes dictionary for the selected
-                                Meter.
+        Meter.
         :return: None
         :rtype: None
         """
-        self._hardware_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-
-        self._do_load_comboboxes(self._subcategory_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        AssessmentInputs.do_load_page(self, attributes)
 
         self.cmbApplication.handler_block(self._lst_handler_id[1])
         self.cmbApplication.set_active(attributes['application_id'])
@@ -170,8 +211,6 @@ class MeterAssessmentInputs(AssessmentInputs):
         self.cmbType.handler_unblock(self._lst_handler_id[2])
 
         self._do_set_sensitive()
-
-        return None
 
     def _do_set_sensitive(self, **kwargs):  # pylint: disable=unused-argument
         """
@@ -185,70 +224,6 @@ class MeterAssessmentInputs(AssessmentInputs):
 
         if (self._hazard_rate_method_id == 2 and self._subcategory_id == 2):
             self.cmbApplication.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the Meter class Gtk.Notebook() assessment input page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        # Build the container for inductors.
-        _x_pos, _y_pos = AssessmentInputs.make_page(self)
-
-        self.put(self.cmbType, _x_pos, _y_pos[1])
-        self.put(self.cmbApplication, _x_pos, _y_pos[2])
-
-        return None
-
-    def _on_combo_changed(self, combo, index):
-        """
-        Retrieve RAMSTKCombo() changes and assign to Meter attribute.
-
-        This method is called by:
-
-            * Gtk.Combo() 'changed' signal
-
-        :param combo: the RAMSTKCombo() that called this method.
-        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`
-        :param int index: the position in the signal handler list associated
-                          with the calling RAMSTKComboBox().  Indices are:
-
-            +-------+------------------+-------+------------------+
-            | Index | Widget           | Index | Widget           |
-            +=======+==================+=======+==================+
-            |   1   | cmbApplication   |   2   | cmbType          |
-            +-------+------------------+-------+------------------+
-
-        :return: None
-        :rtype: None
-        """
-        _dic_keys = {0: 'quality_id', 1: 'application_id', 2: 'type_id'}
-        try:
-            _key = _dic_keys[index]
-        except KeyError:
-            _key = ''
-
-        combo.handler_block(self._lst_handler_id[index])
-
-        try:
-            _new_text = int(combo.get_active())
-        except ValueError:
-            _new_text = 0
-
-        # Only publish the message if something is selected in the ComboBox.
-        if _new_text != -1:
-            pub.sendMessage(
-                'wvw_editing_hardware',
-                module_id=self._hardware_id,
-                key=_key,
-                value=_new_text)
-
-        combo.handler_unblock(self._lst_handler_id[index])
-
-        return None
 
 
 class MeterAssessmentResults(AssessmentResults):
@@ -271,12 +246,17 @@ class MeterAssessmentResults(AssessmentResults):
         1:
         "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>"
+        "<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>",
     }
 
-    def __init__(self, **kwargs):
-        """Initialize an instance of the Meter assessment result view."""
-        AssessmentResults.__init__(self, **kwargs)
+    def __init__(self, configuration, **kwargs):
+        """
+        Initialize an instance of the Meter assessment result view.
+
+        :param configuration: the RAMSTK Configuration class instance.
+        :type configuration: :class:`Configuration.Configuration`
+        """
+        AssessmentResults.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -286,36 +266,69 @@ class MeterAssessmentResults(AssessmentResults):
         self._lst_labels.append("\u03C0<sub>T</sub>:")
 
         # Initialize private scalar attributes.
-        self._lblModel.set_tooltip_markup(
-            _("The assessment model used to calculate the meter failure "
-              "rate."))
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtPiA = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The application factor for the meter."))
-        self.txtPiF = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The function factor for the meter."))
-        self.txtPiT = ramstk.RAMSTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_("The temperature stress factor for the meter."))
+        self.txtPiA = RAMSTKEntry()
+        self.txtPiF = RAMSTKEntry()
+        self.txtPiT = RAMSTKEntry()
 
-        self._make_page()
-        self.show_all()
+        self.__set_properties()
+        self.__make_ui()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_page, 'loaded_hardware_results')
+
+    def __make_ui(self):
+        """
+        Make the meter Gtk.Notebook() assessment results page.
+
+        :return: None
+        :rtype: None
+        """
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_ui(self)
+
+        self.put(self.txtPiA, _x_pos, _y_pos[3])
+        self.put(self.txtPiF, _x_pos, _y_pos[4])
+        self.put(self.txtPiT, _x_pos, _y_pos[5])
+
+        self.show_all()
+
+    def __set_properties(self):
+        """
+        Set properties for Meter assessment result widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self._lblModel.set_tooltip_markup(
+            _(
+                "The assessment model used to calculate the meter failure "
+                "rate.",
+            ),
+        )
+        self.txtPiA.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The application factor for the meter."),
+        )
+        self.txtPiF.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The function factor for the meter."),
+        )
+        self.txtPiT.do_set_properties(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_("The temperature stress factor for the meter."),
+        )
 
     def _do_load_page(self, attributes):
         """
@@ -338,8 +351,6 @@ class MeterAssessmentResults(AssessmentResults):
 
         self._do_set_sensitive()
 
-        return None
-
     def _do_set_sensitive(self, **kwargs):
         """
         Set widget sensitivity as needed for the selected meter.
@@ -361,21 +372,3 @@ class MeterAssessmentResults(AssessmentResults):
             elif self._subcategory_id == 2:
                 self.txtPiA.set_sensitive(True)
                 self.txtPiF.set_sensitive(True)
-
-        return None
-
-    def _make_page(self):
-        """
-        Make the meter Gtk.Notebook() assessment results page.
-
-        :return: None
-        :rtype: None
-        """
-        # Build the container for capacitors.
-        _x_pos, _y_pos = AssessmentResults.make_page(self)
-
-        self.put(self.txtPiA, _x_pos, _y_pos[3])
-        self.put(self.txtPiF, _x_pos, _y_pos[4])
-        self.put(self.txtPiT, _x_pos, _y_pos[5])
-
-        return None

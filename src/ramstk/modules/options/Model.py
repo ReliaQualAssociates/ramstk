@@ -6,15 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Options Data Model."""
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk.dao import RAMSTKProgramInfo, RAMSTKSiteInfo
 from ramstk.modules import RAMSTKDataModel
-from ramstk.dao import RAMSTKSiteInfo, RAMSTKProgramInfo
 
 
 class OptionsDataModel(RAMSTKDataModel):
     """Contains the attributes and methods of an Options data model."""
 
     _tag = 'Options'
+    _root = 0
 
     def __init__(self, dao, site_dao):
         """
@@ -61,8 +62,6 @@ class OptionsDataModel(RAMSTKDataModel):
         if _program:
             self.program_options = self.dtm_program_options.do_select_all()[0]
 
-        return None
-
     def do_update(self):  # pylint: disable=arguments-differ
         """
         Update the selected Options in the RAMSTKProgramInfo table.
@@ -80,6 +79,7 @@ class SiteOptionsDataModel(RAMSTKDataModel):
     """Contain the attributes and methods for Site-wide options."""
 
     _tag = 'SiteOpts'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -116,7 +116,8 @@ class SiteOptionsDataModel(RAMSTKDataModel):
         :rtype: None
         """
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         self._site_info = _session.query(RAMSTKSiteInfo).all()
 
@@ -137,7 +138,8 @@ class SiteOptionsDataModel(RAMSTKDataModel):
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         for _entity in self._site_info:
             _session.add(_entity)
@@ -155,6 +157,7 @@ class ProgramOptionsDataModel(RAMSTKDataModel):
     """Contains the attributes and methods for Program (user) options."""
 
     _tag = 'ProgramOpts'
+    _root = 0
 
     def __init__(self, dao):
         """
@@ -190,7 +193,8 @@ class ProgramOptionsDataModel(RAMSTKDataModel):
         :rtype: None
         """
         _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
+        )
 
         self._program_info = _session.query(RAMSTKProgramInfo).all()
 
@@ -212,7 +216,8 @@ class ProgramOptionsDataModel(RAMSTKDataModel):
             bind=self.dao.engine,
             autoflush=True,
             autocommit=False,
-            expire_on_commit=False)
+            expire_on_commit=False,
+        )
 
         for _entity in self._program_info:
             _session.add(_entity)

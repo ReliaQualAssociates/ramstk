@@ -6,12 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Package Data Controller Module."""
 
+# Third Party Imports
 from pubsub import pub
 
-# Import other RAMSTK modules.
-from ramstk.modules import RAMSTKDataController
-from ramstk.modules import RAMSTKDataMatrix
+# RAMSTK Package Imports
 from ramstk.dao import RAMSTKHardware, RAMSTKRequirement, RAMSTKValidation
+from ramstk.modules import RAMSTKDataController, RAMSTKDataMatrix
+
+# RAMSTK Local Imports
 from . import dtmValidation
 
 
@@ -38,7 +40,8 @@ class ValidationDataController(RAMSTKDataController):
             configuration,
             model=dtmValidation(dao, **kwargs),
             ramstk_module='validation',
-            **kwargs)
+            **kwargs,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -49,12 +52,18 @@ class ValidationDataController(RAMSTKDataController):
             dao,
             row_table=RAMSTKValidation,
             column_table=RAMSTKRequirement,
-            **kwargs)
+            **kwargs,
+        )
         self._dmx_vldtn_hw_matrix = RAMSTKDataMatrix(
             dao,
             row_table=RAMSTKValidation,
             column_table=RAMSTKHardware,
-            **kwargs)
+            **kwargs,
+        )
+        self._dic_inserts = {
+            'vldtn_rqrmnt': self._dmx_vldtn_rqrmnt_matrix.do_insert,
+            'vldtn_hrdwr': self._dmx_vldtn_hw_matrix.do_insert,
+        }
 
         # Initialize public dictionary attributes.
 
@@ -63,27 +72,43 @@ class ValidationDataController(RAMSTKDataController):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.request_do_calculate,
-                      'request_calculate_validation')
-        pub.subscribe(self._request_do_create_matrix,
-                      'request_create_validation_matrix')
-        pub.subscribe(self.request_do_calculate_all,
-                      'request_calculate_all_validations')
+        pub.subscribe(
+            self.request_do_calculate,
+            'request_calculate_validation',
+        )
+        pub.subscribe(
+            self._request_do_create_matrix,
+            'request_create_validation_matrix',
+        )
+        pub.subscribe(
+            self.request_do_calculate_all,
+            'request_calculate_all_validations',
+        )
         pub.subscribe(self.request_do_delete, 'request_delete_validation')
-        pub.subscribe(self._request_do_delete_matrix,
-                      'request_delete_validation_matrix')
+        pub.subscribe(
+            self._request_do_delete_matrix,
+            'request_delete_validation_matrix',
+        )
         pub.subscribe(self.request_do_insert, 'request_insert_validation')
-        pub.subscribe(self._request_do_insert_matrix,
-                      'request_insert_validation_matrix')
+        pub.subscribe(
+            self.request_do_insert_matrix,
+            'request_insert_validation_matrix',
+        )
         pub.subscribe(self.request_do_update, 'request_update_validation')
-        pub.subscribe(self.request_do_update_all,
-                      'request_update_all_validations')
-        pub.subscribe(self._request_do_update_matrix,
-                      'request_update_validation_matrix')
+        pub.subscribe(
+            self.request_do_update_all,
+            'request_update_all_validations',
+        )
+        pub.subscribe(
+            self._request_do_update_matrix,
+            'request_update_validation_matrix',
+        )
         pub.subscribe(self.request_do_update_status, 'request_update_status')
         pub.subscribe(self.request_do_select_all, 'selected_revision')
-        pub.subscribe(self._request_do_select_all_matrix,
-                      'request_select_validation_matrix')
+        pub.subscribe(
+            self._request_do_select_all_matrix,
+            'request_select_validation_matrix',
+        )
         pub.subscribe(self.request_set_attributes, 'mvw_editing_validation')
         pub.subscribe(self.request_set_attributes, 'wvw_editing_validation')
 
@@ -100,7 +125,7 @@ class ValidationDataController(RAMSTKDataController):
             'vldtn_rqrmnt':
             [self._dmx_vldtn_rqrmnt_matrix.do_create, 'requirement_id'],
             'vldtn_hrdwr':
-            [self._dmx_vldtn_hw_matrix.do_create, 'hardware_id']
+            [self._dmx_vldtn_hw_matrix.do_create, 'hardware_id'],
         }
 
         try:
@@ -111,14 +136,17 @@ class ValidationDataController(RAMSTKDataController):
 
         try:
             _create_method(
-                revision_id, matrix_type, rkey='validation_id', ckey=_col_id)
+                revision_id, matrix_type, rkey='validation_id', ckey=_col_id,
+            )
         except TypeError:
             _error_code = 6
             _msg = 'RAMSTK ERROR: Failed to create matrix ' \
                    '{0:s}.'.format(matrix_type)
 
-            RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   None)
+            RAMSTKDataController.do_handle_results(
+                self, _error_code, _msg,
+                None,
+            )
 
     def _request_do_delete_matrix(self, matrix_type, item_id, row=True):
         """
@@ -138,7 +166,7 @@ class ValidationDataController(RAMSTKDataController):
         """
         _dic_deletes = {
             'vldtn_rqrmnt': self._dmx_vldtn_rqrmnt_matrix.do_delete,
-            'vldtn_hrdwr': self._dmx_vldtn_hw_matrix.do_delete
+            'vldtn_hrdwr': self._dmx_vldtn_hw_matrix.do_delete,
         }
 
         try:
@@ -147,42 +175,8 @@ class ValidationDataController(RAMSTKDataController):
             self._matrix_delete_method = None
 
         return RAMSTKDataController.request_do_delete_matrix(
-            self, matrix_type, item_id, row=row)
-
-    def _request_do_insert_matrix(self,
-                                  matrix_type,
-                                  item_id,
-                                  heading,
-                                  row=True):
-        """
-        Request the to add a new row or column to the Data Matrix.
-
-        :param str matrix_type: the type of the Matrix to retrieve.  Current
-                                Validation matrix types are:
-
-                                vldtn_rqrmnt = Validation:Requirement
-                                vldtn_hrdwr = Validation:Hardware
-
-        :param int item_id: the ID of the row or column item to insert into the
-                            Matrix.
-        :param str heading: the heading for the new row or column.
-        :keyword bool row: indicates whether to insert a row (default) or a
-                           column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _dic_inserts = {
-            'vldtn_rqrmnt': self._dmx_vldtn_rqrmnt_matrix.do_insert,
-            'vldtn_hrdwr': self._dmx_vldtn_hw_matrix.do_insert
-        }
-
-        try:
-            self._matrix_insert_method = _dic_inserts[matrix_type]
-        except KeyError:
-            self._matrix_insert_method = None
-
-        return RAMSTKDataController.request_do_insert_matrix(
-            self, matrix_type, item_id, heading, row=row)
+            self, matrix_type, item_id, row=row,
+        )
 
     def _request_do_select_all_matrix(self, revision_id, matrix_type):
         """
@@ -210,7 +204,8 @@ class ValidationDataController(RAMSTKDataController):
                 rkey='validation_id',
                 ckey='requirement_id',
                 rheader='description',
-                cheader='requirement_code')
+                cheader='requirement_code',
+            )
             _matrix = self._dmx_vldtn_rqrmnt_matrix.dtf_matrix
             _column_hdrs = self._dmx_vldtn_rqrmnt_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_vldtn_rqrmnt_matrix.dic_row_hdrs
@@ -221,7 +216,8 @@ class ValidationDataController(RAMSTKDataController):
                 rkey='validation_id',
                 ckey='hardware_id',
                 rheader='description',
-                cheader='comp_ref_des')
+                cheader='comp_ref_des',
+            )
             _matrix = self._dmx_vldtn_hw_matrix.dtf_matrix
             _column_hdrs = self._dmx_vldtn_hw_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_vldtn_hw_matrix.dic_row_hdrs
@@ -244,7 +240,7 @@ class ValidationDataController(RAMSTKDataController):
         """
         _dic_updates = {
             'vldtn_rqrmnt': self._dmx_vldtn_rqrmnt_matrix.do_update,
-            'vldtn_hrdwr': self._dmx_vldtn_hw_matrix.do_update
+            'vldtn_hrdwr': self._dmx_vldtn_hw_matrix.do_update,
         }
 
         try:
@@ -253,7 +249,8 @@ class ValidationDataController(RAMSTKDataController):
             self._matrix_update_method = None
 
         return RAMSTKDataController.request_do_update_matrix(
-            self, revision_id, matrix_type)
+            self, revision_id, matrix_type,
+        )
 
     def request_do_update_status(self):
         """
@@ -264,5 +261,7 @@ class ValidationDataController(RAMSTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.do_update_status()
 
-        return RAMSTKDataController.do_handle_results(self, _error_code, _msg,
-                                                      None)
+        return RAMSTKDataController.do_handle_results(
+            self, _error_code, _msg,
+            None,
+        )
