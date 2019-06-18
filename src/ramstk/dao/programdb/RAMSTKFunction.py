@@ -6,17 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKFunction Table Module."""
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
 
 
 class RAMSTKFunction(RAMSTK_BASE):
@@ -34,23 +30,29 @@ class RAMSTKFunction(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     function_id = Column(
         'fld_function_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     availability_logistics = Column(
-        'fld_availability_logistics', Float, default=1.0)
+        'fld_availability_logistics', Float, default=1.0,
+    )
     availability_mission = Column(
-        'fld_availability_mission', Float, default=1.0)
+        'fld_availability_mission', Float, default=1.0,
+    )
     cost = Column('fld_cost', Float, default=0.0)
     function_code = Column(
-        'fld_function_code', String(16), default='Function Code')
+        'fld_function_code', String(16), default='Function Code',
+    )
     hazard_rate_logistics = Column(
-        'fld_hazard_rate_logistics', Float, default=0.0)
+        'fld_hazard_rate_logistics', Float, default=0.0,
+    )
     hazard_rate_mission = Column('fld_hazard_rate_mission', Float, default=0.0)
     level = Column('fld_level', Integer, default=0)
     mmt = Column('fld_mmt', Float, default=0.0)
@@ -105,7 +107,7 @@ class RAMSTKFunction(RAMSTK_BASE):
             'safety_critical': self.safety_critical,
             'total_mode_count': self.total_mode_count,
             'total_part_count': self.total_part_count,
-            'type_id': self.type_id
+            'type_id': self.type_id,
         }
 
         return _values
@@ -125,34 +127,44 @@ class RAMSTKFunction(RAMSTK_BASE):
 
         try:
             self.availability_logistics = float(
-                none_to_default(values['availability_logistics'], 1.0))
+                none_to_default(values['availability_logistics'], 1.0),
+            )
             self.availability_mission = float(
-                none_to_default(values['availability_mission'], 1.0))
+                none_to_default(values['availability_mission'], 1.0),
+            )
             self.cost = float(none_to_default(values['cost'], 0.0))
             self.function_code = str(
-                none_to_default(values['function_code'], 'Function Code'))
+                none_to_default(values['function_code'], 'Function Code'),
+            )
             self.hazard_rate_logistics = float(
-                none_to_default(values['hazard_rate_logistics'], 0.0))
+                none_to_default(values['hazard_rate_logistics'], 0.0),
+            )
             self.hazard_rate_mission = float(
-                none_to_default(values['hazard_rate_mission'], 0.0))
+                none_to_default(values['hazard_rate_mission'], 0.0),
+            )
             self.level = int(none_to_default(values['level'], 0.0))
             self.mmt = float(none_to_default(values['mmt'], 0.0))
             self.mcmt = float(none_to_default(values['mcmt'], 0.0))
             self.mpmt = float(none_to_default(values['mpmt'], 0.0))
             self.mtbf_logistics = float(
-                none_to_default(values['mtbf_logistics'], 0.0))
+                none_to_default(values['mtbf_logistics'], 0.0),
+            )
             self.mtbf_mission = float(
-                none_to_default(values['mtbf_mission'], 0.0))
+                none_to_default(values['mtbf_mission'], 0.0),
+            )
             self.mttr = float(none_to_default(values['mttr'], 0.0))
             self.name = str(none_to_default(values['name'], 'Function Name'))
             self.parent_id = int(none_to_default(values['parent_id'], 0))
             self.remarks = none_to_default(values['remarks'], b'')
             self.safety_critical = int(
-                none_to_default(values['safety_critical'], 0))
+                none_to_default(values['safety_critical'], 0),
+            )
             self.total_mode_count = int(
-                none_to_default(values['total_mode_count'], 0))
+                none_to_default(values['total_mode_count'], 0),
+            )
             self.total_part_count = int(
-                none_to_default(values['total_part_count'], 0))
+                none_to_default(values['total_part_count'], 0),
+            )
             self.type_id = int(none_to_default(values['type_id'], 0))
         except KeyError as _err:
             _error_code = 40
@@ -182,15 +194,19 @@ class RAMSTKFunction(RAMSTK_BASE):
             _error_code = 101
             _msg = 'RAMSTK ERROR: Overflow Error when calculating the ' \
                    'logistics MTBF for Function ID {0:d}.  Logistics hazard ' \
-                   'rate: {1:f}.'.format(self.function_id,
-                                         self.hazard_rate_logistics)
+                   'rate: {1:f}.'.format(
+                       self.function_id,
+                       self.hazard_rate_logistics,
+                   )
         except ZeroDivisionError:
             self.mtbf_logistics = 0.0
             _error_code = 102
             _msg = 'RAMSTK ERROR: Zero Division Error when calculating the ' \
                    'logistics MTBF for Function ID {0:d}.  Logistics hazard ' \
-                   'rate: {1:f}.'.format(self.function_id,
-                                         self.hazard_rate_logistics)
+                   'rate: {1:f}.'.format(
+                       self.function_id,
+                       self.hazard_rate_logistics,
+                   )
 
         try:
             self.mtbf_mission = 1.0 / self.hazard_rate_mission
@@ -205,8 +221,10 @@ class RAMSTKFunction(RAMSTK_BASE):
             _error_code = 102
             _msg = 'RAMSTK ERROR: Zero Division Error when calculating the ' \
                    'mission MTBF for Function ID {0:d}.  Mission hazard ' \
-                   'rate: {1:f}.'.format(self.function_id,
-                                         self.hazard_rate_mission)
+                   'rate: {1:f}.'.format(
+                       self.function_id,
+                       self.hazard_rate_mission,
+                   )
 
         return _error_code, _msg
 
@@ -249,16 +267,20 @@ class RAMSTKFunction(RAMSTK_BASE):
             _error_code = 101
             _msg = 'RAMSTK ERROR: Overflow Error when calculating the ' \
                    'mission availability for Function ID {0:d}.  ' \
-                   'Mission MTBF: {1:f} MTTR: {2:f}.'.format(self.function_id,
-                                                             self.mtbf_mission,
-                                                             self.mttr)
+                   'Mission MTBF: {1:f} MTTR: {2:f}.'.format(
+                       self.function_id,
+                       self.mtbf_mission,
+                       self.mttr,
+                   )
         except ZeroDivisionError:
             self.availability_mission = 0.0
             _error_code = 102
             _msg = 'RAMSTK ERROR: Zero Division Error when calculating the ' \
                    'mission availability for Function ID {0:d}.  ' \
-                   'Mission MTBF: {1:f} MTTR: {2:f}.'.format(self.function_id,
-                                                             self.mtbf_mission,
-                                                             self.mttr)
+                   'Mission MTBF: {1:f} MTTR: {2:f}.'.format(
+                       self.function_id,
+                       self.mtbf_mission,
+                       self.mttr,
+                   )
 
         return _error_code, _msg

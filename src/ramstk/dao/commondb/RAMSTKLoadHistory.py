@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKLoadHistory Table."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKLoadHistory(RAMSTK_BASE):
@@ -24,9 +25,11 @@ class RAMSTKLoadHistory(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     description = Column(
-        'fld_description', String(512), default='Load History Description')
+        'fld_description', String(512), default='Load History Description',
+    )
 
     def get_attributes(self):
         """
@@ -37,7 +40,7 @@ class RAMSTKLoadHistory(RAMSTK_BASE):
         """
         _values = {
             'history_id': self.history_id,
-            'description': self.description
+            'description': self.description,
         }
 
         return _values
@@ -56,8 +59,11 @@ class RAMSTKLoadHistory(RAMSTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'],
-                                'Load History Description'))
+                none_to_default(
+                    attributes['description'],
+                    'Load History Description',
+                ),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

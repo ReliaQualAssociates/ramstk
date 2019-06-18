@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKNSWC Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 # pylint: disable=R0902
@@ -30,7 +31,8 @@ class RAMSTKNSWC(RAMSTK_BASE):
         Integer,
         ForeignKey('ramstk_hardware.fld_hardware_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
 
     Cac = Column('fld_c_ac', Float, default=0.0)
     Calt = Column('fld_c_alt', Float, default=0.0)
@@ -162,7 +164,7 @@ class RAMSTKNSWC(RAMSTK_BASE):
             'Ct': self.Ct,
             'Cv': self.Cv,
             'Cw': self.Cw,
-            'Cy': self.Cy
+            'Cy': self.Cy,
         }
 
         return _attributes

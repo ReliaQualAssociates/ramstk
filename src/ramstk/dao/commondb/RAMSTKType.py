@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKType Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKType(RAMSTK_BASE):
@@ -24,10 +25,12 @@ class RAMSTKType(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     code = Column('fld_code', String(256), default='Type Code')
     description = Column(
-        'fld_description', String(512), default='Type Description')
+        'fld_description', String(512), default='Type Description',
+    )
     type_type = Column('fld_type', String(256), default='unknown')
 
     def get_attributes(self):
@@ -41,7 +44,7 @@ class RAMSTKType(RAMSTK_BASE):
             'type_id': self.type_id,
             'code': self.code,
             'description': self.description,
-            'type_type': self.type_type
+            'type_type': self.type_type,
         }
 
         return _attributes
@@ -62,13 +65,18 @@ class RAMSTKType(RAMSTK_BASE):
         try:
             self.code = str(none_to_default(attributes['code'], ''))
             self.description = str(
-                none_to_default(attributes['description'], ''))
+                none_to_default(attributes['description'], ''),
+            )
             self.type_type = str(none_to_default(attributes['type_type'], ''))
         except KeyError as _err:
             _error_code = 40
-            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                    "dictionary passed to "
-                    "{1:s}.set_attributes().").format(str(_err),
-                                                      self.__class__.__name__)
+            _msg = (
+                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                "dictionary passed to "
+                "{1:s}.set_attributes()."
+            ).format(
+                str(_err),
+                self.__class__.__name__,
+            )
 
         return _error_code, _msg

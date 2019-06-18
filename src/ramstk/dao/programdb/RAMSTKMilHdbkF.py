@@ -6,13 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKMilHdbkF Table Module."""  # pragma: no cover
 
+# Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer  # pragma: no cover
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE  # pragma: no cover
 
 
 class RAMSTKMilHdbkF(RAMSTK_BASE):
@@ -30,7 +30,8 @@ class RAMSTKMilHdbkF(RAMSTK_BASE):
         Integer,
         ForeignKey('ramstk_hardware.fld_hardware_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
 
     A1 = Column('fld_a_one', Float, default=0.0)  # pylint: disable=C0103
     A2 = Column('fld_a_two', Float, default=0.0)  # pylint: disable=C0103
@@ -117,7 +118,7 @@ class RAMSTKMilHdbkF(RAMSTK_BASE):
             'piT': self.piT,
             'piTAPS': self.piTAPS,
             'piU': self.piU,
-            'piV': self.piV
+            'piV': self.piV,
         }
 
         return _attributes
@@ -145,9 +146,11 @@ class RAMSTKMilHdbkF(RAMSTK_BASE):
             self.lambdaBD = float(none_to_default(attributes['lambdaBD'], 0.0))
             self.lambdaBP = float(none_to_default(attributes['lambdaBP'], 0.0))
             self.lambdaCYC = float(
-                none_to_default(attributes['lambdaCYC'], 0.0))
+                none_to_default(attributes['lambdaCYC'], 0.0),
+            )
             self.lambdaEOS = float(
-                none_to_default(attributes['lambdaEOS'], 0.0))
+                none_to_default(attributes['lambdaEOS'], 0.0),
+            )
             self.piA = float(none_to_default(attributes['piA'], 0.0))
             self.piC = float(none_to_default(attributes['piC'], 0.0))
             self.piCD = float(none_to_default(attributes['piCD'], 0.0))

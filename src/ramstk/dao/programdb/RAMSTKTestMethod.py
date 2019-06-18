@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKTestMethod Table."""
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKTestMethod(RAMSTK_BASE):
@@ -28,17 +29,20 @@ class RAMSTKTestMethod(RAMSTK_BASE):
         'fld_load_id',
         Integer,
         ForeignKey('ramstk_op_load.fld_load_id'),
-        nullable=False)
+        nullable=False,
+    )
     test_id = Column(
         'fld_test_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     description = Column('fld_description', String(512), default='')
     boundary_conditions = Column(
-        'fld_boundary_conditions', String(512), default='')
+        'fld_boundary_conditions', String(512), default='',
+    )
     remarks = Column('fld_remarks', BLOB, default=b'')
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -63,7 +67,7 @@ class RAMSTKTestMethod(RAMSTK_BASE):
             'test_id': self.test_id,
             'description': self.description,
             'boundary_conditions': self.boundary_conditions,
-            'remarks': self.remarks
+            'remarks': self.remarks,
         }
 
         return _attributes
@@ -82,9 +86,11 @@ class RAMSTKTestMethod(RAMSTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'], ''))
+                none_to_default(attributes['description'], ''),
+            )
             self.boundary_conditions = str(
-                none_to_default(attributes['boundary_conditions'], ''))
+                none_to_default(attributes['boundary_conditions'], ''),
+            )
             self.remarks = none_to_default(attributes['remarks'], b'')
         except KeyError as _err:
             _error_code = 40

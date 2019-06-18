@@ -10,7 +10,7 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.dao import RAMSTKRevision
+from ramstk.dao.programdb import RAMSTKRevision
 from ramstk.modules import RAMSTKDataModel
 
 

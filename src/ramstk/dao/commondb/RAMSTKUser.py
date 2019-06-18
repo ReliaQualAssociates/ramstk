@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKUser Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKUser(RAMSTK_BASE):
@@ -28,7 +29,8 @@ class RAMSTKUser(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     user_lname = Column('fld_user_lname', String(256), default='Last Name')
     user_fname = Column('fld_user_fname', String(256), default='First Name')
     user_email = Column('fld_user_email', String(256), default='EMail')
@@ -49,7 +51,7 @@ class RAMSTKUser(RAMSTK_BASE):
             'user_fname': self.user_fname,
             'user_email': self.user_email,
             'user_phone': self.user_phone,
-            'user_group_id': self.user_group_id
+            'user_group_id': self.user_group_id,
         }
 
         return _attributes
@@ -68,20 +70,29 @@ class RAMSTKUser(RAMSTK_BASE):
 
         try:
             self.user_lname = str(
-                none_to_default(attributes['user_lname'], 'Last Name'))
+                none_to_default(attributes['user_lname'], 'Last Name'),
+            )
             self.user_fname = str(
-                none_to_default(attributes['user_fname'], 'First Name'))
+                none_to_default(attributes['user_fname'], 'First Name'),
+            )
             self.user_email = str(
-                none_to_default(attributes['user_email'], 'EMail'))
+                none_to_default(attributes['user_email'], 'EMail'),
+            )
             self.user_phone = str(
-                none_to_default(attributes['user_phone'], '867.5309'))
+                none_to_default(attributes['user_phone'], '867.5309'),
+            )
             self.user_group_id = str(
-                none_to_default(attributes['user_group_id'], '0'))
+                none_to_default(attributes['user_group_id'], '0'),
+            )
         except KeyError as _err:
             _error_code = 40
-            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                    "dictionary passed to "
-                    "{1:s}.set_attributes().").format(str(_err),
-                                                      self.__class__.__name__)
+            _msg = (
+                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                "dictionary passed to "
+                "{1:s}.set_attributes()."
+            ).format(
+                str(_err),
+                self.__class__.__name__,
+            )
 
         return _error_code, _msg

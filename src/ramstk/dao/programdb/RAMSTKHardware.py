@@ -6,14 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKHardware Table Module."""  # pragma: no cover
 
+# Standard Library Imports
 from datetime import date  # pragma: no cover
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKHardware(RAMSTK_BASE):
@@ -38,13 +40,15 @@ class RAMSTKHardware(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     hardware_id = Column(
         'fld_hardware_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     alt_part_number = Column('fld_alt_part_number', String(256), default='')
     attachments = Column('fld_attachments', String(512), default='')
@@ -73,56 +77,68 @@ class RAMSTKHardware(RAMSTK_BASE):
     remarks = Column('fld_remarks', BLOB, default=b'')
     repairable = Column('fld_repairable', Integer, default=0)
     specification_number = Column(
-        'fld_specification_number', String(256), default='')
+        'fld_specification_number', String(256), default='',
+    )
     subcategory_id = Column('fld_subcategory_id', Integer, default=0)
     tagged_part = Column('fld_tagged_part', Integer, default=0)
     total_cost = Column('fld_total_cost', Float, default=0.0)
     total_part_count = Column('fld_total_part_count', Integer, default=0)
     total_power_dissipation = Column(
-        'fld_total_power_dissipation', Float, default=0.0)
+        'fld_total_power_dissipation', Float, default=0.0,
+    )
     year_of_manufacture = Column(
-        'fld_year_of_manufacture', Integer, default=date.today().year)
+        'fld_year_of_manufacture', Integer, default=date.today().year,
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='hardware')
 
     # One-to-one relationships.
     allocation = relationship(
-        'RAMSTKAllocation', back_populates='hardware', cascade='all,delete')
+        'RAMSTKAllocation', back_populates='hardware', cascade='all,delete',
+    )
     hazard = relationship(
         'RAMSTKHazardAnalysis',
         back_populates='hardware',
-        cascade='all,delete')
+        cascade='all,delete',
+    )
     sia = relationship(
-        'RAMSTKSimilarItem', back_populates='hardware', cascade='all,delete')
+        'RAMSTKSimilarItem', back_populates='hardware', cascade='all,delete',
+    )
     mode = relationship(
-        'RAMSTKMode', back_populates='hardware', cascade='all,delete')
+        'RAMSTKMode', back_populates='hardware', cascade='all,delete',
+    )
 
     reliability = relationship(
         'RAMSTKReliability',
         uselist=False,
         back_populates='hardware',
-        cascade='all,delete')
+        cascade='all,delete',
+    )
     milhdbkf = relationship(
         'RAMSTKMilHdbkF',
         uselist=False,
         back_populates='hardware',
-        cascade='all,delete')
+        cascade='all,delete',
+    )
     nswc = relationship(
         'RAMSTKNSWC',
         uselist=False,
         back_populates='hardware',
-        cascade='all,delete')
+        cascade='all,delete',
+    )
     design_electric = relationship(
         'RAMSTKDesignElectric',
         uselist=False,
         back_populates='hardware',
-        cascade='all,delete')
+        cascade='all,delete',
+    )
     design_mechanic = relationship(
         'RAMSTKDesignMechanic',
         uselist=False,
         back_populates='hardware',
-        cascade='all,delete')
+        cascade='all,delete',
+    )
 
     def get_attributes(self):
         """
@@ -173,7 +189,7 @@ class RAMSTKHardware(RAMSTK_BASE):
             'total_cost': self.total_cost,
             'total_part_count': self.total_part_count,
             'total_power_dissipation': self.total_power_dissipation,
-            'year_of_manufacture': self.year_of_manufacture
+            'year_of_manufacture': self.year_of_manufacture,
         }
 
         return _attributes
@@ -193,60 +209,83 @@ class RAMSTKHardware(RAMSTK_BASE):
 
         try:
             self.alt_part_number = str(
-                none_to_default(attributes['alt_part_num'], ''))
+                none_to_default(attributes['alt_part_num'], ''),
+            )
             self.attachments = str(
-                none_to_default(attributes['attachments'], ''))
+                none_to_default(attributes['attachments'], ''),
+            )
             self.cage_code = str(none_to_default(attributes['cage_code'], ''))
             self.category_id = int(
-                none_to_default(attributes['category_id'], 0))
+                none_to_default(attributes['category_id'], 0),
+            )
             self.comp_ref_des = str(
-                none_to_default(attributes['comp_ref_des'], ''))
+                none_to_default(attributes['comp_ref_des'], ''),
+            )
             self.cost = float(none_to_default(attributes['cost'], 0.0))
             self.cost_failure = float(
-                none_to_default(attributes['cost_failure'], 0.0))
+                none_to_default(attributes['cost_failure'], 0.0),
+            )
             self.cost_hour = float(
-                none_to_default(attributes['cost_hour'], 0.0))
+                none_to_default(attributes['cost_hour'], 0.0),
+            )
             self.cost_type_id = int(
-                none_to_default(attributes['cost_type_id'], 0))
+                none_to_default(attributes['cost_type_id'], 0),
+            )
             self.description = str(
-                none_to_default(attributes['description'], ''))
+                none_to_default(attributes['description'], ''),
+            )
             self.duty_cycle = float(
-                none_to_default(attributes['duty_cycle'], 100.0))
+                none_to_default(attributes['duty_cycle'], 100.0),
+            )
             self.figure_number = str(
-                none_to_default(attributes['figure_number'], ''))
+                none_to_default(attributes['figure_number'], ''),
+            )
             self.lcn = str(none_to_default(attributes['lcn'], ''))
             self.level = int(none_to_default(attributes['level'], 0))
             self.manufacturer_id = int(
-                none_to_default(attributes['manufacturer_id'], 0))
+                none_to_default(attributes['manufacturer_id'], 0),
+            )
             self.mission_time = float(
-                none_to_default(attributes['mission_time'], 100.0))
+                none_to_default(attributes['mission_time'], 100.0),
+            )
             self.name = str(none_to_default(attributes['name'], ''))
             self.nsn = str(none_to_default(attributes['nsn'], ''))
             self.page_number = str(
-                none_to_default(attributes['page_number'], ''))
+                none_to_default(attributes['page_number'], ''),
+            )
             self.parent_id = int(none_to_default(attributes['parent_id'], 0))
             self.part = int(none_to_default(attributes['part'], 0))
             self.part_number = str(
-                none_to_default(attributes['part_number'], ''))
+                none_to_default(attributes['part_number'], ''),
+            )
             self.quantity = int(none_to_default(attributes['quantity'], 1))
             self.ref_des = str(none_to_default(attributes['ref_des'], ''))
             self.remarks = none_to_default(attributes['remarks'], b'')
             self.repairable = int(none_to_default(attributes['repairable'], 0))
             self.specification_number = str(
-                none_to_default(attributes['specification_number'], ''))
+                none_to_default(attributes['specification_number'], ''),
+            )
             self.subcategory_id = int(
-                none_to_default(attributes['subcategory_id'], 0))
+                none_to_default(attributes['subcategory_id'], 0),
+            )
             self.tagged_part = int(
-                none_to_default(attributes['tagged_part'], 0))
+                none_to_default(attributes['tagged_part'], 0),
+            )
             self.total_cost = float(
-                none_to_default(attributes['total_cost'], 0.0))
+                none_to_default(attributes['total_cost'], 0.0),
+            )
             self.total_part_count = int(
-                none_to_default(attributes['total_part_count'], 0))
+                none_to_default(attributes['total_part_count'], 0),
+            )
             self.total_power_dissipation = float(
-                none_to_default(attributes['total_power_dissipation'], 0.0))
+                none_to_default(attributes['total_power_dissipation'], 0.0),
+            )
             self.year_of_manufacture = int(
-                none_to_default(attributes['year_of_manufacture'],
-                                date.today().year))
+                none_to_default(
+                    attributes['year_of_manufacture'],
+                    date.today().year,
+                ),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

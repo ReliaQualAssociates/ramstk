@@ -6,13 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKFailureDefinition Table Module."""
 
+# Third Party Imports
 # Import third party modules.
 from sqlalchemy import BLOB, Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKFailureDefinition(RAMSTK_BASE):
@@ -29,13 +30,15 @@ class RAMSTKFailureDefinition(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     definition_id = Column(
         'fld_definition_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     definition = Column('fld_definition', BLOB, default=b'Failure Definition')
 
@@ -52,7 +55,7 @@ class RAMSTKFailureDefinition(RAMSTK_BASE):
         _attributes = {
             'revision_id': self.revision_id,
             'definition_id': self.definition_id,
-            'definition': self.definition
+            'definition': self.definition,
         }
 
         return _attributes
@@ -71,8 +74,10 @@ class RAMSTKFailureDefinition(RAMSTK_BASE):
             format(self.definition_id)
 
         try:
-            self.definition = none_to_default(attributes['definition'],
-                                              b'Failure Definition')
+            self.definition = none_to_default(
+                attributes['definition'],
+                b'Failure Definition',
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

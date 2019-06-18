@@ -6,14 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKProgramStatus Table Module."""
 
+# Standard Library Imports
 from datetime import date
 
+# Third Party Imports
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKProgramStatus(RAMSTK_BASE):
@@ -30,17 +32,20 @@ class RAMSTKProgramStatus(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     status_id = Column(
         'fld_status_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     cost_remaining = Column('fld_cost_remaining', Float, default=0.0)
     date_status = Column(
-        'fld_date_status', Date, unique=True, default=date.today())
+        'fld_date_status', Date, unique=True, default=date.today(),
+    )
     time_remaining = Column('fld_time_remaining', Float, default=0.0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -59,7 +64,7 @@ class RAMSTKProgramStatus(RAMSTK_BASE):
             'status_id': self.status_id,
             'cost_remaining': self.cost_remaining,
             'date_status': self.date_status,
-            'time_remaining': self.time_remaining
+            'time_remaining': self.time_remaining,
         }
 
         return _attributes
@@ -79,11 +84,15 @@ class RAMSTKProgramStatus(RAMSTK_BASE):
 
         try:
             self.cost_remaining = float(
-                none_to_default(attributes['cost_remaining'], 0.0))
-            self.date_status = none_to_default(attributes['date_status'],
-                                               date.today())
+                none_to_default(attributes['cost_remaining'], 0.0),
+            )
+            self.date_status = none_to_default(
+                attributes['date_status'],
+                date.today(),
+            )
             self.time_remaining = float(
-                none_to_default(attributes['time_remaining'], 0.0))
+                none_to_default(attributes['time_remaining'], 0.0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

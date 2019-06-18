@@ -10,14 +10,16 @@ The RAMSTKSurvivalData Table
 ===============================================================================
 """
 
+# Standard Library Imports
 from datetime import date
 
+# Third Party Imports
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKSurvivalData(RAMSTK_BASE):
@@ -34,13 +36,15 @@ class RAMSTKSurvivalData(RAMSTK_BASE):
         'fld_survival_id',
         Integer,
         ForeignKey('ramstk_survival.fld_survival_id'),
-        nullable=False)
+        nullable=False,
+    )
     record_id = Column(
         'fld_record_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     name = Column('fld_name', String(512), default='')
     source_id = Column('fld_source_id', Integer, default=0)
@@ -83,16 +87,18 @@ class RAMSTKSurvivalData(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.survival_id, self.record_id, self.name,
-                       self.source_id, self.failure_date, self.left_interval,
-                       self.right_interval, self.status_id, self.quantity,
-                       self.tbf, self.mode_type_id, self.nevada_chart,
-                       self.ship_date, self.number_shipped, self.return_date,
-                       self.number_returned, self.user_float_1,
-                       self.user_float_2, self.user_float_3,
-                       self.user_integer_1, self.user_integer_2,
-                       self.user_integer_3, self.user_string_1,
-                       self.user_string_2, self.user_string_3)
+        _attributes = (
+            self.survival_id, self.record_id, self.name,
+            self.source_id, self.failure_date, self.left_interval,
+            self.right_interval, self.status_id, self.quantity,
+            self.tbf, self.mode_type_id, self.nevada_chart,
+            self.ship_date, self.number_shipped, self.return_date,
+            self.number_returned, self.user_float_1,
+            self.user_float_2, self.user_float_3,
+            self.user_integer_1, self.user_integer_2,
+            self.user_integer_3, self.user_string_1,
+            self.user_string_2, self.user_string_3,
+        )
 
         return _attributes
 

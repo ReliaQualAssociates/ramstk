@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.hardware.test_designmechanic.py is part of The RAMSTK
@@ -7,13 +8,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing DesignMechanic module algorithms and models. """
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.modules.hardware import dtmDesignMechanic
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao import RAMSTKDesignMechanic
+from ramstk.dao.programdb import RAMSTKDesignMechanic
+from ramstk.modules.hardware import dtmDesignMechanic
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -75,8 +77,10 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(hardware_id=90)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -88,8 +92,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -101,8 +107,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent '
-                    'DesignMechanic record ID 300.')
+    assert _msg == (
+        '  RAMSTK ERROR: Attempted to delete non-existent '
+        'DesignMechanic record ID 300.'
+    )
 
 
 @pytest.mark.integration
@@ -129,8 +137,10 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent DesignMechanic '
-                    'record ID 100.')
+    assert _msg == (
+        'RAMSTK ERROR: Attempted to save non-existent DesignMechanic '
+        'record ID 100.'
+    )
 
 
 @pytest.mark.integration
@@ -142,5 +152,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the mechanical "
-                    "design table.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the mechanical "
+        "design table."
+    )

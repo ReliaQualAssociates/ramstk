@@ -16,7 +16,8 @@ import pytest
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.dao import DAO, RAMSTKRequirement
+from ramstk.dao import DAO
+from ramstk.dao.programdb import RAMSTKRequirement
 from ramstk.modules import RAMSTKDataMatrix
 from ramstk.modules.requirement import dtcRequirement, dtmRequirement
 

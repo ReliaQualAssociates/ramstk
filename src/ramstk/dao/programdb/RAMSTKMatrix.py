@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKMatrix Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKMatrix(RAMSTK_BASE):
@@ -57,17 +58,20 @@ class RAMSTKMatrix(RAMSTK_BASE):
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
     matrix_id = Column('fld_matrix_id', Integer, primary_key=True, default=0)
 
     column_id = Column('fld_column_id', Integer, default=0)
     column_item_id = Column(
-        'fld_column_item_id', Integer, primary_key=True, default=0)
+        'fld_column_item_id', Integer, primary_key=True, default=0,
+    )
     matrix_type = Column('fld_matrix_type', String(128), default='')
     parent_id = Column('fld_parent_id', Integer, default=0)
     row_id = Column('fld_row_id', Integer, default=0)
     row_item_id = Column(
-        'fld_row_item_id', Integer, primary_key=True, default=0)
+        'fld_row_item_id', Integer, primary_key=True, default=0,
+    )
     value = Column('fld_value', Integer, default=0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -90,7 +94,7 @@ class RAMSTKMatrix(RAMSTK_BASE):
             'parent_id': self.parent_id,
             'row_id': self.row_id,
             'row_item_id': self.row_item_id,
-            'value': self.value
+            'value': self.value,
         }
 
         return _attributes
@@ -111,7 +115,8 @@ class RAMSTKMatrix(RAMSTK_BASE):
         try:
             self.column_id = int(none_to_default(values['column_id'], 0))
             self.column_item_id = int(
-                none_to_default(values['column_item_id'], 0))
+                none_to_default(values['column_item_id'], 0),
+            )
             self.matrix_type = str(none_to_default(values['matrix_type'], ''))
             self.parent_id = int(none_to_default(values['parent_id'], 0))
             self.row_id = int(none_to_default(values['row_id'], 0))

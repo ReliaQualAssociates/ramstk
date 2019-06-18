@@ -10,14 +10,16 @@ The RAMSTKSurvival Table
 ===============================================================================
 """
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKSurvival(RAMSTK_BASE):
@@ -35,13 +37,15 @@ class RAMSTKSurvival(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     survival_id = Column(
         'fld_survival_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     hardware_id = Column('fld_hardware_id', Integer, default=0)
     description = Column('fld_description', String(512), default='')
@@ -50,7 +54,8 @@ class RAMSTKSurvival(RAMSTK_BASE):
     confidence = Column('fld_confidence', Float, default=75.0)
     confidence_type_id = Column('fld_confidence_type_id', Integer, default=0)
     confidence_method_id = Column(
-        'fld_confidence_method_id', Integer, default=0)
+        'fld_confidence_method_id', Integer, default=0,
+    )
     fit_method_id = Column('fld_fit_method_id', Integer, default=0)
     rel_time = Column('fld_rel_time', Float, default=0.0)
     n_rel_points = Column('fld_n_rel_points', Integer, default=0)
@@ -81,7 +86,8 @@ class RAMSTKSurvival(RAMSTK_BASE):
     start_time = Column('fld_start_time', Float, default=0.0)
     start_date = Column('fld_start_date', Date, default=date.today())
     end_date = Column(
-        'fld_end_date', Date, default=date.today() + timedelta(days=30))
+        'fld_end_date', Date, default=date.today() + timedelta(days=30),
+    )
     nevada_chart = Column('fld_nevada_chart', Integer, default=0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -103,19 +109,21 @@ class RAMSTKSurvival(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.revision_id, self.survival_id, self.hardware_id,
-                       self.description, self.source_id, self.distribution_id,
-                       self.confidence, self.confidence_type_id,
-                       self.confidence_method_id, self.fit_method_id,
-                       self.rel_time, self.n_rel_points, self.n_suspension,
-                       self.n_failures, self.scale_ll, self.scale,
-                       self.scale_ul, self.shape_ll, self.shape, self.shape_ul,
-                       self.location_ll, self.location, self.location_ul,
-                       self.variance_1, self.variance_2, self.variance_3,
-                       self.covariance_1, self.covariance_2, self.covariance_3,
-                       self.mhb, self.lp, self.lr, self.aic, self.bic,
-                       self.mle, self.start_time, self.start_date,
-                       self.end_date, self.nevada_chart)
+        _attributes = (
+            self.revision_id, self.survival_id, self.hardware_id,
+            self.description, self.source_id, self.distribution_id,
+            self.confidence, self.confidence_type_id,
+            self.confidence_method_id, self.fit_method_id,
+            self.rel_time, self.n_rel_points, self.n_suspension,
+            self.n_failures, self.scale_ll, self.scale,
+            self.scale_ul, self.shape_ll, self.shape, self.shape_ul,
+            self.location_ll, self.location, self.location_ul,
+            self.variance_1, self.variance_2, self.variance_3,
+            self.covariance_1, self.covariance_2, self.covariance_3,
+            self.mhb, self.lp, self.lr, self.aic, self.bic,
+            self.mle, self.start_time, self.start_date,
+            self.end_date, self.nevada_chart,
+        )
 
         return _attributes
 
@@ -170,7 +178,8 @@ class RAMSTKSurvival(RAMSTK_BASE):
             self.start_time = float(none_to_default(attributes[33], 0.0))
             self.start_date = none_to_default(attributes[34], date.today())
             self.end_date = none_to_default(
-                attributes[35], date.today() + timedelta(days=30))
+                attributes[35], date.today() + timedelta(days=30),
+            )
             self.nevada_chart = int(none_to_default(attributes[36], 0))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

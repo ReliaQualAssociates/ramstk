@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKMeasurement Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKMeasurement(RAMSTK_BASE):
@@ -24,10 +25,12 @@ class RAMSTKMeasurement(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     code = Column('fld_code', String(128), default='Measurement Code')
     description = Column(
-        'fld_description', String(512), default='Measurement Decription')
+        'fld_description', String(512), default='Measurement Decription',
+    )
     measurement_type = Column('fld_type', String(128), default='unknown')
 
     def get_attributes(self):
@@ -41,7 +44,7 @@ class RAMSTKMeasurement(RAMSTK_BASE):
             'measurement_id': self.measurement_id,
             'code': self.code,
             'description': self.description,
-            'measurement_type': self.measurement_type
+            'measurement_type': self.measurement_type,
         }
 
         return _attributes
@@ -60,17 +63,26 @@ class RAMSTKMeasurement(RAMSTK_BASE):
 
         try:
             self.code = str(
-                none_to_default(attributes['code'], 'Measurement Code'))
+                none_to_default(attributes['code'], 'Measurement Code'),
+            )
             self.description = str(
-                none_to_default(attributes['description'],
-                                'Measurement Description'))
+                none_to_default(
+                    attributes['description'],
+                    'Measurement Description',
+                ),
+            )
             self.description = str(
-                none_to_default(attributes['measurement_type'], 'unknown'))
+                none_to_default(attributes['measurement_type'], 'unknown'),
+            )
         except KeyError as _err:
             _error_code = 40
-            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                    "dictionary passed to "
-                    "{1:s}.set_attributes().").format(str(_err),
-                                                      self.__class__.__name__)
+            _msg = (
+                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                "dictionary passed to "
+                "{1:s}.set_attributes()."
+            ).format(
+                str(_err),
+                self.__class__.__name__,
+            )
 
         return _error_code, _msg

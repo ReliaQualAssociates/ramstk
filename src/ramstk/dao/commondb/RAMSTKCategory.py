@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKCategory Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKCategory(RAMSTK_BASE):
@@ -31,18 +32,22 @@ class RAMSTKCategory(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     name = Column('fld_name', String(256), default='Category Name')
     description = Column(
-        'fld_description', String(512), default='Category Description')
+        'fld_description', String(512), default='Category Description',
+    )
     cat_type = Column('fld_type', String(256), default='unknown')
     value = Column('fld_value', Integer, default=1)
 
     # Define the relationships to other tables in the RAMSTK Program database.
     subcategory = relationship(
-        'RAMSTKSubCategory', back_populates='category', cascade='delete')
+        'RAMSTKSubCategory', back_populates='category', cascade='delete',
+    )
     mode = relationship(
-        'RAMSTKFailureMode', back_populates='category', cascade='delete')
+        'RAMSTKFailureMode', back_populates='category', cascade='delete',
+    )
 
     def get_attributes(self):
         """
@@ -56,7 +61,7 @@ class RAMSTKCategory(RAMSTK_BASE):
             'name': self.name,
             'description': self.description,
             'category_type': self.cat_type,
-            'value': self.value
+            'value': self.value,
         }
 
         return _attributes
@@ -75,12 +80,17 @@ class RAMSTKCategory(RAMSTK_BASE):
 
         try:
             self.name = str(
-                none_to_default(attributes['name'], 'Category Name'))
+                none_to_default(attributes['name'], 'Category Name'),
+            )
             self.description = str(
-                none_to_default(attributes['description'],
-                                'Category Description'))
+                none_to_default(
+                    attributes['description'],
+                    'Category Description',
+                ),
+            )
             self.cat_type = str(
-                none_to_default(attributes['category_type'], 'unknown'))
+                none_to_default(attributes['category_type'], 'unknown'),
+            )
             self.value = int(none_to_default(attributes['value'], 1))
         except KeyError as _err:
             _error_code = 40

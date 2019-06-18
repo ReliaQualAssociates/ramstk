@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.fmea.test_cause.py is part of The RAMSTK Project
@@ -6,12 +7,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Cause class."""
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
+# RAMSTK Package Imports
+from ramstk.dao.programdb import RAMSTKCause
 from ramstk.modules.fmea import dtmCause
-from ramstk.dao import RAMSTKCause
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -69,8 +71,10 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(mode_id=-1, mechanism_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -82,8 +86,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -95,8 +101,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Cause ID "
-                    "300.")
+    assert _msg == (
+        "  RAMSTK ERROR: Attempted to delete non-existent Cause ID "
+        "300."
+    )
 
 
 @pytest.mark.integration
@@ -135,5 +143,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the FMEA causes "
-                    "table.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the FMEA causes "
+        "table."
+    )

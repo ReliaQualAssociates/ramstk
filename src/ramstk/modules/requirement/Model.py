@@ -11,7 +11,7 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.dao import RAMSTKRequirement
+from ramstk.dao.programdb import RAMSTKRequirement
 # Import other RAMSTK modules.
 from ramstk.modules import RAMSTKDataModel
 

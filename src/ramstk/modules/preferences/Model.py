@@ -7,7 +7,7 @@
 """Preferences Data Model."""
 
 # RAMSTK Package Imports
-from ramstk.dao import (
+from ramstk.dao.commondb import (
     RAMSTKRPN, RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode,
     RAMSTKGroup, RAMSTKHazards, RAMSTKLoadHistory,
     RAMSTKManufacturer, RAMSTKMeasurement, RAMSTKMethod, RAMSTKModel,

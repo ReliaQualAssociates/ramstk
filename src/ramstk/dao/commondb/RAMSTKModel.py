@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKModel Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKModel(RAMSTK_BASE):
@@ -24,9 +25,11 @@ class RAMSTKModel(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     description = Column(
-        'fld_description', String(512), default='Model Description')
+        'fld_description', String(512), default='Model Description',
+    )
     model_type = Column('fld_type', Integer, default='unknown')
 
     def get_attributes(self):
@@ -39,7 +42,7 @@ class RAMSTKModel(RAMSTK_BASE):
         _attributes = {
             'model_id': self.model_id,
             'description': self.description,
-            'model_type': self.model_type
+            'model_type': self.model_type,
         }
 
         return _attributes
@@ -58,15 +61,23 @@ class RAMSTKModel(RAMSTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'],
-                                'Model Description'))
+                none_to_default(
+                    attributes['description'],
+                    'Model Description',
+                ),
+            )
             self.model_type = str(
-                none_to_default(attributes['model_type'], 'unkown'))
+                none_to_default(attributes['model_type'], 'unkown'),
+            )
         except KeyError as _err:
             _error_code = 40
-            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                    "dictionary passed to "
-                    "{1:s}.set_attributes().").format(str(_err),
-                                                      self.__class__.__name__)
+            _msg = (
+                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                "dictionary passed to "
+                "{1:s}.set_attributes()."
+            ).format(
+                str(_err),
+                self.__class__.__name__,
+            )
 
         return _error_code, _msg

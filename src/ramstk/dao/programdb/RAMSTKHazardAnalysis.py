@@ -11,7 +11,7 @@ from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
 
 
@@ -30,34 +30,41 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     hardware_id = Column(
         'fld_hardware_id',
         Integer,
         ForeignKey('ramstk_hardware.fld_hardware_id'),
-        nullable=False)
+        nullable=False,
+    )
     hazard_id = Column(
         'fld_hazard_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     potential_hazard = Column('fld_potential_hazard', String(256), default='')
     potential_cause = Column('fld_potential_cause', String(512), default='')
     assembly_effect = Column('fld_assembly_effect', String(512), default='')
     assembly_severity = Column(
-        'fld_assembly_severity', String(256), default='Major')
+        'fld_assembly_severity', String(256), default='Major',
+    )
     assembly_probability = Column(
-        'fld_assembly_probability', String(256), default='Level A - Frequent')
+        'fld_assembly_probability', String(256), default='Level A - Frequent',
+    )
     assembly_hri = Column('fld_assembly_hri', Integer, default=20)
     assembly_mitigation = Column('fld_assembly_mitigation', BLOB, default=b'')
     assembly_severity_f = Column(
-        'fld_assembly_severity_f', String(256), default='Major')
+        'fld_assembly_severity_f', String(256), default='Major',
+    )
     assembly_probability_f = Column(
         'fld_assembly_probability_f',
         String(256),
-        default='Level A - Frequent')
+        default='Level A - Frequent',
+    )
     assembly_hri_f = Column('fld_assembly_hri_f', Integer, default=20)
     function_1 = Column('fld_function_1', String(128), default='')
     function_2 = Column('fld_function_2', String(128), default='')
@@ -72,15 +79,19 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
     result_5 = Column('fld_result_5', Float, default=0.0)
     system_effect = Column('fld_system_effect', String(512), default='')
     system_severity = Column(
-        'fld_system_severity', String(256), default='Major')
+        'fld_system_severity', String(256), default='Major',
+    )
     system_probability = Column(
-        'fld_system_probability', String(256), default='Level A - Frequent')
+        'fld_system_probability', String(256), default='Level A - Frequent',
+    )
     system_hri = Column('fld_system_hri', Integer, default=20)
     system_mitigation = Column('fld_system_mitigation', BLOB, default=b'')
     system_severity_f = Column(
-        'fld_system_severity_f', String(256), default='Major')
+        'fld_system_severity_f', String(256), default='Major',
+    )
     system_probability_f = Column(
-        'fld_system_probability_f', String(256), default='Level A - Frequent')
+        'fld_system_probability_f', String(256), default='Level A - Frequent',
+    )
     system_hri_f = Column('fld_system_hri_f', Integer, default=20)
     user_blob_1 = Column('fld_user_blob_1', BLOB, default=b'')
     user_blob_2 = Column('fld_user_blob_2', BLOB, default=b'')
@@ -155,7 +166,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
             'user_float_3': self.user_float_3,
             'user_int_1': self.user_int_1,
             'user_int_2': self.user_int_2,
-            'user_int_3': self.user_int_3
+            'user_int_3': self.user_int_3,
         }
 
         return _attributes
@@ -175,51 +186,73 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
 
         try:
             self.potential_hazard = str(
-                none_to_default(attributes['potential_hazard'], ''))
+                none_to_default(attributes['potential_hazard'], ''),
+            )
             self.potential_cause = str(
-                none_to_default(attributes['potential_cause'], ''))
+                none_to_default(attributes['potential_cause'], ''),
+            )
             self.assembly_effect = str(
-                none_to_default(attributes['assembly_effect'], ''))
+                none_to_default(attributes['assembly_effect'], ''),
+            )
             self.assembly_severity = str(
-                none_to_default(attributes['assembly_severity'], ''))
+                none_to_default(attributes['assembly_severity'], ''),
+            )
             self.assembly_probability = str(
-                none_to_default(attributes['assembly_probability'], ''))
+                none_to_default(attributes['assembly_probability'], ''),
+            )
             self.assembly_hri = int(
-                none_to_default(attributes['assembly_hri'], 0))
+                none_to_default(attributes['assembly_hri'], 0),
+            )
             self.assembly_mitigation = none_to_default(
-                attributes['assembly_mitigation'], b'')
+                attributes['assembly_mitigation'], b'',
+            )
             self.assembly_severity_f = str(
-                none_to_default(attributes['assembly_severity_f'], ''))
+                none_to_default(attributes['assembly_severity_f'], ''),
+            )
             self.assembly_probability_f = str(
-                none_to_default(attributes['assembly_probability_f'], ''))
+                none_to_default(attributes['assembly_probability_f'], ''),
+            )
             self.assembly_hri_f = int(
-                none_to_default(attributes['assembly_hri_f'], 0))
+                none_to_default(attributes['assembly_hri_f'], 0),
+            )
             self.system_effect = str(
-                none_to_default(attributes['system_effect'], ''))
+                none_to_default(attributes['system_effect'], ''),
+            )
             self.system_severity = str(
-                none_to_default(attributes['system_severity'], ''))
+                none_to_default(attributes['system_severity'], ''),
+            )
             self.system_probability = str(
-                none_to_default(attributes['system_probability'], ''))
+                none_to_default(attributes['system_probability'], ''),
+            )
             self.system_hri = int(none_to_default(attributes['system_hri'], 0))
             self.system_mitigation = none_to_default(
-                attributes['system_mitigation'], b'')
+                attributes['system_mitigation'], b'',
+            )
             self.system_severity_f = str(
-                none_to_default(attributes['system_severity_f'], ''))
+                none_to_default(attributes['system_severity_f'], ''),
+            )
             self.system_probability_f = str(
-                none_to_default(attributes['system_probability_f'], ''))
+                none_to_default(attributes['system_probability_f'], ''),
+            )
             self.system_hri_f = int(
-                none_to_default(attributes['system_hri_f'], 0))
+                none_to_default(attributes['system_hri_f'], 0),
+            )
             self.remarks = none_to_default(attributes['remarks'], '')
             self.function_1 = str(
-                none_to_default(attributes['function_1'], ''))
+                none_to_default(attributes['function_1'], ''),
+            )
             self.function_2 = str(
-                none_to_default(attributes['function_2'], ''))
+                none_to_default(attributes['function_2'], ''),
+            )
             self.function_3 = str(
-                none_to_default(attributes['function_3'], ''))
+                none_to_default(attributes['function_3'], ''),
+            )
             self.function_4 = str(
-                none_to_default(attributes['function_4'], ''))
+                none_to_default(attributes['function_4'], ''),
+            )
             self.function_5 = str(
-                none_to_default(attributes['function_5'], ''))
+                none_to_default(attributes['function_5'], ''),
+            )
             self.result_1 = float(none_to_default(attributes['result_1'], 0.0))
             self.result_2 = float(none_to_default(attributes['result_2'], 0.0))
             self.result_3 = float(none_to_default(attributes['result_3'], 0.0))
@@ -229,11 +262,14 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
             self.user_blob_2 = none_to_default(attributes['user_blob_2'], b'')
             self.user_blob_3 = none_to_default(attributes['user_blob_3'], b'')
             self.user_float_1 = float(
-                none_to_default(attributes['user_float_1'], 0.0))
+                none_to_default(attributes['user_float_1'], 0.0),
+            )
             self.user_float_2 = float(
-                none_to_default(attributes['user_float_2'], 0.0))
+                none_to_default(attributes['user_float_2'], 0.0),
+            )
             self.user_float_3 = float(
-                none_to_default(attributes['user_float_3'], 0.0))
+                none_to_default(attributes['user_float_3'], 0.0),
+            )
             self.user_int_1 = int(none_to_default(attributes['user_int_1'], 0))
             self.user_int_2 = int(none_to_default(attributes['user_int_2'], 0))
             self.user_int_3 = int(none_to_default(attributes['user_int_3'], 0))
@@ -263,21 +299,21 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
             'Low': 3,
             'Medium': 4,
             'High': 5,
-            'Major': 6
+            'Major': 6,
         }
         _probability = {
             'Level E - Extremely Unlikely': 1,
             'Level D - Remote': 2,
             'Level C - Occasional': 3,
             'Level B - Reasonably Probable': 4,
-            'Level A - Frequent': 5
+            'Level A - Frequent': 5,
         }
 
         # Create list of safe functions.
         _safe_list = [
             'uf1', 'uf2', 'uf3', 'ui1', 'ui2', 'ui3', 'equation1', 'equation2',
             'equation3', 'equation4', 'equation5', 'res1', 'res2', 'res3',
-            'res4', 'res5'
+            'res4', 'res5',
         ]
 
         # Use the list to filter the local namespace
@@ -285,29 +321,37 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
 
         # Calculate the MIL-STD-882 hazard risk indices.
         try:
-            self.assembly_hri = (_probability[self.assembly_probability] *
-                                 _severity[self.assembly_severity])
+            self.assembly_hri = (
+                _probability[self.assembly_probability] *
+                _severity[self.assembly_severity]
+            )
         except KeyError:
             self.assembly_hri = 30
             _return = True
 
         try:
-            self.assembly_hri_f = (_probability[self.assembly_probability_f] *
-                                   _severity[self.assembly_severity_f])
+            self.assembly_hri_f = (
+                _probability[self.assembly_probability_f] *
+                _severity[self.assembly_severity_f]
+            )
         except KeyError:
             self.assembly_hri_f = 30
             _return = True
 
         try:
-            self.system_hri = (_probability[self.system_probability] *
-                               _severity[self.system_severity])
+            self.system_hri = (
+                _probability[self.system_probability] *
+                _severity[self.system_severity]
+            )
         except KeyError:
             self.system_hri = 30
             _return = True
 
         try:
-            self.system_hri_f = (_probability[self.system_probability_f] *
-                                 _severity[self.system_severity_f])
+            self.system_hri_f = (
+                _probability[self.system_probability_f] *
+                _severity[self.system_severity_f]
+            )
         except KeyError:
             self.system_hri_f = 30
             _return = True
@@ -344,40 +388,50 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
 
         # pylint: disable=eval-used
         try:
-            self.result_1 = eval(_calculations['equation1'],
-                                 {"__builtins__": None}, _calculations)
+            self.result_1 = eval(
+                _calculations['equation1'],
+                {"__builtins__": None}, _calculations,
+            )
         except SyntaxError:
             self.result_1 = _calculations['res1']
             if _calculations['equation1'] != '':
                 _return = True
 
         try:
-            self.result_2 = eval(_calculations['equation2'],
-                                 {"__builtins__": None}, _calculations)
+            self.result_2 = eval(
+                _calculations['equation2'],
+                {"__builtins__": None}, _calculations,
+            )
         except SyntaxError:
             self.result_2 = _calculations['res2']
             if _calculations['equation2'] != '':
                 _return = True
 
         try:
-            self.result_3 = eval(_calculations['equation3'],
-                                 {"__builtins__": None}, _calculations)
+            self.result_3 = eval(
+                _calculations['equation3'],
+                {"__builtins__": None}, _calculations,
+            )
         except SyntaxError:
             self.result_3 = _calculations['res3']
             if _calculations['equation3'] != '':
                 _return = True
 
         try:
-            self.result_4 = eval(_calculations['equation4'],
-                                 {"__builtins__": None}, _calculations)
+            self.result_4 = eval(
+                _calculations['equation4'],
+                {"__builtins__": None}, _calculations,
+            )
         except SyntaxError:
             self.result_4 = _calculations['res4']
             if _calculations['equation4'] != '':
                 _return = True
 
         try:
-            self.result_5 = eval(_calculations['equation5'],
-                                 {"__builtins__": None}, _calculations)
+            self.result_5 = eval(
+                _calculations['equation5'],
+                {"__builtins__": None}, _calculations,
+            )
         except SyntaxError:
             self.result_5 = _calculations['res5']
             if _calculations['equation5'] != '':

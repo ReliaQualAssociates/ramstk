@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.hardware.test_hardware.py is part of The RAMSTK Project
@@ -6,13 +7,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hardware module algorithms and models. """
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.modules.hardware import dtmHardware
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao import RAMSTKHardware
+from ramstk.dao.programdb import RAMSTKHardware
+from ramstk.modules.hardware import dtmHardware
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -74,8 +76,10 @@ def test_do_insert_sibling_assembly(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=0, part=0)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -87,8 +91,10 @@ def test_do_insert_child_assembly(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, parent_id=1, part=0)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -100,8 +106,10 @@ def test_do_delete_assembly(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ('RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
-                    'database.')
+    assert _msg == (
+        'RAMSTK SUCCESS: Deleting an item from the RAMSTK Program '
+        'database.'
+    )
 
 
 @pytest.mark.integration
@@ -113,8 +121,10 @@ def test_do_delete_assembly_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ('  RAMSTK ERROR: Attempted to delete non-existent Hardware '
-                    'ID 300.')
+    assert _msg == (
+        '  RAMSTK ERROR: Attempted to delete non-existent Hardware '
+        'ID 300.'
+    )
 
 
 @pytest.mark.integration
@@ -141,8 +151,10 @@ def test_do_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_update(100)
 
     assert _error_code == 2006
-    assert _msg == ('RAMSTK ERROR: Attempted to save non-existent Hardware ID '
-                    '100.')
+    assert _msg == (
+        'RAMSTK ERROR: Attempted to save non-existent Hardware ID '
+        '100.'
+    )
 
 
 @pytest.mark.integration

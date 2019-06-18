@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKManufacturer Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKManufacturer(RAMSTK_BASE):
@@ -24,9 +25,11 @@ class RAMSTKManufacturer(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     description = Column(
-        'fld_description', String(512), default='Manufacturer Description')
+        'fld_description', String(512), default='Manufacturer Description',
+    )
     location = Column('fld_location', String(512), default='unknown')
     cage_code = Column('fld_cage_code', String(512), default='CAGE Code')
 
@@ -41,7 +44,7 @@ class RAMSTKManufacturer(RAMSTK_BASE):
             'manufacturer_id': self.manufacturer_id,
             'description': self.description,
             'location': self.location,
-            'cage_code': self.cage_code
+            'cage_code': self.cage_code,
         }
 
         return _attributes
@@ -60,17 +63,26 @@ class RAMSTKManufacturer(RAMSTK_BASE):
 
         try:
             self.description = str(
-                none_to_default(attributes['description'],
-                                'Manufacturer Description'))
+                none_to_default(
+                    attributes['description'],
+                    'Manufacturer Description',
+                ),
+            )
             self.location = str(
-                none_to_default(attributes['location'], 'unknown'))
+                none_to_default(attributes['location'], 'unknown'),
+            )
             self.cage_code = str(
-                none_to_default(attributes['cage_code'], 'CAGE Code'))
+                none_to_default(attributes['cage_code'], 'CAGE Code'),
+            )
         except KeyError as _err:
             _error_code = 40
-            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                    "dictionary passed to "
-                    "{1:s}.set_attributes().").format(str(_err),
-                                                      self.__class__.__name__)
+            _msg = (
+                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                "dictionary passed to "
+                "{1:s}.set_attributes()."
+            ).format(
+                str(_err),
+                self.__class__.__name__,
+            )
 
         return _error_code, _msg

@@ -6,13 +6,15 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKSiteInfo Table Module."""
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
 from sqlalchemy import Column, Date, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKSiteInfo(RAMSTK_BASE):
@@ -26,10 +28,12 @@ class RAMSTKSiteInfo(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     product_key = Column('fld_product_key', String(512), default='')
     expire_on = Column(
-        'fld_expire_on', Date, default=date.today() + timedelta(30))
+        'fld_expire_on', Date, default=date.today() + timedelta(30),
+    )
     function_enabled = Column('fld_function_enabled', Integer, default=0)
     requirement_enabled = Column('fld_requirement_enabled', Integer, default=0)
     hardware_enabled = Column('fld_hardware_enabled', Integer, default=0)
@@ -52,7 +56,7 @@ class RAMSTKSiteInfo(RAMSTK_BASE):
             'requirement_enabled': self.requirement_enabled,
             'hardware_enabled': self.hardware_enabled,
             'vandv_enabled': self.vandv_enabled,
-            'fmea_enabled': self.fmea_enabled
+            'fmea_enabled': self.fmea_enabled,
         }
 
         return _attributes
@@ -70,24 +74,36 @@ class RAMSTKSiteInfo(RAMSTK_BASE):
 
         try:
             self.product_key = str(
-                none_to_default(attributes['product_key'], '0000'))
-            self.expire_on = none_to_default(attributes['expire_on'],
-                                             date.today() + timedelta(30))
+                none_to_default(attributes['product_key'], '0000'),
+            )
+            self.expire_on = none_to_default(
+                attributes['expire_on'],
+                date.today() + timedelta(30),
+            )
             self.function_enabled = int(
-                none_to_default(attributes['function_enabled'], 0))
+                none_to_default(attributes['function_enabled'], 0),
+            )
             self.requirement_enabled = int(
-                none_to_default(attributes['requirement_enabled'], 0))
+                none_to_default(attributes['requirement_enabled'], 0),
+            )
             self.hardware_enabled = int(
-                none_to_default(attributes['hardware_enabled'], 0))
+                none_to_default(attributes['hardware_enabled'], 0),
+            )
             self.vandv_enabled = int(
-                none_to_default(attributes['vandv_enabled'], 0))
+                none_to_default(attributes['vandv_enabled'], 0),
+            )
             self.fmea_enabled = int(
-                none_to_default(attributes['fmea_enabled'], 0))
+                none_to_default(attributes['fmea_enabled'], 0),
+            )
         except KeyError as _err:
             _error_code = 40
-            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                    "dictionary passed to "
-                    "{1:s}.set_attributes().").format(str(_err),
-                                                      self.__class__.__name__)
+            _msg = (
+                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                "dictionary passed to "
+                "{1:s}.set_attributes()."
+            ).format(
+                str(_err),
+                self.__class__.__name__,
+            )
 
         return _error_code, _msg

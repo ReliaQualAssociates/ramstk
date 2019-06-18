@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKEnvironment Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKEnvironment(RAMSTK_BASE):
@@ -28,7 +29,8 @@ class RAMSTKEnvironment(RAMSTK_BASE):
         'fld_phase_id',
         Integer,
         ForeignKey('ramstk_mission_phase.fld_phase_id'),
-        nullable=False)
+        nullable=False,
+    )
     # test_id = Column('fld_test_id', Integer,
     #                  ForeignKey('ramstk_test.fld_test_id'),
     #                  nullable=False)
@@ -37,7 +39,8 @@ class RAMSTKEnvironment(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     name = Column('fld_name', String(256), default='Condition Name')
     units = Column('fld_units', String(128), default='Units')
@@ -76,7 +79,7 @@ class RAMSTKEnvironment(RAMSTK_BASE):
             'variance': self.variance,
             'ramp_rate': self.ramp_rate,
             'low_dwell_time': self.low_dwell_time,
-            'high_dwell_time': self.high_dwell_time
+            'high_dwell_time': self.high_dwell_time,
         }
 
         return _attributes
@@ -96,18 +99,22 @@ class RAMSTKEnvironment(RAMSTK_BASE):
 
         try:
             self.name = str(
-                none_to_default(attributes['name'], 'Condition Name'))
+                none_to_default(attributes['name'], 'Condition Name'),
+            )
             self.units = str(none_to_default(attributes['units'], 'Units'))
             self.minimum = float(none_to_default(attributes['minimum'], 0.0))
             self.maximum = float(none_to_default(attributes['maximum'], 0.0))
             self.mean = float(none_to_default(attributes['mean'], 0.0))
             self.variance = float(none_to_default(attributes['variance'], 0.0))
             self.ramp_rate = float(
-                none_to_default(attributes['ramp_rate'], 0.0))
+                none_to_default(attributes['ramp_rate'], 0.0),
+            )
             self.low_dwell_time = float(
-                none_to_default(attributes['low_dwell_time'], 0.0))
+                none_to_default(attributes['low_dwell_time'], 0.0),
+            )
             self.high_dwell_time = float(
-                none_to_default(attributes['high_dwell_time'], 0.0))
+                none_to_default(attributes['high_dwell_time'], 0.0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

@@ -6,15 +6,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKRequirement Table Module."""
 
+# Standard Library Imports
 from datetime import date
 
-# Import third party modules.
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKRequirement(RAMSTK_BASE):
@@ -31,13 +32,15 @@ class RAMSTKRequirement(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     requirement_id = Column(
         'fld_requirement_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     derived = Column('fld_derived', Integer, default=0)
     description = Column('fld_description', BLOB, default=b'')
@@ -164,7 +167,7 @@ class RAMSTKRequirement(RAMSTK_BASE):
             'q_verifiable_2': self.q_verifiable_2,
             'q_verifiable_3': self.q_verifiable_3,
             'q_verifiable_4': self.q_verifiable_4,
-            'q_verifiable_5': self.q_verifiable_5
+            'q_verifiable_5': self.q_verifiable_5,
         }
 
         return _attributes
@@ -186,89 +189,130 @@ class RAMSTKRequirement(RAMSTK_BASE):
             self.derived = int(none_to_default(attributes['derived'], 0))
             self.description = none_to_default(attributes['description'], b'')
             self.figure_number = str(
-                none_to_default(attributes['figure_number'], ''))
+                none_to_default(attributes['figure_number'], ''),
+            )
             self.owner = str(none_to_default(attributes['owner'], ''))
             self.page_number = str(
-                none_to_default(attributes['page_number'], ''))
+                none_to_default(attributes['page_number'], ''),
+            )
             self.parent_id = int(none_to_default(attributes['parent_id'], 0))
             self.priority = int(none_to_default(attributes['priority'], 0))
             self.requirement_code = str(
-                none_to_default(attributes['requirement_code'], ''))
+                none_to_default(attributes['requirement_code'], ''),
+            )
             self.specification = str(
-                none_to_default(attributes['specification'], ''))
+                none_to_default(attributes['specification'], ''),
+            )
             self.requirement_type = str(
-                none_to_default(attributes['requirement_type'], ''))
+                none_to_default(attributes['requirement_type'], ''),
+            )
             self.validated = int(none_to_default(attributes['validated'], 0))
-            self.validated_date = none_to_default(attributes['validated_date'],
-                                                  date.today())
+            self.validated_date = none_to_default(
+                attributes['validated_date'],
+                date.today(),
+            )
             self.q_clarity_0 = int(
-                none_to_default(attributes['q_clarity_0'], 0))
+                none_to_default(attributes['q_clarity_0'], 0),
+            )
             self.q_clarity_1 = int(
-                none_to_default(attributes['q_clarity_1'], 0))
+                none_to_default(attributes['q_clarity_1'], 0),
+            )
             self.q_clarity_2 = int(
-                none_to_default(attributes['q_clarity_2'], 0))
+                none_to_default(attributes['q_clarity_2'], 0),
+            )
             self.q_clarity_3 = int(
-                none_to_default(attributes['q_clarity_3'], 0))
+                none_to_default(attributes['q_clarity_3'], 0),
+            )
             self.q_clarity_4 = int(
-                none_to_default(attributes['q_clarity_4'], 0))
+                none_to_default(attributes['q_clarity_4'], 0),
+            )
             self.q_clarity_5 = int(
-                none_to_default(attributes['q_clarity_5'], 0))
+                none_to_default(attributes['q_clarity_5'], 0),
+            )
             self.q_clarity_6 = int(
-                none_to_default(attributes['q_clarity_6'], 0))
+                none_to_default(attributes['q_clarity_6'], 0),
+            )
             self.q_clarity_7 = int(
-                none_to_default(attributes['q_clarity_7'], 0))
+                none_to_default(attributes['q_clarity_7'], 0),
+            )
             self.q_clarity_8 = int(
-                none_to_default(attributes['q_clarity_8'], 0))
+                none_to_default(attributes['q_clarity_8'], 0),
+            )
             self.q_complete_0 = int(
-                none_to_default(attributes['q_complete_0'], 0))
+                none_to_default(attributes['q_complete_0'], 0),
+            )
             self.q_complete_1 = int(
-                none_to_default(attributes['q_complete_1'], 0))
+                none_to_default(attributes['q_complete_1'], 0),
+            )
             self.q_complete_2 = int(
-                none_to_default(attributes['q_complete_2'], 0))
+                none_to_default(attributes['q_complete_2'], 0),
+            )
             self.q_complete_3 = int(
-                none_to_default(attributes['q_complete_3'], 0))
+                none_to_default(attributes['q_complete_3'], 0),
+            )
             self.q_complete_4 = int(
-                none_to_default(attributes['q_complete_4'], 0))
+                none_to_default(attributes['q_complete_4'], 0),
+            )
             self.q_complete_5 = int(
-                none_to_default(attributes['q_complete_5'], 0))
+                none_to_default(attributes['q_complete_5'], 0),
+            )
             self.q_complete_6 = int(
-                none_to_default(attributes['q_complete_6'], 0))
+                none_to_default(attributes['q_complete_6'], 0),
+            )
             self.q_complete_7 = int(
-                none_to_default(attributes['q_complete_7'], 0))
+                none_to_default(attributes['q_complete_7'], 0),
+            )
             self.q_complete_8 = int(
-                none_to_default(attributes['q_complete_8'], 0))
+                none_to_default(attributes['q_complete_8'], 0),
+            )
             self.q_complete_9 = int(
-                none_to_default(attributes['q_complete_9'], 0))
+                none_to_default(attributes['q_complete_9'], 0),
+            )
             self.q_consistent_0 = int(
-                none_to_default(attributes['q_consistent_0'], 0))
+                none_to_default(attributes['q_consistent_0'], 0),
+            )
             self.q_consistent_1 = int(
-                none_to_default(attributes['q_consistent_1'], 0))
+                none_to_default(attributes['q_consistent_1'], 0),
+            )
             self.q_consistent_2 = int(
-                none_to_default(attributes['q_consistent_2'], 0))
+                none_to_default(attributes['q_consistent_2'], 0),
+            )
             self.q_consistent_3 = int(
-                none_to_default(attributes['q_consistent_3'], 0))
+                none_to_default(attributes['q_consistent_3'], 0),
+            )
             self.q_consistent_4 = int(
-                none_to_default(attributes['q_consistent_4'], 0))
+                none_to_default(attributes['q_consistent_4'], 0),
+            )
             self.q_consistent_5 = int(
-                none_to_default(attributes['q_consistent_5'], 0))
+                none_to_default(attributes['q_consistent_5'], 0),
+            )
             self.q_consistent_6 = int(
-                none_to_default(attributes['q_consistent_6'], 0))
+                none_to_default(attributes['q_consistent_6'], 0),
+            )
             self.q_consistent_7 = int(
-                none_to_default(attributes['q_consistent_7'], 0))
+                none_to_default(attributes['q_consistent_7'], 0),
+            )
             self.q_consistent_8 = int(
-                none_to_default(attributes['q_consistent_8'], 0))
+                none_to_default(attributes['q_consistent_8'], 0),
+            )
             self.q_verifiable_0 = int(
-                none_to_default(attributes['q_verifiable_0'], 0))
+                none_to_default(attributes['q_verifiable_0'], 0),
+            )
             self.q_verifiable_1 = int(
-                none_to_default(attributes['q_verifiable_1'], 0))
+                none_to_default(attributes['q_verifiable_1'], 0),
+            )
             self.q_verifiable_2 = int(
-                none_to_default(attributes['q_verifiable_2'], 0))
+                none_to_default(attributes['q_verifiable_2'], 0),
+            )
             self.q_verifiable_3 = int(
-                none_to_default(attributes['q_verifiable_3'], 0))
+                none_to_default(attributes['q_verifiable_3'], 0),
+            )
             self.q_verifiable_4 = int(
-                none_to_default(attributes['q_verifiable_4'], 0))
+                none_to_default(attributes['q_verifiable_4'], 0),
+            )
             self.q_verifiable_5 = int(
-                none_to_default(attributes['q_verifiable_5'], 0))
+                none_to_default(attributes['q_verifiable_5'], 0),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

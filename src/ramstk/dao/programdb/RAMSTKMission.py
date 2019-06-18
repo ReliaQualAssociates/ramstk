@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKMission Table Module."""
 
+# Third Party Imports
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKMission(RAMSTK_BASE):
@@ -29,13 +30,15 @@ class RAMSTKMission(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     mission_id = Column(
         'fld_mission_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     description = Column('fld_description', BLOB, default=b'')
     mission_time = Column('fld_mission_time', Float, default=0.0)
     time_units = Column('fld_time_units', String(256), default='hours')
@@ -61,7 +64,7 @@ class RAMSTKMission(RAMSTK_BASE):
             'mission_id': self.mission_id,
             'description': self.description,
             'mission_time': self.mission_time,
-            'time_units': self.time_units
+            'time_units': self.time_units,
         }
 
         return _attributes
@@ -80,9 +83,11 @@ class RAMSTKMission(RAMSTK_BASE):
         try:
             self.description = none_to_default(attributes['description'], b'')
             self.mission_time = float(
-                none_to_default(attributes['mission_time'], 0.0))
+                none_to_default(attributes['mission_time'], 0.0),
+            )
             self.time_units = str(
-                none_to_default(attributes['time_units'], 'hours'))
+                none_to_default(attributes['time_units'], 'hours'),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

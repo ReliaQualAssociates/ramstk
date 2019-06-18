@@ -15,7 +15,8 @@ import pytest
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.dao import DAO, RAMSTKProgramStatus, RAMSTKValidation
+from ramstk.dao import DAO
+from ramstk.dao.programdb import RAMSTKProgramStatus, RAMSTKValidation
 from ramstk.modules.validation import dtcValidation, dtmValidation
 
 __author__ = 'Doyle Rowland'

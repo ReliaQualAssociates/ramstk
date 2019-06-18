@@ -6,12 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKDesignElectric Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 # pylint: disable=R0902
@@ -30,7 +31,8 @@ class RAMSTKDesignElectric(RAMSTK_BASE):
         Integer,
         ForeignKey('ramstk_hardware.fld_hardware_id'),
         primary_key=True,
-        nullable=False)
+        nullable=False,
+    )
 
     application_id = Column('fld_application_id', Integer, default=0)
     area = Column('fld_area', Float, default=0.0)
@@ -44,9 +46,11 @@ class RAMSTKDesignElectric(RAMSTK_BASE):
     current_rated = Column('fld_current_rated', Float, default=0.0)
     current_ratio = Column('fld_current_ratio', Float, default=0.0)
     environment_active_id = Column(
-        'fld_environment_active_id', Integer, default=0)
+        'fld_environment_active_id', Integer, default=0,
+    )
     environment_dormant_id = Column(
-        'fld_environment_dormant_id', Integer, default=0)
+        'fld_environment_dormant_id', Integer, default=0,
+    )
     family_id = Column('fld_family_id', Integer, default=0)
     feature_size = Column('fld_feature_size', Float, default=0.0)
     frequency_operating = Column('fld_frequency_operating', Float, default=0.0)
@@ -73,23 +77,30 @@ class RAMSTKDesignElectric(RAMSTK_BASE):
     temperature_active = Column('fld_temperature_active', Float, default=35.0)
     temperature_case = Column('fld_temperature_case', Float, default=0.0)
     temperature_dormant = Column(
-        'fld_temperature_dormant', Float, default=25.0)
+        'fld_temperature_dormant', Float, default=25.0,
+    )
     temperature_hot_spot = Column(
-        'fld_temperature_hot_spot', Float, default=0.0)
+        'fld_temperature_hot_spot', Float, default=0.0,
+    )
     temperature_junction = Column(
-        'fld_temperature_junction', Float, default=0.0)
+        'fld_temperature_junction', Float, default=0.0,
+    )
     temperature_knee = Column('fld_temperature_knee', Float, default=25.0)
     temperature_rated_max = Column(
-        'fld_temperature_rated_max', Float, default=0.0)
+        'fld_temperature_rated_max', Float, default=0.0,
+    )
     temperature_rated_min = Column(
-        'fld_temperature_rated_min', Float, default=0.0)
+        'fld_temperature_rated_min', Float, default=0.0,
+    )
     temperature_rise = Column('fld_temperature_rise', Float, default=0.0)
     theta_jc = Column('fld_theta_jc', Float, default=0.0)
     type_id = Column('fld_type_id', Integer, default=0)
     voltage_ac_operating = Column(
-        'fld_voltage_ac_operating', Float, default=0.0)
+        'fld_voltage_ac_operating', Float, default=0.0,
+    )
     voltage_dc_operating = Column(
-        'fld_voltage_dc_operating', Float, default=0.0)
+        'fld_voltage_dc_operating', Float, default=0.0,
+    )
     voltage_esd = Column('fld_voltage_esd', Float, default=0.0)
     voltage_rated = Column('fld_voltage_rated', Float, default=0.0)
     voltage_ratio = Column('fld_voltage_ratio', Float, default=0.0)
@@ -98,7 +109,8 @@ class RAMSTKDesignElectric(RAMSTK_BASE):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     hardware = relationship(
-        'RAMSTKHardware', back_populates='design_electric')  # pragma: no cover
+        'RAMSTKHardware', back_populates='design_electric',
+    )  # pragma: no cover
 
     def get_attributes(self):
         """
@@ -178,7 +190,7 @@ class RAMSTKDesignElectric(RAMSTK_BASE):
             'voltage_rated': self.voltage_rated,
             'voltage_ratio': self.voltage_ratio,
             'weight': self.weight,
-            'years_in_production': self.years_in_production
+            'years_in_production': self.years_in_production,
         }
 
         return _attributes
@@ -198,104 +210,148 @@ class RAMSTKDesignElectric(RAMSTK_BASE):
 
         try:
             self.hardware_id = int(
-                none_to_default(attributes['hardware_id'], 0))
+                none_to_default(attributes['hardware_id'], 0),
+            )
             self.application_id = int(
-                none_to_default(attributes['application_id'], 0))
+                none_to_default(attributes['application_id'], 0),
+            )
             self.area = float(none_to_default(attributes['area'], 0.0))
             self.capacitance = float(
-                none_to_default(attributes['capacitance'], 0.0))
+                none_to_default(attributes['capacitance'], 0.0),
+            )
             self.configuration_id = int(
-                none_to_default(attributes['configuration_id'], 0))
+                none_to_default(attributes['configuration_id'], 0),
+            )
             self.construction_id = int(
-                none_to_default(attributes['construction_id'], 0))
+                none_to_default(attributes['construction_id'], 0),
+            )
             self.contact_form_id = int(
-                none_to_default(attributes['contact_form_id'], 0))
+                none_to_default(attributes['contact_form_id'], 0),
+            )
             self.contact_gauge = int(
-                none_to_default(attributes['contact_gauge'], 0))
+                none_to_default(attributes['contact_gauge'], 0),
+            )
             self.contact_rating_id = int(
-                none_to_default(attributes['contact_rating_id'], 0))
+                none_to_default(attributes['contact_rating_id'], 0),
+            )
             self.current_operating = float(
-                none_to_default(attributes['current_operating'], 0.0))
+                none_to_default(attributes['current_operating'], 0.0),
+            )
             self.current_rated = float(
-                none_to_default(attributes['current_rated'], 0.0))
+                none_to_default(attributes['current_rated'], 0.0),
+            )
             self.current_ratio = float(
-                none_to_default(attributes['current_ratio'], 0.0))
+                none_to_default(attributes['current_ratio'], 0.0),
+            )
             self.environment_active_id = int(
-                none_to_default(attributes['environment_active_id'], 0))
+                none_to_default(attributes['environment_active_id'], 0),
+            )
             self.environment_dormant_id = int(
-                none_to_default(attributes['environment_dormant_id'], 0))
+                none_to_default(attributes['environment_dormant_id'], 0),
+            )
             self.family_id = int(none_to_default(attributes['family_id'], 0))
             self.feature_size = float(
-                none_to_default(attributes['feature_size'], 0.0))
+                none_to_default(attributes['feature_size'], 0.0),
+            )
             self.frequency_operating = float(
-                none_to_default(attributes['frequency_operating'], 0.0))
+                none_to_default(attributes['frequency_operating'], 0.0),
+            )
             self.insert_id = int(none_to_default(attributes['insert_id'], 0))
             self.insulation_id = int(
-                none_to_default(attributes['insulation_id'], 0))
+                none_to_default(attributes['insulation_id'], 0),
+            )
             self.manufacturing_id = int(
-                none_to_default(attributes['manufacturing_id'], 0))
+                none_to_default(attributes['manufacturing_id'], 0),
+            )
             self.matching_id = int(
-                none_to_default(attributes['matching_id'], 0))
+                none_to_default(attributes['matching_id'], 0),
+            )
             self.n_active_pins = int(
-                none_to_default(attributes['n_active_pins'], 0))
+                none_to_default(attributes['n_active_pins'], 0),
+            )
             self.n_circuit_planes = int(
-                none_to_default(attributes['n_circuit_planes'], 1))
+                none_to_default(attributes['n_circuit_planes'], 1),
+            )
             self.n_cycles = int(none_to_default(attributes['n_cycles'], 0))
             self.n_elements = int(none_to_default(attributes['n_elements'], 0))
             self.n_hand_soldered = int(
-                none_to_default(attributes['n_hand_soldered'], 0))
+                none_to_default(attributes['n_hand_soldered'], 0),
+            )
             self.n_wave_soldered = int(
-                none_to_default(attributes['n_wave_soldered'], 0))
+                none_to_default(attributes['n_wave_soldered'], 0),
+            )
             self.operating_life = float(
-                none_to_default(attributes['operating_life'], 0.0))
+                none_to_default(attributes['operating_life'], 0.0),
+            )
             self.overstress = int(none_to_default(attributes['overstress'], 0))
             self.package_id = int(none_to_default(attributes['package_id'], 0))
             self.power_operating = float(
-                none_to_default(attributes['power_operating'], 0.0))
+                none_to_default(attributes['power_operating'], 0.0),
+            )
             self.power_rated = float(
-                none_to_default(attributes['power_rated'], 0.0))
+                none_to_default(attributes['power_rated'], 0.0),
+            )
             self.power_ratio = float(
-                none_to_default(attributes['power_ratio'], 0.0))
+                none_to_default(attributes['power_ratio'], 0.0),
+            )
             self.reason = str(none_to_default(attributes['reason'], ''))
             self.resistance = float(
-                none_to_default(attributes['resistance'], 0.0))
+                none_to_default(attributes['resistance'], 0.0),
+            )
             self.specification_id = int(
-                none_to_default(attributes['specification_id'], 0))
+                none_to_default(attributes['specification_id'], 0),
+            )
             self.technology_id = int(
-                none_to_default(attributes['technology_id'], 0))
+                none_to_default(attributes['technology_id'], 0),
+            )
             self.temperature_active = float(
-                none_to_default(attributes['temperature_active'], 35.0))
+                none_to_default(attributes['temperature_active'], 35.0),
+            )
             self.temperature_case = float(
-                none_to_default(attributes['temperature_case'], 0.0))
+                none_to_default(attributes['temperature_case'], 0.0),
+            )
             self.temperature_dormant = float(
-                none_to_default(attributes['temperature_dormant'], 25.0))
+                none_to_default(attributes['temperature_dormant'], 25.0),
+            )
             self.temperature_hot_spot = float(
-                none_to_default(attributes['temperature_hot_spot'], 0.0))
+                none_to_default(attributes['temperature_hot_spot'], 0.0),
+            )
             self.temperature_junction = float(
-                none_to_default(attributes['temperature_junction'], 0.0))
+                none_to_default(attributes['temperature_junction'], 0.0),
+            )
             self.temperature_knee = float(
-                none_to_default(attributes['temperature_knee'], 25.0))
+                none_to_default(attributes['temperature_knee'], 25.0),
+            )
             self.temperature_rated_max = float(
-                none_to_default(attributes['temperature_rated_max'], 0.0))
+                none_to_default(attributes['temperature_rated_max'], 0.0),
+            )
             self.temperature_rated_min = float(
-                none_to_default(attributes['temperature_rated_min'], 0.0))
+                none_to_default(attributes['temperature_rated_min'], 0.0),
+            )
             self.temperature_rise = float(
-                none_to_default(attributes['temperature_rise'], 0.0))
+                none_to_default(attributes['temperature_rise'], 0.0),
+            )
             self.theta_jc = float(none_to_default(attributes['theta_jc'], 0.0))
             self.type_id = float(none_to_default(attributes['type_id'], 0.0))
             self.voltage_ac_operating = float(
-                none_to_default(attributes['voltage_ac_operating'], 0.0))
+                none_to_default(attributes['voltage_ac_operating'], 0.0),
+            )
             self.voltage_dc_operating = float(
-                none_to_default(attributes['voltage_dc_operating'], 0.0))
+                none_to_default(attributes['voltage_dc_operating'], 0.0),
+            )
             self.voltage_esd = float(
-                none_to_default(attributes['voltage_esd'], 0.0))
+                none_to_default(attributes['voltage_esd'], 0.0),
+            )
             self.voltage_rated = float(
-                none_to_default(attributes['voltage_rated'], 0.0))
+                none_to_default(attributes['voltage_rated'], 0.0),
+            )
             self.voltage_ratio = float(
-                none_to_default(attributes['voltage_ratio'], 0.0))
+                none_to_default(attributes['voltage_ratio'], 0.0),
+            )
             self.weight = float(none_to_default(attributes['weight'], 0.0))
             self.years_in_production = int(
-                none_to_default(attributes['years_in_production'], 1))
+                none_to_default(attributes['years_in_production'], 1),
+            )
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

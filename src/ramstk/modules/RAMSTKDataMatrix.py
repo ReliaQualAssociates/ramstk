@@ -12,8 +12,7 @@ from pubsub import pub
 from sqlalchemy import and_, func
 
 # RAMSTK Package Imports
-# Import other RAMSTK modules.
-from ramstk.dao import RAMSTKMatrix
+from ramstk.dao.programdb import RAMSTKMatrix
 
 
 class RAMSTKDataMatrix():

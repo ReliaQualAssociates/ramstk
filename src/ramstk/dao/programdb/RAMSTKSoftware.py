@@ -10,12 +10,13 @@ The RAMSTKSoftware Table
 ===============================================================================
 """
 
+# Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 # pylint: disable=R0902
@@ -34,13 +35,15 @@ class RAMSTKSoftware(RAMSTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('ramstk_revision.fld_revision_id'),
-        nullable=False)
+        nullable=False,
+    )
     software_id = Column(
         'fld_software_id',
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
 
     # pylint: disable=invalid-name
     a = Column('fld_a', Float, default=0.0)
@@ -121,10 +124,12 @@ class RAMSTKSoftware(RAMSTK_BASE):
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='software')
     development = relationship(
-        'RAMSTKSoftwareDevelopment', back_populates='software')
+        'RAMSTKSoftwareDevelopment', back_populates='software',
+    )
     review = relationship('RAMSTKSoftwareReview', back_populates='software')
     software_test = relationship(
-        'RAMSTKSoftwareTest', back_populates='software')
+        'RAMSTKSoftwareTest', back_populates='software',
+    )
 
     def get_attributes(self):
         """
@@ -145,25 +150,27 @@ class RAMSTKSoftware(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.revision_id, self.software_id, self.a, self.aloc,
-                       self.am, self.application_id, self.ax, self.budget_test,
-                       self.budget_dev, self.bx, self.category_id, self.cb,
-                       self.cx, self.d, self.dc, self.dd, self.description,
-                       self.development_id, self.dev_assess_type_id, self.df,
-                       self.do, self.dr, self.dr_eot, self.dr_test, self.e,
-                       self.ec, self.et, self.ev, self.ew, self.f, self.ft1,
-                       self.ft2, self.hloc, self.labor_hours_dev,
-                       self.labor_hours_test, self.level, self.loc,
-                       self.n_branches, self.n_branches_test, self.n_inputs,
-                       self.n_inputs_test, self.n_interfaces,
-                       self.n_interfaces_test, self.ncb, self.nm, self.nm_test,
-                       self.os, self.parent_id, self.phase_id, self.ren_avg,
-                       self.ren_eot, self.rpfom, self.s1, self.s2, self.sa,
-                       self.schedule_dev, self.schedule_test, self.sl, self.sm,
-                       self.sq, self.sr, self.st, self.sx, self.t, self.tc,
-                       self.tcl, self.te, self.test_approach, self.test_effort,
-                       self.test_path, self.test_time, self.test_time_eot,
-                       self.tm, self.um, self.wm, self.xm)
+        _attributes = (
+            self.revision_id, self.software_id, self.a, self.aloc,
+            self.am, self.application_id, self.ax, self.budget_test,
+            self.budget_dev, self.bx, self.category_id, self.cb,
+            self.cx, self.d, self.dc, self.dd, self.description,
+            self.development_id, self.dev_assess_type_id, self.df,
+            self.do, self.dr, self.dr_eot, self.dr_test, self.e,
+            self.ec, self.et, self.ev, self.ew, self.f, self.ft1,
+            self.ft2, self.hloc, self.labor_hours_dev,
+            self.labor_hours_test, self.level, self.loc,
+            self.n_branches, self.n_branches_test, self.n_inputs,
+            self.n_inputs_test, self.n_interfaces,
+            self.n_interfaces_test, self.ncb, self.nm, self.nm_test,
+            self.os, self.parent_id, self.phase_id, self.ren_avg,
+            self.ren_eot, self.rpfom, self.s1, self.s2, self.sa,
+            self.schedule_dev, self.schedule_test, self.sl, self.sm,
+            self.sq, self.sr, self.st, self.sx, self.t, self.tc,
+            self.tcl, self.te, self.test_approach, self.test_effort,
+            self.test_path, self.test_time, self.test_time_eot,
+            self.tm, self.um, self.wm, self.xm,
+        )
 
         return _attributes
 

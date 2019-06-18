@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.modules.test_hazard_analysis.py is part of The RAMSTK Project
@@ -7,12 +7,14 @@
 # Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the HazardAnalysis class. """
 
+# Third Party Imports
 import pytest
-
 from treelib import Tree
 
-from ramstk.dao import DAO, RAMSTKHazardAnalysis
-from ramstk.modules.hazops import dtmHazardAnalysis, dtcHazardAnalysis
+# RAMSTK Package Imports
+from ramstk.dao import DAO
+from ramstk.dao.programdb import RAMSTKHazardAnalysis
+from ramstk.modules.hazops import dtcHazardAnalysis, dtmHazardAnalysis
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -60,7 +62,7 @@ ATTRIBUTES = {
     'user_float_3': 0.0,
     'user_int_1': 0,
     'user_int_2': 0,
-    'user_int_3': 0
+    'user_int_3': 0,
 }
 
 
@@ -130,8 +132,10 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(revision_id=1, hardware_id=2)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
     assert DUT.last_id == 9
 
 
@@ -144,8 +148,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete('2.2')
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
     assert DUT.last_id == '8.8'
 
 
@@ -158,8 +164,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Hazard "
-                    "Analysis ID 300.")
+    assert _msg == (
+        "  RAMSTK ERROR: Attempted to delete non-existent Hazard "
+        "Analysis ID 300."
+    )
 
 
 @pytest.mark.integration
@@ -188,7 +196,8 @@ def test_do_update_non_existent_id(test_dao):
     assert _error_code == 2207
     assert _msg == (
         "RAMSTK ERROR: Attempted to save non-existent Hazard Analysis "
-        "ID 100.")
+        "ID 100."
+    )
 
 
 @pytest.mark.integration
@@ -200,8 +209,10 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all(hardware_id=3)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the HazOps table "
-                    "for Hardware ID 3.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the HazOps table "
+        "for Hardware ID 3."
+    )
 
 
 @pytest.mark.integration
@@ -244,7 +255,8 @@ def test_request_do_select_all(test_dao, test_configuration):
 
     assert isinstance(DUT._dtm_data_model.tree, Tree)
     assert isinstance(
-        DUT._dtm_data_model.tree.get_node('3.3').data, RAMSTKHazardAnalysis)
+        DUT._dtm_data_model.tree.get_node('3.3').data, RAMSTKHazardAnalysis,
+    )
 
 
 @pytest.mark.integration

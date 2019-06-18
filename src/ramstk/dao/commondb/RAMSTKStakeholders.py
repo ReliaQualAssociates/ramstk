@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKStakeholders Table Module."""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKStakeholders(RAMSTK_BASE):
@@ -24,7 +25,8 @@ class RAMSTKStakeholders(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     stakeholder = Column('fld_stakeholder', String(512), default='Stakeholder')
 
     def get_attributes(self):
@@ -36,7 +38,7 @@ class RAMSTKStakeholders(RAMSTK_BASE):
         """
         _attributes = {
             'stakeholders_id': self.stakeholders_id,
-            'stakeholder': self.stakeholder
+            'stakeholder': self.stakeholder,
         }
 
         return _attributes
@@ -55,12 +57,17 @@ class RAMSTKStakeholders(RAMSTK_BASE):
 
         try:
             self.stakeholder = str(
-                none_to_default(attributes['stakeholder'], 'Stakeholder'))
+                none_to_default(attributes['stakeholder'], 'Stakeholder'),
+            )
         except KeyError as _err:
             _error_code = 40
-            _msg = ("RAMSTK ERROR: Missing attribute {0:s} in attribute "
-                    "dictionary passed to "
-                    "{1:s}.set_attributes().").format(str(_err),
-                                                      self.__class__.__name__)
+            _msg = (
+                "RAMSTK ERROR: Missing attribute {0:s} in attribute "
+                "dictionary passed to "
+                "{1:s}.set_attributes()."
+            ).format(
+                str(_err),
+                self.__class__.__name__,
+            )
 
         return _error_code, _msg

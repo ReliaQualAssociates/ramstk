@@ -6,11 +6,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKRPN Table"""
 
+# Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# Import other RAMSTK modules.
+# RAMSTK Package Imports
+from ramstk import RAMSTK_BASE
 from ramstk.Utilities import error_handler, none_to_default
-from ramstk.dao.RAMSTKCommonDB import RAMSTK_BASE
 
 
 class RAMSTKRPN(RAMSTK_BASE):
@@ -26,10 +27,12 @@ class RAMSTKRPN(RAMSTK_BASE):
         Integer,
         primary_key=True,
         autoincrement=True,
-        nullable=False)
+        nullable=False,
+    )
     name = Column('fld_name', String(512), default='RPN Name')
     description = Column(
-        'fld_description', String(512), default='RPN Description')
+        'fld_description', String(512), default='RPN Description',
+    )
     rpn_type = Column('fld_type', String(256), default='')
     value = Column('fld_value', Integer, default=0)
 
@@ -42,8 +45,10 @@ class RAMSTKRPN(RAMSTK_BASE):
         :rtype: tuple
         """
 
-        _values = (self.rpn_id, self.name, self.description, self.rpn_type,
-                   self.value)
+        _values = (
+            self.rpn_id, self.name, self.description, self.rpn_type,
+            self.value,
+        )
 
         return _values
 
@@ -64,7 +69,8 @@ class RAMSTKRPN(RAMSTK_BASE):
         try:
             self.name = str(none_to_default(attributes[0], 'RPN Name'))
             self.description = str(
-                none_to_default(attributes[1], 'RPN Description'))
+                none_to_default(attributes[1], 'RPN Description'),
+            )
             self.rpn_type = str(none_to_default(attributes[2], ''))
             self.value = int(none_to_default(attributes[3], 0))
         except IndexError as _err:

@@ -13,7 +13,8 @@ import pytest
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.dao import DAO, RAMSTKFunction
+from ramstk.dao import DAO
+from ramstk.dao.programdb import RAMSTKFunction
 from ramstk.modules import RAMSTKDataMatrix
 from ramstk.modules.function import dtcFunction, dtmFunction
 

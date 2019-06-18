@@ -6,13 +6,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the PoF OpLoad class. """
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
-from ramstk.modules.pof import dtmOpLoad
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao import RAMSTKOpLoad
+from ramstk.dao.programdb import RAMSTKOpLoad
+from ramstk.modules.pof import dtmOpLoad
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -73,8 +74,10 @@ def test_do_insert(test_dao):
     _error_code, _msg = DUT.do_insert(mechanism_id=1)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
-                    "Program database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
+        "Program database."
+    )
     assert DUT.last_id == 2
 
 
@@ -87,8 +90,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -100,8 +105,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent OpLoad "
-                    "ID 300.")
+    assert _msg == (
+        "  RAMSTK ERROR: Attempted to delete non-existent OpLoad "
+        "ID 300."
+    )
 
 
 @pytest.mark.integration
@@ -140,5 +147,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all operating loads in the damage "
-                    "modeling worksheet.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all operating loads in the damage "
+        "modeling worksheet."
+    )

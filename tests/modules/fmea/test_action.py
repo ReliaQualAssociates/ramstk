@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.modules.fmea.test_action.py is part of The RAMSTK Project
@@ -6,14 +7,16 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Action class."""
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
+# RAMSTK Package Imports
+from ramstk.dao.programdb import RAMSTKAction
 from ramstk.modules.fmea import dtmAction
-from ramstk.dao import RAMSTKAction
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -83,7 +86,8 @@ def test_do_insert_functional_mode(test_dao):
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -97,7 +101,8 @@ def test_do_insert_hardware_mode(test_dao):
     assert _error_code == 0
     assert _msg == (
         "RAMSTK SUCCESS: Adding one or more items to the RAMSTK Program "
-        "database.")
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -109,8 +114,10 @@ def test_do_delete(test_dao):
     _error_code, _msg = DUT.do_delete(DUT.last_id)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
-                    "database.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+        "database."
+    )
 
 
 @pytest.mark.integration
@@ -122,8 +129,10 @@ def test_do_delete_non_existent_id(test_dao):
     _error_code, _msg = DUT.do_delete(300)
 
     assert _error_code == 2005
-    assert _msg == ("  RAMSTK ERROR: Attempted to delete non-existent Action "
-                    "ID 300.")
+    assert _msg == (
+        "  RAMSTK ERROR: Attempted to delete non-existent Action "
+        "ID 300."
+    )
 
 
 @pytest.mark.integration
@@ -133,8 +142,10 @@ def test_do_update(test_dao):
     DUT.do_select_all(parent_id=1)
 
     _action = DUT.tree.get_node(1).data
-    _action.action_recommended = (b"Test Functional FMEA Recommended Action "
-                                  b"#1 for Cause ID 1")
+    _action.action_recommended = (
+        b"Test Functional FMEA Recommended Action "
+        b"#1 for Cause ID 1"
+    )
 
     _error_code, _msg = DUT.do_update(1)
 
@@ -152,7 +163,8 @@ def test_do_update_non_existent_id(test_dao):
 
     assert _error_code == 2006
     assert _msg == (
-        "RAMSTK ERROR: Attempted to save non-existent Action ID 100.")
+        "RAMSTK ERROR: Attempted to save non-existent Action ID 100."
+    )
 
 
 @pytest.mark.integration
@@ -164,5 +176,7 @@ def test_do_update_all(test_dao):
     _error_code, _msg = DUT.do_update_all()
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating all records in the FMEA actions "
-                    "table.")
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating all records in the FMEA actions "
+        "table."
+    )
