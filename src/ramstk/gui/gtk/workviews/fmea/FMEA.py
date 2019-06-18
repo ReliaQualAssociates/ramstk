@@ -1184,7 +1184,10 @@ class FMEA(RAMSTKWorkView):
         _node_id = _model.get_value(_row, 43)
 
         self.do_set_cursor(Gdk.CursorType.WATCH)
-        pub.sendMessage("request_update_fmea", node_id=_node_id)
+        if self._functional:
+            pub.sendMessage("request_update_ffmea", node_id=_node_id)
+        else:
+            pub.sendMessage("request_update_dfmeca", node_id=_node_id)
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):

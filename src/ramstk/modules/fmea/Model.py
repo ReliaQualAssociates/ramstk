@@ -1253,7 +1253,7 @@ class FMEADataModel(RAMSTKDataModel):
 
         return _error_code, _msg
 
-    def do_calculate(self, item_hr, criticality, rpn):
+    def do_calculate(self, item_hr, criticality, rpn):  # pylint: disable=arguments-differ
         """
         Calculate the RPN or criticality for the selected Node ID.
 
