@@ -84,6 +84,16 @@ def do_create_common_db(**kwargs):
         _record.description = _value[1]
         _record.cat_type = _value[2]
         _record.value = _value[3]
+        _record.harsh_ir_limit = _value[4]
+        _record.mild_ir_limit = _value[5]
+        _record.harsh_pr_limit = _value[6]
+        _record.mild_pr_limit = _value[7]
+        _record.harsh_vr_limit = _value[8]
+        _record.mild_vr_limit = _value[9]
+        _record.harsh_deltat_limit = _value[10]
+        _record.mild_deltat_limit = _value[11]
+        _record.harsh_maxt_limit = _value[12]
+        _record.mild_maxt_limit = _value[13]
         session.add(_record)
 
     for __, _value in enumerate(RAMSTK_SUBCATEGORIES):

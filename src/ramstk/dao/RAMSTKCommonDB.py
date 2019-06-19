@@ -8,57 +8,181 @@
 
 # This file contains all the dictionaries defining the default fields for each
 # of the tables in the RAMSTK Common database.
+
 RAMSTK_CATEGORIES = {
-    0: ('IC', 'Integrated Circuit', 'hardware', 1),
-    1: ('SEMI', 'Semiconductor', 'hardware', 1),
-    2: ('RES', 'Resistor', 'hardware', 1),
-    3: ('CAP', 'Capacitor', 'hardware', 1),
-    4: ('IND', 'Inductive Device', 'hardware', 1),
-    5: ('REL', 'Relay', 'hardware', 1),
-    6: ('SW', 'Switching Device', 'hardware', 1),
-    7: ('CONN', 'Connection', 'hardware', 1),
-    8: ('MET', 'Meter', 'hardware', 1),
-    9: ('MISC', 'Miscellaneous', 'hardware', 1),
-    10: ('INS', 'Insignificant', 'risk', 1),
-    11: ('SLT', 'Slight', 'risk', 2),
-    12: ('LOW', 'Low', 'risk', 3),
-    13: ('MED', 'Medium', 'risk', 4),
-    14: ('HI', 'High', 'risk', 5),
-    15: ('MAJ', 'Major', 'risk', 6),
+    0: (
+        'IC', 'Integrated Circuit', 'hardware', 1, 0.8, 0.9, 1.0, 1.0, 1.0,
+        1.0, 0.0, 0.0, 125.0, 125.0,
+    ),
+    1: (
+        'SEMI', 'Semiconductor', 'hardware', 1, 1.0, 1.0, 0.7, 0.9, 1.0, 1.0,
+        0.0, 0.0, 125.0, 125.0,
+    ),
+    2: (
+        'RES', 'Resistor', 'hardware', 1, 1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0,
+        0.0, 125.0, 125.0,
+    ),
+    3: (
+        'CAP', 'Capacitor', 'hardware', 1, 1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0,
+        0.0, 125.0, 125.0,
+    ),
+    4: (
+        'IND', 'Inductive Device', 'hardware', 1, 0.6, 0.9, 1.0, 1.0, 0.5, 0.9,
+        15.0, 0.0, 125.0, 125.0,
+    ),
+    5: (
+        'REL', 'Relay', 'hardware', 1, 0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0,
+        125.0, 125.0,
+    ),
+    6: (
+        'SW', 'Switching Device', 'hardware', 1, 0.75, 0.9, 1.0, 1.0, 1.0, 1.0,
+        0.0, 0.0, 125.0, 125.0,
+    ),
+    7: (
+        'CONN', 'Connection', 'hardware', 1, 0.7, 0.9, 1.0, 1.0, 0.7, 0.9,
+        25.0, 0.0, 125.0, 125.0,
+    ),
+    8: (
+        'MET', 'Meter', 'hardware', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0,
+        125.0, 125.0,
+    ),
+    9: (
+        'MISC', 'Miscellaneous', 'hardware', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+        0.0, 0.0, 125.0, 125.0,
+    ),
+    10: (
+        'INS', 'Insignificant', 'risk', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0,
+        0.0, 0.0, 0.0,
+    ),
+    11: (
+        'SLT', 'Slight', 'risk', 2, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0,
+        0.0, 0.0,
+    ),
+    12: (
+        'LOW', 'Low', 'risk', 3, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
+        0.0,
+    ),
+    13: (
+        'MED', 'Medium', 'risk', 4, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0,
+        0.0, 0.0,
+    ),
+    14: (
+        'HI', 'High', 'risk', 5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0,
+        0.0,
+    ),
+    15: (
+        'MAJ', 'Major', 'risk', 6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0,
+        0.0, 0.0,
+    ),
     16: (
         'Batch (General)',
         'Can be run as a normal batch job and makes no unusual '
         'hardware or input-output actions (e.g., payroll '
         'program and wind tunnel data analysis program).  '
         'Small, throwaway programs for preliminary analysis '
-        'also fit in this category.', 'software', 1,
+        'also fit in this category.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     17: (
-        'Event Control', 'Does realtime processing of data resulting from '
+        'Event Control',
+        'Does realtime processing of data resulting from '
         'external events. An example might be a computer '
-        'program that processes telemetry data.', 'software', 1,
+        'program that processes telemetry data.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     18: (
-        'Process Control', 'Receives data from an external source and issues '
+        'Process Control',
+        'Receives data from an external source and issues '
         'commands to that source to control its actions '
-        'based on the received data.', 'software', 1,
+        'based on the received data.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     19: (
         'Procedure Control',
         'Controls other software; for example, an operating '
         'system that controls execution of time-shared and '
-        'batch computer programs.', 'software', 1,
+        'batch computer programs.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     20: (
-        'Navigation', 'Does computation and modeling to computer '
+        'Navigation',
+        'Does computation and modeling to computer '
         'information required to guide an airplane from '
-        'point of origin to destination.', 'software', 1,
+        'point of origin to destination.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     21: (
         'Flight Dynamics',
         'Uses the functions computed by navigation software '
         'and augmented by control theory to control the '
-        'entire flight of an aircraft.', 'software', 1,
+        'entire flight of an aircraft.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     22: (
         'Orbital Dynamics',
@@ -66,84 +190,258 @@ RAMSTK_CATEGORIES = {
         'but has the additional complexity required by '
         'orbital navigation, such as a more complex '
         'reference system and the inclusion of '
-        'gravitational effects of other heavenly bodies.', 'software', 1,
+        'gravitational effects of other heavenly bodies.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     23: (
         'Message Processing',
         'Handles input and output mnessages. processing the '
-        'text or information contained therein.', 'software', 1,
+        'text or information contained therein.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     24: (
         'Diagnostic Software',
         'Used to detect and isolate hardware errors in the '
         'computer in which it resides or in other hardware '
-        'that can communicate with the computer.', 'software', 1,
+        'that can communicate with the computer.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     25: (
         'Sensor and Signal Processing',
         'Similar to that of message processing, except that '
         'it required greater processing, analyzing, and '
         'transforming the input into a usable data '
-        'processing format.', 'software', 1,
+        'processing format.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     26: (
-        'Simulation', 'Used to simulate and environment ieseion '
+        'Simulation',
+        'Used to simulate and environment ieseion '
         'situation. other heavradlwuaatrieo,n aonfd a '
         'icnopmutps uftreo mpr otghreasme nt o enable a '
-        'more realistic or a piece of hardware.', 'software', 1,
+        'more realistic or a piece of hardware.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     27: (
-        'Database Management', 'Manages the storage and access of (typically '
+        'Database Management',
+        'Manages the storage and access of (typically '
         'large) groups of data. Such software can also '
         'often prepare reports in user-defined formats, '
-        'based on the contents of the database.', 'software', 1,
+        'based on the contents of the database.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     28: (
         'Data Acquisition',
         'Receives information in real-time and stores it in '
         'some form suitable format for later processing, '
         'for example, software that receives data from a '
-        'space probe ,and files.', 'software', 1,
+        'space probe ,and files.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     29: (
-        'Data Presentation', 'Formats and transforms data, as necessary, for '
+        'Data Presentation',
+        'Formats and transforms data, as necessary, for '
         'convenient and understandable displays for '
         'humans.  Typically, such displays would be for '
-        'some screen presentation.', 'software', 1,
+        'some screen presentation.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     30: (
         'Decision and Planning Aids',
         'Uses artificial intelligence techniques to provide '
         'an expert system to evaluate data and provide '
         'additional information and consideration for '
-        'decision and policy makers.', 'software', 1,
+        'decision and policy makers.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     31: (
         'Pattern and Image Processing',
         'Used for computer image generation and '
         'processing.  Such software may analyze terrain '
-        'data and generate images based on stored data.', 'software', 1,
+        'data and generate images based on stored data.',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     32: (
         'Computer System Software',
         'Provides services to operational computer '
-        'programs (i.e., problem oriented).', 'software', 1,
+        'programs (i.e., problem oriented).',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
     33: (
         'Software Development Tools',
         'Provides services to aid in the development of '
         'software (e.g., compilers, assemblers, static and '
-        'dynamic analyzers).', 'software', 1,
+        'dynamic analyzers).',
+        'software',
+        1,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
     ),
-    34: ('HW', 'Hardware', 'incident', 1),
-    35: ('SW', 'Software', 'incident', 1),
-    36: ('PROC', 'Process', 'incident', 1),
-    37: ('ENGD', 'Engineering, Design', 'action', 1),
-    38: ('ENGR', 'Engineering, Reliability', 'action', 1),
-    39: ('ENGS', 'Engineering, Systems', 'action', 1),
-    40: ('MAN', 'Manufacturing', 'action', 1),
-    41: ('TEST', 'Test', 'action', 1),
-    42: ('VANDV', 'Verification & Validation', 'action', 1),
+    34: (
+        'HW', 'Hardware', 'incident', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0,
+        0.0, 0.0, 0.0,
+    ),
+    35: (
+        'SW', 'Software', 'incident', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0,
+        0.0, 0.0, 0.0,
+    ),
+    36: (
+        'PROC', 'Process', 'incident', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0,
+        0.0, 0.0, 0.0,
+    ),
+    37: (
+        'ENGD', 'Engineering, Design', 'action', 1, 1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 0.0, 0.0, 0.0, 0.0,
+    ),
+    38: (
+        'ENGR', 'Engineering, Reliability', 'action', 1, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+    ),
+    39: (
+        'ENGS', 'Engineering, Systems', 'action', 1, 1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 0.0, 0.0, 0.0, 0.0,
+    ),
+    40: (
+        'MAN', 'Manufacturing', 'action', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+        0.0, 0.0, 0.0, 0.0,
+    ),
+    41: (
+        'TEST', 'Test', 'action', 1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0,
+        0.0, 0.0,
+    ),
+    42: (
+        'VANDV', 'Verification & Validation', 'action', 1, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+    ),
 }
 
 RAMSTK_CONDITIONS = {
@@ -288,7 +586,8 @@ RAMSTK_HAZARDS = {
     58: ('Ergonomics', 'Inadequate/Improper Illumination'),
     59: ('Ergonomics', 'Inappropriate Control/Readout Location'),
     60: (
-        'Ergonomics', 'Nonexistent/Inadequate '
+        'Ergonomics',
+        'Nonexistent/Inadequate '
         'Kill'
         ' Switches',
     ),
@@ -400,7 +699,8 @@ RAMSTK_HAZARDS = {
     166: ('Pneumatic/Hydraulic', 'Pipe/Vessel/Duct Rupture'),
     167: ('Pneumatic/Hydraulic', 'Relief Pressure Improperly Set'),
     168: (
-        'Thermal', 'Altered Structural Properties (e.g., '
+        'Thermal',
+        'Altered Structural Properties (e.g., '
         'Embrittlement)',
     ),
     169: ('Thermal', 'Confined Gas/Liquid'),
@@ -497,32 +797,46 @@ RAMSTK_MODELS = {
 RAMSTK_RPNS = {
     0: ('None', 'No effect.', 'severity', 1),
     1: (
-        'Very Minor', 'System operable with minimal interference.', 'severity',
+        'Very Minor',
+        'System operable with minimal interference.',
+        'severity',
         2,
     ),
     2: (
-        'Minor', 'System operable with some degradation of '
-        'performance.', 'severity', 3,
+        'Minor',
+        'System operable with some degradation of '
+        'performance.',
+        'severity',
+        3,
     ),
     3: (
-        'Very Low', 'System operable with significant degradation of '
-        'performance.', 'severity', 4,
+        'Very Low',
+        'System operable with significant degradation of '
+        'performance.',
+        'severity',
+        4,
     ),
     4: ('Low', 'System inoperable without damage.', 'severity', 5),
     5: ('Moderate', 'System inoperable with minor damage.', 'severity', 6),
     6: ('High', 'System inoperable with system damage.', 'severity', 7),
     7: (
-        'Very High', 'System inoperable with destructive failure '
-        'without compromising safety.', 'severity', 8,
+        'Very High',
+        'System inoperable with destructive failure '
+        'without compromising safety.',
+        'severity',
+        8,
     ),
     8: (
         'Hazardous, with warning',
-        'Failure effects safe system operation with warning.', 'severity', 9,
+        'Failure effects safe system operation with warning.',
+        'severity',
+        9,
     ),
-    9:
-    (
+    9: (
         'Hazardous, without warning',
-        'Failure effects safe system operation without warning.', 'severity', 10,
+        'Failure effects safe system operation without warning.',
+        'severity',
+        10,
     ),
     10: ('Remote', 'Failure rate is 1 in 1,500,000.', 'occurrence', 1),
     11: ('Very Low', 'Failure rate is 1 in 150,000.', 'occurrence', 2),
@@ -537,52 +851,81 @@ RAMSTK_RPNS = {
     20: (
         'Almost Certain',
         'Design control will almost certainly detect a potential '
-        'mechanism/cause and subsequent failure mode.', 'detection', 1,
+        'mechanism/cause and subsequent failure mode.',
+        'detection',
+        1,
     ),
     21: (
-        'Very High', 'Very high chance the existing design controls '
+        'Very High',
+        'Very high chance the existing design controls '
         'will or can detect a potential mechanism/cause and '
-        'subsequent failure mode.', 'detection', 2,
+        'subsequent failure mode.',
+        'detection',
+        2,
     ),
     22: (
-        'High', 'High chance the existing design controls will or '
+        'High',
+        'High chance the existing design controls will or '
         'can detect a potential mechanism/cause and subsequent '
-        'failure mode.', 'detection', 3,
+        'failure mode.',
+        'detection',
+        3,
     ),
     23: (
-        'Moderately High', 'Moderately high chance the existing '
+        'Moderately High',
+        'Moderately high chance the existing '
         'design controls will or can detect a potential '
-        'mechanism/cause and subsequent failure mode.', 'detection', 4,
+        'mechanism/cause and subsequent failure mode.',
+        'detection',
+        4,
     ),
     24: (
-        'Moderate', 'Moderate chance the existing design controls '
+        'Moderate',
+        'Moderate chance the existing design controls '
         'will or can detect a potential mechanism/cause and '
-        'subsequent failure mode.', 'detection', 5,
+        'subsequent failure mode.',
+        'detection',
+        5,
     ),
     25: (
-        'Low', 'Low chance the existing design controls will or can '
+        'Low',
+        'Low chance the existing design controls will or can '
         'detect a potential mechanism/cause and subsequent failure '
-        'mode.', 'detection', 6,
+        'mode.',
+        'detection',
+        6,
     ),
     26: (
-        'Very Low', 'Very low chance the existing design controls '
+        'Very Low',
+        'Very low chance the existing design controls '
         'will or can detect a potential mechanism/cause and '
-        'subsequent failure mode.', 'detection', 7,
+        'subsequent failure mode.',
+        'detection',
+        7,
     ),
     27: (
-        'Remote', 'Remote chance the existing design controls will '
+        'Remote',
+        'Remote chance the existing design controls will '
         'or can detect a potential mechanism/cause and subsequent '
-        'failure mode.', 'detection', 8,
+        'failure mode.',
+        'detection',
+        8,
     ),
     28: (
-        'Very Remote', 'Very remote chance the existing design '
+        'Very Remote',
+        'Very remote chance the existing design '
         'controls will or can detect a potential mechanism/cause and '
-        'subsequent failure mode.', 'detection', 9,
+        'subsequent failure mode.',
+        'detection',
+        9,
     ),
     29: (
-        'Absolute Uncertainty', 'Existing design controls will not '
+        'Absolute Uncertainty',
+        'Existing design controls will not '
         'or cannot detect a potential mechanism/cause and subsequent '
-        'failure mode; there is no design control.', 'detection', 10,
+        'failure mode; there is no design control.',
+        'detection',
+        10,
     ),
 }
 
@@ -597,24 +940,28 @@ RAMSTK_STATUSES = {
     0: ('Initiated', 'Incident has been initiated.', 'incident'),
     1: ('Reviewed', 'Incident has been reviewed.', 'incident'),
     2: (
-        'Analysis', 'Incident has been assigned and is being analyzed.',
+        'Analysis',
+        'Incident has been assigned and is being analyzed.',
         'incident',
     ),
     3: (
         'Solution Identified',
-        'A solution to the reported problem has been identified.', 'incident',
+        'A solution to the reported problem has been identified.',
+        'incident',
     ),
-    4:
-    (
+    4: (
         'Solution Implemented',
-        'A solution to the reported problem has been implemented.', 'incident',
+        'A solution to the reported problem has been implemented.',
+        'incident',
     ),
     5: (
         'Solution Verified',
-        'A solution to the reported problem has been verified.', 'incident',
+        'A solution to the reported problem has been verified.',
+        'incident',
     ),
     6: (
-        'Ready for Approval', 'Incident analysis is ready to be approved.',
+        'Ready for Approval',
+        'Incident analysis is ready to be approved.',
         'incident',
     ),
     7: ('Approved', 'Incident analysis has been approved.', 'incident'),
@@ -628,10 +975,17 @@ RAMSTK_STATUSES = {
 }
 
 RAMSTK_SUBCATEGORIES = [
-    (1, 1, 'Linear'), (1, 2, 'Logic'), (1, 3, 'PAL, PLA'),
-    (1, 4, 'Microprocessor, Microcontroller'), (1, 5, 'Memory, ROM'),
-    (1, 6, 'Memory, EEPROM'), (1, 7, 'Memory, DRAM'), (1, 8, 'Memory, SRAM'),
-    (1, 9, 'GaAs'), (1, 10, 'VHSIC, VLSI'), (2, 12, 'Diode, Low Frequency'),
+    (1, 1, 'Linear'),
+    (1, 2, 'Logic'),
+    (1, 3, 'PAL, PLA'),
+    (1, 4, 'Microprocessor, Microcontroller'),
+    (1, 5, 'Memory, ROM'),
+    (1, 6, 'Memory, EEPROM'),
+    (1, 7, 'Memory, DRAM'),
+    (1, 8, 'Memory, SRAM'),
+    (1, 9, 'GaAs'),
+    (1, 10, 'VHSIC, VLSI'),
+    (2, 12, 'Diode, Low Frequency'),
     (2, 13, 'Diode, High Frequency'),
     (2, 14, 'Transistor, Low Frequency, Bipolar'),
     (2, 15, 'Transistor, Low Frequency, Si FET'),
@@ -639,17 +993,20 @@ RAMSTK_SUBCATEGORIES = [
     (2, 17, 'Transistor, High Frequency, Low Noise, Bipolar'),
     (2, 18, 'Transistor, High Frequency, High Power, Bipolar'),
     (2, 19, 'Transistor, High Frequency, GaAs FET'),
-    (2, 20, 'Transistor, High Frequency, Si FET'), (2, 21, 'Thyristor, SCR'),
+    (2, 20, 'Transistor, High Frequency, Si FET'),
+    (2, 21, 'Thyristor, SCR'),
     (2, 22, 'Optoelectronic, Detector, Isolator, Emitter'),
     (2, 23, 'Optoelectronic, Alphanumeric Display'),
     (2, 24, 'Optoelectronic, Laser Diode'),
     (3, 25, 'Fixed, Composition (RC, RCR)'),
     (3, 26, 'Fixed, Film (RL, RLR, RN, RNC, RNN, RNR)'),
-    (3, 27, 'Fixed, Film, Power (RD)'), (3, 28, 'Fixed, Film, Network (RZ)'),
+    (3, 27, 'Fixed, Film, Power (RD)'),
+    (3, 28, 'Fixed, Film, Network (RZ)'),
     (3, 29, 'Fixed, Wirewound (RB, RBR)'),
     (3, 30, 'Fixed, Wirewound, Power (RW, RWR)'),
     (3, 31, 'Fixed, Wirewound, Power, Chassis-Mounted (RE, RER)'),
-    (3, 32, 'Thermistor (RTH)'), (3, 33, 'Variable, Wirewound (RT, RTR)'),
+    (3, 32, 'Thermistor (RTH)'),
+    (3, 33, 'Variable, Wirewound (RT, RTR)'),
     (3, 34, 'Variable, Wirewound, Precision (RR)'),
     (3, 35, 'Variable, Wirewound, Semiprecision (RA, RK)'),
     (3, 36, 'Variable, Wirewound, Power (RP)'),
@@ -662,27 +1019,42 @@ RAMSTK_SUBCATEGORIES = [
     (4, 43, 'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)'),
     (4, 44, 'Fixed, Plastic and Metallized Plastic'),
     (4, 45, 'Fixed, Super-Metallized Plastic (CRH)'),
-    (4, 46, 'Fixed, Mica (CM, CMR)'), (4, 47, 'Fixed, Mica, Button (CB)'),
+    (4, 46, 'Fixed, Mica (CM, CMR)'),
+    (4, 47, 'Fixed, Mica, Button (CB)'),
     (4, 48, 'Fixed, Glass (CY, CYR)'),
     (4, 49, 'Fixed, Ceramic, General Purpose (CK, CKR)'),
     (
-        4, 50,
+        4,
+        50,
         'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)',
     ),
     (4, 51, 'Fixed, Electrolytic, Tantalum, Solid (CSR)'),
     (4, 52, 'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)'),
     (4, 53, 'Fixed, Electrolytic, Aluminum (CU, CUR)'),
     (4, 54, 'Fixed, Electrolytic (Dry), Aluminum (CE)'),
-    (4, 55, 'Variable, Ceramic (CV)'), (4, 56, 'Variable, Piston Type (PC)'),
+    (4, 55, 'Variable, Ceramic (CV)'),
+    (4, 56, 'Variable, Piston Type (PC)'),
     (4, 57, 'Variable, Air Trimmer (CT)'),
-    (4, 58, 'Variable and Fixed, Gas or Vacuum (CG)'), (5, 62, 'Transformer'),
-    (5, 63, 'Coil'), (6, 64, 'Mechanical'), (6, 65, 'Solid State'),
-    (7, 67, 'Toggle or Pushbutton'), (7, 68, 'Sensitive'), (7, 69, 'Rotary'),
-    (7, 70, 'Thumbwheel'), (7, 71, 'Circuit Breaker'), (8, 72, 'Multi-Pin'),
-    (8, 73, 'PCB Edge'), (8, 74, 'IC Socket'),
-    (8, 75, 'Plated Through Hole (PTH)'), (8, 76, 'Connection, Non-PTH'),
-    (9, 77, 'Elapsed Time'), (9, 78, 'Panel'), (10, 80, 'Crystal'),
-    (10, 81, 'Filter, Non-Tunable Electronic'), (10, 82, 'Fuse'),
+    (4, 58, 'Variable and Fixed, Gas or Vacuum (CG)'),
+    (5, 62, 'Transformer'),
+    (5, 63, 'Coil'),
+    (6, 64, 'Mechanical'),
+    (6, 65, 'Solid State'),
+    (7, 67, 'Toggle or Pushbutton'),
+    (7, 68, 'Sensitive'),
+    (7, 69, 'Rotary'),
+    (7, 70, 'Thumbwheel'),
+    (7, 71, 'Circuit Breaker'),
+    (8, 72, 'Multi-Pin'),
+    (8, 73, 'PCB Edge'),
+    (8, 74, 'IC Socket'),
+    (8, 75, 'Plated Through Hole (PTH)'),
+    (8, 76, 'Connection, Non-PTH'),
+    (9, 77, 'Elapsed Time'),
+    (9, 78, 'Panel'),
+    (10, 80, 'Crystal'),
+    (10, 81, 'Filter, Non-Tunable Electronic'),
+    (10, 82, 'Fuse'),
     (10, 83, 'Lamp'),
 ]
 

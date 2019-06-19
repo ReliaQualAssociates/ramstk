@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.commondb.TestRAMSTKFailureMode.py is part of The RAMSTK Project
+#       tests.dao.commondb.test_ramstkfailuremode.py is part of The RAMSTK Project
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKFailureMode module algorithms and models. """
+"""Test class for the RAMSTKFailureMode module algorithms and models. """
 
+# Third Party Imports
 import pytest
 
+# RAMSTK Package Imports
 from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'mode_id': 3,
@@ -20,7 +17,7 @@ ATTRIBUTES = {
     'subcategory_id': 24,
     'source': 'FMD-97',
     'category_id': 3,
-    'mode_ratio': 0.2
+    'mode_ratio': 0.2,
 }
 
 
@@ -28,7 +25,8 @@ ATTRIBUTES = {
 def test_ramstkfailuremode_create(test_common_dao):
     """ __init__() should create an RAMSTKFailureMode model. """
     _session = test_common_dao.RAMSTK_SESSION(
-        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
+        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False,
+    )
     DUT = _session.query(RAMSTKFailureMode).first()
 
     assert isinstance(DUT, RAMSTKFailureMode)
@@ -47,7 +45,8 @@ def test_ramstkfailuremode_create(test_common_dao):
 def test_get_attributes(test_common_dao):
     """ get_attributes() should return a tuple of attributes values on success. """
     _session = test_common_dao.RAMSTK_SESSION(
-        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
+        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False,
+    )
     DUT = _session.query(RAMSTKFailureMode).first()
 
     assert DUT.get_attributes() == ATTRIBUTES
@@ -57,21 +56,25 @@ def test_get_attributes(test_common_dao):
 def test_set_attributes(test_common_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_common_dao.RAMSTK_SESSION(
-        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
+        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False,
+    )
     DUT = _session.query(RAMSTKFailureMode).first()
 
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKFailureMode {0:d} "
-                    "attributes.".format(DUT.mode_id))
+    assert _msg == (
+        "RAMSTK SUCCESS: Updating RAMSTKFailureMode {0:d} "
+        "attributes.".format(DUT.mode_id)
+    )
 
 
 @pytest.mark.integration
 def test_set_attributes_missing_key(test_common_dao):
     """ set_attributes() should return a 40 error code when passed too few attributes. """
     _session = test_common_dao.RAMSTK_SESSION(
-        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False)
+        bind=test_common_dao.engine, autoflush=False, expire_on_commit=False,
+    )
     DUT = _session.query(RAMSTKFailureMode).first()
 
     ATTRIBUTES.pop('mode_ratio')
@@ -79,7 +82,9 @@ def test_set_attributes_missing_key(test_common_dao):
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'mode_ratio' in attribute "
-                    "dictionary passed to RAMSTKFailureMode.set_attributes().")
+    assert _msg == (
+        "RAMSTK ERROR: Missing attribute 'mode_ratio' in attribute "
+        "dictionary passed to RAMSTKFailureMode.set_attributes()."
+    )
 
     ATTRIBUTES['mode_ratio'] = 0.2

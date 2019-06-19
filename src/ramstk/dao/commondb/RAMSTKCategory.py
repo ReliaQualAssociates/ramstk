@@ -3,11 +3,11 @@
 #       ramstk.dao.commondb.RAMSTKCategory.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKCategory Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -20,8 +20,11 @@ class RAMSTKCategory(RAMSTK_BASE):
     Class to represent the table ramstk_category in the RAMSTK Common database.
 
     Types of category are:
-        # 1 = Hardware Component
-        # 2 = Severity
+        # 1. Hardware
+        # 2. Risk
+        # 3. Software
+        # 4. Incident
+        # 5. Action
     """
 
     __tablename__ = 'ramstk_category'
@@ -40,6 +43,16 @@ class RAMSTKCategory(RAMSTK_BASE):
     )
     cat_type = Column('fld_type', String(256), default='unknown')
     value = Column('fld_value', Integer, default=1)
+    harsh_ir_limit = Column('fld_harsh_ir_limit', Float, default=0.8)
+    mild_ir_limit = Column('fld_mild_ir_limit', Float, default=0.9)
+    harsh_pr_limit = Column('fld_harsh_pr_limit', Float, default=1.0)
+    mild_pr_limit = Column('fld_mild_pr_limit', Float, default=1.0)
+    harsh_vr_limit = Column('fld_harsh_vr_limit', Float, default=1.0)
+    mild_vr_limit = Column('fld_mild_vr_limit', Float, default=1.0)
+    harsh_deltat_limit = Column('fld_harsh_deltat_limit', Float, default=0.0)
+    mild_deltat_limit = Column('fld_mild_deltat_limit', Float, default=0.0)
+    harsh_maxt_limit = Column('fld_harsh_maxt_limit', Float, default=125.0)
+    mild_maxt_limit = Column('fld_mild_maxt_limit', Float, default=125.0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
     subcategory = relationship(
@@ -53,7 +66,11 @@ class RAMSTKCategory(RAMSTK_BASE):
         """
         Retrieve current values of the RAMSTKCategory data model attributes.
 
-        :return: {category_id, name, description, cat_type, value} pairs
+        :return: {category_id, name, description, cat_type, value,
+                  harsh_ir_limit, mild_ir_limit, harsh_pr_limit,
+                  mild_pr_limit, harsh_vr_limit, mild_vr_limit,
+                  harsh_deltat_limit, mild_deltat_limit, harsh_maxt_limit,
+                  mild_maxt_limit} pairs
         :rtype: dict
         """
         _attributes = {
@@ -62,6 +79,16 @@ class RAMSTKCategory(RAMSTK_BASE):
             'description': self.description,
             'category_type': self.cat_type,
             'value': self.value,
+            'harsh_ir_limit': self.harsh_ir_limit,
+            'mild_ir_limit': self.mild_ir_limit,
+            'harsh_pr_limit': self.harsh_pr_limit,
+            'mild_pr_limit': self.mild_pr_limit,
+            'harsh_vr_limit': self.harsh_vr_limit,
+            'mild_vr_limit': self.mild_vr_limit,
+            'harsh_deltat_limit': self.harsh_deltat_limit,
+            'mild_deltat_limit': self.mild_deltat_limit,
+            'harsh_maxt_limit': self.harsh_maxt_limit,
+            'mild_maxt_limit': self.mild_maxt_limit,
         }
 
         return _attributes
@@ -92,6 +119,16 @@ class RAMSTKCategory(RAMSTK_BASE):
                 none_to_default(attributes['category_type'], 'unknown'),
             )
             self.value = int(none_to_default(attributes['value'], 1))
+            self.harsh_ir_limit = float(none_to_default(attributes['harsh_ir_limit'], 1.0))
+            self.mild_ir_limit = float(none_to_default(attributes['mild_ir_limit'], 1.0))
+            self.harsh_pr_limit = float(none_to_default(attributes['harsh_pr_limit'], 1.0))
+            self.mild_pr_limit = float(none_to_default(attributes['mild_pr_limit'], 1.0))
+            self.harsh_vr_limit = float(none_to_default(attributes['harsh_vr_limit'], 1.0))
+            self.mild_vr_limit = float(none_to_default(attributes['mild_vr_limit'], 1.0))
+            self.harsh_deltat_limit = float(none_to_default(attributes['harsh_deltat_limit'], 1.0))
+            self.mild_deltat_limit = float(none_to_default(attributes['mild_deltat_limit'], 1.0))
+            self.harsh_maxt_limit = float(none_to_default(attributes['harsh_maxt_limit'], 1.0))
+            self.mild_maxt_limit = float(none_to_default(attributes['mild_maxt_limit'], 1.0))
         except KeyError as _err:
             _error_code = 40
             _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \

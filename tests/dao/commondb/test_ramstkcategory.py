@@ -12,17 +12,22 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.dao.commondb import RAMSTKCategory
 
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
-
 ATTRIBUTES = {
     'category_type': 'hardware',
     'category_id': 1,
     'name': 'IC',
     'value': 1,
     'description': 'Integrated Circuit',
+    'harsh_ir_limit': 0.8,
+    'mild_ir_limit': 0.9,
+    'harsh_pr_limit': 1.0,
+    'mild_pr_limit': 1.0,
+    'harsh_vr_limit': 1.0,
+    'mild_vr_limit': 1.0,
+    'harsh_deltat_limit': 0.0,
+    'mild_deltat_limit': 0.0,
+    'harsh_maxt_limit': 125.0,
+    'mild_maxt_limit': 125.0,
 }
 
 
@@ -43,6 +48,16 @@ def test_ramstkcategory_create(test_common_dao):
     assert DUT.description == 'Integrated Circuit'
     assert DUT.cat_type == 'hardware'
     assert DUT.value == 1
+    assert DUT.harsh_ir_limit == 0.8
+    assert DUT.mild_ir_limit == 0.9
+    assert DUT.harsh_pr_limit == 1.0
+    assert DUT.mild_pr_limit == 1.0
+    assert DUT.harsh_vr_limit == 1.0
+    assert DUT.mild_vr_limit == 1.0
+    assert DUT.harsh_deltat_limit == 0.0
+    assert DUT.mild_deltat_limit == 0.0
+    assert DUT.harsh_maxt_limit == 125.0
+    assert DUT.mild_maxt_limit == 125.0
 
 
 @pytest.mark.integration
