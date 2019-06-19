@@ -14,7 +14,6 @@ from os import environ, makedirs, path
 from typing import Dict
 
 # RAMSTK Package Imports
-# RAMSTK Imports
 import ramstk.Utilities as Utilities
 
 _ = gettext.gettext
@@ -80,8 +79,7 @@ RAMSTK_CRITICALITY = [
         _(
             "Could result in death, permanent total disability, loss exceeding "
             "$1M, or irreversible severe environmental damage that violates law "
-            "or regulation.",
-        ),
+            "or regulation.", ),
         "I",
         4,
     ],
@@ -92,8 +90,7 @@ RAMSTK_CRITICALITY = [
             "occupational illness that may result in hospitalization of at least "
             "three personnel, loss exceeding $200K but less than $1M, or "
             "reversible environmental damage causing a violation of law or "
-            "regulation.",
-        ),
+            "regulation.", ),
         "II",
         3,
     ],
@@ -103,8 +100,7 @@ RAMSTK_CRITICALITY = [
             "Could result in injury or occupational illness resulting in one or "
             "more lost work days(s), loss exceeding $10K but less than $200K, or "
             "mitigatible environmental damage without violation of law or "
-            "regulation where restoration activities can be accomplished.",
-        ),
+            "regulation where restoration activities can be accomplished.", ),
         "III",
         2,
     ],
@@ -113,8 +109,7 @@ RAMSTK_CRITICALITY = [
         _(
             "Could result in injury or illness not resulting in a lost work "
             "day, loss exceeding $2K but less than $10K, or minimal "
-            "environmental damage not violating law or regulation.",
-        ),
+            "environmental damage not violating law or regulation.", ),
         "IV",
         1,
     ],
@@ -157,9 +152,8 @@ RAMSTK_SW_TEST_METHODS = [
     [
         _("Code Reviews"),
         _(
-            "Code review is a systematic examination (often known as peer review) "
-            "of computer source code.",
-        ),
+            "Code review is a systematic examination (often known as peer "
+            "review) of computer source code.", ),
     ],
     [_("Error/Anomaly Detection"), _("")],
     [_("Structure Analysis"), _("")],
@@ -375,7 +369,11 @@ class Configuration:
     RAMSTK_COLORS: Dict[str, str] = {}
     RAMSTK_COM_INFO: Dict[str, str] = {}  # RAMSTK Common database info.
     RAMSTK_PROG_INFO: Dict[str, str] = {}  # RAMSTK Program database info.
-    RAMSTK_TABPOS = {"listbook": "top", "modulebook": "bottom", "workbook": "bottom"}
+    RAMSTK_TABPOS = {
+        "listbook": "top",
+        "modulebook": "bottom",
+        "workbook": "bottom",
+    }
 
     # The following global dicts are loaded from information in the RAMSTK
     # Common database.
@@ -402,6 +400,7 @@ class Configuration:
     RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User updateable.
     RAMSTK_SEVERITY: Dict[str, str] = {}
     RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User updateable.
+    RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User updateable.
     RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
     RAMSTK_USERS: Dict[str, str] = {}  # Admin updateable.
     RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}
@@ -505,10 +504,6 @@ class Configuration:
         """
         _return = False
 
-        # Try to read the user's configuration file.  If it doesn't exist,
-        # create a new one.  If those options fail, read the system-wide
-        # configuration file and keep going.
-
         if Utilities.file_exists(self.RAMSTK_SITE_CONF):
             _config = configparser.ConfigParser()
             _config.read(self.RAMSTK_SITE_CONF)
@@ -516,10 +511,18 @@ class Configuration:
             self.RAMSTK_COM_BACKEND = _config.get("Backend", "type")
             self.RAMSTK_COM_INFO["host"] = _config.get("Backend", "host")
             self.RAMSTK_COM_INFO["socket"] = _config.get("Backend", "socket")
-            self.RAMSTK_COM_INFO["database"] = _config.get("Backend", "database")
+            self.RAMSTK_COM_INFO["database"] = _config.get(
+                "Backend",
+                "database",
+            )
             self.RAMSTK_COM_INFO["user"] = _config.get("Backend", "user")
-            self.RAMSTK_COM_INFO["password"] = _config.get("Backend", "password")
+            self.RAMSTK_COM_INFO["password"] = _config.get(
+                "Backend",
+                "password",
+            )
             self.RAMSTK_COM_INFO["path"] = _config.get("Backend", "password")
+        else:
+            _return = True
 
         return _return
 
@@ -622,13 +625,16 @@ class Configuration:
         # Copy the icons from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_ICON_DIR.
         try:
-            dir_util.copy_tree(self.RAMSTK_SITE_DIR + "/icons/", self.RAMSTK_ICON_DIR)
+            dir_util.copy_tree(
+                self.RAMSTK_SITE_DIR + "/icons/",
+                self.RAMSTK_ICON_DIR,
+            )
         except IOError:
             _return = True
 
         # Create the default RAMSTK user configuration file.
         _config.add_section("General")
-        _config.set("General", "firstrun", True)
+        _config.set("General", "firstrun", "True")
         _config.set("General", "reportsize", "letter")
         _config.set("General", "frmultiplier", "1000000.0")
         _config.set("General", "calcreltime", "100.0")
@@ -705,7 +711,6 @@ class Configuration:
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-
         if Utilities.file_exists(self.RAMSTK_PROG_CONF):
             _config = configparser.ConfigParser()
             _config.read(self.RAMSTK_PROG_CONF)
@@ -719,9 +724,15 @@ class Configuration:
             self.RAMSTK_BACKEND = _config.get("Backend", "type")
             self.RAMSTK_PROG_INFO["host"] = _config.get("Backend", "host")
             self.RAMSTK_PROG_INFO["socket"] = _config.get("Backend", "socket")
-            self.RAMSTK_PROG_INFO["database"] = _config.get("Backend", "database")
+            self.RAMSTK_PROG_INFO["database"] = _config.get(
+                "Backend",
+                "database",
+            )
             self.RAMSTK_PROG_INFO["user"] = _config.get("Backend", "user")
-            self.RAMSTK_PROG_INFO["password"] = _config.get("Backend", "password")
+            self.RAMSTK_PROG_INFO["password"] = _config.get(
+                "Backend",
+                "password",
+            )
 
             self.RAMSTK_DATA_DIR = _config.get("Directories", "datadir")
             self.RAMSTK_ICON_DIR = _config.get("Directories", "icondir")
@@ -729,13 +740,23 @@ class Configuration:
             self.RAMSTK_PROG_DIR = _config.get("Directories", "progdir")
 
             self.RAMSTK_REPORT_SIZE = _config.get("General", "reportsize")
-            self.RAMSTK_HR_MULTIPLIER = float(_config.get("General", "frmultiplier"))
+            self.RAMSTK_HR_MULTIPLIER = float(
+                _config.get("General", "frmultiplier"), )
             self.RAMSTK_DEC_PLACES = int(_config.get("General", "decimal"))
             self.RAMSTK_MTIME = float(_config.get("General", "calcreltime"))
             self.RAMSTK_MODE_SOURCE = _config.get("General", "modesource")
-            self.RAMSTK_TABPOS["listbook"] = _config.get("General", "listtabpos")
-            self.RAMSTK_TABPOS["modulebook"] = _config.get("General", "moduletabpos")
-            self.RAMSTK_TABPOS["workbook"] = _config.get("General", "worktabpos")
+            self.RAMSTK_TABPOS["listbook"] = _config.get(
+                "General",
+                "listtabpos",
+            )
+            self.RAMSTK_TABPOS["modulebook"] = _config.get(
+                "General",
+                "moduletabpos",
+            )
+            self.RAMSTK_TABPOS["workbook"] = _config.get(
+                "General",
+                "worktabpos",
+            )
         else:
             _return = True
 
@@ -750,16 +771,18 @@ class Configuration:
         """
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
-
         if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
             self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
         else:
             self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/data"):
-            self.RAMSTK_DATA_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/data"
+        if Utilities.dir_exists(
+                self.RAMSTK_HOME_DIR + "/.config/RAMSTK/layouts", ):
+            self.RAMSTK_DATA_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/layouts"
 
-        if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/icons"):
+        if Utilities.dir_exists(
+                self.RAMSTK_HOME_DIR +
+                "/.config/RAMSTK/icons", ):
             self.RAMSTK_ICON_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/icons"
 
         if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"):
@@ -770,9 +793,7 @@ class Configuration:
         if not Utilities.file_exists(self.RAMSTK_SITE_CONF):
             self._set_site_configuration()
 
-        self.get_site_configuration()
-
-        return False
+        return self.get_site_configuration()
 
     def set_user_configuration(self):
         """
@@ -788,22 +809,50 @@ class Configuration:
             _config.add_section("General")
             _config.set("General", "reportsize", self.RAMSTK_REPORT_SIZE)
             _config.set("General", "parallelcalcs", "False")
-            _config.set("General", "frmultiplier", str(self.RAMSTK_HR_MULTIPLIER))
+            _config.set(
+                "General",
+                "frmultiplier",
+                str(self.RAMSTK_HR_MULTIPLIER),
+            )
             _config.set("General", "calcreltime", str(self.RAMSTK_MTIME))
             _config.set("General", "autoaddlistitems", "False")
             _config.set("General", "decimal", str(self.RAMSTK_DEC_PLACES))
             _config.set("General", "modesource", self.RAMSTK_MODE_SOURCE)
-            _config.set("General", "moduletabpos", self.RAMSTK_TABPOS["modulebook"])
-            _config.set("General", "listtabpos", self.RAMSTK_TABPOS["listbook"])
-            _config.set("General", "worktabpos", self.RAMSTK_TABPOS["workbook"])
+            _config.set(
+                "General",
+                "moduletabpos",
+                self.RAMSTK_TABPOS["modulebook"],
+            )
+            _config.set(
+                "General",
+                "listtabpos",
+                self.RAMSTK_TABPOS["listbook"],
+            )
+            _config.set(
+                "General",
+                "worktabpos",
+                self.RAMSTK_TABPOS["workbook"],
+            )
 
             _config.add_section("Backend")
             _config.set("Backend", "type", self.RAMSTK_BACKEND)
             _config.set("Backend", "host", self.RAMSTK_PROG_INFO["host"])
-            _config.set("Backend", "socket", str(self.RAMSTK_PROG_INFO["socket"]))
-            _config.set("Backend", "database", self.RAMSTK_PROG_INFO["database"])
+            _config.set(
+                "Backend",
+                "socket",
+                str(self.RAMSTK_PROG_INFO["socket"]),
+            )
+            _config.set(
+                "Backend",
+                "database",
+                self.RAMSTK_PROG_INFO["database"],
+            )
             _config.set("Backend", "user", self.RAMSTK_PROG_INFO["user"])
-            _config.set("Backend", "password", self.RAMSTK_PROG_INFO["password"])
+            _config.set(
+                "Backend",
+                "password",
+                self.RAMSTK_PROG_INFO["password"],
+            )
 
             _config.add_section("Directories")
             _config.set("Directories", "datadir", self.RAMSTK_DATA_DIR)
@@ -815,7 +864,9 @@ class Configuration:
 
             for _file in self._lst_format_files:
                 _config.set(
-                    "Files", _file, path.basename(self.RAMSTK_FORMAT_FILE[_file]),
+                    "Files",
+                    _file,
+                    path.basename(self.RAMSTK_FORMAT_FILE[_file]),
                 )
 
             _config.add_section("Colors")

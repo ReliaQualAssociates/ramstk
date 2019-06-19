@@ -3,30 +3,26 @@
 #       ramstk.tests.test_ramstk.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""This is the test class for testing the RAMSTK module algorithms and models."""
+"""This is the test class for the RAMSTK module algorithms and models."""
 
+# Standard Library Imports
+import logging
 import os
 import tempfile
 
-import logging
+# Third Party Imports
+import pytest
 from treelib import Tree
 
-import pytest
-
+# RAMSTK Package Imports
 from ramstk.Configuration import Configuration
-from ramstk.RAMSTK import Model, RAMSTK, _initialize_loggers
 from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk.mwi.ListBook import ListBook
 from ramstk.gui.gtk.mwi.ModuleBook import ModuleBook
 from ramstk.gui.gtk.mwi.WorkBook import WorkBook
+from ramstk.RAMSTK import RAMSTK, Model, _initialize_loggers
 
 TEMPDIR = tempfile.gettempdir()
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2018 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration
@@ -34,8 +30,11 @@ def test_initialize_logger(test_configuration):
     """ _initialize_loggers() should return a tuple of logging.Logger instances. """
     _configuration = test_configuration
 
-    (_configuration.RAMSTK_DEBUG_LOG, _configuration.RAMSTK_USER_LOG,
-     _configuration.RAMSTK_IMPORT_LOG) = _initialize_loggers(_configuration)
+    (
+        _configuration.RAMSTK_DEBUG_LOG,
+        _configuration.RAMSTK_USER_LOG,
+        _configuration.RAMSTK_IMPORT_LOG,
+    ) = _initialize_loggers(_configuration)
 
     assert isinstance(_configuration.RAMSTK_DEBUG_LOG, logging.Logger)
     assert isinstance(_configuration.RAMSTK_USER_LOG, logging.Logger)
@@ -64,12 +63,16 @@ def test_do_create_new_program(test_common_dao, test_dao, test_configuration):
     print(TEMPDIR)
     _configuration = test_configuration
     _database = (
-        _configuration.RAMSTK_BACKEND + ':///' + TEMPDIR + '/_ramstk_test_db.ramstk')
+        _configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
+        '/_ramstk_test_db.ramstk'
+    )
     _error_code, _msg = DUT.do_create_program(_database)
 
     assert _error_code == 0
     assert _msg == (
-        'RAMSTK SUCCESS: Creating RAMSTK Program database {0:s}.'.format(_database))
+        'RAMSTK SUCCESS: Creating RAMSTK Program database {0:s}.'.
+        format(_database)
+    )
 
 
 @pytest.mark.integration
@@ -81,8 +84,10 @@ def test_do_create_new_program_failed(test_common_dao, test_dao):
     _error_code, _msg = DUT.do_create_program(_database)
 
     assert _error_code == 1
-    assert _msg == ('RAMSTK ERROR: Failed to create RAMSTK Program database '
-                    'sqlite:/' + TEMPDIR + '/BigAssTestDB.ramstk.')
+    assert _msg == (
+        'RAMSTK ERROR: Failed to create RAMSTK Program database '
+        'sqlite:/' + TEMPDIR + '/BigAssTestDB.ramstk.'
+    )
 
 
 @pytest.mark.integration
@@ -97,7 +102,9 @@ def test_do_open_program(test_common_dao, test_dao, test_configuration):
 
     assert _error_code == 0
     assert _msg == (
-        'RAMSTK SUCCESS: Opening RAMSTK Program database {0:s}.'.format(_database))
+        'RAMSTK SUCCESS: Opening RAMSTK Program database {0:s}.'.
+        format(_database)
+    )
 
 
 @pytest.mark.integration
@@ -116,12 +123,12 @@ def test_load_globals(test_common_dao, test_dao):
         40: ('ENGS', 'Engineering, Systems', 'action', 1),
         41: ('MAN', 'Manufacturing', 'action', 1),
         42: ('TEST', 'Test', 'action', 1),
-        43: ('VANDV', 'Verification & Validation', 'action', 1)
+        43: ('VANDV', 'Verification & Validation', 'action', 1),
     }
     assert _configuration.RAMSTK_INCIDENT_CATEGORY == {
         35: ('HW', 'Hardware', 'incident', 1),
         36: ('SW', 'Software', 'incident', 1),
-        37: ('PROC', 'Process', 'incident', 1)
+        37: ('PROC', 'Process', 'incident', 1),
     }
     assert _configuration.RAMSTK_SEVERITY == {
         11: ('INS', 'Insignificant', 'risk', 1),
@@ -129,13 +136,13 @@ def test_load_globals(test_common_dao, test_dao):
         13: ('LOW', 'Low', 'risk', 3),
         14: ('MED', 'Medium', 'risk', 4),
         15: ('HI', 'High', 'risk', 5),
-        16: ('MAJ', 'Major', 'risk', 6)
+        16: ('MAJ', 'Major', 'risk', 6),
     }
 
     assert _configuration.RAMSTK_AFFINITY_GROUPS == {
         8: ('Durability', 'affinity'),
         9: ('Cost', 'affinity'),
-        7: ('Reliability', 'affinity')
+        7: ('Reliability', 'affinity'),
     }
     assert _configuration.RAMSTK_WORKGROUPS == {
         1: ('Engineering, Design', 'workgroup'),
@@ -143,7 +150,7 @@ def test_load_globals(test_common_dao, test_dao):
         3: ('Engineering, Maintainability', 'workgroup'),
         4: ('Engineering, Reliability', 'workgroup'),
         5: ('Engineering, Safety', 'workgroup'),
-        6: ('Engineering, Software', 'workgroup')
+        6: ('Engineering, Software', 'workgroup'),
     }
 
     assert _configuration.RAMSTK_DETECTION_METHODS == {
@@ -152,7 +159,7 @@ def test_load_globals(test_common_dao, test_dao):
         3: ('Structure Analysis', '', 'detection'),
         4: ('Random Testing', '', 'detection'),
         5: ('Functional Testing', '', 'detection'),
-        6: ('Branch Testing', '', 'detection')
+        6: ('Branch Testing', '', 'detection'),
     }
 
     assert _configuration.RAMSTK_DAMAGE_MODELS == {
@@ -163,124 +170,236 @@ def test_load_globals(test_common_dao, test_dao):
         5: ('Eyring', ),
         6: ('Inverse Power Law (IPL)', ),
         7: ('IPL - Arrhenius', ),
-        8: ('Time Fraction of Damaging Operating Conditions', )
+        8: ('Time Fraction of Damaging Operating Conditions', ),
     }
 
     assert _configuration.RAMSTK_RPN_DETECTION == {
-        1:
-        (21, 'Almost Certain',
-         'Design control will almost certainly detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 1),
-        2:
-        (22, 'Very High',
-         'Very high chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 2),
-        3:
-        (23, 'High',
-         'High chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 3),
-        4:
-        (24, 'Moderately High',
-         'Moderately high chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 4),
-        5:
-        (25, 'Moderate',
-         'Moderate chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 5),
-        6:
-        (26, 'Low',
-         'Low chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 6),
-        7:
-        (27, 'Very Low',
-         'Very low chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 7),
-        8:
-        (28, 'Remote',
-         'Remote chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 8),
-        9:
-        (29, 'Very Remote',
-         'Very remote chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
-         'detection', 9),
-        10:
-        (30, 'Absolute Uncertainty',
-         'Existing design controls will not or cannot detect a potential mechanism/cause and subsequent failure mode; there is no design control.',
-         'detection', 10)
+        1: (
+            21,
+            'Almost Certain',
+            'Design control will almost certainly detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            1,
+        ),
+        2: (
+            22,
+            'Very High',
+            'Very high chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            2,
+        ),
+        3: (
+            23,
+            'High',
+            'High chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            3,
+        ),
+        4: (
+            24,
+            'Moderately High',
+            'Moderately high chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            4,
+        ),
+        5: (
+            25,
+            'Moderate',
+            'Moderate chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            5,
+        ),
+        6: (
+            26,
+            'Low',
+            'Low chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            6,
+        ),
+        7: (
+            27,
+            'Very Low',
+            'Very low chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            7,
+        ),
+        8: (
+            28,
+            'Remote',
+            'Remote chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            8,
+        ),
+        9: (
+            29,
+            'Very Remote',
+            'Very remote chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',
+            'detection',
+            9,
+        ),
+        10: (
+            30,
+            'Absolute Uncertainty',
+            'Existing design controls will not or cannot detect a potential mechanism/cause and subsequent failure mode; there is no design control.',
+            'detection',
+            10,
+        ),
     }
     assert _configuration.RAMSTK_RPN_OCCURRENCE == {
-        1: (11, 'Remote', 'Failure rate is 1 in 1,500,000.', 'occurrence',
-            1),
-        2: (12, 'Very Low', 'Failure rate is 1 in 150,000.', 'occurrence',
-            2),
+        1: (
+            11,
+            'Remote',
+            'Failure rate is 1 in 1,500,000.',
+            'occurrence',
+            1,
+        ),
+        2: (
+            12,
+            'Very Low',
+            'Failure rate is 1 in 150,000.',
+            'occurrence',
+            2,
+        ),
         3: (13, 'Low', 'Failure rate is 1 in 15,000', 'occurrence', 3),
-        4: (14, 'Moderately Low', 'Failure rate is 1 in 2000.',
-            'occurrence', 4),
+        4: (
+            14,
+            'Moderately Low',
+            'Failure rate is 1 in 2000.',
+            'occurrence',
+            4,
+        ),
         5: (15, 'Moderate', 'Failure rate is 1 in 400.', 'occurrence', 5),
-        6: (16, 'Moderately High', 'Failure rate is 1 in 80.', 'occurrence',
-            6),
+        6: (
+            16,
+            'Moderately High',
+            'Failure rate is 1 in 80.',
+            'occurrence',
+            6,
+        ),
         7: (17, 'High', 'Failure rate is 1 in 20.', 'occurrence', 7),
         8: (18, 'Very High', 'Failure rate is 1 in 8.', 'occurrence', 8),
-        9: (19, 'Extremely High', 'Failure rate is 1 in 3.', 'occurrence',
-            9),
-        10: (20, 'Dangerously High', 'Failure rate is > 1 in 2.',
-             'occurrence', 10)
+        9: (
+            19,
+            'Extremely High',
+            'Failure rate is 1 in 3.',
+            'occurrence',
+            9,
+        ),
+        10: (
+            20,
+            'Dangerously High',
+            'Failure rate is > 1 in 2.',
+            'occurrence',
+            10,
+        ),
     }
     assert _configuration.RAMSTK_RPN_SEVERITY == {
         1: (1, 'None', 'No effect.', 'severity', 1),
-        2: (2, 'Very Minor', 'System operable with minimal interference.',
-            'severity', 2),
-        3:
-        (3, 'Minor', 'System operable with some degradation of performance.',
-         'severity', 3),
-        4: (4, 'Very Low',
+        2: (
+            2,
+            'Very Minor',
+            'System operable with minimal interference.',
+            'severity',
+            2,
+        ),
+        3: (
+            3,
+            'Minor',
+            'System operable with some degradation of performance.',
+            'severity',
+            3,
+        ),
+        4: (
+            4,
+            'Very Low',
             'System operable with significant degradation of performance.',
-            'severity', 4),
+            'severity',
+            4,
+        ),
         5: (5, 'Low', 'System inoperable without damage.', 'severity', 5),
-        6: (6, 'Moderate', 'System inoperable with minor damage.',
-            'severity', 6),
-        7: (7, 'High', 'System inoperable with system damage.', 'severity',
-            7),
-        8:
-        (8, 'Very High',
-         'System inoperable with destructive failure without compromising safety.',
-         'severity', 8),
-        9: (9, 'Hazardous, with warning',
+        6: (
+            6,
+            'Moderate',
+            'System inoperable with minor damage.',
+            'severity',
+            6,
+        ),
+        7: (
+            7,
+            'High',
+            'System inoperable with system damage.',
+            'severity',
+            7,
+        ),
+        8: (
+            8,
+            'Very High',
+            'System inoperable with destructive failure without compromising safety.',
+            'severity',
+            8,
+        ),
+        9: (
+            9,
+            'Hazardous, with warning',
             'Failure effects safe system operation with warning.',
-            'severity', 9),
-        10: (10, 'Hazardous, without warning',
-             'Failure effects safe system operation without warning.',
-             'severity', 10)
+            'severity',
+            9,
+        ),
+        10: (
+            10,
+            'Hazardous, without warning',
+            'Failure effects safe system operation without warning.',
+            'severity',
+            10,
+        ),
     }
 
     assert _configuration.RAMSTK_ACTION_STATUS == {
         11: ('Initiated', 'Action has been initiated.', 'action'),
         12: ('Reviewed', 'Action has been reviewed.', 'action'),
         13: ('Approved', 'Action has been approved.', 'action'),
-        14: ('Ready for Closure', 'Action is ready to be closed.',
-             'action'),
-        15: ('Closed', 'Action has been closed.', 'action')
+        14: (
+            'Ready for Closure',
+            'Action is ready to be closed.',
+            'action',
+        ),
+        15: ('Closed', 'Action has been closed.', 'action'),
     }
     assert _configuration.RAMSTK_INCIDENT_STATUS == {
         1: ('Initiated', 'Incident has been initiated.', 'incident'),
         2: ('Reviewed', 'Incident has been reviewed.', 'incident'),
-        3: ('Analysis', 'Incident has been assigned and is being analyzed.',
-            'incident'),
-        4: ('Solution Identified',
+        3: (
+            'Analysis',
+            'Incident has been assigned and is being analyzed.',
+            'incident',
+        ),
+        4: (
+            'Solution Identified',
             'A solution to the reported problem has been identified.',
-            'incident'),
-        5: ('Solution Implemented',
+            'incident',
+        ),
+        5: (
+            'Solution Implemented',
             'A solution to the reported problem has been implemented.',
-            'incident'),
-        6: ('Solution Verified',
+            'incident',
+        ),
+        6: (
+            'Solution Verified',
             'A solution to the reported problem has been verified.',
-            'incident'),
-        7: ('Ready for Approval',
-            'Incident analysis is ready to be approved.', 'incident'),
+            'incident',
+        ),
+        7: (
+            'Ready for Approval',
+            'Incident analysis is ready to be approved.',
+            'incident',
+        ),
         8: ('Approved', 'Incident analysis has been approved.', 'incident'),
-        9: ('Ready for Closure', 'Incident is ready to be closed.',
-            'incident'),
-        10: ('Closed', 'Incident has been closed.', 'incident')
+        9: (
+            'Ready for Closure',
+            'Incident is ready to be closed.',
+            'incident',
+        ),
+        10: ('Closed', 'Incident has been closed.', 'incident'),
     }
     assert _configuration.RAMSTK_INCIDENT_TYPE == {
         1: ('PLN', 'Planning', 'incident'),
@@ -291,7 +410,7 @@ def test_load_globals(test_common_dao, test_dao):
         6: ('DB', 'Database', 'incident'),
         7: ('TI', 'Test Information', 'incident'),
         8: ('MAN', 'Manuals', 'incident'),
-        9: ('OTH', 'Other', 'incident')
+        9: ('OTH', 'Other', 'incident'),
     }
     assert _configuration.RAMSTK_REQUIREMENT_TYPE == {
         10: ('FUN', 'Functional', 'requirement'),
@@ -300,7 +419,7 @@ def test_load_globals(test_common_dao, test_dao):
         13: ('REL', 'Reliability', 'requirement'),
         14: ('SAF', 'Safety', 'requirement'),
         15: ('SVC', 'Serviceability', 'requirement'),
-        16: ('USE', 'Useability', 'requirement')
+        16: ('USE', 'Useability', 'requirement'),
     }
     assert _configuration.RAMSTK_VALIDATION_TYPE == {
         17: ('DOE', 'Manufacturing Test, DOE', 'validation'),
@@ -319,17 +438,23 @@ def test_load_globals(test_common_dao, test_dao):
         30: ('RGT', 'Reliability Test, Growth', 'validation'),
         31: ('FTA', 'Safety, Fault Tree Analysis', 'validation'),
         32: ('PHA', 'Safety, Hazards Analysis', 'validation'),
-        33: ('EMA', 'System Engineering, Electromagnetic Analysis',
-             'validation'),
+        33: (
+            'EMA',
+            'System Engineering, Electromagnetic Analysis',
+            'validation',
+        ),
         34: ('FEA', 'System Engineering, FEA', 'validation'),
         35: ('2DM', 'System Engineering, 2D Model', 'validation'),
         36: ('3DM', 'System Engineering, 3D Model', 'validation'),
         37: ('SRD', 'System Engineering, Robust Design', 'validation'),
-        38: ('SCA', 'System Engineering, Sneak Circuit Analysis',
-             'validation'),
+        38: (
+            'SCA',
+            'System Engineering, Sneak Circuit Analysis',
+            'validation',
+        ),
         39: ('THA', 'System Engineering, Thermal Analysis', 'validation'),
         40: ('TOL', 'System Engineering, Tolerance Analysis', 'validation'),
-        41: ('WCA', 'System Engineering, Worst Case Analysis', 'validation')
+        41: ('WCA', 'System Engineering, Worst Case Analysis', 'validation'),
     }
 
     assert _configuration.RAMSTK_CATEGORIES == {
@@ -342,7 +467,7 @@ def test_load_globals(test_common_dao, test_dao):
         7: 'Switching Device',
         8: 'Connection',
         9: 'Meter',
-        10: 'Miscellaneous'
+        10: 'Miscellaneous',
     }
     assert _configuration.RAMSTK_FAILURE_MODES == {
         1: {
@@ -355,7 +480,7 @@ def test_load_globals(test_common_dao, test_dao):
             7: {},
             8: {},
             9: {},
-            10: {}
+            10: {},
         },
         2: {
             11: {},
@@ -370,7 +495,7 @@ def test_load_globals(test_common_dao, test_dao):
             20: {},
             21: {},
             22: {},
-            23: {}
+            23: {},
         },
         3: {
             32: {},
@@ -381,7 +506,7 @@ def test_load_globals(test_common_dao, test_dao):
             37: {},
             38: {},
             24: {
-                3: ['Parameter Change', 0.2, 'FMD-97']
+                3: ['Parameter Change', 0.2, 'FMD-97'],
             },
             25: {},
             26: {},
@@ -389,7 +514,7 @@ def test_load_globals(test_common_dao, test_dao):
             28: {},
             29: {},
             30: {},
-            31: {}
+            31: {},
         },
         4: {
             39: {},
@@ -410,40 +535,40 @@ def test_load_globals(test_common_dao, test_dao):
             54: {},
             55: {},
             56: {},
-            57: {}
+            57: {},
         },
         5: {
             58: {},
-            59: {}
+            59: {},
         },
         6: {
             60: {},
-            61: {}
+            61: {},
         },
         7: {
             64: {},
             65: {},
             66: {},
             62: {},
-            63: {}
+            63: {},
         },
         8: {
             67: {},
             68: {},
             69: {},
             70: {},
-            71: {}
+            71: {},
         },
         9: {
             72: {},
-            73: {}
+            73: {},
         },
         10: {
             74: {},
             75: {},
             76: {},
-            77: {}
-        }
+            77: {},
+        },
     }
     assert _configuration.RAMSTK_HAZARDS == {
         1: ('Acceleration/Gravity', 'Falls'),
@@ -613,8 +738,10 @@ def test_load_globals(test_common_dao, test_dao):
         165: ('Pneumatic/Hydraulic', 'Pipe/Hose Whip'),
         166: ('Pneumatic/Hydraulic', 'Pipe/Vessel/Duct Rupture'),
         167: ('Pneumatic/Hydraulic', 'Relief Pressure Improperly Set'),
-        168: ('Thermal',
-              'Altered Structural Properties (e.g., Embrittlement)'),
+        168: (
+            'Thermal',
+            'Altered Structural Properties (e.g., Embrittlement)',
+        ),
         169: ('Thermal', 'Confined Gas/Liquid'),
         170: ('Thermal', 'Elevated Flammability'),
         171: ('Thermal', 'Elevated Reactivity'),
@@ -632,12 +759,12 @@ def test_load_globals(test_common_dao, test_dao):
         183: ('Unannunciated Utility Outages', 'Heating/Cooling'),
         184: ('Unannunciated Utility Outages', 'Lubrication Drains/Sumps'),
         185: ('Unannunciated Utility Outages', 'Steam'),
-        186: ('Unannunciated Utility Outages', 'Ventilation')
+        186: ('Unannunciated Utility Outages', 'Ventilation'),
     }
     assert _configuration.RAMSTK_MANUFACTURERS == {
         1: ('Sprague', 'New Hampshire', '13606'),
         2: ('Xilinx', '', ''),
-        3: ('National Semiconductor', 'California', '27014')
+        3: ('National Semiconductor', 'California', '27014'),
     }
     assert _configuration.RAMSTK_MEASUREMENT_UNITS == {
         1: ('lbf', 'Pounds Force', 'unit'),
@@ -649,13 +776,135 @@ def test_load_globals(test_common_dao, test_dao):
         7: ('g', 'grams', 'unit'),
         8: ('oz', 'ounces', 'unit'),
         9: ('A', 'Amperes', 'unit'),
-        10: ('V', 'Volts', 'unit')
+        10: ('V', 'Volts', 'unit'),
     }
     assert _configuration.RAMSTK_STAKEHOLDERS == {
         1: ('Customer', ),
         2: ('Service', ),
         3: ('Manufacturing', ),
-        4: ('Management', )
+        4: ('Management', ),
+    }
+    assert _configuration.RAMSTK_STRESS_LIMITS == {
+        1: (
+            0.8,
+            0.9,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        2: (
+            1.0,
+            1.0,
+            0.7,
+            0.9,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        3: (
+            1.0,
+            1.0,
+            0.5,
+            0.9,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        4: (
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.6,
+            0.9,
+            10.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        5: (
+            .6,
+            0.9,
+            1.0,
+            1.0,
+            0.5,
+            0.9,
+            15.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        6: (
+            0.75,
+            0.9,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        7: (
+            0.75,
+            0.9,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        8: (
+            0.7,
+            0.9,
+            1.0,
+            1.0,
+            0.7,
+            0.9,
+            25.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        9: (
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
+        10: (
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            125.0,
+            125.0,
+        ),
     }
     assert _configuration.RAMSTK_SUBCATEGORIES == {
         1: {
@@ -668,7 +917,7 @@ def test_load_globals(test_common_dao, test_dao):
             7: 'Memory, DRAM',
             8: 'Memory, SRAM',
             9: 'GaAs',
-            10: 'VHSIC, VLSI'
+            10: 'VHSIC, VLSI',
         },
         2: {
             11: 'Diode, Low Frequency',
@@ -683,7 +932,7 @@ def test_load_globals(test_common_dao, test_dao):
             20: 'Thyristor, SCR',
             21: 'Optoelectronic, Detector, Isolator, Emitter',
             22: 'Optoelectronic, Alphanumeric Display',
-            23: 'Optoelectronic, Laser Diode'
+            23: 'Optoelectronic, Laser Diode',
         },
         3: {
             32: 'Variable, Wirewound (RT, RTR)',
@@ -700,84 +949,71 @@ def test_load_globals(test_common_dao, test_dao):
             28: 'Fixed, Wirewound (RB, RBR)',
             29: 'Fixed, Wirewound, Power (RW, RWR)',
             30: 'Fixed, Wirewound, Power, Chassis-Mounted (RE, RER)',
-            31: 'Thermistor (RTH)'
+            31: 'Thermistor (RTH)',
         },
         4: {
-            39:
-            'Fixed, Paper, Bypass (CA, CP)',
-            40:
-            'Fixed, Feed-Through (CZ, CZR)',
-            41:
-            'Fixed, Paper and Plastic Film (CPV, CQ, CQR)',
-            42:
-            'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)',
-            43:
-            'Fixed, Plastic and Metallized Plastic',
-            44:
-            'Fixed, Super-Metallized Plastic (CRH)',
-            45:
-            'Fixed, Mica (CM, CMR)',
-            46:
-            'Fixed, Mica, Button (CB)',
-            47:
-            'Fixed, Glass (CY, CYR)',
-            48:
-            'Fixed, Ceramic, General Purpose (CK, CKR)',
+            39: 'Fixed, Paper, Bypass (CA, CP)',
+            40: 'Fixed, Feed-Through (CZ, CZR)',
+            41: 'Fixed, Paper and Plastic Film (CPV, CQ, CQR)',
+            42: 'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)',
+            43: 'Fixed, Plastic and Metallized Plastic',
+            44: 'Fixed, Super-Metallized Plastic (CRH)',
+            45: 'Fixed, Mica (CM, CMR)',
+            46: 'Fixed, Mica, Button (CB)',
+            47: 'Fixed, Glass (CY, CYR)',
+            48: 'Fixed, Ceramic, General Purpose (CK, CKR)',
             49:
             'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)',
-            50:
-            'Fixed, Electrolytic, Tantalum, Solid (CSR)',
-            51:
-            'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)',
-            52:
-            'Fixed, Electrolytic, Aluminum (CU, CUR)',
-            53:
-            'Fixed, Electrolytic (Dry), Aluminum (CE)',
-            54:
-            'Variable, Ceramic (CV)',
-            55:
-            'Variable, Piston Type (PC)',
-            56:
-            'Variable, Air Trimmer (CT)',
-            57:
-            'Variable and Fixed, Gas or Vacuum (CG)'
+            50: 'Fixed, Electrolytic, Tantalum, Solid (CSR)',
+            51: 'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)',
+            52: 'Fixed, Electrolytic, Aluminum (CU, CUR)',
+            53: 'Fixed, Electrolytic (Dry), Aluminum (CE)',
+            54: 'Variable, Ceramic (CV)',
+            55: 'Variable, Piston Type (PC)',
+            56: 'Variable, Air Trimmer (CT)',
+            57: 'Variable and Fixed, Gas or Vacuum (CG)',
         },
         5: {
             58: 'Transformer',
-            59: 'Coil'
+            59: 'Coil',
         },
         6: {
             60: 'Mechanical',
-            61: 'Solid State'
+            61: 'Solid State',
         },
         7: {
             64: 'Rotary',
             65: 'Thumbwheel',
             66: 'Circuit Breaker',
             62: 'Toggle or Pushbutton',
-            63: 'Sensitive'
+            63: 'Sensitive',
         },
         8: {
             67: 'Multi-Pin',
             68: 'PCB Edge',
             69: 'IC Socket',
             70: 'Plated Through Hole (PTH)',
-            71: 'Connection, Non-PTH'
+            71: 'Connection, Non-PTH',
         },
         9: {
             72: 'Elapsed Time',
-            73: 'Panel'
+            73: 'Panel',
         },
         10: {
             74: 'Crystal',
             75: 'Filter, Non-Tunable Electronic',
             76: 'Fuse',
-            77: 'Lamp'
-        }
+            77: 'Lamp',
+        },
     }
     assert _configuration.RAMSTK_USERS == {
-        1: ('Tester', 'Johnny', 'tester.johnny@reliaqual.com',
-            '+1.269.867.5309', '1')
+        1: (
+            'Tester',
+            'Johnny',
+            'tester.johnny@reliaqual.com',
+            '+1.269.867.5309',
+            '1',
+        ),
     }
 
 
@@ -800,8 +1036,10 @@ def test_do_validate_license_wrong_key(test_common_dao, test_dao):
     _error_code, _msg = DUT.do_validate_license('')
 
     assert _error_code == 1
-    assert _msg == ('RAMSTK ERROR: Invalid license (Invalid key).  Your license '
-                    'key is incorrect.  Closing the RAMSTK application.')
+    assert _msg == (
+        'RAMSTK ERROR: Invalid license (Invalid key).  Your license '
+        'key is incorrect.  Closing the RAMSTK application.'
+    )
 
 
 @pytest.mark.broken_test
@@ -884,7 +1122,7 @@ def test_request_do_open_program(test_configuration):
         'mode': ['MODE', 0],
         'software': ['MODULE', 0],
         'cause': ['CAUSE', 0],
-        'revision': ['REV', 0]
+        'revision': ['REV', 0],
     }
     assert DUT.RAMSTK_CONFIGURATION.RAMSTK_MODULES == {
         'function': 1,
@@ -898,7 +1136,7 @@ def test_request_do_open_program(test_configuration):
         'rcm': 0,
         'incident': 1,
         'revision': 1,
-        'software': 1
+        'software': 1,
     }
 
 
@@ -912,7 +1150,7 @@ def test_request_do_save_program():
         'socket': 3306,
         'database': TEMPDIR + '/TestDB.ramstk',
         'user': '',
-        'password': ''
+        'password': '',
     }
     DUT.request_do_open_program()
 
@@ -929,7 +1167,7 @@ def test_request_do_close_program():
         'socket': 3306,
         'database': TEMPDIR + '/TestDB.ramstk',
         'user': '',
-        'password': ''
+        'password': '',
     }
     DUT.request_do_open_program()
 
