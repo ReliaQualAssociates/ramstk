@@ -62,7 +62,8 @@ class SimilarItemDataController(RAMSTKDataController):
         pub.subscribe(self._request_do_insert, 'request_insert_similar_item')
         pub.subscribe(self.request_do_delete, 'request_delete_similar_item')
         pub.subscribe(self.request_do_roll_up, 'request_roll_up_similar_item')
-        pub.subscribe(self.request_do_select_all, 'selected_hardware')
+        pub.subscribe(self.request_do_select_all, 'selected_revision')
+        pub.subscribe(self._request_do_select_children, 'selected_hardware')
         pub.subscribe(self.request_do_update, 'request_update_similar_item')
         pub.subscribe(
             self.request_do_update_all,
@@ -118,6 +119,19 @@ class SimilarItemDataController(RAMSTKDataController):
             _error_code,
             _msg,
             None,
+        )
+
+    def _request_do_select_children(self, attributes):
+        """
+        Load the children for the selected Hardware item.
+
+        :param dict attributes: the key:value pairs of the Similar Item
+            attributes.
+        :return: children; a list of child nodes from the Similar Item tree.
+        :rtype: list
+        """
+        return self._dtm_data_model.do_select_children(
+            node_id=attributes['hardware_id'],
         )
 
     def request_do_roll_up(self, node_id):

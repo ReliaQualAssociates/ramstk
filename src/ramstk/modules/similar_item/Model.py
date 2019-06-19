@@ -264,7 +264,7 @@ class SimilarItemDataModel(RAMSTKDataModel):
 
         if _error_code == 0:
             if not self._test:
-                _attributes = self.do_select(node_id).get_atributes()
+                _attributes = self.do_select(node_id).get_attributes()
                 pub.sendMessage('updated_similar_item', attributes=_attributes)
         else:
             _error_code = 2207

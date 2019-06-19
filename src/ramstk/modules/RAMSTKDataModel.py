@@ -89,7 +89,8 @@ class RAMSTKDataModel():
             _entity = None
         except tree.NodeIDAbsentError:
             _entity = None
-
+        print(node_id)
+        print(self.tree.all_nodes())
         return _entity
 
     def do_select_all(self, **kwargs):  # pylint: disable=unused-argument
