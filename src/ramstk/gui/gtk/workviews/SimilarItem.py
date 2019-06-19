@@ -10,9 +10,9 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.gui.gtk.assistants.SimilarItem import EditFunction
 from ramstk.gui.gtk.ramstk import (
-    RAMSTKComboBox, RAMSTKDialog, RAMSTKEntry,
-    RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
+    RAMSTKComboBox, RAMSTKFrame, RAMSTKLabel, RAMSTKTreeView,
 )
 from ramstk.gui.gtk.ramstk.Widget import Gdk, Gtk, _
 
@@ -54,12 +54,14 @@ class SimilarItem(RAMSTKWorkView):
     """
     # Define private dictionary attributes.
     _dic_quality = {
+        0: '',
         1: 'Space',
         2: 'Full Military',
         3: 'Ruggedized',
         4: 'Commercial',
     }
     _dic_environment = {
+        0: '',
         1: 'Ground, Benign',
         2: 'Ground,Mobile',
         3: 'Naval, Sheltered',
@@ -88,7 +90,7 @@ class SimilarItem(RAMSTKWorkView):
 
         # Initialize private scalar attributes.
         self._hardware_id = None
-        self._method_id = None
+        self._method_id = 0
 
         # Initialize public dictionary attributes.
 
@@ -367,7 +369,6 @@ class SimilarItem(RAMSTKWorkView):
             try:
                 _attributes = _child.data.get_attributes()
                 _node_id = _child.identifier
-
                 try:
                     _quality_from = self._dic_quality[
                         _attributes['quality_from_id']
@@ -394,35 +395,35 @@ class SimilarItem(RAMSTKWorkView):
                     _environment_to = ''
 
                 _data = [
-                    _attributes['revision_id'],
+                    self._revision_id,
                     _attributes['hardware_id'],
-                    self._dic_hardware[_attributes['hardware_id'][0]],
-                    self._dic_hardware[_attributes['hardware_id'][1]],
+                    self._dic_hardware[_attributes['hardware_id']][0],
+                    self._dic_hardware[_attributes['hardware_id']][1],
                     _quality_from,
                     _quality_to,
                     _environment_from,
                     _environment_to,
                     _attributes['temperature_from'],
                     _attributes['temperature_to'],
-                    _attributes['change_description_1'],
+                    _attributes['change_description_1'].decode('utf-8'),
                     _attributes['change_factor_1'],
-                    _attributes['change_description_2'],
+                    _attributes['change_description_2'].decode('utf-8'),
                     _attributes['change_factor_2'],
-                    _attributes['change_description_3'],
+                    _attributes['change_description_3'].decode('utf-8'),
                     _attributes['change_factor_3'],
-                    _attributes['change_description_4'],
+                    _attributes['change_description_4'].decode('utf-8'),
                     _attributes['change_factor_4'],
-                    _attributes['change_description_5'],
+                    _attributes['change_description_5'].decode('utf-8'),
                     _attributes['change_factor_5'],
-                    _attributes['change_description_6'],
+                    _attributes['change_description_6'].decode('utf-8'),
                     _attributes['change_factor_6'],
-                    _attributes['change_description_7'],
+                    _attributes['change_description_7'].decode('utf-8'),
                     _attributes['change_factor_7'],
-                    _attributes['change_description_8'],
+                    _attributes['change_description_8'].decode('utf-8'),
                     _attributes['change_factor_8'],
-                    _attributes['change_description_9'],
+                    _attributes['change_description_9'].decode('utf-8'),
                     _attributes['change_factor_9'],
-                    _attributes['change_description_10'],
+                    _attributes['change_description_10'].decode('utf-8'),
                     _attributes['change_factor_10'],
                     _attributes['function_1'],
                     _attributes['function_2'],
@@ -434,11 +435,11 @@ class SimilarItem(RAMSTKWorkView):
                     _attributes['result_3'],
                     _attributes['result_4'],
                     _attributes['result_5'],
-                    _attributes['user_blob_1'],
-                    _attributes['user_blob_2'],
-                    _attributes['user_blob_3'],
-                    _attributes['user_blob_4'],
-                    _attributes['user_blob_5'],
+                    _attributes['user_blob_1'].decode('utf-8'),
+                    _attributes['user_blob_2'].decode('utf-8'),
+                    _attributes['user_blob_3'].decode('utf-8'),
+                    _attributes['user_blob_4'].decode('utf-8'),
+                    _attributes['user_blob_5'].decode('utf-8'),
                     _attributes['user_float_1'],
                     _attributes['user_float_2'],
                     _attributes['user_float_3'],
@@ -450,8 +451,9 @@ class SimilarItem(RAMSTKWorkView):
                     _attributes['user_int_4'],
                     _attributes['user_int_5'],
                     _attributes['parent_id'],
+                    str(_attributes),
                 ]
-
+# TODO: Handle user/debug messages in workview.SimilarItem._do_load_children
                 try:
                     _model.append(None, _data)
                 except TypeError:
@@ -470,7 +472,9 @@ class SimilarItem(RAMSTKWorkView):
                             str(self._parent_id),
                         )
                     )
-                except ValueError:
+                    print(_debug_msg)
+                    print(_data)
+                except ValueError as _error:
                     _error_code = 1
                     _user_msg = _(
                         "One or more Similar Item line items "
@@ -478,13 +482,16 @@ class SimilarItem(RAMSTKWorkView):
                         "not displayed in the Similar Item "
                         "analysis.", )
                     _debug_msg = (
-                        "RAMSTK ERROR: Too few fields for "
-                        "Similar Item ID {0:s} for Hardware ID "
-                        "{1:s}.".format(
+                        "RAMSTK ERROR: Data for Similar Item ID "
+                        "{0:s} for Hardware ID {1:s} is the "
+                        "wrong type for one or more "
+                        "columns.  Error was: {2:s}".format(
                             str(_node_id),
                             str(self._parent_id),
+                            str(_error),
                         )
                     )
+                    print(_debug_msg)
             except AttributeError:
                 if _node_id != 0:
                     _error_code = 1
@@ -501,6 +508,43 @@ class SimilarItem(RAMSTKWorkView):
                             str(self._parent_id),
                         )
                     )
+                    print(_debug_msg)
+
+    def _do_refresh_tree(self, model, row, functions):
+        """
+        Refresh the Similar Item Work View RAMSTKTreeView functions.
+
+        :param model:
+        :param row:
+        :param functions:
+        :return: None
+        :rtype: None
+        """
+        model.set_value(
+            row,
+            self._lst_col_order[30],
+            functions[0],
+        )
+        model.set_value(
+            row,
+            self._lst_col_order[31],
+            functions[1],
+        )
+        model.set_value(
+            row,
+            self._lst_col_order[32],
+            functions[2],
+        )
+        model.set_value(
+            row,
+            self._lst_col_order[33],
+            functions[3],
+        )
+        model.set_value(
+            row,
+            self._lst_col_order[34],
+            functions[4],
+        )
 
     def _do_request_calculate(self, __button):
         """
@@ -515,7 +559,7 @@ class SimilarItem(RAMSTKWorkView):
 
         # Iterate through the hazards and calculate the Similar Item hazard
         # intensities.
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         while _row is not None:
             pub.sendMessage(
                 'request_calculate_similar_item',
@@ -523,7 +567,7 @@ class SimilarItem(RAMSTKWorkView):
                 hazard_rate=_model.get_value(_row, 3),
             )
             _row = _model.iter_next(_row)
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_edit_function(self, __button):
         """
@@ -534,216 +578,21 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # TODO: Move the Similar Item Work View _do_request_edit_function() method to a stand-alone assistant.
         (_model, _row) = self.treeview.get_selection().get_selected()
 
-        _title = _("RAMSTK - Edit Similar Item Analysis Functions")
-        _label = RAMSTKLabel(
-            _(
-                "You can define up to five functions.  "
-                "You can use the system failure rate, "
-                "selected assembly failure rate, the "
-                "change factor, the user float, the "
-                "user integer values, and results of "
-                "other functions.\n\n \
-        System hazard rate is hr_sys\n \
-        Assembly hazard rate is hr\n \
-        Change factor is pi[1-8]\n \
-        User float is uf[1-3]\n \
-        User integer is ui[1-3]\n \
-        Function result is res[1-5]", ),
-            width=600,
-            height=-1,
-            wrap=True,
-        )
-        _label2 = RAMSTKLabel(
-            _(
-                "For example, pi1*pi2+pi3, multiplies "
-                "the first two change factors and "
-                "adds the value to the third change "
-                "factor.", ),
-            width=600,
-            height=-1,
-            wrap=True,
-        )
+        _dialog = EditFunction(self.treeview, dlgparent=self.get_parent(),)
 
-        # Build the dialog assistant.
-        _dialog = RAMSTKDialog(_title)
-
-        _fixed = Gtk.Fixed()
-
-        _y_pos = 10
-        _fixed.put(_label, 5, _y_pos)
-        _y_pos += _label.size_request()[1] + 10
-        _fixed.put(_label2, 5, _y_pos)
-        _y_pos += _label2.size_request()[1] + 10
-
-        _label = RAMSTKLabel(_("User function 1:"))
-        _txtFunction1 = RAMSTKEntry()
-        _txtFunction1.set_text(_model.get_value(_row, 30))
-
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtFunction1, 195, _y_pos)
-        _y_pos += 30
-
-        _label = RAMSTKLabel(_("User function 2:"))
-        _txtFunction2 = RAMSTKEntry()
-        _txtFunction2.set_text(_model.get_value(_row, 31))
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtFunction2, 195, _y_pos)
-        _y_pos += 30
-
-        _label = RAMSTKLabel(_("User function 3:"))
-        _txtFunction3 = RAMSTKEntry()
-        _txtFunction3.set_text(_model.get_value(_row, 32))
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtFunction3, 195, _y_pos)
-        _y_pos += 30
-
-        _label = RAMSTKLabel(_("User function 4:"))
-        _txtFunction4 = RAMSTKEntry()
-        _txtFunction4.set_text(_model.get_value(_row, 33))
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtFunction4, 195, _y_pos)
-        _y_pos += 30
-
-        _label = RAMSTKLabel(_("User function 5:"))
-        _txtFunction5 = RAMSTKEntry()
-        _txtFunction5.set_text(_model.get_value(_row, 34))
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtFunction5, 195, _y_pos)
-        _y_pos += 30
-
-        _chkApplyAll = Gtk.CheckButton(label=_("Apply to all assemblies."))
-        _fixed.put(_chkApplyAll, 5, _y_pos)
-
-        _fixed.show_all()
-
-        _dialog.vbox.pack_start(_fixed, True, True, 0)  # pylint: disable=E1101
-
-        # Run the dialog and apply the changes if the 'OK' button is pressed.
-        if _dialog.run() == Gtk.ResponseType.OK:
-            if _chkApplyAll.get_active():
+        if _dialog.do_run() == Gtk.ResponseType.OK:
+            _functions = _dialog.do_set_functions(self.treeview)
+            if _dialog.chkApplyAll.get_active():
                 _row = _model.get_iter_first()
                 while _row is not None:
-                    _hardware_id = _model.get_value(_row, 0)
-                    pub.sendMessage(
-                        'wvw_editing_similar_item',
-                        node_id=_hardware_id,
-                        key='function_1',
-                        value=_txtFunction1.get_text(),
-                    )
-                    pub.sendMessage(
-                        'wvw_editing_similar_item',
-                        node_id=_hardware_id,
-                        key='function_2',
-                        value=_txtFunction2.get_text(),
-                    )
-                    pub.sendMessage(
-                        'wvw_editing_similar_item',
-                        node_id=_hardware_id,
-                        key='function_3',
-                        value=_txtFunction3.get_text(),
-                    )
-                    pub.sendMessage(
-                        'wvw_editing_similar_item',
-                        node_id=_hardware_id,
-                        key='function_4',
-                        value=_txtFunction4.get_text(),
-                    )
-                    pub.sendMessage(
-                        'wvw_editing_similar_item',
-                        node_id=_hardware_id,
-                        key='function_5',
-                        value=_txtFunction5.get_text(),
-                    )
-
-                    _model.set_value(
-                        _row,
-                        self._lst_col_order[30],
-                        _txtFunction1.get_text(),
-                    )
-                    _model.set_value(
-                        _row,
-                        self._lst_col_order[31],
-                        _txtFunction2.get_text(),
-                    )
-                    _model.set_value(
-                        _row,
-                        self._lst_col_order[32],
-                        _txtFunction3.get_text(),
-                    )
-                    _model.set_value(
-                        _row,
-                        self._lst_col_order[33],
-                        _txtFunction4.get_text(),
-                    )
-                    _model.set_value(
-                        _row,
-                        self._lst_col_order[34],
-                        _txtFunction5.get_text(),
-                    )
+                    self._do_refresh_tree(_model, _row, _functions)
                     _row = _model.iter_next(_row)
-
             else:
-                pub.sendMessage(
-                    'wvw_editing_similar_item',
-                    node_id=_hardware_id,
-                    key='function_1',
-                    value=_txtFunction1.get_text(),
-                )
-                pub.sendMessage(
-                    'wvw_editing_similar_item',
-                    node_id=_hardware_id,
-                    key='function_2',
-                    value=_txtFunction2.get_text(),
-                )
-                pub.sendMessage(
-                    'wvw_editing_similar_item',
-                    node_id=_hardware_id,
-                    key='function_3',
-                    value=_txtFunction3.get_text(),
-                )
-                pub.sendMessage(
-                    'wvw_editing_similar_item',
-                    node_id=_hardware_id,
-                    key='function_4',
-                    value=_txtFunction4.get_text(),
-                )
-                pub.sendMessage(
-                    'wvw_editing_similar_item',
-                    node_id=_hardware_id,
-                    key='function_5',
-                    value=_txtFunction5.get_text(),
-                )
+                self._do_refresh_tree(_model, _row, _functions)
 
-                _model.set_value(
-                    _row,
-                    self._lst_col_order[30],
-                    _txtFunction1.get_text(),
-                )
-                _model.set_value(
-                    _row,
-                    self._lst_col_order[31],
-                    _txtFunction2.get_text(),
-                )
-                _model.set_value(
-                    _row,
-                    self._lst_col_order[32],
-                    _txtFunction3.get_text(),
-                )
-                _model.set_value(
-                    _row,
-                    self._lst_col_order[33],
-                    _txtFunction4.get_text(),
-                )
-                _model.set_value(
-                    _row,
-                    self._lst_col_order[34],
-                    _txtFunction5.get_text(),
-                )
-
-        _dialog.destroy()
+        _dialog.do_destroy()
 
     def _do_request_rollup(self, __button):
         """
@@ -753,12 +602,12 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
             'request_roll_up_similar_item',
-            node_id=self._hardware_id,
+            node_id=self._parent_id,
         )
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update(self, __button):
         """
@@ -769,12 +618,12 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage(
             'request_update_similar_item',
             node_id=self._hardware_id,
         )
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_request_update_all(self, __button):
         """
@@ -785,9 +634,9 @@ class SimilarItem(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self.set_cursor(Gdk.CursorType.WATCH)
+        self.do_set_cursor(Gdk.CursorType.WATCH)
         pub.sendMessage('request_update_all_similar_items')
-        self.set_cursor(Gdk.CursorType.LEFT_PTR)
+        self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
     def _do_set_visible(self, **kwargs):
         """
@@ -998,8 +847,6 @@ class SimilarItem(RAMSTKWorkView):
             ]
 
         elif _new_text == 2:  # User-defined
-            _editable = []
-            _visible = []
             for (_index, _value) in enumerate(self.treeview.visible):
                 if _value == 1:
                     _visible.append(_index)
@@ -1014,7 +861,7 @@ class SimilarItem(RAMSTKWorkView):
 
         pub.sendMessage(
             'wvw_editing_similar_item',
-            module_id=self._hardware_id,
+            module_id=self._parent_id,
             key='method_id',
             value=_new_text,
         )

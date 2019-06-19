@@ -5,6 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# RAMSTK Local Imports
 from .CreateProject import CreateProject
 from .Export import RAMSTKExport as ExportModule
 from .FMEA import AddControlAction
@@ -13,3 +14,4 @@ from .OpenProject import OpenProject
 from .Options import Options
 from .PoF import AddStressMethod
 from .Preferences import Preferences
+from .SimilarItem import EditFunction

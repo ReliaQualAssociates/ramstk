@@ -10,15 +10,13 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-# Import other RAMSTK modules.
 from ramstk.gui.gtk.ramstk import RAMSTKBook
 from ramstk.gui.gtk.ramstk.Widget import _
-from ramstk.gui.gtk.workviews import (wvwAllocation, wvwBurndownCurve,
-                                      wvwFunctionGD, wvwHardwareAI,
-                                      wvwHardwareAR, wvwHardwareGD, wvwHazOps,
-                                      wvwPoF, wvwRequirementAnalysis,
-                                      wvwRequirementGD, wvwRevisionGD,
-                                      wvwSimilarItem, wvwValidationGD)
+from ramstk.gui.gtk.workviews import (
+    wvwAllocation, wvwBurndownCurve, wvwFunctionGD, wvwHardwareAI,
+    wvwHardwareAR, wvwHardwareGD, wvwHazOps, wvwPoF, wvwRequirementAnalysis,
+    wvwRequirementGD, wvwRevisionGD, wvwSimilarItem, wvwValidationGD,
+)
 from ramstk.gui.gtk.workviews.fmea import wvwDFMECA, wvwFFMEA
 
 

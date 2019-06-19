@@ -83,8 +83,6 @@ class AddStressMethod(RAMSTKDialog):
 
         _fixed.show_all()
 
-
-
     def _cancel(self, __button):
         """
         Destroy the assistant when the 'Cancel' button is pressed.

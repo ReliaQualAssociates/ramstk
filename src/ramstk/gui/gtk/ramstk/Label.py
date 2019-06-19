@@ -7,6 +7,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Label Module."""
 
+# RAMSTK Local Imports
 # Import the ramstk.Widget base class.
 from .Widget import GObject, Gtk, Pango
 
@@ -62,7 +63,8 @@ def do_make_label_group(text, container, x_pos, y_pos, **kwargs):
             width=-1,
             height=-1,
             wrap=_wrap,
-            justify=Gtk.Justification.RIGHT)
+            justify=Gtk.Justification.RIGHT,
+        )
         _label.set_width_chars(_char_width)
         _max_x = max(_max_x, _label.get_preferred_size()[0].width)
         container.put(_label, x_pos, y_pos)
@@ -145,3 +147,18 @@ class RAMSTKLabel(Gtk.Label):
             self.modify_font(Pango.FontDescription('bold'))
 
         self.show_all()
+
+    def get_attribute(self, attribute):
+        """
+        Get the value of the requested attribute.
+
+        :param str attribute: the name of the attribute to retrieve.
+        :return: the value of the requested attribute.
+        """
+        # The natural size = default size and the requested size = minimum size
+        _attributes = {
+            'height': self.get_preferred_size()[1].height,
+            'width': self.get_preferred_size()[1].width,
+        }
+
+        return _attributes[attribute]

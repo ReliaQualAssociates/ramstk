@@ -7,12 +7,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Dialog Module."""
 
+# Standard Library Imports
 import os
-
 from datetime import datetime
 
-# Import the ramstk.Widget base class.
-from .Widget import _, GObject, Gtk
+# RAMSTK Local Imports
+from .Widget import GObject, Gtk, _
 
 
 class RAMSTKDialog(Gtk.Dialog):
@@ -27,44 +27,38 @@ class RAMSTKDialog(Gtk.Dialog):
 
         :Keyword Arguments:
             * *dlgparent* (tuple) -- the parent window to associate the
-                                     Gtk.Dialog() with.
+                Gtk.Dialog() with.
             * *dlgflags* (tuple) -- the flags that control the operation of the
-                                    Gtk.Dialog().
-                                    Default is Gtk.DialogFlags.MODAL
-                                    and Gtk.DialogFlags.DESTROY_WITH_PARENT.
+                Gtk.Dialog().  Default is Gtk.DialogFlags.MODAL and
+                Gtk.DialogFlags.DESTROY_WITH_PARENT.
             * *dlgbuttons* (tuple) -- the buttons to display and their response
-                                      values.
-                                      Default is
-                                      Gtk.STOCK_OK <==> Gtk.ResponseType.ACCEPT
-                                      Gtk.STOCK_CANCEL <==> Gtk.ResponseType.REJECT
-        :return: _dialog
-        :rtype: Gtk.Dialog
+                values.  Default is Gtk.STOCK_OK <==> Gtk.ResponseType.ACCEPT
+                Gtk.STOCK_CANCEL <==> Gtk.ResponseType.CANCEL
         """
+        GObject.GObject.__init__(self)
         try:
-            _dlgbuttons = kwargs['dlgbuttons']
+            self.add_buttons(kwargs['dlgbuttons'])
         except KeyError:
-            _dlgbuttons = (Gtk.STOCK_OK, Gtk.ResponseType.OK, Gtk.STOCK_CANCEL,
-                           Gtk.ResponseType.CANCEL)
+            self.add_buttons(
+                Gtk.STOCK_OK, Gtk.ResponseType.OK, Gtk.STOCK_CANCEL,
+                Gtk.ResponseType.CANCEL,
+            )
         try:
             _dlgparent = kwargs['dlgparent']
         except KeyError:
             _dlgparent = None
 
-        GObject.GObject.__init__(self)
-
-        self.add_buttons(_dlgbuttons)
         self.set_destroy_with_parent(True)
-        self.set_has_separator(True)
         self.set_modal(True)
         self.set_parent(_dlgparent)
         self.set_title(dlgtitle)
 
     def do_run(self):
-        """Run the RAMSTK Message Dialog."""
+        """Run the RAMSTK Dialog."""
         return self.run()
 
     def do_destroy(self):
-        """Destroy the RAMSTK Message Dialog."""
+        """Destroy the RAMSTK Dialog."""
         self.destroy()
 
 
@@ -109,14 +103,18 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
                      "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
             prompt = '<b>' \
                      + prompt \
-                     + _("  Check the error log for additional information "
+                     + _(
+                         "  Check the error log for additional information "
                          "(if any).  Please e-mail <span foreground='blue' "
-                         "underline='single'>") \
+                         "underline='single'>",
+                     ) \
                      + _hyper \
-                     + _("bugs@reliaqual.com</a></span> with a detailed "
+                     + _(
+                         "bugs@reliaqual.com</a></span> with a detailed "
                          "description of the problem, the workflow you are "
                          "using and the error log attached if the problem "
-                         "persists.</b>")
+                         "persists.</b>",
+                     )
             _criticality = Gtk.MessageType.ERROR
             self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif criticality == 'warning':
@@ -166,8 +164,10 @@ class RAMSTKDateSelect(Gtk.Dialog):
         """Run the RAMSTKDateSelect dialog."""
         if self.run() == Gtk.ResponseType.ACCEPT:
             _date = self._calendar.get_date()
-            _date = datetime(_date[0], _date[1] + 1,
-                             _date[2]).date().strftime("%Y-%m-%d")
+            _date = datetime(
+                _date[0], _date[1] + 1,
+                _date[2],
+            ).date().strftime("%Y-%m-%d")
         else:
             _date = "1970-01-01"
 
@@ -190,8 +190,10 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         """
         GObject.GObject.__init__()
 
-        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-                         Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
+        self.add_buttons(
+            Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
+        )
         self.set_destroy_with_parent(True)
         self.set_modal(True)
         self.set_parent(None)
