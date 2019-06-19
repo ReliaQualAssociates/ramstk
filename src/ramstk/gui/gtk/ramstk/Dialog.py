@@ -27,16 +27,13 @@ class RAMSTKDialog(Gtk.Dialog):
 
         :Keyword Arguments:
             * *dlgparent* (tuple) -- the parent window to associate the
-                                     Gtk.Dialog() with.
+                Gtk.Dialog() with.
             * *dlgflags* (tuple) -- the flags that control the operation of the
-                                    Gtk.Dialog().
-                                    Default is Gtk.DialogFlags.MODAL
-                                    and Gtk.DialogFlags.DESTROY_WITH_PARENT.
+                Gtk.Dialog().  Default is Gtk.DialogFlags.MODAL and
+                Gtk.DialogFlags.DESTROY_WITH_PARENT.
             * *dlgbuttons* (tuple) -- the buttons to display and their response
-                                      values.
-                                      Default is
-                                      Gtk.STOCK_OK <==> Gtk.ResponseType.ACCEPT
-                                      Gtk.STOCK_CANCEL <==> Gtk.ResponseType.CANCEL
+                values.  Default is Gtk.STOCK_OK <==> Gtk.ResponseType.ACCEPT
+                Gtk.STOCK_CANCEL <==> Gtk.ResponseType.CANCEL
         """
         GObject.GObject.__init__(self)
         try:

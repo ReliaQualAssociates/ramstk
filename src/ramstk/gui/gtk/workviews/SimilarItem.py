@@ -453,7 +453,7 @@ class SimilarItem(RAMSTKWorkView):
                     _attributes['parent_id'],
                     str(_attributes),
                 ]
-# TODO: Handle user and debug messages in workview.SimilarItem._do_load_children
+# TODO: Handle user/debug messages in workview.SimilarItem._do_load_children
                 try:
                     _model.append(None, _data)
                 except TypeError:

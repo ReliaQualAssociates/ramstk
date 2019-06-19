@@ -233,4 +233,8 @@ class EditFunction(RAMSTKDialog):
             _hardware_id = _model.get_value(_row, 0)
             self._on_set_function(_hardware_id)
 
-        return(self.txtFunction1.get_text(), self.txtFunction2.get_text(), self.txtFunction3.get_text(), self.txtFunction4.get_text(), self.txtFunction5.get_text())
+        return(
+            self.txtFunction1.get_text(), self.txtFunction2.get_text(),
+            self.txtFunction3.get_text(), self.txtFunction4.get_text(),
+            self.txtFunction5.get_text(),
+        )

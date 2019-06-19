@@ -155,7 +155,7 @@ class RAMSTKLabel(Gtk.Label):
         :param str attribute: the name of the attribute to retrieve.
         :return: the value of the requested attribute.
         """
-        # The natural size = default size and the requested size = minimum size.
+        # The natural size = default size and the requested size = minimum size
         _attributes = {
             'height': self.get_preferred_size()[1].height,
             'width': self.get_preferred_size()[1].width,
