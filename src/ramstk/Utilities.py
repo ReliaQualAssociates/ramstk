@@ -6,19 +6,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Utility functions for interacting with the RAMSTK application."""
 
+# Standard Library Imports
+import gettext
 import os
 import os.path
 import sys
 
-# Add localization support.
-import gettext
-
 _ = gettext.gettext
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2017 Doyle "weibullguy" Rowland'
 
 
 class OutOfRangeError(Exception):
@@ -39,13 +33,9 @@ class OutOfRangeError(Exception):
 class NoParentError(Exception):
     """Exception raised when a parent element does not exist."""
 
-    pass
-
 
 class NoMatrixError(Exception):
     """Exception raised when no Matrices are returned."""
-
-    pass
 
 
 def create_logger(log_name, log_level, log_file, to_tty=False):
@@ -65,7 +55,8 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
 
     _logger = logging.getLogger(log_name)
     _formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    )
 
     if log_level == 'DEBUG':
         log_level = logging.ERROR
@@ -133,7 +124,8 @@ def error_handler(message):
     elif 'float division by zero' in message[0]:  # Zero division error
         _error_code = 20
     elif 'integer division or modulo by zero' in message[
-            0]:  # Zero division error
+            0
+    ]:  # Zero division error
         _error_code = 20
     elif 'index out of range' in message[0]:  # Index error
         _error_code = 40
@@ -280,8 +272,10 @@ def string_to_boolean(string):
 
     _string = str(string)
 
-    if (_string.lower() == 'true' or _string.lower() == 'yes'
-            or _string.lower() == 't' or _string.lower() == 'y'):
+    if (
+            _string.lower() == 'true' or _string.lower() == 'yes'
+            or _string.lower() == 't' or _string.lower() == 'y'
+    ):
         _result = True
 
     return _result
@@ -308,7 +302,7 @@ def prefix(join=None):
     ]
 
     # matching engine
-    while len(_rules) > 0:
+    while _rules:
         (_path, _token) = os.path.split(_path)
         _rule = _rules.pop()
         if not _rule(_token):
@@ -323,7 +317,7 @@ def prefix(join=None):
     return _return
 
 
-def name(pop=[], suffix=None):
+def name(pop, suffix=None):
     """
     Return the name of this particular project.
 
@@ -336,7 +330,7 @@ def name(pop=[], suffix=None):
     if isinstance(pop, str):
         pop = [pop]  # force single strings to list
 
-    while len(pop) > 0:
+    while pop:
         (_path, _tail) = os.path.split(_path)
         if pop.pop() != _tail:
             raise ValueError('Element doesnʼt match path tail.')

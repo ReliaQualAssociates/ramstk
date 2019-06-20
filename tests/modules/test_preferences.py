@@ -116,9 +116,9 @@ def test_do_select_all_user_preferences(
         'host': 'localhost',
         'socket': '3306',
         'database': TEST_COMMON_DB_PATH,
-        'user': 'ramstk',
-        'password': 'ramstk',
-        'path': 'ramstk',
+        'user': 'ramstkcom',
+        'password': 'ramstkcom',
+        'path': 'ramstkcom',
     }
     assert DUT.user_preferences['program_db_info'] == {
         'type': 'sqlite',
@@ -317,8 +317,8 @@ def test_request_do_update(test_dao, test_common_dao, test_configuration):
     _new_user = RAMSTKUser()
     _new_user.user_lname = 'Rowland'
     _new_user.user_fname = 'Doyle'
-    _new_user.user_email = 'doyle.rowland@reliaqual.com'
-    _new_user.user_phone = '269.491.4765'
+    _new_user.user_email = 'doyle.rowland@rwliaqual.com'
+    _new_user.user_phone = '269.491.4766'
     _new_user.user_group_id = 1
     DUT._dtm_data_model.site_preferences['users'].append(_new_user)
 

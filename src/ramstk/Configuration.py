@@ -369,7 +369,6 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self.RAMSTK_RISK_POINTS = [4, 10]
         self._lst_colors = [
             "revisionfg",
             "functionfg",
@@ -405,8 +404,8 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         # Initialize public dictionary attributes.
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
         self.RAMSTK_COLORS: Dict[str, str] = {}
-        self.RAMSTK_COM_INFO: Dict[str, str] = {}  # RAMSTK Common database info.
-        self.RAMSTK_PROG_INFO: Dict[str, str] = {}  # RAMSTK Program database info.
+        self.RAMSTK_COM_INFO: Dict[str, str] = {}
+        self.RAMSTK_PROG_INFO: Dict[str, str] = {}
         self.RAMSTK_TABPOS = {
             "listbook": "top",
             "modulebook": "bottom",
@@ -415,37 +414,37 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
 
         self.RAMSTK_ACTION_CATEGORY: Dict[str, str] = {}
         self.RAMSTK_ACTION_STATUS: Dict[str, str] = {}
-        self.RAMSTK_AFFINITY_GROUPS: Dict[str, str] = {}  # User updateable
+        self.RAMSTK_AFFINITY_GROUPS: Dict[str, str] = {}  # User.
         self.RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User.
         self.RAMSTK_DETECTION_METHODS: Dict[str, str] = {}
-        self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User updateable.
-        self.RAMSTK_HAZARDS: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
+        self.RAMSTK_HAZARDS: Dict[str, str] = {}  # User.
         self.RAMSTK_INCIDENT_CATEGORY: Dict[str, str] = {}
         self.RAMSTK_INCIDENT_STATUS: Dict[str, str] = {}
         self.RAMSTK_INCIDENT_TYPE: Dict[str, str] = {}
-        self.RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User updateable.
-        self.RAMSTK_MANUFACTURERS: Dict[str, str] = {}
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[str, str] = {}  # User updateable.
-        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, str] = {}
+        self.RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User.
+        self.RAMSTK_MANUFACTURERS: Dict[str, str] = {}  # User.
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[str, str] = {}  # User.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, str] = {}  # Admin.
         self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
         self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
         self.RAMSTK_REQUIREMENT_TYPE: Dict[str, str] = {}
-        self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User updateable.
-        self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User updateable.
-        self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User updateable.
+        self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
+        self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
+        self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
         self.RAMSTK_SEVERITY: Dict[str, str] = {}
-        self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User updateable.
-        self.RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
+        self.RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User.
         self.RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_USERS: Dict[str, str] = {}  # Admin updateable.
-        self.RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}
-        self.RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin updateable.
+        self.RAMSTK_USERS: Dict[str, str] = {}  # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}    # Admin.
+        self.RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin.
 
         # Initialize public list attributes.
+        self.RAMSTK_RISK_POINTS = [4, 10]
 
         # Initialize public scalar attributes.
-
         if sys.platform == "linux" or sys.platform == "linux2":
             self.RAMSTK_OS = "Linux"
             self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
@@ -489,7 +488,7 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         :rtype: bool
         """
         _return = False
-        print(self.RAMSTK_SITE_CONF)
+
         if Utilities.file_exists(self.RAMSTK_SITE_CONF):
             _config = configparser.ConfigParser()
             _config.read(self.RAMSTK_SITE_CONF)
@@ -508,6 +507,14 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
             )
             self.RAMSTK_COM_INFO["path"] = _config.get("Backend", "password")
         else:
+            print(
+                _(
+                    "\033[1;31mRAMSTK ERROR: Unable to read site "
+                    "configuration file {0:s}.\033[0m".format(
+                        self.RAMSTK_SITE_CONF,
+                    ),
+                ),
+            )
             _return = True
 
         return _return
@@ -744,6 +751,14 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
                 "worktabpos",
             )
         else:
+            print(
+                _(
+                    "\033[1;31mRAMSTK ERROR: Unable to read program "
+                    "configuration file {0:s}.\033[0m".format(
+                        self.RAMSTK_PROG_CONF,
+                    ),
+                ),
+            )
             _return = True
 
         return _return
@@ -764,12 +779,18 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
 
         if Utilities.dir_exists(
                 self.RAMSTK_HOME_DIR + "/.config/RAMSTK/layouts", ):
-            self.RAMSTK_DATA_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/layouts"
+            self.RAMSTK_DATA_DIR = (
+                self.RAMSTK_HOME_DIR +
+                "/.config/RAMSTK/layouts"
+            )
 
         if Utilities.dir_exists(
                 self.RAMSTK_HOME_DIR +
                 "/.config/RAMSTK/icons", ):
-            self.RAMSTK_ICON_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/icons"
+            self.RAMSTK_ICON_DIR = (
+                self.RAMSTK_HOME_DIR +
+                "/.config/RAMSTK/icons"
+            )
 
         if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"):
             self.RAMSTK_LOG_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"
