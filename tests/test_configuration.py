@@ -8,8 +8,9 @@
 
 # Standard Library Imports
 import gettext
+import glob
 import sys
-from os import environ, path
+from os import environ, getenv, path
 
 # Third Party Imports
 import pytest
@@ -23,6 +24,20 @@ from ramstk.Configuration import (
     RAMSTK_SW_APPLICATION, RAMSTK_SW_DEV_ENVIRONMENTS, RAMSTK_SW_DEV_PHASES,
     RAMSTK_SW_LEVELS, RAMSTK_SW_TEST_METHODS, Configuration,
 )
+
+try:
+    VIRTUAL_ENV = glob.glob(environ['VIRTUAL_ENV'])[0]
+except KeyError:
+    if sys.platform == 'Linux':
+        VIRTUAL_ENV = getenv('HOME') + '/.local'
+    elif sys.platform == 'Windows':
+        VIRTUAL_ENV = getenv('TEMP')
+    else:
+        print((
+            "The {0:s} system platform is not "
+            "supported."
+        ).format(sys.platform))
+        sys.exit(1)
 
 _ = gettext.gettext
 
@@ -296,6 +311,7 @@ def test_get_site_configuration(test_configuration):
     get_site_configuration() should return False on success
     """
     DUT = test_configuration
+    _old_com_info = DUT.RAMSTK_COM_INFO
 
     assert not DUT.get_site_configuration()
     assert DUT.RAMSTK_COM_BACKEND == 'sqlite'
@@ -303,9 +319,11 @@ def test_get_site_configuration(test_configuration):
     assert DUT.RAMSTK_COM_INFO["socket"] == '3306'
     assert DUT.RAMSTK_COM_INFO[
         "database"
-    ] == DUT.RAMSTK_SITE_DIR + '/ramstk_common.rtk'
-    assert DUT.RAMSTK_COM_INFO["user"] == 'ramstk'
-    assert DUT.RAMSTK_COM_INFO["password"] == 'ramstk'
+    ] == DUT.RAMSTK_SITE_DIR + '/ramstk_common.ramstk'
+    assert DUT.RAMSTK_COM_INFO["user"] == 'ramstkcom'
+    assert DUT.RAMSTK_COM_INFO["password"] == 'ramstkcom'
+
+    DUT.RAMSTK_COM_INFO = _old_com_info
 
 
 @pytest.mark.integration
@@ -314,6 +332,7 @@ def test_set_site_configuration(test_configuration):
     _set_site_configuration() should return False on success
     """
     DUT = test_configuration
+    _old_com_info = DUT.RAMSTK_COM_INFO
 
     assert not DUT._set_site_configuration()
     assert not DUT.get_site_configuration()
@@ -323,18 +342,25 @@ def test_set_site_configuration(test_configuration):
     assert DUT.RAMSTK_COM_INFO["socket"] == '3306'
     assert DUT.RAMSTK_COM_INFO[
         "database"
-    ] == DUT.RAMSTK_SITE_DIR + '/ramstk_common.rtk'
-    assert DUT.RAMSTK_COM_INFO["user"] == 'ramstk'
-    assert DUT.RAMSTK_COM_INFO["password"] == 'ramstk'
+    ] == DUT.RAMSTK_SITE_DIR + '/ramstk_common.ramstk'
+    assert DUT.RAMSTK_COM_INFO["user"] == 'ramstkcom'
+    assert DUT.RAMSTK_COM_INFO["password"] == 'ramstkcom'
 
+    DUT.RAMSTK_COM_INFO = _old_com_info
 
 @pytest.mark.integration
-def test_create_user_configuration(test_configuration):
+def test_create_user_configuration():
     """
     create_user_configuration() should return False on success
     """
-    DUT = test_configuration
+    DUT = Configuration()
+
+    _old_home_dir = DUT.RAMSTK_HOME_DIR
+    _old_site_dir = DUT.RAMSTK_SITE_DIR
+    _old_prog_conf = DUT.RAMSTK_PROG_CONF
+
     DUT.RAMSTK_HOME_DIR = '/tmp'
+    DUT.RAMSTK_SITE_DIR = VIRTUAL_ENV + '/share/RAMSTK'
     DUT.RAMSTK_PROG_CONF = '/tmp/.config/RAMSTK/RAMSTK.conf'
 
     assert not DUT.create_user_configuration()
@@ -359,6 +385,9 @@ def test_create_user_configuration(test_configuration):
     assert path.isfile('/tmp/.config/RAMSTK/layouts/Testing.xml')
     assert path.isfile('/tmp/.config/RAMSTK/layouts/Validation.xml')
 
+    DUT.RAMSTK_HOME_DIR = _old_home_dir
+    DUT.RAMSTK_SITE_DIR = _old_site_dir
+    DUT.RAMSTK_PROG_CONF = _old_prog_conf
 
 @pytest.mark.integration
 def test_get_user_configuration(test_configuration):
@@ -399,12 +428,12 @@ def test_get_user_configuration(test_configuration):
     assert DUT.RAMSTK_BACKEND == 'sqlite'
     assert DUT.RAMSTK_PROG_INFO["host"] == 'localhost'
     assert DUT.RAMSTK_PROG_INFO["socket"] == '3306'
-    assert DUT.RAMSTK_PROG_INFO["database"] == ''
-    assert DUT.RAMSTK_PROG_INFO["user"] == ''
-    assert DUT.RAMSTK_PROG_INFO["password"] == ''
-    assert DUT.RAMSTK_DATA_DIR == '/tmp/.config/RAMSTK/layouts'
-    assert DUT.RAMSTK_ICON_DIR == '/tmp/.config/RAMSTK/icons'
-    assert DUT.RAMSTK_LOG_DIR == '/tmp/.config/RAMSTK/logs'
+    assert DUT.RAMSTK_PROG_INFO["database"] == DUT._INSTALL_PREFIX + '/tmp/TestDB.ramstk'
+    assert DUT.RAMSTK_PROG_INFO["user"] == 'johnny.tester'
+    assert DUT.RAMSTK_PROG_INFO["password"] == 'clear.text.password'
+    assert DUT.RAMSTK_DATA_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK/layouts'
+    assert DUT.RAMSTK_ICON_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK/icons'
+    assert DUT.RAMSTK_LOG_DIR == DUT._INSTALL_PREFIX + '/tmp/logs'
     assert DUT.RAMSTK_PROG_DIR == DUT._INSTALL_PREFIX + '/tmp'
     assert DUT.RAMSTK_REPORT_SIZE == 'letter'
     assert DUT.RAMSTK_HR_MULTIPLIER == 1000000.0
@@ -422,44 +451,107 @@ def test_set_site_variables(test_configuration):
     set_site_variables() should return False on success
     """
     DUT = test_configuration
-    DUT.RAMSTK_HOME_DIR = DUT._INSTALL_PREFIX + '/tmp'
 
     assert not DUT.set_site_variables()
     assert DUT.RAMSTK_SITE_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK'
-    assert DUT.RAMSTK_CONF_DIR == DUT.RAMSTK_SITE_DIR
-    assert DUT.RAMSTK_DATA_DIR == "/tmp/.config/RAMSTK/layouts"
-    assert DUT.RAMSTK_ICON_DIR == "/tmp/.config/RAMSTK/icons"
-    assert DUT.RAMSTK_LOG_DIR == "/tmp/.config/RAMSTK/logs"
+    assert DUT.RAMSTK_CONF_DIR == DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK'
+    assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_HOME_DIR + "/.config/RAMSTK/layouts"
+    assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_HOME_DIR + "/.config/RAMSTK/icons"
+    assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"
     assert DUT.RAMSTK_SITE_CONF == DUT.RAMSTK_CONF_DIR + "/Site.conf"
 
 
 @pytest.mark.integration
-def test_set_user_configuration(test_configuration):
+def test_set_user_configuration():
     """
     set_user_configuration() should return False on success
     """
-    DUT = test_configuration
+    DUT = Configuration()
+
+    _old_home_dir = DUT.RAMSTK_HOME_DIR
+    _old_site_dir = DUT.RAMSTK_SITE_DIR
+    _old_prog_conf = DUT.RAMSTK_PROG_CONF
+
+    DUT.RAMSTK_HOME_DIR = '/tmp'
+    DUT.RAMSTK_SITE_DIR = VIRTUAL_ENV + '/share/RAMSTK'
+    DUT.RAMSTK_PROG_CONF = '/tmp/.config/RAMSTK/RAMSTK.conf'
+    DUT.create_user_configuration()
+
     DUT.RAMSTK_REPORT_SIZE = 'A4'
-    DUT.RAMSTK_FORMAT_FILE['allocation'] = 'MyAllocation.txt'
+    DUT.RAMSTK_HR_MULTIPLIER = 1000.0
+    DUT.RAMSTK_MTIME = 24.0
+    DUT.RAMSTK_DEC_PLACES = 4
+    DUT.RAMSTK_MODE_SOURCE = '1'
+    DUT.RAMSTK_TABPOS["listbook"] = 'bottom'
+    DUT.RAMSTK_TABPOS["modulebook"] = 'top'
+    DUT.RAMSTK_TABPOS["workbook"] = 'bottom'
+    DUT.RAMSTK_BACKEND = 'mysql'
+    DUT.RAMSTK_PROG_INFO = {"host": 'treebeard', 'socket': 3306, 'database': 'test', 'user': 'me', 'password': 'big.password'}
+    DUT.RAMSTK_COLORS = {
+        'functionbg': '#FFFFFF',
+        'functionfg': '#000000',
+        'hardwarebg': '#FFFFFF',
+        'hardwarefg': '#000000',
+        'requirementbg': '#FFFFFF',
+        'requirementfg': '#000000',
+        'revisionbg': '#FFFFFF',
+        'revisionfg': '#000000',
+        'stakeholderbg': '#FFFFFF',
+        'stakeholderfg': '#000000',
+        'validationbg': '#FFFFFF',
+        'validationfg': '#000000',
+    }
+    DUT.RAMSTK_FORMAT_FILE = {
+        'allocation': 'MyAllocation.txt',
+        'failure_definition': 'FailureDefinition.xml',
+        'fmea': 'FMEA.xml',
+        'function': 'Function.xml',
+        'hardware': 'Hardware.xml',
+        'hazops': 'HazOps.xml',
+        'pof': 'PoF.xml',
+        'requirement': 'Requirement.xml',
+        'revision': 'Revision.xml',
+        'similaritem': 'SimilarItem.xml',
+        'stakeholder': 'Stakeholder.xml',
+        'validation': 'Validation.xml',
+    }
 
     assert not DUT.set_user_configuration()
 
     DUT.get_user_configuration()
 
     assert DUT.RAMSTK_REPORT_SIZE == 'A4'
+    assert DUT.RAMSTK_HR_MULTIPLIER == 1000.0
+    assert DUT.RAMSTK_MTIME == 24.0
+    assert DUT.RAMSTK_DEC_PLACES == 4
+    assert DUT.RAMSTK_MODE_SOURCE == '1'
     assert DUT.RAMSTK_FORMAT_FILE['allocation'] == 'MyAllocation.txt'
+
+    DUT.RAMSTK_HOME_DIR = _old_home_dir
+    DUT.RAMSTK_SITE_DIR = _old_site_dir
+    DUT.RAMSTK_PROG_CONF = _old_prog_conf
 
 
 @pytest.mark.integration
-def test_set_user_variables(test_configuration):
+def test_set_user_variables():
     """
     set_user_variables() should return False on success
     """
-    DUT = test_configuration
+    DUT = Configuration()
 
-    assert DUT.set_user_variables()
+    _old_home_dir = DUT.RAMSTK_HOME_DIR
+    _old_conf_dir = DUT.RAMSTK_CONF_DIR
+    _old_prog_conf = DUT.RAMSTK_PROG_CONF
+
+    DUT.RAMSTK_HOME_DIR = '/tmp'
+
+    assert not DUT.set_user_variables()
 
     DUT.get_user_configuration()
 
-    assert DUT.RAMSTK_CONF_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK'
-    assert DUT.RAMSTK_PROG_CONF == DUT._INSTALL_PREFIX + '/share/RAMSTK/RAMSTK.conf'
+    assert DUT.RAMSTK_CONF_DIR == DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK'
+    assert DUT.RAMSTK_PROG_CONF == DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK/RAMSTK.conf'
+
+    DUT.RAMSTK_HOME_DIR = _old_home_dir
+    DUT.RAMSTK_CONF_DIR = _old_conf_dir
+    DUT.RAMSTK_PROG_CONF = _old_prog_conf

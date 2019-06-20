@@ -181,7 +181,7 @@ RAMSTK_S_DIST = [
 ]
 
 
-class Configuration:
+class Configuration:    # pylint: disable=too-many-instance-attributes
     r"""
     RAMSTK configuration class.
 
@@ -364,82 +364,12 @@ class Configuration:
     :cvar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
 
-    # Define public dictionary class attributes.
-    RAMSTK_FORMAT_FILE: Dict[str, str] = {}
-    RAMSTK_COLORS: Dict[str, str] = {}
-    RAMSTK_COM_INFO: Dict[str, str] = {}  # RAMSTK Common database info.
-    RAMSTK_PROG_INFO: Dict[str, str] = {}  # RAMSTK Program database info.
-    RAMSTK_TABPOS = {
-        "listbook": "top",
-        "modulebook": "bottom",
-        "workbook": "bottom",
-    }
-
-    # The following global dicts are loaded from information in the RAMSTK
-    # Common database.
-    RAMSTK_ACTION_CATEGORY: Dict[str, str] = {}
-    RAMSTK_ACTION_STATUS: Dict[str, str] = {}
-    RAMSTK_AFFINITY_GROUPS: Dict[str, str] = {}  # User updateable
-    RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
-    RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User updateable.
-    RAMSTK_DETECTION_METHODS: Dict[str, str] = {}
-    RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User updateable.
-    RAMSTK_HAZARDS: Dict[str, str] = {}  # User updateable.
-    RAMSTK_INCIDENT_CATEGORY: Dict[str, str] = {}
-    RAMSTK_INCIDENT_STATUS: Dict[str, str] = {}
-    RAMSTK_INCIDENT_TYPE: Dict[str, str] = {}
-    RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User updateable.
-    RAMSTK_MANUFACTURERS: Dict[str, str] = {}
-    RAMSTK_MEASURABLE_PARAMETERS: Dict[str, str] = {}  # User updateable.
-    RAMSTK_MEASUREMENT_UNITS: Dict[str, str] = {}
-    RAMSTK_MODULES: Dict[str, str] = {}  # Static.
-    RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
-    RAMSTK_REQUIREMENT_TYPE: Dict[str, str] = {}
-    RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User updateable.
-    RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User updateable.
-    RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User updateable.
-    RAMSTK_SEVERITY: Dict[str, str] = {}
-    RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User updateable.
-    RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User updateable.
-    RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
-    RAMSTK_USERS: Dict[str, str] = {}  # Admin updateable.
-    RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}
-    RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin updateable.
-
-    # Define global list class attributes.
-    RAMSTK_RISK_POINTS = [4, 10]
-
-    # Define public scalar class attributes.
-    RAMSTK_MODE = ""
-    RAMSTK_SITE_CONF = ""
-    RAMSTK_PROG_CONF = ""
-    RAMSTK_HOME_DIR = ""
-    RAMSTK_SITE_DIR = ""
-    RAMSTK_ICON_DIR = ""
-    RAMSTK_DATA_DIR = ""
-    RAMSTK_CONF_DIR = ""
-    RAMSTK_LOG_DIR = ""
-    RAMSTK_PROG_DIR = ""
-    RAMSTK_DEBUG_LOG = ""
-    RAMSTK_IMPORT_LOG = ""
-    RAMSTK_USER_LOG = ""
-    RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
-    RAMSTK_COM_BACKEND = ""
-    RAMSTK_BACKEND = ""
-    RAMSTK_REPORT_SIZE = "letter"
-    RAMSTK_HR_MULTIPLIER = 1000000.0
-    RAMSTK_DEC_PLACES = 6
-    RAMSTK_MTIME = 100.0
-    RAMSTK_GUI_LAYOUT = "advanced"
-    RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
-    RAMSTK_LOCALE = "en_US"
-    RAMSTK_OS = ""
-
     def __init__(self):
         """Initialize the RAMSTK configuration parser."""
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self.RAMSTK_RISK_POINTS = [4, 10]
         self._lst_colors = [
             "revisionfg",
             "functionfg",
@@ -473,6 +403,44 @@ class Configuration:
         self._INSTALL_PREFIX = Utilities.prefix()
 
         # Initialize public dictionary attributes.
+        self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
+        self.RAMSTK_COLORS: Dict[str, str] = {}
+        self.RAMSTK_COM_INFO: Dict[str, str] = {}  # RAMSTK Common database info.
+        self.RAMSTK_PROG_INFO: Dict[str, str] = {}  # RAMSTK Program database info.
+        self.RAMSTK_TABPOS = {
+            "listbook": "top",
+            "modulebook": "bottom",
+            "workbook": "bottom",
+        }
+
+        self.RAMSTK_ACTION_CATEGORY: Dict[str, str] = {}
+        self.RAMSTK_ACTION_STATUS: Dict[str, str] = {}
+        self.RAMSTK_AFFINITY_GROUPS: Dict[str, str] = {}  # User updateable
+        self.RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
+        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_DETECTION_METHODS: Dict[str, str] = {}
+        self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_HAZARDS: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, str] = {}
+        self.RAMSTK_INCIDENT_STATUS: Dict[str, str] = {}
+        self.RAMSTK_INCIDENT_TYPE: Dict[str, str] = {}
+        self.RAMSTK_LOAD_HISTORY: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_MANUFACTURERS: Dict[str, str] = {}
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, str] = {}
+        self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
+        self.RAMSTK_PAGE_NUMBER: Dict[str, str] = {}
+        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, str] = {}
+        self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User updateable.
+        self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User updateable.
+        self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User updateable.
+        self.RAMSTK_SEVERITY: Dict[str, str] = {}
+        self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_STRESS_LIMITS: Dict[str, str] = {}  # User updateable.
+        self.RAMSTK_SUBCATEGORIES: Dict[str, str] = {}  # Static.
+        self.RAMSTK_USERS: Dict[str, str] = {}  # Admin updateable.
+        self.RAMSTK_VALIDATION_TYPE: Dict[str, str] = {}
+        self.RAMSTK_WORKGROUPS: Dict[str, str] = {}  # Admin updateable.
 
         # Initialize public list attributes.
 
@@ -495,6 +463,24 @@ class Configuration:
         self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
         self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
+        self.RAMSTK_SITE_CONF = ""
+        self.RAMSTK_PROG_CONF = ""
+        self.RAMSTK_DEBUG_LOG = ""
+        self.RAMSTK_IMPORT_LOG = ""
+        self.RAMSTK_USER_LOG = ""
+
+        self.RAMSTK_MODE = ""
+        self.RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
+        self.RAMSTK_COM_BACKEND = ""
+        self.RAMSTK_BACKEND = ""
+        self.RAMSTK_REPORT_SIZE = "letter"
+        self.RAMSTK_HR_MULTIPLIER = 1000000.0
+        self.RAMSTK_DEC_PLACES = 6
+        self.RAMSTK_MTIME = 100.0
+        self.RAMSTK_GUI_LAYOUT = "advanced"
+        self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
+        self.RAMSTK_LOCALE = "en_US"
+
     def get_site_configuration(self):
         """
         Read the site configuration file.
@@ -503,7 +489,7 @@ class Configuration:
         :rtype: bool
         """
         _return = False
-
+        print(self.RAMSTK_SITE_CONF)
         if Utilities.file_exists(self.RAMSTK_SITE_CONF):
             _config = configparser.ConfigParser()
             _config.read(self.RAMSTK_SITE_CONF)
@@ -535,7 +521,7 @@ class Configuration:
         """
         _return = False
 
-        _common_db = self.RAMSTK_SITE_DIR + "/ramstk_common.rtk"
+        _common_db = self.RAMSTK_SITE_DIR + "/ramstk_common.ramstk"
 
         _config = configparser.ConfigParser()
 
@@ -543,8 +529,8 @@ class Configuration:
         _config.set("Backend", "host", "localhost")
         _config.set("Backend", "socket", "3306")
         _config.set("Backend", "database", _common_db)
-        _config.set("Backend", "user", "ramstk")
-        _config.set("Backend", "password", "ramstk")
+        _config.set("Backend", "user", "ramstkcom")
+        _config.set("Backend", "password", "ramstkcom")
         _config.set("Backend", "type", "sqlite")
         _config.set("Backend", "path", self.RAMSTK_SITE_DIR)
 
@@ -894,7 +880,6 @@ class Configuration:
 
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
-
         if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
             self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
         else:

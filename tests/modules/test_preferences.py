@@ -41,11 +41,11 @@ except KeyError:
         sys.exit(1)
 
 CONF_DIR = VIRTUAL_ENV + '/share/RAMSTK'
-DATA_DIR = CONF_DIR + '/data'
+DATA_DIR = CONF_DIR + '/layouts'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
-TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
+TEST_COMMON_DB_PATH = VIRTUAL_ENV + '/share/RAMSTK/ramstk_common.ramstk'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.ramstk'
 
 
@@ -116,8 +116,9 @@ def test_do_select_all_user_preferences(
         'host': 'localhost',
         'socket': '3306',
         'database': TEST_COMMON_DB_PATH,
-        'user': 'ramstkcom',
-        'password': 'ramstkcom',
+        'user': 'ramstk',
+        'password': 'ramstk',
+        'path': 'ramstk',
     }
     assert DUT.user_preferences['program_db_info'] == {
         'type': 'sqlite',

@@ -39,14 +39,13 @@ except KeyError:
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
         print((
-            "The {0:s} system platform is not "
-            "supported."
+            "The {0:s} system platform is not supported."
         ).format(platform.system()))
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONF_DIR = VIRTUAL_ENV + '/share/RAMSTK'
-DATA_DIR = CONF_DIR + '/data'
+DATA_DIR = CONF_DIR + '/layouts'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
@@ -293,6 +292,8 @@ def test_configuration():
         os.makedirs(LOG_DIR)
 
     configuration = Configuration()
+
+    configuration._INSTALL_PREFIX = VIRTUAL_ENV
 
     configuration.RAMSTK_SITE_DIR = CONF_DIR
     configuration.RAMSTK_CONF_DIR = CONF_DIR
