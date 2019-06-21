@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.conftest.py is part of The RAMSTK Project
@@ -38,14 +39,13 @@ except KeyError:
         VIRTUAL_ENV = os.getenv('TEMP')
     else:
         print((
-            "The {0:s} system platform is not "
-            "supported."
+            "The {0:s} system platform is not supported."
         ).format(platform.system()))
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONF_DIR = VIRTUAL_ENV + '/share/RAMSTK'
-DATA_DIR = CONF_DIR + '/data'
+DATA_DIR = CONF_DIR + '/layouts'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
@@ -60,62 +60,180 @@ IMPORT_LOG = LOG_DIR + '/RAMSTK_import.log'
 
 HEADERS = {
     'Function': [
-        'Revision ID', 'Function ID', 'Level', 'Function Code',
-        'Function Name', 'Parent', 'Remarks', 'Safety Critical', 'Type',
+        'Revision ID',
+        'Function ID',
+        'Level',
+        'Function Code',
+        'Function Name',
+        'Parent',
+        'Remarks',
+        'Safety Critical',
+        'Type',
     ],
     'Requirement': [
-        'Revision ID', 'Requirement ID', 'Derived?', 'Requirement',
-        'Figure Number', 'Owner', 'Page Number', 'Parent ID', 'Priority',
-        'Requirement Code', 'Specification', 'Requirement Type', 'Validated?',
+        'Revision ID',
+        'Requirement ID',
+        'Derived?',
+        'Requirement',
+        'Figure Number',
+        'Owner',
+        'Page Number',
+        'Parent ID',
+        'Priority',
+        'Requirement Code',
+        'Specification',
+        'Requirement Type',
+        'Validated?',
         'Validated Date',
     ],
     'Hardware': [
-        'Revision ID', 'Hardware ID', 'Alt. Part Num.', 'CAGE Code',
-        'Category', 'Comp. Ref. Des.', 'Unit Cost', 'Cost Type', 'Description',
-        'Duty Cycle', 'Fig. Num.', 'LCN', 'Level', 'Supplier', 'Mission Time',
-        'Name', 'NSN', 'Page Num.', 'Parent ID', 'Part?', 'PN', 'Quantity',
-        'Ref. Des.', 'Remarks', 'Repairable?', 'Specification', 'SubCat',
-        'Tagged', 'Year of Manufacture', 'App. ID', 'Area', 'Capacitance',
-        'Configuration', 'Construction ID', 'Contact Form', 'Constact Gauge',
-        'Contact Rating ID', 'Operating Current', 'Rated Current',
-        'Current Ratio', 'Active Environment', 'Dormant Environment', 'Family',
-        'Feature Size', 'Operating Freq.', 'Insert ID', 'Insulation ID',
-        'Manufacturing ID', 'Matching', 'Num. Active Pins', 'Num. Ckt. Planes',
-        'Num. Cycles', 'Num. Elements', 'Hand Soldered', 'Wave Soldered',
-        'Operating Life', 'Overstressed?', 'Package ID', 'Operating Power',
-        'Rated Power', 'Power Ratio', 'Overstress Reason', 'Resistance',
-        'Specification ID', 'Tech. ID', 'Active Temp.', 'Case Temp.',
-        'Dormant Temp.', 'Hot Spot Temp.', 'Junction Temp.', 'Knee Temp.',
-        'Max. Rated Temp.', 'Min. Rated Temp.', 'Temperature Rise', 'Theta JC',
-        'Type', 'AC Operating Voltage', 'DC Operating Voltage',
-        'ESD Withstand Volts', 'Rated Voltage', 'Voltage Ratio', 'Weight',
-        'Years in Prod.', 'Add. Adj. Factor', 'Fail. Dist. ID', 'h(t) Method',
-        'h(t) Model', 'Specified h(t)', 'h(t) Type', 'Location',
-        'Specified MTBF', 'Mult. Adj. Factor', 'Quality', 'R(t) Goal',
-        'R(t) Goal Measure', 'Scale Parameter', 'Shape Parameter',
+        'Revision ID',
+        'Hardware ID',
+        'Alt. Part Num.',
+        'CAGE Code',
+        'Category',
+        'Comp. Ref. Des.',
+        'Unit Cost',
+        'Cost Type',
+        'Description',
+        'Duty Cycle',
+        'Fig. Num.',
+        'LCN',
+        'Level',
+        'Supplier',
+        'Mission Time',
+        'Name',
+        'NSN',
+        'Page Num.',
+        'Parent ID',
+        'Part?',
+        'PN',
+        'Quantity',
+        'Ref. Des.',
+        'Remarks',
+        'Repairable?',
+        'Specification',
+        'SubCat',
+        'Tagged',
+        'Year of Manufacture',
+        'App. ID',
+        'Area',
+        'Capacitance',
+        'Configuration',
+        'Construction ID',
+        'Contact Form',
+        'Constact Gauge',
+        'Contact Rating ID',
+        'Operating Current',
+        'Rated Current',
+        'Current Ratio',
+        'Active Environment',
+        'Dormant Environment',
+        'Family',
+        'Feature Size',
+        'Operating Freq.',
+        'Insert ID',
+        'Insulation ID',
+        'Manufacturing ID',
+        'Matching',
+        'Num. Active Pins',
+        'Num. Ckt. Planes',
+        'Num. Cycles',
+        'Num. Elements',
+        'Hand Soldered',
+        'Wave Soldered',
+        'Operating Life',
+        'Overstressed?',
+        'Package ID',
+        'Operating Power',
+        'Rated Power',
+        'Power Ratio',
+        'Overstress Reason',
+        'Resistance',
+        'Specification ID',
+        'Tech. ID',
+        'Active Temp.',
+        'Case Temp.',
+        'Dormant Temp.',
+        'Hot Spot Temp.',
+        'Junction Temp.',
+        'Knee Temp.',
+        'Max. Rated Temp.',
+        'Min. Rated Temp.',
+        'Temperature Rise',
+        'Theta JC',
+        'Type',
+        'AC Operating Voltage',
+        'DC Operating Voltage',
+        'ESD Withstand Volts',
+        'Rated Voltage',
+        'Voltage Ratio',
+        'Weight',
+        'Years in Prod.',
+        'Add. Adj. Factor',
+        'Fail. Dist. ID',
+        'h(t) Method',
+        'h(t) Model',
+        'Specified h(t)',
+        'h(t) Type',
+        'Location',
+        'Specified MTBF',
+        'Mult. Adj. Factor',
+        'Quality',
+        'R(t) Goal',
+        'R(t) Goal Measure',
+        'Scale Parameter',
+        'Shape Parameter',
         'Surv. Analysis',
     ],
     'Validation': [
-        'Revision ID', 'Validation ID', 'Maximum Acceptable',
-        'Mean Acceptable', 'Minimum Acceptable', 'Acceptable Variance',
-        's-Confidence', 'Avg. Task Cost', 'Max. Task Cost', 'Min. Task Cost',
-        'Start Date', 'Finish Date', 'Description', 'Unit of Measure',
-        'Task Name', 'Status', 'Type', 'Task Spec.', 'Average Task Time',
-        'Maximum Task Time', 'Minimum Task Time',
+        'Revision ID',
+        'Validation ID',
+        'Maximum Acceptable',
+        'Mean Acceptable',
+        'Minimum Acceptable',
+        'Acceptable Variance',
+        's-Confidence',
+        'Avg. Task Cost',
+        'Max. Task Cost',
+        'Min. Task Cost',
+        'Start Date',
+        'Finish Date',
+        'Description',
+        'Unit of Measure',
+        'Task Name',
+        'Status',
+        'Type',
+        'Task Spec.',
+        'Average Task Time',
+        'Maximum Task Time',
+        'Minimum Task Time',
     ],
 }
 
 # Row data for the Function import test file.
 ROW_DATA = [
     [
-        1, 4, 1, 'PRESS-001', 'Maintain system pressure.', 0,
+        1,
+        4,
+        1,
+        'PRESS-001',
+        'Maintain system pressure.',
+        0,
         'This is a function that is about system pressure.  This remarks box also needs to be larger.',
-        1, 0,
+        1,
+        0,
     ],
     [
-        1, 5, 1, 'FLOW-001', 'Maintain system flow.', 0,
+        1,
+        5,
+        1,
+        'FLOW-001',
+        'Maintain system flow.',
+        0,
         'These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.',
-        0, 0,
+        0,
+        0,
     ],
 ]
 
@@ -175,8 +293,12 @@ def test_configuration():
 
     configuration = Configuration()
 
+    configuration._INSTALL_PREFIX = VIRTUAL_ENV
+
     configuration.RAMSTK_SITE_DIR = CONF_DIR
     configuration.RAMSTK_CONF_DIR = CONF_DIR
+    configuration.RAMSTK_SITE_CONF = configuration.RAMSTK_CONF_DIR + \
+        '/Site.conf'
     configuration.RAMSTK_PROG_CONF = configuration.RAMSTK_CONF_DIR + \
         '/RAMSTK.conf'
 
@@ -239,6 +361,7 @@ def test_configuration():
         'validationfg': '#000000',
     }
 
+    configuration._set_site_configuration()
     configuration.set_user_configuration()
 
     configuration.RAMSTK_DEBUG_LOG = \
@@ -258,7 +381,10 @@ def test_csv_file_function():
 
     with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
-            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL,
+            _csv_file,
+            delimiter=';',
+            quotechar='|',
+            quoting=csv.QUOTE_MINIMAL,
         )
         filewriter.writerow(HEADERS['Function'])
         filewriter.writerow(ROW_DATA[0])
@@ -274,7 +400,10 @@ def test_csv_file_requirement():
 
     with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
-            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL,
+            _csv_file,
+            delimiter=';',
+            quotechar='|',
+            quoting=csv.QUOTE_MINIMAL,
         )
         filewriter.writerow(HEADERS['Requirement'])
 
@@ -288,7 +417,10 @@ def test_csv_file_hardware():
 
     with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
-            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL,
+            _csv_file,
+            delimiter=';',
+            quotechar='|',
+            quoting=csv.QUOTE_MINIMAL,
         )
         filewriter.writerow(HEADERS['Hardware'])
 
@@ -302,7 +434,10 @@ def test_csv_file_validation():
 
     with open(_test_file, 'w') as _csv_file:
         filewriter = csv.writer(
-            _csv_file, delimiter=';', quotechar='|', quoting=csv.QUOTE_MINIMAL,
+            _csv_file,
+            delimiter=';',
+            quotechar='|',
+            quoting=csv.QUOTE_MINIMAL,
         )
         filewriter.writerow(HEADERS['Validation'])
 

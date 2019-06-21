@@ -41,11 +41,11 @@ except KeyError:
         sys.exit(1)
 
 CONF_DIR = VIRTUAL_ENV + '/share/RAMSTK'
-DATA_DIR = CONF_DIR + '/data'
+DATA_DIR = CONF_DIR + '/layouts'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
-TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
+TEST_COMMON_DB_PATH = VIRTUAL_ENV + '/share/RAMSTK/ramstk_common.ramstk'
 TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.ramstk'
 
 
@@ -118,6 +118,7 @@ def test_do_select_all_user_preferences(
         'database': TEST_COMMON_DB_PATH,
         'user': 'ramstkcom',
         'password': 'ramstkcom',
+        'path': 'ramstkcom',
     }
     assert DUT.user_preferences['program_db_info'] == {
         'type': 'sqlite',
@@ -316,8 +317,8 @@ def test_request_do_update(test_dao, test_common_dao, test_configuration):
     _new_user = RAMSTKUser()
     _new_user.user_lname = 'Rowland'
     _new_user.user_fname = 'Doyle'
-    _new_user.user_email = 'doyle.rowland@reliaqual.com'
-    _new_user.user_phone = '269.491.4765'
+    _new_user.user_email = 'doyle.rowland@rwliaqual.com'
+    _new_user.user_phone = '269.491.4766'
     _new_user.user_group_id = 1
     DUT._dtm_data_model.site_preferences['users'].append(_new_user)
 

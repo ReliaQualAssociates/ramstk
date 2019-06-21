@@ -6,25 +6,23 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Utilities module algorithms and models."""
 
+# Standard Library Imports
+import logging
 import os
 import tempfile
-
 from datetime import datetime
-import logging
 
+# Third Party Imports
 import pytest
 
-from ramstk.Utilities import (create_logger, split_string, none_to_string,
-                           string_to_boolean, date_to_ordinal, ordinal_to_date,
-                           dir_exists, file_exists, none_to_default,
-                           error_handler)
+# RAMSTK Package Imports
+from ramstk.Utilities import (
+    create_logger, date_to_ordinal, dir_exists, error_handler,
+    file_exists, none_to_default, none_to_string,
+    ordinal_to_date, split_string, string_to_boolean,
+)
 
 TEMPDIR = tempfile.gettempdir()
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 
 def test_create_logger():
@@ -52,7 +50,7 @@ def test_split_string():
     assert _strings[2] == 'three'
 
 
-def test_none_to_string_None():
+def test_none_to_string_None():  # pylint: disable=invalid-name
     """none_to_string() should return an empty string when passed None."""
     assert none_to_string(None) == ''
 
@@ -67,7 +65,7 @@ def test_none_to_string_string():
     assert none_to_string('The original string') == 'The original string'
 
 
-def test_string_to_boolean_True():
+def test_string_to_boolean_True():  # pylint: disable=invalid-name
     """ string_to_boolean() should return a 1 when passed True. """
     assert string_to_boolean(True) == 1
 
@@ -87,7 +85,7 @@ def test_string_to_boolean_y():
     assert string_to_boolean('y') == 1
 
 
-def test_string_to_boolean_False():
+def test_string_to_boolean_False():  # pylint: disable=invalid-name
     """ string_to_boolean() should return a 0 when passed False. """
     assert string_to_boolean(False) == 0
 
@@ -155,14 +153,14 @@ def test_none_to_default_not_none():
 def test_error_handler_type_error():
     """ error_handler() should return a 10 error code when passed a TypeError string. """
     _error_code = error_handler(
-        ['The argument must be a string or a number dude!'])
+        ['The argument must be a string or a number dude!'], )
     assert _error_code == 10
 
 
 def test_error_handler_value_error():
     """ error_handler() should return a 10 error code when passed a ValueError string. """
     _error_code = error_handler(
-        ['That is invalid literal for int() with base 10'])
+        ['That is invalid literal for int() with base 10'], )
     assert _error_code == 10
 
     _error_code = error_handler(['I could not convert string to float'])
@@ -175,7 +173,7 @@ def test_error_handler_zero_division_error():
     assert _error_code == 20
 
     _error_code = error_handler(
-        ['That was integer division or modulo by zero'])
+        ['That was integer division or modulo by zero'], )
     assert _error_code == 20
 
 

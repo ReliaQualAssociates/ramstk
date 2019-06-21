@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_resistor.py is part of The RAMSTK Project
@@ -7,15 +7,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the resistor module."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Resistor, Component
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
+# RAMSTK Package Imports
+from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
+from ramstk.analyses.prediction import Component, Resistor
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -29,63 +26,63 @@ ATTRIBUTES['quantity'] = 1
 PART_COUNT_LAMBDA_B = {
     1: [
         0.0005, 0.0022, 0.0071, 0.0037, 0.012, 0.0052, 0.0065, 0.016, 0.025,
-        0.025, 0.00025, 0.0098, 0.035, 0.36
+        0.025, 0.00025, 0.0098, 0.035, 0.36,
     ],
     2: {
         1: [
             0.0012, 0.0027, 0.011, 0.0054, 0.020, 0.0063, 0.013, 0.018, 0.033,
-            0.030, 0.00025, 0.014, 0.044, 0.69
+            0.030, 0.00025, 0.014, 0.044, 0.69,
         ],
         2: [
             0.0012, 0.0027, 0.011, 0.0054, 0.020, 0.0063, 0.013, 0.018, 0.033,
-            0.030, 0.00025, 0.014, 0.044, 0.69
+            0.030, 0.00025, 0.014, 0.044, 0.69,
         ],
         3: [
             0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014, 0.021, 0.038,
-            0.034, 0.00028, 0.016, 0.050, 0.78
+            0.034, 0.00028, 0.016, 0.050, 0.78,
         ],
         4: [
             0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014, 0.021, 0.038,
-            0.034, 0.00028, 0.016, 0.050, 0.78
-        ]
+            0.034, 0.00028, 0.016, 0.050, 0.78,
+        ],
     },
     3: [
         0.012, 0.025, 0.13, 0.062, 0.21, 0.078, 0.10, 0.19, 0.24, 0.32, 0.0060,
-        0.18, 0.47, 8.2
+        0.18, 0.47, 8.2,
     ],
     4: [
         0.0023, 0.0066, 0.031, 0.013, 0.055, 0.022, 0.043, 0.077, 0.15, 0.10,
-        0.0011, 0.055, 0.15, 1.7
+        0.0011, 0.055, 0.15, 1.7,
     ],
     5: [
         0.0085, 0.018, 0.10, 0.045, 0.16, 0.15, 0.17, 0.30, 0.38, 0.26, 0.0068,
-        0.13, 0.37, 5.4
+        0.13, 0.37, 5.4,
     ],
     6: {
         1: [
             0.014, 0.031, 0.16, 0.077, 0.26, 0.073, 0.15, 0.19, 0.39, 0.42,
-            0.0042, 0.21, 0.62, 9.4
+            0.0042, 0.21, 0.62, 9.4,
         ],
         2: [
             0.013, 0.028, 0.15, 0.070, 0.24, 0.065, 0.13, 0.18, 0.35, 0.38,
-            0.0038, 0.19, 0.56, 8.6
-        ]
+            0.0038, 0.19, 0.56, 8.6,
+        ],
     },
     7: [
         0.008, 0.18, 0.096, 0.045, 0.15, 0.044, 0.088, 0.12, 0.24, 0.25, 0.004,
-        0.13, 0.37, 5.5
+        0.13, 0.37, 5.5,
     ],
     8: [
         0.065, 0.32, 1.4, 0.71, 1.6, 0.71, 1.9, 1.0, 2.7, 2.4, 0.032, 1.3, 3.4,
-        62.0
+        62.0,
     ],
     9: [
         0.025, 0.055, 0.35, 0.15, 0.58, 0.16, 0.26, 0.35, 0.58, 1.1, 0.013,
-        0.52, 1.6, 24.0
+        0.52, 1.6, 24.0,
     ],
     10: [
         0.33, 0.73, 7.0, 2.9, 12.0, 3.5, 5.3, 7.1, 9.8, 23.0, 0.16, 11.0, 33.0,
-        510.0
+        510.0,
     ],
     11:
     [0.15, 0.35, 3.1, 1.2, 5.4, 1.9, 2.8, 0.0, 0.0, 9.0, 0.075, 0.0, 0.0, 0.0],
@@ -93,16 +90,16 @@ PART_COUNT_LAMBDA_B = {
     [0.15, 0.34, 2.9, 1.2, 5.0, 1.6, 2.4, 0.0, 0.0, 7.6, 0.076, 0.0, 0.0, 0.0],
     13: [
         0.043, 0.15, 0.75, 0.35, 1.3, 0.39, 0.78, 1.8, 2.8, 2.5, 0.21, 1.2,
-        3.7, 49.0
+        3.7, 49.0,
     ],
     14: [
         0.05, 0.11, 1.1, 0.45, 1.7, 2.8, 4.6, 4.6, 7.5, 3.3, 0.025, 1.5, 4.7,
-        67.0
+        67.0,
     ],
     15: [
         0.048, 0.16, 0.76, 0.36, 1.3, 0.36, 0.72, 1.4, 2.2, 2.3, 0.024, 1.2,
-        3.4, 52.0
-    ]
+        3.4, 52.0,
+    ],
 }
 
 PART_COUNT_PIQ = [0.030, 0.10, 0.30, 1.0, 3.0, 10.0]
@@ -110,14 +107,20 @@ PART_COUNT_PIQ = [0.030, 0.10, 0.30, 1.0, 3.0, 10.0]
 
 @pytest.mark.unit
 @pytest.mark.calculation
-@pytest.mark.parametrize("subcategory_id",
-                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+)
 @pytest.mark.parametrize("specification_id", [1, 2, 3, 4])
 @pytest.mark.parametrize("quality_id", [1, 2, 3, 4, 5, 6])
-@pytest.mark.parametrize("environment_active_id",
-                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
-def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
-                                            quality_id, environment_active_id):
+@pytest.mark.parametrize(
+    "environment_active_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+)
+def test_calculate_mil_hdbk_217f_part_count(
+        subcategory_id, specification_id,
+        quality_id, environment_active_id,
+):
     """calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 1
     ATTRIBUTES['subcategory_id'] = subcategory_id
@@ -128,10 +131,12 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
     try:
         if subcategory_id in [2, 6]:
             lambda_b = PART_COUNT_LAMBDA_B[subcategory_id][specification_id][
-                environment_active_id - 1]
+                environment_active_id - 1
+            ]
         else:
             lambda_b = PART_COUNT_LAMBDA_B[subcategory_id][
-                environment_active_id - 1]
+                environment_active_id - 1
+            ]
     except (KeyError, IndexError):
         lambda_b = 0.0
     piQ = PART_COUNT_PIQ[quality_id - 1]
@@ -140,12 +145,16 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
-                        'calculating resistor, hardware ID: 6, subcategory '
-                        'ID: {0:d}, specification ID: {1:d}, active '
-                        'environment ID: {2:d}, and quality ID: '
-                        '{3:d}.\n').format(subcategory_id, specification_id,
-                                           environment_active_id, quality_id)
+        assert _msg == (
+            'RAMSTK WARNING: Base hazard rate is 0.0 when '
+            'calculating resistor, hardware ID: 6, subcategory '
+            'ID: {0:d}, specification ID: {1:d}, active '
+            'environment ID: {2:d}, and quality ID: '
+            '{3:d}.\n'
+        ).format(
+            subcategory_id, specification_id,
+            environment_active_id, quality_id,
+        )
     else:
         assert _msg == ''
     assert _attributes['lambda_b'] == lambda_b
@@ -165,10 +174,12 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     _attributes, _msg = Resistor.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-                    'resistor, hardware ID: 6, subcategory ID: 0, '
-                    'specification ID: 1, active environment ID: 1, and '
-                    'quality ID: 1.\n')
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
+        'resistor, hardware ID: 6, subcategory ID: 0, '
+        'specification ID: 1, active environment ID: 1, and '
+        'quality ID: 1.\n'
+    )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.03
     assert _attributes['hazard_rate_active'] == 0.0
@@ -189,7 +200,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_specification():
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
         'resistor, hardware ID: 6, subcategory ID: 2, specification ID: 10, '
-        'active environment ID: 1, and quality ID: 1.\n')
+        'active environment ID: 1, and quality ID: 1.\n'
+    )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 0.030
     assert _attributes['hazard_rate_active'] == 0.0
@@ -210,7 +222,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
         'resistor, hardware ID: 6, subcategory ID: 1, specification ID: 1, '
-        'active environment ID: 100, and quality ID: 1.\n')
+        'active environment ID: 100, and quality ID: 1.\n'
+    )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.03
     assert _attributes['hazard_rate_active'] == 0.0
@@ -228,8 +241,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Resistor.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating resistor, '
-                    'hardware ID: 6, quality ID: 11.')
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating resistor, '
+        'hardware ID: 6, quality ID: 11.'
+    )
     assert _attributes['lambda_b'] == 0.0005
     assert _attributes['piQ'] == 0.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -275,11 +290,18 @@ def test_calculate_mil_hdbk_217f_part_stress():
 @pytest.mark.unit
 @pytest.mark.calculation
 @pytest.mark.parametrize("power_rated", [0.5, 0.25])
-@pytest.mark.parametrize("environment_active_id",
-                         [3, 5, 6, 7, 8, 9, 10, 12, 13, 14])
-def test_power_overstress_harsh_environment(power_rated,
-                                            environment_active_id):
+@pytest.mark.parametrize(
+    "environment_active_id",
+    [3, 5, 6, 7, 8, 9, 10, 12, 13, 14],
+)
+def test_power_overstress_harsh_environment(
+        power_rated,
+        environment_active_id,
+):
     """overstressed() should return True when power ratio > 0.5 in a harsh environment and False otherwise."""
+    ATTRIBUTES['current_operating'] = 0.0
+    ATTRIBUTES['current_rated'] = 0.1
+    ATTRIBUTES['voltage_rated'] = 25.0
     ATTRIBUTES['power_operating'] = 0.18
     ATTRIBUTES['voltage_ac_operating'] = 0.02
     ATTRIBUTES['voltage_dc_operating'] = 6.0
@@ -289,7 +311,7 @@ def test_power_overstress_harsh_environment(power_rated,
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Component.do_check_overstress(**_attributes)
+    _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
     assert isinstance(_attributes, dict)
     if power_rated == 0.5:
@@ -297,17 +319,24 @@ def test_power_overstress_harsh_environment(power_rated,
         assert _attributes['reason'] == ''
     elif power_rated == 0.25:
         assert _attributes['overstress']
-        assert _attributes['reason'] == ('1. Operating power > 50% rated '
-                                         'power in harsh environment.\n')
+        assert _attributes['reason'] == (
+            '1. Operating power > 50.0% rated '
+            'power in harsh environment.\n'
+        )
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 @pytest.mark.parametrize("power_rated", [0.5, 0.25])
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])
-def test_voltage_overstress_mild_environment(power_rated,
-                                             environment_active_id):
+def test_power_overstress_mild_environment(
+        power_rated,
+        environment_active_id,
+):
     """overstressed() should return True when power ratio > 0.9 in a mild environment and False otherwise."""
+    ATTRIBUTES['current_operating'] = 0.0
+    ATTRIBUTES['current_rated'] = 0.1
+    ATTRIBUTES['voltage_rated'] = 25.0
     ATTRIBUTES['power_operating'] = 0.235
     ATTRIBUTES['voltage_ac_operating'] = 0.02
     ATTRIBUTES['voltage_dc_operating'] = 6.0
@@ -317,7 +346,7 @@ def test_voltage_overstress_mild_environment(power_rated,
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Component.do_check_overstress(**_attributes)
+    _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
     assert isinstance(_attributes, dict)
     if power_rated == 0.5:
@@ -325,5 +354,7 @@ def test_voltage_overstress_mild_environment(power_rated,
         assert _attributes['reason'] == ''
     elif power_rated == 0.25:
         assert _attributes['overstress']
-        assert _attributes['reason'] == ('1. Operating power > 90% rated '
-                                         'power in mild environment.\n')
+        assert _attributes['reason'] == (
+            '1. Operating power > 90.0% rated '
+            'power in mild environment.\n'
+        )

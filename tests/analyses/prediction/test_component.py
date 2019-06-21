@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_component.py is part of The RAMSTK Project
@@ -7,15 +7,14 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the component module."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.analyses.data import HARDWARE_ATTRIBUTES, DORMANT_MULT
+# RAMSTK Package Imports
+from ramstk.analyses.data import (
+    DORMANT_MULT, HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS,
+)
 from ramstk.analyses.prediction import Component
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -33,9 +32,9 @@ def test_calculate_mil_217f_part_count(category_id):
     if category_id == 10:
         for subcategory_id in [1, 2, 3, 4]:
             ATTRIBUTES['subcategory_id'] = subcategory_id
-            _attributes, _msg = Component.calculate(**ATTRIBUTES)
+            _attributes, _msg = Component.calculate(RAMSTK_STRESS_LIMITS, **ATTRIBUTES)
     else:
-        _attributes, _msg = Component.calculate(**ATTRIBUTES)
+        _attributes, _msg = Component.calculate(RAMSTK_STRESS_LIMITS, **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if category_id < 9:
@@ -55,9 +54,9 @@ def test_calculate_mil_217f_part_stress(category_id):
     if category_id == 10:
         for subcategory_id in [1, 2, 3, 4]:
             ATTRIBUTES['subcategory_id'] = subcategory_id
-            _attributes, _msg = Component.calculate(**ATTRIBUTES)
+            _attributes, _msg = Component.calculate(RAMSTK_STRESS_LIMITS, **ATTRIBUTES)
     else:
-        _attributes, _msg = Component.calculate(**ATTRIBUTES)
+        _attributes, _msg = Component.calculate(RAMSTK_STRESS_LIMITS, **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if category_id < 9:
@@ -68,12 +67,16 @@ def test_calculate_mil_217f_part_stress(category_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("category_id", [1, 2, 3, 4, 5, 6, 7, 8])
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
-@pytest.mark.parametrize("environment_active_id",
-                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+@pytest.mark.parametrize(
+    "environment_active_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+)
 @pytest.mark.parametrize("environment_dormant_id", [1, 2, 3, 4])
-def test_calculate_dormant_hazard_rate(category_id, subcategory_id,
-                                       environment_active_id,
-                                       environment_dormant_id):
+def test_calculate_dormant_hazard_rate(
+        category_id, subcategory_id,
+        environment_active_id,
+        environment_dormant_id,
+):
     """calculate_dormant_hazard_rate() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_active'] = 1.005887691
     ATTRIBUTES['category_id'] = category_id
@@ -85,34 +88,47 @@ def test_calculate_dormant_hazard_rate(category_id, subcategory_id,
         if category_id == 2:
             # [1, 2] = diodes, else transistors.
             if subcategory_id in [1, 2]:
-                dormant_mult = (DORMANT_MULT[category_id][
-                    environment_active_id][environment_dormant_id][0])
+                dormant_mult = (
+                    DORMANT_MULT[category_id][
+                        environment_active_id
+                    ][environment_dormant_id][0]
+                )
             elif subcategory_id in [3, 4, 5, 6, 7, 8, 9]:
-                dormant_mult = (DORMANT_MULT[category_id][
-                    environment_active_id][environment_dormant_id][1])
+                dormant_mult = (
+                    DORMANT_MULT[category_id][
+                        environment_active_id
+                    ][environment_dormant_id][1]
+                )
             else:
                 dormant_mult = 0.0
         else:
             dormant_mult = DORMANT_MULT[category_id][environment_active_id][
-                environment_dormant_id]
+                environment_dormant_id
+            ]
     except KeyError:
         dormant_mult = 0.0
 
     _attributes, _msg = Component.do_calculate_dormant_hazard_rate(
-        **ATTRIBUTES)
+        **ATTRIBUTES,
+    )
 
     assert isinstance(_attributes, dict)
     try:
         assert _msg == ''
     except AssertionError:
-        assert _msg == ("RAMSTK ERROR: Unknown active and/or dormant environment "
-                        "ID for hardware item.  Hardware ID: 6, active "
-                        "environment ID: {0:d}, and dormant environment ID: "
-                        "{1:d}.\n").format(environment_active_id,
-                                           environment_dormant_id)
+        assert _msg == (
+            "RAMSTK ERROR: Unknown active and/or dormant environment "
+            "ID for hardware item.  Hardware ID: 6, active "
+            "environment ID: {0:d}, and dormant environment ID: "
+            "{1:d}.\n"
+        ).format(
+            environment_active_id,
+            environment_dormant_id,
+        )
 
     assert _attributes['hazard_rate_dormant'] == (
-        ATTRIBUTES['hazard_rate_active'] * dormant_mult)
+        ATTRIBUTES['hazard_rate_active'] * dormant_mult
+    )
 
 
 @pytest.mark.unit
@@ -125,11 +141,13 @@ def test_calculate_zero_mult_adj():
     ATTRIBUTES['category_id'] = 1
     ATTRIBUTES['mult_adj_factor'] = 0.0
 
-    _attributes, _msg = Component.calculate(**ATTRIBUTES)
+    _attributes, _msg = Component.calculate(RAMSTK_STRESS_LIMITS, **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RAMSTK WARNING: Multiplicative adjustment factor is 0.0 "
-                    "when calculating hardware item, hardware ID: 6.\n")
+    assert _msg == (
+        "RAMSTK WARNING: Multiplicative adjustment factor is 0.0 "
+        "when calculating hardware item, hardware ID: 6.\n"
+    )
 
 
 @pytest.mark.unit
@@ -143,11 +161,13 @@ def test_calculate_zero_duty_cycle():
     ATTRIBUTES['mult_adj_factor'] = 1.0
     ATTRIBUTES['duty_cycle'] = 0.0
 
-    _attributes, _msg = Component.calculate(**ATTRIBUTES)
+    _attributes, _msg = Component.calculate(RAMSTK_STRESS_LIMITS, **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RAMSTK WARNING: Duty cycle is 0.0 when calculating "
-                    "hardware item, hardware ID: 6.\n")
+    assert _msg == (
+        "RAMSTK WARNING: Duty cycle is 0.0 when calculating "
+        "hardware item, hardware ID: 6.\n"
+    )
 
 
 @pytest.mark.unit
@@ -162,8 +182,10 @@ def test_calculate_zero_quantity():
     ATTRIBUTES['duty_cycle'] = 1.0
     ATTRIBUTES['quantity'] = 0
 
-    _attributes, _msg = Component.calculate(**ATTRIBUTES)
+    _attributes, _msg = Component.calculate(RAMSTK_STRESS_LIMITS, **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RAMSTK WARNING: Quantity is less than 1 when calculating "
-                    "hardware item, hardware ID: 6.\n")
+    assert _msg == (
+        "RAMSTK WARNING: Quantity is less than 1 when calculating "
+        "hardware item, hardware ID: 6.\n"
+    )

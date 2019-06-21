@@ -11,7 +11,6 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
-from ramstk import Configuration
 from ramstk.Configuration import (
     RAMSTK_CONTROL_TYPES, RAMSTK_FAILURE_PROBABILITY,
 )
@@ -836,11 +835,11 @@ class FMEA(RAMSTKWorkView):
         )
 
         if not self._functional:
-            self._lst_fmea_data[22] = Configuration.RAMSTK_RPN_OCCURRENCE[entity.rpn_occurrence][1]
-            self._lst_fmea_data[23] = Configuration.RAMSTK_RPN_DETECTION[entity.rpn_detection][1]
+            self._lst_fmea_data[22] = self.RAMSTK_CONFIGURATION.RAMSTK_RPN_OCCURRENCE[entity.rpn_occurrence][1]
+            self._lst_fmea_data[23] = self.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION[entity.rpn_detection][1]
             self._lst_fmea_data[24] = entity.rpn
-            self._lst_fmea_data[35] = Configuration.RAMSTK_RPN_OCCURRENCE[entity.rpn_occurrence_new][1]
-            self._lst_fmea_data[36] = Configuration.RAMSTK_RPN_DETECTION[entity.rpn_detection_new][1]
+            self._lst_fmea_data[35] = self.RAMSTK_CONFIGURATION.RAMSTK_RPN_OCCURRENCE[entity.rpn_occurrence_new][1]
+            self._lst_fmea_data[36] = self.RAMSTK_CONFIGURATION.RAMSTK_RPN_DETECTION[entity.rpn_detection_new][1]
             self._lst_fmea_data[37] = entity.rpn_new
             self._lst_fmea_data[40] = entity.pof_include
 
@@ -886,8 +885,8 @@ class FMEA(RAMSTKWorkView):
             self._lst_fmea_data[17] = entity.mode_hazard_rate
             self._lst_fmea_data[18] = entity.mode_op_time
             self._lst_fmea_data[19] = entity.mode_criticality
-            self._lst_fmea_data[21] = Configuration.RAMSTK_RPN_SEVERITY[entity.rpn_severity][1]
-            self._lst_fmea_data[34] = Configuration.RAMSTK_RPN_SEVERITY[entity.rpn_severity_new][1]
+            self._lst_fmea_data[21] = self.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY[entity.rpn_severity][1]
+            self._lst_fmea_data[34] = self.RAMSTK_CONFIGURATION.RAMSTK_RPN_SEVERITY[entity.rpn_severity_new][1]
             self._lst_fmea_data[38] = entity.critical_item
             self._lst_fmea_data[39] = entity.single_point
 

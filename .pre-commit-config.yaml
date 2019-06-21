@@ -6,7 +6,7 @@ repos:
             entry: bandit
             args: [-b, .bandit.baseline, --ini, setup.cfg, -s, B322, --recursive, src/]
             language: system
-            files: .py
+            files: .py$
     - repo: https://github.com/asottile/add-trailing-comma
       rev: v1.0.0
       hooks:

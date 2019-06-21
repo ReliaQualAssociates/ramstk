@@ -138,6 +138,7 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         :rtype: dict
         """
         _hr_multiplier = float(kwargs['hr_multiplier'])
+        _limits = kwargs['limits']
         try:
             _attributes = self.tree.get_node(node_id).data
         except AttributeError:
@@ -146,7 +147,7 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
         if _attributes is not None:
             if _attributes['category_id'] > 0:
-                _attributes, __ = Component.calculate(**_attributes)
+                _attributes, __ = Component.calculate(_limits, **_attributes)
             else:
                 # If the assembly is to be assessed, set the attributes that
                 # are the sum of the child attributes to zero.  Without doing
@@ -301,16 +302,14 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         Calculate all items in the system.
 
         :param float hr_multiplier: the hazard rate multiplier.  This is used
-                                    to allow the hazard rates to be entered and
-                                    displayed in more human readable numbers,
-                                    but have the calculations work out.
-                                    Default value is 1E6 so hazard rates will
-                                    be entered and displayed as
-                                    failures/million hours.
+            to allow the hazard rates to be entered and displayed in more human
+            readable numbers, but have the calculations work out.  Default
+            value is 1E6 so hazard rates will be entered and displayed as
+            failures/million hours.
         :param int node_id: the ID of the treelib Tree() node to start the
-                            calculation at.
+            calculation at.
         :return: _cum_results; the list of cumulative results.  The list order
-                 is:
+            is:
 
                     * 0 - active hazard rate
                     * 1 - dormant hazard rate
@@ -321,8 +320,9 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
         :rtype: list
         """
-        _hr_multiplier = kwargs['hr_multiplier']
         _node_id = kwargs['node_id']
+        _limits = kwargs['limits']
+        _hr_multiplier = kwargs['hr_multiplier']
         _cum_results = [0.0, 0.0, 0.0, 0.0, 0, 0.0]
 
         # Check if there are children nodes of the node passed.
@@ -332,7 +332,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
             # If there are children, calculate each of them first.
             for _subnode_id in self.tree.get_node(_node_id).fpointer:
                 _results = self.do_calculate_all(
-                    node_id=_subnode_id, hr_multiplier=_hr_multiplier,
+                    node_id=_subnode_id, limits=_limits,
+                    hr_multiplier=_hr_multiplier,
                 )
                 _cum_results[0] += _results[0]
                 _cum_results[1] += _results[1]
@@ -342,7 +343,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
                 _cum_results[5] += _results[5]
             # Then calculate the parent node.
             _attributes = self.do_calculate(
-                _node_id, hr_multiplier=_hr_multiplier,
+                _node_id, limits=_limits,
+                hr_multiplier=_hr_multiplier,
             )
             if _attributes is not None:
                 _cum_results[0] += _attributes['hazard_rate_active']
@@ -354,7 +356,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         else:
             if self.tree.get_node(_node_id).data is not None:
                 _attributes = self.do_calculate(
-                    _node_id, hr_multiplier=_hr_multiplier,
+                    _node_id, limits=_limits,
+                    hr_multiplier=_hr_multiplier,
                 )
                 _cum_results[0] += _attributes['hazard_rate_active']
                 _cum_results[1] += _attributes['hazard_rate_dormant']

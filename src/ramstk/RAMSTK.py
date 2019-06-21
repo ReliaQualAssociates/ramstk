@@ -117,33 +117,39 @@ def _initialize_loggers(configuration):
             os.remove(__user_log)
         except OSError as _error:
             print(("Could not delete {0:s} because {1:s}.").format(
-                __user_log, _error,
+                __user_log,
+                _error,
             ))
     if Utilities.file_exists(__error_log):
         try:
             os.remove(__error_log)
         except OSError as _error:
             print(("Could not delete {0:s} because {1:s}.").format(
-                __user_log, _error,
+                __user_log,
+                _error,
             ))
     if Utilities.file_exists(__import_log):
         try:
             os.remove(__import_log)
         except OSError as _error:
             print(("Could not delete {0:s} because {1:s}.").format(
-                __user_log, _error,
+                __user_log,
+                _error,
             ))
 
     _debug_log = Utilities.create_logger(
-        "RAMSTK.debug", logging.DEBUG,
+        "RAMSTK.debug",
+        logging.DEBUG,
         __error_log,
     )
     _user_log = Utilities.create_logger(
-        "RAMSTK.user", logging.WARNING,
+        "RAMSTK.user",
+        logging.WARNING,
         __user_log,
     )
     _import_log = Utilities.create_logger(
-        "RAMSTK.import", logging.WARNING,
+        "RAMSTK.import",
+        logging.WARNING,
         __import_log,
     )
 
@@ -195,7 +201,9 @@ class Model():
         # Create a session for communicating with the RAMSTK Common database
         site_session = self.site_dao.RAMSTK_SESSION
         site_session.configure(
-            bind=self.site_dao.engine, autoflush=False, expire_on_commit=False,
+            bind=self.site_dao.engine,
+            autoflush=False,
+            expire_on_commit=False,
         )
         self.site_session = scoped_session(site_session)
         self.program_session = None
@@ -295,7 +303,18 @@ class Model():
 
             _subcats = {}
             configuration.RAMSTK_FAILURE_MODES[_record.category_id] = {}
-
+            configuration.RAMSTK_STRESS_LIMITS[_record.category_id] = (
+                _record.harsh_ir_limit,
+                _record.mild_ir_limit,
+                _record.harsh_pr_limit,
+                _record.mild_pr_limit,
+                _record.harsh_vr_limit,
+                _record.mild_vr_limit,
+                _record.harsh_deltat_limit,
+                _record.mild_deltat_limit,
+                _record.harsh_maxt_limit,
+                _record.mild_maxt_limit,
+            )
             for _subcat in self.site_session.query(RAMSTKSubCategory).\
                     filter(RAMSTKSubCategory.category_id == _record.category_id).\
                     all():
@@ -311,7 +330,9 @@ class Model():
                         filter(RAMSTKFailureMode.subcategory_id == _subcat.subcategory_id).\
                         all():
                     _modes[_mode.mode_id] = [
-                        _mode.description, _mode.mode_ratio, _mode.source,
+                        _mode.description,
+                        _mode.mode_ratio,
+                        _mode.source,
                     ]
 
                 configuration.RAMSTK_FAILURE_MODES[_record.category_id][
@@ -319,8 +340,7 @@ class Model():
                 ] = _modes
 
             configuration.RAMSTK_CATEGORIES[
-                _record.
-                category_id
+                _record.category_id
             ] = _record.description
             configuration.RAMSTK_SUBCATEGORIES[_record.category_id] = _subcats
 
@@ -331,24 +351,30 @@ class Model():
                 filter(RAMSTKCategory.cat_type == 'action').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_ACTION_CATEGORY[_record.category_id] = (
-                _attributes['name'], _attributes['description'],
-                _attributes['category_type'], _attributes['value'],
+                _attributes['name'],
+                _attributes['description'],
+                _attributes['category_type'],
+                _attributes['value'],
             )
 
         for _record in self.site_session.query(RAMSTKCategory).\
                 filter(RAMSTKCategory.cat_type == 'incident').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_INCIDENT_CATEGORY[_record.category_id] = (
-                _attributes['name'], _attributes['description'],
-                _attributes['category_type'], _attributes['value'],
+                _attributes['name'],
+                _attributes['description'],
+                _attributes['category_type'],
+                _attributes['value'],
             )
 
         for _record in self.site_session.query(RAMSTKCategory).\
                 filter(RAMSTKCategory.cat_type == 'risk').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_SEVERITY[_record.category_id] = (
-                _attributes['name'], _attributes['description'],
-                _attributes['category_type'], _attributes['value'],
+                _attributes['name'],
+                _attributes['description'],
+                _attributes['category_type'],
+                _attributes['value'],
             )
 
         # ------------------------------------------------------------------- #
@@ -358,14 +384,16 @@ class Model():
                 filter(RAMSTKGroup.group_type == 'affinity').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_AFFINITY_GROUPS[_record.group_id] = (
-                _attributes['description'], _attributes['group_type'],
+                _attributes['description'],
+                _attributes['group_type'],
             )
 
         for _record in self.site_session.query(RAMSTKGroup).\
                 filter(RAMSTKGroup.group_type == 'workgroup').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_WORKGROUPS[_record.group_id] = (
-                _attributes['description'], _attributes['group_type'],
+                _attributes['description'],
+                _attributes['group_type'],
             )
 
         # ------------------------------------------------------------------- #
@@ -375,7 +403,8 @@ class Model():
                 filter(RAMSTKMethod.method_type == 'detection').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_DETECTION_METHODS[_record.method_id] = (
-                _attributes['name'], _attributes['description'],
+                _attributes['name'],
+                _attributes['description'],
                 _attributes['method_type'],
             )
 
@@ -413,7 +442,8 @@ class Model():
                 filter(RAMSTKStatus.status_type == 'action').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_ACTION_STATUS[_record.status_id] = (
-                _attributes['name'], _attributes['description'],
+                _attributes['name'],
+                _attributes['description'],
                 _attributes['status_type'],
             )
 
@@ -421,7 +451,8 @@ class Model():
                 filter(RAMSTKStatus.status_type == 'incident').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_INCIDENT_STATUS[_record.status_id] = (
-                _attributes['name'], _attributes['description'],
+                _attributes['name'],
+                _attributes['description'],
                 _attributes['status_type'],
             )
 
@@ -432,7 +463,8 @@ class Model():
                 filter(RAMSTKType.type_type == 'incident').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_INCIDENT_TYPE[_record.type_id] = (
-                _attributes['code'], _attributes['description'],
+                _attributes['code'],
+                _attributes['description'],
                 _attributes['type_type'],
             )
 
@@ -440,7 +472,8 @@ class Model():
                 filter(RAMSTKType.type_type == 'requirement').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_REQUIREMENT_TYPE[_record.type_id] = (
-                _attributes['code'], _attributes['description'],
+                _attributes['code'],
+                _attributes['description'],
                 _attributes['type_type'],
             )
 
@@ -448,7 +481,8 @@ class Model():
                 filter(RAMSTKType.type_type == 'validation').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_VALIDATION_TYPE[_record.type_id] = (
-                _attributes['code'], _attributes['description'],
+                _attributes['code'],
+                _attributes['description'],
                 _attributes['type_type'],
             )
 
@@ -458,7 +492,8 @@ class Model():
         for _record in self.site_session.query(RAMSTKHazards).all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_HAZARDS[_record.hazard_id] = (
-                _attributes['category'], _attributes['subcategory'],
+                _attributes['category'],
+                _attributes['subcategory'],
             )
 
         for _record in self.site_session.query(RAMSTKLoadHistory).all():
@@ -469,7 +504,8 @@ class Model():
         for _record in self.site_session.query(RAMSTKManufacturer).all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_MANUFACTURERS[_record.manufacturer_id] = (
-                _attributes['description'], _attributes['location'],
+                _attributes['description'],
+                _attributes['location'],
                 _attributes['cage_code'],
             )
 
@@ -477,7 +513,8 @@ class Model():
                 filter(RAMSTKMeasurement.measurement_type == 'unit').all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_MEASUREMENT_UNITS[_record.measurement_id] = (
-                _attributes['code'], _attributes['description'],
+                _attributes['code'],
+                _attributes['description'],
                 _attributes['measurement_type'],
             )
 
@@ -500,8 +537,10 @@ class Model():
         for _record in self.site_session.query(RAMSTKUser).all():
             _attributes = _record.get_attributes()
             configuration.RAMSTK_USERS[_record.user_id] = (
-                _attributes['user_lname'], _attributes['user_fname'],
-                _attributes['user_email'], _attributes['user_phone'],
+                _attributes['user_lname'],
+                _attributes['user_fname'],
+                _attributes['user_email'],
+                _attributes['user_phone'],
                 _attributes['user_group_id'],
             )
 
@@ -594,11 +633,9 @@ class RAMSTK():
                 "create and populate this directory.  If you choose "
                 "not to, you will recieve this prompt every time you "
                 "execute RAMSTK.  Would you like to create and populate "
-                "a user-specific configuration directory?",
-            ).format(
-                self.RAMSTK_CONFIGURATION.RAMSTK_HOME_DIR +
-                "/.config/RAMSTK",
-            )
+                "a user-specific configuration directory?", ).format(
+                    self.RAMSTK_CONFIGURATION.RAMSTK_HOME_DIR
+                    + "/.config/RAMSTK", )
             _dialog = ramstk.RAMSTKMessageDialog(_prompt, '', 'question')
             _response = _dialog.do_run()
             _dialog.do_destroy()
@@ -623,7 +660,10 @@ class RAMSTK():
         # Initialize private list instance attributes.
         self.__test = kwargs['test']
         self._lst_modules = [
-            'requirement', 'function', 'hardware', 'validation',
+            'requirement',
+            'function',
+            'hardware',
+            'validation',
         ]
 
         # Initialize private scalar instance attributes.
@@ -853,7 +893,8 @@ class RAMSTK():
             _program_info = self.dic_controllers[
                 'options'
             ].request_get_options(
-                site=False, program=True,
+                site=False,
+                program=True,
             )
             self.RAMSTK_CONFIGURATION.RAMSTK_MODULES['function'] = \
                 _program_info['function_active']
@@ -889,8 +930,7 @@ class RAMSTK():
             if not self.__test:
                 _attributes = {'revision_id': -1}
                 self.dic_controllers['revision'].request_do_select_all(
-                    _attributes,
-                )
+                    _attributes, )
 
         else:
             self.RAMSTK_CONFIGURATION.RAMSTK_DEBUG_LOG.error(_msg)
@@ -912,9 +952,7 @@ class RAMSTK():
         self.icoStatus.set_tooltip(
             _(
                 "RAMSTK is not currently connected to a "
-                "project database.",
-            ),
-        )
+                "project database.", ), )
 
         if not self.__test:
             pub.sendMessage('closed_program')

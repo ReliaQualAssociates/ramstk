@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_meter.py is part of The RAMSTK Project
@@ -7,15 +7,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the meter module."""
 
+# Third Party Imports
 import pytest
 
+# RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
 from ramstk.analyses.prediction import Meter
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -27,23 +24,27 @@ ATTRIBUTES['duty_cycle'] = 100.0
 ATTRIBUTES['quantity'] = 1
 
 PART_COUNT_LAMBDA_B = {
-    1: [[
-        10.0, 20.0, 120.0, 70.0, 180.0, 50.0, 80.0, 160.0, 250.0, 260.0, 5.0,
-        140.0, 380.0, 0.0
-    ], [
-        15.0, 30.0, 180.0, 105.0, 270.0, 75.0, 120.0, 240.0, 375.0, 390.0, 7.5,
-        210.0, 570.0, 0.0
-    ], [
-        40.0, 80.0, 480.0, 280.0, 720.0, 200.0, 320.0, 640.0, 1000.0, 1040.0,
-        20.0, 560.0, 1520.0, 0.0
-    ]],
-    2: [[
-        0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4, 0.0,
-        0.0
-    ], [
-        0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2, 0.0,
-        0.0
-    ]]
+    1: [
+        [
+            10.0, 20.0, 120.0, 70.0, 180.0, 50.0, 80.0, 160.0, 250.0, 260.0, 5.0,
+            140.0, 380.0, 0.0,
+        ], [
+            15.0, 30.0, 180.0, 105.0, 270.0, 75.0, 120.0, 240.0, 375.0, 390.0, 7.5,
+            210.0, 570.0, 0.0,
+        ], [
+            40.0, 80.0, 480.0, 280.0, 720.0, 200.0, 320.0, 640.0, 1000.0, 1040.0,
+            20.0, 560.0, 1520.0, 0.0,
+        ],
+    ],
+    2: [
+        [
+            0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4, 0.0,
+            0.0,
+        ], [
+            0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2, 0.0,
+            0.0,
+        ],
+    ],
 }
 
 PART_COUNT_PIQ = {2: [1.0, 3.4]}
@@ -54,10 +55,14 @@ PART_COUNT_PIQ = {2: [1.0, 3.4]}
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 @pytest.mark.parametrize("type_id", [1, 2, 3])
 @pytest.mark.parametrize("quality_id", [1, 2, 3])
-@pytest.mark.parametrize("environment_active_id",
-                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
-def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
-                                            quality_id, environment_active_id):
+@pytest.mark.parametrize(
+    "environment_active_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+)
+def test_calculate_mil_hdbk_217f_part_count(
+        subcategory_id, type_id,
+        quality_id, environment_active_id,
+):
     """calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 1
     ATTRIBUTES['subcategory_id'] = subcategory_id
@@ -67,7 +72,8 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
 
     try:
         lambda_b = PART_COUNT_LAMBDA_B[subcategory_id][type_id - 1][
-            environment_active_id - 1]
+            environment_active_id - 1
+        ]
     except (KeyError, IndexError):
         lambda_b = 0.0
 
@@ -80,11 +86,15 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
-                        'calculating meter, hardware ID: 6, subcategory '
-                        'ID: {0:d}, type ID: {2:d}, and active environment '
-                        'ID: {1:d}.').format(subcategory_id,
-                                             environment_active_id, type_id)
+        assert _msg == (
+            'RAMSTK WARNING: Base hazard rate is 0.0 when '
+            'calculating meter, hardware ID: 6, subcategory '
+            'ID: {0:d}, type ID: {2:d}, and active environment '
+            'ID: {1:d}.'
+        ).format(
+            subcategory_id,
+            environment_active_id, type_id,
+        )
     else:
         assert _msg == ''
     assert _attributes['lambda_b'] == lambda_b
@@ -104,9 +114,11 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-                    "meter, hardware ID: 6, subcategory ID: 0, type "
-                    "ID: 1, and active environment ID: 1.")
+    assert _msg == (
+        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
+        "meter, hardware ID: 6, subcategory ID: 0, type "
+        "ID: 1, and active environment ID: 1."
+    )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -124,9 +136,11 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
     _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-                    "meter, hardware ID: 6, subcategory ID: 1, type ID: 10, "
-                    "and active environment ID: 1.")
+    assert _msg == (
+        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
+        "meter, hardware ID: 6, subcategory ID: 1, type ID: 10, "
+        "and active environment ID: 1."
+    )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 1.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -144,9 +158,11 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-                    "meter, hardware ID: 6, subcategory ID: 1, type ID: 1, "
-                    "and active environment ID: 100.")
+    assert _msg == (
+        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
+        "meter, hardware ID: 6, subcategory ID: 1, type ID: 1, "
+        "and active environment ID: 100."
+    )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -172,8 +188,10 @@ def test_calculate_mil_hdbk_217f_part_stress_elapsed_time_meter():
     _attributes, _msg = Meter.calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ("RAMSTK WARNING: piQ is 0.0 when calculating meter, "
-                    "hardware ID: 6, quality ID: 1.")
+    assert _msg == (
+        "RAMSTK WARNING: piQ is 0.0 when calculating meter, "
+        "hardware ID: 6, quality ID: 1."
+    )
     assert pytest.approx(_attributes['lambda_b'], 0.09)
     assert _attributes['piQ'] == 0.0
     assert _attributes['piE'] == 7.0

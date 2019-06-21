@@ -1689,6 +1689,7 @@ class AssessmentInputs(RAMSTKWorkView):
             'request_calculate_hardware',
             node_id=self._hardware_id,
             hr_multiplier=self.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER,
+            limits=self.RAMSTK_CONFIGURATION.RAMSTK_STRESS_LIMITS,
         )
 
     def _do_request_update(self, __button):
@@ -2584,6 +2585,7 @@ class AssessmentResults(RAMSTKWorkView):
             'request_calculate_hardware',
             node_id=self._hardware_id,
             hr_multiplier=self.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER,
+            limits=self.RAMSTK_CONFIGURATION.RAMSTK_STRESS_LIMITS,
         )
 
     def _do_request_update(self, __button):
