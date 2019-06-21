@@ -92,30 +92,50 @@ def do_calculate_217f_part_count(**attributes):
         3: [0.030, 0.10, 0.30, 1.0, 3.0, 10.0],
         4: [0.030, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0],
         5: [0.25, 1.0, 10.0],
-        6: {1: [0.6, 3.0, 9.0], 2: [0.0, 1.0, 4.0]},
-        7: {1: [1.0, 20.0], 2: [1.0, 20.0], 3: [1.0, 50.0], 4: [1.0, 10.0], 5: [1.0, 8.4],},
+        6: {
+            1: [0.6, 3.0, 9.0],
+            2: [0.0, 1.0, 4.0],
+        },
+        7: {
+            1: [1.0, 20.0],
+            2: [1.0, 20.0],
+            3: [1.0, 50.0],
+            4: [1.0, 10.0],
+            5: [1.0, 8.4],
+        },
         8: [1.0, 2.0],
-        9: {1: [1.0, 1.0], 2: [1.0, 3.4]},
-        10: {1: [1.0, 2.1], 2: [1.0, 2.9]},
+        9: {
+            1: [1.0, 1.0],
+            2: [1.0, 3.4],
+        },
+        10: {
+            1: [1.0, 2.1],
+            2: [1.0, 2.9],
+        },
     }
 
     # Select the piQ.
     try:
-        attributes['piQ'] = _dic_piQ[attributes['category_id']][attributes['subcategory_id']][attributes['quality_id'] - 1]
-    except(IndexError, TypeError):
+        attributes['piQ'] = _dic_piQ[attributes['category_id']][
+            attributes['subcategory_id']
+        ][attributes['quality_id'] - 1]
+    except (IndexError, TypeError):
         try:
-            attributes['piQ'] = _dic_piQ[attributes['category_id']][attributes['quality_id'] - 1]
-        except(IndexError, KeyError):
+            attributes['piQ'] = _dic_piQ[attributes['category_id']][
+                attributes['quality_id'] - 1
+            ]
+        except (IndexError, KeyError):
             attributes['piQ'] = 0.0
     except KeyError:
         attributes['piQ'] = 0.0
 
     if attributes['category_id'] == 1:
         attributes, _msg = IntegratedCircuit.calculate_217f_part_count(
+            **attributes, )
+    elif attributes['category_id'] == 2:
+        attributes, _msg = Semiconductor.calculate_217f_part_count(
             **attributes,
         )
-    elif attributes['category_id'] == 2:
-        attributes, _msg = Semiconductor.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 3:
         attributes, _msg = Resistor.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 4:
@@ -158,12 +178,10 @@ def do_calculate_217f_part_stress(**attributes):
 
     if attributes['category_id'] == 1:
         attributes, _msg = IntegratedCircuit.calculate_217f_part_stress(
-            **attributes,
-        )
+            **attributes, )
     elif attributes['category_id'] == 2:
         attributes, _msg = Semiconductor.calculate_217f_part_stress(
-            **attributes,
-        )
+            **attributes, )
     elif attributes['category_id'] == 3:
         attributes, _msg = Resistor.calculate_217f_part_stress(**attributes)
     elif attributes['category_id'] == 4:
@@ -337,8 +355,10 @@ def do_check_overstress(limits, **attributes):
         _harsh = False
 
     (_overstress, _reason) = _do_check_current_stress(
-        _harsh, limits[attributes['category_id']][0],
-        limits[attributes['category_id']][1], attributes['current_ratio'],
+        _harsh,
+        limits[attributes['category_id']][0],
+        limits[attributes['category_id']][1],
+        attributes['current_ratio'],
     )
     if _overstress:
         attributes['overstress'] = attributes['overstress'] or _overstress
@@ -346,8 +366,10 @@ def do_check_overstress(limits, **attributes):
         _reason_num += 1
 
     (_overstress, _reason) = _do_check_power_stress(
-        _harsh, limits[attributes['category_id']][2],
-        limits[attributes['category_id']][3], attributes['power_ratio'],
+        _harsh,
+        limits[attributes['category_id']][2],
+        limits[attributes['category_id']][3],
+        attributes['power_ratio'],
     )
     if _overstress:
         attributes['overstress'] = attributes['overstress'] or _overstress
@@ -358,40 +380,44 @@ def do_check_overstress(limits, **attributes):
         if attributes['voltage_ratio'] > 1.05:
             _overstress = True
             _overstress_reason = _overstress_reason + str(_reason_num) + _(
-                ". Operating voltage > 105% rated voltage.\n",
-            )
+                ". Operating voltage > 105% rated voltage.\n", )
         if attributes['voltage_ratio'] < 0.95:
             _overstress = True
             _overstress_reason = _overstress_reason + str(_reason_num) + _(
-                ". Operating voltage < 95% rated voltage.\n",
-            )
+                ". Operating voltage < 95% rated voltage.\n", )
         attributes['overstress'] = attributes['overstress'] or _overstress
     else:
         (_overstress, _reason) = _do_check_voltage_stress(
-            _harsh, limits[attributes['category_id']][4],
-            limits[attributes['category_id']][5], attributes['voltage_ratio'],
+            _harsh,
+            limits[attributes['category_id']][4],
+            limits[attributes['category_id']][5],
+            attributes['voltage_ratio'],
         )
         if _overstress:
             attributes['overstress'] = attributes['overstress'] or _overstress
             _overstress_reason = _overstress_reason + str(
-                _reason_num,
-            ) + _reason
+                _reason_num, ) + _reason
             _reason_num += 1
         (_overstress, _reason) = _do_check_deltat_stress(
-            _harsh, limits[attributes['category_id']][6],
+            _harsh,
+            limits[attributes['category_id']][6],
             limits[attributes['category_id']][7],
-            attributes['temperature_active'], _limit_temp, _limit_temp_str,
+            attributes['temperature_active'],
+            _limit_temp,
+            _limit_temp_str,
         )
         if _overstress:
             attributes['overstress'] = attributes['overstress'] or _overstress
             _overstress_reason = _overstress_reason + str(
-                _reason_num,
-            ) + _reason
+                _reason_num, ) + _reason
             _reason_num += 1
 
     (_overstress, _reason) = _do_check_maxtemp_stress(
-        _harsh, limits[attributes['category_id']][8],
-        limits[attributes['category_id']][9], _op_temp, _limit_temp_str,
+        _harsh,
+        limits[attributes['category_id']][8],
+        limits[attributes['category_id']][9],
+        _op_temp,
+        _limit_temp_str,
     )
     if _overstress:
         attributes['overstress'] = attributes['overstress'] or _overstress
@@ -427,15 +453,18 @@ def _do_check_current_stress(harsh, harsh_limit, mild_limit, current_ratio):
         _overstress = True
         _reason = _(
             ". Operating current > {0:s}% rated current in {1:s} "
-            "environment.\n",
-        ).format(str(_limit * 100.0), _environ)
+            "environment.\n", ).format(str(_limit * 100.0), _environ)
 
     return _overstress, _reason
 
 
 def _do_check_deltat_stress(
-        harsh, harsh_limit, mild_limit, op_temp,
-        limit_temp, limit_temp_str,
+        harsh,
+        harsh_limit,
+        mild_limit,
+        op_temp,
+        limit_temp,
+        limit_temp_str,
 ):
     """
     Check the operating delta temperature against the stress limit.
@@ -465,14 +494,16 @@ def _do_check_deltat_stress(
         _reason = _(
             ". Operating temperature within {0:s}C of {1:s} "
             "temperature in {2:s} environment."
-            "\n",
-        ).format(str(_limit), limit_temp_str, _environ)
+            "\n", ).format(str(_limit), limit_temp_str, _environ)
 
     return _overstress, _reason
 
 
 def _do_check_maxtemp_stress(
-        harsh, harsh_limit, mild_limit, op_temp,
+        harsh,
+        harsh_limit,
+        mild_limit,
+        op_temp,
         limit_temp_str,
 ):
     """
@@ -502,10 +533,11 @@ def _do_check_maxtemp_stress(
         _overstress = True
         _reason = _(
             ". Operating temperature > {0:s}C {1:s} temperature limit "
-            "in {2:s} environment.\n",
-        ).format(
-            str(_limit), limit_temp_str, _environ,
-        )
+            "in {2:s} environment.\n", ).format(
+                str(_limit),
+                limit_temp_str,
+                _environ,
+            )
 
     return _overstress, _reason
 
@@ -534,8 +566,7 @@ def _do_check_power_stress(harsh, harsh_limit, mild_limit, power_ratio):
         _overstress = True
         _reason = _(
             ". Operating power > {0:s}% rated power in {1:s} "
-            "environment.\n",
-        ).format(str(_limit * 100.0), _environ)
+            "environment.\n", ).format(str(_limit * 100.0), _environ)
 
     return _overstress, _reason
 
@@ -564,7 +595,6 @@ def _do_check_voltage_stress(harsh, harsh_limit, mild_limit, voltage_ratio):
         _overstress = True
         _reason = _(
             ". Operating voltage > {0:s}% rated voltage in {1:s} "
-            "environment.\n",
-        ).format(str(_limit * 100.0), _environ)
+            "environment.\n", ).format(str(_limit * 100.0), _environ)
 
     return _overstress, _reason
