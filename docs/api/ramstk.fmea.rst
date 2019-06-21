@@ -1,22 +1,22 @@
-Physics of Failure (PoF) Analysis Package
+Failure Mode and Effects Analysis (FMEA) Package
 ===============================================================================
 
 .. toctree::
 
-PoF Data Models
+FMEA Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.pof.Model
+.. automodule:: ramstk.modules.fmea.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-PoF Data Controller
+FMEA Data Controller
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.modules.pof.Controller
+
+.. automodule:: ramstk.modules.fmea.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
-

@@ -1,22 +1,22 @@
-Similar Item Analysis Package
+Requirement Package
 ===============================================================================
 
 .. toctree::
 
-Similar Item Data Models
+Requirement Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.similar_item.Model
+.. automodule:: ramstk.modules.requirement.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-Similar Item Data Controller
+Requirement Data Controller
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.modules.similar_item.Controller
+
+.. automodule:: ramstk.modules.requirement.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
-

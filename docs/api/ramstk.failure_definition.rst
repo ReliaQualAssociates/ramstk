@@ -1,23 +1,22 @@
-Requirement Package
+Failure Definition Package
 ===============================================================================
 
 .. toctree::
 
-Requirement Data Model
+Failure Definition Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.requirement.Model
+.. automodule:: ramstk.modules.failure_definition.Model
     :members:
-    :private-members:
     :undoc-members:
+    :private-members:
     :show-inheritance:
 
-Requirement Data Controller
+Failure Definition Data Controller
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.requirement.Controller
+.. automodule:: ramstk.modules.failure_definition.Controller
     :members:
-    :private-members:
     :undoc-members:
+    :private-members:
     :show-inheritance:
-

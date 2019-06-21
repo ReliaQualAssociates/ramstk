@@ -50,5 +50,3 @@ Validation Module View
     :undoc-members:
     :private-members:
     :show-inheritance:
-
-

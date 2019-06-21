@@ -34,4 +34,3 @@ Work Book
     :undoc-members:
     :private-members:
     :show-inheritance:
-

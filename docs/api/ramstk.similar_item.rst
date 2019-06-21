@@ -1,23 +1,21 @@
-Function Package
+Similar Item Analysis Package
 ===============================================================================
 
 .. toctree::
 
-Function Data Model
+Similar Item Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.function.Model
+.. automodule:: ramstk.modules.similar_item.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-Function Data Controller
+Similar Item Data Controller
 -------------------------------------------------------------------------------
-
-.. automodule:: ramstk.modules.function.Controller
+.. automodule:: ramstk.modules.similar_item.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
-

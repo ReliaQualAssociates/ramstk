@@ -1,22 +1,22 @@
-Reliability Allocation Package
+Revision Package
 ===============================================================================
 
 .. toctree::
 
-Allocation Data Models
+Revision Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.allocation.Model
+.. automodule:: ramstk.modules.revision.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-Allocation Data Controller
+Revision Data Controller
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.modules.allocation.Controller
+
+.. automodule:: ramstk.modules.revision.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
-

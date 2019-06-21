@@ -1,22 +1,22 @@
-Hazardous Operations (HazOps) Analysis Package
+Function Package
 ===============================================================================
 
 .. toctree::
 
-HazOps Data Models
+Function Data Model
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.hazops.Model
+.. automodule:: ramstk.modules.function.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-HazOps Data Controller
+Function Data Controller
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.modules.hazops.Controller
+
+.. automodule:: ramstk.modules.function.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
-
