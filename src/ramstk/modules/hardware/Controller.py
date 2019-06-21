@@ -120,7 +120,7 @@ class HardwareBoMDataController(RAMSTKDataController):
         pub.subscribe(self._request_set_attributes, 'mvw_editing_hardware')
         pub.subscribe(self._request_set_attributes, 'wvw_editing_hardware')
 
-    def _request_do_calculate(self, node_id, hr_multiplier):
+    def _request_do_calculate(self, node_id, limits, hr_multiplier):
         """
         Request to calculate the selected Hardware item.
 
@@ -130,7 +130,7 @@ class HardwareBoMDataController(RAMSTKDataController):
         :rtype: dict
         """
         _attributes = self._dtm_data_model.do_calculate(
-            node_id, hr_multiplier=hr_multiplier,
+            node_id, limits=limits, hr_multiplier=hr_multiplier,
         )
 
         # Update the value of calculated attributes.
@@ -166,7 +166,7 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         return _attributes
 
-    def request_do_calculate_all(self, node_id, **kwargs):  # pylint: disable=arguments-differ
+    def request_do_calculate_all(self, node_id, limits):    # pylint: disable=arguments-differ
         """
         Request to calculate all hardware items.
 
@@ -174,7 +174,7 @@ class HardwareBoMDataController(RAMSTKDataController):
         :rtype: list
         """
         return self._dtm_data_model.do_calculate_all(
-            node_id=node_id, hr_multiplier=self._hr_multiplier, **kwargs,
+            node_id=node_id, limits=limits, hr_multiplier=self._hr_multiplier,
         )
 
     def _request_do_create_matrix(self, revision_id, matrix_type):

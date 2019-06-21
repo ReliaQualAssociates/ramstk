@@ -93,8 +93,8 @@ class ModuleView(RAMSTKModuleView):
                         "Hardware).",
                     ),
                     _(
-                        "Adds a new Hardware assembly one level subordinate to "
-                        "the selected Hardware (i.e., a child hardware).",
+                        "Adds a new Hardware assembly one level subordinate "
+                        "to the selected Hardware (i.e., a child hardware).",
                     ),
                     _(
                         "Adds a new Hardware component/piece-part at the same "
@@ -104,8 +104,9 @@ class ModuleView(RAMSTKModuleView):
                     ),
                     _(
                         "Adds a new Hardware component/piece-part one level "
-                        "subordinate to selected Hardware component/piece-part "
-                        "(i.e., a child component/piece-part).",
+                        "subordinate to selected Hardware "
+                        "component/piece-part (i.e., a child "
+                        "component/piece-part).",
                     ),
                     _(
                         "Remove the currently selected Hardware item and any "
@@ -113,8 +114,8 @@ class ModuleView(RAMSTKModuleView):
                     ),
                     _("Calculate the entire system."),
                     _(
-                        "Exports Hardware to an external file (CSV, Excel, and "
-                        "text files are supported).",
+                        "Exports Hardware to an external file (CSV, Excel, "
+                        "and text files are supported).",
                     ),
                 ],
                 callbacks=[
@@ -198,6 +199,7 @@ class ModuleView(RAMSTKModuleView):
         pub.sendMessage(
             'request_calculate_all_hardware',
             node_id=self._hardware_id,
+            limits=self.RAMSTK_CONFIGURATION.RAMSTK_STRESS_LIMITS,
         )
 
     def _do_request_delete(self, __button):
