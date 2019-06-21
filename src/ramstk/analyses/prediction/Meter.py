@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.prediction.Meter.py is part of the RAMSTK Project
@@ -7,6 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Meter Reliability Calculations Module."""
 
+# Standard Library Imports
 import gettext
 
 _ = gettext.gettext
@@ -33,61 +33,54 @@ def calculate_217f_part_count(**attributes):
     # list is selected by the type ID.  The hazard rate to use is selected from
     # the list depending on the active environment.
     _dic_lambda_b = {
-        1: [[
-            10.0, 20.0, 120.0, 70.0, 180.0, 50.0, 80.0, 160.0, 250.0, 260.0,
-            5.0, 140.0, 380.0, 0.0
-        ], [
-            15.0, 30.0, 180.0, 105.0, 270.0, 75.0, 120.0, 240.0, 375.0, 390.0,
-            7.5, 210.0, 570.0, 0.0
-        ], [
-            40.0, 80.0, 480.0, 280.0, 720.0, 200.0, 320.0, 640.0, 1000.0,
-            1040.0, 20.0, 560.0, 1520.0, 0.0
-        ]],
-        2: [[
-            0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4,
-            0.0, 0.0
-        ], [
-            0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2,
-            0.0, 0.0
-        ]]
+        1: [
+            [
+                10.0, 20.0, 120.0, 70.0, 180.0, 50.0, 80.0, 160.0, 250.0, 260.0,
+                5.0, 140.0, 380.0, 0.0,
+            ], [
+                15.0, 30.0, 180.0, 105.0, 270.0, 75.0, 120.0, 240.0, 375.0, 390.0,
+                7.5, 210.0, 570.0, 0.0,
+            ], [
+                40.0, 80.0, 480.0, 280.0, 720.0, 200.0, 320.0, 640.0, 1000.0,
+                1040.0, 20.0, 560.0, 1520.0, 0.0,
+            ],
+        ],
+        2: [
+            [
+                0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4,
+                0.0, 0.0,
+            ], [
+                0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2,
+                0.0, 0.0,
+            ],
+        ],
     }
-
-    # List containing piQ values for parts count method.  The list positions
-    # correspond to the following quality levels:
-    #
-    #   0. MIL-SPEC
-    #   1. Non-MIL
-    #
-    # The quality_id attribute is used to select the proper value of piQ.
-    _dic_piQ = {2: [1.0, 3.4]}
     _msg = ''
 
     # Select the base hazard rate.
     try:
         attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
-            attributes['type_id'] - 1][attributes['environment_active_id'] - 1]
+            attributes['type_id'] - 1
+        ][attributes['environment_active_id'] - 1]
     except (IndexError, KeyError):
         attributes['lambda_b'] = 0.0
-
-    # Select the piQ.
-    try:
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-            attributes['quality_id'] - 1]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 1.0
 
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
-        _msg = ("RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-                "meter, hardware ID: {0:d}, subcategory ID: {1:d}, type "
-                "ID: {3:d}, and active environment ID: {2:d}.").format(
-                    attributes['hardware_id'], attributes['subcategory_id'],
-                    attributes['environment_active_id'], attributes['type_id'])
+        _msg = (
+            "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
+            "meter, hardware ID: {0:d}, subcategory ID: {1:d}, type "
+            "ID: {3:d}, and active environment ID: {2:d}."
+        ).format(
+            attributes['hardware_id'], attributes['subcategory_id'],
+            attributes['environment_active_id'], attributes['type_id'],
+        )
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ'])
+        attributes['lambda_b'] * attributes['piQ']
+    )
 
     return attributes, _msg
 
@@ -107,12 +100,12 @@ def calculate_217f_part_stress(**attributes):
     _dic_piE = {
         2: [
             1.0, 4.0, 25.0, 12.0, 35.0, 28.0, 42.0, 58.0, 73.0, 60.0, 1.1,
-            60.0, 0.0, 0.0
+            60.0, 0.0, 0.0,
         ],
         1: [
             1.0, 2.0, 12.0, 7.0, 18.0, 5.0, 8.0, 16.0, 25.0, 26.0, 0.5, 14.0,
-            38.0, 0.0
-        ]
+            38.0, 0.0,
+        ],
     }
     _dic_piQ = {2: [1.0, 3.4]}
     _lst_piF = [1.0, 1.0, 2.8]
@@ -120,8 +113,10 @@ def calculate_217f_part_stress(**attributes):
 
     # Calculate the temperature ratio.
     try:
-        _temperature_ratio = (attributes['temperature_active'] /
-                              attributes['temperature_rated_max'])
+        _temperature_ratio = (
+            attributes['temperature_active'] /
+            attributes['temperature_rated_max']
+        )
     except ZeroDivisionError:
         _temperature_ratio = 1.0
 
@@ -136,7 +131,8 @@ def calculate_217f_part_stress(**attributes):
     if attributes['lambda_b'] <= 0.0:
         _msg = (
             "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
-            "hardware ID: {0:d}.").format(attributes['hardware_id'])
+            "hardware ID: {0:d}."
+        ).format(attributes['hardware_id'])
 
     # Determine the application factor (piA) and function factor (piF).
     if attributes['subcategory_id'] == 2:
@@ -145,49 +141,58 @@ def calculate_217f_part_stress(**attributes):
 
     # Determine the temperature stress factor (piT).
     if attributes['subcategory_id'] == 1:
-        if _temperature_ratio > 0.0 and _temperature_ratio <= 0.5:
+        if 0.0 < _temperature_ratio <= 0.5:
             attributes['piT'] = 0.5
-        elif _temperature_ratio > 0.5 and _temperature_ratio <= 0.6:
+        elif 0.5 < _temperature_ratio <= 0.6:
             attributes['piT'] = 0.6
-        elif _temperature_ratio > 0.6 and _temperature_ratio <= 0.8:
+        elif 0.6 < _temperature_ratio <= 0.8:
             attributes['piT'] = 0.8
-        elif _temperature_ratio > 0.8 and _temperature_ratio <= 1.0:
+        elif 0.8 < _temperature_ratio <= 1.0:
             attributes['piT'] = 1.0
 
     # Determine the quality factor (piQ).
     try:
         attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-            attributes['quality_id'] - 1]
+            attributes['quality_id'] - 1
+        ]
     except (KeyError, IndexError):
         attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
         _msg = (
             "RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
-            "{0:d}, quality ID: {1:d}.").format(attributes['hardware_id'],
-                                                attributes['quality_id'])
+            "{0:d}, quality ID: {1:d}."
+        ).format(
+            attributes['hardware_id'],
+            attributes['quality_id'],
+        )
 
     # Determine the environmental factor (piE).
     try:
         attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1]
+            attributes['environment_active_id'] - 1
+        ]
     except (IndexError, KeyError):
         attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
         _msg = (
             "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
-            "{0:d}").format(attributes['hardware_id'])
+            "{0:d}"
+        ).format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piE'])
+        attributes['lambda_b'] * attributes['piE']
+    )
     if attributes['subcategory_id'] == 2:
         attributes['hazard_rate_active'] = (
             attributes['hazard_rate_active'] * attributes['piA'] *
-            attributes['piF'] * attributes['piQ'])
+            attributes['piF'] * attributes['piQ']
+        )
     elif attributes['subcategory_id'] == 1:
         attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] * attributes['piT'])
+            attributes['hazard_rate_active'] * attributes['piT']
+        )
 
     return attributes, _msg

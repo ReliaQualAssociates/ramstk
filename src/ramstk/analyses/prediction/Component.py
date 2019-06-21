@@ -79,35 +79,66 @@ def do_calculate_217f_part_count(**attributes):
     """
     _msg = ''
 
+    # Dictionary containing piQ values for parts count method.  The value list
+    # positions correspond to the following quality levels:
+    #
+    #   0. Established reliability level S or MIL-SPEC
+    #   1. Established reliability level B or Non MIL-SPEC
+    #   2. Established reliability level B-1
+    #
+    # The quality_id attribute is used to select the proper value of piQ.
+    _dic_piQ = {
+        1: [0.25, 1.0, 2.0],
+        3: [0.030, 0.10, 0.30, 1.0, 3.0, 10.0],
+        4: [0.030, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0],
+        5: [0.25, 1.0, 10.0],
+        6: {1: [0.6, 3.0, 9.0], 2: [0.0, 1.0, 4.0]},
+        7: {1: [1.0, 20.0], 2: [1.0, 20.0], 3: [1.0, 50.0], 4: [1.0, 10.0], 5: [1.0, 8.4],},
+        8: [1.0, 2.0],
+        9: {1: [1.0, 1.0], 2: [1.0, 3.4]},
+        10: {1: [1.0, 2.1], 2: [1.0, 2.9]},
+    }
+
+    # Select the piQ.
+    try:
+        attributes['piQ'] = _dic_piQ[attributes['category_id']][attributes['subcategory_id']][attributes['quality_id'] - 1]
+    except(IndexError, TypeError):
+        try:
+            attributes['piQ'] = _dic_piQ[attributes['category_id']][attributes['quality_id'] - 1]
+        except(IndexError, KeyError):
+            attributes['piQ'] = 0.0
+    except KeyError:
+        attributes['piQ'] = 0.0
+
     if attributes['category_id'] == 1:
-        attributes, __ = IntegratedCircuit.calculate_217f_part_count(
+        attributes, _msg = IntegratedCircuit.calculate_217f_part_count(
             **attributes,
         )
     elif attributes['category_id'] == 2:
-        attributes, __ = Semiconductor.calculate_217f_part_count(**attributes)
+        attributes, _msg = Semiconductor.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 3:
-        attributes, __ = Resistor.calculate_217f_part_count(**attributes)
+        attributes, _msg = Resistor.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 4:
-        attributes, __ = Capacitor.calculate_217f_part_count(**attributes)
+        attributes, _msg = Capacitor.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 5:
-        attributes, __ = Inductor.calculate_217f_part_count(**attributes)
+        attributes, _msg = Inductor.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 6:
-        attributes, __ = Relay.calculate_217f_part_count(**attributes)
+        attributes, _msg = Relay.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 7:
-        attributes, __ = Switch.calculate_217f_part_count(**attributes)
+        attributes, _msg = Switch.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 8:
-        attributes, __ = Connection.calculate_217f_part_count(**attributes)
+        attributes, _msg = Connection.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 9:
-        attributes, __ = Meter.calculate_217f_part_count(**attributes)
+        attributes, _msg = Meter.calculate_217f_part_count(**attributes)
     elif attributes['category_id'] == 10:
         if attributes['subcategory_id'] == 1:
-            attributes, __ = Crystal.calculate_217f_part_count(**attributes)
+            attributes, _msg = Crystal.calculate_217f_part_count(**attributes)
         elif attributes['subcategory_id'] == 4:
-            attributes, __ = Lamp.calculate_217f_part_count(**attributes)
+            attributes, _msg = Lamp.calculate_217f_part_count(**attributes)
         elif attributes['subcategory_id'] == 3:
-            attributes, __ = Fuse.calculate_217f_part_count(**attributes)
+            attributes, _msg = Fuse.calculate_217f_part_count(**attributes)
         elif attributes['subcategory_id'] == 2:
-            attributes, __ = Filter.calculate_217f_part_count(**attributes)
+            attributes, _msg = Filter.calculate_217f_part_count(**attributes)
 
     return attributes, _msg
 

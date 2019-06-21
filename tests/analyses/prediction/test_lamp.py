@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Lamp
+from ramstk.analyses.prediction import Component, Lamp
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -60,7 +60,7 @@ def test_calculate_mil_hdbk_217f_part_count(
     except (KeyError, IndexError):
         lambda_b = 0.0
 
-    _attributes, _msg = Lamp.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
@@ -83,7 +83,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     ATTRIBUTES['application_id'] = 1
     ATTRIBUTES['environment_active_id'] = 100
 
-    _attributes, _msg = Lamp.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (

@@ -7,6 +7,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Filter Reliability Calculations Module."""
 
+# Standard Library Imports
 import gettext
 
 _ = gettext.gettext
@@ -28,32 +29,26 @@ def calculate_217f_part_count(**attributes):
     _dic_lambda_b = {
         1: [
             0.022, 0.044, 0.13, 0.088, 0.20, 0.15, 0.20, 0.24, 0.29, 0.24,
-            0.018, 0.15, 0.33, 2.6
+            0.018, 0.15, 0.33, 2.6,
         ],
         2: [
             0.12, 0.24, 0.72, 0.48, 1.1, 0.84, 1.1, 1.3, 1.6, 1.3, 0.096, 0.84,
-            1.8, 1.4
+            1.8, 1.4,
         ],
         3: [
             0.27, 0.54, 1.6, 1.1, 2.4, 1.9, 2.4, 3.0, 3.5, 3.0, 0.22, 1.9, 4.1,
-            32.0
-        ]
+            32.0,
+        ],
     }
-    _lst_piQ = [1.0, 2.9]
     _msg = ''
 
     # Select the base hazard rate.
     try:
         attributes['lambda_b'] = _dic_lambda_b[attributes['type_id']][
-            attributes['environment_active_id'] - 1]
+            attributes['environment_active_id'] - 1
+        ]
     except (KeyError, IndexError):
         attributes['lambda_b'] = 0.0
-
-    # Select the piQ.
-    try:
-        attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
-    except IndexError:
-        attributes['piQ'] = 0.0
 
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
@@ -61,9 +56,11 @@ def calculate_217f_part_count(**attributes):
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating filter, hardware ID: ' \
             '{0:d}, type ID: {2:d}, active environment ID: ' \
-            '{1:d}'.format(attributes['hardware_id'],
-                           attributes['environment_active_id'],
-                           attributes['type_id'])
+            '{1:d}'.format(
+                attributes['hardware_id'],
+                attributes['environment_active_id'],
+                attributes['type_id'],
+            )
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
@@ -72,7 +69,8 @@ def calculate_217f_part_count(**attributes):
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ'])
+        attributes['lambda_b'] * attributes['piQ']
+    )
 
     return attributes, _msg
 
@@ -91,7 +89,7 @@ def calculate_217f_part_stress(**attributes):
     _dic_lambda_b = {1: 0.022, 2: 0.12, 3: 0.12, 4: 0.27}
     _lst_piE = [
         1.0, 2.0, 6.0, 4.0, 9.0, 7.0, 9.0, 11.0, 13.0, 11.0, 0.8, 7.0, 15.0,
-        120.0
+        120.0,
     ]
     _lst_piQ = [1.0, 2.9]
     _msg = ''
@@ -129,6 +127,7 @@ def calculate_217f_part_stress(**attributes):
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ'] * attributes['piE'])
+        attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
+    )
 
     return attributes, _msg

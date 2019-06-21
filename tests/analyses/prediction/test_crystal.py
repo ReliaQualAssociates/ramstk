@@ -13,7 +13,7 @@ from pytest import approx
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Crystal
+from ramstk.analyses.prediction import Component, Crystal
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -48,7 +48,7 @@ def test_calculate_mil_hdbk_217f_part_count(quality_id, environment_active_id):
     lambda_b = PART_COUNT_LAMBDA_B[environment_active_id - 1]
     piQ = PART_COUNT_PIQ[quality_id - 1]
 
-    _attributes, _msg = Crystal.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
@@ -70,7 +70,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     ATTRIBUTES['environment_active_id'] = 100
     ATTRIBUTES['quality_id'] = 1
 
-    _attributes, _msg = Crystal.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -90,7 +90,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     ATTRIBUTES['environment_active_id'] = 1
     ATTRIBUTES['quality_id'] = 100
 
-    _attributes, _msg = Crystal.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (

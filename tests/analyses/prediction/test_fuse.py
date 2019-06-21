@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Fuse
+from ramstk.analyses.prediction import Component, Fuse
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -21,6 +21,7 @@ ATTRIBUTES['add_adj_factor'] = 0.0
 ATTRIBUTES['mult_adj_factor'] = 1.0
 ATTRIBUTES['duty_cycle'] = 100.0
 ATTRIBUTES['quantity'] = 1
+ATTRIBUTES['subcategory_id'] = 3
 
 PART_COUNT_LAMBDA_B = [
     0.01, 0.02, 0.06, 0.05, 0.11, 0.09, 0.12, 0.15, 0.18, 0.18, 0.009, 0.1,
@@ -46,7 +47,7 @@ def test_calculate_mil_hdbk_217f_part_count(environment_active_id):
 
     lambda_b = PART_COUNT_LAMBDA_B[environment_active_id - 1]
 
-    _attributes, _msg = Fuse.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
@@ -60,7 +61,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
     ATTRIBUTES['environment_active_id'] = 100
 
-    _attributes, _msg = Fuse.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (

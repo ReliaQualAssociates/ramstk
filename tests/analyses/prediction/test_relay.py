@@ -91,7 +91,7 @@ def test_calculate_mil_hdbk_217f_part_count(
     except (KeyError, IndexError):
         piQ = 0.0
 
-    _attributes, _msg = Relay.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0 and piQ > 0.0:
@@ -126,7 +126,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     ATTRIBUTES['type_id'] = 1
     ATTRIBUTES['environment_active_id'] = 1
 
-    _attributes, _msg = Relay.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -148,7 +148,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['environment_active_id'] = 1
 
-    _attributes, _msg = Relay.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -171,7 +171,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     ATTRIBUTES['environment_active_id'] = 100
     ATTRIBUTES['quality_id'] = 1
 
-    _attributes, _msg = Relay.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (

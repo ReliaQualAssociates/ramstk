@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Filter
+from ramstk.analyses.prediction import Component, Filter
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -21,6 +21,7 @@ ATTRIBUTES['add_adj_factor'] = 0.0
 ATTRIBUTES['mult_adj_factor'] = 1.0
 ATTRIBUTES['duty_cycle'] = 100.0
 ATTRIBUTES['quantity'] = 1
+ATTRIBUTES['subcategory_id'] = 2
 
 PART_COUNT_LAMBDA_B = {
     1: [
@@ -59,7 +60,7 @@ def test_calculate_mil_hdbk_217f_part_count(
     lambda_b = PART_COUNT_LAMBDA_B[type_id][environment_active_id - 1]
     piQ = PART_COUNT_PIQ[quality_id - 1]
 
-    _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
@@ -82,7 +83,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['type_id'] = 9
 
-    _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -103,7 +104,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['type_id'] = 1
 
-    _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -124,7 +125,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     ATTRIBUTES['quality_id'] = 4
     ATTRIBUTES['type_id'] = 1
 
-    _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (

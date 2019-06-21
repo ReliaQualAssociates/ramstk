@@ -218,7 +218,7 @@ def test_calculate_mil_hdbk_217f_part_count(
     except (IndexError, KeyError):
         piQ = 0.0
 
-    _attributes, _msg = Semiconductor.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0 and piQ > 0.0:

@@ -161,12 +161,6 @@ def calculate_217f_part_count(**attributes):
     except IndexError:
         attributes['lambda_b'] = 0.0
 
-    # Select the piQ.
-    try:
-        attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
-    except IndexError:
-        attributes['piQ'] = 0.0
-
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
