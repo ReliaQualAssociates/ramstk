@@ -396,8 +396,8 @@ def calculate_217f_part_stress(**attributes):
     # Determine the series resistance factor (piSR).
     if attributes['subcategory_id'] == 12:
         _cr = attributes['resistance'] / (
-            attributes['voltage_dc_operating'] +
-            attributes['voltage_ac_operating']
+            attributes['voltage_dc_operating']
+            + attributes['voltage_ac_operating']
         )
         attributes['piSR'] = _dic_piSR[_cr]
         attributes['hazard_rate_active'] = (

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.prediction.Connection.py is part of the RAMSTK Project
@@ -278,8 +277,8 @@ def calculate_217f_part_stress(**attributes):
 
     # Calculate the base hazard rate.
     _contact_temp = (
-        attributes['temperature_active'] +
-        attributes['temperature_rise'] + 273.0
+        attributes['temperature_active']
+        + attributes['temperature_rise'] + 273.0
     )
     if attributes['subcategory_id'] == 1:
         _key = _dic_keys[attributes['type_id']][
@@ -316,8 +315,8 @@ def calculate_217f_part_stress(**attributes):
         attributes['lambda_b'] = 0.00042
     else:
         attributes['lambda_b'] = _f0 * exp(
-            (_f1 / _contact_temp) +
-            (_contact_temp / _ref_temp)**_f2,
+            (_f1 / _contact_temp)
+            + (_contact_temp / _ref_temp)**_f2,
         )
 
     if attributes['lambda_b'] <= 0.0:
@@ -340,8 +339,7 @@ def calculate_217f_part_stress(**attributes):
     # Determine active pins factor.
     if attributes['subcategory_id'] in [1, 2, 3]:
         attributes['piP'] = exp(
-            ((attributes['n_active_pins'] - 1) / 10.0)
-            **0.51064,
+            ((attributes['n_active_pins'] - 1) / 10.0)**0.51064,
         )
 
     # Determine the environmental factor (piE).

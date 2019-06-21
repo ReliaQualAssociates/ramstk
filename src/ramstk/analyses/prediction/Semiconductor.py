@@ -445,9 +445,8 @@ def _calculate_temperature_factor(attributes):
                     'piT'
                 ] = _f2 * (attributes['voltage_ratio'] - 0.35) * exp(
                     -_f0 * (
-                        1.0 /
-                        (attributes['temperature_junction'] + 273.0) -
-                        1.0 / 298.0
+                        1.0 / (attributes['temperature_junction'] + 273.0)
+                        - 1.0 / 298.0
                     ),
                 )
         else:

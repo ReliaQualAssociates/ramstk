@@ -458,16 +458,15 @@ def test_set_site_variables():
     set_site_variables() should return False on success
     """
     DUT = Configuration()
+    DUT._INSTALL_PREFIX = VIRTUAL_ENV
+    DUT.RAMSTK_HOME_DIR = '/tmp/home'
 
     assert not DUT.set_site_variables()
     assert DUT.RAMSTK_SITE_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK'
-    assert DUT.RAMSTK_CONF_DIR == DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK'
-    assert DUT.RAMSTK_DATA_DIR == (
-        DUT.RAMSTK_HOME_DIR +
-        "/.config/RAMSTK/layouts"
-    )
-    assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_HOME_DIR + "/.config/RAMSTK/icons"
-    assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"
+    assert DUT.RAMSTK_CONF_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK'
+    assert DUT.RAMSTK_DATA_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK/layouts'
+    assert DUT.RAMSTK_ICON_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK/icons'
+    assert DUT.RAMSTK_LOG_DIR == '/var/log/RAMSTK'
     assert DUT.RAMSTK_SITE_CONF == DUT.RAMSTK_CONF_DIR + "/Site.conf"
 
 

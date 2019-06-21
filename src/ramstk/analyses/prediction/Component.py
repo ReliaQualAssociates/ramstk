@@ -42,8 +42,8 @@ def calculate(limits, **attributes):
     attributes = do_check_overstress(limits, **attributes)
 
     if attributes['mult_adj_factor'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: Multiplicative adjustment factor is 0.0 ' \
-            'when calculating hardware item, hardware ID: ' \
+        _msg = _msg + 'RAMSTK WARNING: Multiplicative adjustment factor is ' \
+            '0.0 when calculating hardware item, hardware ID: ' \
             '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['duty_cycle'] <= 0.0:
@@ -57,8 +57,8 @@ def calculate(limits, **attributes):
             '{0:d}.\n'.format(attributes['hardware_id'])
 
     attributes['hazard_rate_active'] = (
-        attributes['hazard_rate_active'] +
-        attributes['add_adj_factor']
+        attributes['hazard_rate_active']
+        + attributes['add_adj_factor']
     ) * \
         (attributes['duty_cycle'] / 100.0) * \
         attributes['mult_adj_factor'] * attributes['quantity']
@@ -193,26 +193,38 @@ def do_calculate_dormant_hazard_rate(**attributes):
             if attributes['subcategory_id'] in [1, 2]:
                 attributes['hazard_rate_dormant'] = \
                     (
-                        DORMANT_MULT[attributes['category_id']][attributes['environment_active_id']]
-                        [attributes['environment_dormant_id']][0] *
-                        attributes['hazard_rate_active']
+                        DORMANT_MULT[
+                            attributes['category_id']
+                        ][
+                            attributes['environment_active_id']
+                        ]
+                        [attributes['environment_dormant_id']][0]
+                        * attributes['hazard_rate_active']
                     )
             elif attributes['subcategory_id'] in [3, 4, 5, 6, 7, 8, 9]:
                 attributes['hazard_rate_dormant'] = \
                     (
-                        DORMANT_MULT[attributes['category_id']][attributes['environment_active_id']]
-                        [attributes['environment_dormant_id']][1] *
-                        attributes['hazard_rate_active']
+                        DORMANT_MULT[
+                            attributes['category_id']
+                        ][
+                            attributes['environment_active_id']
+                        ]
+                        [attributes['environment_dormant_id']][1]
+                        * attributes['hazard_rate_active']
                     )
             else:
                 attributes['hazard_rate_dormant'] = 0.0
         else:
             attributes['hazard_rate_dormant'] = \
-                    (
-                        DORMANT_MULT[attributes['category_id']][attributes['environment_active_id']]
-                        [attributes['environment_dormant_id']] *
-                        attributes['hazard_rate_active']
-                    )
+                (
+                    DORMANT_MULT[
+                        attributes['category_id']
+                    ][
+                        attributes['environment_active_id']
+                    ]
+                    [attributes['environment_dormant_id']]
+                    * attributes['hazard_rate_active']
+                )
     except KeyError:
         attributes['hazard_rate_dormant'] = 0.0
         _msg = 'RAMSTK ERROR: Unknown active and/or dormant environment ID for ' \
@@ -461,7 +473,7 @@ def _do_check_maxtemp_stress(
             ". Operating temperature > {0:s}C {1:s} temperature limit "
             "in {2:s} environment.\n",
         ).format(
-                        str(_limit), limit_temp_str, _environ,
+            str(_limit), limit_temp_str, _environ,
         )
 
     return _overstress, _reason

@@ -317,8 +317,8 @@ def calculate_hot_spot_temperature(**attributes):
             attributes['temperature_rise'] = 0.0
 
     attributes['temperature_hot_spot'] = (
-        attributes['temperature_active'] +
-        1.1 * attributes['temperature_rise']
+        attributes['temperature_active']
+        + 1.1 * attributes['temperature_rise']
     )
 
     return attributes

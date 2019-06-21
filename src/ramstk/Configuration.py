@@ -546,6 +546,14 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
             _config.write(_parser)
             _parser.close()
         except EnvironmentError:
+            print(
+                _(
+                    "\033[1;31mRAMSTK ERROR: Unable to write to site "
+                    "configuration file {0:s}.\033[0m".format(
+                        self.RAMSTK_SITE_CONF,
+                    ),
+                ),
+            )
             _return = True
 
         return _return
@@ -770,6 +778,8 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
         if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
@@ -777,23 +787,13 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
         else:
             self.RAMSTK_CONF_DIR = self.RAMSTK_SITE_DIR
 
-        if Utilities.dir_exists(
-                self.RAMSTK_HOME_DIR + "/.config/RAMSTK/layouts", ):
-            self.RAMSTK_DATA_DIR = (
-                self.RAMSTK_HOME_DIR +
-                "/.config/RAMSTK/layouts"
-            )
-
-        if Utilities.dir_exists(
-                self.RAMSTK_HOME_DIR +
-                "/.config/RAMSTK/icons", ):
-            self.RAMSTK_ICON_DIR = (
-                self.RAMSTK_HOME_DIR +
-                "/.config/RAMSTK/icons"
-            )
+        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + '/layouts'
+        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + '/icons'
 
         if Utilities.dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"):
             self.RAMSTK_LOG_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK/logs"
+        else:
+            self.RAMSTK_LOG_DIR = '/var/log/RAMSTK'
 
         self.RAMSTK_SITE_CONF = self.RAMSTK_CONF_DIR + "/Site.conf"
 
