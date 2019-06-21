@@ -66,16 +66,6 @@ def calculate_217f_part_count(**attributes):
         },
     }
 
-    # List containing piQ values for parts count method.  The list positions
-    # corrspond to the following quality levels:
-    #
-    #   0. Established reliability
-    #   1. Non-established reliability MIL-SPEC
-    #   2. Non-established reliability non-MIL
-    #
-    # The quality_id attribute is used to select the proper value of piQ.
-    _lst_piQ = [0.25, 1.0, 10.0]
-
     # Select the base hazard rate.
     try:
         _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
@@ -92,12 +82,6 @@ def calculate_217f_part_count(**attributes):
         ]
     except IndexError:
         attributes['lambda_b'] = 0.0
-
-    # Select the piQ.
-    try:
-        attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
-    except IndexError:
-        attributes['piQ'] = 0.0
 
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.

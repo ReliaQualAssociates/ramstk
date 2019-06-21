@@ -33,6 +33,15 @@ Capacitor Prediction Calculations Module
     :undoc-members:
     :show-inheritance:
 
+Base Component Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: ramstk.analyses.prediction.Component
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
 Connection Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -140,4 +149,3 @@ Switch Prediction Calculations Module
     :private-members:
     :undoc-members:
     :show-inheritance:
-

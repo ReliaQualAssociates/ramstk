@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Meter
+from ramstk.analyses.prediction import Component, Meter
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -54,7 +54,7 @@ PART_COUNT_PIQ = {2: [1.0, 3.4]}
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 @pytest.mark.parametrize("type_id", [1, 2, 3])
-@pytest.mark.parametrize("quality_id", [1, 2, 3])
+@pytest.mark.parametrize("quality_id", [1, 2])
 @pytest.mark.parametrize(
     "environment_active_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
@@ -82,7 +82,7 @@ def test_calculate_mil_hdbk_217f_part_count(
     except (KeyError, IndexError):
         piQ = 1.0
 
-    _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
@@ -111,7 +111,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['environment_active_id'] = 1
 
-    _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -120,7 +120,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
         "ID: 1, and active environment ID: 1."
     )
     assert _attributes['lambda_b'] == 0.0
-    assert _attributes['piQ'] == 1.0
+    assert _attributes['piQ'] == 0.0
     assert _attributes['hazard_rate_active'] == 0.0
 
 
@@ -133,7 +133,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['environment_active_id'] = 1
 
-    _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -155,7 +155,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     ATTRIBUTES['environment_active_id'] = 100
     ATTRIBUTES['quality_id'] = 1
 
-    _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (

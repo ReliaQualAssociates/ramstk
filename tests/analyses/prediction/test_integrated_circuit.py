@@ -352,9 +352,7 @@ def test_calculate_mil_hdbk_217f_part_count(
         lambda_b = 0.0
     piQ = PART_COUNT_PIQ[quality_id - 1]
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_count(
-        **ATTRIBUTES,
-    )
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
@@ -379,9 +377,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['environment_active_id'] = 1
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_count(
-        **ATTRIBUTES,
-    )
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -403,9 +399,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_technology():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['environment_active_id'] = 1
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_count(
-        **ATTRIBUTES,
-    )
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -427,9 +421,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['environment_active_id'] = 44
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_count(
-        **ATTRIBUTES,
-    )
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -451,9 +443,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     ATTRIBUTES['quality_id'] = 10
     ATTRIBUTES['environment_active_id'] = 1
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_count(
-        **ATTRIBUTES,
-    )
+    _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (

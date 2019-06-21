@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
 #
 # Configuration file for the Sphinx documentation builder.
@@ -5,8 +6,7 @@
 # This file does only contain a selection of the most common options. For a
 # full list see the documentation:
 # http://www.sphinx-doc.org/en/master/config
-
-# -- Path setup --------------------------------------------------------------
+"""Configuration for Sphinx."""
 
 # Standard Library Imports
 import os
@@ -22,8 +22,13 @@ import sys
 # Third Party Imports
 from mock import Mock as MagicMock
 
+# RAMSTK Package Imports
+# -- Path setup --------------------------------------------------------------
+import sphinx_py3doc_enhanced_theme
+
 
 class Mock(MagicMock):
+    """Class to mock modules when building documentation."""
     @classmethod
     def __getattr__(cls, name):
         return MagicMock()
@@ -41,11 +46,11 @@ sys.path.append(os.path.join(os.path.dirname(__name__), '../../'))
 # -- Project information -----------------------------------------------------
 
 project = u'RAMSTK'
-copyright = u'2018, Doyle Rowland'
+copyright = u'2007 - 2019, Doyle Rowland'   # pylint: disable=redefined-builtin
 author = u'Doyle Rowland'
 
 # The short X.Y version
-version = u''
+version = u'2.0'
 # The full version, including alpha/beta/rc tags
 release = u'2.0.0'
 
@@ -65,6 +70,7 @@ extensions = [
     'sphinx.ext.imgmath',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
+    'm2r',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -74,7 +80,7 @@ templates_path = ['_templates']
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
 
 # The master toctree document.
 master_doc = 'index'
@@ -100,7 +106,9 @@ pygments_style = None
 # a list of builtin themes.
 #
 # html_theme = 'alabaster'
-html_theme = 'sphinx_rtd_theme'
+#html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_py3doc_enhanced_theme"
+html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -153,7 +161,10 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (
-        master_doc, 'RAMSTK.tex', u'RAMSTK Documentation', u'Doyle Rowland',
+        master_doc,
+        'RAMSTK.tex',
+        u'RAMSTK Documentation',
+        u'Doyle Rowland',
         'manual',
     ),
 ]
@@ -171,8 +182,13 @@ man_pages = [(master_doc, 'ramstk', u'RAMSTK Documentation', [author], 1)]
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        master_doc, 'RAMSTK', u'RAMSTK Documentation', author, 'RAMSTK',
-        'One line description of project.', 'Miscellaneous',
+        master_doc,
+        'RAMSTK',
+        u'RAMSTK Documentation',
+        author,
+        'RAMSTK',
+        'One line description of project.',
+        'Miscellaneous',
     ),
 ]
 

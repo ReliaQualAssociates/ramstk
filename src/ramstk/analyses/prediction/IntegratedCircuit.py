@@ -344,16 +344,6 @@ def calculate_217f_part_count(**attributes):
         },
     }
 
-    # List containing piQ values for parts count method.  The list positions
-    # corrspond to the following quality levels:
-    #
-    #   0. Established reliability level S
-    #   1. Established reliability level B
-    #   2. Established reliability level B-1
-    #
-    # The quality_id attribute is used to select the proper value of piQ.
-    _lst_piQ = [0.25, 1.0, 2.0]
-
     # Dictionary containing the number of element breakpoints for determining
     # the base hazard rate list to use.
     _dic_breakpoints = {
@@ -417,12 +407,6 @@ def calculate_217f_part_count(**attributes):
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating integrated circuit, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
-
-    # Select the piQ.
-    try:
-        attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
-    except IndexError:
-        attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
