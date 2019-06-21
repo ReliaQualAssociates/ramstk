@@ -10,7 +10,7 @@ Welcome to RAMSTK's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+.. mdinclude:: CHANGELOG.md
 
 Indices and tables
 ==================
