@@ -77,9 +77,9 @@ RAMSTK_CRITICALITY = [
     [
         _("Catastrophic"),
         _(
-            "Could result in death, permanent total disability, loss exceeding "
-            "$1M, or irreversible severe environmental damage that violates law "
-            "or regulation.", ),
+            "Could result in death, permanent total disability, loss "
+            "exceeding $1M, or irreversible severe environmental damage that "
+            "violates law or regulation.", ),
         "I",
         4,
     ],
@@ -87,9 +87,9 @@ RAMSTK_CRITICALITY = [
         _("Critical"),
         _(
             "Could result in permanent partial disability, injuries or "
-            "occupational illness that may result in hospitalization of at least "
-            "three personnel, loss exceeding $200K but less than $1M, or "
-            "reversible environmental damage causing a violation of law or "
+            "occupational illness that may result in hospitalization of at "
+            "least three personnel, loss exceeding $200K but less than $1M, "
+            "or reversible environmental damage causing a violation of law or "
             "regulation.", ),
         "II",
         3,
@@ -97,10 +97,11 @@ RAMSTK_CRITICALITY = [
     [
         _("Marginal"),
         _(
-            "Could result in injury or occupational illness resulting in one or "
-            "more lost work days(s), loss exceeding $10K but less than $200K, or "
-            "mitigatible environmental damage without violation of law or "
-            "regulation where restoration activities can be accomplished.", ),
+            "Could result in injury or occupational illness resulting in one "
+            "or more lost work days(s), loss exceeding $10K but less than "
+            "$200K, or mitigatible environmental damage without violation of "
+            "law or regulation where restoration activities can be "
+            "accomplished.", ),
         "III",
         2,
     ],
@@ -185,183 +186,182 @@ class Configuration:    # pylint: disable=too-many-instance-attributes
     r"""
     RAMSTK configuration class.
 
-    Class attributes of the Configuration class are:
+    Attributes of the Configuration class are:
 
-    :cvar dict RAMSTK_FORMAT_FILE: Dictionary containing the path to the format
-                                files to use for various widgets.  Keys for
-                                this dictionary are:
+    :ivar dict RAMSTK_FORMAT_FILE: Dictionary containing the path to the format
+        files to use for various widgets.  Keys for this dictionary are:
 
-                                * revision
-                                * function
-                                * requirement
-                                * hardware
-                                * validation
-                                * sia
-                                * fmeca
-                                * stakeholder
-                                * ffmeca
+            * revision
+            * function
+            * requirement
+            * hardware
+            * validation
+            * sia
+            * fmeca
+            * stakeholder
+            * ffmeca
 
-    :cvar dict RAMSTK_COLORS: Dictionary containing the colors to use for various
-                           widgets.  Keys for this dictionary are:
+    :ivar dict RAMSTK_COLORS: Dictionary containing the colors to use for
+        various widgets.  Keys for this dictionary are:
 
-                           * revisionbg - Revision Tree background
-                           * revisionfg - Revision Tree foreground
-                           * functionbg - Function Tree background
-                           * functionfg - Function Tree foreground
-                           * requirementbg - Requirement Tree background
-                           * requirementfg - Requirement Tree foreground
-                           * hardwarebg - Hardware Tree background
-                           * hardwarefg - Hardware Tree foreground
-                           * validationbg - Validation Tree background
-                           * validationfg - Validation Tree foreground
-    :cvar dict RAMSTK_COM_INFO: Dictionary for the RAMSTK common database connection
-                             information.  The information contained is:
+            * revisionbg - Revision Tree background
+            * revisionfg - Revision Tree foreground
+            * functionbg - Function Tree background
+            * functionfg - Function Tree foreground
+            * requirementbg - Requirement Tree background
+            * requirementfg - Requirement Tree foreground
+            * hardwarebg - Hardware Tree background
+            * hardwarefg - Hardware Tree foreground
+            * validationbg - Validation Tree background
+            * validationfg - Validation Tree foreground
 
-                             +----------+-------------------------------+
-                             |   Key    | Information                   |
-                             +==========+===============================+
-                             |   host   | Host name (MySQL only)        |
-                             +----------+-------------------------------+
-                             |  socket  | Host port (MySQL only)        |
-                             +----------+-------------------------------+
-                             | database | Database name                 |
-                             +----------+-------------------------------+
-                             |   user   | User name (MySQL only)        |
-                             +----------+-------------------------------+
-                             | password | User password (MySQL only)    |
-                             +----------+-------------------------------+
-    :cvar dict RAMSTK_PROG_INFO: Dictionary for RAMSTK Program database connection
-                              information.  The information contained is:
+    :ivar dict RAMSTK_COM_INFO: Dictionary for the RAMSTK common database
+        connection information.  The information contained is:
 
-                              +----------+-------------------------------+
-                              |   Key    | Information                   |
-                              +==========+===============================+
-                              |   host   | Host name (MySQL only)        |
-                              +----------+-------------------------------+
-                              |  socket  | Host port (MySQL only)        |
-                              +----------+-------------------------------+
-                              | database | Database name                 |
-                              +----------+-------------------------------+
-                              |   user   | User name (MySQL only)        |
-                              +----------+-------------------------------+
-                              | password | User password (MySQL only)    |
-                              +----------+-------------------------------+
-    :cvar dict RAMSTK_TABPOS: Dictionary containing the location of tabs in the
-                           three main Gtk.Notebook() widgets.  Can be one of:
+            +----------+-------------------------------+
+            |   Key    | Information                   |
+            +==========+===============================+
+            |   host   | Host name (MySQL only)        |
+            +----------+-------------------------------+
+            |  socket  | Host port (MySQL only)        |
+            +----------+-------------------------------+
+            | database | Database name                 |
+            +----------+-------------------------------+
+            |   user   | User name (MySQL only)        |
+            +----------+-------------------------------+
+            | password | User password (MySQL only)    |
+            +----------+-------------------------------+
 
-                           * Top
-                           * Bottom
-                           * Left
-                           * Right
+    :ivar dict RAMSTK_PROG_INFO: Dictionary for RAMSTK Program database
+        connection information.  The information contained is:
 
-                           +------------+---------------+----------+
-                           |    Key     | Notebook      | Default  |
-                           +============+===============+==========+
-                           |  listbook  | Module Book   |  *top*   |
-                           +------------+---------------+----------+
-                           | modulebook | Work Book     | *bottom* |
-                           +------------+---------------+----------+
-                           |  workbook  | List Book     | *bottom* |
-                           +------------+---------------+----------+
+            +----------+-------------------------------+
+            |   Key    | Information                   |
+            +==========+===============================+
+            |   host   | Host name (MySQL only)        |
+            +----------+-------------------------------+
+            |  socket  | Host port (MySQL only)        |
+            +----------+-------------------------------+
+            | database | Database name                 |
+            +----------+-------------------------------+
+            |   user   | User name (MySQL only)        |
+            +----------+-------------------------------+
+            | password | User password (MySQL only)    |
+            +----------+-------------------------------+
 
-    :cvar dict RAMSTK_SEVERITY: Dictionary for failure severity categories.
-    :cvar dict RAMSTK_HAZARDS: Dictionary for potential hazards.
-    :cvar dict RAMSTK_REQUIREMENT_TYPES: Dictionary of requirement types.
-    :cvar dict RAMSTK_RPN_SEVERITY: Dictionary for RPN Severity categories.
-    :cvar dict RAMSTK_RPN_OCCURRENCE: Dictionary for RPN Occurrence categories.
-    :cvar dict RAMSTK_RPN_DETECTION: Dictionary for RPN Detection categories.
+    :ivar dict RAMSTK_TABPOS: Dictionary containing the location of tabs in the
+        three main Gtk.Notebook() widgets.  Can be one of:
 
-    :cvar list RAMSTK_MODULES: Dictionary of active modules in the open RAMSTK
-                            Program database.  Where 1 = active and
-                            0 = inactive.  Keys are:
+            * Top
+            * Bottom
+            * Left
+            * Right
 
-                            * Function
-                            * Hardware
-                            * Requirements
-                            * Revision
-                            * Validation
+            +------------+---------------+----------+
+            |    Key     | Notebook      | Default  |
+            +============+===============+==========+
+            |  listbook  | Module Book   |  *top*   |
+            +------------+---------------+----------+
+            | modulebook | Work Book     | *bottom* |
+            +------------+---------------+----------+
+            |  workbook  | List Book     | *bottom* |
+            +------------+---------------+----------+
 
-    :cvar list RAMSTK_PAGE_NUMBER: List indicating which page each RAMSTK module
-                                occupies in the ModuleBook.
-    :cvar list RAMSTK_RISK_POINTS: List for risk level cutoffs.  Cutoffs are:
+    :ivar dict RAMSTK_SEVERITY: Dictionary for failure severity categories.
+    :ivar dict RAMSTK_HAZARDS: Dictionary for potential hazards.
+    :ivar dict RAMSTK_REQUIREMENT_TYPES: Dictionary of requirement types.
+    :ivar dict RAMSTK_RPN_SEVERITY: Dictionary for RPN Severity categories.
+    :ivar dict RAMSTK_RPN_OCCURRENCE: Dictionary for RPN Occurrence categories.
+    :ivar dict RAMSTK_RPN_DETECTION: Dictionary for RPN Detection categories.
+    :ivar dict RAMSTK_MODULES: Dictionary of active modules in the open RAMSTK
+        Program database.  Where 1 = active and 0 = inactive.  Keys are:
 
-                                +-------+---------------------------+
-                                | Index | Risk Level Cutoff Value   |
-                                +=======+===========================+
-                                |   0   | Low to medium             |
-                                +-------+---------------------------+
-                                |   1   | Medium to high            |
-                                +-------+---------------------------+
+            * Function
+            * Hardware
+            * Requirements
+            * Revision
+            * Validation
 
-    :cvar float RAMSTK_HR_MULTIPLIER: The failure rate multiplier.  All failure
-                                   rates will be multiplied by this value for
-                                   display.  This allows failure rates to
-                                   display without using scientific notation.
-                                   Set to one to use scientific notation.
-                                   Default value is *1000000.0*.
-    :cvar float RAMSTK_MTIME: The default mission time for new RAMSTK Programs.
-    :cvar int RAMSTK_DEC_PLACES: Number of decimal places to show in numerical
-                              results.  Default value is *6*.
-    :cvar int RAMSTK_MODE_SOURCE: Indicator variable used to determine which
-                               failure mode source to use.  Sources are:
+    :ivar list RAMSTK_PAGE_NUMBER: List indicating which page each RAMSTK
+        module occupies in the ModuleBook.
+    :ivar list RAMSTK_RISK_POINTS: List for risk level cutoffs.  Cutoffs are:
 
-                               1. FMD-97
-                               2. MIL-STD-338
+        +-------+---------------------------+
+        | Index | Risk Level Cutoff Value   |
+        +=======+===========================+
+        |   0   | Low to medium             |
+        +-------+---------------------------+
+        |   1   | Medium to high            |
+        +-------+---------------------------+
 
-    :cvar str RAMSTK_CONF_DIR: Path to the directory containing configuration
-                            files used by RAMSTK.  Default values are:
+    :ivar float RAMSTK_HR_MULTIPLIER: The failure rate multiplier.  All failure
+        rates will be multiplied by this value for display.  This allows
+        failure rates to display without using scientific notation.  Set to one
+        to use scientific notation.  Default value is *1000000.0*.
+    :ivar float RAMSTK_MTIME: The default mission time for new RAMSTK Programs.
+    :ivar int RAMSTK_DEC_PLACES: Number of decimal places to show in numerical
+        results.  Default value is *6*.
+    :ivar int RAMSTK_MODE_SOURCE: Indicator variable used to determine which
+        failure mode source to use.  Sources are:
 
-                            - POSIX default: *$HOME/.config/RAMSTK*
-                            - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RAMSTK*
+            1. FMD-97
+            2. MIL-STD-338
 
-    :cvar str RAMSTK_DATA_DIR: Path to the directory containing data files used by
-                            RAMSTK.  Default values are:
+    :ivar str RAMSTK_CONF_DIR: Path to the directory containing configuration
+        files used by RAMSTK.  Default values are:
 
-                            - POSIX default: */usr/share/RAMSTK*
-                            - Windows default: *None*
+            - POSIX default: *$HOME/.config/RAMSTK*
+            - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RAMSTK*
 
-    :cvar str RAMSTK_ICON_DIR: Path to the directory containing icon files used
-                            by RAMSTK.  Default values are:
+    :ivar str RAMSTK_DATA_DIR: Path to the directory containing data files used
+        by RAMSTK.  Default values are:
 
-                            - POSIX default: */usr/share/pixmaps/RAMSTK*
-                            - Windows default: *None*
+            - POSIX default: */usr/share/RAMSTK*
+            - Windows default: *None*
 
-    :cvar str RAMSTK_LOG_DIR: Path to the directory containing log files used by
-                           RAMSTK.  Default values are:
+    :ivar str RAMSTK_ICON_DIR: Path to the directory containing icon files used
+        by RAMSTK.  Default values are:
 
-                           - POSIX default: *$HOME/.config/RAMSTK/logs*
-                           - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RAMSTK\\\logs*
+            - POSIX default: */usr/share/RAMSTK/icons*
+            - Windows default: *None*
 
-    :cvar str RAMSTK_PROG_DIR: Path to the base directory containing RAMSTK Program
-                            database files.  This is only used when the
-                            backend is SQLite3.  Default values are:
+    :ivar str RAMSTK_LOG_DIR: Path to the directory containing log files used
+        by RAMSTK.  Default values are:
 
-                            - POSIX default: *$HOME/analyses/ramstk*
-                            - Windows default: *C:\\\Users\\\<USER NAME>\\\analyses\\\ramstk*
+            - POSIX default: */var/log*
+            - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RAMSTK\\\logs*
 
-    :cvar str RAMSTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options are:
+    :ivar str RAMSTK_PROG_DIR: Path to the base directory containing RAMSTK
+        Program database files.  This is only used when the backend is SQLite3.
+        Default values are:
 
-                              * basic - a single window embedded with the
-                                        Module Book, Work Book, and List Book.
-                              * advanced - multiple windows; one each for the
-                                           Module Book, Work Book, and List
-                                           Book.
+            - POSIX default: *$HOME/analyses/ramstk*
+            - Windows default: *C:\\\Users\\\<USER NAME>\\\analyses\\\ramstk*
 
-                              Default value is *basic*.
-    :cvar str RAMSTK_COM_BACKEND: RAMSTK common database backend to use.  Options
-                               are:
+    :ivar str RAMSTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options
+        are:
 
-                               * mysql
-                               * sqlite
+            * basic - a single window embedded with the Module Book, Work Book,
+                and List Book.
+            * advanced - multiple windows; one each for the Module Book, Work
+                Book, and List Book.
 
-    :cvar str RAMSTK_BACKEND: RAMSTK Program database backend to use.  Options are:
+        Default value is *basic*.
+    :ivar str RAMSTK_COM_BACKEND: RAMSTK common database backend to use.
+        Options are:
 
-                           * mysql
-                           * sqlite
+            * mysql (future)
+            * sqlite
 
-    :cvar str RAMSTK_LOCALE: The language locale to use with RAMSTK.  Default value
-                          is *en_US*.
-    :cvar str RAMSTK_OS: The operating system RAMSTK is currently running on.
+    :ivar str RAMSTK_BACKEND: RAMSTK Program database backend to use.  Options
+        are:
+
+            * mysql (future)
+            * sqlite
+
+    :ivar str RAMSTK_LOCALE: The language locale to use with RAMSTK.  Default
+        value is *en_US*.
+    :ivar str RAMSTK_OS: The operating system RAMSTK is currently running on.
     """
 
     def __init__(self):

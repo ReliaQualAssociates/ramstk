@@ -634,8 +634,8 @@ class RAMSTK():
                 "not to, you will recieve this prompt every time you "
                 "execute RAMSTK.  Would you like to create and populate "
                 "a user-specific configuration directory?", ).format(
-                    self.RAMSTK_CONFIGURATION.RAMSTK_HOME_DIR +
-                    "/.config/RAMSTK", )
+                    self.RAMSTK_CONFIGURATION.RAMSTK_HOME_DIR
+                    + "/.config/RAMSTK", )
             _dialog = ramstk.RAMSTKMessageDialog(_prompt, '', 'question')
             _response = _dialog.do_run()
             _dialog.do_destroy()
