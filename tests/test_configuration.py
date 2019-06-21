@@ -383,12 +383,11 @@ def test_create_user_configuration():
 
 
 @pytest.mark.integration
-def test_get_user_configuration():
+def test_get_user_configuration(test_configuration):
     """
     get_user_configuration() should return False on success
     """
-    DUT = Configuration()
-    DUT.set_user_variables()
+    DUT = test_configuration
 
     assert not DUT.get_user_configuration()
     assert DUT.RAMSTK_COLORS == {
@@ -422,20 +421,20 @@ def test_get_user_configuration():
     assert DUT.RAMSTK_BACKEND == 'sqlite'
     assert DUT.RAMSTK_PROG_INFO["host"] == 'localhost'
     assert DUT.RAMSTK_PROG_INFO["socket"] == '3306'
-    assert DUT.RAMSTK_PROG_INFO["database"] == ''
-    assert DUT.RAMSTK_PROG_INFO["user"] == ''
-    assert DUT.RAMSTK_PROG_INFO["password"] == ''
+    assert DUT.RAMSTK_PROG_INFO["database"] == (DUT._INSTALL_PREFIX + '/tmp/TestDB.ramstk')
+    assert DUT.RAMSTK_PROG_INFO["user"] == 'johnny.tester'
+    assert DUT.RAMSTK_PROG_INFO["password"] == 'clear.text.password'
     assert DUT.RAMSTK_DATA_DIR == (
-        DUT.RAMSTK_HOME_DIR +
-        '/.config/RAMSTK/layouts'
+        DUT._INSTALL_PREFIX +
+        '/share/RAMSTK/layouts'
     )
     assert DUT.RAMSTK_ICON_DIR == (
-        DUT.RAMSTK_HOME_DIR +
-        '/.config/RAMSTK/icons'
+        DUT._INSTALL_PREFIX +
+        '/share/RAMSTK/icons'
     )
-    assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK/logs'
-    assert DUT.RAMSTK_REPORT_SIZE == 'A4'
-    assert DUT.RAMSTK_HR_MULTIPLIER == 1.0
+    assert DUT.RAMSTK_LOG_DIR == DUT._INSTALL_PREFIX + '/tmp/logs'
+    assert DUT.RAMSTK_REPORT_SIZE == 'letter'
+    assert DUT.RAMSTK_HR_MULTIPLIER == 1000000.0
     assert DUT.RAMSTK_DEC_PLACES == 6
     assert DUT.RAMSTK_MTIME == 100.0
     assert DUT.RAMSTK_MODE_SOURCE == '1'

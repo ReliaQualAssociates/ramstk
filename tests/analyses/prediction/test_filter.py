@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+# pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_filter.py is part of The RAMSTK Project
@@ -7,15 +7,12 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the filter module."""
 
+# Third Party Imports
 import pytest
 
+# RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
 from ramstk.analyses.prediction import Filter
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -28,14 +25,14 @@ ATTRIBUTES['quantity'] = 1
 PART_COUNT_LAMBDA_B = {
     1: [
         0.022, 0.044, 0.13, 0.088, 0.20, 0.15, 0.20, 0.24, 0.29, 0.24, 0.018,
-        0.15, 0.33, 2.6
+        0.15, 0.33, 2.6,
     ],
     2: [
         0.12, 0.24, 0.72, 0.48, 1.1, 0.84, 1.1, 1.3, 1.6, 1.3, 0.096, 0.84,
-        1.8, 1.4
+        1.8, 1.4,
     ],
     3:
-    [0.27, 0.54, 1.6, 1.1, 2.4, 1.9, 2.4, 3.0, 3.5, 3.0, 0.22, 1.9, 4.1, 32.0]
+    [0.27, 0.54, 1.6, 1.1, 2.4, 1.9, 2.4, 3.0, 3.5, 3.0, 0.22, 1.9, 4.1, 32.0],
 }
 
 PART_COUNT_PIQ = [1.0, 2.9]
@@ -45,10 +42,14 @@ PART_COUNT_PIQ = [1.0, 2.9]
 @pytest.mark.calculation
 @pytest.mark.parametrize("type_id", [1, 2, 3])
 @pytest.mark.parametrize("quality_id", [1, 2])
-@pytest.mark.parametrize("environment_active_id",
-                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
-def test_calculate_mil_hdbk_217f_part_count(type_id, quality_id,
-                                            environment_active_id):
+@pytest.mark.parametrize(
+    "environment_active_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+)
+def test_calculate_mil_hdbk_217f_part_count(
+        type_id, quality_id,
+        environment_active_id,
+):
     """calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 1
     ATTRIBUTES['type_id'] = type_id
@@ -62,8 +63,10 @@ def test_calculate_mil_hdbk_217f_part_count(type_id, quality_id,
 
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
-        assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when '
-                        'calculating filter, hardware ID: 6')
+        assert _msg == (
+            'RAMSTK WARNING: Base hazard rate is 0.0 when '
+            'calculating filter, hardware ID: 6'
+        )
     else:
         assert _msg == ''
     assert _attributes['lambda_b'] == lambda_b
@@ -82,9 +85,11 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
     _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-                    'filter, hardware ID: 6, type ID: 9, active environment '
-                    'ID: 1')
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
+        'filter, hardware ID: 6, type ID: 9, active environment '
+        'ID: 1'
+    )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -101,9 +106,11 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-                    'filter, hardware ID: 6, type ID: 1, active environment '
-                    'ID: 100')
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
+        'filter, hardware ID: 6, type ID: 1, active environment '
+        'ID: 100'
+    )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -120,8 +127,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Filter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RAMSTK WARNING: piQ is 0.0 when calculating filter, '
-                    'hardware ID: 6, quality ID: 4')
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating filter, '
+        'hardware ID: 6, quality ID: 4'
+    )
     assert _attributes['lambda_b'] == 0.022
     assert _attributes['piQ'] == 0.0
     assert _attributes['hazard_rate_active'] == 0.0
