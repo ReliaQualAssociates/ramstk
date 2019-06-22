@@ -3,14 +3,12 @@
 
 [![Github](https://img.shields.io/github/release/ReliaQualAssociates/ramstk/all.svg)](https://github.com/ReliaQualAssociates/ramstk/releases)
 [![PyPI](https://img.shields.io/pypi/v/RAMSTK.svg)](https://pypi.python.org/pypi/RAMSTK/)
-[![Master Build Status](https://travis-ci.org/ReliaQualAssociates/ramstk.svg?branch=master)](https://travis-ci.org/ReliaQualAssociates/ramstk)
 [![Develop Build Status](https://travis-ci.org/ReliaQualAssociates/ramstk.svg?branch=develop)](https://travis-ci.org/ReliaQualAssociates/ramstk)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/app/ReliaQualAssociates/ramstk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ReliaQualAssociates/ramstk&amp;utm_campaign=Badge_Grade)
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/281487d67cff4b7a8fd7bd4ef878a45e)](https://www.codacy.com/app/ReliaQualAssociates/ramstk?utm_source=github.com&utm_medium=referral&utm_content=ReliaQualAssociates/ramstk&utm_campaign=Badge_Coverage)
 [![Coverage Status](https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master)](https://coveralls.io/github/ReliaQualAssociates/ramstk?branch=master)
 [![CodeFactor](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge)](https://www.codefactor.io/repository/github/reliaqualassociates/ramstk)
 [![BCH Compliance](https://bettercodehub.com/edge/badge/ReliaQualAssociates/ramstk?branch=master)](https://bettercodehub.com/)
-[![Documentation Status](https://readthedocs.org/projects/ramstk/badge/?version=latest)](https://ramstk.readthedocs.io/en/latest/?badge=latest)
 
 ## 🚩 Table of Contents
 - [Features](#-features)
@@ -20,7 +18,7 @@
     - [Download](#download)
     - [Running the Tests](#running-the-tests)
 - [Usage](#-usage)
-- [Docs](#-docs)
+- [Documentation](#-docs)
 - [Examples](#-examples)
 - [Contributing](#-contributing)
 - [Authors](#-authors)
@@ -102,14 +100,6 @@ To run specific tests or groups of tests, use pytest:
 ```
 $ pytest -m integration tests/modules/test_allocation.py
 $ pytest -m calculation tests/analyses/prediction
-```
-
-#### Coding Style Tests
-
-The test directory contains a script named RunTests.py.  This is for executing static checkers such as pylint and is intended for developers.  It makes it easier to integrate into an IDE.  You can execute the following to see what RunTests.py wraps:
-
-```
-$ tests/RunTests.py --help
 ```
 
 ## 🔨 Usage

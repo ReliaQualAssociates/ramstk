@@ -11,57 +11,33 @@ Matrix View Meta-Class
     :private-members:
     :show-inheritance:
 
-Function-Hardware Matrix View
+Function Matrix Views
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.matrixviews.FunctionHardware
+.. automodule:: ramstk.gui.gtk.matrixviews.Function
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-Hardware-Requirement Matrix View
+Requirement Matrix Views
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.matrixviews.HardwareRequirement
+.. automodule:: ramstk.gui.gtk.matrixviews.Requirement
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-Hardware-Validation Matrix View
+Hardware Matrix Views
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.matrixviews.HardwareValidation
+.. automodule:: ramstk.gui.gtk.matrixviews.Hardware
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-Requirement-Hardware Matrix View
+Validation Matrix Views
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.matrixviews.RequirementHardware
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-
-Requirement-Validation Matrix View
--------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.matrixviews.RequirementValidation
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-
-Validation-Hardware Matrix View
--------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.matrixviews.ValidationHardware
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-
-Validation-Requirement Matrix View
--------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.matrixviews.ValidationRequirement
+.. automodule:: ramstk.gui.gtk.matrixviews.Validation
     :members:
     :undoc-members:
     :private-members:
