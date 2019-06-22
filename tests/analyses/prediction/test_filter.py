@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Component, Filter
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -146,7 +146,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['type_id'] = 2
 
-    _attributes, _msg = Filter.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
@@ -165,7 +165,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_type():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['type_id'] = 6
 
-    _attributes, _msg = Filter.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
@@ -185,7 +185,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['quality_id'] = 10
     ATTRIBUTES['type_id'] = 2
 
-    _attributes, _msg = Filter.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == 'RAMSTK WARNING: piQ is 0.0 when ' \
@@ -205,7 +205,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['type_id'] = 2
 
-    _attributes, _msg = Filter.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == 'RAMSTK WARNING: piE is 0.0 when ' \

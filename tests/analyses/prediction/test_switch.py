@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component, Switch
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -226,12 +226,13 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['n_cycles'] = 5
     ATTRIBUTES['n_elements'] = 4
 
-    _attributes, _msg = Switch.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == 'RAMSTK WARNING: piQ is 0.0 when calculating switch, ' \
+        'hardware ID: 6.\n'
     assert pytest.approx(_attributes['lambda_b'], 0.1036000)
-    assert _attributes['piQ'] == 10.0
+    assert _attributes['piQ'] == 0.0
     assert _attributes['piE'] == 8.0
     assert _attributes['piC'] == 0.0
     assert _attributes['piCYC'] == 5.0
@@ -247,9 +248,10 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['environment_active_id'] = 4
     ATTRIBUTES['quality_id'] = 10
-    ATTRIBUTES['subcategory_id'] = 2
+    ATTRIBUTES['subcategory_id'] = 5
     ATTRIBUTES['application_id'] = 1
     ATTRIBUTES['construction_id'] = 2
+    ATTRIBUTES['contact_form_id'] = 3
     ATTRIBUTES['type_id'] = 2
     ATTRIBUTES['temperature_active'] = 32.0
     ATTRIBUTES['temperature_rated_max'] = 85.0
@@ -258,20 +260,20 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['n_cycles'] = 5
     ATTRIBUTES['n_elements'] = 4
 
-    _attributes, _msg = Switch.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'switch, hardware ID: 6.\n'
+        'RAMSTK WARNING: piQ is 0.0 when calculating switch, ' \
+        'hardware ID: 6.\n'
     )
-    assert _attributes['lambda_b'] == 0.0
-    assert _attributes['piQ'] == 10.0
+    assert _attributes['lambda_b'] == 0.02
+    assert _attributes['piQ'] == 0.0
     assert _attributes['piE'] == 8.0
-    assert _attributes['piC'] == 0.0
+    assert _attributes['piC'] == 3.0
     assert _attributes['piCYC'] == 5.0
-    assert _attributes['piL'] == 1.0
-    assert _attributes['piU'] == 0.0
+    assert _attributes['piL'] == 0.0
+    assert _attributes['piU'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
 
 
@@ -293,7 +295,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     ATTRIBUTES['n_cycles'] = 5
     ATTRIBUTES['n_elements'] = 4
 
-    _attributes, _msg = Switch.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -301,7 +303,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
                     'hardware ID: 6.\n'
     )
     assert pytest.approx(_attributes['lambda_b'], 0.1036000)
-    assert _attributes['piQ'] == 10.0
+    assert _attributes['piQ'] == 0.0
     assert _attributes['piE'] == 0.0
     assert _attributes['piC'] == 0.0
     assert _attributes['piCYC'] == 5.0

@@ -13,6 +13,40 @@ from math import exp
 _ = gettext.gettext
 
 
+def _get_part_stress_quality_factor(attributes):
+    """
+    Select the MIL-HDBK-217F quality factor for the inductor device.
+
+    :param dict attributes: the hardware attributes for the inductor.
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values
+    :rtype: dict
+    """
+    _dic_piQ = {
+        1: {
+            1: [1.5, 5.0],
+            2: [3.0, 7.5],
+            3: [8.0, 30.0],
+            4: [12.0, 30.0],
+        },
+        2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
+    }
+
+    try:
+        if attributes['subcategory_id'] == 1:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['family_id']
+            ][attributes['quality_id'] - 1]
+        else:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['quality_id'] - 1
+            ]
+    except (KeyError, IndexError):
+        attributes['piQ'] = 0.0
+
+    return attributes
+
+
 def calculate_217f_part_count(**attributes):
     """
     Calculate the part count hazard rate for a inductor.
@@ -155,15 +189,6 @@ def calculate_217f_part_stress(**attributes):
             4: [0.00035, 10.0],
         },
     }
-    _dic_piQ = {
-        1: {
-            1: [1.5, 5.0],
-            2: [3.0, 7.5],
-            3: [8.0, 30.0],
-            4: [12.0, 30.0],
-        },
-        2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
-    }
     _dic_piE = {
         1: [
             1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0,
@@ -207,18 +232,7 @@ def calculate_217f_part_stress(**attributes):
             '{0:d}'.format(attributes['hardware_id'])
 
     # Determine the quality factor (piQ).
-    try:
-        if attributes['subcategory_id'] == 1:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['family_id']
-            ][attributes['quality_id'] - 1]
-        else:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['quality_id'] - 1
-            ]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
-
+    attributes = _get_part_stress_quality_factor(attributes)
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])

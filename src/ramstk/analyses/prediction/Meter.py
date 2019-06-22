@@ -196,7 +196,6 @@ def calculate_217f_part_stress(**attributes):
             0.0,
         ],
     }
-    _dic_piQ = {2: [1.0, 3.4]}
     _lst_piF = [1.0, 1.0, 2.8]
     _msg = ''
 
@@ -217,11 +216,20 @@ def calculate_217f_part_stress(**attributes):
     else:
         attributes['lambda_b'] = 0.0
 
+    # Check for weirdo inputs.
     if attributes['lambda_b'] <= 0.0:
         _msg = (
             "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
-            "hardware ID: {0:d}."
+            "hardware ID: {0:d}.\n"
         ).format(attributes['hardware_id'])
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + (
+            "RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
+            "{0:d}, quality ID: {1:d}.\n"
+        ).format(
+            attributes['hardware_id'],
+            attributes['quality_id'],
+        )
 
     # Determine the application factor (piA) and function factor (piF).
     if attributes['subcategory_id'] == 2:
@@ -239,23 +247,6 @@ def calculate_217f_part_stress(**attributes):
         elif 0.8 < _temperature_ratio <= 1.0:
             attributes['piT'] = 1.0
 
-    # Determine the quality factor (piQ).
-    try:
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-            attributes['quality_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
-
-    if attributes['piQ'] <= 0.0:
-        _msg = (
-            "RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
-            "{0:d}, quality ID: {1:d}."
-        ).format(
-            attributes['hardware_id'],
-            attributes['quality_id'],
-        )
-
     # Determine the environmental factor (piE).
     try:
         attributes['piE'] = _dic_piE[attributes['subcategory_id']][
@@ -265,7 +256,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
-        _msg = (
+        _msg = _msg + (
             "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
             "{0:d}"
         ).format(attributes['hardware_id'])

@@ -186,7 +186,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             _lambda_b1 + attributes['n_elements'] * _lambda_b2
         )
     elif attributes['subcategory_id'] == 5:
-        attributes['lambda_b'] = _dic_lambda_b[5][attributes['application_id']]
+        attributes['lambda_b'] = _dic_lambda_b[5][attributes['application_id'] - 1]
     else:
         attributes['lambda_b'] = 0.0
 
@@ -195,18 +195,9 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
                'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the quality factor (piQ).
-    if attributes['subcategory_id'] == 5:
-        try:
-            attributes['piQ'] = (
-                8.4
-                if (attributes['quality_id']) - (1) else 1.0
-            )
-        except IndexError:
-            attributes['piQ'] = 0.0
-
-        if attributes['piQ'] <= 0.0:
-            _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-                'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
+    if attributes['piQ'] <= 0.0:
+        _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+            'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the environmental factor (piE).
     try:
@@ -245,9 +236,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     # Determine the contact form and quantity factor (piC).
     if attributes['subcategory_id'] in [1, 5]:
         attributes['piC'] = _dic_piC[attributes['subcategory_id']][
-            attributes[
-                'contact_form_id'
-            ]
+            attributes['contact_form_id'] - 1
         ]
 
     # Determine the use factor (piU).

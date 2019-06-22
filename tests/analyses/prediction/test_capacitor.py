@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses import data
-from ramstk.analyses.prediction import Capacitor, Component
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = data.HARDWARE_ATTRIBUTES.copy()
 
@@ -237,7 +237,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['voltage_ac_operating'] = 0.05
     ATTRIBUTES['voltage_dc_operating'] = 3.3
 
-    _attributes, _msg = Capacitor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''

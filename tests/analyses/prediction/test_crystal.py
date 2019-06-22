@@ -13,7 +13,7 @@ from pytest import approx
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Component, Crystal
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -111,7 +111,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['frequency_operating'] = 10.0
 
-    _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
@@ -130,7 +130,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_frequency():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['frequency_operating'] = 0.0
 
-    _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -152,7 +152,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['quality_id'] = 100
     ATTRIBUTES['frequency_operating'] = 10.0
 
-    _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -174,7 +174,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['frequency_operating'] = 10.0
 
-    _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (

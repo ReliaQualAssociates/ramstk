@@ -91,7 +91,6 @@ def calculate_217f_part_stress(**attributes):
         1.0, 2.0, 6.0, 4.0, 9.0, 7.0, 9.0, 11.0, 13.0, 11.0, 0.8, 7.0, 15.0,
         120.0,
     ]
-    _lst_piQ = [1.0, 2.9]
     _msg = ''
 
     # Determine the base hazard rate.
@@ -104,12 +103,6 @@ def calculate_217f_part_stress(**attributes):
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating filter, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
-
-    # Determine the quality factor (piQ).
-    try:
-        attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \

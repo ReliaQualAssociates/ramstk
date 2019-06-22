@@ -244,23 +244,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
         14: [0.0246, 0.459, 9.3, 2.32, 5.3, 1.0],
         15: [0.018, 1.0, 7.4, 2.55, 3.6, 1.0],
     }
-    _dic_piQ = {
-        1: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
-        2: [0.03, 0.1, 0.3, 1.0, 5.0, 5.0, 15.0],
-        3: [1.0, 3.0],
-        4: [1.0, 3.0],
-        5: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
-        6: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
-        7: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
-        8: [1.0, 15.0],
-        9: [0.02, 0.06, 0.2, 0.6, 3.0, 10.0],
-        10: [2.5, 5.0],
-        11: [2.0, 4.0],
-        12: [2.0, 4.0],
-        13: [0.02, 0.06, 0.2, 0.6, 3.0, 10.0],
-        14: [2.5, 5.0],
-        15: [2.0, 4.0],
-    }
     _dic_piE = {
         1: [
             1.0, 3.0, 8.0, 5.0, 13.0, 4.0, 5.0, 7.0, 11.0, 19.0, 0.5, 11.0,
@@ -532,11 +515,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
             attributes['piR'] = _dic_piR[attributes['subcategory_id']][
                 _index + 1
             ]
-
-    # Determine the quality factor (piQ).
-    attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-        attributes['quality_id'] - 1
-    ]
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \

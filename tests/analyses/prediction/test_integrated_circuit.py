@@ -13,7 +13,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component, IntegratedCircuit
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -475,7 +475,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['power_operating'] = 0.05
     ATTRIBUTES['theta_jc'] = 30.0
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_stress(
+    _attributes, _msg = Component.do_calculate_217f_part_stress(
         **ATTRIBUTES,
     )
 
@@ -512,7 +512,7 @@ def test_calculate_mil_hdbk_217f_part_stress_gaas():
     ATTRIBUTES['power_operating'] = 0.05
     ATTRIBUTES['theta_jc'] = 30.0
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_stress(
+    _attributes, _msg = Component.do_calculate_217f_part_stress(
         **ATTRIBUTES,
     )
 

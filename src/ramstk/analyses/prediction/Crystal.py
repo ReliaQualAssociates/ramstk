@@ -79,7 +79,6 @@ def calculate_217f_part_stress(**attributes):
         1.0, 3.0, 10.0, 6.0, 16.0, 12.0, 17.0, 22.0, 28.0, 23.0, 0.5, 13.0,
         32.0, 500.0,
     ]
-    _lst_piQ = [1.0, 3.4]
     _msg = ''
 
     # Calculate the base hazard rate.
@@ -89,12 +88,6 @@ def calculate_217f_part_stress(**attributes):
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating crystal, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
-
-    # Determine the quality factor (piQ).
-    try:
-        attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \

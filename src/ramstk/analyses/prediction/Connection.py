@@ -221,7 +221,6 @@ def calculate_217f_part_stress(**attributes):
             26: 2.1,
         },
     }
-    _dic_piQ = {4: [1.0, 2.0], 5: [1.0, 1.0, 2.0, 20.0]}
     _dic_piE = {
         1: {
             1: [
@@ -293,11 +292,6 @@ def calculate_217f_part_stress(**attributes):
     if attributes['subcategory_id'] in [4, 5]:
         attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
             attributes['type_id'] - 1
-        ]
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-            attributes[
-                'quality_id'
-            ]
         ]
     elif attributes['subcategory_id'] == 3:
         attributes['lambda_b'] = 0.00042

@@ -211,14 +211,14 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['n_cycles'] = 2
     ATTRIBUTES['n_active_pins'] = 20
 
-    _attributes, _msg = Connection.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert pytest.approx(_attributes['lambda_b'], 0.07944039)
     assert pytest.approx(_attributes['piCV'], 0.3617763)
-    assert _attributes['piQ'] == 10.0
+    assert _attributes['piQ'] == 0.0
     assert pytest.approx(_attributes['hazard_rate_active'], 1.005887691)
     assert pytest.approx(_attributes['temperature_rise'], 2.3072012)
     assert pytest.approx(_attributes['lambda_b'], 0.0006338549)

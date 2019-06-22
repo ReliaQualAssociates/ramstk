@@ -481,7 +481,6 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
             ],
         },
     }
-    _lst_piQ = [0.25, 1.0, 2.0]
     _lst_piE = [
         0.5, 2.0, 4.0, 4.0, 6.0, 4.0, 5.0, 5.0, 8.0, 8.0, 0.5, 5.0, 12.0,
         220.0,
@@ -554,9 +553,6 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
     attributes[
         'piL'
     ] = 0.01 * exp(5.35 - 0.35 * attributes['years_in_production'])
-
-    # Determine the quality factor (piQ).
-    attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
