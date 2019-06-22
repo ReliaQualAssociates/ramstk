@@ -1,23 +1,21 @@
-Failure Mode and Effects Analysis (FMEA) Package
+Hazardous Operations (HazOps) Analysis Package
 ===============================================================================
 
 .. toctree::
 
-FMEA Data Models
+HazOps Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.fmea.Model
+.. automodule:: ramstk.modules.hazops.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-FMEA Data Controller
+HazOps Data Controller
 -------------------------------------------------------------------------------
-
-.. automodule:: ramstk.modules.fmea.Controller
+.. automodule:: ramstk.modules.hazops.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
-

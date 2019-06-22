@@ -1,54 +1,44 @@
-Module View Package
+Matrix View Package
 ===============================================================================
 
 .. toctree::
 
-Module View Meta-Class
+Matrix View Meta-Class
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.moduleviews.ModuleView
+.. automodule:: ramstk.gui.gtk.matrixviews.MatrixView
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-Revision Module View
+Function Matrix Views
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.moduleviews.Revision
+.. automodule:: ramstk.gui.gtk.matrixviews.Function
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-Requirement Module View
+Requirement Matrix Views
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.moduleviews.Requirement
+.. automodule:: ramstk.gui.gtk.matrixviews.Requirement
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-Function Module View
+Hardware Matrix Views
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.moduleviews.Function
+.. automodule:: ramstk.gui.gtk.matrixviews.Hardware
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-Hardware Module View
+Validation Matrix Views
 -------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.moduleviews.Hardware
+.. automodule:: ramstk.gui.gtk.matrixviews.Validation
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
-
-Validation Module View
--------------------------------------------------------------------------------
-.. automodule:: ramstk.gui.gtk.moduleviews.Validation
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-
-

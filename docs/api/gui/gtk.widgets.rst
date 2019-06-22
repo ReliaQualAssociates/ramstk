@@ -62,4 +62,3 @@ Widgets Package
     :undoc-members:
     :private-members:
     :show-inheritance:
-

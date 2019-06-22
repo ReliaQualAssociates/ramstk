@@ -38,4 +38,3 @@ Stakeholder List View
     :undoc-members:
     :private-members:
     :show-inheritance:
-

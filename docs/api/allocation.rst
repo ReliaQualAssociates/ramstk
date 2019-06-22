@@ -1,23 +1,21 @@
-Usage Profile Package
+Reliability Allocation Package
 ===============================================================================
 
 .. toctree::
 
-Usage Profile Data Models
+Allocation Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.usage.Model
+.. automodule:: ramstk.modules.allocation.Model
     :members:
-    :undoc-members:
     :private-members:
+    :undoc-members:
     :show-inheritance:
 
-Usage Profile Data Controller
+Allocation Data Controller
 -------------------------------------------------------------------------------
-
-.. automodule:: ramstk.modules.usage.Controller
+.. automodule:: ramstk.modules.allocation.Controller
     :members:
-    :undoc-members:
     :private-members:
+    :undoc-members:
     :show-inheritance:
-

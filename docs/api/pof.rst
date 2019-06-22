@@ -1,23 +1,21 @@
-Failure Definition Package
+Physics of Failure (PoF) Analysis Package
 ===============================================================================
 
 .. toctree::
 
-Failure Definition Data Model
+PoF Data Models
 -------------------------------------------------------------------------------
 
-.. automodule:: ramstk.modules.failure_definition.Model
+.. automodule:: ramstk.modules.pof.Model
     :members:
-    :undoc-members:
     :private-members:
+    :undoc-members:
     :show-inheritance:
 
-Failure Definition Data Controller
+PoF Data Controller
 -------------------------------------------------------------------------------
-
-.. automodule:: ramstk.modules.failure_definition.Controller
+.. automodule:: ramstk.modules.pof.Controller
     :members:
-    :undoc-members:
     :private-members:
+    :undoc-members:
     :show-inheritance:
-

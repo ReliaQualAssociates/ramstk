@@ -580,45 +580,42 @@ class RAMSTK():
     """
     Class representing the RAMSTK data controller.
 
-    This is the master controller for the entire RAMSTK application.  Attributes
-    of an RAMSTK data controller are:
+    This is the master controller for the entire RAMSTK application.
+    Attributes of a RAMSTK data controller are:
 
     :ivar dict dic_controllers: dictionary of data controllers available in the
-                                running instance of RAMSTK.
+        running instance of RAMSTK. Keys are:
 
-                                Keys are:
-                                    'allocation'
-                                    'function'
-                                    'hardware'
-                                    'revision'
-                                    'requirement'
-                                    'validation'
-                                    'survival'
-                                    'matrices'
-                                    'profile'
-                                    'definition'
-                                    'fmea'
-                                    'stakeholder'
-                                    'hazard'
-                                    'similaritem'
-                                    'pof'
-                                    'growth'
-                                    'options'
-                                    'imports'
-                                Values are the instance of each RAMSTK data
-                                controller.
+            'allocation'
+            'function'
+            'hardware'
+            'revision'
+            'requirement'
+            'validation'
+            'survival'
+            'matrices'
+            'profile'
+            'definition'
+            'fmea'
+            'stakeholder'
+            'hazard'
+            'similaritem'
+            'pof'
+            'growth'
+            'options'
+            'imports'
 
+        Values are the instance of each RAMSTK data controller.
     :ivar dict dic_books: dictionary of GUI books used by the running instance
-                          of RAMSTK.
+        of RAMSTK. Keys are:
 
-                          Keys are:
-                              'listbook'
-                              'modulebook'
-                              'workbook'
-                          Values are the instance of each RAMSTK book.
+            'listbook'
+            'modulebook'
+            'workbook'
 
-    :ivar ramstk_model: the instance of :class:`ramstk.RAMSTK.Model` managed by this
-                     data controller.
+        Values are the instance of each RAMSTK book.
+    :ivar ramstk_model: the instance of :class:`ramstk.RAMSTK.Model` managed by
+        this data controller.
     """
     RAMSTK_CONFIGURATION = Configuration()
 

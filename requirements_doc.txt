@@ -1,5 +1,5 @@
-sphinx==1.8.5
+Babel
+sphinx
+sphinx_py3doc_enhanced_theme
 sphinxcontrib-issuetracker
 sphinxcontrib-spelling
-Babel
-sphinx_rtd_theme
