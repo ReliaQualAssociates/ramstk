@@ -12,6 +12,43 @@ from math import exp
 
 _ = gettext.gettext
 
+PI_E = {
+    1: {
+        1: [
+            1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0,
+            27.0, 490.0,
+        ],
+        2: [
+            2.0, 5.0, 21.0, 10.0, 27.0, 12.0, 18.0, 17.0, 25.0, 37.0, 0.8,
+            20.0, 54.0, 970.0,
+        ],
+    },
+    2: {
+        1: [
+            1.0, 3.0, 8.0, 5.0, 13.0, 6.0, 11.0, 6.0, 11.0, 19.0, 0.5,
+            10.0, 27.0, 490.0,
+        ],
+        2: [
+            2.0, 7.0, 17.0, 10.0, 26.0, 14.0, 22.0, 14.0, 22.0, 37.0, 0.8,
+            20.0, 54.0, 970.0,
+        ],
+    },
+    3: [
+        1.0, 3.0, 14.0, 6.0, 18.0, 8.0, 12.0, 11.0, 13.0, 25.0, 0.5, 14.0,
+        36.0, 650.0,
+    ],
+    4: [
+        1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0,
+        27.0, 500.0,
+    ],
+    5: [
+        1.0, 2.0, 7.0, 4.0, 11.0, 4.0, 6.0, 6.0, 8.0, 16.0, 0.5, 9.0, 24.0,
+        420.0,
+    ],
+}
+PI_K = [1.0, 1.5, 2.0, 3.0, 4.0]
+REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0}
+
 
 def _get_environment_factor(**attributes):
     """
@@ -22,50 +59,14 @@ def _get_environment_factor(**attributes):
     :return: attributes; the attributes dictionary updated with pi_E.
     :rtype: dict
     """
-    _dic_piE = {
-        1: {
-            1: [
-                1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0,
-                27.0, 490.0,
-            ],
-            2: [
-                2.0, 5.0, 21.0, 10.0, 27.0, 12.0, 18.0, 17.0, 25.0, 37.0, 0.8,
-                20.0, 54.0, 970.0,
-            ],
-        },
-        2: {
-            1: [
-                1.0, 3.0, 8.0, 5.0, 13.0, 6.0, 11.0, 6.0, 11.0, 19.0, 0.5,
-                10.0, 27.0, 490.0,
-            ],
-            2: [
-                2.0, 7.0, 17.0, 10.0, 26.0, 14.0, 22.0, 14.0, 22.0, 37.0, 0.8,
-                20.0, 54.0, 970.0,
-            ],
-        },
-        3: [
-            1.0, 3.0, 14.0, 6.0, 18.0, 8.0, 12.0, 11.0, 13.0, 25.0, 0.5, 14.0,
-            36.0, 650.0,
-        ],
-        4: [
-            1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0,
-            27.0, 500.0,
-        ],
-        5: [
-            1.0, 2.0, 7.0, 4.0, 11.0, 4.0, 6.0, 6.0, 8.0, 16.0, 0.5, 9.0, 24.0,
-            420.0,
-        ],
-    }
-
-    # Determine the environmental factor (piE).
     if attributes['subcategory_id'] in [1, 2]:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+        attributes['piE'] = PI_E[attributes['subcategory_id']][
             attributes[
                 'quality_id'
             ]
         ][attributes['environment_active_id'] - 1]
     else:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+        attributes['piE'] = PI_E[attributes['subcategory_id']][
             attributes['environment_active_id'] - 1
         ]
 
@@ -258,8 +259,6 @@ def calculate_217f_part_stress(**attributes):
             1: [3, 3, 2, 2, 2, 2, 2, 2],
         },
     }
-    _dic_ref_temp = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0}
-
     # Factors are used to calculate base hazard rate for circular/rack and
     # panel connectors.  Key is from dictionary above (1 - 4) or contact
     # gauge (22 - 12).
@@ -280,8 +279,6 @@ def calculate_217f_part_stress(**attributes):
             26: 2.1,
         },
     }
-    _lst_piK = [1.0, 1.5, 2.0, 3.0, 4.0]
-
     _msg = ''
 
     # Calculate the insert temperature rise.
@@ -299,7 +296,7 @@ def calculate_217f_part_stress(**attributes):
                 'specification_id'
             ]
         ][attributes['insert_id'] - 1]
-        _ref_temp = _dic_ref_temp[_key]
+        _ref_temp = REF_TEMPS[_key]
         _f0 = _dic_factors[attributes['subcategory_id']][_key][0]
         _f1 = _dic_factors[attributes['subcategory_id']][_key][1]
         _f2 = _dic_factors[attributes['subcategory_id']][_key][2]
@@ -331,21 +328,22 @@ def calculate_217f_part_stress(**attributes):
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating connection, hardware ID: ' \
             '{0:d}.\n'.format(attributes['hardware_id'])
+
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
             'connection, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the mating/unmating factor.
     if attributes['n_cycles'] <= 0.05:
-        attributes['piK'] = _lst_piK[0]
-    elif attributes['n_cycles'] > 0.05 and attributes['n_cycles'] <= 0.5:
-        attributes['piK'] = _lst_piK[1]
-    elif attributes['n_cycles'] > 0.5 and attributes['n_cycles'] <= 5.0:
-        attributes['piK'] = _lst_piK[2]
-    elif attributes['n_cycles'] > 5.0 and attributes['n_cycles'] <= 50.0:
-        attributes['piK'] = _lst_piK[3]
+        attributes['piK'] = PI_K[0]
+    elif 0.05 < attributes['n_cycles'] <= 0.5:
+        attributes['piK'] = PI_K[1]
+    elif 0.5 < attributes['n_cycles'] <= 5.0:
+        attributes['piK'] = PI_K[2]
+    elif 5.0 < attributes['n_cycles'] <= 50.0:
+        attributes['piK'] = PI_K[3]
     else:
-        attributes['piK'] = _lst_piK[4]
+        attributes['piK'] = PI_K[4]
 
     # Determine active pins factor.
     if attributes['subcategory_id'] in [1, 2, 3]:

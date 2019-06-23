@@ -13,6 +13,11 @@ from math import exp
 _ = gettext.gettext
 
 
+PI_C = {
+    1: [1.0, 1.5, 1.7, 2.0, 2.5, 3.0, 4.2, 5.5, 8.0],
+    5: [1.0, 2.0, 3.0, 4.0],
+}
+
 def calculate_217f_part_count(**attributes):
     """
     Calculate the part count hazard rate for a switch.
@@ -135,10 +140,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         1: [[0.00045, 0.034], [0.0027, 0.04]],
         5: [0.02, 0.038, 0.038],
     }
-    _dic_piC = {
-        1: [1.0, 1.5, 1.7, 2.0, 2.5, 3.0, 4.2, 5.5, 8.0],
-        5: [1.0, 2.0, 3.0, 4.0],
-    }
     _msg = ''
 
     # Calculate the base hazard rate.
@@ -194,7 +195,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         _msg = 'RAMSTK WARNING: Base hazard rate is 0.0 when calculating ' \
                'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
-    # Determine the quality factor (piQ).
     if attributes['piQ'] <= 0.0:
         _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
@@ -220,7 +220,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
 
     # Determine the contact form and quantity factor (piC).
     if attributes['subcategory_id'] in [1, 5]:
-        attributes['piC'] = _dic_piC[attributes['subcategory_id']][
+        attributes['piC'] = PI_C[attributes['subcategory_id']][
             attributes['contact_form_id'] - 1
         ]
 

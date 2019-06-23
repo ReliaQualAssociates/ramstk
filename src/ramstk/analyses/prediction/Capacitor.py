@@ -12,6 +12,28 @@ from math import exp
 
 _ = gettext.gettext
 
+PI_SR = {
+    0.1: 0.33,
+    0.2: 0.27,
+    0.4: 0.2,
+    0.6: 0.13,
+    0.8: 0.1,
+    1.0: 0.066,
+}
+PI_C = {1: 0.3, 2: 1.0, 3: 2.0, 4: 2.5, 5: 3.0}
+PI_CF = {1: 0.1, 2: 1.0}
+REF_TEMPS = {
+    65.0: 338.0,
+    70.0: 343.0,
+    85.0: 358.0,
+    105.0: 378.0,
+    125.0: 398.0,
+    150.0: 423.0,
+    170.0: 443.0,
+    175.0: 448.0,
+    200.0: 473.0,
+}
+
 
 def calculate_217f_part_count(**attributes):
     """
@@ -186,17 +208,6 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _dic_ref_temp = {
-        65.0: 338.0,
-        70.0: 343.0,
-        85.0: 358.0,
-        105.0: 378.0,
-        125.0: 398.0,
-        150.0: 423.0,
-        170.0: 443.0,
-        175.0: 448.0,
-        200.0: 473.0,
-    }
     _dic_factors = {
         1: [0.00086, 0.4, 5.0, 2.5, 1.8, 1.2, 0.095],
         2: [0.00115, 0.4, 5.0, 2.5, 1.8, 1.4, 0.12],
@@ -218,22 +229,11 @@ def calculate_217f_part_stress(**attributes):
         18: [1.92E-6, 0.33, 3.0, 10.8, 1.0, 1.0, 0.0],
         19: [0.0112, 0.17, 3.0, 1.59, 10.1, 1.0, 0.0],
     }
-    _dic_piSR = {
-        0.1: 0.33,
-        0.2: 0.27,
-        0.4: 0.2,
-        0.6: 0.13,
-        0.8: 0.1,
-        1.0: 0.066,
-    }
-    _dic_piC = {1: 0.3, 2: 1.0, 3: 2.0, 4: 2.5, 5: 3.0}
-    _dic_piCF = {1: 0.1, 2: 1.0}
-
     _msg = ''
 
     # Calculate the base hazard rate.
     try:
-        _ref_temp = _dic_ref_temp[attributes['temperature_rated_max']]
+        _ref_temp = REF_TEMPS[attributes['temperature_rated_max']]
         _f0 = _dic_factors[attributes['subcategory_id']][0]
         _f1 = _dic_factors[attributes['subcategory_id']][1]
         _f2 = _dic_factors[attributes['subcategory_id']][2]
@@ -273,13 +273,13 @@ def calculate_217f_part_stress(**attributes):
             attributes['voltage_dc_operating']
             + attributes['voltage_ac_operating']
         )
-        attributes['piSR'] = _dic_piSR[_cr]
+        attributes['piSR'] = PI_SR[_cr]
         attributes['hazard_rate_active'] = (
             attributes['lambda_b'] * attributes['piCV'] * attributes['piQ'] *
             attributes['piE'] * attributes['piSR']
         )
     elif attributes['subcategory_id'] == 13:
-        attributes['piC'] = _dic_piC[attributes['construction_id']]
+        attributes['piC'] = PI_C[attributes['construction_id']]
         attributes['hazard_rate_active'] = (
             attributes['lambda_b'] * attributes['piCV'] * attributes['piQ'] *
             attributes['piE'] * attributes['piC']
@@ -289,7 +289,7 @@ def calculate_217f_part_stress(**attributes):
             attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
         )
     elif attributes['subcategory_id'] == 19:
-        attributes['piCF'] = _dic_piCF[attributes['configuration_id']]
+        attributes['piCF'] = PI_CF[attributes['configuration_id']]
         attributes['hazard_rate_active'] = (
             attributes['lambda_b'] * attributes['piCF'] * attributes['piQ'] *
             attributes['piE']

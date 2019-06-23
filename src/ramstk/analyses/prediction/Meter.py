@@ -11,6 +11,8 @@ import gettext
 
 _ = gettext.gettext
 
+PI_F = [1.0, 1.0, 2.8]
+
 
 def calculate_217f_part_count(**attributes):
     """
@@ -162,7 +164,6 @@ def calculate_217f_part_stress(**attributes):
     :rtype: (dict, str)
     """
     _dic_lambda_b = {1: [20.0, 30.0, 80.0], 2: 0.09}
-    _lst_piF = [1.0, 1.0, 2.8]
     _msg = ''
 
     # Calculate the temperature ratio.
@@ -182,12 +183,12 @@ def calculate_217f_part_stress(**attributes):
     else:
         attributes['lambda_b'] = 0.0
 
-    # Check for weirdo inputs.
     if attributes['lambda_b'] <= 0.0:
         _msg = (
             "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
             "hardware ID: {0:d}.\n"
         ).format(attributes['hardware_id'])
+
     if attributes['piQ'] <= 0.0:
         _msg = _msg + (
             "RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
@@ -197,10 +198,16 @@ def calculate_217f_part_stress(**attributes):
             attributes['quality_id'],
         )
 
+    if attributes['piE'] <= 0.0:
+        _msg = _msg + (
+            "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
+            "{0:d}.\n"
+        ).format(attributes['hardware_id'])
+
     # Determine the application factor (piA) and function factor (piF).
     if attributes['subcategory_id'] == 2:
         attributes['piA'] = (1.7 if (attributes['type_id']) - (1) else 1.0)
-        attributes['piF'] = _lst_piF[attributes['application_id'] - 1]
+        attributes['piF'] = PI_F[attributes['application_id'] - 1]
 
     # Determine the temperature stress factor (piT).
     if attributes['subcategory_id'] == 1:
@@ -212,12 +219,6 @@ def calculate_217f_part_stress(**attributes):
             attributes['piT'] = 0.8
         elif 0.8 < _temperature_ratio <= 1.0:
             attributes['piT'] = 1.0
-
-    if attributes['piE'] <= 0.0:
-        _msg = _msg + (
-            "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
-            "{0:d}.\n"
-        ).format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (

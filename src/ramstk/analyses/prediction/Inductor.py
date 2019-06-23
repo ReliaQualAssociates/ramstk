@@ -13,6 +13,24 @@ from math import exp
 _ = gettext.gettext
 
 
+REF_TEMPS = {
+    1: {
+        1: 329.0,
+        2: 352.0,
+        3: 364.0,
+        4: 400.0,
+        5: 398.0,
+        6: 477.0,
+    },
+    2: {
+        1: 329.0,
+        2: 352.0,
+        3: 364.0,
+        4: 409.0,
+    },
+}
+
+
 def _get_part_stress_quality_factor(attributes):
     """
     Select the MIL-HDBK-217F quality factor for the inductor device.
@@ -157,22 +175,6 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _dic_ref_temp = {
-        1: {
-            1: 329.0,
-            2: 352.0,
-            3: 364.0,
-            4: 400.0,
-            5: 398.0,
-            6: 477.0,
-        },
-        2: {
-            1: 329.0,
-            2: 352.0,
-            3: 364.0,
-            4: 409.0,
-        },
-    }
     _dic_factors = {
         1: {
             1: [0.0018, 15.6],
@@ -196,7 +198,7 @@ def calculate_217f_part_stress(**attributes):
 
     # Calculate the base hazard rate.
     try:
-        _ref_temp = _dic_ref_temp[attributes['subcategory_id']][
+        _ref_temp = REF_TEMPS[attributes['subcategory_id']][
             attributes[
                 'insulation_id'
             ]

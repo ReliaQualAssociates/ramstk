@@ -13,6 +13,30 @@ from math import exp, log
 
 _ = gettext.gettext
 
+C1 = {
+    1: [[0.01, 0.02, 0.04, 0.06], [0.01, 0.02, 0.04, 0.06]],
+    2: [
+        [0.0025, 0.005, 0.01, 0.02, 0.04, 0.08],
+        [0.01, 0.02, 0.04, 0.08, 0.16, 0.29],
+    ],
+    3: [[0.01, 0.021, 0.042], [0.00085, 0.0017, 0.0034, 0.0068]],
+    4: [[0.06, 0.12, 0.24, 0.48], [0.14, 0.28, 0.56, 1.12]],
+    5: [[0.00065, 0.0013, 0.0026, 0.0052], [0.0094, 0.019, 0.038, 0.075]],
+    6: [[0.00085, 0.0017, 0.0034, 0.0068], [0.0, 0.0, 0.0, 0.0]],
+    7: [[0.0013, 0.0025, 0.005, 0.01], [0.0, 0.0, 0.0, 0.0]],
+    8: [[0.0078, 0.016, 0.031, 0.062], [0.0052, 0.011, 0.021, 0.042]],
+    9: [[4.5, 7.2], [25.0, 51.0]],
+}
+C2 = {
+    1: [2.8E-4, 1.08],
+    2: [9.0E-5, 1.51],
+    3: [3.0E-5, 1.82],
+    4: [3.0E-5, 2.01],
+    5: [3.6E-4, 1.08],
+}
+PI_A = {1: [1.0, 3.0, 3.0], 2: [1.0]}
+PI_PT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
+
 
 def calculate_217f_part_count(**attributes):
     """
@@ -432,32 +456,6 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    # Key is subcategory ID.  Value is a list of lists where the first index
-    # is the technology ID to select the inner list and the second index is
-    # determined by the number of elements.
-    _dic_c1 = {
-        1: [[0.01, 0.02, 0.04, 0.06], [0.01, 0.02, 0.04, 0.06]],
-        2: [
-            [0.0025, 0.005, 0.01, 0.02, 0.04, 0.08],
-            [0.01, 0.02, 0.04, 0.08, 0.16, 0.29],
-        ],
-        3: [[0.01, 0.021, 0.042], [0.00085, 0.0017, 0.0034, 0.0068]],
-        4: [[0.06, 0.12, 0.24, 0.48], [0.14, 0.28, 0.56, 1.12]],
-        5: [[0.00065, 0.0013, 0.0026, 0.0052], [0.0094, 0.019, 0.038, 0.075]],
-        6: [[0.00085, 0.0017, 0.0034, 0.0068], [0.0, 0.0, 0.0, 0.0]],
-        7: [[0.0013, 0.0025, 0.005, 0.01], [0.0, 0.0, 0.0, 0.0]],
-        8: [[0.0078, 0.016, 0.031, 0.062], [0.0052, 0.011, 0.021, 0.042]],
-        9: [[4.5, 7.2], [25.0, 51.0]],
-    }
-    _dic_c2 = {
-        1: [2.8E-4, 1.08],
-        2: [9.0E-5, 1.51],
-        3: [3.0E-5, 1.82],
-        4: [3.0E-5, 2.01],
-        5: [3.6E-4, 1.08],
-    }
-    _dic_piA = {1: [1.0, 3.0, 3.0], 2: [1.0]}
-    _dic_piPT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
     # Dictionary containing the number of element breakpoints for determining
     # the base hazard rate list to use.
     _dic_breakpoints = {
@@ -515,7 +513,7 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
             elif _diff >= 0:
                 break
 
-        attributes['C1'] = _dic_c1[attributes['subcategory_id']][
+        attributes['C1'] = C1[attributes['subcategory_id']][
             _technology - 1
         ][_index + 1]
 
@@ -536,8 +534,8 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
 
     # Calculate the value of C2.
     try:
-        _f0 = _dic_c2[_package][0]
-        _f1 = _dic_c2[_package][1]
+        _f0 = C2[_package][0]
+        _f1 = C2[_package][1]
         attributes['C2'] = _f0 * (attributes['n_active_pins']**_f1)
     except KeyError:
         attributes['C2'] = 0.0
@@ -553,12 +551,12 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'integrated circuit, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
             'integrated circuit, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            '{0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the active hazard rate.
     if attributes['subcategory_id'] in [1, 2, 3, 4]:
@@ -579,7 +577,7 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
             ) * attributes['piQ'] * attributes['piL']
         )
     elif attributes['subcategory_id'] == 9:
-        attributes['piA'] = _dic_piA[attributes['type_id']][
+        attributes['piA'] = PI_A[attributes['type_id']][
             attributes['application_id'] - 1
         ]
         attributes['hazard_rate_active'] = (
@@ -609,7 +607,7 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
 
         # Determine the package type correction factor (piPT).
         try:
-            attributes['piPT'] = _dic_piPT[attributes['package_id']]
+            attributes['piPT'] = PI_PT[attributes['package_id']]
         except KeyError:
             attributes['piPT'] = 1.0
 
