@@ -1377,7 +1377,7 @@ def do_calculate_217f_part_count(**attributes):
     count method.
 
     :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
+        dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
     _msg = ''

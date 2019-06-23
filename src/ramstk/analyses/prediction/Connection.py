@@ -7,10 +7,7 @@
 """Connection Reliability Calculations Module."""
 
 # Standard Library Imports
-import gettext
 from math import exp
-
-_ = gettext.gettext
 
 PART_COUNT_217F_LAMBDA_B = {
     1: {
@@ -296,7 +293,7 @@ def _calculate_insert_temperature(attributes):
     """
     Calculate the insert temperature.
 
-    :param dict attributes: the attributes for the capacitor being calculated.
+    :param dict attributes: the attributes for the connection being calculated.
     """
     # First key is subcategory ID, second key is contact gauge.
     _dic_factors = {
@@ -333,10 +330,10 @@ def _do_check_variables(attributes):
     Check calculation variable to ensure they are all greater than zero.
 
     All variables are checked regardless of whether they'll be used in the
-    calculation for the capacitor type which is why a WARKING message is issued
-    rather than an ERROR message.
+    calculation for the connection type which is why a WARKING message is
+    issued rather than an ERROR message.
 
-    :param dict attributes: the attributes for the capacitor being calculated.
+    :param dict attributes: the attributes for the connection being calculated.
     :return: _msg; a message indicating all the variables that are less than or
         equal to zero in value.
     :rtype: str
@@ -429,7 +426,7 @@ def calculate_217f_part_count(**attributes):
     """
     Calculate the part count hazard rate for a connection.
 
-    :param dict attributes: the attributes for the capacitor being calculated.
+    :param dict attributes: the attributes for the connection being calculated.
     :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
@@ -451,7 +448,7 @@ def calculate_217f_part_stress(**attributes):
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
 
-    :param dict attributes: the attributes for the capacitor being calculated.
+    :param dict attributes: the attributes for the connection being calculated.
     :return: (attributes, _msg); the keyword argument (hardware attribute)
         dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
@@ -498,6 +495,9 @@ def calculate_217f_part_stress(**attributes):
     else:
         attributes[
             'hazard_rate_active'
-        ] = attributes['hazard_rate_active'] * attributes['piK'] * attributes['piP']
+        ] = (
+            attributes['hazard_rate_active'] * attributes['piK']
+            * attributes['piP']
+        )
 
     return attributes, _msg
