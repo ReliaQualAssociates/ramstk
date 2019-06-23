@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.modules.RAMSTKDataController &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.modules.RAMSTKDataController</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.modules.RAMSTKDataController.py is part of the RAMSTK Project</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2017 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;Datamodels Package RAMSTKDataController.&quot;&quot;&quot;</span>
+
+<span class="c1"># Third Party Imports</span>
+<span class="kn">from</span> <span class="nn">pubsub</span> <span class="k">import</span> <span class="n">pub</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Doyle Rowland&#39;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s1">&#39;doyle.rowland@reliaqual.com&#39;</span>
+<span class="n">__organization__</span> <span class="o">=</span> <span class="s1">&#39;ReliaQual Associates, LLC&#39;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s1">&#39;Copyright 2017 Doyle &quot;weibullguy&quot; Rowland&#39;</span>
+
+
+<div class="viewcode-block" id="RAMSTKDataController"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController">[docs]</a><span class="k">class</span> <span class="nc">RAMSTKDataController</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provide an interface between data models and RAMSTK views.</span>
+
+<span class="sd">    This is the meta-class for all RAMSTK data controllers.</span>
+
+<span class="sd">    :ivar _configuration: the :class:`ramstk.Configuration.Configuration`</span>
+<span class="sd">                          instance associated with the current RAMSTK instance.</span>
+<span class="sd">    :ivar _matrix_delete_method: the RAMSTKDataMatrix() method currently</span>
+<span class="sd">                                 selected for the delete.</span>
+<span class="sd">    :ivar _matrix_insert_method: the RAMSTKDataMatrix() method currently</span>
+<span class="sd">                                 selected for the insert.</span>
+<span class="sd">    :ivar _matrix_update_method: the RAMSTKDataMatrix() method currently</span>
+<span class="sd">                                 selected for the update.</span>
+<span class="sd">    :ivar _dtm_data_model: the RAMSTKDataModel associated with the</span>
+<span class="sd">                           RAMSTKDataController.</span>
+<span class="sd">    :ivar bool _test: indicates whether or not Data Controller is being tested.</span>
+<span class="sd">                      used to suppress pypubsub sending messages when running</span>
+<span class="sd">                      tests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a RAMSTKDataController instance.</span>
+
+<span class="sd">        :param configuration: the Configuration instance associated with the</span>
+<span class="sd">                              current instance of the RAMSTK application.</span>
+<span class="sd">        :type configuration: :class:`ramstk.Configuration.Configuration`</span>
+<span class="sd">        :keyword model: the RAMSTKDataModel() to associate.</span>
+<span class="sd">        :ramstk_module: the all lowercase name of the RAMSTK Module the Data</span>
+<span class="sd">                     Controller is for.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize private dictionary attributes.</span>
+
+        <span class="c1"># Initialize private list attributes.</span>
+
+        <span class="c1"># Initialize private scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_configuration</span> <span class="o">=</span> <span class="n">configuration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matrix_delete_method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matrix_insert_method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_matrix_update_method</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">__</span><span class="p">,</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ramstk_module&#39;</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">char</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ramstk_module&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
+
+        <span class="c1"># Initialize public dictionary attributes.</span>
+
+        <span class="c1"># Initialize public list attributes.</span>
+
+        <span class="c1"># Initialize public scalar attributes.</span>
+
+<div class="viewcode-block" id="RAMSTKDataController.do_handle_results"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.do_handle_results">[docs]</a>    <span class="k">def</span> <span class="nf">do_handle_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="n">pub_msg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle the error code and error message from other methods.</span>
+
+<span class="sd">        This methods processes the error code and error message from the</span>
+<span class="sd">        insert, delete, update, and calculate methods.</span>
+
+<span class="sd">        :param int error_code: the error code returned by the Data Model when</span>
+<span class="sd">                               requested to insert.</span>
+<span class="sd">        :param str error_msg: the error message returned by the Data Model when</span>
+<span class="sd">                              requested to insert.</span>
+<span class="sd">        :param str pub_msg: the message to be published by pypubsub.</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># If the insert, delete, update, or calculation was successful log the</span>
+        <span class="c1"># error message to the user log.  Otherwise, log it to the debug log.</span>
+        <span class="k">if</span> <span class="n">error_code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_configuration</span><span class="o">.</span><span class="n">RAMSTK_USER_LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">pub_msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test</span><span class="p">:</span>
+                <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="n">pub_msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_configuration</span><span class="o">.</span><span class="n">RAMSTK_DEBUG_LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+            <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_calculate"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_calculate">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_calculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to calculate the record.</span>
+
+<span class="sd">        :param int node_id: the PyPubSub Tree() ID of the Stakeholder to</span>
+<span class="sd">                            calculate.</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_calculate</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_calculate_all"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_calculate_all">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_calculate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to calculate all records for the module.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_calculate_all</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_delete"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_delete">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to delete an RAMSTK Program database table record.</span>
+
+<span class="sd">        :param int node_id: the PyPubSub Tree() ID to delete.</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_delete</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_handle_results</span><span class="p">(</span><span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_delete_matrix"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_delete_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_delete_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix_type</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to remove a new row or column from the Data Matrix.</span>
+
+<span class="sd">        :param str matrix_type: the type of the Matrix to remove from.</span>
+<span class="sd">        :param int item_id: the ID of the row or column item to remove from the</span>
+<span class="sd">                            Matrix.</span>
+<span class="sd">        :keyword bool row: indicates whether to insert a row (default) or a</span>
+<span class="sd">                           column.</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># pylint: disable=not-callable</span>
+            <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix_delete_method</span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Attempted to delete from non-existent &#39;</span> \
+                   <span class="s1">&#39;matrix </span><span class="si">{0:s}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matrix_type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_error_code</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test</span><span class="p">:</span>
+            <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span>
+                <span class="s1">&#39;deleted_matrix&#39;</span><span class="p">,</span>
+                <span class="n">matrix_type</span><span class="o">=</span><span class="n">matrix_type</span><span class="p">,</span>
+                <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+                <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_handle_results</span><span class="p">(</span><span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_insert"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_insert">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to add an RAMSTK Program database table record.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_insert</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_handle_results</span><span class="p">(</span><span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_insert_matrix"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_insert_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_insert_matrix</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">matrix_type</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span>
+            <span class="n">row</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the to add a new row or column to the Data Matrix.</span>
+
+<span class="sd">        :param str matrix_type: the type of the Matrix to insert into.</span>
+<span class="sd">        :param int item_id: the ID of the row or column item to insert into the</span>
+<span class="sd">                            Matrix.</span>
+<span class="sd">        :param str heading: the heading for the new row or column.</span>
+<span class="sd">        :keyword bool row: indicates whether to insert a row (default) or a</span>
+<span class="sd">                           column.</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_matrix_insert_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dic_inserts</span><span class="p">[</span><span class="n">matrix_type</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_matrix_insert_method</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># pylint: disable=not-callable</span>
+            <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">_matrix_insert_method</span><span class="p">(</span>
+                <span class="n">item_id</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Attempted to insert into non-existent &#39;</span> \
+                   <span class="s1">&#39;matrix </span><span class="si">{0:s}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matrix_type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_error_code</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test</span><span class="p">:</span>
+            <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span>
+                <span class="s1">&#39;inserted_matrix&#39;</span><span class="p">,</span>
+                <span class="n">matrix_type</span><span class="o">=</span><span class="n">matrix_type</span><span class="p">,</span>
+                <span class="n">item_id</span><span class="o">=</span><span class="n">item_id</span><span class="p">,</span>
+                <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_handle_results</span><span class="p">(</span><span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_select"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_select">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the RAMSTK Program database record associated with Node ID.</span>
+
+<span class="sd">        :param int node_id: the Node ID to retrieve from the Tree.</span>
+<span class="sd">        :return: the RAMSTK Program database record requested.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_select</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_select_all"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_select_all">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_select_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the treelib Tree() from the RAMSTK Data Model.</span>
+
+<span class="sd">        The RAMSTK Data Model method sends the &#39;retrieved_&lt;module&gt;&#39; PyPubSub</span>
+<span class="sd">        message.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_select_all</span><span class="p">(</span>
+            <span class="n">revision_id</span><span class="o">=</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;revision_id&#39;</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_select_children"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_select_children">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_select_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the child nodes of the selected Hardware ID.</span>
+
+<span class="sd">        :param int node_id: the PyPubSub Tree() ID of the Similar Item to</span>
+<span class="sd">                            select the child nodes for.</span>
+<span class="sd">        :return: a list of the immediate child nodes of the passed Hardware ID.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_select_children</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_update"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_update">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to update an RAMSTK Program database table record.</span>
+
+<span class="sd">        :param int node_id: the PyPubSub Tree() ID of the Revision to save.</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_update</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_handle_results</span><span class="p">(</span><span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_update_all"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_update_all">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_update_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to update all records in the RAMSTK Program database table.</span>
+
+<span class="sd">        :return: (_error_code, _msg); the error code and associated message.</span>
+<span class="sd">        :rtype: (int, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">do_update_all</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_handle_results</span><span class="p">(</span><span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_do_update_matrix"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_do_update_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_update_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision_id</span><span class="p">,</span> <span class="n">matrix_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to update the selected Data Matrix.</span>
+
+<span class="sd">        :param int revision_id: the ID of the Revision is the matrix to update</span>
+<span class="sd">                                is associated with.</span>
+<span class="sd">        :param int matrix_type: the type of the Matrix to save.</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># pylint: disable=not-callable</span>
+            <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_matrix_update_method</span><span class="p">(</span>
+                <span class="n">revision_id</span><span class="p">,</span> <span class="n">matrix_type</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Attempted to update non-existent matrix &#39;</span> \
+                   <span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matrix_type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_error_code</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test</span><span class="p">:</span>
+            <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="s1">&#39;saved_matrix&#39;</span><span class="p">,</span> <span class="n">matrix_type</span><span class="o">=</span><span class="n">matrix_type</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_handle_results</span><span class="p">(</span><span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_get_attributes"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_get_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">request_get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request attributes from the record associated with the Node ID.</span>
+
+<span class="sd">        :param int node_id: the ID of the record in the RAMSTK Program</span>
+<span class="sd">                            database whose attributes are being</span>
+<span class="sd">                            requested.</span>
+<span class="sd">        :return: _attributes</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_do_select</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+        <span class="c1"># Simple data models need to call the get_attributes() method,</span>
+        <span class="c1"># aggregate data models will return a dict directly.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_entity</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_entity</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_set_attributes"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_set_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">request_set_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module_id</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to set a RAMSTK record&#39;s attribute.</span>
+
+<span class="sd">        :param int module_id: the ID of the entity who&#39;s attribute is to</span>
+<span class="sd">                              be set.</span>
+<span class="sd">        :param str key: the key of the attributes to set.</span>
+<span class="sd">        :param value: the value to set the attribute identified by the</span>
+<span class="sd">                      key.</span>
+<span class="sd">        :return: _error_code, _msg; the error code and error message from the</span>
+<span class="sd">                                    called method.</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_entity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_do_select</span><span class="p">(</span><span class="n">module_id</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_entity</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_entity</span>
+
+        <span class="n">_attributes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_entity</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">_attributes</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_last_id"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_last_id">[docs]</a>    <span class="k">def</span> <span class="nf">request_last_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the last entity ID used in the RAMSTK Program database.</span>
+
+<span class="sd">        :return: the last entity ID used.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">last_id</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataController.request_tree"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController.request_tree">[docs]</a>    <span class="k">def</span> <span class="nf">request_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the Treelib tree from the Data Model.</span>
+
+<span class="sd">        :return: tree; the Treelib Tree() object containing the module&#39;s data.</span>
+<span class="sd">        :rtype: :class:`treelib.Tree`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtm_data_model</span><span class="o">.</span><span class="n">tree</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

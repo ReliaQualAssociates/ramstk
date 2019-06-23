@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Validation Package &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reliability Allocation Package" href="allocation.html" />
+    <link rel="prev" title="Hardware Package" href="hardware.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../contributing.html" >Contributing</a> &#187;</li>
+          <li><a href="../apidocuments.html" accesskey="U">RAMSTK Module</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="validation-package">
+<h1>Validation Package<a class="headerlink" href="#validation-package" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-ramstk.modules.validation.Model">
+<span id="validation-data-model"></span><h2>Validation Data Model<a class="headerlink" href="#module-ramstk.modules.validation.Model" title="Permalink to this headline">¶</a></h2>
+<p>Validation Package Data Model.</p>
+<dl class="class">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel">
+<em class="property">class </em><code class="descclassname">ramstk.modules.validation.Model.</code><code class="descname">ValidationDataModel</code><span class="sig-paren">(</span><em>dao</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataModel.RAMSTKDataModel" title="ramstk.modules.RAMSTKDataModel.RAMSTKDataModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataModel.RAMSTKDataModel</span></code></a></p>
+<p>Contain the attributes and methods of a Validation.</p>
+<p>An RAMSTK Project will consist of one or more Validations.  The attributes
+of a Validation are:</p>
+<dl class="attribute">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel._root">
+<code class="descname">_root</code><em class="property"> = 0</em><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel._root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel._tag">
+<code class="descname">_tag</code><em class="property"> = 'Validations'</em><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel._tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.do_calculate">
+<code class="descname">do_calculate</code><span class="sig-paren">(</span><em>node_id</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.do_calculate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.do_calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate task cost metrics.</p>
+<p>This method calculate mean, lower bound, upper bound, and standard
+error on task costs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the PyPubSub Tree() ID of the Validation to
+calculate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.do_calculate_all">
+<code class="descname">do_calculate_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.do_calculate_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.do_calculate_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the overall cost and time of all validation tasks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>revision_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Revision ID to calculate program costs for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_attributes; a dictionary of program status results.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.do_delete">
+<code class="descname">do_delete</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.do_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.do_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a record from the RAMSTKValidation table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id entity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the ID of the RAMSTKValidation record to be
+removed from the RAMSTK Program database.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.do_insert">
+<code class="descname">do_insert</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.do_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.do_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a record to the RAMSTKValidation table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.do_select_all">
+<code class="descname">do_select_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.do_select_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.do_select_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all the Validations from the RAMSTK Program database.</p>
+<p>This method retrieves all the records from the RAMSTKValidation table in
+the connected RAMSTK Program database.  It then add each to the Validation
+data model treelib.Tree().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tree; the Tree() of RAMSTKValidation data models.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">treelib.Tree</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.do_update">
+<code class="descname">do_update</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.do_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.do_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update record associated with Node ID in the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Validation ID of the Validation to save.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.do_update_all">
+<code class="descname">do_update_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.do_update_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.do_update_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update all RAMSTKValidation table records in the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.do_update_status">
+<code class="descname">do_update_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.do_update_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.do_update_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the overall program Validation status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.get_actual_burndown">
+<code class="descname">get_actual_burndown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.get_actual_burndown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.get_actual_burndown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the actual burndown curve dates and task times.</p>
+<p>This method creates and returns a SortedDict with remaining task times
+for each date.  The key is the ordinal date and the value is the sum of
+the remaining time for tasks due on that date.  The remaining times are
+calculated using the average expected time to complete the task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>_time_remaining; dictionary of remaining program time by date.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.get_assessment_points">
+<code class="descname">get_assessment_points</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.get_assessment_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.get_assessment_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the dates, minimum, and maximum values for reliability assessments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_assessed_dates, _targets)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Model.ValidationDataModel.get_planned_burndown">
+<code class="descname">get_planned_burndown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Model.html#ValidationDataModel.get_planned_burndown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Model.ValidationDataModel.get_planned_burndown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the planned burndown curve dates and task times.</p>
+<p>This method creates and returns three SortedDicts; one with minimum
+expected task times, one with average expected task times, and one with
+maximum expected task times.  The key for each dict is the ordinal date
+and the value for each dict is the sum of times for tasks due on that
+date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_y_minimum, _y_average, _y_maximum)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.7)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ramstk.modules.validation.Controller">
+<span id="validation-data-controller"></span><h2>Validation Data Controller<a class="headerlink" href="#module-ramstk.modules.validation.Controller" title="Permalink to this headline">¶</a></h2>
+<p>Validation Package Data Controller Module.</p>
+<dl class="class">
+<dt id="ramstk.modules.validation.Controller.ValidationDataController">
+<em class="property">class </em><code class="descclassname">ramstk.modules.validation.Controller.</code><code class="descname">ValidationDataController</code><span class="sig-paren">(</span><em>dao</em>, <em>configuration</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Controller.html#ValidationDataController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Controller.ValidationDataController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController" title="ramstk.modules.RAMSTKDataController.RAMSTKDataController"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataController.RAMSTKDataController</span></code></a></p>
+<p>Provide an interface between Validation data models and RAMSTK views.</p>
+<p>A single Validation data controller can manage one or more Failure
+Validation data models.</p>
+<dl class="method">
+<dt id="ramstk.modules.validation.Controller.ValidationDataController._request_do_create_matrix">
+<code class="descname">_request_do_create_matrix</code><span class="sig-paren">(</span><em>revision_id</em>, <em>matrix_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Controller.html#ValidationDataController._request_do_create_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Controller.ValidationDataController._request_do_create_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to create or refresh a Validation matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>revision_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the ID of the Revision the desired Matrix is
+associated with.</p></li>
+<li><p><strong>matrix_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the type of the Matrix to select all rows and
+all columns for.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Controller.ValidationDataController._request_do_delete_matrix">
+<code class="descname">_request_do_delete_matrix</code><span class="sig-paren">(</span><em>matrix_type</em>, <em>item_id</em>, <em>row=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Controller.html#ValidationDataController._request_do_delete_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Controller.ValidationDataController._request_do_delete_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to remove a row or column from the selected Data Matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matrix_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – <p>the type of the Matrix to retrieve.  Current
+Validation matrix types are:</p>
+<p>rqrmnt_hrdwr = Validation:Hardware</p>
+</p></li>
+<li><p><strong>item_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the ID of the row or column item to remove from the
+Matrix.</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a>) – indicates whether to insert a row (default) or a
+column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Controller.ValidationDataController._request_do_select_all_matrix">
+<code class="descname">_request_do_select_all_matrix</code><span class="sig-paren">(</span><em>revision_id</em>, <em>matrix_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Controller.html#ValidationDataController._request_do_select_all_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Controller.ValidationDataController._request_do_select_all_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all the Matrices associated with the Requirement module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>revision_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Revision ID to select the matrices for.</p></li>
+<li><p><strong>matrix_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – <p>the type of the Matrix to retrieve.  Current
+Validation matrix types are:</p>
+<p>vldtn_hrdwr = Requirement:Hardware</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_matrix, _column_hdrs, _row_hdrs); the Pandas Dataframe,
+noun names to use for column headings, noun names to use for
+row headings.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<code class="xref py py-class docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code>, dict, dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Controller.ValidationDataController._request_do_update_matrix">
+<code class="descname">_request_do_update_matrix</code><span class="sig-paren">(</span><em>revision_id</em>, <em>matrix_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Controller.html#ValidationDataController._request_do_update_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Controller.ValidationDataController._request_do_update_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to update the selected Data Matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>revision_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the ID of the Revision is the matrix to update
+is associated with.</p></li>
+<li><p><strong>matrix_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – <p>the type of the Matrix to save.  Current
+Validation matrix types are:</p>
+<p>vldtn_hrdwr = Requirement:Hardware</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.validation.Controller.ValidationDataController.request_do_update_status">
+<code class="descname">request_do_update_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/validation/Controller.html#ValidationDataController.request_do_update_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.validation.Controller.ValidationDataController.request_do_update_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to update program Validation task status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Validation Package</a><ul>
+<li><a class="reference internal" href="#module-ramstk.modules.validation.Model">Validation Data Model</a></li>
+<li><a class="reference internal" href="#module-ramstk.modules.validation.Controller">Validation Data Controller</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="hardware.html"
+                        title="previous chapter">Hardware Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="allocation.html"
+                        title="next chapter">Reliability Allocation Package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/validation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="allocation.html" title="Reliability Allocation Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hardware.html" title="Hardware Package"
+             accesskey="P">previous</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

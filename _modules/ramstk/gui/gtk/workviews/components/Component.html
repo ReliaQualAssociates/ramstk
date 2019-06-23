@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.gui.gtk.workviews.components.Component &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../../" src="../../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../../../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.gui.gtk.workviews.components.Component</h1><div class="highlight"><pre>
+<span></span><span class="c1"># pylint: disable=non-parent-init-called</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.gui.gtk.workviews.components.Component.py is part of the RAMSTK</span>
+<span class="c1">#       Project.</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2017 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;The RAMSTK Component Base Work View.&quot;&quot;&quot;</span>
+
+<span class="c1"># Third Party Imports</span>
+<span class="kn">from</span> <span class="nn">pubsub</span> <span class="k">import</span> <span class="n">pub</span>
+
+<span class="c1"># RAMSTK Package Imports</span>
+<span class="kn">from</span> <span class="nn">ramstk.gui.gtk.ramstk</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">RAMSTKCheckButton</span><span class="p">,</span> <span class="n">RAMSTKComboBox</span><span class="p">,</span> <span class="n">RAMSTKEntry</span><span class="p">,</span> <span class="n">RAMSTKFrame</span><span class="p">,</span>
+    <span class="n">RAMSTKLabel</span><span class="p">,</span> <span class="n">RAMSTKPlot</span><span class="p">,</span> <span class="n">RAMSTKTextView</span><span class="p">,</span> <span class="n">do_make_label_group</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ramstk.gui.gtk.ramstk.Widget</span> <span class="k">import</span> <span class="n">Gdk</span><span class="p">,</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">_</span>
+
+
+<div class="viewcode-block" id="AssessmentInputs"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentInputs">[docs]</a><span class="k">class</span> <span class="nc">AssessmentInputs</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display Hardware assessment input attribute data in the RAMSTK Work Book.</span>
+
+<span class="sd">    The Hardware assessment input view displays all the assessment inputs for</span>
+<span class="sd">    the selected Hardware item.  This includes, currently, inputs for</span>
+<span class="sd">    MIL-HDBK-217FN2 parts count and part stress analyses.  The attributes of a</span>
+<span class="sd">    Hardware assessment input view are:</span>
+
+<span class="sd">    :ivar list _lst_handler_id: the list of signal handler IDs for each of the</span>
+<span class="sd">                                input widgets.</span>
+
+<span class="sd">    :ivar int _hardware_id: the ID of the Hardware item currently being</span>
+<span class="sd">                            displayed.</span>
+<span class="sd">    :ivar int _subcategory_id: the ID of the subcategory for the hardware item</span>
+<span class="sd">                               currently being displayed.</span>
+
+<span class="sd">    :ivar cmbQuality: select and display the quality level of the hardware</span>
+<span class="sd">                      item.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Define private list attributes.</span>
+    <span class="n">_lst_labels</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>    <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of the Hardware assessment input view.</span>
+
+<span class="sd">        :param configuration: the RAMSTK Configuration class instance.</span>
+<span class="sd">        :type configuration: :class:`ramstk.Configuration.Configuration`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="n">configuration</span>
+
+        <span class="c1"># Initialize private dictionary attributes.</span>
+
+        <span class="c1"># Initialize private list attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Initialize private scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hazard_rate_method_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Initialize public dictionary attributes.</span>
+
+        <span class="c1"># Initialize public list attributes.</span>
+
+        <span class="c1"># Initialize public scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;{0:0.&#39;</span> <span class="o">+</span> \
+                   <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DEC_PLACES</span><span class="p">)</span> <span class="o">+</span> \
+                   <span class="s1">&#39;G}&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmbQuality</span> <span class="o">=</span> <span class="n">RAMSTKComboBox</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">simple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_properties</span><span class="p">()</span>
+
+        <span class="c1"># Subscribe to PyPubSub messages.</span>
+
+    <span class="k">def</span> <span class="nf">__set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set properties for assessment input widgets common to all components.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmbQuality</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span><span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The quality level of the hardware item.&quot;</span><span class="p">),)</span>
+
+<div class="viewcode-block" id="AssessmentInputs.do_load_page"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentInputs.do_load_page">[docs]</a>    <span class="k">def</span> <span class="nf">do_load_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the component common widgets.</span>
+
+<span class="sd">        :param dict attributes: the attributes dictionary for the selected</span>
+<span class="sd">        Component.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hardware_id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hazard_rate_method_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_method_id&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_load_comboboxes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmbQuality</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmbQuality</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;quality_id&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmbQuality</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="AssessmentInputs.make_ui"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentInputs.make_ui">[docs]</a>    <span class="k">def</span> <span class="nf">make_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make the Hardware class Gtk.Notebook() assessment input page.</span>
+
+<span class="sd">        :return: _x_pos, _y_pos</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span> <span class="o">=</span> <span class="n">do_make_label_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_labels</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">_x_pos</span> <span class="o">+=</span> <span class="mi">50</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmbQuality</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span></div>
+
+<div class="viewcode-block" id="AssessmentInputs.on_combo_changed"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentInputs.on_combo_changed">[docs]</a>    <span class="k">def</span> <span class="nf">on_combo_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve RAMSTKCombo() changes and assign to Component attribute.</span>
+
+<span class="sd">        This method is called by:</span>
+
+<span class="sd">            * RAMSTKComboBox() &#39;changed&#39; signal</span>
+
+<span class="sd">        :param combo: the RAMSTKCombo() that called this method.</span>
+<span class="sd">        :type combo: :class:`ramstk.gui.gtk.ramstk.RAMSTKCombo`</span>
+<span class="sd">        :param int index: the position in the signal handler list associated</span>
+<span class="sd">        with the calling RAMSTKComboBox().</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dic_keys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">combo</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_new_text</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">combo</span><span class="o">.</span><span class="n">get_active</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">_new_text</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Only publish the message if something is selected in the ComboBox.</span>
+        <span class="k">if</span> <span class="n">_new_text</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span>
+                <span class="s1">&#39;wvw_editing_hardware&#39;</span><span class="p">,</span>
+                <span class="n">module_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span><span class="p">,</span>
+                <span class="n">key</span><span class="o">=</span><span class="n">_key</span><span class="p">,</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">_new_text</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">combo</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="n">index</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="AssessmentInputs.on_focus_out"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentInputs.on_focus_out">[docs]</a>    <span class="k">def</span> <span class="nf">on_focus_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve changes made in RAMSTKEntry() widgets.</span>
+
+<span class="sd">        This method is called by:</span>
+
+<span class="sd">            * RAMSTKEntry() &#39;changed&#39; signal</span>
+<span class="sd">            * RAMSTKTextView() &#39;changed&#39; signal</span>
+
+<span class="sd">        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the</span>
+<span class="sd">        method.</span>
+<span class="sd">        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or</span>
+<span class="sd">                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`</span>
+<span class="sd">        :param int index: the position in the Hardware class Gtk.TreeModel()</span>
+<span class="sd">        associated with the data from the calling Gtk.Widget().</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dic_keys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">entry</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_new_text</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_new_text</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_new_text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">_new_text</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">entry</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span>
+            <span class="s1">&#39;wvw_editing_hardware&#39;</span><span class="p">,</span>
+            <span class="n">module_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="n">_key</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">_new_text</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="StressInputs"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.StressInputs">[docs]</a><span class="k">class</span> <span class="nc">StressInputs</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display hardware item stress input attribute data in the RAMSTK Work Book.</span>
+
+<span class="sd">    The hardware item stress input view displays all the assessment inputs for</span>
+<span class="sd">    the selected hardware item.  This includes, currently, stress inputs for</span>
+<span class="sd">    MIL-HDBK-217FN2.  The attributes of a hardware item stress input view are:</span>
+
+<span class="sd">    :cvar list _lst_labels: the text to use for the assessment input widget</span>
+<span class="sd">                            labels.</span>
+
+<span class="sd">    :ivar list _lst_handler_id: the list of signal handler IDs for each of the</span>
+<span class="sd">                                input widgets.</span>
+
+<span class="sd">    :ivar _dtc_data_controller: the Hardware BoM data controller instance.</span>
+
+<span class="sd">    :ivar int _hardware_id: the ID of the Hardware item currently being</span>
+<span class="sd">                            displayed.</span>
+<span class="sd">    :ivar int _subcategory_id: the ID of the subcategory for the hardware item</span>
+<span class="sd">                               currently being displayed.</span>
+
+<span class="sd">    :ivar txtTemperatureRatedMin: enter and display the minimum rated</span>
+<span class="sd">                                  temperature of the hardware item.</span>
+<span class="sd">    :ivar txtTemperatureKnee: enter and display the temperature above which the</span>
+<span class="sd">                              hardware item must be derated.</span>
+<span class="sd">    :ivar txtTemperatureRatedMax: enter and display the maximum rated</span>
+<span class="sd">                                  temperature of the hardware item.</span>
+<span class="sd">    :ivar txtCurrentRated: enter and display the current rating of the hardware</span>
+<span class="sd">                           item.</span>
+<span class="sd">    :ivar txtCurrentOperating: enter and display the operating current of the</span>
+<span class="sd">                               hardware item.</span>
+<span class="sd">    :ivar txtPowerRated: enter and display the rated power of the hardware</span>
+<span class="sd">                         item.</span>
+<span class="sd">    :ivar txtPowerOperating: enter and display the operating power of the</span>
+<span class="sd">                             hardware item.</span>
+<span class="sd">    :ivar txtVoltageRated: enter and display the rated voltage of the</span>
+<span class="sd">                           hardware item.</span>
+<span class="sd">    :ivar txtVoltageAC: enter and display the operating ac voltage of the</span>
+<span class="sd">                        hardware item.</span>
+<span class="sd">    :ivar txtVoltageDC: enter and display the operating DC voltage of the</span>
+<span class="sd">                        hardware item.</span>
+
+<span class="sd">    Callbacks signals in RAMSTKBaseView._lst_handler_id:</span>
+
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    | Index | Widget - Signal                           |</span>
+<span class="sd">    +=======+===========================================+</span>
+<span class="sd">    |   0   | txtTemperatureRatedMin - `changed`        |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   1   | txtTemperatureKnee - `changed`            |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   2   | txtTemperatureRatedMax - `changed`        |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   3   | txtCurrentRated - `changed`               |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   4   | txtCurrentOperating - `changed`           |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   5   | txtPowerRated - `changed`                 |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   6   | txtPowerOperating - `changed`             |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   7   | txtVoltageRated - `changed`               |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   8   | txtVoltageAC - `changed`                  |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    |   9   | txtVoltageDC - `changed`                  |</span>
+<span class="sd">    +-------+-------------------------------------------+</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Define private list attributes.</span>
+    <span class="n">_lst_labels</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Minimum Rated Temperature (</span><span class="se">\u00B0</span><span class="s2">C):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Knee Temperature (</span><span class="se">\u00B0</span><span class="s2">C):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Maximum Rated Temperature (</span><span class="se">\u00B0</span><span class="s2">C):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Rated Current (A):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Operating Current (A):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Rated Power (W):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Operating Power (W):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Rated Voltage (V):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Operating ac Voltage (V):&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Operating DC Voltage (V):&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of the Hardware stress input view.</span>
+
+<span class="sd">        :param configuration: the RAMSTK Configuration class instance.</span>
+<span class="sd">        :type configuration: :class:`ramstk.Configuration.Configuration`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="n">configuration</span>
+
+        <span class="c1"># Initialize private dictionary attributes.</span>
+
+        <span class="c1"># Initialize private list attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Initialize private scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Initialize public dictionary attributes.</span>
+
+        <span class="c1"># Initialize public list attributes.</span>
+
+        <span class="c1"># Initialize public scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;{0:0.&#39;</span> <span class="o">+</span> \
+                   <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DEC_PLACES</span><span class="p">)</span> <span class="o">+</span> \
+                   <span class="s1">&#39;G}&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMin</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureKnee</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMax</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRated</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentOperating</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRated</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerOperating</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRated</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageAC</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageDC</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_properties</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__make_ui</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_callbacks</span><span class="p">()</span>
+
+        <span class="c1"># Subscribe to PyPubSub messages.</span>
+
+    <span class="k">def</span> <span class="nf">__make_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make the Hardware module stress input container.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span> <span class="o">=</span> <span class="n">do_make_label_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_labels</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">_x_pos</span> <span class="o">+=</span> <span class="mi">50</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMin</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureKnee</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMax</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRated</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentOperating</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRated</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtPowerOperating</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRated</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageAC</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageDC</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__set_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set common callback methods for the ModuleView and widgets.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMin</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+                <span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span>
+                <span class="mi">0</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureKnee</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMax</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+                <span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span>
+                <span class="mi">2</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentOperating</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerOperating</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageAC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageDC</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_focus_out</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set properties for the stress input widgets common to all components.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMin</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The minimum rated temperature (in </span><span class="se">\u00B0</span><span class="s2">C) of the &quot;</span>
+                <span class="s2">&quot;hardware item.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureKnee</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The break temperature (in </span><span class="se">\u00B0</span><span class="s2">C) of the hardware item &quot;</span>
+                <span class="s2">&quot;beyond which it must be derated.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMax</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The maximum rated temperature (in </span><span class="se">\u00B0</span><span class="s2">C) of the hardware &quot;</span>
+                <span class="s2">&quot;item.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRated</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The rated current (in A) of the hardware item.&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentOperating</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The operating current (in A) of the hardware item.&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRated</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The rated power (in W) of the hardware item.&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerOperating</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The operating power (in W) of the hardware item.&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRated</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The rated voltage (in V) of the hardware item.&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageAC</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The operating ac voltage (in V) of the hardware item.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageDC</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The operating DC voltage (in V) of the hardware &quot;</span>
+                <span class="s2">&quot;item.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="StressInputs.do_load_page"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.StressInputs.do_load_page">[docs]</a>    <span class="k">def</span> <span class="nf">do_load_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the Component stress input widgets.</span>
+
+<span class="sd">        :param dict attributes: the attributes dict for the selected Hardware.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hardware_id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMin</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMin</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;temperature_rated_min&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMin</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureKnee</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureKnee</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;temperature_knee&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureKnee</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMax</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMax</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;temperature_rated_max&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtTemperatureRatedMax</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRated</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRated</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;current_rated&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRated</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentOperating</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentOperating</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;current_operating&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentOperating</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRated</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRated</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;power_rated&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRated</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerOperating</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerOperating</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;power_operating&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerOperating</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRated</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRated</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;voltage_rated&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRated</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageAC</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageAC</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;voltage_ac_operating&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageAC</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageDC</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageDC</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;voltage_dc_operating&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageDC</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="StressInputs._on_focus_out"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.StressInputs._on_focus_out">[docs]</a>    <span class="k">def</span> <span class="nf">_on_focus_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entry</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve changes made in RAMSTKEntry() widgets..</span>
+
+<span class="sd">        This method is called by:</span>
+
+<span class="sd">            * RAMSTKEntry() &#39;changed&#39; signal</span>
+<span class="sd">            * RAMSTKTextView() &#39;changed&#39; signal</span>
+
+<span class="sd">        :param entry: the RAMSTKEntry() or RAMSTKTextView() that called the</span>
+<span class="sd">                      method.</span>
+<span class="sd">        :type entry: :class:`ramstk.gui.gtk.ramstk.RAMSTKEntry` or</span>
+<span class="sd">                     :class:`ramstk.gui.gtk.ramstk.RAMSTKTextView`</span>
+<span class="sd">        :param int index: the position in the Hardware class Gtk.TreeModel()</span>
+<span class="sd">                          associated with the data from the calling</span>
+<span class="sd">                          Gtk.Widget().  Indices are:</span>
+
+<span class="sd">            +-------+------------------------+-------+-------------------+</span>
+<span class="sd">            | Index | Widget                 | Index | Widget            |</span>
+<span class="sd">            +=======+========================+=======+===================+</span>
+<span class="sd">            |   0   | txtTemperatureRatedMin |   5   | txtPowerRated     |</span>
+<span class="sd">            +-------+------------------------+-------+-------------------+</span>
+<span class="sd">            |   1   | txtTemperatureKnee     |   6   | txtPowerOperating |</span>
+<span class="sd">            +-------+------------------------+-------+-------------------+</span>
+<span class="sd">            |   2   | txtTemperatureRatedMax |   7   | txtVoltageRated   |</span>
+<span class="sd">            +-------+------------------------+-------+-------------------+</span>
+<span class="sd">            |   3   | txtCurrentRated        |   8   | txtVoltageAC      |</span>
+<span class="sd">            +-------+------------------------+-------+-------------------+</span>
+<span class="sd">            |   4   | txtCurrentOperating    |   9   | txtVoltageDC      |</span>
+<span class="sd">            +-------+------------------------+-------+-------------------+</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_dic_keys</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;temperature_rated_min&#39;</span><span class="p">,</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;temperature_knee&#39;</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;temperature_rated_max&#39;</span><span class="p">,</span>
+            <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;current_rated&#39;</span><span class="p">,</span>
+            <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;current_operating&#39;</span><span class="p">,</span>
+            <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;power_rated&#39;</span><span class="p">,</span>
+            <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;power_operating&#39;</span><span class="p">,</span>
+            <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;voltage_rated&#39;</span><span class="p">,</span>
+            <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;voltage_ac_operating&#39;</span><span class="p">,</span>
+            <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;voltage_dc_operating&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_key</span> <span class="o">=</span> <span class="n">_dic_keys</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="n">entry</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_new_text</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">get_text</span><span class="p">())</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">_new_text</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="n">entry</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+        <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span>
+            <span class="s1">&#39;wvw_editing_hardware&#39;</span><span class="p">,</span>
+            <span class="n">module_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span><span class="p">,</span>
+            <span class="n">key</span><span class="o">=</span><span class="n">_key</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">_new_text</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AssessmentResults"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentResults">[docs]</a><span class="k">class</span> <span class="nc">AssessmentResults</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Fixed</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display Hardware assessment results attribute data in the RAMSTK Work Book.</span>
+
+<span class="sd">    The Hardware assessment result view displays all the assessment results</span>
+<span class="sd">    for the selected hardware item.  This includes, currently, results for</span>
+<span class="sd">    MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.  The</span>
+<span class="sd">    attributes of a Hardware assessment result view are:</span>
+
+<span class="sd">    :cvar list _lst_labels: the text to use for the assessment results widget</span>
+<span class="sd">                            labels.</span>
+
+<span class="sd">    :ivar int _hardware_id: the ID of the Hardware item currently being</span>
+<span class="sd">                            displayed.</span>
+<span class="sd">    :ivar int _subcategory_id: the ID of the subcategory for the hardware item</span>
+<span class="sd">                               currently being displayed.</span>
+<span class="sd">    :ivar _lblModel: the :class:`ramstk.gui.gtk.ramstk.Label.RAMSTKLabel` to</span>
+<span class="sd">                     display the failure rate mathematical model used.</span>
+
+<span class="sd">    :ivar txtLambdaB: displays the base hazard rate of the hardware item.</span>
+<span class="sd">    :ivar txtPiQ: displays the quality factor for the hardware item.</span>
+<span class="sd">    :ivar txtPiE: displays the environment factor for the hardware item.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>    <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of the Hardware assessment result view.</span>
+
+<span class="sd">        :param configuration: the RAMSTK Configuration class instance.</span>
+<span class="sd">        :type configuration: :class:`ramstk.Configuration.Configuration`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="n">configuration</span>
+
+        <span class="c1"># Initialize private dictionary attributes.</span>
+
+        <span class="c1"># Initialize private list attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_labels</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;</span><span class="se">\u03BB</span><span class="s2">&lt;sub&gt;b&lt;/sub&gt;:&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u03C0</span><span class="s2">&lt;sub&gt;Q&lt;/sub&gt;:&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="se">\u03C0</span><span class="s2">&lt;sub&gt;E&lt;/sub&gt;:&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Initialize private scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hazard_rate_method_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span> <span class="o">=</span> <span class="n">RAMSTKLabel</span><span class="p">(</span>
+            <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The assessment model used to calculate the hardware item &quot;</span>
+                <span class="s2">&quot;hazard rate.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Initialize public dictionary attributes.</span>
+
+        <span class="c1"># Initialize public list attributes.</span>
+
+        <span class="c1"># Initialize public scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;{0:0.&#39;</span> <span class="o">+</span> \
+                   <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DEC_PLACES</span><span class="p">)</span> <span class="o">+</span> \
+                   <span class="s1">&#39;G}&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtLambdaB</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPiQ</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPiE</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+
+        <span class="c1"># Subscribe to PyPubSub messages.</span>
+
+    <span class="k">def</span> <span class="nf">__set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set properties for assessment result widgets common to all components.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtLambdaB</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The base hazard rate of the hardware item.&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPiQ</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The quality factor for the hardware item.&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPiE</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;The environment factor for the hardware item.&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="AssessmentResults.do_load_page"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentResults.do_load_page">[docs]</a>    <span class="k">def</span> <span class="nf">do_load_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the Hardware assessment results page.</span>
+
+<span class="sd">        :param dict attributes: the attributes dict for the selected Hardware.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hardware_id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hazard_rate_method_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_method_id&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Display the correct calculation model.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hazard_rate_method_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span><span class="o">.</span><span class="n">set_markup</span><span class="p">(</span>
+                <span class="s2">&quot;&lt;span foreground=</span><span class="se">\&quot;</span><span class="s2">blue</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="se">\u03BB</span><span class="s2">&lt;sub&gt;p&lt;/sub&gt; = </span><span class="se">\u03BB</span><span class="s2">&lt;sub&gt;b&lt;/sub&gt;</span><span class="se">\u03C0</span><span class="s2">&lt;sub&gt;Q&lt;/sub&gt;&lt;/span&gt;&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hazard_rate_method_id</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span><span class="o">.</span><span class="n">set_markup</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dic_part_stress</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span><span class="o">.</span><span class="n">set_markup</span><span class="p">(</span><span class="s2">&quot;No Model&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span><span class="o">.</span><span class="n">set_markup</span><span class="p">(</span><span class="s2">&quot;No Model&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtLambdaB</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">])))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPiQ</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piQ&#39;</span><span class="p">])))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPiE</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piE&#39;</span><span class="p">])))</span></div>
+
+<div class="viewcode-block" id="AssessmentResults.do_set_sensitive"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentResults.do_set_sensitive">[docs]</a>    <span class="k">def</span> <span class="nf">do_set_sensitive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set widget sensitivity as needed for the selected hardware item.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPiQ</span><span class="o">.</span><span class="n">set_sensitive</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPiE</span><span class="o">.</span><span class="n">set_sensitive</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AssessmentResults.make_ui"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.AssessmentResults.make_ui">[docs]</a>    <span class="k">def</span> <span class="nf">make_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make the Hardware Gtk.Notebook() assessment results page.</span>
+
+<span class="sd">        :return: _x_pos, _y_pos</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hazard_rate_method_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span><span class="o">.</span><span class="n">set_markup</span><span class="p">(</span>
+                <span class="s2">&quot;&lt;span foreground=</span><span class="se">\&quot;</span><span class="s2">blue</span><span class="se">\&quot;</span><span class="s2">&gt;</span><span class="se">\u03BB</span><span class="s2">&lt;sub&gt;EQUIP&lt;/sub&gt; = &quot;</span>
+                <span class="s2">&quot;</span><span class="se">\u03BB</span><span class="s2">&lt;sub&gt;g&lt;/sub&gt;</span><span class="se">\u03C0</span><span class="s2">&lt;sub&gt;Q&lt;/sub&gt;&lt;/span&gt;&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lst_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u03BB</span><span class="s2">&lt;sub&gt;g&lt;/sub&gt;:&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span><span class="o">.</span><span class="n">set_markup</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dic_part_stress</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span><span class="o">.</span><span class="n">set_markup</span><span class="p">(</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Missing Model&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lst_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\u03BB</span><span class="s2">&lt;sub&gt;b&lt;/sub&gt;:&quot;</span>
+
+        <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span> <span class="o">=</span> <span class="n">do_make_label_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_labels</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">35</span><span class="p">)</span>
+        <span class="n">_x_pos</span> <span class="o">+=</span> <span class="mi">50</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lblModel</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtLambdaB</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtPiQ</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtPiE</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span></div></div>
+
+
+<div class="viewcode-block" id="StressResults"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.StressResults">[docs]</a><span class="k">class</span> <span class="nc">StressResults</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">HPaned</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display Hardware stress results attribute data in the RAMSTK Work Book.</span>
+
+<span class="sd">    The Hardware stress result view displays all the stress results for the</span>
+<span class="sd">    selected hardware item.  This includes, currently, results for</span>
+<span class="sd">    MIL-HDBK-217FN2 parts count and part stress methods.  The attributes of a</span>
+<span class="sd">    Hardware stress result view are:</span>
+
+<span class="sd">    :cvar list _lst_labels: the text to use for the sress results widget</span>
+<span class="sd">                            labels.</span>
+
+<span class="sd">    :ivar int _hardware_id: the ID of the Hardware item currently being</span>
+<span class="sd">                            displayed.</span>
+<span class="sd">    :ivar int _subcategory_id: the ID of the subcategory for the hardware item</span>
+<span class="sd">                               currently being displayed.</span>
+
+<span class="sd">    :ivar str fmt: the format string for displaying numbers.</span>
+
+<span class="sd">    :ivar chkOverstressed: display whether or not the selected hardware item is</span>
+<span class="sd">                           overstressed.</span>
+<span class="sd">    :ivar pltDerate: displays the derating curves and the design operating</span>
+<span class="sd">                     point relative to those curves.</span>
+<span class="sd">    :ivar txtCurrentRatio: display the ratio of operating current to rated</span>
+<span class="sd">                           current.</span>
+<span class="sd">    :ivar txtPowerRatio: display the ratio of operating power to rated power.</span>
+<span class="sd">    :ivar txtVoltageRatio: display the ratio of operating voltage (ac + DC) to</span>
+<span class="sd">                           rated voltage.</span>
+<span class="sd">    :ivar txtReason: display the reason(s) the hardware item is overstressed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Define private list attributes.</span>
+    <span class="n">_lst_labels</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Current Ratio:&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Power Ratio:&quot;</span><span class="p">),</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Voltage Ratio:&quot;</span><span class="p">),</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Overstress Reason:&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>    <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of the Hardware stress result view.</span>
+
+<span class="sd">        :param configuration: the RAMSTK Configuration class instance.</span>
+<span class="sd">        :type configuration: :class:`ramstk.Configuration.Configuration`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="n">configuration</span>
+
+        <span class="c1"># Initialize private dictionary attributes.</span>
+
+        <span class="c1"># Initialize private list attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_derate_criteria</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]]</span>
+
+        <span class="c1"># Initialize private scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Initialize public dictionary attributes.</span>
+
+        <span class="c1"># Initialize public list attributes.</span>
+
+        <span class="c1"># Initialize public scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;{0:0.&#39;</span> <span class="o">+</span> \
+                   <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DEC_PLACES</span><span class="p">)</span> <span class="o">+</span> \
+                   <span class="s1">&#39;G}&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span> <span class="o">=</span> <span class="n">RAMSTKPlot</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">chkOverstress</span> <span class="o">=</span> <span class="n">RAMSTKCheckButton</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Overstressed&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRatio</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRatio</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRatio</span> <span class="o">=</span> <span class="n">RAMSTKEntry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span> <span class="o">=</span> <span class="n">RAMSTKTextView</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">TextBuffer</span><span class="p">(),)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_properties</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__make_ui</span><span class="p">()</span>
+
+        <span class="c1"># Subscribe to PyPubSub messages.</span>
+        <span class="n">pub</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_load_page</span><span class="p">,</span> <span class="s1">&#39;loaded_hardware_results&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__make_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make the Hardware Gtk.Notebook() assessment results page.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_fixed</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Fixed</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pack1</span><span class="p">(</span><span class="n">_fixed</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span> <span class="o">=</span> <span class="n">do_make_label_group</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lst_labels</span><span class="p">,</span> <span class="n">_fixed</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="mi">35</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">_x_pos</span> <span class="o">+=</span> <span class="mi">50</span>
+
+        <span class="n">_fixed</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRatio</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">_fixed</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRatio</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">_fixed</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRatio</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">_fixed</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chkOverstress</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">_fixed</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">scrollwindow</span><span class="p">,</span> <span class="n">_x_pos</span><span class="p">,</span> <span class="n">_y_pos</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+
+        <span class="n">_fixed</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+        <span class="c1"># Create the derating plot.</span>
+        <span class="n">_frame</span> <span class="o">=</span> <span class="n">RAMSTKFrame</span><span class="p">(</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;Derating Curve and Operating Point&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">_frame</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">plot</span><span class="p">)</span>
+        <span class="n">_frame</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pack2</span><span class="p">(</span><span class="n">_frame</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set properties for the stress result widgets common to all components.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chkOverstress</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;Indicates whether or not the selected hardware item &quot;</span>
+                <span class="s2">&quot;is overstressed.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRatio</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The ratio of operating current to rated current for &quot;</span>
+                <span class="s2">&quot;the hardware item.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRatio</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The ratio of operating power to rated power for &quot;</span>
+                <span class="s2">&quot;the hardware item.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRatio</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+            <span class="n">editable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">bold</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The ratio of operating voltage to rated voltage for &quot;</span>
+                <span class="s2">&quot;the hardware item.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">width</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span>
+            <span class="n">tooltip</span><span class="o">=</span><span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;The reason(s) the selected hardware item is &quot;</span>
+                <span class="s2">&quot;overstressed.&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">chkOverstress</span><span class="o">.</span><span class="n">set_sensitive</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">set_editable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">_bg_color</span> <span class="o">=</span> <span class="n">Gdk</span><span class="o">.</span><span class="n">RGBA</span><span class="p">(</span><span class="n">red</span><span class="o">=</span><span class="mf">173.0</span><span class="p">,</span> <span class="n">green</span><span class="o">=</span><span class="mf">216.0</span><span class="p">,</span> <span class="n">blue</span><span class="o">=</span><span class="mf">230.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">override_background_color</span><span class="p">(</span>
+            <span class="n">Gtk</span><span class="o">.</span><span class="n">StateFlags</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">,</span> <span class="n">_bg_color</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">override_background_color</span><span class="p">(</span>
+            <span class="n">Gtk</span><span class="o">.</span><span class="n">StateFlags</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">,</span> <span class="n">_bg_color</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">override_background_color</span><span class="p">(</span>
+            <span class="n">Gtk</span><span class="o">.</span><span class="n">StateFlags</span><span class="o">.</span><span class="n">PRELIGHT</span><span class="p">,</span> <span class="n">_bg_color</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">override_background_color</span><span class="p">(</span>
+            <span class="n">Gtk</span><span class="o">.</span><span class="n">StateFlags</span><span class="o">.</span><span class="n">SELECTED</span><span class="p">,</span> <span class="n">_bg_color</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">override_background_color</span><span class="p">(</span>
+            <span class="n">Gtk</span><span class="o">.</span><span class="n">StateFlags</span><span class="o">.</span><span class="n">INSENSITIVE</span><span class="p">,</span> <span class="n">_bg_color</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="StressResults._do_load_derating_curve"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.StressResults._do_load_derating_curve">[docs]</a>    <span class="k">def</span> <span class="nf">_do_load_derating_curve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the benign and harsh environment derating curves.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Plot the derating curve.</span>
+        <span class="n">_x</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;temperature_rated_min&#39;</span><span class="p">]),</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;temperature_knee&#39;</span><span class="p">]),</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;temperature_rated_max&#39;</span><span class="p">]),</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">do_load_plot</span><span class="p">(</span>
+            <span class="n">x_values</span><span class="o">=</span><span class="n">_x</span><span class="p">,</span>
+            <span class="n">y_values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_derate_criteria</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">plot_type</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;r.-&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">do_load_plot</span><span class="p">(</span>
+            <span class="n">x_values</span><span class="o">=</span><span class="n">_x</span><span class="p">,</span>
+            <span class="n">y_values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lst_derate_criteria</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">plot_type</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;b.-&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">do_load_plot</span><span class="p">(</span>
+            <span class="n">x_values</span><span class="o">=</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;temperature_active&#39;</span><span class="p">]],</span>
+            <span class="n">y_values</span><span class="o">=</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;voltage_ratio&#39;</span><span class="p">]],</span>
+            <span class="n">plot_type</span><span class="o">=</span><span class="s1">&#39;scatter&#39;</span><span class="p">,</span>
+            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;go&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">do_make_title</span><span class="p">(</span>
+            <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Voltage Derating Curve for </span><span class="si">{0:s}</span><span class="s2"> at </span><span class="si">{1:s}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;part_number&#39;</span><span class="p">],</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;ref_des&#39;</span><span class="p">],</span>
+            <span class="p">),</span>
+            <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">do_make_legend</span><span class="p">([</span>
+            <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Harsh Environment&quot;</span><span class="p">),</span>
+            <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Mild Environment&quot;</span><span class="p">),</span>
+            <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Voltage Operating Point&quot;</span><span class="p">),</span>
+        <span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">do_make_labels</span><span class="p">(</span>
+            <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Temperature (</span><span class="se">\u2070</span><span class="s2">C)&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">do_make_labels</span><span class="p">(</span>
+            <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Voltage Ratio&quot;</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">set_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">pltDerate</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="StressResults._do_load_page"><a class="viewcode-back" href="../../../../../../api/gui/gtk.workview.html#ramstk.gui.gtk.workviews.components.Component.StressResults._do_load_page">[docs]</a>    <span class="k">def</span> <span class="nf">_do_load_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the Hardware stress results page common widgets.</span>
+
+<span class="sd">        :param dict attributes: the attributes dict for the selected Hardware.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hardware_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hardware_id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_subcategory_id</span> <span class="o">=</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtCurrentRatio</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;current_ratio&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtPowerRatio</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;power_ratio&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">txtVoltageRatio</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;voltage_ratio&#39;</span><span class="p">])),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chkOverstress</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;overstress&#39;</span><span class="p">])</span>
+        <span class="n">_textbuffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">txtReason</span><span class="o">.</span><span class="n">do_get_buffer</span><span class="p">()</span>
+        <span class="n">_textbuffer</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;reason&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_do_load_derating_curve</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>
