@@ -178,16 +178,16 @@ def calculate_217f_part_count(**attributes):
     except IndexError:
         attributes['lambda_b'] = 0.0
 
-    # Confirm all inputs are within range.  If not, set the message.  The
-    # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating capacitor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'capacitor, hardware ID: {0:d}.\n'.format(
+                attributes['hardware_id'],
+            )
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
@@ -256,11 +256,15 @@ def calculate_217f_part_stress(**attributes):
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
+            'capacitor, hardware ID: {0:d}.\n'.format(
+                attributes['hardware_id'],
+            )
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
+            'capacitor, hardware ID: {0:d}.\n'.format(
+                attributes['hardware_id'],
+            )
 
     # Calculate the capacitance factor (piCV).
     _f0 = _dic_factors[attributes['subcategory_id']][5]

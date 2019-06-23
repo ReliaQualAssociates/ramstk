@@ -331,7 +331,9 @@ def calculate_217f_part_stress(**attributes):
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'connection, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
+            'connection, hardware ID: {0:d}.\n'.format(
+                attributes['hardware_id'],
+            )
 
     # Determine the mating/unmating factor.
     if attributes['n_cycles'] <= 0.05:

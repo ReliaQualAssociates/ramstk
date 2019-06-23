@@ -151,7 +151,7 @@ def test_calculate_mil_hdbk_217f_part_count(
     if lambda_b == 0.0:
         assert _msg == (
             'RAMSTK WARNING: Base hazard rate is 0.0 when '
-            'calculating capacitor, hardware ID: 6'
+            'calculating capacitor, hardware ID: 6.\n'
         )
     else:
         assert _msg == ''
@@ -173,7 +173,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'capacitor, hardware ID: 6'
+        'capacitor, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.030
@@ -193,7 +193,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_specification():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'capacitor, hardware ID: 6'
+        'capacitor, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 0.030
@@ -214,7 +214,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'capacitor, hardware ID: 6'
+        'capacitor, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.030

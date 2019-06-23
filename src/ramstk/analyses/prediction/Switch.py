@@ -12,11 +12,11 @@ from math import exp
 
 _ = gettext.gettext
 
-
 PI_C = {
     1: [1.0, 1.5, 1.7, 2.0, 2.5, 3.0, 4.2, 5.5, 8.0],
     5: [1.0, 2.0, 3.0, 4.0],
 }
+
 
 def calculate_217f_part_count(**attributes):
     """
@@ -193,15 +193,17 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
 
     if attributes['lambda_b'] <= 0.0:
         _msg = 'RAMSTK WARNING: Base hazard rate is 0.0 when calculating ' \
-               'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
+               'switch, hardware ID: {0:d}.\n'.format(
+                   attributes['hardware_id'],
+               )
 
     if attributes['piQ'] <= 0.0:
         _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['piE'] <= 0.0:
-        _msg = 'RAMSTK WARNING: piE is 0.0 when calculating switch, hardware ' \
-               'ID: {0:d}.\n'.format(attributes['hardware_id'])
+        _msg = 'RAMSTK WARNING: piE is 0.0 when calculating switch, ' \
+               'hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the cycling factor (piCYC).
     if attributes['n_cycles'] <= 1:
