@@ -46,7 +46,6 @@ _templates/
 *.xls*
 .coverage
 _temp/
-Makefile
 pylintout
 coverage.xml
 
