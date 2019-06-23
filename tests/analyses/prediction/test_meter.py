@@ -120,7 +120,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
         "ID: 1, and active environment ID: 1."
     )
     assert _attributes['lambda_b'] == 0.0
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
 
 
@@ -188,12 +188,9 @@ def test_calculate_mil_hdbk_217f_part_stress_elapsed_time_meter():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        "RAMSTK WARNING: piQ is 0.0 when calculating meter, "
-        "hardware ID: 6, quality ID: 1.\n"
-    )
+    assert _msg == ''
     assert pytest.approx(_attributes['lambda_b'], 0.09)
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 7.0
     assert pytest.approx(_attributes['hazard_rate_active'], 1.836)
 

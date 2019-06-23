@@ -75,10 +75,6 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _lst_piE = [
-        1.0, 3.0, 10.0, 6.0, 16.0, 12.0, 17.0, 22.0, 28.0, 23.0, 0.5, 13.0,
-        32.0, 500.0,
-    ]
     _msg = ''
 
     # Calculate the base hazard rate.
@@ -87,21 +83,15 @@ def calculate_217f_part_stress(**attributes):
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating crystal, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'crystal, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    # Determine the environmental factor (piE).
-    try:
-        attributes['piE'] = _lst_piE[attributes['environment_active_id'] - 1]
-    except IndexError:
-        attributes['piE'] = 0.0
+            'crystal, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'crystal, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'crystal, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (

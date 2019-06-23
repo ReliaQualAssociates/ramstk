@@ -244,68 +244,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
         14: [0.0246, 0.459, 9.3, 2.32, 5.3, 1.0],
         15: [0.018, 1.0, 7.4, 2.55, 3.6, 1.0],
     }
-    _dic_piE = {
-        1: [
-            1.0, 3.0, 8.0, 5.0, 13.0, 4.0, 5.0, 7.0, 11.0, 19.0, 0.5, 11.0,
-            27.0, 490.0,
-        ],
-        2: [
-            1.0, 2.0, 8.0, 4.0, 14.0, 4.0, 8.0, 10.0, 18.0, 19.0, 0.2, 10.0,
-            28.0, 510.0,
-        ],
-        3: [
-            1.0, 2.0, 10.0, 5.0, 17.0, 6.0, 8.0, 14.0, 18.0, 25.0, 0.5, 14.0,
-            36.0, 660.0,
-        ],
-        4: [
-            1.0, 2.0, 10.0, 5.0, 17.0, 6.0, 8.0, 14.0, 18.0, 25.0, 0.5, 14.0,
-            36.0, 660.0,
-        ],
-        5: [
-            1.0, 2.0, 11.0, 5.0, 18.0, 15.0, 18.0, 28.0, 35.0, 27.0, 0.8, 14.0,
-            38.0, 610.0,
-        ],
-        6: [
-            1.0, 2.0, 10.0, 5.0, 16.0, 4.0, 8.0, 9.0, 18.0, 23.0, 0.3, 13.0,
-            34.0, 610.0,
-        ],
-        7: [
-            1.0, 2.0, 10.0, 5.0, 16.0, 4.0, 8.0, 9.0, 18.0, 23.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        8: [
-            1.0, 5.0, 21.0, 11.0, 24.0, 11.0, 30.0, 16.0, 42.0, 37.0, 0.5,
-            20.0, 53.0, 950.0,
-        ],
-        9: [
-            1.0, 2.0, 12.0, 6.0, 20.0, 5.0, 8.0, 9.0, 15.0, 33.0, 0.5, 18.0,
-            48.0, 870.0,
-        ],
-        10: [
-            1.0, 2.0, 18.0, 8.0, 30.0, 8.0, 12.0, 13.0, 18.0, 53.0, 0.5, 29.0,
-            76.0, 1400.0,
-        ],
-        11: [
-            1.0, 2.0, 16.0, 7.0, 28.0, 8.0, 12.0, 0.0, 0.0, 38.0, 0.5, 0.0,
-            0.0, 0.0,
-        ],
-        12: [
-            1.0, 3.0, 16.0, 7.0, 28.0, 8.0, 12.0, 0.0, 0.0, 38.0, 0.5, 0.0,
-            0.0, 0.0,
-        ],
-        13: [
-            1.0, 3.0, 14.0, 6.0, 24.0, 5.0, 7.0, 12.0, 18.0, 39.0, 0.5, 22.0,
-            57.0, 1000.0,
-        ],
-        14: [
-            1.0, 2.0, 19.0, 8.0, 29.0, 40.0, 65.0, 48.0, 78.0, 46.0, 0.5, 25.0,
-            66.0, 1200.0,
-        ],
-        15: [
-            1.0, 3.0, 14.0, 7.0, 24.0, 6.0, 12.0, 20.0, 30.0, 39.0, 0.5, 22.0,
-            57.0, 1000.0,
-        ],
-    }
     # Resistance factor (piR) dictionary of values.  The key is the
     # subcategory ID.  The index in the returned list is the resistance range
     # breakpoint (breakpoint values are in _lst_breakpoints below).  For
@@ -518,16 +456,11 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'resistor, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    # Determine the environmental factor (piE).
-    attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-        attributes['environment_active_id'] - 1
-    ]
+            'resistor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'resistor, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'resistor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Calculate the temperature factor (piT).
     if attributes['subcategory_id'] == 4:

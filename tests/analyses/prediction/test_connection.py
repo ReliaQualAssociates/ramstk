@@ -218,7 +218,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert pytest.approx(_attributes['lambda_b'], 0.07944039)
     assert pytest.approx(_attributes['piCV'], 0.3617763)
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert pytest.approx(_attributes['hazard_rate_active'], 1.005887691)
     assert pytest.approx(_attributes['temperature_rise'], 2.3072012)
     assert pytest.approx(_attributes['lambda_b'], 0.0006338549)

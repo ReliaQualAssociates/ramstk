@@ -199,21 +199,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
-    # Determine the environmental factor (piE).
-    try:
-        if attributes['subcategory_id'] == 5:
-            attributes['piE'] = [
-                1.0, 2.0, 15.0, 8.0, 27.0, 7.0, 9.0, 11.0, 12.0, 46.0, 0.5,
-                25.0, 67.0, 0.0,
-            ][attributes['environment_active_id'] - 1]
-        else:
-            attributes['piE'] = [
-                1.0, 3.0, 18.0, 8.0, 29.0, 10.0, 18.0, 13.0, 22.0, 46.0, 0.5,
-                25.0, 67.0, 1200.0,
-            ][attributes['environment_active_id'] - 1]
-    except IndexError:
-        attributes['piE'] = 0.0
-
     if attributes['piE'] <= 0.0:
         _msg = 'RAMSTK WARNING: piE is 0.0 when calculating switch, hardware ' \
                'ID: {0:d}.\n'.format(attributes['hardware_id'])

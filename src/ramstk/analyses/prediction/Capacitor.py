@@ -218,84 +218,6 @@ def calculate_217f_part_stress(**attributes):
         18: [1.92E-6, 0.33, 3.0, 10.8, 1.0, 1.0, 0.0],
         19: [0.0112, 0.17, 3.0, 1.59, 10.1, 1.0, 0.0],
     }
-    _dic_piE = {
-        1: [
-            1.0, 2.0, 9.0, 5.0, 15.0, 6.0, 8.0, 17.0, 32.0, 22.0, 0.5, 12.0,
-            32.0, 570.0,
-        ],
-        2: [
-            1.0, 2.0, 9.0, 7.0, 15.0, 6.0, 8.0, 17.0, 28.0, 22.0, 0.5, 12.0,
-            32.0, 570.0,
-        ],
-        3: [
-            1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 6.0, 11.0, 20.0, 20.0, 0.5, 11.0,
-            29.0, 530.0,
-        ],
-        4: [
-            1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 6.0, 11.0, 20.0, 20.0, 0.5, 11.0,
-            29.0, 530.0,
-        ],
-        5: [
-            1.0, 2.0, 10.0, 5.0, 16.0, 6.0, 11.0, 18.0, 30.0, 23.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        6: [
-            1.0, 4.0, 8.0, 5.0, 14.0, 4.0, 6.0, 13.0, 20.0, 20.0, 0.5, 11.0,
-            29.0, 530.0,
-        ],
-        7: [
-            1.0, 2.0, 10.0, 6.0, 16.0, 5.0, 7.0, 22.0, 28.0, 23.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        8: [
-            1.0, 2.0, 10.0, 5.0, 16.0, 5.0, 7.0, 22.0, 28.0, 23.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        9: [
-            1.0, 2.0, 10.0, 6.0, 16.0, 5.0, 7.0, 22.0, 28.0, 23.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        10: [
-            1.0, 2.0, 9.0, 5.0, 15.0, 4.0, 4.0, 8.0, 12.0, 20.0, 0.4, 13.0,
-            34.0, 610.0,
-        ],
-        11: [
-            1.0, 2.0, 10.0, 5.0, 17.0, 4.0, 8.0, 16.0, 35.0, 24.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        12: [
-            1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 12.0, 20.0, 24.0, 0.4, 11.0,
-            29.0, 530.0,
-        ],
-        13: [
-            1.0, 2.0, 10.0, 6.0, 16.0, 4.0, 8.0, 14.0, 30.0, 23.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        14: [
-            1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0, 27.0, 0.5, 14.0,
-            38.0, 690.0,
-        ],
-        15: [
-            1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0, 27.0, 0.5, 18.0,
-            38.0, 690.0,
-        ],
-        16: [
-            1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0, 0.4, 20.0,
-            52.0, 950.0,
-        ],
-        17: [
-            1.0, 3.0, 12.0, 7.0, 18.0, 3.0, 4.0, 20.0, 30.0, 32.0, 0.5, 18.0,
-            46.0, 830.0,
-        ],
-        18: [
-            1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0, 0.5, 20.0,
-            52.0, 950.0,
-        ],
-        19: [
-            1.0, 3.0, 14.0, 8.0, 27.0, 10.0, 18.0, 70.0, 108.0, 40.0, 0.5,
-            None, None, None,
-        ],
-    }
     _dic_piSR = {
         0.1: 0.33,
         0.2: 0.27,
@@ -330,25 +252,20 @@ def calculate_217f_part_stress(**attributes):
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating capacitor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            '{0:d}.\n'.format(attributes['hardware_id'])
+
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+            'capacitor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
+
+    if attributes['piE'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
+            'capacitor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Calculate the capacitance factor (piCV).
     _f0 = _dic_factors[attributes['subcategory_id']][5]
     _f1 = _dic_factors[attributes['subcategory_id']][6]
     attributes['piCV'] = _f0 * attributes['capacitance']**_f1
-
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    # Determine the environmental factor (piE).
-    attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-        attributes['environment_active_id'] - 1
-    ]
-
-    if attributes['piE'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the series resistance factor (piSR).
     if attributes['subcategory_id'] == 12:

@@ -481,10 +481,6 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
             ],
         },
     }
-    _lst_piE = [
-        0.5, 2.0, 4.0, 4.0, 6.0, 4.0, 5.0, 5.0, 8.0, 8.0, 0.5, 5.0, 12.0,
-        220.0,
-    ]
     _msg = ''
 
     # Categorize the technology.
@@ -558,9 +554,6 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'integrated circuit, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
-
-    # Determine the environmental factor (piE).
-    attributes['piE'] = _lst_piE[attributes['environment_active_id'] - 1]
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \

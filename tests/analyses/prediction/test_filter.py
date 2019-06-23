@@ -128,13 +128,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating filter, '
-        'hardware ID: 6, quality ID: 4'
-    )
+    assert _msg == ''
     assert _attributes['lambda_b'] == 0.022
-    assert _attributes['piQ'] == 0.0
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert _attributes['piQ'] == 1.0
+    assert _attributes['hazard_rate_active'] == 0.022
 
 
 @pytest.mark.unit
@@ -169,7 +166,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_type():
 
     assert isinstance(_attributes, dict)
     assert _msg == 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-                   'calculating filter, hardware ID: 6'
+                   'calculating filter, hardware ID: 6.\n'
     assert pytest.approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 4.0
@@ -188,12 +185,11 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == 'RAMSTK WARNING: piQ is 0.0 when ' \
-                   'calculating filter, hardware ID: 6'
+    assert _msg == ''
     assert pytest.approx(_attributes['lambda_b'], 0.012)
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 4.0
-    assert pytest.approx(_attributes['hazard_rate_active'], 0.0)
+    assert pytest.approx(_attributes['hazard_rate_active'], 0.048)
 
 
 @pytest.mark.unit
@@ -208,9 +204,8 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == 'RAMSTK WARNING: piE is 0.0 when ' \
-                   'calculating filter, hardware ID: 6'
+    assert _msg == ''
     assert pytest.approx(_attributes['lambda_b'], 0.012)
     assert _attributes['piQ'] == 1.0
-    assert _attributes['piE'] == 0.0
-    assert pytest.approx(_attributes['hazard_rate_active'], 0.0)
+    assert _attributes['piE'] == 1.0
+    assert pytest.approx(_attributes['hazard_rate_active'], 0.012)

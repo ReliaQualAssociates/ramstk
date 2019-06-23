@@ -189,19 +189,10 @@ def calculate_217f_part_stress(**attributes):
             4: [0.00035, 10.0],
         },
     }
-    _dic_piE = {
-        1: [
-            1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        2: [
-            1.0, 4.0, 12.0, 5.0, 16.0, 5.0, 7.0, 6.0, 8.0, 24.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-    }
     _msg = ''
 
     attributes = calculate_hot_spot_temperature(**attributes)
+    attributes = _get_part_stress_quality_factor(attributes)
 
     # Calculate the base hazard rate.
     try:
@@ -226,28 +217,17 @@ def calculate_217f_part_stress(**attributes):
     except (KeyError, ZeroDivisionError):
         attributes['lambda_b'] = 0.0
 
+    # Check for input weirdness,
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating inductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    # Determine the quality factor (piQ).
-    attributes = _get_part_stress_quality_factor(attributes)
+            '{0:d}.\n'.format(attributes['hardware_id'])
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    # Determine the environmental factor (piE).
-    try:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        attributes['piE'] = 0.0
-
+            'inductor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'inductor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Calculate the construction factor (piC).
     if attributes['subcategory_id'] == 2:

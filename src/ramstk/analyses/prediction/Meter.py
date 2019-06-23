@@ -162,40 +162,6 @@ def calculate_217f_part_stress(**attributes):
     :rtype: (dict, str)
     """
     _dic_lambda_b = {1: [20.0, 30.0, 80.0], 2: 0.09}
-    _dic_piE = {
-        2: [
-            1.0,
-            4.0,
-            25.0,
-            12.0,
-            35.0,
-            28.0,
-            42.0,
-            58.0,
-            73.0,
-            60.0,
-            1.1,
-            60.0,
-            0.0,
-            0.0,
-        ],
-        1: [
-            1.0,
-            2.0,
-            12.0,
-            7.0,
-            18.0,
-            5.0,
-            8.0,
-            16.0,
-            25.0,
-            26.0,
-            0.5,
-            14.0,
-            38.0,
-            0.0,
-        ],
-    }
     _lst_piF = [1.0, 1.0, 2.8]
     _msg = ''
 
@@ -247,18 +213,10 @@ def calculate_217f_part_stress(**attributes):
         elif 0.8 < _temperature_ratio <= 1.0:
             attributes['piT'] = 1.0
 
-    # Determine the environmental factor (piE).
-    try:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1
-        ]
-    except (IndexError, KeyError):
-        attributes['piE'] = 0.0
-
     if attributes['piE'] <= 0.0:
         _msg = _msg + (
             "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
-            "{0:d}"
+            "{0:d}.\n"
         ).format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.

@@ -13,6 +13,65 @@ from math import exp
 _ = gettext.gettext
 
 
+def _get_environment_factor(**attributes):
+    """
+    Retrieve the environment factor (pi_E).
+
+    :param dict attributes: the attributes dictionary of the connection being
+        calculated.
+    :return: attributes; the attributes dictionary updated with pi_E.
+    :rtype: dict
+    """
+    _dic_piE = {
+        1: {
+            1: [
+                1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0,
+                27.0, 490.0,
+            ],
+            2: [
+                2.0, 5.0, 21.0, 10.0, 27.0, 12.0, 18.0, 17.0, 25.0, 37.0, 0.8,
+                20.0, 54.0, 970.0,
+            ],
+        },
+        2: {
+            1: [
+                1.0, 3.0, 8.0, 5.0, 13.0, 6.0, 11.0, 6.0, 11.0, 19.0, 0.5,
+                10.0, 27.0, 490.0,
+            ],
+            2: [
+                2.0, 7.0, 17.0, 10.0, 26.0, 14.0, 22.0, 14.0, 22.0, 37.0, 0.8,
+                20.0, 54.0, 970.0,
+            ],
+        },
+        3: [
+            1.0, 3.0, 14.0, 6.0, 18.0, 8.0, 12.0, 11.0, 13.0, 25.0, 0.5, 14.0,
+            36.0, 650.0,
+        ],
+        4: [
+            1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0,
+            27.0, 500.0,
+        ],
+        5: [
+            1.0, 2.0, 7.0, 4.0, 11.0, 4.0, 6.0, 6.0, 8.0, 16.0, 0.5, 9.0, 24.0,
+            420.0,
+        ],
+    }
+
+    # Determine the environmental factor (piE).
+    if attributes['subcategory_id'] in [1, 2]:
+        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+            attributes[
+                'quality_id'
+            ]
+        ][attributes['environment_active_id'] - 1]
+    else:
+        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+            attributes['environment_active_id'] - 1
+        ]
+
+    return attributes
+
+
 def calculate_217f_part_count(**attributes):
     """
     Calculate the part count hazard rate for a connection.
@@ -221,46 +280,13 @@ def calculate_217f_part_stress(**attributes):
             26: 2.1,
         },
     }
-    _dic_piE = {
-        1: {
-            1: [
-                1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0,
-                27.0, 490.0,
-            ],
-            2: [
-                2.0, 5.0, 21.0, 10.0, 27.0, 12.0, 18.0, 17.0, 25.0, 37.0, 0.8,
-                20.0, 54.0, 970.0,
-            ],
-        },
-        2: {
-            1: [
-                1.0, 3.0, 8.0, 5.0, 13.0, 6.0, 11.0, 6.0, 11.0, 19.0, 0.5,
-                10.0, 27.0, 490.0,
-            ],
-            2: [
-                2.0, 7.0, 17.0, 10.0, 26.0, 14.0, 22.0, 14.0, 22.0, 37.0, 0.8,
-                20.0, 54.0, 970.0,
-            ],
-        },
-        3: [
-            1.0, 3.0, 14.0, 6.0, 18.0, 8.0, 12.0, 11.0, 13.0, 25.0, 0.5, 14.0,
-            36.0, 650.0,
-        ],
-        4: [
-            1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0,
-            27.0, 500.0,
-        ],
-        5: [
-            1.0, 2.0, 7.0, 4.0, 11.0, 4.0, 6.0, 6.0, 8.0, 16.0, 0.5, 9.0, 24.0,
-            420.0,
-        ],
-    }
     _lst_piK = [1.0, 1.5, 2.0, 3.0, 4.0]
 
     _msg = ''
 
     # Calculate the insert temperature rise.
     attributes = do_calculate_insert_temperature(**attributes)
+    attributes = _get_environment_factor(**attributes)
 
     # Calculate the base hazard rate.
     _contact_temp = (
@@ -304,7 +330,10 @@ def calculate_217f_part_stress(**attributes):
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating connection, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            '{0:d}.\n'.format(attributes['hardware_id'])
+    if attributes['piE'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
+            'connection, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the mating/unmating factor.
     if attributes['n_cycles'] <= 0.05:
@@ -323,22 +352,6 @@ def calculate_217f_part_stress(**attributes):
         attributes['piP'] = exp(
             ((attributes['n_active_pins'] - 1) / 10.0)**0.51064,
         )
-
-    # Determine the environmental factor (piE).
-    if attributes['subcategory_id'] in [1, 2]:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes[
-                'quality_id'
-            ]
-        ][attributes['environment_active_id'] - 1]
-    else:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1
-        ]
-
-    if attributes['piE'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'connection, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the complexity factor (piC) for PTH connections.
     if attributes['subcategory_id'] == 4:

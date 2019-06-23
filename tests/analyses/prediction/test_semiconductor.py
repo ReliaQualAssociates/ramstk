@@ -13,7 +13,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component, Semiconductor
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -261,7 +261,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['voltage_dc_operating'] = 3.3
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes, _msg = Semiconductor.calculate_217f_part_stress(**_attributes)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
@@ -297,7 +297,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['voltage_dc_operating'] = 3.3
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes, _msg = Semiconductor.calculate_217f_part_stress(**_attributes)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
@@ -336,22 +336,19 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     ATTRIBUTES['voltage_dc_operating'] = 3.3
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes, _msg = Semiconductor.calculate_217f_part_stress(**_attributes)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piE is 0.0 when calculating semiconductor, '
-        'hardware ID: 6 and active environment ID: 41.\n'
-    )
+    assert _msg == ''
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert _attributes['temperature_junction'] == 55.5
     assert _attributes['lambda_b'] == 0.0034
     assert _attributes['piQ'] == 1.0
-    assert _attributes['piE'] == 0.0
+    assert _attributes['piE'] == 1.0
     assert _attributes['piC'] == 2.0
     assert pytest.approx(_attributes['piT'], 2.6196648)
     assert pytest.approx(_attributes['piS'], 0.3778868)
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert pytest.approx(_attributes['hazard_rate_active'], 0.0123875)
 
 
 @pytest.mark.unit
