@@ -421,6 +421,7 @@ def calculate_217f_part_stress(**attributes):
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
 
+    :param dict attributes: the attributes for the capacitor being calculated.
     :return: (attributes, _msg); the keyword argument (hardware attribute)
         dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
@@ -448,13 +449,13 @@ def calculate_217f_part_stress(**attributes):
     )
     if attributes['subcategory_id'] == 12:
         attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] * attributes['piCV'] *
-            attributes['piSR']
+            attributes['hazard_rate_active'] * attributes['piCV']
+            * attributes['piSR']
         )
     elif attributes['subcategory_id'] == 13:
         attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] * attributes['piCV'] *
-            attributes['piC']
+            attributes['hazard_rate_active'] * attributes['piCV']
+            * attributes['piC']
         )
     elif attributes['subcategory_id'] == 19:
         attributes['hazard_rate_active'] = (
