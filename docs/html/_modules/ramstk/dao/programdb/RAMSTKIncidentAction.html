@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.dao.programdb.RAMSTKIncidentAction &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.dao.programdb.RAMSTKIncidentAction</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.dao.RAMSTKIncidentAction.py is part of The RAMSTK Project</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2017 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">===============================================================================</span>
+<span class="sd">The RAMSTKIncidentAction Table</span>
+<span class="sd">===============================================================================</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># Standard Library Imports</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="c1"># Third Party Imports</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">BLOB</span><span class="p">,</span> <span class="n">Column</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">ForeignKey</span><span class="p">,</span> <span class="n">Integer</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="k">import</span> <span class="n">relationship</span>
+
+<span class="c1"># RAMSTK Package Imports</span>
+<span class="kn">from</span> <span class="nn">ramstk</span> <span class="k">import</span> <span class="n">RAMSTK_BASE</span>
+<span class="kn">from</span> <span class="nn">ramstk.Utilities</span> <span class="k">import</span> <span class="n">error_handler</span><span class="p">,</span> <span class="n">none_to_default</span>
+
+
+<div class="viewcode-block" id="RAMSTKIncidentAction"><a class="viewcode-back" href="../../../../api/dao.html#ramstk.dao.programdb.RAMSTKIncidentAction.RAMSTKIncidentAction">[docs]</a><span class="k">class</span> <span class="nc">RAMSTKIncidentAction</span><span class="p">(</span><span class="n">RAMSTK_BASE</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to represent the table ramstk_incident_action in the RAMSTK Program</span>
+<span class="sd">    database.</span>
+
+<span class="sd">    This table shares a Many-to-One relationship with ramstk_incident.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">&#39;ramstk_incident_action&#39;</span>
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;extend_existing&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+    <span class="n">incident_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="s1">&#39;fld_incident_id&#39;</span><span class="p">,</span>
+        <span class="n">Integer</span><span class="p">,</span>
+        <span class="n">ForeignKey</span><span class="p">(</span><span class="s1">&#39;ramstk_incident.fld_incident_id&#39;</span><span class="p">),</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">action_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="s1">&#39;fld_action_id&#39;</span><span class="p">,</span>
+        <span class="n">Integer</span><span class="p">,</span>
+        <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">autoincrement</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">action_owner</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;fld_action_owner&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">action_prescribed</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;fld_action_prescribed&#39;</span><span class="p">,</span> <span class="n">BLOB</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">action_taken</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;fld_action_taken&#39;</span><span class="p">,</span> <span class="n">BLOB</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">approved</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;fld_approved&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">approved_by</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;fld_approved_by&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">approved_date</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="s1">&#39;fld_approved_date&#39;</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">closed</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;fld_closed&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">closed_by</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;fld_closed_by&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">closed_date</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="s1">&#39;fld_closed_date&#39;</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">due_date</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span>
+        <span class="s1">&#39;fld_due_date&#39;</span><span class="p">,</span> <span class="n">Date</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">status_id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="s1">&#39;fld_status_id&#39;</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Define the relationships to other tables in the RAMSTK Program database.</span>
+    <span class="n">incident</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="s1">&#39;RAMSTKIncident&#39;</span><span class="p">,</span> <span class="n">back_populates</span><span class="o">=</span><span class="s1">&#39;incident_action&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RAMSTKIncidentAction.get_attributes"><a class="viewcode-back" href="../../../../api/dao.html#ramstk.dao.programdb.RAMSTKIncidentAction.RAMSTKIncidentAction.get_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieves the current values of the RAMSTKIncidentAction data model</span>
+<span class="sd">        attributes.</span>
+
+<span class="sd">        :return: (incident_id, action_id, action_id, action_owner,</span>
+<span class="sd">                  action_prescribed, action_taken, approved, approved_by,</span>
+<span class="sd">                  approved_date, closed, closed_by, closed_date, due_date,</span>
+<span class="sd">                  status_id)</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_values</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incident_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_owner</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_prescribed</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_taken</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">approved</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">approved_by</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">approved_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">closed_by</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">closed_date</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">due_date</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_id</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_values</span></div>
+
+<div class="viewcode-block" id="RAMSTKIncidentAction.set_attributes"><a class="viewcode-back" href="../../../../api/dao.html#ramstk.dao.programdb.RAMSTKIncidentAction.RAMSTKIncidentAction.set_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">set_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to set the RAMSTKIncidentAction data model attributes.</span>
+
+<span class="sd">        :param tuple values: tuple of values to assign to the instance</span>
+<span class="sd">                             attributes.</span>
+<span class="sd">        :return: (_code, _msg); the error code and error message.</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_msg</span> <span class="o">=</span> <span class="s2">&quot;RAMSTK SUCCESS: Updating RAMSTKIncidentAction </span><span class="si">{0:d}</span><span class="s2"> attributes.&quot;</span><span class="o">.</span> \
+               <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_owner</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">none_to_default</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_prescribed</span> <span class="o">=</span> <span class="n">none_to_default</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">action_taken</span> <span class="o">=</span> <span class="n">none_to_default</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">approved</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">none_to_default</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">approved_by</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">none_to_default</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">approved_date</span> <span class="o">=</span> <span class="n">none_to_default</span><span class="p">(</span>
+                <span class="n">values</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">none_to_default</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">closed_by</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">none_to_default</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">closed_date</span> <span class="o">=</span> <span class="n">none_to_default</span><span class="p">(</span>
+                <span class="n">values</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">due_date</span> <span class="o">=</span> <span class="n">none_to_default</span><span class="p">(</span>
+                <span class="n">values</span><span class="p">[</span><span class="mi">9</span><span class="p">],</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">none_to_default</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">IndexError</span> <span class="k">as</span> <span class="n">_err</span><span class="p">:</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="n">error_handler</span><span class="p">(</span><span class="n">_err</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="s2">&quot;RAMSTK ERROR: Insufficient number of input values to &quot;</span> \
+                   <span class="s2">&quot;RAMSTKIncidentAction.set_attributes().&quot;</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">_err</span><span class="p">:</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="n">error_handler</span><span class="p">(</span><span class="n">_err</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="s2">&quot;RAMSTK ERROR: Incorrect data type when converting one or &quot;</span> \
+                   <span class="s2">&quot;more RAMSTKIncidentAction attributes.&quot;</span>
+
+        <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.modules.RAMSTKDataMatrix &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.modules.RAMSTKDataMatrix</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.modules.Matrix.py is part of The RAMSTK Project</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2017 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;Datamodels Package RAMSTKDataMatrix.&quot;&quot;&quot;</span>
+
+<span class="c1"># Third Party Imports</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pubsub</span> <span class="k">import</span> <span class="n">pub</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">and_</span><span class="p">,</span> <span class="n">func</span>
+
+<span class="c1"># RAMSTK Package Imports</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.programdb</span> <span class="k">import</span> <span class="n">RAMSTKMatrix</span>
+
+
+<div class="viewcode-block" id="RAMSTKDataMatrix"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataMatrix.RAMSTKDataMatrix">[docs]</a><span class="k">class</span> <span class="nc">RAMSTKDataMatrix</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The RAMSTK Data Matrix model.</span>
+
+<span class="sd">    The Matrix data model is an aggregate model of N x M cell data models.  The</span>
+<span class="sd">    attributes of a Matrix are:</span>
+
+<span class="sd">    :ivar dict dic_row_hdrs: dictionary of the row heading text to use in</span>
+<span class="sd">                             views.  Key is the &lt;MODULE&gt; ID; values are the</span>
+<span class="sd">                             noun name to use in the row heading.</span>
+<span class="sd">    :ivar dict dic_column_hdrs: dictionary of the column heading text to use</span>
+<span class="sd">                                in views.  Key is the &lt;MODULE&gt; ID; values are</span>
+<span class="sd">                                the noun name to use in the column heading.</span>
+<span class="sd">    :ivar object _column_table: the RAMSTK Progam database table to use for the</span>
+<span class="sd">                                matrix columns.  This is an SQLAlchemy object.</span>
+<span class="sd">    :ivar object _row_table: the RAMSTK Progam database table to use for the</span>
+<span class="sd">                             matrix rows.  This is an SQLAlchemy object.</span>
+<span class="sd">    :ivar dtf_matrix: the :class:`pd.DataFrame` storing the Matrix.</span>
+<span class="sd">    :ivar dao: the :class:`ramstk.dao.DAO` object used to communicate with the</span>
+<span class="sd">               RAMSTK Program database.</span>
+<span class="sd">    :ivar int n_row: the number of rows in the Matrix.</span>
+<span class="sd">    :ivar int n_col: the number of columns in the Matrix.</span>
+
+<span class="sd">    There are currently 10 matrices as defined by their matrix type.  These</span>
+<span class="sd">    are:</span>
+
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        | Matrix ID |  Row Table  | Column Table |  Matrix Type |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        |     1     | Function    | Hardware     | fnctn_hrdwr  |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        |     2     | Function    | Validation   | fnctn_vldtn  |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        |     3     | Requirement | Hardware     | rqrmnt_hrdwr |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        |     4     | Requirement | Validation   | rqrmnt_vldtn |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        |     5     | Hardware    | Requirement  | hrdwr_rqrmnt |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        |     6     | Hardware    | Validation   | hrdwr_vldtn  |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        |     7     | Validation  | Requirement  | vldtn_rqrmnt |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">        |     8     | Validation  | Hardware     | vldtn_hrdwr  |</span>
+<span class="sd">        +-----------+-------------+--------------+--------------+</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_tag</span> <span class="o">=</span> <span class="s1">&#39;matrix&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dao</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a Matrix data model instance.&quot;&quot;&quot;</span>
+        <span class="c1"># Initialize private dictionary attributes.</span>
+
+        <span class="c1"># Initialize private list attributes.</span>
+
+        <span class="c1"># Initialize private scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_column_table</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;column_table&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_row_table</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;row_table&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Initialize public dictionary attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_row_hdrs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_column_hdrs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Initialize public list attributes.</span>
+
+        <span class="c1"># Initialize public scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dao</span> <span class="o">=</span> <span class="n">dao</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_row</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_col</span> <span class="o">=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="RAMSTKDataMatrix.do_create"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataMatrix.RAMSTKDataMatrix.do_create">[docs]</a>    <span class="k">def</span> <span class="nf">do_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision_id</span><span class="p">,</span> <span class="n">matrix_type</span><span class="p">,</span> <span class="n">rkey</span><span class="o">=</span><span class="s1">&#39;rkey&#39;</span><span class="p">,</span> <span class="n">ckey</span><span class="o">=</span><span class="s1">&#39;ckey&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create or refresh a data matrix.</span>
+
+<span class="sd">        :param int revision_id: the ID of the Revision the desired Matrix is</span>
+<span class="sd">                                associated with.</span>
+<span class="sd">        :param str matrix_type: the type of the Matrix to select all rows and</span>
+<span class="sd">                                all columns for.</span>
+<span class="sd">        :keyword int rkey: the key in the row table attributes containing the</span>
+<span class="sd">                           module ID.</span>
+<span class="sd">        :keyword int ckey: the key in the column table attributes containing</span>
+<span class="sd">                           the module ID.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">_lst_row_id</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_lst_value</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_dic_column</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dao</span><span class="o">.</span><span class="n">RAMSTK_SESSION</span><span class="p">(</span>
+            <span class="n">bind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dao</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span> <span class="n">autoflush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Iterate over the rows (records from the &quot;row&quot; table) and then the</span>
+        <span class="c1"># columns (records from the &quot;column&quot; table) to create, ultimately, a</span>
+        <span class="c1"># pandas dataframe representation of the matrix.  Update the RAMSTK</span>
+        <span class="c1"># Program database with the contents of this dataframe.</span>
+        <span class="k">for</span> <span class="n">_row</span> <span class="ow">in</span> <span class="n">_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_row_table</span><span class="o">.</span><span class="n">revision_id</span> <span class="o">==</span> <span class="n">revision_id</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_row</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">_lst_row_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_attributes</span><span class="p">[</span><span class="n">rkey</span><span class="p">])</span>
+            <span class="n">_lst_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">_column</span> <span class="ow">in</span> <span class="n">_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_column_table</span><span class="o">.</span><span class="n">revision_id</span> <span class="o">==</span> <span class="n">revision_id</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_column</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+                <span class="n">_column_id</span> <span class="o">=</span> <span class="n">_attributes</span><span class="p">[</span><span class="n">ckey</span><span class="p">]</span>
+                <span class="n">_dic_column</span><span class="p">[</span><span class="n">_column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                    <span class="n">_lst_value</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">_lst_row_id</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">_dic_column</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_update</span><span class="p">(</span><span class="n">revision_id</span><span class="p">,</span> <span class="n">matrix_type</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataMatrix.do_select"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataMatrix.RAMSTKDataMatrix.do_select">[docs]</a>    <span class="k">def</span> <span class="nf">do_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select the value from the cell identified by col and row.</span>
+
+<span class="sd">        :param str col: the column of the cell.  This is the first index of the</span>
+<span class="sd">                        Pandas DataFrame.</span>
+<span class="sd">        :param str row: the row of the cell.  This is the second index of the</span>
+<span class="sd">                        Pandas DataFrame.</span>
+<span class="sd">        :return: the value in the cell at (col, row).</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="p">[</span><span class="n">col</span><span class="p">][</span><span class="n">row</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataMatrix.do_select_all"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataMatrix.RAMSTKDataMatrix.do_select_all">[docs]</a>    <span class="k">def</span> <span class="nf">do_select_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision_id</span><span class="p">,</span> <span class="n">matrix_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select everything needed to build the matrix.</span>
+
+<span class="sd">        This method selects the row headngs, the column headings, and the cell</span>
+<span class="sd">        values for the matrix then build the matrix as a Pandas DataFrame.</span>
+
+<span class="sd">        :param int revision_id: the ID of the Revision the desired Matrix is</span>
+<span class="sd">                                associated with.</span>
+<span class="sd">        :param str matrix_type: the type of the Matrix to select all rows and</span>
+<span class="sd">                                all columns for.</span>
+<span class="sd">        :param \**kwargs: See below</span>
+
+<span class="sd">        :Keyword Arguments:</span>
+<span class="sd">            * *rkey* (int) -- the key in the row table attributes containing</span>
+<span class="sd">                              the module ID.</span>
+<span class="sd">            * *ckey* (int) -- the key in the column table attributes containing</span>
+<span class="sd">                              the module ID.</span>
+<span class="sd">            * *rheader* (int) -- the index in the row table attributes</span>
+<span class="sd">                                 containing the text to use for the Matrix row</span>
+<span class="sd">                                 headings.</span>
+<span class="sd">            * *cheader* (int) -- the index in the column table attributes</span>
+<span class="sd">                                 containing the text to use for the Matrix</span>
+<span class="sd">                                 column headings.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_rkey</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;rkey&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_rkey</span> <span class="o">=</span> <span class="s1">&#39;rkey&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_ckey</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ckey&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_ckey</span> <span class="o">=</span> <span class="s1">&#39;ckey&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_rheader</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;rheader&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_rheader</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_cheader</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cheader&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_cheader</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">_dic_row_title</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;fnctn_hrdwr&#39;</span><span class="p">:</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;fnctn_vldtn&#39;</span><span class="p">:</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rqrmnt_hrdwr&#39;</span><span class="p">:</span> <span class="s1">&#39;Requirement&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rqrmnt_vldtn&#39;</span><span class="p">:</span> <span class="s1">&#39;Requirement&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hrdwr_rqrmnt&#39;</span><span class="p">:</span> <span class="s1">&#39;Hardware&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hrdwr_vldtn&#39;</span><span class="p">:</span> <span class="s1">&#39;Hardware&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;vldtn_rqrmnt&#39;</span><span class="p">:</span> <span class="s1">&#39;Validation&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;vldtn_hrdwr&#39;</span><span class="p">:</span> <span class="s1">&#39;Validation&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dao</span><span class="o">.</span><span class="n">RAMSTK_SESSION</span><span class="p">(</span>
+            <span class="n">bind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dao</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span> <span class="n">autoflush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">_column_id</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_lst_row_id</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_lst_value</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_dic_column</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_col</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_row</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Retrieve the dictionary of row headings.  The key is the row table&#39;s</span>
+        <span class="c1"># module ID.  The value is the row table field with string data</span>
+        <span class="c1"># (typically the code, description, or name field).</span>
+        <span class="k">for</span> <span class="n">_row</span> <span class="ow">in</span> <span class="n">_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_row_table</span><span class="o">.</span><span class="n">revision_id</span> <span class="o">==</span> <span class="n">revision_id</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_row</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_row_hdrs</span><span class="p">[</span><span class="n">_attributes</span><span class="p">[</span><span class="n">_rkey</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_attributes</span><span class="p">[</span><span class="n">_rheader</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_row</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Retrieve the dictionary of column headings.  The key is the column</span>
+        <span class="c1"># table&#39;s module ID.  The value is the column table field with string</span>
+        <span class="c1"># data (typically the code, description, or name field).</span>
+        <span class="k">for</span> <span class="n">_column</span> <span class="ow">in</span> <span class="n">_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_table</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_column_table</span><span class="o">.</span><span class="n">revision_id</span> <span class="o">==</span> <span class="n">revision_id</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_column</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dic_column_hdrs</span><span class="p">[</span>
+                    <span class="n">_attributes</span><span class="p">[</span><span class="n">_ckey</span><span class="p">]</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="n">_attributes</span><span class="p">[</span><span class="n">_cheader</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="c1"># ISSUE: See issue #59 at https://github.com/ReliaQualAssociates/ramstk/issues/59</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s1">&#39;Handle TypeError in &#39;</span> \
+                      <span class="s1">&#39;RAMSTKDataMatrix.do_select_all().  Tuple indices must &#39;</span> \
+                      <span class="s1">&#39;be integers, not str.  This will be fixed when all &#39;</span> \
+                      <span class="s1">&#39;the RAMSTK database tables are converted to return &#39;</span> \
+                      <span class="s1">&#39;dicts from the get_attributes() method.  Matrix </span><span class="si">{0:s}</span><span class="s1"> &#39;</span> \
+                      <span class="s1">&#39;is not working.  See issue #59&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matrix_type</span><span class="p">),</span>
+                <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_col</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Retrieve the matrix values for the desired Matrix ID.</span>
+        <span class="k">for</span> <span class="n">_matrix</span> <span class="ow">in</span> <span class="n">_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKMatrix</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="n">and_</span><span class="p">(</span>
+                    <span class="n">RAMSTKMatrix</span><span class="o">.</span><span class="n">revision_id</span> <span class="o">==</span> <span class="n">revision_id</span><span class="p">,</span>
+                    <span class="n">RAMSTKMatrix</span><span class="o">.</span><span class="n">matrix_type</span> <span class="o">==</span> <span class="n">matrix_type</span><span class="p">,</span>
+                <span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">_matrix</span><span class="o">.</span><span class="n">column_item_id</span> <span class="o">==</span> <span class="n">_column_id</span><span class="p">:</span>
+                <span class="n">_lst_row_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_matrix</span><span class="o">.</span><span class="n">row_item_id</span><span class="p">)</span>
+                <span class="n">_lst_value</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_matrix</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_lst_row_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">_matrix</span><span class="o">.</span><span class="n">row_item_id</span><span class="p">]</span>
+                <span class="n">_lst_value</span> <span class="o">=</span> <span class="p">[</span><span class="n">_matrix</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+                <span class="n">_column_id</span> <span class="o">=</span> <span class="n">_matrix</span><span class="o">.</span><span class="n">column_item_id</span>
+
+            <span class="n">_dic_column</span><span class="p">[</span><span class="n">_column_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">_lst_value</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">_lst_row_id</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">_dic_column</span><span class="p">)</span>
+
+        <span class="n">_session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># If we&#39;re not running a test, let anyone who cares know a matrix was</span>
+        <span class="c1"># selected.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_test</span><span class="p">:</span>
+            <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span>
+                <span class="s1">&#39;retrieved_matrix&#39;</span><span class="p">,</span>
+                <span class="n">matrix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="p">,</span>
+                <span class="n">column_headings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dic_column_hdrs</span><span class="p">,</span>
+                <span class="n">row_headings</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dic_row_hdrs</span><span class="p">,</span>
+                <span class="n">row</span><span class="o">=</span><span class="n">_dic_row_title</span><span class="p">[</span><span class="n">matrix_type</span><span class="p">],</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataMatrix.do_insert"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataMatrix.RAMSTKDataMatrix.do_insert">[docs]</a>    <span class="k">def</span> <span class="nf">do_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">heading</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert a row or a column into the matrix.</span>
+
+<span class="sd">        :param int item_id: the ID of the row or column item to insert into the</span>
+<span class="sd">                            Matrix (this is the module ID associated with the</span>
+<span class="sd">                            row or column to be inserted).</span>
+<span class="sd">        :param str heading: the heading for the new row or column.</span>
+<span class="sd">        :keyword bool row: indicates whether to insert a row (default) or a</span>
+<span class="sd">                           column.</span>
+<span class="sd">        :return: (_error_code, _msg); the error code and associated message.</span>
+<span class="sd">        :rtype: (int, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK SUCCESS: Inserting a row or column into the matrix.&#39;</span>
+
+        <span class="k">if</span> <span class="n">row</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">item_id</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+                <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Attempting to insert row </span><span class="si">{0:d}</span><span class="s1"> into a &#39;</span> \
+                       <span class="s1">&#39;matrix already containing a row </span><span class="si">{0:d}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dic_row_hdrs</span><span class="p">[</span><span class="n">item_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">heading</span>
+                <span class="n">_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">item_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">_values</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">n_row</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+                    <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Inserting row into matrix.  Row &#39;</span> \
+                           <span class="s1">&#39;</span><span class="si">{0:d}</span><span class="s1"> already exists or adjacent row </span><span class="si">{1:d}</span><span class="s1"> does &#39;</span> \
+                           <span class="s1">&#39;NOT exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_row</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_column_hdrs</span><span class="p">[</span><span class="n">item_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">heading</span>
+            <span class="n">_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_col</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">_values</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_col</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+                <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Inserting column into matrix.  Column &#39;</span> \
+                       <span class="s1">&#39;</span><span class="si">{0:d}</span><span class="s1"> already exists or adjacent column </span><span class="si">{1:d}</span><span class="s1"> does &#39;</span> \
+                       <span class="s1">&#39;NOT exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_col</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataMatrix.do_delete"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataMatrix.RAMSTKDataMatrix.do_delete">[docs]</a>    <span class="k">def</span> <span class="nf">do_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a column or row from the Matrix.</span>
+
+<span class="sd">        :param int item_id: the ID of the row or column item to delete from the</span>
+<span class="sd">                            Matrix.</span>
+<span class="sd">        :param bool row: indicates whether to delete a row (default) or a</span>
+<span class="sd">                         column identified by identifier.</span>
+<span class="sd">        :return: (_error_code, _msg); the error code and associated message.</span>
+<span class="sd">        :rtype: (int, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK SUCCESS: Removing a row or column from the matrix.&#39;</span>
+
+        <span class="k">if</span> <span class="n">row</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dic_row_hdrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_row</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+                <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Attempted to drop non-existent row </span><span class="si">{0:d}</span><span class="s1"> &#39;</span> \
+                       <span class="s1">&#39;from the matrix.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dic_column_hdrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n_col</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+                <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Attempted to drop non-existent column &#39;</span> \
+                       <span class="s1">&#39;</span><span class="si">{0:d}</span><span class="s1"> from the matrix.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div>
+
+<div class="viewcode-block" id="RAMSTKDataMatrix.do_update"><a class="viewcode-back" href="../../../apidocuments.html#ramstk.modules.RAMSTKDataMatrix.RAMSTKDataMatrix.do_update">[docs]</a>    <span class="k">def</span> <span class="nf">do_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision_id</span><span class="p">,</span> <span class="n">matrix_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the Matrix associated with Matrix type.</span>
+
+<span class="sd">        :param int revision_id: the Revision ID the matrix is associated with.</span>
+<span class="sd">        :param str matrix_type: the type of the Matrix to update.</span>
+<span class="sd">        :return: (_error_code, _msg); the error code and associated message.</span>
+<span class="sd">        :rtype: (int, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK SUCCESS: Updating Matrix </span><span class="si">{0:s}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">matrix_type</span><span class="p">)</span>
+
+        <span class="n">_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dao</span><span class="o">.</span><span class="n">RAMSTK_SESSION</span><span class="p">(</span>
+            <span class="n">bind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dao</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span>
+            <span class="n">autoflush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">autocommit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_matrix_id</span> <span class="o">=</span> <span class="n">_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKMatrix</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                <span class="n">RAMSTKMatrix</span><span class="o">.</span><span class="n">matrix_type</span> <span class="o">==</span> <span class="n">matrix_type</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span><span class="o">.</span><span class="n">matrix_id</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">_matrix_id</span> <span class="o">=</span> <span class="n">_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span>
+                <span class="n">func</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">RAMSTKMatrix</span><span class="o">.</span><span class="n">matrix_id</span><span class="p">)</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;last_id&quot;</span><span class="p">),</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">one</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_matrix_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_matrix_id</span><span class="o">.</span><span class="n">last_id</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">_matrix_id</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">_column_item_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_row_item_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="o">.</span><span class="n">index</span><span class="p">):</span>
+                <span class="n">_entity</span> <span class="o">=</span> <span class="n">_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKMatrix</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+                    <span class="n">and_</span><span class="p">(</span>
+                        <span class="n">RAMSTKMatrix</span><span class="o">.</span><span class="n">revision_id</span> <span class="o">==</span> <span class="n">revision_id</span><span class="p">,</span>
+                        <span class="n">RAMSTKMatrix</span><span class="o">.</span><span class="n">matrix_type</span> <span class="o">==</span> <span class="n">matrix_type</span><span class="p">,</span>
+                        <span class="n">RAMSTKMatrix</span><span class="o">.</span><span class="n">column_item_id</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">_column_item_id</span><span class="p">),</span>
+                        <span class="n">RAMSTKMatrix</span><span class="o">.</span><span class="n">row_item_id</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span>
+                            <span class="n">_row_item_id</span><span class="p">,</span>
+                        <span class="p">),</span>
+                    <span class="p">),</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># If there is no corresponding record in RAMSTKMatrix, then</span>
+                    <span class="c1"># create a new RAMSTKMatrix record and add it.</span>
+                    <span class="k">if</span> <span class="n">_entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">_entity</span> <span class="o">=</span> <span class="n">RAMSTKMatrix</span><span class="p">()</span>
+                        <span class="n">_entity</span><span class="o">.</span><span class="n">revision_id</span> <span class="o">=</span> <span class="n">revision_id</span>
+                        <span class="n">_entity</span><span class="o">.</span><span class="n">matrix_id</span> <span class="o">=</span> <span class="n">_matrix_id</span>
+                        <span class="n">_entity</span><span class="o">.</span><span class="n">matrix_type</span> <span class="o">=</span> <span class="n">matrix_type</span>
+                        <span class="n">_entity</span><span class="o">.</span><span class="n">column_item_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_column_item_id</span><span class="p">)</span>
+                        <span class="n">_entity</span><span class="o">.</span><span class="n">row_item_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_row_item_id</span><span class="p">)</span>
+
+                    <span class="n">_entity</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">dtf_matrix</span><span class="p">[</span><span class="n">_column_item_id</span><span class="p">][</span><span class="n">_row_item_id</span><span class="p">],</span>
+                    <span class="p">)</span>
+                    <span class="n">_session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">_entity</span><span class="p">)</span>
+                    <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dao</span><span class="o">.</span><span class="n">db_update</span><span class="p">(</span><span class="n">_session</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">6</span>
+                    <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Attempted to save non-existent &#39;</span> \
+                           <span class="s1">&#39;entity with Column ID </span><span class="si">{0:s}</span><span class="s1"> and Row ID </span><span class="si">{1:s}</span><span class="s1"> to &#39;</span> \
+                           <span class="s1">&#39;Matrix </span><span class="si">{2:s}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                               <span class="nb">str</span><span class="p">(</span><span class="n">_column_item_id</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">_row_item_id</span><span class="p">),</span>
+                               <span class="n">matrix_type</span><span class="p">,</span>
+                           <span class="p">)</span>
+
+        <span class="n">_session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

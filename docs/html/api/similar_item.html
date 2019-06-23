@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Similar Item Analysis Package &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Access Object Package" href="dao.html" />
+    <link rel="prev" title="Hazardous Operations (HazOps) Analysis Package" href="hazops.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../contributing.html" >Contributing</a> &#187;</li>
+          <li><a href="../apidocuments.html" accesskey="U">RAMSTK Module</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="similar-item-analysis-package">
+<h1>Similar Item Analysis Package<a class="headerlink" href="#similar-item-analysis-package" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-ramstk.modules.similar_item.Model">
+<span id="similar-item-data-models"></span><h2>Similar Item Data Models<a class="headerlink" href="#module-ramstk.modules.similar_item.Model" title="Permalink to this headline">¶</a></h2>
+<p>Similar Item Analysis Data Model.</p>
+<dl class="class">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel">
+<em class="property">class </em><code class="descclassname">ramstk.modules.similar_item.Model.</code><code class="descname">SimilarItemDataModel</code><span class="sig-paren">(</span><em>dao</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataModel.RAMSTKDataModel" title="ramstk.modules.RAMSTKDataModel.RAMSTKDataModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataModel.RAMSTKDataModel</span></code></a></p>
+<p>Contain the attributes and methods of a reliability similar_item.</p>
+<p>An RAMSTK Project will consist of one or more Modes.  The attributes of a
+Mode are:</p>
+<dl class="attribute">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel._root">
+<code class="descname">_root</code><em class="property"> = 0</em><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel._root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel._tag">
+<code class="descname">_tag</code><em class="property"> = 'SimilarItems'</em><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel._tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel.do_calculate">
+<code class="descname">do_calculate</code><span class="sig-paren">(</span><em>node_id</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel.do_calculate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel.do_calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate and allocate the goals for the selected hardware item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Node (Hardware) ID of the hardware item whose
+goal is to be allocated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel.do_delete">
+<code class="descname">do_delete</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel.do_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel.do_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a record from the RAMSTKSimilarItem table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the PyPubSub Tree() ID of the Similar Item to be
+removed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel.do_insert">
+<code class="descname">do_insert</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel.do_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel.do_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a record to the RAMSTKSimilarItem table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel.do_roll_up">
+<code class="descname">do_roll_up</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel.do_roll_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel.do_roll_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate the descriptions for lower indenture level items.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Node ID to roll the child descriptions up to.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel.do_select_all">
+<code class="descname">do_select_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel.do_select_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel.do_select_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all the SimilarItems from the RAMSTK Program database.</p>
+<p>This method retrieves all the records from the RAMSTKSimilarItem table
+in the connected RAMSTK Program database.  It then adds each to the
+SimilarItem data model treelib.Tree().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>revision_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Revision ID the SimilarItems are associated
+with.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel.do_select_children">
+<code class="descname">do_select_children</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel.do_select_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel.do_select_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select a subtree containing the immediate child nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Node ID to select the children for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a list of treelib Node()s that are child nodes of node_id.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel.do_update">
+<code class="descname">do_update</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel.do_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel.do_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the record in the RAMSTKSimilarItem table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the SimilarItem ID to save to the RAMSTK Program
+database.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Model.SimilarItemDataModel.do_update_all">
+<code class="descname">do_update_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Model.html#SimilarItemDataModel.do_update_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Model.SimilarItemDataModel.do_update_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update all RAMSTKSimilarItem records.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ramstk.modules.similar_item.Controller">
+<span id="similar-item-data-controller"></span><h2>Similar Item Data Controller<a class="headerlink" href="#module-ramstk.modules.similar_item.Controller" title="Permalink to this headline">¶</a></h2>
+<p>SimilarItem Package Data Controller Module.</p>
+<dl class="class">
+<dt id="ramstk.modules.similar_item.Controller.SimilarItemDataController">
+<em class="property">class </em><code class="descclassname">ramstk.modules.similar_item.Controller.</code><code class="descname">SimilarItemDataController</code><span class="sig-paren">(</span><em>dao</em>, <em>configuration</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Controller.html#SimilarItemDataController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Controller.SimilarItemDataController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController" title="ramstk.modules.RAMSTKDataController.RAMSTKDataController"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataController.RAMSTKDataController</span></code></a></p>
+<p>Provide an interface between SimilarItem data models and RAMSTK views.</p>
+<p>A single SimilarItem data controller can manage one or more SimilarItem
+data models.</p>
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Controller.SimilarItemDataController._request_do_calculate">
+<code class="descname">_request_do_calculate</code><span class="sig-paren">(</span><em>node_id</em>, <em>hazard_rate</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Controller.html#SimilarItemDataController._request_do_calculate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Controller.SimilarItemDataController._request_do_calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to calculate the record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the PyPubSub Tree() ID of the Stakeholder to
+calculate.</p></li>
+<li><p><strong>hazard_rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the current hazard rate of the Similar Item</p></li>
+</ul>
+</dd>
+</dl>
+<p>node that is being calculated.
+:return: False if successful or True if an error is encountered.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Controller.SimilarItemDataController._request_do_insert">
+<code class="descname">_request_do_insert</code><span class="sig-paren">(</span><em>revision_id</em>, <em>hardware_id</em>, <em>parent_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Controller.html#SimilarItemDataController._request_do_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Controller.SimilarItemDataController._request_do_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to add an RAMSTKSimilarItem table record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>revision_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Revision ID this Similar Item record will</p>
+</dd>
+</dl>
+<p>be associated with.
+:param int hardware_id: the Hardware ID this Similar Item record will
+be associated with.
+:param int parent_id: the Hardware ID of the parent hardware item.
+:return: False if successful or True if an error is encountered.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Controller.SimilarItemDataController._request_do_select_children">
+<code class="descname">_request_do_select_children</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Controller.html#SimilarItemDataController._request_do_select_children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Controller.SimilarItemDataController._request_do_select_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the children for the selected Hardware item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the key:value pairs of the Similar Item
+attributes.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>children; a list of child nodes from the Similar Item tree.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.similar_item.Controller.SimilarItemDataController.request_do_roll_up">
+<code class="descname">request_do_roll_up</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/similar_item/Controller.html#SimilarItemDataController.request_do_roll_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.similar_item.Controller.SimilarItemDataController.request_do_roll_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to roll-up change descriptions of child nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Node ID of the parent to roll-up descriptions</p>
+</dd>
+</dl>
+<p>to.
+:return: None
+:rtype: None</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Similar Item Analysis Package</a><ul>
+<li><a class="reference internal" href="#module-ramstk.modules.similar_item.Model">Similar Item Data Models</a></li>
+<li><a class="reference internal" href="#module-ramstk.modules.similar_item.Controller">Similar Item Data Controller</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="hazops.html"
+                        title="previous chapter">Hazardous Operations (HazOps) Analysis Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="dao.html"
+                        title="next chapter">Data Access Object Package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/similar_item.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="dao.html" title="Data Access Object Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="hazops.html" title="Hazardous Operations (HazOps) Analysis Package"
+             accesskey="P">previous</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

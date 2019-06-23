@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.gui.gtk.ramstk.TreeView &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.gui.gtk.ramstk.TreeView</h1><div class="highlight"><pre>
+<span></span><span class="c1"># pylint: disable=non-parent-init-called</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.gui.gtk.ramstk.TreeView.py is part of the RAMSTK Project</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2017 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;RAMSTKTreeView Module.&quot;&quot;&quot;</span>
+
+<span class="c1"># Standard Library Imports</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="c1"># Third Party Imports</span>
+<span class="kn">import</span> <span class="nn">defusedxml.lxml</span> <span class="k">as</span> <span class="nn">lxml</span>
+<span class="kn">from</span> <span class="nn">sortedcontainers</span> <span class="k">import</span> <span class="n">SortedDict</span>
+
+<span class="c1"># RAMSTK Package Imports</span>
+<span class="kn">from</span> <span class="nn">ramstk.Utilities</span> <span class="k">import</span> <span class="n">integer_to_boolean</span>
+
+<span class="c1"># RAMSTK Local Imports</span>
+<span class="kn">from</span> <span class="nn">.Label</span> <span class="k">import</span> <span class="n">RAMSTKLabel</span>
+<span class="kn">from</span> <span class="nn">.Widget</span> <span class="k">import</span> <span class="n">Gdk</span><span class="p">,</span> <span class="n">GdkPixbuf</span><span class="p">,</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">Pango</span>
+
+
+<div class="viewcode-block" id="RAMSTKTreeView"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView">[docs]</a><span class="k">class</span> <span class="nc">RAMSTKTreeView</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">TreeView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The RAMSTKTreeView class.&quot;&quot;&quot;</span>
+
+    <span class="c1"># pylint: disable=R0913, R0914, W0613</span>
+    <span class="c1"># Retain the arguments for backwards compatibility.  Once all current</span>
+    <span class="c1"># RAMSTKTreeView() instances are updated to use the new API, the arguments</span>
+    <span class="c1"># can be removed.</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt_path</span><span class="p">,</span> <span class="n">fmt_idx</span><span class="p">,</span> <span class="n">fmt_file</span><span class="p">,</span> <span class="n">bg_col</span><span class="p">,</span> <span class="n">fg_col</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a RAMSTKTreeView() instance.</span>
+
+<span class="sd">        :param str fmt_path: the absolute path to the format file.</span>
+<span class="sd">        :param int fmt_idx: the index of the format file (deprecated).</span>
+<span class="sd">        :param str fmt_file: the name of the format file.</span>
+<span class="sd">        :param str bg_col: the hex string for the cell background color.</span>
+<span class="sd">        :param str fg_col: the hex string for the cell foreground color.</span>
+<span class="sd">        :param \**kwargs: See below</span>
+
+<span class="sd">        :Keyword Arguments:</span>
+<span class="sd">            * *pixbuf* (bool) -- indicates whether there is a pixbuf at the</span>
+<span class="sd">                                 beginning of each row.</span>
+<span class="sd">            * *indexed* (bool) -- indicates whether the data to load into the</span>
+<span class="sd">                                  tree will be indexed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Initialize private dictionary instance attributes:</span>
+
+        <span class="c1"># Initialize private list instance attributes:</span>
+
+        <span class="c1"># Initialize private scalar instance attributes.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_pixbuf</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;pixbuf&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_pixbuf</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_indexed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;indexed&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_indexed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Initialize public dictionary instance attributes.</span>
+
+        <span class="c1"># Initialize public list instance attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editable</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">korder</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Initialize public scalar instance attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pixbuf_col</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index_col</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># This is required for backwards compatibility.  Once current</span>
+        <span class="c1"># RAMSTKTreeView() instances are updated to use the new API, this if</span>
+        <span class="c1"># block can be removed.</span>
+        <span class="k">if</span> <span class="n">fmt_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_parse_format</span><span class="p">(</span>
+                <span class="n">fmt_path</span><span class="p">,</span>
+                <span class="n">fmt_file</span><span class="p">,</span>
+                <span class="n">pixbuf</span><span class="o">=</span><span class="n">_pixbuf</span><span class="p">,</span>
+                <span class="n">indexed</span><span class="o">=</span><span class="n">_indexed</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">make_model</span><span class="p">(</span><span class="n">bg_col</span><span class="p">,</span> <span class="n">fg_col</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RAMSTKTreeView.do_parse_format"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView.do_parse_format">[docs]</a>    <span class="k">def</span> <span class="nf">do_parse_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt_path</span><span class="p">,</span> <span class="n">fmt_file</span><span class="p">,</span> <span class="n">pixbuf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indexed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parse the format file for the RAMSTKTreeView().</span>
+
+<span class="sd">        :param str fmt_path: the base XML path in the format file to read.</span>
+<span class="sd">        :param str fmt_file: the absolute path to the format file to read.</span>
+<span class="sd">        :keyword bool pixbuf: indicates whether or not to prepend a PixBuf</span>
+<span class="sd">                              column to the Gtk.TreeModel().</span>
+<span class="sd">        :keyword bool indexed: indicates whether or not to append a column to</span>
+<span class="sd">                               the Gtk.TreeModel() to hold indexing</span>
+<span class="sd">                               information.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Retrieve the column heading text from the format file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headings</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fmt_file</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">fmt_path</span> <span class="o">+</span> <span class="s2">&quot;/usertitle&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve the column datatype from the format file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fmt_file</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">fmt_path</span> <span class="o">+</span> <span class="s2">&quot;/datatype&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve the column position from the format file.</span>
+        <span class="n">_position</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fmt_file</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">fmt_path</span> <span class="o">+</span> <span class="s2">&quot;/position&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve the cell renderer type from the format file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fmt_file</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">fmt_path</span> <span class="o">+</span> <span class="s2">&quot;/widget&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve whether or not the column is editable from the format file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editable</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fmt_file</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">fmt_path</span> <span class="o">+</span> <span class="s2">&quot;/editable&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve whether or not the column is visible from the format file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fmt_file</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">fmt_path</span> <span class="o">+</span> <span class="s2">&quot;/visible&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Initialize public scalar instance attributes.</span>
+        <span class="n">_keys</span> <span class="o">=</span> <span class="n">lxml</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">fmt_file</span><span class="p">)</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="n">fmt_path</span> <span class="o">+</span> <span class="s2">&quot;/key&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Create a list of GObject datatypes to pass to the model.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">)):</span>  <span class="c1"># pylint: disable=C0200</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">editable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">integer_to_boolean</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">editable</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">headings</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headings</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;  &quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">_position</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">integer_to_boolean</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">_position</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_position</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="c1"># Not all format files will have keys.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_keys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_keys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Append entries to each list if this RAMSTKTreeView is to display an</span>
+        <span class="c1"># icon at the beginning of the row (Usage Profile, Hardware, etc.)</span>
+        <span class="k">if</span> <span class="n">pixbuf</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;pixbuf&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">editable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">headings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pixbuf_col</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;pixbuf&#39;</span><span class="p">)</span>
+
+        <span class="c1"># We may want to add a column to hold indexing information for program</span>
+        <span class="c1"># control.  This is used, for example, by aggregate data views to hold</span>
+        <span class="c1"># the Node ID from the PyPubSub Tree().</span>
+        <span class="k">if</span> <span class="n">indexed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;gchararray&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">editable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">headings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">index_col</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="c1"># Sort each of the lists according to the desired sequence provided in</span>
+        <span class="c1"># the _position list.  This is necessary to allow for user-specific</span>
+        <span class="c1"># ordering of columns in the RAMSTKTreeView.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">))</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editable</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">editable</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headings</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">headings</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">korder</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">_position</span><span class="p">,</span> <span class="n">_keys</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">))]</span>
+
+        <span class="c1"># Add a column at the end to hold a string representation of the</span>
+        <span class="c1"># attributes dict.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;gchararray&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">editable</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Attributes&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">korder</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;dict&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView.do_set_visible_columns"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView.do_set_visible_columns">[docs]</a>    <span class="k">def</span> <span class="nf">do_set_visible_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the treeview columns visible, hidden, and/or editable.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_visible</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;visible&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_visible</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_editable</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;editable&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_editable</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">_col</span> <span class="ow">in</span> <span class="n">_visible</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">_col</span><span class="p">)</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">_col</span><span class="p">)</span>
+                <span class="n">_cells</span> <span class="o">=</span> <span class="n">_column</span><span class="o">.</span><span class="n">get_cells</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">_cells</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">__</span><span class="p">,</span> <span class="n">_cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_cells</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;background&#39;</span><span class="p">,</span> <span class="s1">&#39;light gray&#39;</span><span class="p">)</span>
+                    <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;editable&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;cell-background&#39;</span><span class="p">,</span> <span class="s1">&#39;light gray&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_col</span> <span class="ow">in</span> <span class="n">_editable</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">_col</span><span class="p">)</span>
+                <span class="n">_cells</span> <span class="o">=</span> <span class="n">_column</span><span class="o">.</span><span class="n">get_cells</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">_cells</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">__</span><span class="p">,</span> <span class="n">_cell</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_cells</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;background&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>
+                    <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;editable&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;cell-background&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView.do_load_tree"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView.do_load_tree">[docs]</a>    <span class="k">def</span> <span class="nf">do_load_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tree</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the Module View&#39;s Gtk.TreeModel() with the Module&#39;s tree.</span>
+
+<span class="sd">        :param tree: the Module&#39;s treelib Tree().</span>
+<span class="sd">        :type tree: :class:`treelib.Tree`</span>
+<span class="sd">        :param row: the parent row in the Gtk.TreeView() to add the new item.</span>
+<span class="sd">        :type row: :class:`Gtk.TreeIter`</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_row</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">()</span>
+
+        <span class="n">_node</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">SortedDict</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">_entity</span> <span class="o">=</span> <span class="n">_node</span><span class="o">.</span><span class="n">data</span>
+
+        <span class="n">_attributes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">_entity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># pylint: disable=too-many-nested-blocks</span>
+            <span class="c1"># For simple data models that return a RAMSTK database</span>
+            <span class="c1"># table instance for the data object, the first try</span>
+            <span class="c1"># statement will create the list of attribute values.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_temp</span> <span class="o">=</span> <span class="n">_entity</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">korder</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">_key</span> <span class="o">==</span> <span class="s1">&#39;dict&#39;</span><span class="p">:</span>
+                        <span class="n">_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_temp</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_temp</span><span class="p">[</span><span class="n">_key</span><span class="p">],</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+                                <span class="n">_temp</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_temp</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+                            <span class="n">_temp</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_temp</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                        <span class="k">except</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+                            <span class="k">pass</span>
+                        <span class="n">_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_temp</span><span class="p">[</span><span class="n">_key</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="c1"># For aggregate data models (Hardware, Software) that</span>
+                <span class="c1"># return a dictionary of attributes from ALL associated</span>
+                <span class="c1"># RAMSTK database tables, this try statement will create</span>
+                <span class="c1"># the list of attribute values.</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">korder</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">_key</span> <span class="o">==</span> <span class="s1">&#39;dict&#39;</span><span class="p">:</span>
+                            <span class="n">_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_entity</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">_entity</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_entity</span><span class="p">[</span><span class="n">_key</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                                <span class="k">pass</span>
+                            <span class="n">_attributes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_entity</span><span class="p">[</span><span class="n">_key</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_row</span> <span class="o">=</span> <span class="n">_model</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">_attributes</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">_row</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">_row</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">_n</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">children</span><span class="p">(</span><span class="n">_node</span><span class="o">.</span><span class="n">identifier</span><span class="p">):</span>
+            <span class="n">_child_tree</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">subtree</span><span class="p">(</span><span class="n">_n</span><span class="o">.</span><span class="n">identifier</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">do_load_tree</span><span class="p">(</span><span class="n">_child_tree</span><span class="p">,</span> <span class="n">_row</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView._do_make_column"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView._do_make_column">[docs]</a>    <span class="k">def</span> <span class="nf">_do_make_column</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cells</span><span class="p">,</span> <span class="n">visible</span><span class="p">,</span> <span class="n">heading</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a Gtk.TreeViewColumn().</span>
+
+<span class="sd">        :param list cells: list of Gtk.CellRenderer()s that are to be packed in</span>
+<span class="sd">                           the column.</span>
+<span class="sd">        :param int visible: indicates whether the column will be visible.</span>
+<span class="sd">        :param str heading: the column heading text.</span>
+<span class="sd">        :return: _column</span>
+<span class="sd">        :rtype: :class:`Gtk.TreeViewColumn`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_column</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">TreeViewColumn</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">_cell</span><span class="p">,</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererPixbuf</span><span class="p">):</span>
+                <span class="n">_column</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">_cell</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_column</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">_cell</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">_column</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;notify::width&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resize_wrap</span><span class="p">,</span> <span class="n">_cell</span><span class="p">)</span>
+
+        <span class="n">_label</span> <span class="o">=</span> <span class="n">RAMSTKLabel</span><span class="p">(</span>
+            <span class="n">heading</span><span class="p">,</span>
+            <span class="n">width</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">height</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">justify</span><span class="o">=</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Justification</span><span class="o">.</span><span class="n">CENTER</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">_column</span><span class="o">.</span><span class="n">set_widget</span><span class="p">(</span><span class="n">_label</span><span class="p">)</span>
+        <span class="n">_column</span><span class="o">.</span><span class="n">set_resizable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">_column</span><span class="o">.</span><span class="n">set_alignment</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">_column</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_column</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView._do_make_combo_cell"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView._do_make_combo_cell">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_do_make_combo_cell</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a Gtk.CellRendererCombo().</span>
+
+<span class="sd">        :return: _cell</span>
+<span class="sd">        :rtype: :class:`Gtk.CellRendererCombo`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_cell</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererCombo</span><span class="p">()</span>
+        <span class="n">_cellmodel</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ListStore</span><span class="p">(</span><span class="n">GObject</span><span class="o">.</span><span class="n">TYPE_STRING</span><span class="p">)</span>
+        <span class="n">_cellmodel</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">])</span>
+        <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;has-entry&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="n">_cellmodel</span><span class="p">)</span>
+        <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;text-column&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_cell</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView._do_make_spin_cell"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView._do_make_spin_cell">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_do_make_spin_cell</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a Gtk.CellRendererCombo().</span>
+
+<span class="sd">        :param str bg_color: the cell background color.</span>
+<span class="sd">        :param str fg_color: the cell foreground color.</span>
+<span class="sd">        :param int editable: indicates whether the cell is editable.</span>
+<span class="sd">        :param int position: the position in the Gtk.TreeModel() that this</span>
+<span class="sd">                             cell falls.</span>
+<span class="sd">        :param model: the Gtk.TreeModel() the cell belongs to.</span>
+<span class="sd">        :type model: :class:`Gtk.TreeModel`</span>
+<span class="sd">        :return: _cell</span>
+<span class="sd">        :rtype: :class:`Gtk.CellRendererCombo`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_cell</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererSpin</span><span class="p">()</span>
+        <span class="n">_adjustment</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Adjustment</span><span class="p">(</span><span class="n">upper</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">step_incr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;adjustment&#39;</span><span class="p">,</span> <span class="n">_adjustment</span><span class="p">)</span>
+        <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;digits&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_cell</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView._do_make_text_cell"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView._do_make_text_cell">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_do_make_text_cell</span><span class="p">(</span><span class="n">blob</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a Gtk.CellRendererCombo().</span>
+
+<span class="sd">        :param bool blob: indicates whether the cell will be displaying a BLOB</span>
+<span class="sd">                          field.</span>
+<span class="sd">        :type model: :class:`Gtk.TreeModel`</span>
+<span class="sd">        :return: _cell</span>
+<span class="sd">        :rtype: :class:`Gtk.CellRendererCombo`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">blob</span><span class="p">:</span>
+            <span class="n">_cell</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererText</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_cell</span> <span class="o">=</span> <span class="n">CellRendererML</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">_cell</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView._do_make_toggle_cell"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView._do_make_toggle_cell">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_do_make_toggle_cell</span><span class="p">(</span><span class="n">editable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make a Gtk.CellRendererCombo().</span>
+
+<span class="sd">        :param int editable: indicates whether the cell is editable.</span>
+<span class="sd">        :return: _cell</span>
+<span class="sd">        :rtype: :class:`Gtk.CellRendererCombo`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_cell</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererToggle</span><span class="p">()</span>
+        <span class="n">_cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;activatable&#39;</span><span class="p">,</span> <span class="n">editable</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_cell</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView._do_set_properties"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView._do_set_properties">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_do_set_properties</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">bg_color</span><span class="p">,</span> <span class="n">fg_color</span><span class="p">,</span> <span class="n">editable</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set common properties of Gtk.CellRenderers().</span>
+
+<span class="sd">        :param cell: the cell whose properties are to be set.</span>
+<span class="sd">        :type cell: :class:`Gtk.CellRenderer`</span>
+<span class="sd">        :param str bg_color: the cell background color.</span>
+<span class="sd">        :param str fg_color: the cell foreground color.</span>
+<span class="sd">        :param int editable: indicates whether the cell is editable.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">editable</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;cell-background&#39;</span><span class="p">,</span> <span class="s1">&#39;light gray&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;cell-background&#39;</span><span class="p">,</span> <span class="n">bg_color</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererToggle</span><span class="p">):</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;editable&#39;</span><span class="p">,</span> <span class="n">editable</span><span class="p">)</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;foreground&#39;</span><span class="p">,</span> <span class="n">fg_color</span><span class="p">)</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;wrap-width&#39;</span><span class="p">,</span> <span class="mi">250</span><span class="p">)</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;wrap-mode&#39;</span><span class="p">,</span> <span class="n">Pango</span><span class="o">.</span><span class="n">WrapMode</span><span class="o">.</span><span class="n">WORD</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;activatable&#39;</span><span class="p">,</span> <span class="n">editable</span><span class="p">)</span>
+
+        <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;yalign&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView.do_edit_cell"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView.do_edit_cell">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">do_edit_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">new_text</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle Gtk.CellRenderer() edits.</span>
+
+<span class="sd">        :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.</span>
+<span class="sd">        :param str path: the Gtk.TreeView() path of the Gtk.CellRenderer() that</span>
+<span class="sd">                         was edited.</span>
+<span class="sd">        :param str new_text: the new text in the edited Gtk.CellRenderer().</span>
+<span class="sd">        :param int position: the column position of the edited</span>
+<span class="sd">                             Gtk.CellRenderer().</span>
+<span class="sd">        :param Gtk.TreeModel model: the Gtk.TreeModel() the Gtk.CellRenderer()</span>
+<span class="sd">                                    belongs to.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_convert</span> <span class="o">=</span> <span class="n">GObject</span><span class="o">.</span><span class="n">type_name</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_column_type</span><span class="p">(</span><span class="n">position</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererToggle</span><span class="p">):</span>
+            <span class="n">model</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">cell</span><span class="o">.</span><span class="n">get_active</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">_convert</span> <span class="o">==</span> <span class="s1">&#39;gchararray&#39;</span><span class="p">:</span>
+            <span class="n">model</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">new_text</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">_convert</span> <span class="o">==</span> <span class="s1">&#39;gint&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">model</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">new_text</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">model</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">new_text</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">_convert</span> <span class="o">==</span> <span class="s1">&#39;gfloat&#39;</span><span class="p">:</span>
+            <span class="n">model</span><span class="p">[</span><span class="n">path</span><span class="p">][</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">new_text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView.get_cell_model"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView.get_cell_model">[docs]</a>    <span class="k">def</span> <span class="nf">get_cell_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the Gtk.TreeModel() from a Gtk.CellRendererCombo().</span>
+
+<span class="sd">        :param int column: the column number to retrieve the cell&#39;s model.</span>
+<span class="sd">        :param bool clear: whether or not to clear the Gtk.TreeModel().</span>
+<span class="sd">        Default is True.</span>
+<span class="sd">        :return: _model</span>
+<span class="sd">        :rtype: :class:`Gtk.TreeModel`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
+        <span class="n">_cell</span> <span class="o">=</span> <span class="n">_column</span><span class="o">.</span><span class="n">get_cells</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">_model</span> <span class="o">=</span> <span class="n">_cell</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">clear</span><span class="p">:</span>
+            <span class="n">_model</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">_model</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView.make_model"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView.make_model">[docs]</a>    <span class="k">def</span> <span class="nf">make_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bg_color</span><span class="o">=</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="n">fg_color</span><span class="o">=</span><span class="s1">&#39;#FFFFFF&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make the RAMSTKTreeView() data model.</span>
+
+<span class="sd">        :keyword str bg_col: the background color to use for each row.</span>
+<span class="sd">                             Defaults to white.</span>
+<span class="sd">        :keyword str fg_col: the foreground (text) color to use for each row.</span>
+<span class="sd">                             Defaults to black.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_types</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Create a list of GObject datatypes to pass to the model.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">)):</span>  <span class="c1"># pylint: disable=C0200</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;pixbuf&#39;</span><span class="p">:</span>
+                <span class="n">_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GdkPixbuf</span><span class="o">.</span><span class="n">Pixbuf</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;pyobject&#39;</span><span class="p">:</span>
+                <span class="n">_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GObject</span><span class="o">.</span><span class="n">TYPE_PYOBJECT</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GObject</span><span class="o">.</span><span class="n">type_from_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+        <span class="n">_model</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">TreeStore</span><span class="p">(</span><span class="o">*</span><span class="n">_types</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">_model</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_idx</span><span class="p">,</span> <span class="n">_widget</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">_widget</span> <span class="o">==</span> <span class="s1">&#39;combo&#39;</span><span class="p">:</span>
+                <span class="n">_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_make_combo_cell</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">_widget</span> <span class="o">==</span> <span class="s1">&#39;spin&#39;</span><span class="p">:</span>
+                <span class="n">_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_make_spin_cell</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">_widget</span> <span class="o">==</span> <span class="s1">&#39;toggle&#39;</span><span class="p">:</span>
+                <span class="n">_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_make_toggle_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">editable</span><span class="p">[</span><span class="n">_idx</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">_widget</span> <span class="o">==</span> <span class="s1">&#39;blob&#39;</span><span class="p">:</span>
+                <span class="n">_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_make_text_cell</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_make_text_cell</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_do_set_properties</span><span class="p">(</span>
+                <span class="n">_cell</span><span class="p">,</span>
+                <span class="n">bg_color</span><span class="p">,</span>
+                <span class="n">fg_color</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">editable</span><span class="p">[</span><span class="n">_idx</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixbuf_col</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">_idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_pbcell</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererPixbuf</span><span class="p">()</span>
+                <span class="n">_pbcell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;xalign&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+                <span class="n">_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_make_column</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">_pbcell</span><span class="p">,</span> <span class="n">_cell</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="p">[</span><span class="n">_idx</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">headings</span><span class="p">[</span><span class="n">_idx</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="n">_column</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">_pbcell</span><span class="p">,</span> <span class="n">pixbuf</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pixbuf_col</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_column</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_make_column</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">_cell</span><span class="p">,</span>
+                    <span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">visible</span><span class="p">[</span><span class="n">_idx</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">headings</span><span class="p">[</span><span class="n">_idx</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="n">_column</span><span class="o">.</span><span class="n">set_cell_data_func</span><span class="p">(</span>
+                <span class="n">_cell</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_format_cell</span><span class="p">,</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="n">_idx</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatypes</span><span class="p">[</span><span class="n">_idx</span><span class="p">]),</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">_widget</span> <span class="o">==</span> <span class="s1">&#39;toggle&#39;</span><span class="p">:</span>
+                <span class="n">_column</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">_cell</span><span class="p">,</span> <span class="n">active</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="n">_idx</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">_widget</span> <span class="o">!=</span> <span class="s1">&#39;pixbuf&#39;</span><span class="p">:</span>
+                <span class="n">_column</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">_cell</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">[</span><span class="n">_idx</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">_idx</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">_column</span><span class="o">.</span><span class="n">set_reorderable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">append_column</span><span class="p">(</span><span class="n">_column</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView._format_cell"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView._format_cell">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_format_cell</span><span class="p">(</span><span class="n">__column</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the formatting of the Gtk.Treeview() Gtk.CellRenderers().</span>
+
+<span class="sd">        :param __column: the Gtk.TreeViewColumn() containing the</span>
+<span class="sd">                         Gtk.CellRenderer() to format.</span>
+<span class="sd">        :type __column: :class:`Gtk.TreeViewColumn`</span>
+<span class="sd">        :param cell: the Gtk.CellRenderer() to format.</span>
+<span class="sd">        :type cell: :class:`Gtk.CellRenderer`</span>
+<span class="sd">        :param model: the Gtk.TreeModel() containing the Gtk.TreeViewColumn().</span>
+<span class="sd">        :type model: :class:`Gtk.TreeModel`</span>
+<span class="sd">        :param row: the Gtk.TreeIter() pointing to the row containing the</span>
+<span class="sd">                    Gtk.CellRenderer() to format.</span>
+<span class="sd">        :type row: :class:`Gtk.TreeIter`</span>
+<span class="sd">        :param tuple data: a tuple containing the position and the data type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;gfloat&#39;</span><span class="p">:</span>
+            <span class="c1"># fmt = &#39;{0:0.&#39; + str(Configuration.PLACES) + &#39;g}&#39;</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:0.6g}</span><span class="s1">&#39;</span>
+        <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;gint&#39;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:0d}</span><span class="s1">&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># It&#39;s a Gtk.CellRendererToggle</span>
+            <span class="k">pass</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="RAMSTKTreeView._resize_wrap"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.RAMSTKTreeView._resize_wrap">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_resize_wrap</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">__param</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dynamically set wrap-width property for a Gtk.CellRenderer().</span>
+
+<span class="sd">        This is called whenever the column width in the Gtk.TreeView() is</span>
+<span class="sd">        resized.</span>
+
+<span class="sd">        :param column: the Gtk.TreeViewColumn() being resized.</span>
+<span class="sd">        :type column: :class:`Gtk.TreeViewColumn`</span>
+<span class="sd">        :param GParamInt __param: the triggering parameter.</span>
+<span class="sd">        :param cell: the Gtk.CellRenderer() that needs to be resized.</span>
+<span class="sd">        :type cell: :class:`Gtk.CellRenderer`</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_width</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">_width</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_width</span> <span class="o">+=</span> <span class="mi">10</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;wrap-width&#39;</span><span class="p">,</span> <span class="n">_width</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>  <span class="c1"># This is a Gtk.CellRendererToggle</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="n">_width</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CellRendererML"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.CellRendererML">[docs]</a><span class="k">class</span> <span class="nc">CellRendererML</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererText</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a multi-line cell renderer.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a CellRendererML instance.&quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">treestore</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">treeiter</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">TextView</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textbuffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textedit</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">()</span>
+
+<div class="viewcode-block" id="CellRendererML.do_get_size"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.CellRendererML.do_get_size">[docs]</a>    <span class="k">def</span> <span class="nf">do_get_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">cell_area</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the size of the CellRendererML.</span>
+
+<span class="sd">        :param widget:</span>
+<span class="sd">        :param cell_area:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">size_tuple</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">CellRendererText</span><span class="o">.</span><span class="n">do_get_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">cell_area</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">size_tuple</span></div>
+
+<div class="viewcode-block" id="CellRendererML.do_start_editing"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.CellRendererML.do_start_editing">[docs]</a>    <span class="k">def</span> <span class="nf">do_start_editing</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">__event</span><span class="p">,</span>
+            <span class="n">treeview</span><span class="p">,</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">__background_area</span><span class="p">,</span>
+            <span class="n">cell_area</span><span class="p">,</span>
+            <span class="n">__flags</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle edits of the CellRendererML.</span>
+
+<span class="sd">        :param __event:</span>
+<span class="sd">        :param treeview:</span>
+<span class="sd">        :param path:</span>
+<span class="sd">        :param __background_area:</span>
+<span class="sd">        :param cell_area:</span>
+<span class="sd">        :param __flags:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;editable&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">treeview</span><span class="o">.</span><span class="n">get_selection</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">treestore</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">treeiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="o">.</span><span class="n">get_selected</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Dialog</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">treeview</span><span class="o">.</span><span class="n">get_toplevel</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">action_area</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">set_decorated</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;skip-taskbar-hint&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">set_transient_for</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit</span><span class="o">.</span><span class="n">set_editable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;visible&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textbuffer</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;key-press-event&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keyhandler</span><span class="p">)</span>
+
+        <span class="n">scrolled_window</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ScrolledWindow</span><span class="p">()</span>
+        <span class="n">scrolled_window</span><span class="o">.</span><span class="n">set_policy</span><span class="p">(</span>
+            <span class="n">Gtk</span><span class="o">.</span><span class="n">PolicyType</span><span class="o">.</span><span class="n">AUTOMATIC</span><span class="p">,</span>
+            <span class="n">Gtk</span><span class="o">.</span><span class="n">PolicyType</span><span class="o">.</span><span class="n">AUTOMATIC</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">scrolled_window</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s1">&#39;visible&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># self.textedit_window.vbox.pack_start(scrolled_window, True, True, 0)</span>
+
+        <span class="n">scrolled_window</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">textedit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">vbox</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">scrolled_window</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">realize</span><span class="p">()</span>
+
+        <span class="c1"># Position the popup below the edited cell (and try hard to keep the</span>
+        <span class="c1"># popup within the toplevel window)</span>
+        <span class="p">(</span><span class="n">tree_x</span><span class="p">,</span> <span class="n">tree_y</span><span class="p">)</span> <span class="o">=</span> <span class="n">treeview</span><span class="o">.</span><span class="n">get_bin_window</span><span class="p">()</span><span class="o">.</span><span class="n">get_origin</span><span class="p">()</span>
+        <span class="p">(</span><span class="n">tree_w</span><span class="p">,</span> <span class="n">tree_h</span><span class="p">)</span> <span class="o">=</span> <span class="n">treeview</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">get_geometry</span><span class="p">()[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+        <span class="p">(</span><span class="n">t_w</span><span class="p">,</span> <span class="n">t_h</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">window</span><span class="o">.</span><span class="n">get_geometry</span><span class="p">()[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">x_pos</span> <span class="o">=</span> <span class="n">tree_x</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">cell_area</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+            <span class="n">tree_w</span> <span class="o">-</span> <span class="n">t_w</span> <span class="o">+</span> <span class="n">treeview</span><span class="o">.</span><span class="n">get_visible_rect</span><span class="p">()</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">y_pos</span> <span class="o">=</span> <span class="n">tree_y</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="n">cell_area</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+            <span class="n">tree_h</span> <span class="o">-</span> <span class="n">t_h</span> <span class="o">+</span> <span class="n">treeview</span><span class="o">.</span><span class="n">get_visible_rect</span><span class="p">()</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">cell_area</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">cell_area</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="c1"># Run the dialog, get response by tracking keypresses</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">response</span> <span class="o">==</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ResponseType</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+
+            <span class="p">(</span><span class="n">iter_first</span><span class="p">,</span> <span class="n">iter_last</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbuffer</span><span class="o">.</span><span class="n">get_bounds</span><span class="p">()</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">textbuffer</span><span class="o">.</span><span class="n">get_text</span><span class="p">(</span><span class="n">iter_first</span><span class="p">,</span> <span class="n">iter_last</span><span class="p">)</span>
+
+            <span class="c1"># self.treestore[path][2] = text</span>
+
+            <span class="n">treeview</span><span class="o">.</span><span class="n">set_cursor</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s1">&#39;edited&#39;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">response</span> <span class="o">==</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ResponseType</span><span class="o">.</span><span class="n">CANCEL</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;response </span><span class="si">%i</span><span class="s2"> received&quot;</span> <span class="o">%</span> <span class="n">response</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CellRendererML._keyhandler"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.TreeView.CellRendererML._keyhandler">[docs]</a>    <span class="k">def</span> <span class="nf">_keyhandler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__widget</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle key-press-events on the Gtk.TextView().</span>
+
+<span class="sd">        :param __widget: the Gtk.TextView() that called this method.</span>
+<span class="sd">        :param event: the Gdk.Event() that called this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_keyname</span> <span class="o">=</span> <span class="n">Gdk</span><span class="o">.</span><span class="n">keyval_name</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">keyval</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">get_state</span><span class="p">()</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Gdk</span><span class="o">.</span><span class="n">ModifierType</span><span class="o">.</span><span class="n">SHIFT_MASK</span> <span class="o">|</span> <span class="n">Gdk</span><span class="o">.</span><span class="n">ModifierType</span><span class="o">.</span><span class="n">CONTROL_MASK</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="n">_keyname</span> <span class="o">==</span> <span class="s1">&#39;Return&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">textedit_window</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">ResponseType</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span></div></div>
+
+
+<span class="c1"># Register the new widget types.</span>
+<span class="n">GObject</span><span class="o">.</span><span class="n">type_register</span><span class="p">(</span><span class="n">RAMSTKTreeView</span><span class="p">)</span>
+<span class="n">GObject</span><span class="o">.</span><span class="n">type_register</span><span class="p">(</span><span class="n">CellRendererML</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

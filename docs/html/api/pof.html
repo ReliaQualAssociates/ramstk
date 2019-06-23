@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Physics of Failure (PoF) Analysis Package &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Hazardous Operations (HazOps) Analysis Package" href="hazops.html" />
+    <link rel="prev" title="Failure Mode and Effects Analysis (FMEA) Package" href="fmea.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../contributing.html" >Contributing</a> &#187;</li>
+          <li><a href="../apidocuments.html" accesskey="U">RAMSTK Module</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="physics-of-failure-pof-analysis-package">
+<h1>Physics of Failure (PoF) Analysis Package<a class="headerlink" href="#physics-of-failure-pof-analysis-package" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="module-ramstk.modules.pof.Model">
+<span id="pof-data-models"></span><h2>PoF Data Models<a class="headerlink" href="#module-ramstk.modules.pof.Model" title="Permalink to this headline">¶</a></h2>
+<p>Physics of Failure Data Model.</p>
+<dl class="class">
+<dt id="ramstk.modules.pof.Model.OpLoadDataModel">
+<em class="property">class </em><code class="descclassname">ramstk.modules.pof.Model.</code><code class="descname">OpLoadDataModel</code><span class="sig-paren">(</span><em>dao</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpLoadDataModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpLoadDataModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataModel.RAMSTKDataModel" title="ramstk.modules.RAMSTKDataModel.RAMSTKDataModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataModel.RAMSTKDataModel</span></code></a></p>
+<p>Contain the attributes and methods of a failure OpLoad.</p>
+<p>An RAMSTK Project will consist of one or more OpLoads.  The attributes of a
+OpLoad are:</p>
+<dl class="attribute">
+<dt id="ramstk.modules.pof.Model.OpLoadDataModel._root">
+<code class="descname">_root</code><em class="property"> = 0</em><a class="headerlink" href="#ramstk.modules.pof.Model.OpLoadDataModel._root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ramstk.modules.pof.Model.OpLoadDataModel._tag">
+<code class="descname">_tag</code><em class="property"> = 'OpLoads'</em><a class="headerlink" href="#ramstk.modules.pof.Model.OpLoadDataModel._tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpLoadDataModel.do_delete">
+<code class="descname">do_delete</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpLoadDataModel.do_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpLoadDataModel.do_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a record from the RAMSTKOpLoad table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the ID of the RAMSTKOpLoad record to be removed from the
+RAMSTK Program database.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpLoadDataModel.do_insert">
+<code class="descname">do_insert</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpLoadDataModel.do_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpLoadDataModel.do_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a record to the RAMSTKOpLoad table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpLoadDataModel.do_select_all">
+<code class="descname">do_select_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpLoadDataModel.do_select_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpLoadDataModel.do_select_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all the operating loads from the RAMSTK Program database.</p>
+<p>This method retrieves all the records from the RAMSTKOpLoad table in the
+connected RAMSTK Program database.  It then add each to the OpLoad data
+model treelib.Tree().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Mechanism ID the operating loads are
+associated with.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tree; the Tree() of RAMSTKOpLoad data models.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">treelib.Tree</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpLoadDataModel.do_update">
+<code class="descname">do_update</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpLoadDataModel.do_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpLoadDataModel.do_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the record associated with Node ID to the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the OpLoad ID of the OpLoad to save.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpLoadDataModel.do_update_all">
+<code class="descname">do_update_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpLoadDataModel.do_update_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpLoadDataModel.do_update_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update all RAMSTKOpLoad table records in the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ramstk.modules.pof.Model.OpStressDataModel">
+<em class="property">class </em><code class="descclassname">ramstk.modules.pof.Model.</code><code class="descname">OpStressDataModel</code><span class="sig-paren">(</span><em>dao</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpStressDataModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpStressDataModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataModel.RAMSTKDataModel" title="ramstk.modules.RAMSTKDataModel.RAMSTKDataModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataModel.RAMSTKDataModel</span></code></a></p>
+<p>Contain the attributes and methods of a failure OpStress.</p>
+<p>An RAMSTK Project will consist of one or more OpStresss.  The attributes of a
+OpStress are:</p>
+<dl class="attribute">
+<dt id="ramstk.modules.pof.Model.OpStressDataModel._root">
+<code class="descname">_root</code><em class="property"> = 0</em><a class="headerlink" href="#ramstk.modules.pof.Model.OpStressDataModel._root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ramstk.modules.pof.Model.OpStressDataModel._tag">
+<code class="descname">_tag</code><em class="property"> = 'OpStresss'</em><a class="headerlink" href="#ramstk.modules.pof.Model.OpStressDataModel._tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpStressDataModel.do_delete">
+<code class="descname">do_delete</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpStressDataModel.do_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpStressDataModel.do_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a record from the RAMSTKOpStress table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the ID of the RAMSTKOpStress record to be removed from the
+RAMSTK Program database.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpStressDataModel.do_insert">
+<code class="descname">do_insert</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpStressDataModel.do_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpStressDataModel.do_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a record to the RAMSTKOpStress table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpStressDataModel.do_select_all">
+<code class="descname">do_select_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpStressDataModel.do_select_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpStressDataModel.do_select_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all the operating stresss from the RAMSTK Program database.</p>
+<p>This method retrieves all the records from the RAMSTKOpStress table in the
+connected RAMSTK Program database.  It then add each to the OpStress data
+model treelib.Tree().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Mechanism ID the operating stresss are
+associated with.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tree; the Tree() of RAMSTKOpStress data models.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">treelib.Tree</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpStressDataModel.do_update">
+<code class="descname">do_update</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpStressDataModel.do_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpStressDataModel.do_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the record associated with Node ID to the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the OpStress ID of the OpStress to save.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.OpStressDataModel.do_update_all">
+<code class="descname">do_update_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#OpStressDataModel.do_update_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.OpStressDataModel.do_update_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update all RAMSTKOpStress table records in the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel">
+<em class="property">class </em><code class="descclassname">ramstk.modules.pof.Model.</code><code class="descname">PhysicsOfFailureDataModel</code><span class="sig-paren">(</span><em>dao</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataModel.RAMSTKDataModel" title="ramstk.modules.RAMSTKDataModel.RAMSTKDataModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataModel.RAMSTKDataModel</span></code></a></p>
+<p>Contain the attributes and methods of a PhysicsOfFailure (PoF).</p>
+<p>The PhysicsOfFailure data model aggregates the Mechanism, OpLoad, OpStress
+and TestMethod data models to produce an overall PoF.  A Hardware item will
+consist of one PoF.  This is a hierarchical relationship, such as:</p>
+<blockquote>
+<div><dl>
+<dt>Mode 1</dt><dd><div class="line-block">
+<div class="line"><br /></div>
+</div>
+<dl>
+<dt><a href="#id1"><span class="problematic" id="id2">|</span></a>_Mechanism 1.1</dt><dd><div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><a href="#id3"><span class="problematic" id="id4">|</span></a>_Load 1.1.1
+|   |
+|   <a href="#id5"><span class="problematic" id="id6">|</span></a>_Stress 1.1.1.1s
+|   <a href="#id7"><span class="problematic" id="id8">|</span></a>_Stress 1.1.1.2s
+|   <a href="#id9"><span class="problematic" id="id10">|</span></a>_Test 1.1.1.1t
+|   <a href="#id11"><span class="problematic" id="id12">|</span></a>_Test 1.1.1.2t
+|
+<a href="#id13"><span class="problematic" id="id14">|</span></a>_Load 1.1.2</p>
+<blockquote>
+<div><div class="line-block">
+<div class="line"><br /></div>
+</div>
+<p><a href="#id15"><span class="problematic" id="id16">|</span></a>_Stress 1.1.2.1s
+<a href="#id17"><span class="problematic" id="id18">|</span></a>_Stress 1.1.2.2s
+<a href="#id19"><span class="problematic" id="id20">|</span></a>_Test 1.1.2.1t</p>
+</div></blockquote>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel._do_add_mechanisms">
+<code class="descname">_do_add_mechanisms</code><span class="sig-paren">(</span><em>mode_id</em>, <em>parent_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel._do_add_mechanisms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel._do_add_mechanisms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the failure mechanisms to Physics of Failure tree for Mode ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mechanism_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Mechanism ID to add the operating loads
+to.</p></li>
+<li><p><strong>parent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the Node ID to add the operating loads to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel._do_add_oploads">
+<code class="descname">_do_add_oploads</code><span class="sig-paren">(</span><em>mechanism_id</em>, <em>parent_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel._do_add_oploads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel._do_add_oploads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the operating loads to Physics of Failure tree for Mechanism ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mechanism_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Mechanism ID to add the operating loads
+to.</p></li>
+<li><p><strong>parent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the Node ID to add the operating loads to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel._do_add_opstress">
+<code class="descname">_do_add_opstress</code><span class="sig-paren">(</span><em>load_id</em>, <em>parent_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel._do_add_opstress"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel._do_add_opstress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the operating stresses to the PhysicsOfFailure tree for Load ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>load_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Load ID to add the operating stresses to.</p></li>
+<li><p><strong>parent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the Node ID to add the operating stresses to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel._do_add_test_methods">
+<code class="descname">_do_add_test_methods</code><span class="sig-paren">(</span><em>load_id</em>, <em>parent_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel._do_add_test_methods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel._do_add_test_methods" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the test methods to the PhysicsOfFailure tree for Stress ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>load_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Operating Load ID to add the test method to.</p></li>
+<li><p><strong>parent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the Node ID to add the test method to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel._root">
+<code class="descname">_root</code><em class="property"> = '0'</em><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel._root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel._tag">
+<code class="descname">_tag</code><em class="property"> = 'PhysicsOfFailure'</em><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel._tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_delete">
+<code class="descname">do_delete</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel.do_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove record from RAMSTKOpLoad, RAMSTKOpStress, or RAMSTKTestMethod table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the ID of the RAMSTKMode record to be removed from</p>
+</dd>
+</dl>
+<p>the RAMSTK Program database.
+:return: (_error_code, _msg); the error code and associated message.
+:rtype: (int, str)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_insert">
+<code class="descname">do_insert</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel.do_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an entity to the PhysicsOfFailure and RAMSTK Program database..</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the RAMSTK Program database Mechanism ID, OpLoad ID,
+or OpStress ID to add the entity to.</p></li>
+<li><p><strong>parent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the Node ID of the parent node in the treelib
+Tree().</p></li>
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – <p>the type of entity to add to the PhysicsOfFailure.  Levels are:</p>
+<ul>
+<li><p>opload</p></li>
+<li><p>opstress</p></li>
+<li><p>testmethod</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_select_all">
+<code class="descname">do_select_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel.do_select_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_select_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve and build the Physics of Failure tree for Hardware ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>hardware_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the Hardware ID to retrieve the Physics of
+Failure information and build trees for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tree; the PhysicsOfFailure treelib Tree().</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">treelib.Tree</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_update">
+<code class="descname">do_update</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel.do_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the record associated with Node ID to the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Mode ID of the Mode to save.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_update_all">
+<code class="descname">do_update_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#PhysicsOfFailureDataModel.do_update_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.PhysicsOfFailureDataModel.do_update_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update all RAMSTKControl table records in the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="ramstk.modules.pof.Model.TestMethodDataModel">
+<em class="property">class </em><code class="descclassname">ramstk.modules.pof.Model.</code><code class="descname">TestMethodDataModel</code><span class="sig-paren">(</span><em>dao</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#TestMethodDataModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.TestMethodDataModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataModel.RAMSTKDataModel" title="ramstk.modules.RAMSTKDataModel.RAMSTKDataModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataModel.RAMSTKDataModel</span></code></a></p>
+<p>Contain the attributes and methods of a failure TestMethod.</p>
+<p>An RAMSTK Project will consist of one or more TestMethods.  The attributes of a
+TestMethod are:</p>
+<dl class="attribute">
+<dt id="ramstk.modules.pof.Model.TestMethodDataModel._root">
+<code class="descname">_root</code><em class="property"> = 0</em><a class="headerlink" href="#ramstk.modules.pof.Model.TestMethodDataModel._root" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="ramstk.modules.pof.Model.TestMethodDataModel._tag">
+<code class="descname">_tag</code><em class="property"> = 'TestMethods'</em><a class="headerlink" href="#ramstk.modules.pof.Model.TestMethodDataModel._tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.TestMethodDataModel.do_delete">
+<code class="descname">do_delete</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#TestMethodDataModel.do_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.TestMethodDataModel.do_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a record from the RAMSTKTestMethod table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the ID of the RAMSTKTestMethod record to be removed
+from the RAMSTK Program database.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.TestMethodDataModel.do_insert">
+<code class="descname">do_insert</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#TestMethodDataModel.do_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.TestMethodDataModel.do_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a record to the RAMSTKTestMethod table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.TestMethodDataModel.do_select_all">
+<code class="descname">do_select_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#TestMethodDataModel.do_select_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.TestMethodDataModel.do_select_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve all the operating stresss from the RAMSTK Program database.</p>
+<p>This method retrieves all the records from the RAMSTKTestMethod table in the
+connected RAMSTK Program database.  It then add each to the TestMethod data
+model treelib.Tree().</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parent_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the Mechanism ID the operating stresss are
+associated with.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tree; the Tree() of RAMSTKTestMethod data models.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">treelib.Tree</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.TestMethodDataModel.do_update">
+<code class="descname">do_update</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#TestMethodDataModel.do_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.TestMethodDataModel.do_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the record associated with Node ID to the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the TestMethod ID of the TestMethod to save.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Model.TestMethodDataModel.do_update_all">
+<code class="descname">do_update_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Model.html#TestMethodDataModel.do_update_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Model.TestMethodDataModel.do_update_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update all RAMSTKTestMethod table records in the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(_error_code, _msg); the error code and associated message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-ramstk.modules.pof.Controller">
+<span id="pof-data-controller"></span><h2>PoF Data Controller<a class="headerlink" href="#module-ramstk.modules.pof.Controller" title="Permalink to this headline">¶</a></h2>
+<p>Physics of Failure Package Data Controller.</p>
+<dl class="class">
+<dt id="ramstk.modules.pof.Controller.PhysicsOfFailureDataController">
+<em class="property">class </em><code class="descclassname">ramstk.modules.pof.Controller.</code><code class="descname">PhysicsOfFailureDataController</code><span class="sig-paren">(</span><em>dao</em>, <em>configuration</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Controller.html#PhysicsOfFailureDataController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Controller.PhysicsOfFailureDataController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../apidocuments.html#ramstk.modules.RAMSTKDataController.RAMSTKDataController" title="ramstk.modules.RAMSTKDataController.RAMSTKDataController"><code class="xref py py-class docutils literal notranslate"><span class="pre">ramstk.modules.RAMSTKDataController.RAMSTKDataController</span></code></a></p>
+<p>Provide an interface between the PoF data model and an RAMSTK view model.</p>
+<p>A single PoF controller can manage one or more PoF data models.
+The attributes of a PoF data controller are:</p>
+<dl class="method">
+<dt id="ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_delete">
+<code class="descname">request_do_delete</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Controller.html#PhysicsOfFailureDataController.request_do_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request entity and it’s children be deleted from the PoF.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the Mode, Mechanism, Cause, Controle, or Action ID
+to delete.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_insert">
+<code class="descname">request_do_insert</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Controller.html#PhysicsOfFailureDataController.request_do_insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to add a PoF table record.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_select_all">
+<code class="descname">request_do_select_all</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Controller.html#PhysicsOfFailureDataController.request_do_select_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_select_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the treelib Tree() from the Requirement Data Model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>tree; the treelib Tree() of RAMSTKRequirement models in the
+Requirement tree.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">treelib.Tree</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_update">
+<code class="descname">request_do_update</code><span class="sig-paren">(</span><em>node_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Controller.html#PhysicsOfFailureDataController.request_do_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request to update an RAMSTKOpLoad, RAMSTKOpStress, or RAMSTKTestMethod.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – the PyPubSub Tree() ID of the entity to save.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_update_all">
+<code class="descname">request_do_update_all</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/modules/pof/Controller.html#PhysicsOfFailureDataController.request_do_update_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.modules.pof.Controller.PhysicsOfFailureDataController.request_do_update_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request all PoF entities be saved to the RAMSTK Program database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>False if successful or True if an error is encountered.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Physics of Failure (PoF) Analysis Package</a><ul>
+<li><a class="reference internal" href="#module-ramstk.modules.pof.Model">PoF Data Models</a></li>
+<li><a class="reference internal" href="#module-ramstk.modules.pof.Controller">PoF Data Controller</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fmea.html"
+                        title="previous chapter">Failure Mode and Effects Analysis (FMEA) Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="hazops.html"
+                        title="next chapter">Hazardous Operations (HazOps) Analysis Package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/pof.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="hazops.html" title="Hazardous Operations (HazOps) Analysis Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fmea.html" title="Failure Mode and Effects Analysis (FMEA) Package"
+             accesskey="P">previous</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>
