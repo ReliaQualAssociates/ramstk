@@ -17,6 +17,7 @@
 - Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods to eliminate duplicate code [\#200](https://github.com/ReliaQualAssociates/ramstk/issues/200) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
 - PyGTK deprecation [\#58](https://github.com/ReliaQualAssociates/ramstk/issues/58)
 - Support Python 3 [\#57](https://github.com/ReliaQualAssociates/ramstk/issues/57)
+- Add target to docs/Makefile to auto publish gh-pages [\#223](https://github.com/ReliaQualAssociates/ramstk/pull/223) ([weibullguy](https://github.com/weibullguy))
 - Move docs to GitHub Pages [\#217](https://github.com/ReliaQualAssociates/ramstk/pull/217) ([weibullguy](https://github.com/weibullguy))
 - Refactor piQ assignment for parts count analyses [\#216](https://github.com/ReliaQualAssociates/ramstk/pull/216) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)] ([weibullguy](https://github.com/weibullguy))
 - Issue \#204: Remove duplicate code in overstressed methods [\#214](https://github.com/ReliaQualAssociates/ramstk/pull/214) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)] ([weibullguy](https://github.com/weibullguy))

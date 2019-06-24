@@ -7,8 +7,8 @@
 """Crystal Reliability Calculations Module."""
 
 PART_COUNT_217F_LAMBDA_B = [
-        0.032, 0.096, 0.32, 0.19, 0.51, 0.38, 0.54, 0.70, 0.90, 0.74, 0.016,
-        0.42, 1.0, 16.0,
+    0.032, 0.096, 0.32, 0.19, 0.51, 0.38, 0.54, 0.70, 0.90, 0.74, 0.016, 0.42,
+    1.0, 16.0,
 ]
 
 
@@ -17,10 +17,10 @@ def _do_check_variables(attributes):
     Check calculation variable to ensure they are all greater than zero.
 
     All variables are checked regardless of whether they'll be used in the
-    calculation for the connection type which is why a WARKING message is issued
+    calculation for the crystal type which is why a WARKING message is issued
     rather than an ERROR message.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param dict attributes: the attributes for the crystal being calculated.
     :return: _msg; a message indicating all the variables that are less than or
         equal to zero in value.
     :rtype: str
@@ -48,7 +48,7 @@ def _do_check_variables(attributes):
                     attributes['hardware_id'],
                     attributes['environment_active_id'],
                 )
-    print(_msg)
+
     return _msg
 
 
@@ -59,7 +59,7 @@ def calculate_217f_part_count(**attributes):
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param dict attributes: the attributes for the crystal being calculated.
     :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
@@ -87,7 +87,7 @@ def calculate_217f_part_stress(**attributes):
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
 
-    :param dict attributes: the attributes for the connection being calculated.
+    :param dict attributes: the attributes for the crystal being calculated.
     :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)

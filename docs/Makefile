@@ -19,6 +19,8 @@ help:
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+# This was stolen from:
+# http://nikhilism.com/post/2012/automatic-github-pages-generation-from/
 gh-pages:
 	git checkout gh-pages
 	rm -rf _build _sources _static
