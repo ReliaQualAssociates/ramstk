@@ -696,9 +696,7 @@ def _do_check_variables(attributes):
     """
     _msg = ''
 
-    try:
-        1.0 / attributes['piQ']
-    except ZeroDivisionError:
+    if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'integrated circuit, hardware ID: {0:d}, ' \
             'quality ID: {1:d}.\n'.format(
@@ -707,17 +705,13 @@ def _do_check_variables(attributes):
             )
 
     if attributes['hazard_rate_method_id'] == 1:
-        try:
-            1.0 / attributes['lambda_b']
-        except ZeroDivisionError:
+        if attributes['lambda_b'] <= 0.0:
             _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
                 'calculating integrated circuit, hardware ID: ' \
                 '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['hazard_rate_method_id'] == 2:
-        try:
-            1.0 / attributes['C1']
-        except ZeroDivisionError:
+        if attributes['C1'] <= 0.0:
             _msg = _msg + 'RAMSTK WARNING: C1 is 0.0 when calculating ' \
                 'integrated circuit, hardware ID: {0:d}, ' \
                 'application ID: {1:d}, ' \
@@ -727,9 +721,7 @@ def _do_check_variables(attributes):
                     attributes['technology_id'],
                 )
 
-        try:
-            1.0 / attributes['C2']
-        except ZeroDivisionError:
+        if attributes['C2'] <= 0.0:
             _msg = _msg + 'RAMSTK WARNING: C2 is 0.0 when calculating ' \
                 'integrated circuit, hardware ID: {0:d}, ' \
                 'package ID: {1:d}, ' \
@@ -739,9 +731,7 @@ def _do_check_variables(attributes):
                     attributes['n_active_pins'],
                 )
 
-        try:
-            1.0 / attributes['piA']
-        except ZeroDivisionError:
+        if attributes['piA'] <= 0.0:
             _msg = _msg + 'RAMSTK WARNING: piA is 0.0 when calculating ' \
                 'integrated circuit, hardware ID: {0:d}, ' \
                 'application ID: {1:d}.\n'.format(
@@ -749,9 +739,7 @@ def _do_check_variables(attributes):
                     attributes['application_id'],
                 )
 
-        try:
-            1.0 / attributes['piE']
-        except ZeroDivisionError:
+        if attributes['piE'] <= 0.0:
             _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
                 'integrated circuit, hardware ID: {0:d}, ' \
                 'environment ID: {1:d}.\n'.format(
@@ -759,9 +747,7 @@ def _do_check_variables(attributes):
                     attributes['environment_active_id'],
                 )
 
-        try:
-            1.0 / attributes['piL']
-        except ZeroDivisionError:
+        if attributes['piL'] <= 0.0:
             _msg = _msg + 'RAMSTK WARNING: piL is 0.0 when calculating ' \
                 'integrated circuit, hardware ID: {0:d}, ' \
                 'years in production: {1:f}.\n'.format(
@@ -769,9 +755,7 @@ def _do_check_variables(attributes):
                     attributes['years_in_production'],
                 )
 
-        try:
-            1.0 / attributes['piT']
-        except ZeroDivisionError:
+        if attributes['piT'] <= 0.0:
             _msg = _msg + 'RAMSTK WARNING: piT is 0.0 when calculating ' \
                 'integrated circuit, hardware ID: {0:d}, ' \
                 'application ID: {1:d}, ' \
@@ -780,7 +764,7 @@ def _do_check_variables(attributes):
                     attributes['application_id'],
                     attributes['type_id'],
                 )
-
+    print(_msg)
     return _msg
 
 
