@@ -4,188 +4,40 @@
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v1.0.1...HEAD)
 
-**Closed issues:**
+**Implemented enhancements:**
 
-- Move Similar Item Work View \_do\_request\_edit\_function\(\) method to a stand-alone assistant [\#212](https://github.com/ReliaQualAssociates/ramstk/issues/212)
-- Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods in component workviews to eliminate duplicate code. [\#208](https://github.com/ReliaQualAssociates/ramstk/issues/208)
-- Refactor workviews to have \_\_make\_ui\(\), \_\_set\_properties\(\), \_\_set\_callbacks\(\) methods [\#207](https://github.com/ReliaQualAssociates/ramstk/issues/207)
-- Refactor matrix views to move common code to meta-class [\#206](https://github.com/ReliaQualAssociates/ramstk/issues/206)
-- Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods in component workviews to eliminate duplicate code. [\#205](https://github.com/ReliaQualAssociates/ramstk/issues/205)
-- Refactor matrix views to move common code to meta-class [\#203](https://github.com/ReliaQualAssociates/ramstk/issues/203)
-- Refactor matrix views to move common code to meta-class [\#202](https://github.com/ReliaQualAssociates/ramstk/issues/202)
-- Refactor matrix views to move common code to meta-class [\#201](https://github.com/ReliaQualAssociates/ramstk/issues/201)
-- Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods to eliminate duplicate code [\#200](https://github.com/ReliaQualAssociates/ramstk/issues/200)
+- Move Similar Item Work View \_do\_request\_edit\_function\(\) method to a stand-alone assistant [\#212](https://github.com/ReliaQualAssociates/ramstk/issues/212) [[module:similaritem](https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem)]
+- Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods in component workviews to eliminate duplicate code. [\#208](https://github.com/ReliaQualAssociates/ramstk/issues/208) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
+- Refactor workviews to have \_\_make\_ui\(\), \_\_set\_properties\(\), \_\_set\_callbacks\(\) methods [\#207](https://github.com/ReliaQualAssociates/ramstk/issues/207) [[module:fmea](https://github.com/ReliaQualAssociates/ramstk/labels/module:fmea)] [[module:pof](https://github.com/ReliaQualAssociates/ramstk/labels/module:pof)]
+- Refactor matrix views to move common code to meta-class [\#206](https://github.com/ReliaQualAssociates/ramstk/issues/206) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)] [[module:requirement](https://github.com/ReliaQualAssociates/ramstk/labels/module:requirement)] [[module:validation](https://github.com/ReliaQualAssociates/ramstk/labels/module:validation)]
+- Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods in component workviews to eliminate duplicate code. [\#205](https://github.com/ReliaQualAssociates/ramstk/issues/205) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
+- Refactor matrix views to move common code to meta-class [\#203](https://github.com/ReliaQualAssociates/ramstk/issues/203) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
+- Refactor matrix views to move common code to meta-class [\#202](https://github.com/ReliaQualAssociates/ramstk/issues/202) [[module:validation](https://github.com/ReliaQualAssociates/ramstk/labels/module:validation)]
+- Refactor matrix views to move common code to meta-class [\#201](https://github.com/ReliaQualAssociates/ramstk/issues/201) [[module:requirement](https://github.com/ReliaQualAssociates/ramstk/labels/module:requirement)]
+- Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods to eliminate duplicate code [\#200](https://github.com/ReliaQualAssociates/ramstk/issues/200) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
 - PyGTK deprecation [\#58](https://github.com/ReliaQualAssociates/ramstk/issues/58)
 - Support Python 3 [\#57](https://github.com/ReliaQualAssociates/ramstk/issues/57)
+- Add target to docs/Makefile to auto publish gh-pages [\#223](https://github.com/ReliaQualAssociates/ramstk/pull/223) ([weibullguy](https://github.com/weibullguy))
+- Move docs to GitHub Pages [\#217](https://github.com/ReliaQualAssociates/ramstk/pull/217) ([weibullguy](https://github.com/weibullguy))
+- Refactor piQ assignment for parts count analyses [\#216](https://github.com/ReliaQualAssociates/ramstk/pull/216) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)] ([weibullguy](https://github.com/weibullguy))
+- Issue \#204: Remove duplicate code in overstressed methods [\#214](https://github.com/ReliaQualAssociates/ramstk/pull/214) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)] ([weibullguy](https://github.com/weibullguy))
+- Feature/similar item undup code [\#213](https://github.com/ReliaQualAssociates/ramstk/pull/213) [[module:similaritem](https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem)] ([weibullguy](https://github.com/weibullguy))
+- Update to Python 3 and pygobject. [\#198](https://github.com/ReliaQualAssociates/ramstk/pull/198) ([weibullguy](https://github.com/weibullguy))
 
 **Merged pull requests:**
 
-- Add target to docs/Makefile to auto publish gh-pages [\#223](https://github.com/ReliaQualAssociates/ramstk/pull/223) ([weibullguy](https://github.com/weibullguy))
 - \[ImgBot\] Optimize images [\#219](https://github.com/ReliaQualAssociates/ramstk/pull/219) ([imgbot[bot]](https://github.com/apps/imgbot))
-- Move docs to GitHub Pages [\#217](https://github.com/ReliaQualAssociates/ramstk/pull/217) ([weibullguy](https://github.com/weibullguy))
-- Refactor piQ assignment for parts count analyses [\#216](https://github.com/ReliaQualAssociates/ramstk/pull/216) ([weibullguy](https://github.com/weibullguy))
-- Issue \#204: Remove duplicate code in overstressed methods [\#214](https://github.com/ReliaQualAssociates/ramstk/pull/214) ([weibullguy](https://github.com/weibullguy))
-- Feature/similar item undup code [\#213](https://github.com/ReliaQualAssociates/ramstk/pull/213) ([weibullguy](https://github.com/weibullguy))
-- Eliminate cyclic imports in DAO package [\#211](https://github.com/ReliaQualAssociates/ramstk/pull/211) ([weibullguy](https://github.com/weibullguy))
-- Decouple RAMSTK Data Controllers from Views [\#210](https://github.com/ReliaQualAssociates/ramstk/pull/210) ([weibullguy](https://github.com/weibullguy))
-- Validation Views Update [\#209](https://github.com/ReliaQualAssociates/ramstk/pull/209) ([weibullguy](https://github.com/weibullguy))
-- Update master branch with Python 3 and pygobject [\#199](https://github.com/ReliaQualAssociates/ramstk/pull/199) ([weibullguy](https://github.com/weibullguy))
-- Update to Python 3 and pygobject. [\#198](https://github.com/ReliaQualAssociates/ramstk/pull/198) ([weibullguy](https://github.com/weibullguy))
-- Merge pull request \#1 from ReliaQualAssociates/develop [\#197](https://github.com/ReliaQualAssociates/ramstk/pull/197) ([weibullguy](https://github.com/weibullguy))
-- Develop [\#196](https://github.com/ReliaQualAssociates/ramstk/pull/196) ([weibullguy](https://github.com/weibullguy))
-- build\(deps\): bump treelib from 1.5.3 to 1.5.5 [\#195](https://github.com/ReliaQualAssociates/ramstk/pull/195) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sphinx from 2.0.0 to 2.0.1 [\#194](https://github.com/ReliaQualAssociates/ramstk/pull/194) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sqlalchemy from 1.2.12 to 1.3.2 [\#193](https://github.com/ReliaQualAssociates/ramstk/pull/193) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump xlsxwriter from 1.1.2 to 1.1.6 [\#192](https://github.com/ReliaQualAssociates/ramstk/pull/192) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump lxml from 4.2.5 to 4.3.3 [\#191](https://github.com/ReliaQualAssociates/ramstk/pull/191) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sphinx from 1.8.1 to 2.0.0 [\#190](https://github.com/ReliaQualAssociates/ramstk/pull/190) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump openpyxl from 2.5.9 to 2.6.2 [\#189](https://github.com/ReliaQualAssociates/ramstk/pull/189) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump pandas from 0.23.4 to 0.24.2 [\#188](https://github.com/ReliaQualAssociates/ramstk/pull/188) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump pypubsub from 3.3.0 to 4.0.3 [\#173](https://github.com/ReliaQualAssociates/ramstk/pull/173) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sqlalchemy-utils from 0.33.6 to 0.33.11 [\#172](https://github.com/ReliaQualAssociates/ramstk/pull/172) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump xlrd from 1.1.0 to 1.2.0 [\#166](https://github.com/ReliaQualAssociates/ramstk/pull/166) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sortedcontainers from 1.5.9 to 2.1.0 [\#162](https://github.com/ReliaQualAssociates/ramstk/pull/162) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump openpyxl from 2.5.7 to 2.5.9 [\#156](https://github.com/ReliaQualAssociates/ramstk/pull/156) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump xlsxwriter from 1.1.1 to 1.1.2 [\#155](https://github.com/ReliaQualAssociates/ramstk/pull/155) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sqlalchemy-utils from 0.33.5 to 0.33.6 [\#154](https://github.com/ReliaQualAssociates/ramstk/pull/154) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sphinx from 1.7.9 to 1.8.1 [\#153](https://github.com/ReliaQualAssociates/ramstk/pull/153) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [v1.0.1](https://github.com/ReliaQualAssociates/ramstk/tree/v1.0.1) (2018-10-09)
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v1.0.0...v1.0.1)
 
-**Merged pull requests:**
-
-- Merge pull request \#150 from weibullguy/develop [\#151](https://github.com/ReliaQualAssociates/ramstk/pull/151) ([weibullguy](https://github.com/weibullguy))
-
 ## [v1.0.0](https://github.com/ReliaQualAssociates/ramstk/tree/v1.0.0) (2018-09-30)
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v1.0.0.rc1...v1.0.0)
 
-**Closed issues:**
+**Fixed bugs:**
 
-- Import Hardware Does Not Create Similar Item Table Records [\#140](https://github.com/ReliaQualAssociates/ramstk/issues/140)
+- Import Hardware Does Not Create Similar Item Table Records [\#140](https://github.com/ReliaQualAssociates/ramstk/issues/140) [[module:allocation](https://github.com/ReliaQualAssociates/ramstk/labels/module:allocation)] [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)] [[module:similaritem](https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem)]
 - New RAMSTK Program Database Not Opening; Must Restart RAMSTK [\#139](https://github.com/ReliaQualAssociates/ramstk/issues/139)
-
-**Merged pull requests:**
-
-- Sync Master and Develop Branches [\#150](https://github.com/ReliaQualAssociates/ramstk/pull/150) ([weibullguy](https://github.com/weibullguy))
-- Sync Develop and Master Branches [\#149](https://github.com/ReliaQualAssociates/ramstk/pull/149) ([weibullguy](https://github.com/weibullguy))
-- build\(deps\): bump sqlalchemy from 1.2.11 to 1.2.12 [\#148](https://github.com/ReliaQualAssociates/ramstk/pull/148) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump xlsxwriter from 1.1.0 to 1.1.1 [\#147](https://github.com/ReliaQualAssociates/ramstk/pull/147) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sqlalchemy-utils from 0.33.4 to 0.33.5 [\#146](https://github.com/ReliaQualAssociates/ramstk/pull/146) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump openpyxl from 2.5.6 to 2.5.7 [\#145](https://github.com/ReliaQualAssociates/ramstk/pull/145) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump lxml from 4.2.4 to 4.2.5 [\#144](https://github.com/ReliaQualAssociates/ramstk/pull/144) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sqlalchemy-utils from 0.33.3 to 0.33.4 [\#143](https://github.com/ReliaQualAssociates/ramstk/pull/143) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-
-## [v1.0.0.rc1](https://github.com/ReliaQualAssociates/ramstk/tree/v1.0.0.rc1) (2018-09-05)
-[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.4.0...v1.0.0.rc1)
-
-**Closed issues:**
-
-- Dependabot can't evaluate your Python dependency files [\#135](https://github.com/ReliaQualAssociates/ramstk/issues/135)
-- Dependabot can't evaluate your Python dependency files [\#134](https://github.com/ReliaQualAssociates/ramstk/issues/134)
-- Refactor RTKTreeView [\#133](https://github.com/ReliaQualAssociates/ramstk/issues/133)
-- Revision Module View Has Inconsistent Method Definitions [\#122](https://github.com/ReliaQualAssociates/ramstk/issues/122)
-- Hardware Module View Has Inconsistent Method Definitions [\#121](https://github.com/ReliaQualAssociates/ramstk/issues/121)
-- Requirements Module View Has Inconsistent Method Definitions [\#120](https://github.com/ReliaQualAssociates/ramstk/issues/120)
-- Function Module View Has Inconsistent Method Definitions [\#119](https://github.com/ReliaQualAssociates/ramstk/issues/119)
-- Validation Module View Has Inconsistent Method Definitions [\#118](https://github.com/ReliaQualAssociates/ramstk/issues/118)
-- Revision Module View Has Inconsistent Method Definitions [\#117](https://github.com/ReliaQualAssociates/ramstk/issues/117)
-- Stakeholder List View Missing Methods [\#116](https://github.com/ReliaQualAssociates/ramstk/issues/116)
-- Failure Definition List View Missing Methods [\#115](https://github.com/ReliaQualAssociates/ramstk/issues/115)
-- RTK Data Controller Methods Not Consistently Defined [\#114](https://github.com/ReliaQualAssociates/ramstk/issues/114)
-- Validation Data Controller Methods Not Consistently Defined [\#113](https://github.com/ReliaQualAssociates/ramstk/issues/113)
-- Usage Profile Data Controller Methods Not Consistently Defined [\#112](https://github.com/ReliaQualAssociates/ramstk/issues/112)
-- Stakeholder Data Controller Methods Not Consistently Defined [\#111](https://github.com/ReliaQualAssociates/ramstk/issues/111)
-- Similar Item Data Controller Methods Not Consistently Defined [\#110](https://github.com/ReliaQualAssociates/ramstk/issues/110)
-- Revision Data Controller Methods Not Consistently Defined [\#109](https://github.com/ReliaQualAssociates/ramstk/issues/109)
-- Requirements Data Controller Methods Not Consistently Defined [\#108](https://github.com/ReliaQualAssociates/ramstk/issues/108)
-- Physics of Failure Data Controller Methods Not Consistently Defined [\#107](https://github.com/ReliaQualAssociates/ramstk/issues/107)
-- Hazard Analysis Data Controller Methods Not Consistently Defined [\#106](https://github.com/ReliaQualAssociates/ramstk/issues/106)
-- Hardware BoM Data Controller Methods Not Consistently Defined [\#105](https://github.com/ReliaQualAssociates/ramstk/issues/105)
-- Function Data Controller Methods Not Consistently Defined [\#104](https://github.com/ReliaQualAssociates/ramstk/issues/104)
-- FMEA Data Controller Methods Not Consistently Defined [\#103](https://github.com/ReliaQualAssociates/ramstk/issues/103)
-- Failure Definition Data Controller Methods Not Consistently Defined [\#102](https://github.com/ReliaQualAssociates/ramstk/issues/102)
-- Allocation Data Controller Methods Not Consistently Defined [\#101](https://github.com/ReliaQualAssociates/ramstk/issues/101)
-- Validation Data Model Calculate Methods Not Consistently Defined [\#100](https://github.com/ReliaQualAssociates/ramstk/issues/100)
-- Remove Unnecessary Methods from Function Class [\#99](https://github.com/ReliaQualAssociates/ramstk/issues/99)
-- select\_all\(\) Method Definitions Are Not Identical [\#98](https://github.com/ReliaQualAssociates/ramstk/issues/98)
-- HardwareBoMDataModel.select\(\) Method is Incorrectly Defined [\#97](https://github.com/ReliaQualAssociates/ramstk/issues/97)
-- Remove Unnecessary Methods from Revision Class [\#96](https://github.com/ReliaQualAssociates/ramstk/issues/96)
-- Inconsistent calculate\(\) Method Definitions [\#95](https://github.com/ReliaQualAssociates/ramstk/issues/95)
-- Handle IndexError in the Requirements Analysis Work View \_do\_toggle\_cell\(\) Method [\#94](https://github.com/ReliaQualAssociates/ramstk/issues/94)
-- Handle TypeError in FMEA Work View \_\_init\_\_\(\) Method [\#93](https://github.com/ReliaQualAssociates/ramstk/issues/93)
-- Add code to HazOps WorkView \_on\_button\_press\(\) Method [\#92](https://github.com/ReliaQualAssociates/ramstk/issues/92)
-- Add code to FMEA WorkView \_on\_button\_press\(\) Method [\#91](https://github.com/ReliaQualAssociates/ramstk/issues/91)
-- Add code to Allocation WorkView \_on\_button\_press\(\) Method [\#90](https://github.com/ReliaQualAssociates/ramstk/issues/90)
-- Handle Errors in HazOps WorkView \_do\_load\_tree\(\) Method [\#89](https://github.com/ReliaQualAssociates/ramstk/issues/89)
-- Handle Errors in FMEA WorkView \_do\_load\_tree\(\) Method [\#88](https://github.com/ReliaQualAssociates/ramstk/issues/88)
-- Handle Errors in Allocation WorkView \_do\_load\_tree\(\) Method [\#87](https://github.com/ReliaQualAssociates/ramstk/issues/87)
-- Handle TypeError in Usage Profile \_do\_load\_tree\(\) Method [\#86](https://github.com/ReliaQualAssociates/ramstk/issues/86)
-- Handle AttributeError in Failure Definition \_on\_revision\_select\(\) Method [\#85](https://github.com/ReliaQualAssociates/ramstk/issues/85)
-- Add Records to Hardware Associated Analysis When Successfully Adding Hardware [\#84](https://github.com/ReliaQualAssociates/ramstk/issues/84)
-- Handle Errors in Hardware BoM Data Model insert\(\) Method [\#83](https://github.com/ReliaQualAssociates/ramstk/issues/83)
-- Handle non-zero error codes in Similar Item module update\_all\(\) method [\#82](https://github.com/ReliaQualAssociates/ramstk/issues/82)
-- Handle non-zero error codes in PoF module update\_all\(\) method [\#81](https://github.com/ReliaQualAssociates/ramstk/issues/81)
-- Handle non-zero error codes in HazOps module update\_all\(\) method [\#80](https://github.com/ReliaQualAssociates/ramstk/issues/80)
-- Handle non-zero error codes in Hardware module update\_all\(\) methods [\#79](https://github.com/ReliaQualAssociates/ramstk/issues/79)
-- Handle Non-Zero Error Codes in FMEA update\_all\(\) Method [\#78](https://github.com/ReliaQualAssociates/ramstk/issues/78)
-- Handle Non-Zero Error Codes in Allocation update\_all\(\) Method [\#77](https://github.com/ReliaQualAssociates/ramstk/issues/77)
-- Handle non-zero error codes in Validation module update\_all\(\) method [\#75](https://github.com/ReliaQualAssociates/ramstk/issues/75)
-- Handle non-zero error codes in Failure Definition module update\_all\(\) method [\#74](https://github.com/ReliaQualAssociates/ramstk/issues/74)
-- Handle non-zero error codes in Usage Profile module update\_all\(\) method [\#73](https://github.com/ReliaQualAssociates/ramstk/issues/73)
-- Handle non-zero error codes in Stakeholder module update\_all\(\) method [\#72](https://github.com/ReliaQualAssociates/ramstk/issues/72)
-- Handle non-zero error codes in Requirement module update\_all\(\) method [\#71](https://github.com/ReliaQualAssociates/ramstk/issues/71)
-- Handle non-zero error codes in Function module update\_all\(\) method [\#70](https://github.com/ReliaQualAssociates/ramstk/issues/70)
-- Handle non-zero error codes in Revision module update\_all\(\) method [\#69](https://github.com/ReliaQualAssociates/ramstk/issues/69)
-- Handle KeyError in Capacitor calculate\_217f\_part\_stress\(\) [\#68](https://github.com/ReliaQualAssociates/ramstk/issues/68)
-- Need Function to Add Entries to Global dicts [\#60](https://github.com/ReliaQualAssociates/ramstk/issues/60)
-- PyPI package [\#55](https://github.com/ReliaQualAssociates/ramstk/issues/55)
-- No Busy Cursor When Saving Hardware [\#37](https://github.com/ReliaQualAssociates/ramstk/issues/37)
-- Add All Reliability Information to the copy\_hardware\(\) Method [\#36](https://github.com/ReliaQualAssociates/ramstk/issues/36)
-- Add Field to rtk\_stress Table for Overstress Reason [\#33](https://github.com/ReliaQualAssociates/ramstk/issues/33)
-- No Mission Time Unit Selection [\#31](https://github.com/ReliaQualAssociates/ramstk/issues/31)
-- List View Not Updating When Editing Work View [\#30](https://github.com/ReliaQualAssociates/ramstk/issues/30)
-- Add Reliability Target Fields [\#25](https://github.com/ReliaQualAssociates/ramstk/issues/25)
-- No Error Handling for insert\(\) Method [\#24](https://github.com/ReliaQualAssociates/ramstk/issues/24)
-- No set\_attributes\(\)/request\_set\_attributes\(\) Methods [\#23](https://github.com/ReliaQualAssociates/ramstk/issues/23)
-- No get\_attributes\(\)/request\_get\_attributes\(\) methods [\#22](https://github.com/ReliaQualAssociates/ramstk/issues/22)
-- No Way to "Close" an Open RTK Program Database w/o Closing RTK Application [\#21](https://github.com/ReliaQualAssociates/ramstk/issues/21)
-- No Method to Export RTK Data [\#19](https://github.com/ReliaQualAssociates/ramstk/issues/19)
-- Cannot Import Complete Project [\#13](https://github.com/ReliaQualAssociates/ramstk/issues/13)
-- No Availability Calculations for Revision [\#11](https://github.com/ReliaQualAssociates/ramstk/issues/11)
-- Revision Sprint 2.0.0 Coding Convention Updates [\#5](https://github.com/ReliaQualAssociates/ramstk/issues/5)
-- Work Book widgets not updated when Hardware Module Book is edited. [\#3](https://github.com/ReliaQualAssociates/ramstk/issues/3)
-
-**Merged pull requests:**
-
-- build\(deps\): bump openpyxl from 2.5.5 to 2.5.6 [\#138](https://github.com/ReliaQualAssociates/ramstk/pull/138) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump xlsxwriter from 1.0.9 to 1.1.0 [\#137](https://github.com/ReliaQualAssociates/ramstk/pull/137) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- build\(deps\): bump sqlalchemy from 1.2.2 to 1.2.11 [\#136](https://github.com/ReliaQualAssociates/ramstk/pull/136) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump pandas from 0.22.0 to 0.23.4 [\#132](https://github.com/ReliaQualAssociates/ramstk/pull/132) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump lxml from 4.1.1 to 4.2.4 [\#131](https://github.com/ReliaQualAssociates/ramstk/pull/131) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump statsmodels from 0.8.0 to 0.9.0 [\#128](https://github.com/ReliaQualAssociates/ramstk/pull/128) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump sqlalchemy-utils from 0.32.21 to 0.33.3 [\#124](https://github.com/ReliaQualAssociates/ramstk/pull/124) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump treelib from 1.5.1 to 1.5.3 [\#123](https://github.com/ReliaQualAssociates/ramstk/pull/123) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Apply yapf formatting [\#67](https://github.com/ReliaQualAssociates/ramstk/pull/67) ([rakhimov](https://github.com/rakhimov))
-
-## [v0.4.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.4.0) (2017-12-09)
-**Closed issues:**
-
-- Pre 1.0 releases [\#66](https://github.com/ReliaQualAssociates/ramstk/issues/66)
-- RTK prefix vs. rtk namespace [\#62](https://github.com/ReliaQualAssociates/ramstk/issues/62)
-- Consider setting 'develop' branch as git default [\#53](https://github.com/ReliaQualAssociates/ramstk/issues/53)
-- No Pop-Up Menu for Module View [\#40](https://github.com/ReliaQualAssociates/ramstk/issues/40)
-- No Pop-Up Menu for Revision Module View [\#12](https://github.com/ReliaQualAssociates/ramstk/issues/12)
-- No Availability Calculations for Function Module [\#8](https://github.com/ReliaQualAssociates/ramstk/issues/8)
-- No Pop Up Menu for ModuleView [\#7](https://github.com/ReliaQualAssociates/ramstk/issues/7)
-- Licence file [\#1](https://github.com/ReliaQualAssociates/ramstk/issues/1)
-
-**Merged pull requests:**
-
-- Keep a changelog [\#65](https://github.com/ReliaQualAssociates/ramstk/pull/65) ([rakhimov](https://github.com/rakhimov))
-- Rename/reformat the licence file for GitHub to pickup [\#64](https://github.com/ReliaQualAssociates/ramstk/pull/64) ([rakhimov](https://github.com/rakhimov))
-- Fix Windows carriage-return chars [\#54](https://github.com/ReliaQualAssociates/ramstk/pull/54) ([rakhimov](https://github.com/rakhimov))
-- Create CODE\_OF\_CONDUCT.md [\#2](https://github.com/ReliaQualAssociates/ramstk/pull/2) ([weibullguy](https://github.com/weibullguy))
 
 
 
