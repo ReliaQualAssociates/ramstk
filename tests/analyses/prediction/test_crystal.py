@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_crystal.py is part of The RAMSTK Project
@@ -74,9 +74,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'crystal, hardware ID: 6, subcategory ID: 1, active '
-        'environment ID: 100'
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating crystal, '
+        'hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
@@ -93,25 +92,22 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating crystal, '
-        'hardware ID: 6 and quality ID: 100'
-    )
+    assert _msg == ''
     assert _attributes['lambda_b'] == 0.032
-    assert _attributes['piQ'] == 0.0
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert _attributes['piQ'] == 1.0
+    assert _attributes['hazard_rate_active'] == 0.032
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
-    """(TestConnectionModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
+    """(TestCrystalModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['environment_active_id'] = 4
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['frequency_operating'] = 10.0
 
-    _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
@@ -124,18 +120,18 @@ def test_calculate_mil_hdbk_217f_part_stress():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_missing_frequency():
-    """(TestConnectionModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
+    """(TestCrystalModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['environment_active_id'] = 4
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['frequency_operating'] = 0.0
 
-    _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'crystal, hardware ID: 6'
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating crystal, '
+        'hardware ID: 6.\n'
     )
     assert approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 1.0
@@ -146,21 +142,18 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_frequency():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
-    """(TestConnectionModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
+    """(TestCrystalModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['environment_active_id'] = 4
     ATTRIBUTES['quality_id'] = 100
     ATTRIBUTES['frequency_operating'] = 10.0
 
-    _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating crystal, '
-        'hardware ID: 6'
-    )
+    assert _msg == ''
     assert approx(_attributes['lambda_b'], 0.02207717)
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 6.0
     assert approx(_attributes['hazard_rate_active'], 0.0)
 
@@ -168,20 +161,70 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
-    """(TestConnectionModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
+    """(TestCrystalModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['environment_active_id'] = 100
     ATTRIBUTES['quality_id'] = 1
     ATTRIBUTES['frequency_operating'] = 10.0
 
-    _attributes, _msg = Crystal.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piE is 0.0 when calculating crystal, '
-        'hardware ID: 6'
-    )
+    assert _msg == ''
     assert approx(_attributes['lambda_b'], 0.02207717)
     assert _attributes['piQ'] == 1.0
-    assert _attributes['piE'] == 0.0
-    assert approx(_attributes['hazard_rate_active'], 0.0)
+    assert _attributes['piE'] == 1.0
+    assert approx(_attributes['hazard_rate_active'], 0.02207717)
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Crystal._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating crystal, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Crystal._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating crystal, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = Crystal._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating crystal, hardware ID: '
+        '100 and quality ID: 1.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Crystal._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating crystal, hardware ID: '
+        '100 and quality ID: 1.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Crystal._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating crystal, hardware ID: '
+        '100 and active environment ID: 100.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Crystal._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating crystal, hardware ID: '
+        '100 and active environment ID: 100.\n'
+    )

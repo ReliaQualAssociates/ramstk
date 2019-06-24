@@ -13,7 +13,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component, IntegratedCircuit
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -446,13 +446,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating integrated '
-        'circuit, hardware ID: 6'
-    )
+    assert _msg == ''
     assert _attributes['lambda_b'] == 0.0095
-    assert _attributes['piQ'] == 0.0
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert _attributes['piQ'] == 1.0
+    assert _attributes['hazard_rate_active'] == 0.0095
 
 
 @pytest.mark.unit
@@ -475,7 +472,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['power_operating'] = 0.05
     ATTRIBUTES['theta_jc'] = 30.0
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_stress(
+    _attributes, _msg = Component.do_calculate_217f_part_stress(
         **ATTRIBUTES,
     )
 
@@ -512,7 +509,7 @@ def test_calculate_mil_hdbk_217f_part_stress_gaas():
     ATTRIBUTES['power_operating'] = 0.05
     ATTRIBUTES['theta_jc'] = 30.0
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_stress(
+    _attributes, _msg = Component.do_calculate_217f_part_stress(
         **ATTRIBUTES,
     )
 

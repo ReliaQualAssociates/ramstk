@@ -12,6 +12,11 @@ from math import exp
 
 _ = gettext.gettext
 
+PI_C = {
+    1: [1.0, 1.5, 1.7, 2.0, 2.5, 3.0, 4.2, 5.5, 8.0],
+    5: [1.0, 2.0, 3.0, 4.0],
+}
+
 
 def calculate_217f_part_count(**attributes):
     """
@@ -135,10 +140,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         1: [[0.00045, 0.034], [0.0027, 0.04]],
         5: [0.02, 0.038, 0.038],
     }
-    _dic_piC = {
-        1: [1.0, 1.5, 1.7, 2.0, 2.5, 3.0, 4.2, 5.5, 8.0],
-        5: [1.0, 2.0, 3.0, 4.0],
-    }
     _msg = ''
 
     # Calculate the base hazard rate.
@@ -186,46 +187,23 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             _lambda_b1 + attributes['n_elements'] * _lambda_b2
         )
     elif attributes['subcategory_id'] == 5:
-        attributes['lambda_b'] = _dic_lambda_b[5][attributes['application_id']]
+        attributes['lambda_b'] = _dic_lambda_b[5][attributes['application_id'] - 1]
     else:
         attributes['lambda_b'] = 0.0
 
     if attributes['lambda_b'] <= 0.0:
         _msg = 'RAMSTK WARNING: Base hazard rate is 0.0 when calculating ' \
-               'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
+               'switch, hardware ID: {0:d}.\n'.format(
+                   attributes['hardware_id'],
+               )
 
-    # Determine the quality factor (piQ).
-    if attributes['subcategory_id'] == 5:
-        try:
-            attributes['piQ'] = (
-                8.4
-                if (attributes['quality_id']) - (1) else 1.0
-            )
-        except IndexError:
-            attributes['piQ'] = 0.0
-
-        if attributes['piQ'] <= 0.0:
-            _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-                'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
-
-    # Determine the environmental factor (piE).
-    try:
-        if attributes['subcategory_id'] == 5:
-            attributes['piE'] = [
-                1.0, 2.0, 15.0, 8.0, 27.0, 7.0, 9.0, 11.0, 12.0, 46.0, 0.5,
-                25.0, 67.0, 0.0,
-            ][attributes['environment_active_id'] - 1]
-        else:
-            attributes['piE'] = [
-                1.0, 3.0, 18.0, 8.0, 29.0, 10.0, 18.0, 13.0, 22.0, 46.0, 0.5,
-                25.0, 67.0, 1200.0,
-            ][attributes['environment_active_id'] - 1]
-    except IndexError:
-        attributes['piE'] = 0.0
+    if attributes['piQ'] <= 0.0:
+        _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+            'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['piE'] <= 0.0:
-        _msg = 'RAMSTK WARNING: piE is 0.0 when calculating switch, hardware ' \
-               'ID: {0:d}.\n'.format(attributes['hardware_id'])
+        _msg = 'RAMSTK WARNING: piE is 0.0 when calculating switch, ' \
+               'hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the cycling factor (piCYC).
     if attributes['n_cycles'] <= 1:
@@ -244,10 +222,8 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
 
     # Determine the contact form and quantity factor (piC).
     if attributes['subcategory_id'] in [1, 5]:
-        attributes['piC'] = _dic_piC[attributes['subcategory_id']][
-            attributes[
-                'contact_form_id'
-            ]
+        attributes['piC'] = PI_C[attributes['subcategory_id']][
+            attributes['contact_form_id'] - 1
         ]
 
     # Determine the use factor (piU).

@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component, Relay
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -103,11 +103,18 @@ def test_calculate_mil_hdbk_217f_part_count(
         ).format(
             subcategory_id, type_id, environment_active_id,
         )
-    elif piQ == 0.0:
+    elif lambda_b == 0.0 and piQ == 0.0:
         assert _msg == (
-            'RAMSTK WARNING: piQ is 0.0 when calculating relay, '
-            'hardware ID: 6, subcategory ID: {0:d}, and quality '
-            'ID: {1:d}.'
+            'RAMSTK WARNING: Base hazard rate is 0.0 when calculating relay, '
+            'hardware ID: 6, subcategory ID: {0:d}, type ID: {1:d}, and '
+            'active environment ID: {3:d}.\n'
+            'RAMSTK WARNING: piQ is 0.0 when calculating relay, hardware '
+            'ID: 6, subcategory ID: {0:d}, and quality ID: {2:d}.\n'
+        ).format(subcategory_id, type_id, quality_id, environment_active_id,)
+    elif lambda_b > 0.0 and piQ == 0.0:
+        assert _msg == (
+            'RAMSTK WARNING: piQ is 0.0 when calculating relay, hardware '
+            'ID: 6, subcategory ID: {0:d}, and quality ID: {1:d}.\n'
         ).format(subcategory_id, quality_id)
     else:
         assert _msg == ''
@@ -130,11 +137,12 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating relay, '
-        'hardware ID: 6, subcategory ID: 0, and quality ID: 1.'
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating relay, '
+        'hardware ID: 6, subcategory ID: 0, type ID: 1, and active '
+        'environment ID: 1.\n'
     )
     assert _attributes['lambda_b'] == 0.0
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
 
 
@@ -157,7 +165,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
         'environment ID: 1.\n'
     )
     assert _attributes['lambda_b'] == 0.0
-    assert _attributes['piQ'], 0.0
+    assert _attributes['piQ'], 1.0
     assert _attributes['hazard_rate_active'] == 0.0
 
 
@@ -207,7 +215,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['current_operating'] = 1.5
     ATTRIBUTES['n_cycles'] = 5
 
-    _attributes, _msg = Relay.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
@@ -244,16 +252,13 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['current_operating'] = 1.5
     ATTRIBUTES['n_cycles'] = 5
 
-    _attributes, _msg = Relay.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating relay, hardware '
-        'ID: 6'
-    )
+    assert _msg == ''
     assert pytest.approx(_attributes['current_ratio'], 0.3)
     assert pytest.approx(_attributes['lambda_b'], 0.006166831)
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 24.0
     assert _attributes['piC'] == 1.5
     assert _attributes['piCYC'] == 1.0
@@ -284,17 +289,14 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     ATTRIBUTES['current_operating'] = 1.5
     ATTRIBUTES['n_cycles'] = 5
 
-    _attributes, _msg = Relay.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piE is 0.0 when calculating relay, hardware '
-        'ID: 6'
-    )
+    assert _msg == ''
     assert pytest.approx(_attributes['current_ratio'], 0.3)
     assert pytest.approx(_attributes['lambda_b'], 0.006166831)
     assert _attributes['piQ'] == 0.1
-    assert _attributes['piE'] == 0.0
+    assert _attributes['piE'] == 1.0
     assert _attributes['piC'] == 1.5
     assert _attributes['piCYC'] == 1.0
     assert pytest.approx(_attributes['piL'], 0.14062499)

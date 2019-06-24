@@ -7,6 +7,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Lamp Reliability Calculations Module."""
 
+# Standard Library Imports
 import gettext
 
 _ = gettext.gettext
@@ -28,19 +29,20 @@ def calculate_217f_part_count(**attributes):
     _dic_lambda_b = {
         1: [
             3.9, 7.8, 12.0, 12.0, 16.0, 16.0, 16.0, 19.0, 23.0, 19.0, 2.7,
-            16.0, 23.0, 100.0
+            16.0, 23.0, 100.0,
         ],
         2: [
             13.0, 26.0, 38.0, 38.0, 51.0, 51.0, 51.0, 64.0, 77.0, 64.0, 9.0,
-            51.0, 77.0, 350.0
-        ]
+            51.0, 77.0, 350.0,
+        ],
     }
     _msg = ''
 
     # Select the base hazard rate.
     try:
         attributes['lambda_b'] = _dic_lambda_b[attributes['application_id']][
-            attributes['environment_active_id'] - 1]
+            attributes['environment_active_id'] - 1
+        ]
     except (IndexError, KeyError):
         attributes['lambda_b'] = 0.0
 
@@ -50,8 +52,10 @@ def calculate_217f_part_count(**attributes):
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating lamp, hardware ID: ' \
             '{0:d}, active environment ID: ' \
-            '{1:d}'.format(attributes['hardware_id'],
-                           attributes['environment_active_id'])
+            '{1:d}'.format(
+                attributes['hardware_id'],
+                attributes['environment_active_id'],
+            )
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = attributes['lambda_b']
@@ -70,9 +74,6 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _lst_piE = [
-        1.0, 2.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 6.0, 5.0, 0.7, 4.0, 6.0, 27.0
-    ]
     _msg = ''
 
     # Calculate the base hazard rate.
@@ -82,31 +83,28 @@ def calculate_217f_part_stress(**attributes):
     _utilization = attributes['duty_cycle'] / 100.0
     if _utilization < 0.1:
         attributes['piU'] = 0.1
-    elif _utilization >= 0.1 and _utilization < 0.9:
+    elif 0.1 <= _utilization < 0.9:
         attributes['piU'] = 0.72
     else:
         attributes['piU'] = 1.0
 
     # Determine the application factor (piA).
     try:
-        attributes['piA'] = (3.3
-                             if (attributes['application_id']) - (1) else 1.0)
+        attributes['piA'] = (
+            3.3
+            if (attributes['application_id']) - (1) else 1.0
+        )
     except IndexError:
         attributes['piA'] = 0.0
 
-    # Determine the environmental factor (piE).
-    try:
-        attributes['piE'] = _lst_piE[attributes['environment_active_id'] - 1]
-    except IndexError:
-        attributes['piE'] = 0.0
-
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'lamp, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'lamp, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piU'] * attributes['piA'] *
-        attributes['piE'])
+        attributes['piE']
+    )
 
     return attributes, _msg

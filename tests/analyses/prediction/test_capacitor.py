@@ -1,7 +1,8 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_capacitor.py is part of The RAMSTK Project
+#       tests.analyses.prediction.test_capacitor.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -151,7 +152,7 @@ def test_calculate_mil_hdbk_217f_part_count(
     if lambda_b == 0.0:
         assert _msg == (
             'RAMSTK WARNING: Base hazard rate is 0.0 when '
-            'calculating capacitor, hardware ID: 6'
+            'calculating capacitor, hardware ID: 6.\n'
         )
     else:
         assert _msg == ''
@@ -173,7 +174,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'capacitor, hardware ID: 6'
+        'capacitor, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.030
@@ -193,7 +194,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_specification():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'capacitor, hardware ID: 6'
+        'capacitor, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 0.030
@@ -214,7 +215,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'capacitor, hardware ID: 6'
+        'capacitor, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.030
@@ -237,10 +238,17 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['voltage_ac_operating'] = 0.05
     ATTRIBUTES['voltage_dc_operating'] = 3.3
 
-    _attributes, _msg = Capacitor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating capacitor, '
+        'hardware ID: 6.\n'
+        'RAMSTK WARNING: piCF is 0.0 when calculating capacitor, '
+        'hardware ID: 6.\n'
+        'RAMSTK WARNING: piCR is 0.0 when calculating capacitor, '
+        'hardware ID: 6.\n'
+    )
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert pytest.approx(_attributes['lambda_b'], 0.07944039)
     assert pytest.approx(_attributes['piCV'], 0.3617763)
@@ -347,3 +355,120 @@ def test_voltage_overstress_mild_environment(
             '1. Operating voltage > 90.0% rated '
             'voltage in mild environment.\n'
         )
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piCF'] = 1.0
+    ATTRIBUTES['piCR'] = 1.0
+    ATTRIBUTES['piSR'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piC'] = -1.3
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piC'] = 0.0
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piCF'] = -1.3
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piCF is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piCF'] = 0.0
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piCF is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piCF'] = 1.0
+    ATTRIBUTES['piCR'] = -1.3
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piCR is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piCR'] = 0.0
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piCR is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piCR'] = 1.0
+    ATTRIBUTES['piSR'] = -1.3
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piSR is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piSR'] = 0.0
+    _msg = Capacitor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piSR is 0.0 when ' \
+            'calculating capacitor, hardware ID: 100.\n'
+    )

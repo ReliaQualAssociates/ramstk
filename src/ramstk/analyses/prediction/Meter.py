@@ -11,6 +11,8 @@ import gettext
 
 _ = gettext.gettext
 
+PI_F = [1.0, 1.0, 2.8]
+
 
 def calculate_217f_part_count(**attributes):
     """
@@ -162,42 +164,6 @@ def calculate_217f_part_stress(**attributes):
     :rtype: (dict, str)
     """
     _dic_lambda_b = {1: [20.0, 30.0, 80.0], 2: 0.09}
-    _dic_piE = {
-        2: [
-            1.0,
-            4.0,
-            25.0,
-            12.0,
-            35.0,
-            28.0,
-            42.0,
-            58.0,
-            73.0,
-            60.0,
-            1.1,
-            60.0,
-            0.0,
-            0.0,
-        ],
-        1: [
-            1.0,
-            2.0,
-            12.0,
-            7.0,
-            18.0,
-            5.0,
-            8.0,
-            16.0,
-            25.0,
-            26.0,
-            0.5,
-            14.0,
-            38.0,
-            0.0,
-        ],
-    }
-    _dic_piQ = {2: [1.0, 3.4]}
-    _lst_piF = [1.0, 1.0, 2.8]
     _msg = ''
 
     # Calculate the temperature ratio.
@@ -220,13 +186,28 @@ def calculate_217f_part_stress(**attributes):
     if attributes['lambda_b'] <= 0.0:
         _msg = (
             "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
-            "hardware ID: {0:d}."
+            "hardware ID: {0:d}.\n"
+        ).format(attributes['hardware_id'])
+
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + (
+            "RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
+            "{0:d}, quality ID: {1:d}.\n"
+        ).format(
+            attributes['hardware_id'],
+            attributes['quality_id'],
+        )
+
+    if attributes['piE'] <= 0.0:
+        _msg = _msg + (
+            "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
+            "{0:d}.\n"
         ).format(attributes['hardware_id'])
 
     # Determine the application factor (piA) and function factor (piF).
     if attributes['subcategory_id'] == 2:
         attributes['piA'] = (1.7 if (attributes['type_id']) - (1) else 1.0)
-        attributes['piF'] = _lst_piF[attributes['application_id'] - 1]
+        attributes['piF'] = PI_F[attributes['application_id'] - 1]
 
     # Determine the temperature stress factor (piT).
     if attributes['subcategory_id'] == 1:
@@ -238,37 +219,6 @@ def calculate_217f_part_stress(**attributes):
             attributes['piT'] = 0.8
         elif 0.8 < _temperature_ratio <= 1.0:
             attributes['piT'] = 1.0
-
-    # Determine the quality factor (piQ).
-    try:
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-            attributes['quality_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
-
-    if attributes['piQ'] <= 0.0:
-        _msg = (
-            "RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
-            "{0:d}, quality ID: {1:d}."
-        ).format(
-            attributes['hardware_id'],
-            attributes['quality_id'],
-        )
-
-    # Determine the environmental factor (piE).
-    try:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1
-        ]
-    except (IndexError, KeyError):
-        attributes['piE'] = 0.0
-
-    if attributes['piE'] <= 0.0:
-        _msg = (
-            "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
-            "{0:d}"
-        ).format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (

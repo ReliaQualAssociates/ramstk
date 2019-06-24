@@ -147,7 +147,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
         if _attributes is not None:
             if _attributes['category_id'] > 0:
-                _attributes, __ = Component.calculate(_limits, **_attributes)
+                # TODO: Log the returned messages.
+                _attributes, _msg = Component.calculate(_limits, **_attributes)
             else:
                 # If the assembly is to be assessed, set the attributes that
                 # are the sum of the child attributes to zero.  Without doing

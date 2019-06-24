@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Component, Meter
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -120,7 +120,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
         "ID: 1, and active environment ID: 1."
     )
     assert _attributes['lambda_b'] == 0.0
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
 
 
@@ -185,15 +185,12 @@ def test_calculate_mil_hdbk_217f_part_stress_elapsed_time_meter():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Meter.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        "RAMSTK WARNING: piQ is 0.0 when calculating meter, "
-        "hardware ID: 6, quality ID: 1."
-    )
+    assert _msg == ''
     assert pytest.approx(_attributes['lambda_b'], 0.09)
-    assert _attributes['piQ'] == 0.0
+    assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 7.0
     assert pytest.approx(_attributes['hazard_rate_active'], 1.836)
 
@@ -215,7 +212,7 @@ def test_calculate_mil_hdbk_217f_part_stress_panel_meter():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Meter.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''

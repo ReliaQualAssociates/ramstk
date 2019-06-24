@@ -182,13 +182,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, '
-        'hardware ID: 6, quality ID: 11.'
-    )
+    assert _msg == ''
     assert _attributes['lambda_b'] == 0.0035
-    assert _attributes['piQ'] == 0.0
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert _attributes['piQ'] == 1.0
+    assert _attributes['hazard_rate_active'] == 0.0035
 
 
 @pytest.mark.unit
@@ -207,7 +204,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
@@ -234,12 +231,12 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating inductor, '
-        'hardware ID: 6'
+        'hardware ID: 6.\n'
     )
     assert pytest.approx(_attributes['lambda_b'], 0.0003462094)
     assert _attributes['piQ'] == 0.0
@@ -264,18 +261,15 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piE is 0.0 when calculating inductor, '
-        'hardware ID: 6'
-    )
+    assert _msg == ''
     assert pytest.approx(_attributes['lambda_b'], 0.0003462094)
     assert _attributes['piQ'] == 0.1
-    assert _attributes['piE'] == 0.0
+    assert _attributes['piE'] == 1.0
     assert _attributes['piC'] == 2.0
-    assert pytest.approx(_attributes['hazard_rate_active'], 0.0)
+    assert pytest.approx(_attributes['hazard_rate_active'], 0.00006924188)
 
 
 @pytest.mark.unit
@@ -294,12 +288,12 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_insulation():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'inductor, hardware ID: 6'
+        'inductor, hardware ID: 6.\n'
     )
     assert pytest.approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 0.1

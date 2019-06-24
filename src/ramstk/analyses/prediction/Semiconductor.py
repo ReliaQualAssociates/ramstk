@@ -127,6 +127,9 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     # Calculate junction temperature.
     attributes = _calculate_junction_temperature(attributes)
 
+    # Retrieve the quality factor (piQ).
+    attributes = _select_part_stress_quality_factor(attributes)
+
     # Calculate the temperature factor (piT).
     attributes = _calculate_temperature_factor(attributes)
 
@@ -155,8 +158,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     if attributes['subcategory_id'] == 13:
         attributes['piP'] = 1.0 / (2.0 * (1.0 - attributes['power_ratio']))
 
-    # Retrieve the quality factor (piQ).
-    attributes = _select_part_stress_quality_factor(attributes)
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
             'semiconductor, hardware ID: {0:d} and quality ID: ' \
@@ -166,7 +167,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             )
 
     # Retrieve the environmental factor (piE).
-    attributes = _select_environmental_factor(attributes)
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
             'semiconductor, hardware ID: {0:d} and active environment ID: ' \
@@ -637,79 +637,6 @@ def _select_base_part_count_hazard_rate(attributes):
         ]
     except IndexError:
         attributes['lambda_b'] = 0.0
-
-    return attributes
-
-
-def _select_environmental_factor(attributes):
-    """
-    Select the MIL-HDBK-217F environmental factor for the semiconductor device.
-
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-             with updated values
-    :rtype: dict
-    """
-    _dic_piE = {
-        1: [
-            1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
-            32.0, 320.0,
-        ],
-        2: [
-            1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0,
-            24.0, 250.0,
-        ],
-        3: [
-            1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
-            32.0, 320.0,
-        ],
-        4: [
-            1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
-            32.0, 320.0,
-        ],
-        5: [
-            1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
-            32.0, 320.0,
-        ],
-        6: [
-            1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0,
-            24.0, 250.0,
-        ],
-        7: [
-            1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0,
-            24.0, 250.0,
-        ],
-        8: [
-            1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 7.5,
-            24.0, 250.0,
-        ],
-        9: [
-            1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
-            32.0, 320.0,
-        ],
-        10: [
-            1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
-            32.0, 320.0,
-        ],
-        11: [
-            1.0, 2.0, 8.0, 5.0, 12.0, 4.0, 6.0, 6.0, 8.0, 17.0, 0.5, 9.0, 24.0,
-            450.0,
-        ],
-        12: [
-            1.0, 2.0, 8.0, 5.0, 12.0, 4.0, 6.0, 6.0, 8.0, 17.0, 0.5, 9.0, 24.0,
-            450.0,
-        ],
-        13: [
-            1.0, 2.0, 8.0, 5.0, 12.0, 4.0, 6.0, 6.0, 8.0, 17.0, 0.5, 9.0, 24.0,
-            450.0,
-        ],
-    }
-
-    try:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        attributes['piE'] = 0.0
 
     return attributes
 

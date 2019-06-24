@@ -13,6 +13,58 @@ from math import exp
 _ = gettext.gettext
 
 
+REF_TEMPS = {
+    1: {
+        1: 329.0,
+        2: 352.0,
+        3: 364.0,
+        4: 400.0,
+        5: 398.0,
+        6: 477.0,
+    },
+    2: {
+        1: 329.0,
+        2: 352.0,
+        3: 364.0,
+        4: 409.0,
+    },
+}
+
+
+def _get_part_stress_quality_factor(attributes):
+    """
+    Select the MIL-HDBK-217F quality factor for the inductor device.
+
+    :param dict attributes: the hardware attributes for the inductor.
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values
+    :rtype: dict
+    """
+    _dic_piQ = {
+        1: {
+            1: [1.5, 5.0],
+            2: [3.0, 7.5],
+            3: [8.0, 30.0],
+            4: [12.0, 30.0],
+        },
+        2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
+    }
+
+    try:
+        if attributes['subcategory_id'] == 1:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['family_id']
+            ][attributes['quality_id'] - 1]
+        else:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['quality_id'] - 1
+            ]
+    except (KeyError, IndexError):
+        attributes['piQ'] = 0.0
+
+    return attributes
+
+
 def calculate_217f_part_count(**attributes):
     """
     Calculate the part count hazard rate for a inductor.
@@ -123,22 +175,6 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _dic_ref_temp = {
-        1: {
-            1: 329.0,
-            2: 352.0,
-            3: 364.0,
-            4: 400.0,
-            5: 398.0,
-            6: 477.0,
-        },
-        2: {
-            1: 329.0,
-            2: 352.0,
-            3: 364.0,
-            4: 409.0,
-        },
-    }
     _dic_factors = {
         1: {
             1: [0.0018, 15.6],
@@ -155,32 +191,14 @@ def calculate_217f_part_stress(**attributes):
             4: [0.00035, 10.0],
         },
     }
-    _dic_piQ = {
-        1: {
-            1: [1.5, 5.0],
-            2: [3.0, 7.5],
-            3: [8.0, 30.0],
-            4: [12.0, 30.0],
-        },
-        2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
-    }
-    _dic_piE = {
-        1: [
-            1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-        2: [
-            1.0, 4.0, 12.0, 5.0, 16.0, 5.0, 7.0, 6.0, 8.0, 24.0, 0.5, 13.0,
-            34.0, 610.0,
-        ],
-    }
     _msg = ''
 
     attributes = calculate_hot_spot_temperature(**attributes)
+    attributes = _get_part_stress_quality_factor(attributes)
 
     # Calculate the base hazard rate.
     try:
-        _ref_temp = _dic_ref_temp[attributes['subcategory_id']][
+        _ref_temp = REF_TEMPS[attributes['subcategory_id']][
             attributes[
                 'insulation_id'
             ]
@@ -201,39 +219,17 @@ def calculate_217f_part_stress(**attributes):
     except (KeyError, ZeroDivisionError):
         attributes['lambda_b'] = 0.0
 
+    # Check for input weirdness,
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating inductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    # Determine the quality factor (piQ).
-    try:
-        if attributes['subcategory_id'] == 1:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['family_id']
-            ][attributes['quality_id'] - 1]
-        else:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['quality_id'] - 1
-            ]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
-
+            '{0:d}.\n'.format(attributes['hardware_id'])
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    # Determine the environmental factor (piE).
-    try:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        attributes['piE'] = 0.0
-
+            'inductor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'inductor, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Calculate the construction factor (piC).
     if attributes['subcategory_id'] == 2:

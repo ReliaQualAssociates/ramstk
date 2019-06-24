@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component, Resistor
+from ramstk.analyses.prediction import Component
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -241,13 +241,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating resistor, '
-        'hardware ID: 6, quality ID: 11.'
-    )
+    assert _msg == ''
     assert _attributes['lambda_b'] == 0.0005
-    assert _attributes['piQ'] == 0.0
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert _attributes['piQ'] == 1.0
+    assert _attributes['hazard_rate_active'] == 0.0005
 
 
 @pytest.mark.unit
@@ -271,7 +268,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['n_elements'] = 4
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes, _msg = Resistor.calculate_217f_part_stress(**_attributes)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
