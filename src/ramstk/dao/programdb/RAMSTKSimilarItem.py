@@ -344,8 +344,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
                    "RAMSTKSimilarItem.set_attributes().".format(str(_err))
         except ValueError as _err:
             # FIXME: Handle ValueError with an error code and error message in RAMSTKSimilarItem.set_attributes().
-            print(_err)
-
+            pass
         return _error_code, _msg
 
     def topic_633(self, hazard_rate):

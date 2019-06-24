@@ -798,9 +798,10 @@ class DAO():
                 IOError, exc.SQLAlchemyError, exc.DBAPIError,
                 exc.OperationalError,
         ) as _error:
-            print(_error)
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             return True
         except ArgumentError:  # pylint: disable=undefined-variable # noqa
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             print("Bad common database URI: {0:s}".format(database))
             return True
 
@@ -819,18 +820,23 @@ class DAO():
         try:
             do_create_program_db(database=database)
         except IOError:
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             print("IOError")
             _return = True
         except exc.OperationalError:
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             print("OperationalError")
             _return = True
         except exc.DBAPIError:
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             print("DBAPIError")
             _return = True
         except exc.SQLAlchemyError:
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             print("SQLAlchemyError")
             _return = True
         except ArgumentError:  # pylint: disable=undefined-variable  # noqa
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             print("Bad program database URI: {0:s}".format(database))
             _return = True
 
@@ -881,7 +887,7 @@ class DAO():
                         'date object: {0:s}'
                     ).format(_error)
                 else:
-                    print(_error)
+                    # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
                     _error_code = 1
                     _msg = (
                         'RAMSTK ERROR: Adding one or more items to the RAMSTK '
@@ -913,11 +919,14 @@ class DAO():
 
         try:
             session.commit()
-        except (exc.SQLAlchemyError, exc.DBAPIError) as error:
-            print(error)
+        except (exc.SQLAlchemyError, exc.DBAPIError) as _error:
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             session.rollback()
             _error_code = 1
-            _msg = "RAMSTK ERROR: Updating the RAMSTK Program database."
+            _msg = (
+                "RAMSTK ERROR: Updating the RAMSTK Program database failed "
+                "with error: {0:s}."
+            ).format(_error)
 
         return _error_code, _msg
 
@@ -941,11 +950,14 @@ class DAO():
         try:
             session.delete(item)
             session.commit()
-        except (exc.SQLAlchemyError, exc.DBAPIError) as error:
-            print(error)
+        except (exc.SQLAlchemyError, exc.DBAPIError) as _error:
+            # TODO: Create and log a useful user and/or debug message in src/ramstk/dao/DAO.py.
             session.rollback()
             _error_code = 1
-            _msg = "RAMSTK ERROR: Deleting an item from the RAMSTK Program database."
+            _msg = (
+                "RAMSTK ERROR: Deleting an item from the RAMSTK Program "
+                "database with error: {0:s}."
+            ).format(_error)
 
         return _error_code, _msg
 

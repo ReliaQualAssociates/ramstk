@@ -472,7 +472,7 @@ class SimilarItem(RAMSTKWorkView):
                             str(self._parent_id),
                         )
                     )
-                    print(_debug_msg)
+                    # TODO: Create and log a useful user and/or debug message in src/ramstk/gui/gtk/workviews/SimilarItem.py.
                     print(_data)
                 except ValueError as _error:
                     _error_code = 1
@@ -491,7 +491,7 @@ class SimilarItem(RAMSTKWorkView):
                             str(_error),
                         )
                     )
-                    print(_debug_msg)
+                    # TODO: Create and log a useful user and/or debug message in src/ramstk/gui/gtk/workviews/SimilarItem.py.
             except AttributeError:
                 if _node_id != 0:
                     _error_code = 1
@@ -508,7 +508,7 @@ class SimilarItem(RAMSTKWorkView):
                             str(self._parent_id),
                         )
                     )
-                    print(_debug_msg)
+                    # TODO: Create and log a useful user and/or debug message in src/ramstk/gui/gtk/workviews/SimilarItem.py.
 
     def _do_refresh_tree(self, model, row, functions):
         """
