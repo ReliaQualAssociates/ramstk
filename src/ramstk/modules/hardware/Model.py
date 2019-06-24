@@ -147,7 +147,7 @@ class HardwareBoMDataModel(RAMSTKDataModel):
 
         if _attributes is not None:
             if _attributes['category_id'] > 0:
-                # TODO: Log the returned messages.
+                # ISSUE: See issue #248 at https://github.com/ReliaQualAssociates/ramstk/issues/248
                 _attributes, _msg = Component.calculate(_limits, **_attributes)
             else:
                 # If the assembly is to be assessed, set the attributes that

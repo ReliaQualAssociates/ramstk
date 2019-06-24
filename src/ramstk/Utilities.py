@@ -130,7 +130,7 @@ def error_handler(message):
     elif 'index out of range' in message[0]:  # Index error
         _error_code = 40
     else:  # Unhandled error
-        # TODO: Create and log a useful user and/or debug message in src/ramstk/Utilities.py.
+        # ISSUE: See issue #227 at https://github.com/ReliaQualAssociates/ramstk/issues/227
         _error_code = 1000  # pragma: no cover
 
     return _error_code

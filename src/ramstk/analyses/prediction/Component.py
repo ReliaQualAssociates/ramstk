@@ -1199,12 +1199,12 @@ def _get_environment_factor(**attributes):
             attributes['subcategory_id']
         ][attributes['environment_active_id'] - 1]
     except TypeError as _error:
-        # TODO: Create and log a useful user and/or debug message in src/ramstk/analyses/prediction/Component.py.
+        # ISSUE: See issue #250 at https://github.com/ReliaQualAssociates/ramstk/issues/250
         attributes['piE'] = PI_E[attributes['category_id']][
             attributes['environment_active_id'] - 1
         ]
     except (IndexError, KeyError) as _error:
-        # TODO: Create and log a useful user and/or debug message in src/ramstk/analyses/prediction/Component.py.
+        # ISSUE: See issue #250 at https://github.com/ReliaQualAssociates/ramstk/issues/250
         attributes['piE'] = 1.0
 
     return attributes
