@@ -443,7 +443,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['piCF'] = 0.0
 
     _msg = _do_check_variables(attributes)
-    print(_msg)
+
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
     )

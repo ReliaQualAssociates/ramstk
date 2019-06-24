@@ -465,7 +465,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['temperature_active'] = 32.0
     ATTRIBUTES['temperature_rated_max'] = 85.0
     ATTRIBUTES['power_operating'] = 0.05
-    ATTRIBUTES['n_elements'] = 2000
+    ATTRIBUTES['n_elements'] = 1000
     ATTRIBUTES['n_active_pins'] = 16
     ATTRIBUTES['years_in_production'] = 1
     ATTRIBUTES['temperature_case'] = 40.0
@@ -503,7 +503,7 @@ def test_calculate_mil_hdbk_217f_part_stress_gaas():
     ATTRIBUTES['temperature_active'] = 32.0
     ATTRIBUTES['temperature_rated_max'] = 85.0
     ATTRIBUTES['power_operating'] = 0.05
-    ATTRIBUTES['n_elements'] = 2000
+    ATTRIBUTES['n_elements'] = 100
     ATTRIBUTES['n_active_pins'] = 16
     ATTRIBUTES['years_in_production'] = 1
     ATTRIBUTES['temperature_case'] = 40.0

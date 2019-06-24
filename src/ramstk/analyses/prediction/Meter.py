@@ -125,7 +125,7 @@ def _do_check_variables(attributes):
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + (
-            "RAMSTK WARNING: piQ is 0.0 when calculating meter, " \
+            "RAMSTK WARNING: piQ is 0.0 when calculating meter, "
             "hardware ID: {0:d}, quality ID: {1:d}.\n"
         ).format(
             attributes['hardware_id'],
@@ -135,7 +135,7 @@ def _do_check_variables(attributes):
     if attributes['hazard_rate_method_id'] == 2:
         if attributes['piE'] <= 0.0:
             _msg = _msg + (
-                "RAMSTK WARNING: piE is 0.0 when calculating meter, " \
+                "RAMSTK WARNING: piE is 0.0 when calculating meter, "
                 "hardware ID: {0:d}, active environment ID: {1:d}.\n"
             ).format(
                 attributes['hardware_id'],
@@ -167,7 +167,7 @@ def _do_check_variables(attributes):
                     attributes['temperature_active'],
                     attributes['temperature_rated_max'],
                 )
-    print(_msg)
+
     return _msg
 
 

@@ -351,6 +351,7 @@ C2 = {
 PI_A = {1: [1.0, 3.0, 3.0], 2: [1.0]}
 PI_PT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
 
+
 def _calculate_package_hazard_rate(attributes):
     """Calculate the package hazard rate (C2)."""
     if attributes['package_id'] in [1, 2, 3]:
@@ -390,10 +391,10 @@ def _calculate_die_complexity_hazard_rate(attributes):
         8: [16000, 64000, 256000],
         9: {
             1: [
-                10,
+                100, 1000,
             ],
             2: [
-                1000,
+                1000, 10000,
             ],
         },
     }
@@ -409,32 +410,25 @@ def _calculate_die_complexity_hazard_rate(attributes):
     else:
         _technology = attributes['technology_id']
 
-    # Retrieve the value of C1.
     try:
         if attributes['subcategory_id'] == 3:
-            _breaks = _dic_breakpoints[attributes['subcategory_id']][
+            _index = _dic_breakpoints[attributes['subcategory_id']][
                 _technology
-            ]
+            ].index(attributes['n_elements'])
         if attributes['subcategory_id'] == 9:
-            _breaks = _dic_breakpoints[attributes['subcategory_id']][
+            _index = _dic_breakpoints[attributes['subcategory_id']][
                 attributes['application_id']
-            ]
+            ].index(attributes['n_elements'])
         else:
-            _breaks = _dic_breakpoints[attributes['subcategory_id']]
-
-        _index = -1
-        for _index, _value in enumerate(_breaks):
-            _diff = _value - attributes['n_elements']
-            if len(_breaks) == 1 and _diff < 0:
-                break
-            elif _diff >= 0:
-                break
+            _index = _dic_breakpoints[
+                attributes['subcategory_id']
+            ].index(attributes['n_elements'])
 
         attributes['C1'] = C1[attributes['subcategory_id']][
             _technology - 1
-        ][_index + 1]
+        ][_index]
 
-    except KeyError:
+    except(KeyError, ValueError):
         attributes['C1'] = 0.0
 
     return attributes
@@ -622,7 +616,11 @@ def _calculate_temperature_factor(**attributes):
         ]
     elif attributes['subcategory_id'] == 9:
         _ref_temp = 423.0
-        _ea = ACTIVATION_ENERGY[attributes['subcategory_id']][attributes['type_id'] - 1]
+        _ea = ACTIVATION_ENERGY[
+            attributes['subcategory_id']
+        ][
+            attributes['type_id'] - 1
+        ]
     else:
         _ref_temp = 296.0
         try:
@@ -657,8 +655,8 @@ def _calculate_vhisc_vlsi_variables(attributes):
 
     # Calculate the die complexity correction factor.
     attributes['piCD'] = (
-        (attributes['area'] / 0.21) *
-        (2.0 / attributes['feature_size'])**2.0 * 0.64
+        (attributes['area'] / 0.21)
+        * (2.0 / attributes['feature_size'])**2.0 * 0.64
     ) + 0.36
 
     # Determine the package type correction factor (piPT).
@@ -764,7 +762,7 @@ def _do_check_variables(attributes):
                     attributes['application_id'],
                     attributes['type_id'],
                 )
-    print(_msg)
+
     return _msg
 
 
@@ -804,7 +802,7 @@ def calculate_217f_part_count(**attributes):
     return attributes, _msg
 
 
-def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branches
+def calculate_217f_part_stress(**attributes):
     """
     Calculate the part stress hazard rate for a integrated circuit.
 
@@ -856,9 +854,9 @@ def calculate_217f_part_stress(**attributes):   # pylint: disable=too-many-branc
     elif attributes['subcategory_id'] == 10:
         attributes = _calculate_vhisc_vlsi_variables(attributes)
         attributes['hazard_rate_active'] = (
-            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT'] *
-            attributes['piCD'] + attributes['lambdaBP'] * attributes['piE'] *
-            attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS']
+            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT']
+            * attributes['piCD'] + attributes['lambdaBP'] * attributes['piE']
+            * attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS']
         )
 
     return attributes, _msg

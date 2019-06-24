@@ -27,7 +27,10 @@ def _do_check_variables(attributes):
     """
     _msg = ''
 
-    if attributes['hazard_rate_method_id'] == 1 and attributes['lambda_b'] <= 0.0:
+    if (
+            attributes['hazard_rate_method_id'] == 1 and
+            attributes['lambda_b'] <= 0.0
+    ):
         _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating fuse, hardware ID: ' \
             '{0:d}, active environment ID: ' \

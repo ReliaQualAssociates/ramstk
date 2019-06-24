@@ -62,7 +62,7 @@ def _do_check_variables(attributes):
                 'filter, hardware ID: {0:d}.\n'.format(
                     attributes['hardware_id'],
                 )
-    print(_msg)
+
     return _msg
 
 

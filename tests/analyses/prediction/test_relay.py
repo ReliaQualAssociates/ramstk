@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_relay.py is part of The RAMSTK Project
@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component
+from ramstk.analyses.prediction import Component, Relay
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -214,18 +214,28 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['current_rated'] = 5.0
     ATTRIBUTES['current_operating'] = 1.5
     ATTRIBUTES['n_cycles'] = 5
+    ATTRIBUTES['current_ratio'] = 0.3
 
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating relay, '
+        'hardware ID: 6, contact form ID: 2.\n'
+        'RAMSTK WARNING: piCYC is 0.0 when calculating relay, '
+        'hardware ID: 6, subcategory ID: 2, quality ID: 1, '
+        'cycling rate: 5.000000.\n'
+        'RAMSTK WARNING: piF is 0.0 when calculating relay, '
+        'hardware ID: 6, quality ID: 1, contact rating ID: 2, '
+        'application ID: 4, construction ID: 1.\n'
+    )
     assert pytest.approx(_attributes['current_ratio'], 0.3)
     assert pytest.approx(_attributes['lambda_b'], 0.006166831)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 6.0
     assert _attributes['piC'] == 0.0
     assert _attributes['piCYC'] == 0.0
-    assert _attributes['piL'] == 0.0
+    assert pytest.approx(_attributes['piL'], 0.140625)
     assert pytest.approx(_attributes['hazard_rate_active'], 0.0037000986)
 
 
@@ -251,6 +261,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['current_rated'] = 5.0
     ATTRIBUTES['current_operating'] = 1.5
     ATTRIBUTES['n_cycles'] = 5
+    ATTRIBUTES['current_ratio'] = 0.3
 
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
@@ -263,7 +274,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     assert _attributes['piC'] == 1.5
     assert _attributes['piCYC'] == 1.0
     assert pytest.approx(_attributes['piL'], 0.14062499)
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert pytest.approx(_attributes['hazard_rate_active'], 0.3746349781284185)
 
 
 @pytest.mark.unit
@@ -288,6 +299,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     ATTRIBUTES['current_rated'] = 5.0
     ATTRIBUTES['current_operating'] = 1.5
     ATTRIBUTES['n_cycles'] = 5
+    ATTRIBUTES['current_ratio'] = 0.4
 
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
@@ -300,7 +312,7 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     assert _attributes['piC'] == 1.5
     assert _attributes['piCYC'] == 1.0
     assert pytest.approx(_attributes['piL'], 0.14062499)
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert pytest.approx(_attributes['hazard_rate_active'], 0.00138753695603)
 
 
 @pytest.mark.unit
@@ -368,3 +380,124 @@ def test_current_overstress_mild_environment(
             '1. Operating current > 90.0% rated '
             'current in mild environment.\n'
         )
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piCYC'] = 1.0
+    ATTRIBUTES['piF'] = 1.0
+    ATTRIBUTES['piL'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating relay, ' \
+        'hardware ID: 100, subcategory ID: 1, type ID: 1, and active ' \
+        'environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating relay, ' \
+        'hardware ID: 100, subcategory ID: 1, type ID: 1, and active ' \
+        'environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating relay, hardware ID: '
+        '100, subcategory ID: 1, and quality ID: 1.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating relay, hardware ID: '
+        '100, subcategory ID: 1, and quality ID: 1.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating relay, hardware ID: '
+        '100, active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating relay, hardware ID: '
+        '100, active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piC'] = -1.3
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating relay, hardware ID: '
+        '100, contact form ID: 2.\n'
+    )
+
+    ATTRIBUTES['piC'] = 0.0
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating relay, hardware ID: '
+        '100, contact form ID: 2.\n'
+    )
+
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piCYC'] = -1.3
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piCYC is 0.0 when calculating relay, hardware ID: '
+        '100, subcategory ID: 1, quality ID: 1, cycling rate: 5.000000.\n'
+    )
+
+    ATTRIBUTES['piCYC'] = 0.0
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piCYC is 0.0 when calculating relay, hardware ID: '
+        '100, subcategory ID: 1, quality ID: 1, cycling rate: 5.000000.\n'
+    )
+
+    ATTRIBUTES['piCYC'] = 1.0
+    ATTRIBUTES['piF'] = -1.3
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piF is 0.0 when calculating relay, hardware ID: '
+        '100, quality ID: 1, contact rating ID: 2, application ID: 4, '
+        'construction ID: 1.\n'
+    )
+
+    ATTRIBUTES['piF'] = 0.0
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piF is 0.0 when calculating relay, hardware ID: '
+        '100, quality ID: 1, contact rating ID: 2, application ID: 4, '
+        'construction ID: 1.\n'
+    )
+
+    ATTRIBUTES['piF'] = 1.0
+    ATTRIBUTES['piL'] = -1.3
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piL is 0.0 when calculating relay, hardware ID: '
+        '100, technology ID: 1, current ratio: 0.400000.\n'
+    )
+
+    ATTRIBUTES['piL'] = 0.0
+    _msg = Relay._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piL is 0.0 when calculating relay, hardware ID: '
+        '100, technology ID: 1, current ratio: 0.400000.\n'
+    )
