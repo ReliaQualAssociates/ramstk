@@ -493,3 +493,73 @@ def test_current_overstress_mild_environment(
             '1. Operating current > 90.0% rated '
             'current in mild environment.\n'
         )
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Inductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating inductor, ' \
+        'hardware ID: 100, subcategory ID: 2, family ID: 1, and active ' \
+        'environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Inductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating inductor, ' \
+        'hardware ID: 100, subcategory ID: 2, family ID: 1, and active ' \
+        'environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Inductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+        'calculating inductor, hardware ID: 100, active environment ID: 11.\n'
+    )
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Inductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+        'calculating inductor, hardware ID: 100, active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = Inductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, hardware ID: ' \
+        '100, quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Inductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, hardware ID: ' \
+        '100, quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = -1.3
+    _msg = Inductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating inductor, hardware ID: ' \
+        '100, construction ID: 2.\n'
+    )
+
+    ATTRIBUTES['piC'] = 0.0
+    _msg = Inductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating inductor, hardware ID: ' \
+        '100, construction ID: 2.\n'
+    )

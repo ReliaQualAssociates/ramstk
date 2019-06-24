@@ -253,8 +253,10 @@ def _do_check_variables(attributes):
     if attributes['hazard_rate_method_id'] == 2:
         if attributes['piE'] <= 0.0:
             _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-                'inductor, hardware ID: {0:d}.\n'.format(
+                'inductor, hardware ID: {0:d}, ' \
+                'active environment ID: {1:d}.\n'.format(
                     attributes['hardware_id'],
+                    attributes['environment_active_id'],
                 )
 
         if attributes['piC'] <= 0.0:

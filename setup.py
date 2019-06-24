@@ -12,7 +12,7 @@ from setuptools.command.sdist import sdist
 
 # Read the contents of your README file
 HERE = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(HERE, 'README.md')) as f:
+with open(os.path.join(HERE, 'README.md'), encoding='utf-8') as f:
     __long_description__ = f.read()
 
 __appname__ = 'RAMSTK'

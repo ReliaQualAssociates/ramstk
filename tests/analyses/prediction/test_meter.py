@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_meter.py is part of The RAMSTK Project
@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Component
+from ramstk.analyses.prediction import Component, Meter
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -87,10 +87,9 @@ def test_calculate_mil_hdbk_217f_part_count(
     assert isinstance(_attributes, dict)
     if lambda_b == 0.0:
         assert _msg == (
-            'RAMSTK WARNING: Base hazard rate is 0.0 when '
-            'calculating meter, hardware ID: 6, subcategory '
-            'ID: {0:d}, type ID: {2:d}, and active environment '
-            'ID: {1:d}.'
+            'RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, '
+            'hardware ID: 6, subcategory ID: {0:d}, type ID: {2:d}, and '
+            'active environment ID: {1:d}.\n'
         ).format(
             subcategory_id,
             environment_active_id, type_id,
@@ -115,9 +114,9 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-        "meter, hardware ID: 6, subcategory ID: 0, type "
-        "ID: 1, and active environment ID: 1."
+        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
+        "hardware ID: 6, subcategory ID: 0, type ID: 1, and active "
+        "environment ID: 1.\n"
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
@@ -137,9 +136,9 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-        "meter, hardware ID: 6, subcategory ID: 1, type ID: 10, "
-        "and active environment ID: 1."
+        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
+        "hardware ID: 6, subcategory ID: 1, type ID: 10, and active "
+        "environment ID: 1.\n"
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 1.0
@@ -159,9 +158,9 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-        "meter, hardware ID: 6, subcategory ID: 1, type ID: 1, "
-        "and active environment ID: 100."
+        "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
+        "hardware ID: 6, subcategory ID: 1, type ID: 1, and active "
+        "environment ID: 100.\n"
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
@@ -188,7 +187,10 @@ def test_calculate_mil_hdbk_217f_part_stress_elapsed_time_meter():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == 'RAMSTK WARNING: piA is 0.0 when calculating meter, ' \
+                    'hardware ID: 6, type ID: 2.\n' \
+                    'RAMSTK WARNING: piF is 0.0 when calculating meter, ' \
+                    'hardware ID: 6, application ID: 2.\n'
     assert pytest.approx(_attributes['lambda_b'], 0.09)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 7.0
@@ -215,10 +217,117 @@ def test_calculate_mil_hdbk_217f_part_stress_panel_meter():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == 'RAMSTK WARNING: piF is 0.0 when calculating meter, ' \
+                   'hardware ID: 6, active temperature: 32.000000, and max '\
+                   'rated temperature: 85.000000.\n'
     assert pytest.approx(_attributes['lambda_b'], 0.09)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 12.0
     assert _attributes['piA'] == 1.7
     assert _attributes['piF'] == 1.0
     assert pytest.approx(_attributes['hazard_rate_active'], 1.836)
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piA'] = 1.0
+    ATTRIBUTES['piF'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piT'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, ' \
+        'hardware ID: 100, subcategory ID: 2, type ID: 2, and active ' \
+        'environment ID: 4.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, ' \
+        'hardware ID: 100, subcategory ID: 2, type ID: 2, and active ' \
+        'environment ID: 4.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: ' \
+        '100, active environment ID: 4.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: ' \
+        '100, active environment ID: 4.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piA'] = -1.3
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating meter, hardware ID: ' \
+        '100, type ID: 2.\n'
+    )
+
+    ATTRIBUTES['piA'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating meter, hardware ID: ' \
+        '100, type ID: 2.\n'
+    )
+
+    ATTRIBUTES['piA'] = 1.0
+    ATTRIBUTES['piF'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piF is 0.0 when calculating meter, hardware ID: ' \
+        '100, application ID: 2.\n'
+    )
+
+    ATTRIBUTES['piF'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piF is 0.0 when calculating meter, hardware ID: ' \
+        '100, application ID: 2.\n'
+    )
+
+    ATTRIBUTES['piF'] = 1.0
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: ' \
+        '100, quality ID: 1.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: ' \
+        '100, quality ID: 1.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piT'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piF is 0.0 when calculating meter, hardware ID: ' \
+        '100, active temperature: 32.000000, and max rated ' \
+        'temperature: 85.000000.\n'
+    )
+
+    ATTRIBUTES['piT'] = 0.0
+    _msg = Meter._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piF is 0.0 when calculating meter, hardware ID: ' \
+        '100, active temperature: 32.000000, and max rated ' \
+        'temperature: 85.000000.\n'
+    )
