@@ -1,8 +1,8 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_integrated_circuit.py is part of The RAMSTK
-#       Project
+#       tests.analyses.prediction.test_integrated_circuit.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -382,7 +382,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'integrated circuit, hardware ID: 6'
+        'integrated circuit, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -404,7 +404,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_technology():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'integrated circuit, hardware ID: 6'
+        'integrated circuit, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -426,7 +426,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'integrated circuit, hardware ID: 6'
+        'integrated circuit, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -477,7 +477,8 @@ def test_calculate_mil_hdbk_217f_part_stress():
     )
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == 'RAMSTK WARNING: piA is 0.0 when calculating integrated ' \
+        'circuit, hardware ID: 6, application ID: 0.\n'
     assert pytest.approx(_attributes['C1'], 0.06)
     assert pytest.approx(_attributes['C2'], 0.005921936)
     assert pytest.approx(_attributes['piT'], 0.4477441)
