@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_lamp.py is part of The RAMSTK Project
@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Component
+from ramstk.analyses.prediction import Component, Lamp
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -67,7 +67,7 @@ def test_calculate_mil_hdbk_217f_part_count(
         assert _msg == (
             'RAMSTK WARNING: Base hazard rate is 0.0 when '
             'calculating lamp, hardware ID: 6, active environment '
-            'ID: {0:d}'
+            'ID: {0:d}.\n'
         ).format(environment_active_id)
     else:
         assert _msg == ''
@@ -88,7 +88,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating lamp, hardware '
-        'ID: 6, active environment ID: 100'
+        'ID: 6, active environment ID: 100.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -113,3 +113,44 @@ def test_calculate_mil_hdbk_217f_part_stress():
     assert _attributes['piE'] == 3.0
     assert _attributes['piU'] == 0.72
     assert pytest.approx(_attributes['hazard_rate_active'], 3.9430227)
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piA'] = 1.0
+    ATTRIBUTES['piU'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Lamp._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating lamp, ' \
+        'hardware ID: 100, active environment ID: 4.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Lamp._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+            'calculating lamp, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piA'] = 0.0
+    _msg = Lamp._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating lamp, hardware ID: ' \
+        '100, application ID: 1.\n'
+    )
+
+    ATTRIBUTES['piA'] = 1.0
+    ATTRIBUTES['piU'] = 0.0
+    _msg = Lamp._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piU is 0.0 when calculating lamp, hardware ID: ' \
+        '100, duty cycle: 50.000000.\n'
+    )

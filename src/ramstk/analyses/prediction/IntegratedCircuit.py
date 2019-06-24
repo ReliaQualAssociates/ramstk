@@ -780,7 +780,7 @@ def _do_check_variables(attributes):
                     attributes['application_id'],
                     attributes['type_id'],
                 )
-    print(_msg)
+
     return _msg
 
 
