@@ -1442,7 +1442,6 @@ def do_calculate_217f_part_stress(**attributes):
     elif attributes['category_id'] == 4:
         attributes, _msg = Capacitor.calculate_217f_part_stress(**attributes)
     elif attributes['category_id'] == 5:
-        attributes = Inductor.calculate_hot_spot_temperature(**attributes)
         attributes, _msg = Inductor.calculate_217f_part_stress(**attributes)
     elif attributes['category_id'] == 6:
         attributes, _msg = Relay.calculate_217f_part_stress(**attributes)

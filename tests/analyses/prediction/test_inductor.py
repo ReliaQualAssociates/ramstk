@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_inductor.py is part of The RAMSTK Project
@@ -93,7 +93,7 @@ def test_calculate_mil_hdbk_217f_part_count(
             'RAMSTK WARNING: Base hazard rate is 0.0 when '
             'calculating inductor, hardware ID: 6, subcategory '
             'ID: {0:d}, family ID: {1:d}, and active '
-            'environment ID: {2:d}.'
+            'environment ID: {2:d}.\n'
         ).format(
             subcategory_id, family_id, environment_active_id,
         )
@@ -117,9 +117,9 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'inductor, hardware ID: 6, subcategory ID: 0, family '
-        'ID: 1, and active environment ID: 1.'
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating inductor, ' \
+        'hardware ID: 6, subcategory ID: 0, family ID: 1, and active ' \
+        'environment ID: 1.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -141,7 +141,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_family():
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
         'inductor, hardware ID: 6, subcategory ID: 1, family ID: 0, and '
-        'active environment ID: 1.'
+        'active environment ID: 1.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 0.030
@@ -163,7 +163,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
         'inductor, hardware ID: 6, subcategory ID: 1, family ID: 1, and '
-        'active environment ID: 100.'
+        'active environment ID: 100.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -235,8 +235,8 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, '
-        'hardware ID: 6.\n'
+        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, hardware ' \
+        'ID: 6, quality ID: 20.\n'
     )
     assert pytest.approx(_attributes['lambda_b'], 0.0003462094)
     assert _attributes['piQ'] == 0.0
@@ -292,8 +292,9 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_insulation():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'inductor, hardware ID: 6.\n'
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating inductor, ' \
+        'hardware ID: 6, subcategory ID: 2, family ID: 1, and active ' \
+        'environment ID: 4.\n'
     )
     assert pytest.approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 0.1
@@ -324,7 +325,7 @@ def test_voltage_overstress_harsh_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -364,7 +365,7 @@ def test_current_overstress_harsh_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -405,7 +406,7 @@ def test_temperature_overstress_harsh_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -441,7 +442,7 @@ def test_voltage_overstress_mild_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -478,7 +479,7 @@ def test_current_overstress_mild_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 

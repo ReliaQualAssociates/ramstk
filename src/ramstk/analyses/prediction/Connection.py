@@ -128,8 +128,8 @@ def _calculate_mil_hdbk_217f_part_count_lambda_b(attributes):
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory \  |           Capacitor \         | MIL-HDBK-217F \ |
-    |       ID       |             Style             |    Section      |
+    | Subcategory \  |           Connection \        | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
     +================+===============================+=================+
     |        1       | Circular, Rack and Panel, \   |       15.1      |
     |                | Coaxial, Triaxial             |                 |
