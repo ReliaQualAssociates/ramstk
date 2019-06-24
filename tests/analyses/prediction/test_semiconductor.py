@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_semiconductor.py is part of The RAMSTK
@@ -13,7 +13,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component
+from ramstk.analyses.prediction import Component, Semiconductor
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -231,7 +231,7 @@ def test_calculate_mil_hdbk_217f_part_count(
         assert _msg == (
             'RAMSTK WARNING: piQ is 0.0 when calculating '
             'semiconductor, hardware ID: 6 and quality '
-            'ID: {0:d}.'
+            'ID: {0:d}.\n'
         ).format(quality_id)
     else:
         assert _msg == ''
@@ -264,7 +264,24 @@ def test_calculate_mil_hdbk_217f_part_stress():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating '
+        'semiconductor, hardware ID: 6, subcategory ID: 1, '
+        'application ID: 0, and duty cycle: 100.000000.\n'
+        'RAMSTK WARNING: piI is 0.0 when calculating '
+        'semiconductor, hardware ID: 6 and operating current: '
+        '0.000000.\n'
+        'RAMSTK WARNING: piM is 0.0 when calculating '
+        'semiconductor, hardware ID: 6 and network matching '
+        'ID: 0.\n'
+        'RAMSTK WARNING: piP is 0.0 when calculating '
+        'semiconductor, hardware ID: 6 and power ratio: '
+        '1.000000.\n'
+        'RAMSTK WARNING: piR is 0.0 when calculating '
+        'semiconductor, hardware ID: 6, subcategory ID: 1, type '
+        'ID: 7, rated current: 0.000000, and rated '
+        'power: 0.000000.\n'
+    )
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert _attributes['temperature_junction'] == 55.5
     assert _attributes['lambda_b'] == 0.0034
@@ -301,8 +318,20 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating semiconductor, '
-        'hardware ID: 6 and quality ID: 22.\n'
+        'RAMSTK WARNING: piQ is 0.0 when calculating semiconductor, hardware '
+        'ID: 6 and quality ID: 22.\n'
+        'RAMSTK WARNING: piA is 0.0 when calculating semiconductor, hardware '
+        'ID: 6, subcategory ID: 1, application ID: 0, and duty cycle: '
+        '100.000000.\n'
+        'RAMSTK WARNING: piI is 0.0 when calculating semiconductor, hardware '
+        'ID: 6 and operating current: 0.000000.\n'
+        'RAMSTK WARNING: piM is 0.0 when calculating semiconductor, hardware '
+        'ID: 6 and network matching ID: 0.\n'
+        'RAMSTK WARNING: piP is 0.0 when calculating semiconductor, hardware '
+        'ID: 6 and power ratio: 1.000000.\n'
+        'RAMSTK WARNING: piR is 0.0 when calculating semiconductor, hardware '
+        'ID: 6, subcategory ID: 1, type ID: 7, rated current: 0.000000, and '
+        'rated power: 0.000000.\n'
     )
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert _attributes['temperature_junction'] == 55.5
@@ -339,7 +368,21 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating semiconductor, hardware '
+        'ID: 6, subcategory ID: 1, application ID: 0, and duty cycle: '
+        '100.000000.\n'
+        'RAMSTK WARNING: piI is 0.0 when calculating semiconductor, hardware '
+        'ID: 6 and operating current: 0.000000.\n'
+        'RAMSTK WARNING: piM is 0.0 when calculating semiconductor, hardware '
+        'ID: 6 and network matching ID: 0.\n'
+        'RAMSTK WARNING: piP is 0.0 when calculating semiconductor, hardware '
+        'ID: 6 and power ratio: 1.000000.\n'
+        'RAMSTK WARNING: piR is 0.0 when calculating semiconductor, hardware '
+        'ID: 6, subcategory ID: 1, type ID: 7, rated current: 0.000000, and '
+        'rated power: 0.000000.\n'
+    )
+
     assert pytest.approx(_attributes['voltage_ratio'], 0.67)
     assert _attributes['temperature_junction'] == 55.5
     assert _attributes['lambda_b'] == 0.0034
@@ -449,3 +492,192 @@ def test_voltage_overstress_mild_environment(
             '1. Operating power > 90.0% rated '
             'power in mild environment.\n'
         )
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piA'] = 1.0
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piI'] = 1.0
+    ATTRIBUTES['piM'] = 1.0
+    ATTRIBUTES['piP'] = 1.0
+    ATTRIBUTES['piR'] = 1.0
+    ATTRIBUTES['piS'] = 1.0
+    ATTRIBUTES['piT'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
+        'semiconductor, hardware ID: 100 and active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
+        'semiconductor, hardware ID: 100 and active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piA'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating semiconductor, hardware '
+        'ID: 100, subcategory ID: 1, application ID: 0, and duty cycle: '
+        '100.000000.\n'
+    )
+
+    ATTRIBUTES['piA'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating semiconductor, hardware '
+        'ID: 100, subcategory ID: 1, application ID: 0, and duty cycle: '
+        '100.000000.\n'
+    )
+
+    ATTRIBUTES['piA'] = 1.0
+    ATTRIBUTES['piC'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and construction  ID: 2.\n'
+    )
+
+    ATTRIBUTES['piC'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and construction  ID: 2.\n'
+    )
+
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piI'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piI is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and operating current: 0.000000.\n'
+    )
+
+    ATTRIBUTES['piI'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piI is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and operating current: 0.000000.\n'
+    )
+
+    ATTRIBUTES['piI'] = 1.0
+    ATTRIBUTES['piM'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piM is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and network matching ID: 0.\n'
+    )
+
+    ATTRIBUTES['piM'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piM is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and network matching ID: 0.\n'
+    )
+
+    ATTRIBUTES['piM'] = 1.0
+    ATTRIBUTES['piP'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piP is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and power ratio: 0.000000.\n'
+    )
+
+    ATTRIBUTES['piP'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piP is 0.0 when calculating semiconductor, hardware '
+        'ID: 100 and power ratio: 0.000000.\n'
+    )
+
+    ATTRIBUTES['piP'] = 1.0
+    ATTRIBUTES['piR'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piR is 0.0 when calculating semiconductor, hardware '
+        'ID: 100, subcategory ID: 1, type ID: 7, rated current: 0.000000, '
+        'and rated power: 0.500000.\n'
+    )
+
+    ATTRIBUTES['piR'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piR is 0.0 when calculating semiconductor, hardware '
+        'ID: 100, subcategory ID: 1, type ID: 7, rated current: 0.000000, '
+        'and rated power: 0.500000.\n'
+    )
+
+    ATTRIBUTES['piR'] = 1.0
+    ATTRIBUTES['piS'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piS is 0.0 when calculating semiconductor, hardware '
+        'ID: 100, subcategory ID: 1, type ID: 7, and voltage ratio: '
+        '0.000000.\n'
+    )
+
+    ATTRIBUTES['piS'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piS is 0.0 when calculating semiconductor, hardware '
+        'ID: 100, subcategory ID: 1, type ID: 7, and voltage ratio: '
+        '0.000000.\n'
+    )
+
+    ATTRIBUTES['piS'] = 1.0
+    ATTRIBUTES['piT'] = -1.3
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piT is 0.0 when calculating semiconductor, hardware '
+        'ID: 100, subcategory ID: 1, type ID: 7, junction temperature: '
+        '48.700000, and voltage ratio: 0.000000.\n'
+    )
+
+    ATTRIBUTES['piT'] = 0.0
+    _msg = Semiconductor._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piT is 0.0 when calculating semiconductor, hardware '
+        'ID: 100, subcategory ID: 1, type ID: 7, junction temperature: '
+        '48.700000, and voltage ratio: 0.000000.\n'
+    )
