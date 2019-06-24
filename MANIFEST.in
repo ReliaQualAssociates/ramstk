@@ -12,7 +12,6 @@ exclude .pre-commit-config.yaml
 exclude .pylintrc
 exclude .travis.yml
 exclude appveyor.yml*
-exclude bump_version.sh
 exclude coverage.xml
 exclude pytest.ini
 exclude tags
@@ -23,5 +22,5 @@ graft docs
 graft locale
 
 global-exclude *.py[co]
-
-prune docs/build
+global-exclude *.sh
+global-exclude *.hooks

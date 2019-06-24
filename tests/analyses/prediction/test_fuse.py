@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_fuse.py is part of The RAMSTK Project
@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES
-from ramstk.analyses.prediction import Component
+from ramstk.analyses.prediction import Component, Fuse
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -65,8 +65,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'fuse, hardware ID: 6, active environment ID: 100'
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating fuse, ' \
+        'hardware ID: 6, active environment ID: 100.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -100,3 +100,45 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     assert _msg == ''
     assert _attributes['piE'] == 1.0
     assert pytest.approx(_attributes['hazard_rate_active'], 0.0)
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 1
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piK'] = 1.0
+    ATTRIBUTES['piP'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Fuse._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating fuse, ' \
+        'hardware ID: 100, active environment ID: 40.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Fuse._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating fuse, ' \
+        'hardware ID: 100, active environment ID: 40.\n'
+    )
+
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Fuse._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+            'calculating fuse, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Fuse._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+            'calculating fuse, hardware ID: 100.\n'
+    )

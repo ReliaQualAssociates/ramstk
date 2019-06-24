@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.prediction.Filter.py is part of the RAMSTK Project
@@ -22,6 +21,7 @@ PART_COUNT_217F_LAMBDA_B = {
     ],
 }
 PART_STRESS_217F_LAMBDA_B = {1: 0.022, 2: 0.12, 3: 0.12, 4: 0.27}
+
 
 def _do_check_variables(attributes):
     """
