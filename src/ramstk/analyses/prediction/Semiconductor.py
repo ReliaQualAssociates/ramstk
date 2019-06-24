@@ -310,8 +310,8 @@ def _calculate_junction_temperature(attributes):
     if attributes['theta_jc'] <= 0.0:
         attributes['theta_jc'] = THETA_JC[attributes['package_id'] - 1]
     attributes['temperature_junction'] = (
-        attributes['temperature_case'] +
-        attributes['theta_jc'] * attributes['power_operating']
+        attributes['temperature_case']
+        + attributes['theta_jc'] * attributes['power_operating']
     )
 
     return attributes
@@ -569,7 +569,8 @@ def _do_check_variables(attributes):
     calculation for the semiconductor type which is why a WARKING message is
     issued rather than an ERROR message.
 
-    :param dict attributes: the attributes for the semiconductor being calculated.
+    :param dict attributes: the attributes for the semiconductor being
+        calculated.
     :return: _msg; a message indicating all the variables that are less than or
         equal to zero in value.
     :rtype: str

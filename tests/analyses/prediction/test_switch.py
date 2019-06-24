@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_switch.py is part of The RAMSTK Project
@@ -12,7 +12,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.data import HARDWARE_ATTRIBUTES, RAMSTK_STRESS_LIMITS
-from ramstk.analyses.prediction import Component
+from ramstk.analyses.prediction import Component, Switch
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
@@ -227,13 +227,22 @@ def test_calculate_mil_hdbk_217f_part_stress():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating switch, hardware ID: 6, '
+        'subcategory ID: 2, and contact form ID: 0.\n'
+        'RAMSTK WARNING: piCYC is 0.0 when calculating switch, hardware ID: 6 '
+        'and # of cycles: 5.000000.\n'
+        'RAMSTK WARNING: piL is 0.0 when calculating switch, hardware ID: 6, '
+        'subcategory ID: 2, application ID: 1, and current ratio: 0.000000.\n'
+        'RAMSTK WARNING: piU is 0.0 when calculating switch, hardware ID: 6 '
+        'and application ID: 1.\n'
+    )
     assert pytest.approx(_attributes['lambda_b'], 0.1036000)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 8.0
     assert _attributes['piC'] == 0.0
     assert _attributes['piCYC'] == 5.0
-    assert _attributes['piL'] == 1.0
+    assert _attributes['piL'] == 0.0
     assert _attributes['piU'] == 0.0
     assert pytest.approx(_attributes['hazard_rate_active'], 4.1440000)
 
@@ -260,7 +269,16 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating switch, '
+        'hardware ID: 6, subcategory ID: 5, and contact form ID: 3.\n'
+        'RAMSTK WARNING: piCYC is 0.0 when calculating switch, hardware ID: '
+        '6 and # of cycles: 5.000000.\n'
+        'RAMSTK WARNING: piL is 0.0 when calculating switch, hardware ID: 6, '
+        'subcategory ID: 5, application ID: 1, and current ratio: 0.000000.\n'
+        'RAMSTK WARNING: piU is 0.0 when calculating switch, hardware ID: 6 '
+        'and application ID: 1.\n'
+    )
     assert _attributes['lambda_b'] == 0.02
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 8.0
@@ -292,13 +310,22 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating switch, hardware ID: 6, '
+        'subcategory ID: 2, and contact form ID: 3.\n'
+        'RAMSTK WARNING: piCYC is 0.0 when calculating switch, hardware ID: 6 '
+        'and # of cycles: 5.000000.\n'
+        'RAMSTK WARNING: piL is 0.0 when calculating switch, hardware ID: 6, '
+        'subcategory ID: 2, application ID: 1, and current ratio: 0.000000.\n'
+        'RAMSTK WARNING: piU is 0.0 when calculating switch, hardware ID: 6 '
+        'and application ID: 1.\n'
+    )
     assert pytest.approx(_attributes['lambda_b'], 0.1036000)
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 1.0
     assert _attributes['piC'] == 0.0
     assert _attributes['piCYC'] == 5.0
-    assert _attributes['piL'] == 1.0
+    assert _attributes['piL'] == 0.0
     assert _attributes['piU'] == 0.0
     assert pytest.approx(_attributes['hazard_rate_active'], 0.518)
 
@@ -374,3 +401,124 @@ def test_current_overstress_mild_environment(
             '1. Operating current > 90.0% rated '
             'current in mild environment.\n'
         )
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """_do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piCYC'] = 1.0
+    ATTRIBUTES['piL'] = 1.0
+    ATTRIBUTES['piU'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating switch, '
+        'hardware ID: 100, subcategory ID: 2, construction ID: 2, and active '
+        'environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating switch, '
+        'hardware ID: 100, subcategory ID: 2, construction ID: 2, and active '
+        'environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating switch, hardware ID: '
+        '100, subcategory ID: 2, and quality ID: 1.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating switch, hardware ID: '
+        '100, subcategory ID: 2, and quality ID: 1.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating switch, hardware ID: '
+        '100, active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating switch, hardware ID: '
+        '100, active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piC'] = -1.3
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating switch, hardware ID: '
+        '100, subcategory ID: 2, and contact form ID: 3.\n'
+    )
+
+    ATTRIBUTES['piC'] = 0.0
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating switch, hardware ID: '
+        '100, subcategory ID: 2, and contact form ID: 3.\n'
+    )
+
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piCYC'] = -1.3
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piCYC is 0.0 when calculating switch, hardware ID: '
+        '100 and # of cycles: 5.000000.\n'
+    )
+
+    ATTRIBUTES['piCYC'] = 0.0
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piCYC is 0.0 when calculating switch, hardware ID: '
+        '100 and # of cycles: 5.000000.\n'
+    )
+
+    ATTRIBUTES['piCYC'] = 1.0
+    ATTRIBUTES['piL'] = -1.3
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piL is 0.0 when calculating switch, hardware ID: '
+        '100, subcategory ID: 2, application ID: 1, and current ratio: '
+        '0.000000.\n'
+    )
+
+    ATTRIBUTES['piL'] = 0.0
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piL is 0.0 when calculating switch, hardware ID: '
+        '100, subcategory ID: 2, application ID: 1, and current ratio: '
+        '0.000000.\n'
+    )
+
+    ATTRIBUTES['piL'] = 1.0
+    ATTRIBUTES['piU'] = -1.3
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piU is 0.0 when calculating switch, hardware ID: '
+        '100 and application ID: 1.\n'
+    )
+
+    ATTRIBUTES['piU'] = 0.0
+    _msg = Switch._do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piU is 0.0 when calculating switch, hardware ID: '
+        '100 and application ID: 1.\n'
+    )
