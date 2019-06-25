@@ -227,7 +227,14 @@ def test_calculate_mil_hdbk_217f_part_count(
             'calculating semiconductor, hardware ID: 6 and active '
             'environment ID: {0:d}.\n'
         ).format(environment_active_id)
-    elif piQ == 0.0:
+    elif lambda_b == 0.0 and piQ == 0.0:
+        assert _msg == (
+            'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
+            'semiconductor, hardware ID: 6 and active environment ID: {0:d}.\n'
+            'RAMSTK WARNING: piQ is 0.0 when calculating semiconductor, '
+            'hardware ID: 6 and quality ID: {1:d}.\n'
+        ).format(environment_active_id, quality_id)
+    elif lambda_b > 0.0 and piQ == 0.0:
         assert _msg == (
             'RAMSTK WARNING: piQ is 0.0 when calculating '
             'semiconductor, hardware ID: 6 and quality '

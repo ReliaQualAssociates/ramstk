@@ -759,73 +759,90 @@ def do_check_variables(attributes):
     """
     _msg = ''
 
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'integrated circuit, hardware ID: {0:d}, ' \
-            'quality ID: {1:d}.\n'.format(
-                attributes['hardware_id'],
-                attributes['quality_id'],
-            )
+    _messages = {
+        'piQ': (
+            'RAMSTK WARNING: piQ is 0.0 when calculating '
+            'integrated circuit, hardware ID: {0:d}, '
+            'quality ID: {1:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['quality_id'],
+        ),
+        'lambda_b': (
+            'RAMSTK WARNING: Base hazard rate is 0.0 when '
+            'calculating integrated circuit, hardware ID: '
+            '{0:d}.\n'
+        ).format(attributes['hardware_id']),
+        'C1': (
+            'RAMSTK WARNING: C1 is 0.0 when calculating '
+            'integrated circuit, hardware ID: {0:d}, '
+            'application ID: {1:d}, '
+            'technology ID: {2:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['application_id'],
+            attributes['technology_id'],
+        ),
+        'C2': (
+            'RAMSTK WARNING: C2 is 0.0 when calculating '
+            'integrated circuit, hardware ID: {0:d}, '
+            'package ID: {1:d}, '
+            '# active pins: {2:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['package_id'],
+            attributes['n_active_pins'],
+        ),
+        'piA':(
+            'RAMSTK WARNING: piA is 0.0 when calculating '
+            'integrated circuit, hardware ID: {0:d}, '
+            'application ID: {1:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['application_id'],
+        ),
+        'piE':(
+            'RAMSTK WARNING: piE is 0.0 when calculating '
+            'integrated circuit, hardware ID: {0:d}, '
+            'environment ID: {1:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['environment_active_id'],
+        ),
+        'piL':(
+            'RAMSTK WARNING: piL is 0.0 when calculating '
+            'integrated circuit, hardware ID: {0:d}, '
+            'years in production: {1:f}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['years_in_production'],
+        ),
+        'piT':(
+            'RAMSTK WARNING: piT is 0.0 when calculating '
+            'integrated circuit, hardware ID: {0:d}, '
+            'application ID: {1:d}, '
+            'type ID: {2:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['application_id'],
+            attributes['type_id'],
+        ),
+    }
+
+    _variables = ['piQ', ]
 
     if attributes['hazard_rate_method_id'] == 1:
-        if attributes['lambda_b'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-                'calculating integrated circuit, hardware ID: ' \
-                '{0:d}.\n'.format(attributes['hardware_id'])
-
+        _variables.append('lambda_b')
     if attributes['hazard_rate_method_id'] == 2:
-        if attributes['C1'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: C1 is 0.0 when calculating ' \
-                'integrated circuit, hardware ID: {0:d}, ' \
-                'application ID: {1:d}, ' \
-                'technology ID: {2:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['application_id'],
-                    attributes['technology_id'],
-                )
+        _variables.append('C1')
+        _variables.append('C2')
+        _variables.append('piA')
+        _variables.append('piE')
+        _variables.append('piL')
+        _variables.append('piT')
 
-        if attributes['C2'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: C2 is 0.0 when calculating ' \
-                'integrated circuit, hardware ID: {0:d}, ' \
-                'package ID: {1:d}, ' \
-                '# active pins: {2:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['package_id'],
-                    attributes['n_active_pins'],
-                )
-
-        if attributes['piA'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piA is 0.0 when calculating ' \
-                'integrated circuit, hardware ID: {0:d}, ' \
-                'application ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['application_id'],
-                )
-
-        if attributes['piE'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-                'integrated circuit, hardware ID: {0:d}, ' \
-                'environment ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['environment_active_id'],
-                )
-
-        if attributes['piL'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piL is 0.0 when calculating ' \
-                'integrated circuit, hardware ID: {0:d}, ' \
-                'years in production: {1:f}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['years_in_production'],
-                )
-
-        if attributes['piT'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piT is 0.0 when calculating ' \
-                'integrated circuit, hardware ID: {0:d}, ' \
-                'application ID: {1:d}, ' \
-                'type ID: {2:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['application_id'],
-                    attributes['type_id'],
-                )
+    for _var in _variables:
+        if attributes[_var] <= 0.0:
+            _msg = _msg + _messages[_var]
 
     return _msg

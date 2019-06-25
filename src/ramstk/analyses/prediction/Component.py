@@ -1426,11 +1426,11 @@ def do_calculate_217f_part_count(**attributes):
     except IndexError:
         attributes['lambda_b'] = 0.0
 
+    _msg = _do_check(attributes)
+
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piQ']
     )
-
-    _msg = _do_check(attributes)
 
     return attributes, _msg
 
@@ -1450,35 +1450,44 @@ def do_calculate_217f_part_stress(**attributes):
     attributes = _get_environment_factor(**attributes)
     attributes = _get_quality_factor(**attributes)
 
-    if attributes['category_id'] == 1:
-        attributes, _msg = IntegratedCircuit.calculate_217f_part_stress(
-            **attributes, )
-    elif attributes['category_id'] == 2:
-        attributes, _msg = Semiconductor.calculate_217f_part_stress(
-            **attributes, )
-    elif attributes['category_id'] == 3:
-        attributes, _msg = Resistor.calculate_217f_part_stress(**attributes)
-    elif attributes['category_id'] == 4:
-        attributes, _msg = Capacitor.calculate_217f_part_stress(**attributes)
-    elif attributes['category_id'] == 5:
-        attributes, _msg = Inductor.calculate_217f_part_stress(**attributes)
-    elif attributes['category_id'] == 6:
-        attributes, _msg = Relay.calculate_217f_part_stress(**attributes)
-    elif attributes['category_id'] == 7:
-        attributes, _msg = Switch.calculate_217f_part_stress(**attributes)
-    elif attributes['category_id'] == 8:
-        attributes, _msg = Connection.calculate_217f_part_stress(**attributes)
-    elif attributes['category_id'] == 9:
-        attributes, _msg = Meter.calculate_217f_part_stress(**attributes)
-    elif attributes['category_id'] == 10:
-        if attributes['subcategory_id'] == 1:
-            attributes, _msg = Crystal.calculate_217f_part_stress(**attributes)
-        elif attributes['subcategory_id'] == 4:
-            attributes, _msg = Lamp.calculate_217f_part_stress(**attributes)
-        elif attributes['subcategory_id'] == 3:
-            attributes, _msg = Fuse.calculate_217f_part_stress(**attributes)
-        elif attributes['subcategory_id'] == 2:
-            attributes, _msg = Filter.calculate_217f_part_stress(**attributes)
+    _dic_functions = {
+        1: IntegratedCircuit.calculate_217f_part_stress,
+        2: Semiconductor.calculate_217f_part_stress,
+        3: Resistor.calculate_217f_part_stress,
+        4: Capacitor.calculate_217f_part_stress,
+        5: Inductor.calculate_217f_part_stress,
+        6: Relay.calculate_217f_part_stress,
+        7: Switch.calculate_217f_part_stress,
+        8: Connection.calculate_217f_part_stress,
+        9: Meter.calculate_217f_part_stress,
+        10: {
+            1: Crystal.calculate_217f_part_stress,
+            2: Filter.calculate_217f_part_stress,
+            3: Fuse.calculate_217f_part_stress,
+            4: Lamp.calculate_217f_part_stress,
+        },
+    }
+
+    try:
+        _part_stress = _dic_functions[attributes['category_id']]
+        (attributes, _msg,) = _part_stress(**attributes)
+    except (KeyError, TypeError, ValueError):
+        # ValueError is raised with category ID 10 because only the dict is
+        # returned.  TypeError is raised when attempting to call _part_count
+        # for category ID 10 since a dict is returned.  In these cases, try to
+        # get the functions by also using subcategory ID.
+        try:
+            _part_stress = _dic_functions[
+                attributes['category_id']
+            ][
+                attributes['subcategory_id']
+            ]
+            (attributes, _msg,) = _part_stress(**attributes)
+        except KeyError:
+            _msg = (
+                "RAMSTK ERROR: No MIL-HDBK-217F parts stress function found "
+                "for Hardware ID: {0:d}.\n"
+            ).format(attributes['hardware_id'])
 
     return attributes, _msg
 

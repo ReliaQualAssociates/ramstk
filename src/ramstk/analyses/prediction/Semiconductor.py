@@ -706,113 +706,132 @@ def do_check_variables(attributes):
     """
     _msg = ''
 
-    if attributes['lambda_b'] <= 0.0:
-        _msg = 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-               'calculating semiconductor, hardware ID: {0:d} and active ' \
-               'environment ID: {1:d}.\n'.format(
-                   attributes['hardware_id'],
-                   attributes['environment_active_id'],
-               )
+    _messages = {
+        'lambda_b': (
+            'RAMSTK WARNING: Base hazard rate is 0.0 when '
+            'calculating semiconductor, hardware ID: {0:d} and active '
+            'environment ID: {1:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['environment_active_id'],
+        ),
+        'piQ': (
+            'RAMSTK WARNING: piQ is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d} and quality ID: '
+            '{1:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['quality_id'],
+        ),
+        'piA': (
+            'RAMSTK WARNING: piA is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d}, '
+            'subcategory ID: {1:d}, '
+            'application ID: {2:d}, and '
+            'duty cycle: {3:f}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['subcategory_id'],
+            attributes['application_id'],
+            attributes['duty_cycle'],
+        ),
+        'piC': (
+            'RAMSTK WARNING: piC is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d} and construction  '
+            'ID: {1:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['construction_id'],
+        ),
+        'piE': (
+            'RAMSTK WARNING: piE is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d} and active environment '
+            'ID: {1:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['environment_active_id'],
+        ),
+        'piI': (
+            'RAMSTK WARNING: piI is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d} and operating current: '
+            '{1:f}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['current_operating'],
+        ),
+        'piM': (
+            'RAMSTK WARNING: piM is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d} and network matching '
+            'ID: {1:d}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['matching_id'],
+        ),
+        'piP': (
+            'RAMSTK WARNING: piP is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d} and power ratio: '
+            '{1:f}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['power_ratio'],
+        ),
+        'piR': (
+            'RAMSTK WARNING: piR is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d}, '
+            'subcategory ID: {1:d}, '
+            'type ID: {2:d}, '
+            'rated current: {3:f}, and '
+            'rated power: {4:f}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['subcategory_id'],
+            attributes['type_id'],
+            attributes['current_rated'],
+            attributes['power_rated'],
+        ),
+        'piS': (
+            'RAMSTK WARNING: piS is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d}, '
+            'subcategory ID: {1:d}, '
+            'type ID: {2:d}, and '
+            'voltage ratio: {3:f}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['subcategory_id'],
+            attributes['type_id'],
+            attributes['voltage_ratio'],
+        ),
+        'piT': (
+            'RAMSTK WARNING: piT is 0.0 when calculating '
+            'semiconductor, hardware ID: {0:d}, '
+            'subcategory ID: {1:d}, '
+            'type ID: {2:d}, '
+            'junction temperature: {3:f}, and '
+            'voltage ratio: {4:f}.\n'
+        ).format(
+            attributes['hardware_id'],
+            attributes['subcategory_id'],
+            attributes['type_id'],
+            attributes['temperature_junction'],
+            attributes['voltage_ratio'],
+        ),
+    }
 
-    if attributes['piQ'] <= 0.0:
-        _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-               'semiconductor, hardware ID: {0:d} and quality ID: ' \
-               '{1:d}.\n'.format(
-                   attributes['hardware_id'],
-                   attributes['quality_id'],
-               )
+    _variables = ['lambda_b', 'piQ', ]
 
     if attributes['hazard_rate_method_id'] == 2:
-        if attributes['piA'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piA is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d}, ' \
-                'subcategory ID: {1:d}, ' \
-                'application ID: {2:d}, and ' \
-                'duty cycle: {3:f}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['subcategory_id'],
-                    attributes['application_id'],
-                    attributes['duty_cycle'],
-                )
+        _variables.append('piA')
+        _variables.append('piC')
+        _variables.append('piE')
+        _variables.append('piI')
+        _variables.append('piM')
+        _variables.append('piP')
+        _variables.append('piR')
+        _variables.append('piS')
+        _variables.append('piT')
 
-        if attributes['piC'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piC is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d} and construction  ' \
-                'ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['construction_id'],
-                )
-
-        if attributes['piE'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d} and active environment ' \
-                'ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['environment_active_id'],
-                )
-
-        if attributes['piI'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piI is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d} and operating current: ' \
-                '{1:f}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['current_operating'],
-                )
-
-        if attributes['piM'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piM is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d} and network matching ' \
-                'ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['matching_id'],
-                )
-
-        if attributes['piP'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piP is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d} and power ratio: ' \
-                '{1:f}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['power_ratio'],
-                )
-
-        if attributes['piR'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piR is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d}, ' \
-                'subcategory ID: {1:d}, ' \
-                'type ID: {2:d}, ' \
-                'rated current: {3:f}, and ' \
-                'rated power: {4:f}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['subcategory_id'],
-                    attributes['type_id'],
-                    attributes['current_rated'],
-                    attributes['power_rated'],
-                )
-
-        if attributes['piS'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piS is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d}, ' \
-                'subcategory ID: {1:d}, ' \
-                'type ID: {2:d}, and ' \
-                'voltage ratio: {3:f}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['subcategory_id'],
-                    attributes['type_id'],
-                    attributes['voltage_ratio'],
-                )
-
-        if attributes['piT'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piT is 0.0 when calculating ' \
-                'semiconductor, hardware ID: {0:d}, ' \
-                'subcategory ID: {1:d}, ' \
-                'type ID: {2:d}, ' \
-                'junction temperature: {3:f}, and ' \
-                'voltage ratio: {4:f}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['subcategory_id'],
-                    attributes['type_id'],
-                    attributes['temperature_junction'],
-                    attributes['voltage_ratio'],
-                )
+    for _var in _variables:
+        if attributes[_var] <= 0.0:
+            _msg = _msg + _messages[_var]
 
     return _msg
