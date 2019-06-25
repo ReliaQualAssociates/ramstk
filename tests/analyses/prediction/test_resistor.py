@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_resistor.py is part of The RAMSTK Project
@@ -241,13 +241,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating resistor, '
-        'hardware ID: 6, quality ID: 11.'
-    )
+    assert _msg == ''
     assert _attributes['lambda_b'] == 0.0005
-    assert _attributes['piQ'] == 0.0
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert _attributes['piQ'] == 1.0
+    assert _attributes['hazard_rate_active'] == 0.0005
 
 
 @pytest.mark.unit
@@ -271,10 +268,13 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['n_elements'] = 4
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes, _msg = Resistor.calculate_217f_part_stress(**_attributes)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**_attributes)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == 'RAMSTK WARNING: piT is 0.0 when calculating resistor, ' \
+                   'hardware ID: 6, subcategory ID: 10, case temperature: ' \
+                   '0.000000, ambient temperature: 32.000000, power ' \
+                   'ratio: 0.300000.\n'
     assert _attributes['power_ratio'] == 0.3
     assert pytest.approx(_attributes['voltage_ratio'], 0.8901438)
     assert pytest.approx(_attributes['lambda_b'], 4.2888845)
@@ -358,3 +358,126 @@ def test_power_overstress_mild_environment(
             '1. Operating power > 90.0% rated '
             'power in mild environment.\n'
         )
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piR'] = 1.0
+    ATTRIBUTES['piT'] = 1.0
+    ATTRIBUTES['piV'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating resistor, '
+        'hardware ID: 100, subcategory ID: 10, specification ID: 1, active '
+        'environment ID: 11, and quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating resistor, '
+        'hardware ID: 100, subcategory ID: 10, specification ID: 1, active '
+        'environment ID: 11, and quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating resistor, hardware ID: '
+        '100, quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating resistor, hardware ID: '
+        '100, quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating resistor, hardware ID: '
+        '100, active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating resistor, hardware ID: '
+        '100, active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piC'] = -1.3
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating resistor, hardware ID: '
+        '100, construction ID: 2.\n'
+    )
+
+    ATTRIBUTES['piC'] = 0.0
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating resistor, hardware ID: '
+        '100, construction ID: 2.\n'
+    )
+
+    ATTRIBUTES['piC'] = 1.0
+    ATTRIBUTES['piR'] = -1.3
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piR is 0.0 when calculating resistor, hardware ID: '
+        '100, subcategory ID: 10, specification ID: 1, family ID: 0, # of '
+        'elements: 4.\n'
+    )
+
+    ATTRIBUTES['piR'] = 0.0
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piR is 0.0 when calculating resistor, hardware ID: '
+        '100, subcategory ID: 10, specification ID: 1, family ID: 0, # of '
+        'elements: 4.\n'
+    )
+
+    ATTRIBUTES['piR'] = 1.0
+    ATTRIBUTES['piT'] = -1.3
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piT is 0.0 when calculating resistor, hardware ID: '
+        '100, subcategory ID: 10, case temperature: 0.000000, ambient '
+        'temperature: 48.700000, power ratio: 0.000000.\n'
+    )
+
+    ATTRIBUTES['piT'] = 0.0
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piT is 0.0 when calculating resistor, hardware ID: '
+        '100, subcategory ID: 10, case temperature: 0.000000, ambient '
+        'temperature: 48.700000, power ratio: 0.000000.\n'
+    )
+
+    ATTRIBUTES['piT'] = 1.0
+    ATTRIBUTES['piV'] = -1.3
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piV is 0.0 when calculating resistor, hardware ID: '
+        '100, subcategory ID: 10, voltage ratio: 0.000000.\n'
+    )
+
+    ATTRIBUTES['piV'] = 0.0
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piV is 0.0 when calculating resistor, hardware ID: '
+        '100, subcategory ID: 10, voltage ratio: 0.000000.\n'
+    )

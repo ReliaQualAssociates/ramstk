@@ -12,30 +12,7 @@ from math import exp
 
 _ = gettext.gettext
 
-
-def calculate_217f_part_count(**attributes):
-    """
-    Calculate the part count hazard rate for a relay.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _msg = ''
-
-    # Dictionary containing MIL-HDBK-217FN2 parts count base hazard rates.
-    # First key is the subcategory_id.  Current subcategory IDs are:
-    #
-    #    1. Mechanical
-    #    2. Solid-State
-    #
-    # These keys return a list of base hazard rate lists.  The proper internal
-    # list is selected by the type ID.  The hazard rate in to use is selected
-    # from the list depending on the active environment.
-    _dic_lambda_b = {
+PART_COUNT_217F_LAMBDA_B = {
         1: [
             [
                 0.13, 0.28, 2.1, 1.1, 3.8, 1.1, 1.4, 1.9, 2.0, 7.0, 0.66, 3.5,
@@ -66,116 +43,94 @@ def calculate_217f_part_count(**attributes):
                 5.0, 17.0, 300.0,
             ],
         ],
-    }
+}
+PI_C = {1: [1.0, 1.5, 1.75, 2.0, 2.5, 3.0, 4.25, 5.5, 8.0]}
+PI_E = {
+    1: [
+        [
+            1.0, 2.0, 15.0, 8.0, 27.0, 7.0, 9.0, 11.0, 12.0, 46.0, 0.50,
+            25.0, 66.0, 0.0,
+        ],
+        [
+            2.0, 5.0, 44.0, 24.0, 78.0, 15.0, 20.0, 28.0, 38.0, 140.0, 1.0,
+            72.0, 200.0, 0.0,
+        ],
+    ],
+    2: [
+        1.0, 3.0, 12.0, 6.0, 17.0, 12.0, 19.0, 21.0, 32.0, 23.0, 0.4, 12.0,
+        33.0, 590.0,
+    ],
+}
+PI_F = {
+    1: [[
+        [4.0, 8.0], [6.0, 18.0], [1.0, 3.0], [4.0, 8.0], [7.0, 14.0],
+        [7.0, 14.0],
+    ]],
+    2:
+    [
+        [
+            [3.0, 6.0], [5.0, 10.0],
+            [6.0, 12.0],
+        ], [
+            [5.0, 10.0], [2.0, 6.0], [6.0, 12.0], [100.0, 100.0],
+            [10.0, 20.0],
+        ], [[10.0, 20.0], [100.0, 100.0]],
+        [[6.0, 12.0], [1.0, 3.0]], [[25.0, 0.0], [6.0, 0.0]],
+        [[10.0, 20.0]], [[9.0, 12.0]], [
+            [10.0, 20.0], [5.0, 10.0],
+            [5.0, 10.0],
+        ],
+    ],
+    3: [
+        [[20.0, 40.0], [5.0, 10.0]], [
+            [3.0, 6.0], [1.0, 3.0], [2.0, 6.0],
+            [3.0, 6.0], [2.0, 6.0], [2.0, 6.0],
+        ],
+    ],
+    4: [[[7.0, 14.0], [12.0, 24.0], [10.0, 20.0], [5.0, 10.0]]],
+}
 
-    # Select the base hazard rate.
-    try:
-        _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
-            attributes['type_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        _lst_base_hr = [0.0]
 
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    # Confirm all inputs are within range.  If not, set the message.  The
-    # hazard rate will be calculated anyway, but will be zero.
-    if attributes['lambda_b'] <= 0.0:
-        _msg = 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating relay, hardware ID: {0:d}, subcategory ID: {1:d}, ' \
-            'type ID: {3:d}, and active environment ID: ' \
-            '{2:d}.\n'.format(
-                attributes['hardware_id'],
-                attributes['subcategory_id'],
-                attributes['environment_active_id'],
-                attributes['type_id'],
-            )
-
-    if attributes['piQ'] <= 0.0:
-        _msg = 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'relay, hardware ID: {0:d}, subcategory ID: {2:d}, and quality ' \
-            'ID: {1:d}.'.format(
-                attributes['hardware_id'],
-                attributes['quality_id'],
-                attributes['subcategory_id'],
-            )
-
-    # Calculate the hazard rate.
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ']
-    )
-
-    return attributes, _msg
-
-
-def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
+def _calculate_cycling_factor(attributes):
     """
-    Calculate the part stress hazard rate for a relay.
+    Calculate the cycling factor (piCYC) for the relay.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    :param dict attributes: the dict of relay attributes.
+    :return: attributes with lambda_b updated.
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] == 1:
+        if (
+                attributes['quality_id'] in [1, 2, 3, 4, 5, 6]
+                and attributes['n_cycles'] < 1.0
+        ):
+            attributes['piCYC'] = 0.1
+        elif attributes['quality_id'] == 7 and attributes['n_cycles'] > 1000:
+            attributes['piCYC'] = (attributes['n_cycles'] / 100.0)**2.0
+        elif (
+                attributes['quality_id'] == 7 and attributes['n_cycles'] > 10
+                and attributes['n_cycles'] < 1000
+        ):
+            attributes['piCYC'] = attributes['n_cycles'] / 10.0
+        else:
+            attributes['piCYC'] = 1.0
 
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
+    return attributes
+
+
+def _calculate_lambda_b(attributes):
+    """
+    Calculate the base hazard rate for the relay.
+
+    :param dict attributes: the dict of relay attributes.
+    :return: attributes with lambda_b updated.
+    :rtype: dict
     """
     _dic_factors = {
         1: [[0.00555, 352.0, 15.7], [0.0054, 377.0, 10.4]],
         2: [0.4, 0.5, 0.5],
     }
-    _dic_piC = {1: [1.0, 1.5, 1.75, 2.0, 2.5, 3.0, 4.25, 5.5, 8.0]}
-    _dic_piF = {
-        1: [[
-            [4.0, 8.0], [6.0, 18.0], [1.0, 3.0], [4.0, 8.0], [7.0, 14.0],
-            [7.0, 14.0],
-        ]],
-        2:
-        [
-            [
-                [3.0, 6.0], [5.0, 10.0],
-                [6.0, 12.0],
-            ], [
-                [5.0, 10.0], [2.0, 6.0], [6.0, 12.0], [100.0, 100.0],
-                [10.0, 20.0],
-            ], [[10.0, 20.0], [100.0, 100.0]],
-            [[6.0, 12.0], [1.0, 3.0]], [[25.0, 0.0], [6.0, 0.0]],
-            [[10.0, 20.0]], [[9.0, 12.0]], [
-                [10.0, 20.0], [5.0, 10.0],
-                [5.0, 10.0],
-            ],
-        ],
-        3: [
-            [[20.0, 40.0], [5.0, 10.0]], [
-                [3.0, 6.0], [1.0, 3.0], [2.0, 6.0],
-                [3.0, 6.0], [2.0, 6.0], [2.0, 6.0],
-            ],
-        ],
-        4: [[[7.0, 14.0], [12.0, 24.0], [10.0, 20.0], [5.0, 10.0]]],
-    }
-    _dic_piQ = {1: [0.1, 0.3, 0.45, 0.6, 1.0, 1.5, 3.0], 2: [1.0, 4.0]}
-    _dic_piE = {
-        1: [
-            [
-                1.0, 2.0, 15.0, 8.0, 27.0, 7.0, 9.0, 11.0, 12.0, 46.0, 0.50,
-                25.0, 66.0, 0.0,
-            ], [
-                2.0, 5.0, 44.0, 24.0, 78.0, 15.0, 20.0, 28.0, 38.0, 140.0, 1.0,
-                72.0, 200.0, 0.0,
-            ],
-        ],
-        2: [
-            1.0, 3.0, 12.0, 6.0, 17.0, 12.0, 19.0, 21.0, 32.0, 23.0, 0.4, 12.0,
-            33.0, 590.0,
-        ],
-    }
-    _msg = ''
 
-    # Calculate the base hazard rate.
     if attributes['subcategory_id'] == 1:
         _f0 = _dic_factors[attributes['subcategory_id']][
             attributes['type_id']
@@ -199,91 +154,156 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     else:
         attributes['lambda_b'] = 0.0
 
-    if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating relay, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+    return attributes
 
-    # Calculate the load stress factor (piL).
-    if attributes['subcategory_id'] == 1:
-        if attributes['technology_id'] == 1:
-            attributes['piL'] = (attributes['current_ratio'] / 0.8)**2.0
-        elif attributes['technology_id'] == 2:
-            attributes['piL'] = (attributes['current_ratio'] / 0.4)**2.0
-        elif attributes['technology_id'] == 3:
-            attributes['piL'] = (attributes['current_ratio'] / 0.2)**2.0
-        else:
-            attributes['piL'] = 1.0
 
-    # Determine the contact form factor (piC).
-    if attributes['subcategory_id'] == 1:
-        attributes['piC'] = _dic_piC[attributes['subcategory_id']][
-            attributes['contact_form_id'] - 1
-        ]
+def _calculate_load_stress_factor(attributes):
+    """
+    Calculate the load stress factor (piL).
 
-    # Determine cycling factor (piCYC).
-    if attributes['subcategory_id'] == 1:
-        if (
-                attributes['quality_id'] in [1, 2, 3, 4, 5, 6]
-                and attributes['n_cycles'] < 1.0
-        ):
-            attributes['piCYC'] = 0.1
-        elif attributes['quality_id'] == 7 and attributes['n_cycles'] > 1000:
-            attributes['piCYC'] = (attributes['n_cycles'] / 100.0)**2.0
-        elif (
-                attributes['quality_id'] == 7 and attributes['n_cycles'] > 10
-                and attributes['n_cycles'] < 1000
-        ):
-            attributes['piCYC'] = attributes['n_cycles'] / 10.0
-        else:
-            attributes['piCYC'] = 1.0
+    Only subcategory 1 relays use this in their calculation.
 
-    # Determine application and construction factor (piF).
+    :param dict attributes: the attributes dictionary of the relay being
+        calculated.
+    :return: attributes; the attributes dictionary updated with pi_L.
+    :rtype: dict
+    """
+    if attributes['technology_id'] == 1:
+        attributes['piL'] = (attributes['current_ratio'] / 0.8)**2.0
+    elif attributes['technology_id'] == 2:
+        attributes['piL'] = (attributes['current_ratio'] / 0.4)**2.0
+    elif attributes['technology_id'] == 3:
+        attributes['piL'] = (attributes['current_ratio'] / 0.2)**2.0
+    else:
+        attributes['piL'] = 1.0
+
+    return attributes
+
+
+def _get_application_construction_factor(attributes):
+    """
+    Calculate the construction factor (piF) for the relay.
+
+    :param dict attributes: the dict of relay attributes.
+    :return: attributes with lambda_b updated.
+    :rtype: dict
+    """
     if attributes['subcategory_id'] == 1:
         if attributes['quality_id'] in [1, 2, 3, 4, 5, 6]:
             _quality = 0
         else:
             _quality = 1
-        attributes['piF'] = _dic_piF[attributes['contact_rating_id']][
+        attributes['piF'] = PI_F[attributes['contact_rating_id']][
             attributes['application_id'] - 1
         ][
             attributes['construction_id'] - 1
         ][_quality]
 
-    # Determine the quality factor (piQ).
-    try:
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-            attributes['quality_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
+    return attributes
 
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'relay, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
-    # Determine the environmental factor (piE).
+def _get_environment_factor(attributes):
+    """
+    Retrieve the environment factor (pi_E).
+
+    :param dict attributes: the attributes dictionary of the relay being
+        calculated.
+    :return: attributes; the attributes dictionary updated with pi_E.
+    :rtype: dict
+    """
+    if attributes['quality_id'] in [1, 2, 3, 4, 5, 6]:
+        _quality = 0
+    else:
+        _quality = 1
+
     if attributes['subcategory_id'] == 1:
         try:
-            attributes['piE'] = _dic_piE[1][_quality][
+            attributes['piE'] = PI_E[1][_quality][
                 attributes['environment_active_id'] - 1
             ]
         except IndexError:
-            attributes['piE'] = 0.0
+            attributes['piE'] = 1.0
     else:
         try:
-            attributes['piE'] = _dic_piE[2][
+            attributes['piE'] = PI_E[2][
                 attributes['environment_active_id']
                 - 1
             ]
         except (KeyError, IndexError):
-            attributes['piE'] = 0.0
+            attributes['piE'] = 1.0
 
-    if attributes['piE'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-            'relay, hardware ID: {0:d}'.format(attributes['hardware_id'])
+    return attributes
 
-    # Calculate the active hazard rate.
+
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. type id; if the relay subcategory is NOT type dependent, then
+            the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |              Relay \          | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Mechanical                    |       13.1      |
+    +----------------+-------------------------------+-----------------+
+    |        2       | Solid State                   |       13.2      |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
+
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
+    """
+    try:
+        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[attributes['subcategory_id']][
+            attributes['type_id'] - 1
+        ]
+    except (KeyError, IndexError):
+        _lst_base_hr = [0.0]
+
+    return _lst_base_hr
+
+
+def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
+    """
+    Calculate the part stress hazard rate for a relay.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
+             dictionary with updated values and the error message, if any.
+    :rtype: (dict, str)
+    """
+    attributes = _calculate_lambda_b(attributes)
+    attributes = _calculate_cycling_factor(attributes)
+    attributes = _calculate_load_stress_factor(attributes)
+    attributes = _get_environment_factor(attributes)
+    attributes = _get_application_construction_factor(attributes)
+
+    # Determine the contact form factor (piC).
+    if attributes['subcategory_id'] == 1:
+        attributes['piC'] = PI_C[attributes['subcategory_id']][
+            attributes['contact_form_id'] - 1
+        ]
+
+    _msg = do_check_variables(attributes)
+
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
     )
@@ -294,3 +314,94 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         )
 
     return attributes, _msg
+
+
+def do_check_variables(attributes):
+    """
+    Check calculation variable to ensure they are all greater than zero.
+
+    All variables are checked regardless of whether they'll be used in the
+    calculation for the relay type which is why a WARKING message is
+    issued rather than an ERROR message.
+
+    :param dict attributes: the attributes for the relay being calculated.
+    :return: _msg; a message indicating all the variables that are less than or
+        equal to zero in value.
+    :rtype: str
+    """
+    _msg = ''
+
+    if attributes['lambda_b'] <= 0.0:
+        _msg = 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating relay, hardware ID: {0:d}, subcategory ID: {1:d}, ' \
+            'type ID: {3:d}, and active environment ID: ' \
+            '{2:d}.\n'.format(
+                attributes['hardware_id'],
+                attributes['subcategory_id'],
+                attributes['environment_active_id'],
+                attributes['type_id'],
+            )
+
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+            'relay, hardware ID: {0:d}, subcategory ID: {2:d}, and quality ' \
+            'ID: {1:d}.\n'.format(
+                attributes['hardware_id'],
+                attributes['quality_id'],
+                attributes['subcategory_id'],
+            )
+
+    if attributes['hazard_rate_method_id'] == 2:
+        if attributes['piC'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piC is 0.0 when calculating ' \
+                'relay, hardware ID: {0:d}, ' \
+                'contact form ID: {1:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['contact_form_id'],
+                )
+
+        if attributes['piCYC'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piCYC is 0.0 when calculating ' \
+                'relay, hardware ID: {0:d}, ' \
+                'subcategory ID: {1:d}, ' \
+                'quality ID: {2:d}, ' \
+                'cycling rate: {3:f}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['subcategory_id'],
+                    attributes['quality_id'],
+                    attributes['n_cycles'],
+                )
+
+        if attributes['piE'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
+                'relay, hardware ID: {0:d}, ' \
+                'active environment ID: {1:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['environment_active_id'],
+                )
+
+        if attributes['piF'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piF is 0.0 when calculating ' \
+                'relay, hardware ID: {0:d}, ' \
+                'quality ID: {2:d}, ' \
+                'contact rating ID: {1:d}, '\
+                'application ID: {3:d}, ' \
+                'construction ID: {4:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['contact_rating_id'],
+                    attributes['quality_id'],
+                    attributes['application_id'],
+                    attributes['construction_id'],
+                )
+
+        if attributes['piL'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piL is 0.0 when calculating ' \
+                'relay, hardware ID: {0:d}, ' \
+                'technology ID: {1:d}, ' \
+                'current ratio: {2:f}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['technology_id'],
+                    attributes['current_ratio'],
+                )
+
+    return _msg

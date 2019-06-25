@@ -6,33 +6,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Meter Reliability Calculations Module."""
 
-# Standard Library Imports
-import gettext
-
-_ = gettext.gettext
-
-
-def calculate_217f_part_count(**attributes):
-    """
-    Calculate the part count hazard rate for a meter.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    # Dictionary containing MIL-HDBK-217FN2 parts count base hazard rates.
-    # First key is the subcategory_id.  Current subcategory IDs are:
-    #
-    #    1. Elapsed Time
-    #    2. Panel
-    #
-    # These keys return a list of base hazard rate lists.  The proper internal
-    # list is selected by the type ID.  The hazard rate to use is selected from
-    # the list depending on the active environment.
-    _dic_lambda_b = {
+PART_COUNT_217F_LAMBDA_B = {
         1: [
             [
                 10.0,
@@ -117,90 +91,20 @@ def calculate_217f_part_count(**attributes):
                 0.0,
             ],
         ],
-    }
-    _msg = ''
-
-    # Select the base hazard rate.
-    try:
-        attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
-            attributes['type_id'] - 1
-        ][attributes['environment_active_id'] - 1]
-    except (IndexError, KeyError):
-        attributes['lambda_b'] = 0.0
-
-    # Confirm all inputs are within range.  If not, set the message.  The
-    # hazard rate will be calculated anyway, but will be zero.
-    if attributes['lambda_b'] <= 0.0:
-        _msg = (
-            "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-            "meter, hardware ID: {0:d}, subcategory ID: {1:d}, type "
-            "ID: {3:d}, and active environment ID: {2:d}."
-        ).format(
-            attributes['hardware_id'],
-            attributes['subcategory_id'],
-            attributes['environment_active_id'],
-            attributes['type_id'],
-        )
-
-    # Calculate the hazard rate.
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ']
-    )
-
-    return attributes, _msg
+}
+PART_STRESS_217F_LAMBDA_B = {1: [20.0, 30.0, 80.0], 2: 0.09}
+PI_F = [1.0, 1.0, 2.8]
 
 
-def calculate_217f_part_stress(**attributes):
+def _get_temperature_stress_factor(attributes):
     """
-    Calculate the part stress hazard rate for a meter.
+    Retrieve the temperature stress factor (piT).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
+    :param dict attributes: the attributes for the meter being calculated.
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
+    :rtype: dict
     """
-    _dic_lambda_b = {1: [20.0, 30.0, 80.0], 2: 0.09}
-    _dic_piE = {
-        2: [
-            1.0,
-            4.0,
-            25.0,
-            12.0,
-            35.0,
-            28.0,
-            42.0,
-            58.0,
-            73.0,
-            60.0,
-            1.1,
-            60.0,
-            0.0,
-            0.0,
-        ],
-        1: [
-            1.0,
-            2.0,
-            12.0,
-            7.0,
-            18.0,
-            5.0,
-            8.0,
-            16.0,
-            25.0,
-            26.0,
-            0.5,
-            14.0,
-            38.0,
-            0.0,
-        ],
-    }
-    _dic_piQ = {2: [1.0, 3.4]}
-    _lst_piF = [1.0, 1.0, 2.8]
-    _msg = ''
-
-    # Calculate the temperature ratio.
     try:
         _temperature_ratio = (
             attributes['temperature_active'] /
@@ -209,26 +113,6 @@ def calculate_217f_part_stress(**attributes):
     except ZeroDivisionError:
         _temperature_ratio = 1.0
 
-    # Calculate the base hazard rate.
-    if attributes['subcategory_id'] == 1:
-        attributes['lambda_b'] = _dic_lambda_b[1][attributes['type_id'] - 1]
-    elif attributes['subcategory_id'] == 2:
-        attributes['lambda_b'] = _dic_lambda_b[2]
-    else:
-        attributes['lambda_b'] = 0.0
-
-    if attributes['lambda_b'] <= 0.0:
-        _msg = (
-            "RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, "
-            "hardware ID: {0:d}."
-        ).format(attributes['hardware_id'])
-
-    # Determine the application factor (piA) and function factor (piF).
-    if attributes['subcategory_id'] == 2:
-        attributes['piA'] = (1.7 if (attributes['type_id']) - (1) else 1.0)
-        attributes['piF'] = _lst_piF[attributes['application_id'] - 1]
-
-    # Determine the temperature stress factor (piT).
     if attributes['subcategory_id'] == 1:
         if 0.0 < _temperature_ratio <= 0.5:
             attributes['piT'] = 0.5
@@ -239,38 +123,100 @@ def calculate_217f_part_stress(**attributes):
         elif 0.8 < _temperature_ratio <= 1.0:
             attributes['piT'] = 1.0
 
-    # Determine the quality factor (piQ).
-    try:
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-            attributes['quality_id'] - 1
+    return attributes
+
+
+def _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes):
+    """
+    Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    stress method.
+
+    :param dict attributes: the attributes for the meter being calculated.
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] == 1:
+        attributes['lambda_b'] = PART_STRESS_217F_LAMBDA_B[1][
+            attributes['type_id'] - 1
         ]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
+    elif attributes['subcategory_id'] == 2:
+        attributes['lambda_b'] = PART_STRESS_217F_LAMBDA_B[2]
+    else:
+        attributes['lambda_b'] = 0.0
 
-    if attributes['piQ'] <= 0.0:
-        _msg = (
-            "RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
-            "{0:d}, quality ID: {1:d}."
-        ).format(
-            attributes['hardware_id'],
-            attributes['quality_id'],
-        )
+    return attributes
 
-    # Determine the environmental factor (piE).
+
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. type id; if the meter subcategory is NOT type dependent, then
+            the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |              Meter \          | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Elapsed Time                  |       12.4      |
+    +----------------+-------------------------------+-----------------+
+    |        2       | Panel                         |       18.1      |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
+
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
+    """
     try:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1
+        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+            attributes['subcategory_id']
+        ][
+            attributes['type_id'] - 1
         ]
     except (IndexError, KeyError):
-        attributes['piE'] = 0.0
+        _lst_base_hr = [0.0]
 
-    if attributes['piE'] <= 0.0:
-        _msg = (
-            "RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
-            "{0:d}"
-        ).format(attributes['hardware_id'])
+    return _lst_base_hr
 
-    # Calculate the active hazard rate.
+
+def calculate_217f_part_stress(**attributes):
+    """
+    Calculate the part stress hazard rate for a meter.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
+        dictionary with updated values and the error message, if any.
+    :rtype: (dict, str)
+    """
+    attributes = _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes)
+    attributes = _get_temperature_stress_factor(attributes)
+
+    # Determine the application factor (piA) and function factor (piF).
+    if attributes['subcategory_id'] == 2:
+        attributes['piA'] = (1.7 if (attributes['type_id']) - (1) else 1.0)
+        attributes['piF'] = PI_F[attributes['application_id'] - 1]
+
+    _msg = do_check_variables(attributes)
+
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piE']
     )
@@ -285,3 +231,78 @@ def calculate_217f_part_stress(**attributes):
         )
 
     return attributes, _msg
+
+
+def do_check_variables(attributes):
+    """
+    Check calculation variable to ensure they are all greater than zero.
+
+    All variables are checked regardless of whether they'll be used in the
+    calculation for the meter type which is why a WARKING message is
+    issued rather than an ERROR message.
+
+    :param dict attributes: the attributes for the meter being calculated.
+    :return: _msg; a message indicating all the variables that are less than or
+        equal to zero in value.
+    :rtype: str
+    """
+    _msg = ''
+
+    if attributes['lambda_b'] <= 0.0:
+        _msg = (
+            "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
+            "meter, hardware ID: {0:d}, subcategory ID: {1:d}, type "
+            "ID: {3:d}, and active environment ID: {2:d}.\n"
+        ).format(
+            attributes['hardware_id'],
+            attributes['subcategory_id'],
+            attributes['environment_active_id'],
+            attributes['type_id'],
+        )
+
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + (
+            "RAMSTK WARNING: piQ is 0.0 when calculating meter, "
+            "hardware ID: {0:d}, quality ID: {1:d}.\n"
+        ).format(
+            attributes['hardware_id'],
+            attributes['quality_id'],
+        )
+
+    if attributes['hazard_rate_method_id'] == 2:
+        if attributes['piE'] <= 0.0:
+            _msg = _msg + (
+                "RAMSTK WARNING: piE is 0.0 when calculating meter, "
+                "hardware ID: {0:d}, active environment ID: {1:d}.\n"
+            ).format(
+                attributes['hardware_id'],
+                attributes['environment_active_id'],
+            )
+
+        if attributes['piA'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piA is 0.0 when calculating ' \
+                'meter, hardware ID: {0:d}, ' \
+                'type ID: {1:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['type_id'],
+                )
+
+        if attributes['piF'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piF is 0.0 when calculating ' \
+                'meter, hardware ID: {0:d}, ' \
+                'application ID: {1:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['application_id'],
+                )
+
+        if attributes['piT'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piF is 0.0 when calculating ' \
+                'meter, hardware ID: {0:d}, ' \
+                'active temperature: {1:f}, and max rated temperature: ' \
+                '{2:f}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['temperature_active'],
+                    attributes['temperature_rated_max'],
+                )
+
+    return _msg

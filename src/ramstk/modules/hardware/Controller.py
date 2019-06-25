@@ -260,7 +260,7 @@ class HardwareBoMDataController(RAMSTKDataController):
 
         if _error_code == 0:
             self._configuration.RAMSTK_USER_LOG.info(_msg)
-            # TODO: Move the code for adding Hardware:X matrix records to a seperate method that responds to the 'inserted_hardware' signal.
+            # ISSUE: See issue #249 at https://github.com/ReliaQualAssociates/ramstk/issues/249
             _hardware_id = self.request_last_id()
             _heading = self.request_do_select(_hardware_id)['ref_des']
 

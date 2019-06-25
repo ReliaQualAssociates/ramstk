@@ -5,14 +5,13 @@ exclude .bandit.baseline
 exclude .coverage
 exclude .coveragerc
 exclude .gitattributes
-exclude .gitcommitmessage.txt
+exclude .gitcommittemplate.txt
 exclude .gitignore
 exclude .isort.cfg
 exclude .pre-commit-config.yaml
 exclude .pylintrc
 exclude .travis.yml
 exclude appveyor.yml*
-exclude bump_version.sh
 exclude coverage.xml
 exclude pytest.ini
 exclude tags
@@ -23,8 +22,5 @@ graft docs
 graft locale
 
 global-exclude *.py[co]
-global-exclude *.aux
-global-exclude *.log
-global-exclude *.synctex.gz
-
-prune docs/api/build
+global-exclude *.sh
+global-exclude *.hooks

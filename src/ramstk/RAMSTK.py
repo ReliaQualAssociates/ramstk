@@ -910,7 +910,7 @@ class RAMSTK():
                     ] = _module
                     _page += 1
 
-            # TODO: Move the status icon code out of the RAMSTK controller and into a GUI module.
+            # ISSUE: See issue #228 at https://github.com/ReliaQualAssociates/ramstk/issues/228
             _icon = self.RAMSTK_CONFIGURATION.RAMSTK_ICON_DIR + \
                 '/32x32/db-connected.png'
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)

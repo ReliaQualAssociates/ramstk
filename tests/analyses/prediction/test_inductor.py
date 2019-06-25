@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
 #       tests.analyses.prediction.test_inductor.py is part of The RAMSTK Project
@@ -93,7 +93,7 @@ def test_calculate_mil_hdbk_217f_part_count(
             'RAMSTK WARNING: Base hazard rate is 0.0 when '
             'calculating inductor, hardware ID: 6, subcategory '
             'ID: {0:d}, family ID: {1:d}, and active '
-            'environment ID: {2:d}.'
+            'environment ID: {2:d}.\n'
         ).format(
             subcategory_id, family_id, environment_active_id,
         )
@@ -117,9 +117,9 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'inductor, hardware ID: 6, subcategory ID: 0, family '
-        'ID: 1, and active environment ID: 1.'
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating inductor, ' \
+        'hardware ID: 6, subcategory ID: 0, family ID: 1, and active ' \
+        'environment ID: 1.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -141,7 +141,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_family():
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
         'inductor, hardware ID: 6, subcategory ID: 1, family ID: 0, and '
-        'active environment ID: 1.'
+        'active environment ID: 1.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 0.030
@@ -163,7 +163,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
         'inductor, hardware ID: 6, subcategory ID: 1, family ID: 1, and '
-        'active environment ID: 100.'
+        'active environment ID: 100.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -182,13 +182,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, '
-        'hardware ID: 6, quality ID: 11.'
-    )
+    assert _msg == ''
     assert _attributes['lambda_b'] == 0.0035
-    assert _attributes['piQ'] == 0.0
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert _attributes['piQ'] == 1.0
+    assert _attributes['hazard_rate_active'] == 0.0035
 
 
 @pytest.mark.unit
@@ -207,7 +204,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == ''
@@ -234,12 +231,12 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_quality():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, '
-        'hardware ID: 6'
+        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, hardware ' \
+        'ID: 6, quality ID: 20.\n'
     )
     assert pytest.approx(_attributes['lambda_b'], 0.0003462094)
     assert _attributes['piQ'] == 0.0
@@ -264,18 +261,15 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piE is 0.0 when calculating inductor, '
-        'hardware ID: 6'
-    )
+    assert _msg == ''
     assert pytest.approx(_attributes['lambda_b'], 0.0003462094)
     assert _attributes['piQ'] == 0.1
-    assert _attributes['piE'] == 0.0
+    assert _attributes['piE'] == 1.0
     assert _attributes['piC'] == 2.0
-    assert pytest.approx(_attributes['hazard_rate_active'], 0.0)
+    assert pytest.approx(_attributes['hazard_rate_active'], 0.00006924188)
 
 
 @pytest.mark.unit
@@ -294,12 +288,13 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_insulation():
     ATTRIBUTES['power_operating'] = 4.2
     ATTRIBUTES['weight'] = 0.75
 
-    _attributes, _msg = Inductor.calculate_217f_part_stress(**ATTRIBUTES)
+    _attributes, _msg = Component.do_calculate_217f_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _msg == (
-        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'inductor, hardware ID: 6'
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating inductor, ' \
+        'hardware ID: 6, subcategory ID: 2, family ID: 1, and active ' \
+        'environment ID: 4.\n'
     )
     assert pytest.approx(_attributes['lambda_b'], 0.0)
     assert _attributes['piQ'] == 0.1
@@ -330,7 +325,7 @@ def test_voltage_overstress_harsh_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -370,7 +365,7 @@ def test_current_overstress_harsh_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -411,7 +406,7 @@ def test_temperature_overstress_harsh_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -447,7 +442,7 @@ def test_voltage_overstress_mild_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -484,7 +479,7 @@ def test_current_overstress_mild_environment(
     ATTRIBUTES['environment_active_id'] = environment_active_id
 
     _attributes = Component.do_calculate_stress_ratios(**ATTRIBUTES)
-    _attributes = Inductor.calculate_hot_spot_temperature(**_attributes)
+    _attributes = Inductor._calculate_hot_spot_temperature(**_attributes)
     _attributes['temperature_hot_spot'] = 65.0
     _attributes = Component.do_check_overstress(RAMSTK_STRESS_LIMITS, **_attributes)
 
@@ -498,3 +493,73 @@ def test_current_overstress_mild_environment(
             '1. Operating current > 90.0% rated '
             'current in mild environment.\n'
         )
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = Inductor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating inductor, ' \
+        'hardware ID: 100, subcategory ID: 2, family ID: 1, and active ' \
+        'environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = Inductor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating inductor, ' \
+        'hardware ID: 100, subcategory ID: 2, family ID: 1, and active ' \
+        'environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piE'] = -1.3
+    _msg = Inductor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+        'calculating inductor, hardware ID: 100, active environment ID: 11.\n'
+    )
+    ATTRIBUTES['piE'] = 0.0
+    _msg = Inductor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when ' \
+        'calculating inductor, hardware ID: 100, active environment ID: 11.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = Inductor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, hardware ID: ' \
+        '100, quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = Inductor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating inductor, hardware ID: ' \
+        '100, quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piC'] = -1.3
+    _msg = Inductor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating inductor, hardware ID: ' \
+        '100, construction ID: 2.\n'
+    )
+
+    ATTRIBUTES['piC'] = 0.0
+    _msg = Inductor.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piC is 0.0 when calculating inductor, hardware ID: ' \
+        '100, construction ID: 2.\n'
+    )

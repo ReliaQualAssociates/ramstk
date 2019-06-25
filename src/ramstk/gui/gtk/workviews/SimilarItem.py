@@ -453,7 +453,7 @@ class SimilarItem(RAMSTKWorkView):
                     _attributes['parent_id'],
                     str(_attributes),
                 ]
-# TODO: Handle user/debug messages in workview.SimilarItem._do_load_children
+# ISSUE: See issue #229 at https://github.com/ReliaQualAssociates/ramstk/issues/229
                 try:
                     _model.append(None, _data)
                 except TypeError:
@@ -472,7 +472,7 @@ class SimilarItem(RAMSTKWorkView):
                             str(self._parent_id),
                         )
                     )
-                    print(_debug_msg)
+                    # ISSUE: See issue #230 at https://github.com/ReliaQualAssociates/ramstk/issues/230
                     print(_data)
                 except ValueError as _error:
                     _error_code = 1
@@ -491,7 +491,7 @@ class SimilarItem(RAMSTKWorkView):
                             str(_error),
                         )
                     )
-                    print(_debug_msg)
+                    # ISSUE: See issue #230 at https://github.com/ReliaQualAssociates/ramstk/issues/230
             except AttributeError:
                 if _node_id != 0:
                     _error_code = 1
@@ -508,7 +508,7 @@ class SimilarItem(RAMSTKWorkView):
                             str(self._parent_id),
                         )
                     )
-                    print(_debug_msg)
+                    # ISSUE: See issue #230 at https://github.com/ReliaQualAssociates/ramstk/issues/230
 
     def _do_refresh_tree(self, model, row, functions):
         """

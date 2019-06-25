@@ -1,8 +1,8 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_integrated_circuit.py is part of The RAMSTK
-#       Project
+#       tests.analyses.prediction.test_integrated_circuit.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -382,7 +382,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'integrated circuit, hardware ID: 6'
+        'integrated circuit, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -404,7 +404,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_technology():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'integrated circuit, hardware ID: 6'
+        'integrated circuit, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -426,7 +426,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert isinstance(_attributes, dict)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating '
-        'integrated circuit, hardware ID: 6'
+        'integrated circuit, hardware ID: 6.\n'
     )
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 0.25
@@ -446,13 +446,10 @@ def test_calculate_mil_hdbk_217f_part_count_missing_quality():
     _attributes, _msg = Component.do_calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RAMSTK WARNING: piQ is 0.0 when calculating integrated '
-        'circuit, hardware ID: 6'
-    )
+    assert _msg == ''
     assert _attributes['lambda_b'] == 0.0095
-    assert _attributes['piQ'] == 0.0
-    assert _attributes['hazard_rate_active'] == 0.0
+    assert _attributes['piQ'] == 1.0
+    assert _attributes['hazard_rate_active'] == 0.0095
 
 
 @pytest.mark.unit
@@ -468,19 +465,20 @@ def test_calculate_mil_hdbk_217f_part_stress():
     ATTRIBUTES['temperature_active'] = 32.0
     ATTRIBUTES['temperature_rated_max'] = 85.0
     ATTRIBUTES['power_operating'] = 0.05
-    ATTRIBUTES['n_elements'] = 2000
+    ATTRIBUTES['n_elements'] = 1000
     ATTRIBUTES['n_active_pins'] = 16
     ATTRIBUTES['years_in_production'] = 1
     ATTRIBUTES['temperature_case'] = 40.0
     ATTRIBUTES['power_operating'] = 0.05
     ATTRIBUTES['theta_jc'] = 30.0
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_stress(
+    _attributes, _msg = Component.do_calculate_217f_part_stress(
         **ATTRIBUTES,
     )
 
     assert isinstance(_attributes, dict)
-    assert _msg == ''
+    assert _msg == 'RAMSTK WARNING: piA is 0.0 when calculating integrated ' \
+        'circuit, hardware ID: 6, application ID: 0.\n'
     assert pytest.approx(_attributes['C1'], 0.06)
     assert pytest.approx(_attributes['C2'], 0.005921936)
     assert pytest.approx(_attributes['piT'], 0.4477441)
@@ -505,14 +503,14 @@ def test_calculate_mil_hdbk_217f_part_stress_gaas():
     ATTRIBUTES['temperature_active'] = 32.0
     ATTRIBUTES['temperature_rated_max'] = 85.0
     ATTRIBUTES['power_operating'] = 0.05
-    ATTRIBUTES['n_elements'] = 2000
+    ATTRIBUTES['n_elements'] = 100
     ATTRIBUTES['n_active_pins'] = 16
     ATTRIBUTES['years_in_production'] = 1
     ATTRIBUTES['temperature_case'] = 40.0
     ATTRIBUTES['power_operating'] = 0.05
     ATTRIBUTES['theta_jc'] = 30.0
 
-    _attributes, _msg = IntegratedCircuit.calculate_217f_part_stress(
+    _attributes, _msg = Component.do_calculate_217f_part_stress(
         **ATTRIBUTES,
     )
 
@@ -633,3 +631,137 @@ def test_temperature_overstress_harsh_environment(
             'Junction temperature limit in harsh '
             'environment.\n'
         )
+
+
+@pytest.mark.unit
+def test_check_variable_zero():
+    """do_check_variables() should return a warning message when variables <= zero."""
+    ATTRIBUTES['hazard_rate_method_id'] = 1
+    ATTRIBUTES['hardware_id'] = 100
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['C1'] = 1.0
+    ATTRIBUTES['C2'] = 1.0
+    ATTRIBUTES['piA'] = 1.0
+    ATTRIBUTES['piL'] = 1.0
+    ATTRIBUTES['piT'] = 1.0
+
+    ATTRIBUTES['lambda_b'] = -1.3
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating ' \
+        'integrated circuit, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 0.0
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: Base hazard rate is 0.0 when calculating ' \
+        'integrated circuit, hardware ID: 100.\n'
+    )
+
+    ATTRIBUTES['lambda_b'] = 1.0
+    ATTRIBUTES['piQ'] = -1.3
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 0.0
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piQ is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, quality ID: 2.\n'
+    )
+
+    ATTRIBUTES['piQ'] = 1.0
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['piE'] = -1.3
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, environment ID: 14.\n'
+    )
+
+    ATTRIBUTES['piE'] = 0.0
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piE is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, environment ID: 14.\n'
+    )
+
+    ATTRIBUTES['piE'] = 1.0
+    ATTRIBUTES['piA'] = -1.3
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, application ID: 1.\n'
+    )
+
+    ATTRIBUTES['piA'] = 0.0
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piA is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, application ID: 1.\n'
+    )
+
+    ATTRIBUTES['piA'] = 1.0
+    ATTRIBUTES['piL'] = -1.3
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piL is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, years in production: 1.000000.\n'
+    )
+
+    ATTRIBUTES['piL'] = 0.0
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piL is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, years in production: 1.000000.\n'
+    )
+
+    ATTRIBUTES['piL'] = 1.0
+    ATTRIBUTES['piT'] = -1.3
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piT is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, application ID: 1, type ID: 2.\n'
+    )
+
+    ATTRIBUTES['piT'] = 0.0
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: piT is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, application ID: 1, type ID: 2.\n'
+    )
+
+    ATTRIBUTES['piT'] = 1.0
+    ATTRIBUTES['C1'] = -1.3
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: C1 is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, application ID: 1, technology ID: 1.\n'
+    )
+
+    ATTRIBUTES['C1'] = 0.0
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: C1 is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, application ID: 1, technology ID: 1.\n'
+    )
+
+    ATTRIBUTES['C1'] = 1.0
+    ATTRIBUTES['C2'] = -1.3
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: C2 is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, package ID: 2, # active pins: 16.\n'
+    )
+
+    ATTRIBUTES['C2'] = 0.0
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
+    assert _msg == (
+        'RAMSTK WARNING: C2 is 0.0 when calculating integrated circuit, ' \
+        'hardware ID: 100, package ID: 2, # active pins: 16.\n'
+    )

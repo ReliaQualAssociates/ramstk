@@ -239,6 +239,6 @@ def test_dao_db_delete_no_item(test_configuration):
 
     assert _error_code == 1
     assert _msg == (
-        "RAMSTK ERROR: Deleting an item from the RAMSTK Program "
-        "database."
+        "RAMSTK ERROR: Deleting an item from the RAMSTK Program database "
+        "with error: Class 'builtins.NoneType' is not mapped."
     )
