@@ -6,22 +6,22 @@
     <title>ramstk.analyses.prediction.Capacitor &#8212; RAMSTK 2.0.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../../_static/language_data.js"></script>
-    
+
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
-    
+
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="../../../../_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
-    
-    
+
+
 
   </head><body>
     <div class="related">
@@ -29,17 +29,17 @@
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
         <li><a href="../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
-          <li><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
       </ul>
     </div>
-    
-  
+
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
-            
+
   <h1>Source code for ramstk.analyses.prediction.Capacitor</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1">#</span>
@@ -188,109 +188,6 @@
     <span class="k">return</span> <span class="n">attributes</span></div>
 
 
-<div class="viewcode-block" id="_calculate_mil_hdbk_217f_part_count_lambda_b"><a class="viewcode-back" href="../../../../api/hardware.html#ramstk.analyses.prediction.Capacitor._calculate_mil_hdbk_217f_part_count_lambda_b">[docs]</a><span class="k">def</span> <span class="nf">_calculate_mil_hdbk_217f_part_count_lambda_b</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</span>
-
-<span class="sd">    This function calculates the MIL-HDBK-217F hazard rate using the parts</span>
-<span class="sd">    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the</span>
-<span class="sd">    MIL-HDBK-217F parts count base hazard rates.  Keys are for</span>
-<span class="sd">    PART_COUNT_217F_LAMBDA_B are:</span>
-
-<span class="sd">        #. subcategory_id</span>
-<span class="sd">        #. specification id; if the capacitor subcategory is NOT specification</span>
-<span class="sd">            dependent, then the second key will be zero.</span>
-
-<span class="sd">    Current subcategory IDs are:</span>
-
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    | Subcategory \  |           Capacitor \         | MIL-HDBK-217F \ |</span>
-<span class="sd">    |       ID       |             Style             |    Section      |</span>
-<span class="sd">    +================+===============================+=================+</span>
-<span class="sd">    |        1       | Fixed, Paper, Bypass (CA, CP) |       10.1      |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |        2       | Fixed, Feed-Through (CZ, CZR) |       10.2      |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |        3       | Fixed, Paper and Plastic \    |       10.3      |</span>
-<span class="sd">    |                | Film (CPV, CQ, CQR)           |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |        4       | Fixed, Metallized Paper, \    |       10.4      |</span>
-<span class="sd">    |                | Paper-Plastic and Plastic \   |                 |</span>
-<span class="sd">    |                | (CH, CHR)                     |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |        5       | Fixed, Plastic and \          |       10.5      |</span>
-<span class="sd">    |                | Metallized Plastic (CFR)      |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |        6       | Fixed, Super-Metallized \     |       10.6      |</span>
-<span class="sd">    |                | Plastic (CRH)                 |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |        7       | Fixed, Mica (CM, CMR)         |       10.7      |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |        8       | Fixed, Mica, Button (CB)      |       10.8      |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |        9       | Fixed, Glass (CY, CYR)        |       10.9      |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       10       | Fixed, Ceramic, General \     |      10.10      |</span>
-<span class="sd">    |                | Purpose (CK, CKR)             |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       11       | Fixed, Ceramic, Temperature \ |      10.11      |</span>
-<span class="sd">    |                | Compensating and Chip \       |                 |</span>
-<span class="sd">    |                | (CC, CCR, CDR)                |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       12       | Fixed, Electrolytic, \        |      10.12      |</span>
-<span class="sd">    |                | Tantalum, Solid (CSR)         |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       13       | Fixed, Electrolytic, \        |      10.13      |</span>
-<span class="sd">    |                | Tantalum, Non-Solid (CL, CLR) |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       14       | Fixed, Electrolytic, \        |      10.14      |</span>
-<span class="sd">    |                | Aluminum (CU, CUR)            |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       15       | Fixed, Electrolytic (Dry), \  |      10.15      |</span>
-<span class="sd">    |                | Aluminum (CE)                 |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       16       | Variable, Ceramic (CV)        |      10.16      |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       17       | Variable, Piston Type (PC)    |      10.17      |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       18       | Variable, Air Trimmer (CT)    |      10.18      |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-<span class="sd">    |       19       | Variable and Fixed, Gas or \  |      10.19      |</span>
-<span class="sd">    |                | Vacuum (CG)                   |                 |</span>
-<span class="sd">    +----------------+-------------------------------+-----------------+</span>
-
-<span class="sd">    These keys return a list of base hazard rates.  The hazard rate to use is</span>
-<span class="sd">    selected from the list depending on the active environment.</span>
-
-<span class="sd">    :param dict attributes: the attributes for the capacitor being calculated.</span>
-<span class="sd">    :return: attributes; the keyword argument (hardware attribute) dictionary</span>
-<span class="sd">        with updated values and the error message, if any.</span>
-<span class="sd">    :rtype: dict</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">_lst_base_hr</span> <span class="o">=</span> <span class="n">PART_COUNT_217F_LAMBDA_B</span><span class="p">[</span>
-                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
-            <span class="p">][</span>
-                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;specification_id&#39;</span><span class="p">]</span>
-            <span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">_lst_base_hr</span> <span class="o">=</span> <span class="n">PART_COUNT_217F_LAMBDA_B</span><span class="p">[</span>
-                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
-            <span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">_lst_base_hr</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_lst_base_hr</span><span class="p">[</span>
-            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;environment_active_id&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="p">]</span>
-    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-
-    <span class="k">return</span> <span class="n">attributes</span></div>
-
-
 <div class="viewcode-block" id="_calculate_mil_hdbk_217f_part_stress_lambda_b"><a class="viewcode-back" href="../../../../api/hardware.html#ramstk.analyses.prediction.Capacitor._calculate_mil_hdbk_217f_part_stress_lambda_b">[docs]</a><span class="k">def</span> <span class="nf">_calculate_mil_hdbk_217f_part_stress_lambda_b</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.</span>
@@ -378,7 +275,157 @@
     <span class="k">return</span> <span class="n">attributes</span></div>
 
 
-<div class="viewcode-block" id="_do_check_variables"><a class="viewcode-back" href="../../../../api/hardware.html#ramstk.analyses.prediction.Capacitor._do_check_variables">[docs]</a><span class="k">def</span> <span class="nf">_do_check_variables</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
+<div class="viewcode-block" id="calculate_217f_part_count_lambda_b"><a class="viewcode-back" href="../../../../api/hardware.html#ramstk.analyses.prediction.Capacitor.calculate_217f_part_count_lambda_b">[docs]</a><span class="k">def</span> <span class="nf">calculate_217f_part_count_lambda_b</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</span>
+
+<span class="sd">    This function calculates the MIL-HDBK-217F hazard rate using the parts</span>
+<span class="sd">    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the</span>
+<span class="sd">    MIL-HDBK-217F parts count base hazard rates.  Keys are for</span>
+<span class="sd">    PART_COUNT_217F_LAMBDA_B are:</span>
+
+<span class="sd">        #. subcategory_id</span>
+<span class="sd">        #. specification id; if the capacitor subcategory is NOT specification</span>
+<span class="sd">            dependent, then the second key will be zero.</span>
+
+<span class="sd">    Current subcategory IDs are:</span>
+
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    | Subcategory \  |           Capacitor \         | MIL-HDBK-217F \ |</span>
+<span class="sd">    |       ID       |             Style             |    Section      |</span>
+<span class="sd">    +================+===============================+=================+</span>
+<span class="sd">    |        1       | Fixed, Paper, Bypass (CA, CP) |       10.1      |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |        2       | Fixed, Feed-Through (CZ, CZR) |       10.2      |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |        3       | Fixed, Paper and Plastic \    |       10.3      |</span>
+<span class="sd">    |                | Film (CPV, CQ, CQR)           |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |        4       | Fixed, Metallized Paper, \    |       10.4      |</span>
+<span class="sd">    |                | Paper-Plastic and Plastic \   |                 |</span>
+<span class="sd">    |                | (CH, CHR)                     |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |        5       | Fixed, Plastic and \          |       10.5      |</span>
+<span class="sd">    |                | Metallized Plastic (CFR)      |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |        6       | Fixed, Super-Metallized \     |       10.6      |</span>
+<span class="sd">    |                | Plastic (CRH)                 |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |        7       | Fixed, Mica (CM, CMR)         |       10.7      |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |        8       | Fixed, Mica, Button (CB)      |       10.8      |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |        9       | Fixed, Glass (CY, CYR)        |       10.9      |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       10       | Fixed, Ceramic, General \     |      10.10      |</span>
+<span class="sd">    |                | Purpose (CK, CKR)             |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       11       | Fixed, Ceramic, Temperature \ |      10.11      |</span>
+<span class="sd">    |                | Compensating and Chip \       |                 |</span>
+<span class="sd">    |                | (CC, CCR, CDR)                |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       12       | Fixed, Electrolytic, \        |      10.12      |</span>
+<span class="sd">    |                | Tantalum, Solid (CSR)         |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       13       | Fixed, Electrolytic, \        |      10.13      |</span>
+<span class="sd">    |                | Tantalum, Non-Solid (CL, CLR) |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       14       | Fixed, Electrolytic, \        |      10.14      |</span>
+<span class="sd">    |                | Aluminum (CU, CUR)            |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       15       | Fixed, Electrolytic (Dry), \  |      10.15      |</span>
+<span class="sd">    |                | Aluminum (CE)                 |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       16       | Variable, Ceramic (CV)        |      10.16      |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       17       | Variable, Piston Type (PC)    |      10.17      |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       18       | Variable, Air Trimmer (CT)    |      10.18      |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+<span class="sd">    |       19       | Variable and Fixed, Gas or \  |      10.19      |</span>
+<span class="sd">    |                | Vacuum (CG)                   |                 |</span>
+<span class="sd">    +----------------+-------------------------------+-----------------+</span>
+
+<span class="sd">    These keys return a list of base hazard rates.  The hazard rate to use is</span>
+<span class="sd">    selected from the list depending on the active environment.</span>
+
+<span class="sd">    :param dict attributes: the attributes for the capacitor being calculated.</span>
+<span class="sd">    :return: _lst_base_hr; the list of base hazard rates.</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">_lst_base_hr</span> <span class="o">=</span> <span class="n">PART_COUNT_217F_LAMBDA_B</span><span class="p">[</span>
+                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
+            <span class="p">][</span>
+                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;specification_id&#39;</span><span class="p">]</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_lst_base_hr</span> <span class="o">=</span> <span class="n">PART_COUNT_217F_LAMBDA_B</span><span class="p">[</span>
+                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
+            <span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">_lst_base_hr</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">_lst_base_hr</span></div>
+
+
+<div class="viewcode-block" id="calculate_217f_part_stress"><a class="viewcode-back" href="../../../../api/hardware.html#ramstk.analyses.prediction.Capacitor.calculate_217f_part_stress">[docs]</a><span class="k">def</span> <span class="nf">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the part stress hazard rate for a capacitor.</span>
+
+<span class="sd">    This function calculates the MIL-HDBK-217F hazard rate using the part</span>
+<span class="sd">    stress method.</span>
+
+<span class="sd">    :param dict attributes: the attributes for the capacitor being calculated.</span>
+<span class="sd">    :return: (attributes, _msg); the keyword argument (hardware attribute)</span>
+<span class="sd">        dictionary with updated values and the error message, if any.</span>
+<span class="sd">    :rtype: (dict, str)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="n">_calculate_mil_hdbk_217f_part_stress_lambda_b</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="n">_calculate_capacitance_factor</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+    <span class="n">attributes</span> <span class="o">=</span> <span class="n">_calculate_series_resistance_factor</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+
+    <span class="c1"># Get the construction factor (piC).</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PI_C</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;construction_id&#39;</span><span class="p">]]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># Get the configuration factor (piCF).</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCF&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PI_CF</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;configuration_id&#39;</span><span class="p">]]</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCF&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="n">_msg</span> <span class="o">=</span> <span class="n">do_check_variables</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+
+    <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piQ&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piE&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCV&#39;</span><span class="p">]</span>
+            <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piSR&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCV&#39;</span><span class="p">]</span>
+            <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piC&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCF&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCV&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span></div>
+
+
+<div class="viewcode-block" id="do_check_variables"><a class="viewcode-back" href="../../../../api/hardware.html#ramstk.analyses.prediction.Capacitor.do_check_variables">[docs]</a><span class="k">def</span> <span class="nf">do_check_variables</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check calculation variable to ensure they are all greater than zero.</span>
 
@@ -436,80 +483,6 @@
                 <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">_msg</span></div>
-
-
-<div class="viewcode-block" id="calculate_217f_part_count"><a class="viewcode-back" href="../../../../api/hardware.html#ramstk.analyses.prediction.Capacitor.calculate_217f_part_count">[docs]</a><span class="k">def</span> <span class="nf">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate the part count hazard rate for a capacitor.</span>
-
-<span class="sd">    :param dict attributes: the attributes for the capacitor being calculated.</span>
-<span class="sd">    :return: (attributes, _msg); the keyword argument (hardware attribute)</span>
-<span class="sd">        dictionary with updated values and the error message, if any.</span>
-<span class="sd">    :rtype: (dict, str)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">attributes</span> <span class="o">=</span> <span class="n">_calculate_mil_hdbk_217f_part_count_lambda_b</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="n">_msg</span> <span class="o">=</span> <span class="n">_do_check_variables</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-
-    <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piQ&#39;</span><span class="p">]</span>
-    <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span></div>
-
-
-<div class="viewcode-block" id="calculate_217f_part_stress"><a class="viewcode-back" href="../../../../api/hardware.html#ramstk.analyses.prediction.Capacitor.calculate_217f_part_stress">[docs]</a><span class="k">def</span> <span class="nf">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate the part stress hazard rate for a capacitor.</span>
-
-<span class="sd">    This function calculates the MIL-HDBK-217F hazard rate using the part</span>
-<span class="sd">    stress method.</span>
-
-<span class="sd">    :param dict attributes: the attributes for the capacitor being calculated.</span>
-<span class="sd">    :return: (attributes, _msg); the keyword argument (hardware attribute)</span>
-<span class="sd">        dictionary with updated values and the error message, if any.</span>
-<span class="sd">    :rtype: (dict, str)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">attributes</span> <span class="o">=</span> <span class="n">_calculate_mil_hdbk_217f_part_stress_lambda_b</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="n">attributes</span> <span class="o">=</span> <span class="n">_calculate_capacitance_factor</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="n">attributes</span> <span class="o">=</span> <span class="n">_calculate_series_resistance_factor</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-
-    <span class="c1"># Get the construction factor (piC).</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PI_C</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;construction_id&#39;</span><span class="p">]]</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-
-    <span class="c1"># Get the configuration factor (piCF).</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCF&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PI_CF</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;configuration_id&#39;</span><span class="p">]]</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCF&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-
-    <span class="n">_msg</span> <span class="o">=</span> <span class="n">_do_check_variables</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">_msg</span><span class="p">)</span>
-    <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piQ&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piE&#39;</span><span class="p">]</span>
-    <span class="p">)</span>
-    <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCV&#39;</span><span class="p">]</span>
-            <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piSR&#39;</span><span class="p">]</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCV&#39;</span><span class="p">]</span>
-            <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piC&#39;</span><span class="p">]</span>
-        <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">19</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCF&#39;</span><span class="p">]</span>
-        <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piCV&#39;</span><span class="p">]</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span></div>
 </pre></div>
 
           </div>
@@ -518,7 +491,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
     <a id="sidebar-anchor"></a>
-    
+
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>

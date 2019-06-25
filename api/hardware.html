@@ -6,15 +6,15 @@
     <title>Hardware Package &#8212; RAMSTK 2.0.0 documentation</title>
     <link rel="stylesheet" href="../_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
-    
+
     <script type="text/javascript" src="../_static/sidebar.js"></script>
-    
+
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Validation Package" href="validation.html" />
@@ -22,8 +22,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="../_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
-    
-    
+
+
 
   </head><body>
     <div class="related">
@@ -32,17 +32,17 @@
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
         <li><a href="../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
           <li><a href="../contributing.html" >Contributing</a> &#187;</li>
-          <li><a href="../apidocuments.html" accesskey="U">RAMSTK Module</a> &#187;</li> 
+          <li><a href="../apidocuments.html" accesskey="U">RAMSTK Module</a> &#187;</li>
       </ul>
     </div>
-    
-  
+
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
-            
+
   <div class="section" id="hardware-package">
 <h1>Hardware Package<a class="headerlink" href="#hardware-package" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
@@ -1215,8 +1215,46 @@ dictionary with updated values and the error message, if any.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Capacitor._calculate_mil_hdbk_217f_part_count_lambda_b">
-<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">_calculate_mil_hdbk_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#_calculate_mil_hdbk_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor._calculate_mil_hdbk_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dt id="ramstk.analyses.prediction.Capacitor._calculate_mil_hdbk_217f_part_stress_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">_calculate_mil_hdbk_217f_part_stress_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#_calculate_mil_hdbk_217f_part_stress_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor._calculate_mil_hdbk_217f_part_stress_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+stress method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the capacitor being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values and the error message, if any.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Capacitor._calculate_series_resistance_factor">
+<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">_calculate_series_resistance_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#_calculate_series_resistance_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor._calculate_series_resistance_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the series resistance factor (piSR).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the capacitor being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values and the error message, if any.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Capacitor.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
@@ -1343,88 +1381,10 @@ selected from the list depending on the active environment.</p>
 <dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the capacitor being calculated.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
-with updated values and the error message, if any.</p>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ramstk.analyses.prediction.Capacitor._calculate_mil_hdbk_217f_part_stress_lambda_b">
-<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">_calculate_mil_hdbk_217f_part_stress_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#_calculate_mil_hdbk_217f_part_stress_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor._calculate_mil_hdbk_217f_part_stress_lambda_b" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.</p>
-<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
-stress method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the capacitor being calculated.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
-with updated values and the error message, if any.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ramstk.analyses.prediction.Capacitor._calculate_series_resistance_factor">
-<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">_calculate_series_resistance_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#_calculate_series_resistance_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor._calculate_series_resistance_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the series resistance factor (piSR).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the capacitor being calculated.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
-with updated values and the error message, if any.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ramstk.analyses.prediction.Capacitor._do_check_variables">
-<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">_do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#_do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor._do_check_variables" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
-<p>All variables are checked regardless of whether they’ll be used in the
-calculation for the capacitor type which is why a WARKING message is issued
-rather than an ERROR message.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the capacitor being calculated.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
-equal to zero in value.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ramstk.analyses.prediction.Capacitor.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a capacitor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the capacitor being calculated.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1445,6 +1405,27 @@ dictionary with updated values and the error message, if any.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Capacitor.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Capacitor.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Capacitor.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Capacitor.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the capacitor type which is why a WARKING message is issued
+rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the capacitor being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1725,90 +1706,6 @@ with updated values</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Connection._calculate_mil_hdbk_217f_part_count_lambda_b">
-<code class="descclassname">ramstk.analyses.prediction.Connection.</code><code class="descname">_calculate_mil_hdbk_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Connection.html#_calculate_mil_hdbk_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Connection._calculate_mil_hdbk_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
-<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
-count method.</p>
-<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
-count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-MIL-HDBK-217F parts count base hazard rates.  Keys are for
-PART_COUNT_217F_LAMBDA_B are:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>subcategory_id</p></li>
-<li><dl class="simple">
-<dt>type id; if the connection subcategory is NOT type dependent, then</dt><dd><p>the second key will be zero.</p>
-</dd>
-</dl>
-</li>
-</ol>
-</div></blockquote>
-<p>Current subcategory IDs are:</p>
-<table class="docutils align-center">
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 48%" />
-<col style="width: 27%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><dl class="simple">
-<dt>Subcategory </dt><dd><p>ID</p>
-</dd>
-</dl>
-</th>
-<th class="head"><dl class="simple">
-<dt>Capacitor </dt><dd><p>Style</p>
-</dd>
-</dl>
-</th>
-<th class="head"><dl class="simple">
-<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
-</dd>
-</dl>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>1</p></td>
-<td><p>Circular, Rack and Panel, Coaxial, Triaxial</p></td>
-<td><p>15.1</p></td>
-</tr>
-<tr class="row-odd"><td><p>2</p></td>
-<td><p>PCB/PWA Edge</p></td>
-<td><p>15.2</p></td>
-</tr>
-<tr class="row-even"><td><p>3</p></td>
-<td><p>IC Socket</p></td>
-<td><p>15.3</p></td>
-</tr>
-<tr class="row-odd"><td><p>4</p></td>
-<td><p>Plated Through Hole (PTH)</p></td>
-<td><p>16.1</p></td>
-</tr>
-<tr class="row-even"><td><p>5</p></td>
-<td><p>Non-PTH</p></td>
-<td><p>17.1</p></td>
-</tr>
-</tbody>
-</table>
-<p>These keys return a list of base hazard rates.  The hazard rate to use is
-selected from the list depending on the active environment.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the connection being calculated.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
-with updated values and the error message, if any.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="ramstk.analyses.prediction.Connection._calculate_mil_hdbk_217f_part_stress_lambda_b">
 <code class="descclassname">ramstk.analyses.prediction.Connection.</code><code class="descname">_calculate_mil_hdbk_217f_part_stress_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Connection.html#_calculate_mil_hdbk_217f_part_stress_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Connection._calculate_mil_hdbk_217f_part_stress_lambda_b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.</p>
@@ -1824,27 +1721,6 @@ with updated values and the error message, if any.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ramstk.analyses.prediction.Connection._do_check_variables">
-<code class="descclassname">ramstk.analyses.prediction.Connection.</code><code class="descname">_do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Connection.html#_do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Connection._do_check_variables" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
-<p>All variables are checked regardless of whether they’ll be used in the
-calculation for the connection type which is why a WARKING message is
-issued rather than an ERROR message.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the connection being calculated.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
-equal to zero in value.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1886,19 +1762,84 @@ calculated.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Connection.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Connection.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Connection.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Connection.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a connection.</p>
+<dt id="ramstk.analyses.prediction.Connection.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Connection.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Connection.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Connection.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+MIL-HDBK-217F parts count base hazard rates.  Keys are for
+PART_COUNT_217F_LAMBDA_B are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>subcategory_id</p></li>
+<li><dl class="simple">
+<dt>type id; if the connection subcategory is NOT type dependent, then</dt><dd><p>the second key will be zero.</p>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>Current subcategory IDs are:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><dl class="simple">
+<dt>Subcategory </dt><dd><p>ID</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>Connection </dt><dd><p>Style</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
+</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Circular, Rack and Panel, Coaxial, Triaxial</p></td>
+<td><p>15.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>PCB/PWA Edge</p></td>
+<td><p>15.2</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>IC Socket</p></td>
+<td><p>15.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Plated Through Hole (PTH)</p></td>
+<td><p>16.1</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>Non-PTH</p></td>
+<td><p>17.1</p></td>
+</tr>
+</tbody>
+</table>
+<p>These keys return a list of base hazard rates.  The hazard rate to use is
+selected from the list depending on the active environment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the connection being calculated.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1923,17 +1864,13 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-ramstk.analyses.prediction.Crystal">
-<span id="crystal-prediction-calculations-module"></span><h3>Crystal Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Crystal" title="Permalink to this headline">¶</a></h3>
-<p>Crystal Reliability Calculations Module.</p>
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Crystal._do_check_variables">
-<code class="descclassname">ramstk.analyses.prediction.Crystal.</code><code class="descname">_do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Crystal.html#_do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Crystal._do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dt id="ramstk.analyses.prediction.Connection.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Connection.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Connection.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Connection.do_check_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check calculation variable to ensure they are all greater than zero.</p>
 <p>All variables are checked regardless of whether they’ll be used in the
-calculation for the connection type which is why a WARKING message is issued
-rather than an ERROR message.</p>
+calculation for the connection type which is why a WARKING message is
+issued rather than an ERROR message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the connection being calculated.</p>
@@ -1948,22 +1885,25 @@ equal to zero in value.</p>
 </dl>
 </dd></dl>
 
+</div>
+<div class="section" id="module-ramstk.analyses.prediction.Crystal">
+<span id="crystal-prediction-calculations-module"></span><h3>Crystal Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Crystal" title="Permalink to this headline">¶</a></h3>
+<p>Crystal Reliability Calculations Module.</p>
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Crystal.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Crystal.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Crystal.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Crystal.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
+<dt id="ramstk.analyses.prediction.Crystal.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Crystal.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Crystal.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Crystal.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the part count hazard rate for a crystal.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the connection being calculated.</p>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1976,7 +1916,7 @@ dictionary with updated values and the error message, if any.</p>
 stress method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the connection being calculated.</p>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>(attributes, _msg); the keyword argument (hardware attribute)
@@ -1988,23 +1928,46 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Crystal.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Crystal.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Crystal.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Crystal.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the crystal type which is why a WARKING message is issued
+rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ramstk.analyses.prediction.Filter">
 <span id="filter-prediction-calculations-module"></span><h3>Filter Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Filter" title="Permalink to this headline">¶</a></h3>
 <p>Filter Reliability Calculations Module.</p>
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Filter.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Filter.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Filter.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Filter.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
+<dt id="ramstk.analyses.prediction.Filter.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Filter.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Filter.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Filter.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the part count hazard rate for a filter.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2026,23 +1989,46 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Filter.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Filter.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Filter.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Filter.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the connection type which is why a WARKING message is
+issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the filter being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ramstk.analyses.prediction.Fuse">
 <span id="fuse-prediction-calculations-module"></span><h3>Fuse Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Fuse" title="Permalink to this headline">¶</a></h3>
 <p>Fuse Reliability Calculations Module.</p>
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Fuse.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Fuse.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Fuse.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Fuse.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
+<dt id="ramstk.analyses.prediction.Fuse.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Fuse.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Fuse.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Fuse.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the part count hazard rate for a fuse.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2064,10 +2050,66 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Fuse.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Fuse.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Fuse.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Fuse.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the fuse type which is why a WARKING message is
+issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the fuse being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ramstk.analyses.prediction.Inductor">
 <span id="inductor-prediction-calculations-module"></span><h3>Inductor Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Inductor" title="Permalink to this headline">¶</a></h3>
 <p>Inductor Reliability Calculations Module.</p>
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Inductor._calculate_hot_spot_temperature">
+<code class="descclassname">ramstk.analyses.prediction.Inductor.</code><code class="descname">_calculate_hot_spot_temperature</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Inductor.html#_calculate_hot_spot_temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Inductor._calculate_hot_spot_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the coil or transformer hot spot temperature.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Inductor._calculate_mil_hdbk_217f_part_stress_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Inductor.</code><code class="descname">_calculate_mil_hdbk_217f_part_stress_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Inductor.html#_calculate_mil_hdbk_217f_part_stress_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Inductor._calculate_mil_hdbk_217f_part_stress_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+stress method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the connection being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values and the error message, if any.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="function">
 <dt id="ramstk.analyses.prediction.Inductor._get_part_stress_quality_factor">
 <code class="descclassname">ramstk.analyses.prediction.Inductor.</code><code class="descname">_get_part_stress_quality_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Inductor.html#_get_part_stress_quality_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Inductor._get_part_stress_quality_factor" title="Permalink to this definition">¶</a></dt>
@@ -2087,18 +2129,72 @@ with updated values</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Inductor.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Inductor.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Inductor.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Inductor.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a inductor.</p>
+<dt id="ramstk.analyses.prediction.Inductor.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Inductor.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Inductor.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Inductor.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+MIL-HDBK-217F parts count base hazard rates.  Keys are for
+PART_COUNT_217F_LAMBDA_B are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>subcategory_id</p></li>
+<li><dl class="simple">
+<dt>family id; if the inductor subcategory is NOT family dependent, then</dt><dd><p>the second key will be zero.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>Current subcategory IDs are:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><dl class="simple">
+<dt>Subcategory </dt><dd><p>ID</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>Inductor </dt><dd><p>Style</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
+</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Transformer</p></td>
+<td><p>11.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Coil</p></td>
+<td><p>11.2</p></td>
+</tr>
+</tbody>
+</table>
+<p>These keys return a list of base hazard rates.  The hazard rate to use is
+selected from the list depending on the active environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2121,16 +2217,22 @@ dictionary with updated values and the error message, if any.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Inductor.calculate_hot_spot_temperature">
-<code class="descclassname">ramstk.analyses.prediction.Inductor.</code><code class="descname">calculate_hot_spot_temperature</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Inductor.html#calculate_hot_spot_temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Inductor.calculate_hot_spot_temperature" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the coil or transformer hot spot temperature.</p>
+<dt id="ramstk.analyses.prediction.Inductor.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Inductor.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Inductor.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Inductor.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the fuse type which is why a WARKING message is
+issued rather than an ERROR message.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>attributes; the keyword argument (hardware attribute) dictionary
-with updated values</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the fuse being calculated.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2140,9 +2242,21 @@ with updated values</p>
 <span id="integrated-circuits-prediction-calculations-module"></span><h3>Integrated Circuits Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.IntegratedCircuit" title="Permalink to this headline">¶</a></h3>
 <p>Integrated Circuit Reliability Calculations Module.</p>
 <dl class="function">
+<dt id="ramstk.analyses.prediction.IntegratedCircuit._calculate_die_complexity_hazard_rate">
+<code class="descclassname">ramstk.analyses.prediction.IntegratedCircuit.</code><code class="descname">_calculate_die_complexity_hazard_rate</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/IntegratedCircuit.html#_calculate_die_complexity_hazard_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.IntegratedCircuit._calculate_die_complexity_hazard_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the die complexity hazard rate (C1).</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="ramstk.analyses.prediction.IntegratedCircuit._calculate_lambda_cyclic">
 <code class="descclassname">ramstk.analyses.prediction.IntegratedCircuit.</code><code class="descname">_calculate_lambda_cyclic</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/IntegratedCircuit.html#_calculate_lambda_cyclic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.IntegratedCircuit._calculate_lambda_cyclic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the write cycle hazard rate for EEPROMs.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.IntegratedCircuit._calculate_package_hazard_rate">
+<code class="descclassname">ramstk.analyses.prediction.IntegratedCircuit.</code><code class="descname">_calculate_package_hazard_rate</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/IntegratedCircuit.html#_calculate_package_hazard_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.IntegratedCircuit._calculate_package_hazard_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the package hazard rate (C2).</p>
 </dd></dl>
 
 <dl class="function">
@@ -2152,18 +2266,116 @@ with updated values</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.IntegratedCircuit.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.IntegratedCircuit.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/IntegratedCircuit.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.IntegratedCircuit.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a integrated circuit.</p>
+<dt id="ramstk.analyses.prediction.IntegratedCircuit._calculate_vhisc_vlsi_variables">
+<code class="descclassname">ramstk.analyses.prediction.IntegratedCircuit.</code><code class="descname">_calculate_vhisc_vlsi_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/IntegratedCircuit.html#_calculate_vhisc_vlsi_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.IntegratedCircuit._calculate_vhisc_vlsi_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the extra variables for VHSIC/VLSI integrated circuits.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.IntegratedCircuit._get_error_correction_factor">
+<code class="descclassname">ramstk.analyses.prediction.IntegratedCircuit.</code><code class="descname">_get_error_correction_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/IntegratedCircuit.html#_get_error_correction_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.IntegratedCircuit._get_error_correction_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the error code correction factor (piECC) for.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.IntegratedCircuit.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.IntegratedCircuit.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/IntegratedCircuit.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.IntegratedCircuit.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+MIL-HDBK-217F parts count base hazard rates.  Keys are for
+PART_COUNT_217F_LAMBDA_B are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>subcategory_id</p></li>
+<li><dl class="simple">
+<dt>technology id; if the IC subcategory is NOT technology dependent,</dt><dd><p>then the second key will be zero.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>Current subcategory IDs are:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><dl class="simple">
+<dt>Subcategory </dt><dd><p>ID</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>Integrated Circuit </dt><dd><p>Style</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
+</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Linear</p></td>
+<td><p>5.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Logic</p></td>
+<td><p>5.1</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>PAL/PLA</p></td>
+<td><p>5.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Microprocessor/Microcontroller</p></td>
+<td><p>5.1</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>Memory, ROM</p></td>
+<td><p>5.2</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>Memory, EEPROM</p></td>
+<td><p>5.2</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>Memory, DRAM</p></td>
+<td><p>5.2</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>Memory, SRAM</p></td>
+<td><p>5.2</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>GaAS</p></td>
+<td><p>5.4</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>VHSIC/VLSI</p></td>
+<td><p>5.3</p></td>
+</tr>
+</tbody>
+</table>
+<p>These keys return a list of base hazard rates.  The hazard rate to use is
+selected from the list depending on the active environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2185,23 +2397,47 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="ramstk.analyses.prediction.IntegratedCircuit.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.IntegratedCircuit.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/IntegratedCircuit.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.IntegratedCircuit.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the integrated circuit type which is why a WARKING message
+is issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the integrated circuit being
+calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ramstk.analyses.prediction.Lamp">
 <span id="lamp-prediction-calculations-module"></span><h3>Lamp Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Lamp" title="Permalink to this headline">¶</a></h3>
 <p>Lamp Reliability Calculations Module.</p>
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Lamp.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Lamp.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Lamp.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Lamp.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
+<dt id="ramstk.analyses.prediction.Lamp.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Lamp.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Lamp.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Lamp.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the part count hazard rate for a lamp.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2223,23 +2459,132 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Lamp.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Lamp.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Lamp.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Lamp.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the lamp type which is why a WARKING message is
+issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the lamp being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ramstk.analyses.prediction.Meter">
 <span id="meter-prediction-calculations-module"></span><h3>Meter Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Meter" title="Permalink to this headline">¶</a></h3>
 <p>Meter Reliability Calculations Module.</p>
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Meter.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Meter.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Meter.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Meter.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a meter.</p>
+<dt id="ramstk.analyses.prediction.Meter._calculate_mil_hdbk_217f_part_stress_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Meter.</code><code class="descname">_calculate_mil_hdbk_217f_part_stress_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Meter.html#_calculate_mil_hdbk_217f_part_stress_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Meter._calculate_mil_hdbk_217f_part_stress_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+stress method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the meter being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values and the error message, if any.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Meter._get_temperature_stress_factor">
+<code class="descclassname">ramstk.analyses.prediction.Meter.</code><code class="descname">_get_temperature_stress_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Meter.html#_get_temperature_stress_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Meter._get_temperature_stress_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the temperature stress factor (piT).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the meter being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values and the error message, if any.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Meter.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Meter.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Meter.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Meter.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+MIL-HDBK-217F parts count base hazard rates.  Keys are for
+PART_COUNT_217F_LAMBDA_B are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>subcategory_id</p></li>
+<li><dl class="simple">
+<dt>type id; if the meter subcategory is NOT type dependent, then</dt><dd><p>the second key will be zero.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>Current subcategory IDs are:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><dl class="simple">
+<dt>Subcategory </dt><dd><p>ID</p>
+</dd>
+</dl>
+</th>
+<th class="head"><p>Meter Style</p></th>
+<th class="head"><dl class="simple">
+<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
+</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Elapsed Time</p></td>
+<td><p>12.4</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Panel</p></td>
+<td><p>18.1</p></td>
+</tr>
+</tbody>
+</table>
+<p>These keys return a list of base hazard rates.  The hazard rate to use is
+selected from the list depending on the active environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2257,6 +2602,27 @@ dictionary with updated values and the error message, if any.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Meter.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Meter.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Meter.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Meter.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the meter type which is why a WARKING message is
+issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the meter being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2354,18 +2720,68 @@ calculated.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Relay.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Relay.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Relay.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Relay.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a relay.</p>
+<dt id="ramstk.analyses.prediction.Relay.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Relay.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Relay.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Relay.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+MIL-HDBK-217F parts count base hazard rates.  Keys are for
+PART_COUNT_217F_LAMBDA_B are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>subcategory_id</p></li>
+<li><dl class="simple">
+<dt>type id; if the relay subcategory is NOT type dependent, then</dt><dd><p>the second key will be zero.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>Current subcategory IDs are:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><dl class="simple">
+<dt>Subcategory </dt><dd><p>ID</p>
+</dd>
+</dl>
+</th>
+<th class="head"><p>Relay Style</p></th>
+<th class="head"><dl class="simple">
+<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
+</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Mechanical</p></td>
+<td><p>13.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Solid State</p></td>
+<td><p>13.2</p></td>
+</tr>
+</tbody>
+</table>
+<p>These keys return a list of base hazard rates.  The hazard rate to use is
+selected from the list depending on the active environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2387,23 +2803,188 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Relay.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Relay.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Relay.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Relay.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the relay type which is why a WARKING message is
+issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the relay being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ramstk.analyses.prediction.Resistor">
 <span id="resistor-prediction-calculations-module"></span><h3>Resistor Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Resistor" title="Permalink to this headline">¶</a></h3>
 <p>Resistor Reliability Calculations Module.</p>
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Resistor.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Resistor.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Resistor.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Resistor.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a resistor.</p>
+<dt id="ramstk.analyses.prediction.Resistor._calculate_mil_hdbk_217f_part_stress_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Resistor.</code><code class="descname">_calculate_mil_hdbk_217f_part_stress_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Resistor.html#_calculate_mil_hdbk_217f_part_stress_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Resistor._calculate_mil_hdbk_217f_part_stress_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+stress method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the resistor being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values and the error message, if any.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Resistor._calculate_resistance_factor">
+<code class="descclassname">ramstk.analyses.prediction.Resistor.</code><code class="descname">_calculate_resistance_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Resistor.html#_calculate_resistance_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Resistor._calculate_resistance_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the resistance factor (piR).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Resistor._calculate_temperature_factor">
+<code class="descclassname">ramstk.analyses.prediction.Resistor.</code><code class="descname">_calculate_temperature_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Resistor.html#_calculate_temperature_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Resistor._calculate_temperature_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the temperature factor (piT).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Resistor._calculate_voltage_factor">
+<code class="descclassname">ramstk.analyses.prediction.Resistor.</code><code class="descname">_calculate_voltage_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Resistor.html#_calculate_voltage_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Resistor._calculate_voltage_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the voltage factor (piV).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Resistor.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Resistor.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Resistor.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Resistor.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+MIL-HDBK-217F parts count base hazard rates.  Keys are for
+PART_COUNT_217F_LAMBDA_B are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>subcategory_id</p></li>
+<li><dl class="simple">
+<dt>specification id; if the resistor subcategory is NOT specification</dt><dd><p>dependent, then the second key will be zero.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>Current subcategory IDs are:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><dl class="simple">
+<dt>Subcategory </dt><dd><p>ID</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>Resistor </dt><dd><p>Style</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
+</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Fixed, Composition (RC, RCR)</p></td>
+<td><p>9.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Fixed, Film (RL, RLR, RN, RNC, RNN, RNR)</p></td>
+<td><p>9.2</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>Fixed, Film, Power (RD)</p></td>
+<td><p>9.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Fixed, Film, Network (RZ)</p></td>
+<td><p>9.4</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>Fixed, Wirewound (RB, RBR)</p></td>
+<td><p>9.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>Fixed, Wirewound, Power (RW, RWR)</p></td>
+<td><p>9.6</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>Fixed, Wirewound, Power, Chassis Mounted (RE, RER)</p></td>
+<td><p>9.7</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>Thermistor</p></td>
+<td><p>9.8</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>Variable, Wirewound (RT, RTR)</p></td>
+<td><p>9.9</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>Variable, Wirewound, Precision (RR)</p></td>
+<td><p>9.10</p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>Variable, Wirewound, Semiprecision (RA, RK)</p></td>
+<td><p>9.11</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>Variable, Wirewound, Power (RP)</p></td>
+<td><p>9.12</p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>Variable, Non-Wirewound (RJ, RJR)</p></td>
+<td><p>9.13</p></td>
+</tr>
+<tr class="row-odd"><td><p>14</p></td>
+<td><p>Variable, Composition (RV)</p></td>
+<td><p>9.14</p></td>
+</tr>
+<tr class="row-even"><td><p>15</p></td>
+<td><p>Variable,Non-Wirewound, Film and Precision (RQ, RVC)</p></td>
+<td><p>9.15</p></td>
+</tr>
+</tbody>
+</table>
+<p>These keys return a list of base hazard rates.  The hazard rate to use is
+selected from the list depending on the active environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2421,6 +3002,27 @@ dictionary with updated values and the error message, if any.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Resistor.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Resistor.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Resistor.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Resistor.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the resistor type which is why a WARKING message is
+issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the resistor being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2448,21 +3050,6 @@ with updated values</p>
 <dt id="ramstk.analyses.prediction.Semiconductor._calculate_application_factor">
 <code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_calculate_application_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_calculate_application_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._calculate_application_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the temperature factor for the semiconductor device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>attributes; the keyword argument (hardware attribute) dictionary
-with updated values</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ramstk.analyses.prediction.Semiconductor._calculate_base_part_stress_hazard_rate">
-<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_calculate_base_part_stress_hazard_rate</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_calculate_base_part_stress_hazard_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._calculate_base_part_stress_hazard_rate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>attributes; the keyword argument (hardware attribute) dictionary
@@ -2505,6 +3092,21 @@ with updated values</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="ramstk.analyses.prediction.Semiconductor._calculate_mil_hdbk_217f_part_stress_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_calculate_mil_hdbk_217f_part_stress_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_calculate_mil_hdbk_217f_part_stress_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._calculate_mil_hdbk_217f_part_stress_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="ramstk.analyses.prediction.Semiconductor._calculate_power_rating_factor">
 <code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_calculate_power_rating_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_calculate_power_rating_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._calculate_power_rating_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the power rating factor for the semiconductor device.</p>
@@ -2535,23 +3137,8 @@ with updated values</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Semiconductor._select_base_part_count_hazard_rate">
-<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_select_base_part_count_hazard_rate</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_select_base_part_count_hazard_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._select_base_part_count_hazard_rate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select the MIL-HDBK-217F base hazard rate for the semiconductor device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>attributes; the keyword argument (hardware attribute) dictionary
-with updated values</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="ramstk.analyses.prediction.Semiconductor._select_part_count_quality_factor">
-<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_select_part_count_quality_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_select_part_count_quality_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._select_part_count_quality_factor" title="Permalink to this definition">¶</a></dt>
+<dt id="ramstk.analyses.prediction.Semiconductor._get_part_count_quality_factor">
+<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_get_part_count_quality_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_get_part_count_quality_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._get_part_count_quality_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select the MIL-HDBK-217F quality factor for the semiconductor device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2565,8 +3152,8 @@ with updated values</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Semiconductor._select_part_stress_quality_factor">
-<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_select_part_stress_quality_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_select_part_stress_quality_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._select_part_stress_quality_factor" title="Permalink to this definition">¶</a></dt>
+<dt id="ramstk.analyses.prediction.Semiconductor._get_part_stress_quality_factor">
+<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">_get_part_stress_quality_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#_get_part_stress_quality_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor._get_part_stress_quality_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select the MIL-HDBK-217F quality factor for the semiconductor device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2580,18 +3167,116 @@ with updated values</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Semiconductor.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a semiconductor.</p>
+<dt id="ramstk.analyses.prediction.Semiconductor.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the MIL-HDBK-217F base hazard rate for the semiconductor device.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+MIL-HDBK-217F parts count base hazard rates.  Keys are for
+PART_COUNT_217F_LAMBDA_B are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>subcategory_id</p></li>
+<li><dl class="simple">
+<dt>type id; if the semiconductor subcategory is NOT type dependent,</dt><dd><p>then the second key will be zero.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>Current subcategory IDs are:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><dl class="simple">
+<dt>Subcategory </dt><dd><p>ID</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>Semiconductor </dt><dd><p>Style</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
+</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Diode, Low Frequency</p></td>
+<td><p>6.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Diode, High Frequency</p></td>
+<td><p>6.2</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>Transistor, Low Frequency, Bipolar</p></td>
+<td><p>6.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Transistor, Low Frequency, Si FET</p></td>
+<td><p>6.4</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>Transistor, Unijunction</p></td>
+<td><p>6.5</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>Transistor, High Frequency, Low Noise,Bipolar</p></td>
+<td><p>6.6</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>Transistor, High Frequency, High Power, Bipolar</p></td>
+<td><p>6.7</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>Transistor, High Frequency, GaAs FET</p></td>
+<td><p>6.8</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>Transistor, High Frequency, Si FET</p></td>
+<td><p>6.9</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>Thyristor/SCR</p></td>
+<td><p>6.10</p></td>
+</tr>
+<tr class="row-even"><td><p>11</p></td>
+<td><p>Optoelectronic, Detector, Isolator, Emitter</p></td>
+<td><p>6.11</p></td>
+</tr>
+<tr class="row-odd"><td><p>12</p></td>
+<td><p>Optoelectronic, Alphanumeric Display</p></td>
+<td><p>6.12</p></td>
+</tr>
+<tr class="row-even"><td><p>13</p></td>
+<td><p>Optoelectronic, Laser Diode</p></td>
+<td><p>6.13</p></td>
+</tr>
+</tbody>
+</table>
+<p>These keys return a list of base hazard rates.  The hazard rate to use is
+selected from the list depending on the active environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2613,23 +3298,137 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Semiconductor.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Semiconductor.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Semiconductor.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Semiconductor.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the semiconductor type which is why a WARKING message is
+issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the semiconductor being
+calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-ramstk.analyses.prediction.Switch">
 <span id="switch-prediction-calculations-module"></span><h3>Switch Prediction Calculations Module<a class="headerlink" href="#module-ramstk.analyses.prediction.Switch" title="Permalink to this headline">¶</a></h3>
 <p>Switch Reliability Calculations Module.</p>
 <dl class="function">
-<dt id="ramstk.analyses.prediction.Switch.calculate_217f_part_count">
-<code class="descclassname">ramstk.analyses.prediction.Switch.</code><code class="descname">calculate_217f_part_count</code><span class="sig-paren">(</span><em>**attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Switch.html#calculate_217f_part_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Switch.calculate_217f_part_count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the part count hazard rate for a switch.</p>
+<dt id="ramstk.analyses.prediction.Switch._calculate_load_stress_factor">
+<code class="descclassname">ramstk.analyses.prediction.Switch.</code><code class="descname">_calculate_load_stress_factor</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Switch.html#_calculate_load_stress_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Switch._calculate_load_stress_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the load stress factor (piL).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Switch._calculate_mil_hdbk_217f_part_stress_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Switch.</code><code class="descname">_calculate_mil_hdbk_217f_part_stress_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Switch.html#_calculate_mil_hdbk_217f_part_stress_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Switch._calculate_mil_hdbk_217f_part_stress_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+stress method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the switch being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>attributes; the keyword argument (hardware attribute) dictionary
+with updated values and the error message, if any.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Switch.calculate_217f_part_count_lambda_b">
+<code class="descclassname">ramstk.analyses.prediction.Switch.</code><code class="descname">calculate_217f_part_count_lambda_b</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Switch.html#calculate_217f_part_count_lambda_b"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Switch.calculate_217f_part_count_lambda_b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.</p>
 <p>This function calculates the MIL-HDBK-217F hazard rate using the parts
 count method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(attributes, _msg); the keyword argument (hardware attribute)
-dictionary with updated values and the error message, if any.</p>
+<p>This function calculates the MIL-HDBK-217F hazard rate using the parts
+count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+MIL-HDBK-217F parts count base hazard rates.  Keys are for
+PART_COUNT_217F_LAMBDA_B are:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>subcategory_id</p></li>
+<li><dl class="simple">
+<dt>type id; if the switch subcategory is NOT type dependent, then</dt><dd><p>the second key will be zero.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>(<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a>)</p>
+</dl>
+</li>
+</ol>
+</div></blockquote>
+<p>Current subcategory IDs are:</p>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 48%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><dl class="simple">
+<dt>Subcategory </dt><dd><p>ID</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>Switch </dt><dd><p>Style</p>
+</dd>
+</dl>
+</th>
+<th class="head"><dl class="simple">
+<dt>MIL-HDBK-217F </dt><dd><p>Section</p>
+</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>Toggle or Pushbutton</p></td>
+<td><p>15.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>Sensitive</p></td>
+<td><p>15.2</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>Rotary</p></td>
+<td><p>15.3</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>Thumbwheel</p></td>
+<td><p>16.1</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>Circuit Breaker</p></td>
+<td><p>17.1</p></td>
+</tr>
+</tbody>
+</table>
+<p>These keys return a list of base hazard rates.  The hazard rate to use is
+selected from the list depending on the active environment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the crystal being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_lst_base_hr; the list of base hazard rates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -2651,6 +3450,27 @@ dictionary with updated values and the error message, if any.</p>
 </dl>
 </dd></dl>
 
+<dl class="function">
+<dt id="ramstk.analyses.prediction.Switch.do_check_variables">
+<code class="descclassname">ramstk.analyses.prediction.Switch.</code><code class="descname">do_check_variables</code><span class="sig-paren">(</span><em>attributes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ramstk/analyses/prediction/Switch.html#do_check_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ramstk.analyses.prediction.Switch.do_check_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check calculation variable to ensure they are all greater than zero.</p>
+<p>All variables are checked regardless of whether they’ll be used in the
+calculation for the switch type which is why a WARKING message is
+issued rather than an ERROR message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attributes</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the attributes for the switch being calculated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>_msg; a message indicating all the variables that are less than or
+equal to zero in value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 </div>
@@ -2662,7 +3482,7 @@ dictionary with updated values and the error message, if any.</p>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
     <a id="sidebar-anchor"></a>
-    
+
 
   <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>

@@ -6,22 +6,22 @@
     <title>ramstk.analyses.prediction.Component &#8212; RAMSTK 2.0.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../../_static/language_data.js"></script>
-    
+
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
-    
+
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="../../../../_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
-    
-    
+
+
 
   </head><body>
     <div class="related">
@@ -29,17 +29,17 @@
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
         <li><a href="../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
-          <li><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
       </ul>
     </div>
-    
-  
+
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
-            
+
   <h1>Source code for ramstk.analyses.prediction.Component</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1">#</span>
@@ -1242,12 +1242,12 @@
             <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
         <span class="p">][</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;environment_active_id&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">_error</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">_error</span><span class="p">)</span>
+        <span class="c1"># ISSUE: See issue #250 at https://github.com/ReliaQualAssociates/ramstk/issues/250</span>
         <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PI_E</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]][</span>
             <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;environment_active_id&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="p">]</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">)</span> <span class="k">as</span> <span class="n">_error</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">_error</span><span class="p">)</span>
+        <span class="c1"># ISSUE: See issue #250 at https://github.com/ReliaQualAssociates/ramstk/issues/250</span>
         <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 
     <span class="k">return</span> <span class="n">attributes</span></div>
@@ -1262,7 +1262,6 @@
 <span class="sd">    :return: attributes; the attributes dictionary updated with pi_Q.</span>
 <span class="sd">    :rtype: dict</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Dictionaries containing piQ values.</span>
     <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_method_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">_dic_piQ</span> <span class="o">=</span> <span class="p">{</span>
             <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
@@ -1350,8 +1349,6 @@
                 <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.9</span><span class="p">],</span>
             <span class="p">},</span>
         <span class="p">}</span>
-
-    <span class="c1"># Select the piQ.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piQ&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_dic_piQ</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]][</span>
             <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
@@ -1426,35 +1423,57 @@
     <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">attributes</span> <span class="o">=</span> <span class="n">_get_quality_factor</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">IntegratedCircuit</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span>
-            <span class="o">**</span><span class="n">attributes</span><span class="p">,</span> <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Semiconductor</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span>
-            <span class="o">**</span><span class="n">attributes</span><span class="p">,</span> <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Resistor</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Capacitor</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Inductor</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Relay</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Switch</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Meter</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Lamp</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Fuse</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Filter</span><span class="o">.</span><span class="n">calculate_217f_part_count</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
+    <span class="n">_dic_functions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="n">IntegratedCircuit</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">IntegratedCircuit</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="n">Semiconductor</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Semiconductor</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="n">Resistor</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Resistor</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="n">Capacitor</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Capacitor</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="p">[</span><span class="n">Inductor</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Inductor</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="p">[</span><span class="n">Relay</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Relay</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">7</span><span class="p">:</span> <span class="p">[</span><span class="n">Switch</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Switch</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="p">[</span><span class="n">Connection</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Connection</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">9</span><span class="p">:</span> <span class="p">[</span><span class="n">Meter</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Meter</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="mi">10</span><span class="p">:</span> <span class="p">{</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="p">[</span><span class="n">Crystal</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+            <span class="mi">2</span><span class="p">:</span> <span class="p">[</span><span class="n">Filter</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Filter</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+            <span class="mi">3</span><span class="p">:</span> <span class="p">[</span><span class="n">Fuse</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Fuse</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+            <span class="mi">4</span><span class="p">:</span> <span class="p">[</span><span class="n">Lamp</span><span class="o">.</span><span class="n">calculate_217f_part_count_lambda_b</span><span class="p">,</span> <span class="n">Lamp</span><span class="o">.</span><span class="n">do_check_variables</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="p">(</span><span class="n">_part_count</span><span class="p">,</span> <span class="n">_do_check</span><span class="p">,)</span> <span class="o">=</span> <span class="n">_dic_functions</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]]</span>
+        <span class="n">_lst_base_hr</span> <span class="o">=</span> <span class="n">_part_count</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="c1"># ValueError is raised with category ID 10 because only the dict is</span>
+        <span class="c1"># returned.  TypeError is raised when attempting to call _part_count</span>
+        <span class="c1"># for category ID 10 since a dict is returned.  In these cases, try to</span>
+        <span class="c1"># get the functions by also using subcategory ID.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">_part_count</span><span class="p">,</span> <span class="n">_do_check</span><span class="p">,)</span> <span class="o">=</span> <span class="n">_dic_functions</span><span class="p">[</span>
+                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span>
+            <span class="p">][</span>
+                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
+            <span class="p">]</span>
+            <span class="n">_lst_base_hr</span> <span class="o">=</span> <span class="n">_part_count</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;RAMSTK ERROR: No MIL-HDBK-217F parts count function found &quot;</span>
+                <span class="s2">&quot;for Hardware ID: </span><span class="si">{0:d}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hardware_id&#39;</span><span class="p">])</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_lst_base_hr</span><span class="p">[</span>
+            <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;environment_active_id&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">]</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="n">_msg</span> <span class="o">=</span> <span class="n">_do_check</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+
+    <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hazard_rate_active&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;lambda_b&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;piQ&#39;</span><span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span></div>
 
@@ -1474,36 +1493,44 @@
     <span class="n">attributes</span> <span class="o">=</span> <span class="n">_get_environment_factor</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
     <span class="n">attributes</span> <span class="o">=</span> <span class="n">_get_quality_factor</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">IntegratedCircuit</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span>
-            <span class="o">**</span><span class="n">attributes</span><span class="p">,</span> <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Semiconductor</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span>
-            <span class="o">**</span><span class="n">attributes</span><span class="p">,</span> <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Resistor</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Capacitor</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="n">Inductor</span><span class="o">.</span><span class="n">calculate_hot_spot_temperature</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Inductor</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Relay</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Switch</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Connection</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
-        <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Meter</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Lamp</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Fuse</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="n">Filter</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
+    <span class="n">_dic_functions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">1</span><span class="p">:</span> <span class="n">IntegratedCircuit</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">2</span><span class="p">:</span> <span class="n">Semiconductor</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">3</span><span class="p">:</span> <span class="n">Resistor</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">4</span><span class="p">:</span> <span class="n">Capacitor</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">5</span><span class="p">:</span> <span class="n">Inductor</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="n">Relay</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">7</span><span class="p">:</span> <span class="n">Switch</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="n">Connection</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">9</span><span class="p">:</span> <span class="n">Meter</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="mi">10</span><span class="p">:</span> <span class="p">{</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="n">Crystal</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+            <span class="mi">2</span><span class="p">:</span> <span class="n">Filter</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+            <span class="mi">3</span><span class="p">:</span> <span class="n">Fuse</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+            <span class="mi">4</span><span class="p">:</span> <span class="n">Lamp</span><span class="o">.</span><span class="n">calculate_217f_part_stress</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_part_stress</span> <span class="o">=</span> <span class="n">_dic_functions</span><span class="p">[</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]]</span>
+        <span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,)</span> <span class="o">=</span> <span class="n">_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="c1"># ValueError is raised with category ID 10 because only the dict is</span>
+        <span class="c1"># returned.  TypeError is raised when attempting to call _part_count</span>
+        <span class="c1"># for category ID 10 since a dict is returned.  In these cases, try to</span>
+        <span class="c1"># get the functions by also using subcategory ID.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_part_stress</span> <span class="o">=</span> <span class="n">_dic_functions</span><span class="p">[</span>
+                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;category_id&#39;</span><span class="p">]</span>
+            <span class="p">][</span>
+                <span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;subcategory_id&#39;</span><span class="p">]</span>
+            <span class="p">]</span>
+            <span class="p">(</span><span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span><span class="p">,)</span> <span class="o">=</span> <span class="n">_part_stress</span><span class="p">(</span><span class="o">**</span><span class="n">attributes</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;RAMSTK ERROR: No MIL-HDBK-217F parts stress function found &quot;</span>
+                <span class="s2">&quot;for Hardware ID: </span><span class="si">{0:d}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attributes</span><span class="p">[</span><span class="s1">&#39;hardware_id&#39;</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">attributes</span><span class="p">,</span> <span class="n">_msg</span></div>
 
@@ -1733,7 +1760,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
     <a id="sidebar-anchor"></a>
-    
+
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>

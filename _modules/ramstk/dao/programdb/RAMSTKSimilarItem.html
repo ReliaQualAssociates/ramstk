@@ -6,22 +6,22 @@
     <title>ramstk.dao.programdb.RAMSTKSimilarItem &#8212; RAMSTK 2.0.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../../../_static/language_data.js"></script>
-    
+
     <script type="text/javascript" src="../../../../_static/sidebar.js"></script>
-    
+
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="../../../../_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
-    
-    
+
+
 
   </head><body>
     <div class="related">
@@ -29,17 +29,17 @@
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
         <li><a href="../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
-          <li><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
       </ul>
     </div>
-    
-  
+
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
-            
+
   <h1>Source code for ramstk.dao.programdb.RAMSTKSimilarItem</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1">#</span>
@@ -386,9 +386,8 @@
                    <span class="s2">&quot;dictionary passed to &quot;</span> \
                    <span class="s2">&quot;RAMSTKSimilarItem.set_attributes().&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">_err</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">_err</span><span class="p">:</span>
-            <span class="c1"># FIXME: Handle ValueError with an error code and error message in RAMSTKSimilarItem.set_attributes().</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">_err</span><span class="p">)</span>
-
+            <span class="c1"># ISSUE: See issue #252 at https://github.com/ReliaQualAssociates/ramstk/issues/252).</span>
+            <span class="k">pass</span>
         <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div>
 
 <div class="viewcode-block" id="RAMSTKSimilarItem.topic_633"><a class="viewcode-back" href="../../../../api/dao.html#ramstk.dao.programdb.RAMSTKSimilarItem.RAMSTKSimilarItem.topic_633">[docs]</a>    <span class="k">def</span> <span class="nf">topic_633</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hazard_rate</span><span class="p">):</span>
@@ -685,7 +684,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
     <a id="sidebar-anchor"></a>
-    
+
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>

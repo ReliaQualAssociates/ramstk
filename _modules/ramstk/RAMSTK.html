@@ -6,22 +6,22 @@
     <title>ramstk.RAMSTK &#8212; RAMSTK 2.0.0 documentation</title>
     <link rel="stylesheet" href="../../_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
+
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
+
     <script type="text/javascript" src="../../_static/sidebar.js"></script>
-    
+
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="../../_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
-    
-    
+
+
 
   </head><body>
     <div class="related">
@@ -29,17 +29,17 @@
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
         <li><a href="../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
       </ul>
     </div>
-    
-  
+
+
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
-            
+
   <h1>Source code for ramstk.RAMSTK</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
@@ -953,7 +953,7 @@
                     <span class="p">]</span> <span class="o">=</span> <span class="n">_module</span>
                     <span class="n">_page</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="c1"># TODO: Move the status icon code out of the RAMSTK controller and into a GUI module.</span>
+            <span class="c1"># ISSUE: See issue #228 at https://github.com/ReliaQualAssociates/ramstk/issues/228</span>
             <span class="n">_icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_ICON_DIR</span> <span class="o">+</span> \
                 <span class="s1">&#39;/32x32/db-connected.png&#39;</span>
             <span class="n">_icon</span> <span class="o">=</span> <span class="n">GdkPixbuf</span><span class="o">.</span><span class="n">Pixbuf</span><span class="o">.</span><span class="n">new_from_file_at_size</span><span class="p">(</span><span class="n">_icon</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
@@ -1091,7 +1091,7 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
     <a id="sidebar-anchor"></a>
-    
+
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>

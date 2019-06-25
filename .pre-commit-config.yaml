@@ -1,0 +1,40 @@
+repos:
+    - repo: local
+      hooks:
+          - id: bandit
+            name: bandit
+            entry: bandit
+            args: [-b, .bandit.baseline, --ini, setup.cfg, -s, B322, --recursive, src/]
+            language: system
+            files: .py$
+    - repo: https://github.com/asottile/add-trailing-comma
+      rev: v1.0.0
+      hooks:
+          - id: add-trailing-comma
+            args: ['--py36-plus']
+    - repo: https://github.com/pre-commit/mirrors-isort
+      rev: v4.3.20
+      hooks:
+          - id: isort
+            args: [--apply, --trailing-comma, --use-parentheses, -m5]
+    - repo: https://github.com/pre-commit/mirrors-yapf
+      rev: v0.27.0
+      hooks:
+          - id: yapf
+            args: [--style, pep8, --recursive, --parallel]
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v2.2.3
+      hooks:
+          - id: check-docstring-first
+          - id: check-merge-conflict
+          - id: check-xml
+          - id: debug-statements
+          - id: end-of-file-fixer
+          - id: no-commit-to-branch
+          - id: requirements-txt-fixer
+          - id: trailing-whitespace
+    - repo: https://github.com/pre-commit/mirrors-pylint
+      rev: v2.3.1
+      hooks:
+          - id: pylint
+            args: [-d, E0401, -f, colorized]
