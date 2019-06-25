@@ -793,7 +793,7 @@ def do_check_variables(attributes):
             attributes['package_id'],
             attributes['n_active_pins'],
         ),
-        'piA':(
+        'piA': (
             'RAMSTK WARNING: piA is 0.0 when calculating '
             'integrated circuit, hardware ID: {0:d}, '
             'application ID: {1:d}.\n'
@@ -801,7 +801,7 @@ def do_check_variables(attributes):
             attributes['hardware_id'],
             attributes['application_id'],
         ),
-        'piE':(
+        'piE': (
             'RAMSTK WARNING: piE is 0.0 when calculating '
             'integrated circuit, hardware ID: {0:d}, '
             'environment ID: {1:d}.\n'
@@ -809,7 +809,7 @@ def do_check_variables(attributes):
             attributes['hardware_id'],
             attributes['environment_active_id'],
         ),
-        'piL':(
+        'piL': (
             'RAMSTK WARNING: piL is 0.0 when calculating '
             'integrated circuit, hardware ID: {0:d}, '
             'years in production: {1:f}.\n'
@@ -817,7 +817,7 @@ def do_check_variables(attributes):
             attributes['hardware_id'],
             attributes['years_in_production'],
         ),
-        'piT':(
+        'piT': (
             'RAMSTK WARNING: piT is 0.0 when calculating '
             'integrated circuit, hardware ID: {0:d}, '
             'application ID: {1:d}, '

@@ -554,7 +554,6 @@ def calculate_217f_part_count_lambda_b(attributes):
     return _lst_base_hr
 
 
-
 def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     """
     Calculate the part stress hazard rate for a semiconductor.

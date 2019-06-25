@@ -196,6 +196,7 @@ REF_TEMPS = {
     15: 343.0,
 }
 
+
 def _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes):
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.

@@ -1381,20 +1381,59 @@ def do_calculate_217f_part_count(**attributes):
     attributes = _get_quality_factor(**attributes)
 
     _dic_functions = {
-        1: [IntegratedCircuit.calculate_217f_part_count_lambda_b, IntegratedCircuit.do_check_variables],
-        2: [Semiconductor.calculate_217f_part_count_lambda_b, Semiconductor.do_check_variables],
-        3: [Resistor.calculate_217f_part_count_lambda_b, Resistor.do_check_variables],
-        4: [Capacitor.calculate_217f_part_count_lambda_b, Capacitor.do_check_variables],
-        5: [Inductor.calculate_217f_part_count_lambda_b, Inductor.do_check_variables],
-        6: [Relay.calculate_217f_part_count_lambda_b, Relay.do_check_variables],
-        7: [Switch.calculate_217f_part_count_lambda_b, Switch.do_check_variables],
-        8: [Connection.calculate_217f_part_count_lambda_b, Connection.do_check_variables],
-        9: [Meter.calculate_217f_part_count_lambda_b, Meter.do_check_variables],
+        1: [
+            IntegratedCircuit.calculate_217f_part_count_lambda_b,
+            IntegratedCircuit.do_check_variables,
+        ],
+        2: [
+            Semiconductor.calculate_217f_part_count_lambda_b,
+            Semiconductor.do_check_variables,
+        ],
+        3: [
+            Resistor.calculate_217f_part_count_lambda_b,
+            Resistor.do_check_variables,
+        ],
+        4: [
+            Capacitor.calculate_217f_part_count_lambda_b,
+            Capacitor.do_check_variables,
+        ],
+        5: [
+            Inductor.calculate_217f_part_count_lambda_b,
+            Inductor.do_check_variables,
+        ],
+        6: [
+            Relay.calculate_217f_part_count_lambda_b,
+            Relay.do_check_variables,
+        ],
+        7: [
+            Switch.calculate_217f_part_count_lambda_b,
+            Switch.do_check_variables,
+        ],
+        8: [
+            Connection.calculate_217f_part_count_lambda_b,
+            Connection.do_check_variables,
+        ],
+        9: [
+            Meter.calculate_217f_part_count_lambda_b,
+            Meter.do_check_variables,
+        ],
         10: {
-            1: [Crystal.calculate_217f_part_count_lambda_b, Crystal.do_check_variables],
-            2: [Filter.calculate_217f_part_count_lambda_b, Filter.do_check_variables],
-            3: [Fuse.calculate_217f_part_count_lambda_b, Fuse.do_check_variables],
-            4: [Lamp.calculate_217f_part_count_lambda_b, Lamp.do_check_variables],
+            1: [
+                Crystal.calculate_217f_part_count_lambda_b,
+                Crystal.do_check_variables,
+            ],
+            2: [
+                Filter.calculate_217f_part_count_lambda_b,
+                Filter.do_check_variables,
+            ],
+            3: [
+                Fuse.calculate_217f_part_count_lambda_b,
+                Fuse.do_check_variables,
+            ],
+            4: [
+                Lamp.calculate_217f_part_count_lambda_b,
+                Lamp.do_check_variables,
+            ],
         },
     }
 
