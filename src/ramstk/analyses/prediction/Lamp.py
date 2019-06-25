@@ -18,7 +18,68 @@ PART_COUNT_217F_LAMBDA_B = {
 }
 
 
-def _do_check_variables(attributes):
+def calculate_217f_part_count_lambda_b(attributes):
+    """
+    Calculate the part count hazard rate for a lamp.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.
+
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
+    """
+    try:
+        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+            attributes['application_id']
+        ]
+    except (IndexError, KeyError):
+        _lst_base_hr = [0.0]
+
+    return _lst_base_hr
+
+
+def calculate_217f_part_stress(**attributes):
+    """
+    Calculate the part stress hazard rate for a lamp.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
+             dictionary with updated values and the error message, if any.
+    :rtype: (dict, str)
+    """
+    attributes['lambda_b'] = 0.074 * attributes['voltage_rated']**1.29
+
+    # Determine the utilization factor (piU).
+    if attributes['duty_cycle'] < 10.0:
+        attributes['piU'] = 0.1
+    elif 10.0 <= attributes['duty_cycle'] < 90.0:
+        attributes['piU'] = 0.72
+    else:
+        attributes['piU'] = 1.0
+
+    # Determine the application factor (piA).
+    try:
+        attributes['piA'] = (
+            3.3
+            if (attributes['application_id']) - (1) else 1.0
+        )
+    except IndexError:
+        attributes['piA'] = 0.0
+
+    _msg = do_check_variables(attributes)
+
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b'] * attributes['piU'] * attributes['piA'] *
+        attributes['piE']
+    )
+
+    return attributes, _msg
+
+
+def do_check_variables(attributes):
     """
     Check calculation variable to ensure they are all greater than zero.
 
@@ -72,68 +133,3 @@ def _do_check_variables(attributes):
                 )
 
     return _msg
-
-
-def calculate_217f_part_count_lambda_b(attributes):
-    """
-    Calculate the part count hazard rate for a lamp.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-        dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    try:
-        attributes['lambda_b'] = PART_COUNT_217F_LAMBDA_B[
-            attributes['application_id']
-        ][
-            attributes['environment_active_id'] - 1
-        ]
-    except (IndexError, KeyError):
-        attributes['lambda_b'] = 0.0
-
-    _msg = _do_check_variables(attributes)
-
-    return attributes, _msg
-
-
-def calculate_217f_part_stress(**attributes):
-    """
-    Calculate the part stress hazard rate for a lamp.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    attributes['lambda_b'] = 0.074 * attributes['voltage_rated']**1.29
-
-    # Determine the utilization factor (piU).
-    if attributes['duty_cycle'] < 10.0:
-        attributes['piU'] = 0.1
-    elif 10.0 <= attributes['duty_cycle'] < 90.0:
-        attributes['piU'] = 0.72
-    else:
-        attributes['piU'] = 1.0
-
-    # Determine the application factor (piA).
-    try:
-        attributes['piA'] = (
-            3.3
-            if (attributes['application_id']) - (1) else 1.0
-        )
-    except IndexError:
-        attributes['piA'] = 0.0
-
-    _msg = _do_check_variables(attributes)
-
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piU'] * attributes['piA'] *
-        attributes['piE']
-    )
-
-    return attributes, _msg

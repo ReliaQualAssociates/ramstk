@@ -384,7 +384,7 @@ def test_current_overstress_mild_environment(
 
 @pytest.mark.unit
 def test_check_variable_zero():
-    """_do_check_variables() should return a warning message when variables <= zero."""
+    """do_check_variables() should return a warning message when variables <= zero."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['hardware_id'] = 100
     ATTRIBUTES['piE'] = 1.0
@@ -395,7 +395,7 @@ def test_check_variable_zero():
     ATTRIBUTES['piL'] = 1.0
 
     ATTRIBUTES['lambda_b'] = -1.3
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating relay, ' \
         'hardware ID: 100, subcategory ID: 1, type ID: 1, and active ' \
@@ -403,7 +403,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['lambda_b'] = 0.0
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating relay, ' \
         'hardware ID: 100, subcategory ID: 1, type ID: 1, and active ' \
@@ -412,14 +412,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['lambda_b'] = 1.0
     ATTRIBUTES['piQ'] = -1.3
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating relay, hardware ID: '
         '100, subcategory ID: 1, and quality ID: 1.\n'
     )
 
     ATTRIBUTES['piQ'] = 0.0
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating relay, hardware ID: '
         '100, subcategory ID: 1, and quality ID: 1.\n'
@@ -427,14 +427,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piQ'] = 1.0
     ATTRIBUTES['piE'] = -1.3
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating relay, hardware ID: '
         '100, active environment ID: 11.\n'
     )
 
     ATTRIBUTES['piE'] = 0.0
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating relay, hardware ID: '
         '100, active environment ID: 11.\n'
@@ -442,14 +442,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piE'] = 1.0
     ATTRIBUTES['piC'] = -1.3
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piC is 0.0 when calculating relay, hardware ID: '
         '100, contact form ID: 2.\n'
     )
 
     ATTRIBUTES['piC'] = 0.0
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piC is 0.0 when calculating relay, hardware ID: '
         '100, contact form ID: 2.\n'
@@ -457,14 +457,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piC'] = 1.0
     ATTRIBUTES['piCYC'] = -1.3
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piCYC is 0.0 when calculating relay, hardware ID: '
         '100, subcategory ID: 1, quality ID: 1, cycling rate: 5.000000.\n'
     )
 
     ATTRIBUTES['piCYC'] = 0.0
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piCYC is 0.0 when calculating relay, hardware ID: '
         '100, subcategory ID: 1, quality ID: 1, cycling rate: 5.000000.\n'
@@ -472,7 +472,7 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piCYC'] = 1.0
     ATTRIBUTES['piF'] = -1.3
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piF is 0.0 when calculating relay, hardware ID: '
         '100, quality ID: 1, contact rating ID: 2, application ID: 4, '
@@ -480,7 +480,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['piF'] = 0.0
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piF is 0.0 when calculating relay, hardware ID: '
         '100, quality ID: 1, contact rating ID: 2, application ID: 4, '
@@ -489,14 +489,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piF'] = 1.0
     ATTRIBUTES['piL'] = -1.3
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piL is 0.0 when calculating relay, hardware ID: '
         '100, technology ID: 1, current ratio: 0.400000.\n'
     )
 
     ATTRIBUTES['piL'] = 0.0
-    _msg = Relay._do_check_variables(ATTRIBUTES)
+    _msg = Relay.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piL is 0.0 when calculating relay, hardware ID: '
         '100, technology ID: 1, current ratio: 0.400000.\n'

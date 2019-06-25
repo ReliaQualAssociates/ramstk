@@ -357,7 +357,7 @@ def test_voltage_overstress_mild_environment(
 
 @pytest.mark.unit
 def test_check_variable_zero():
-    """_do_check_variables() should return a warning message when variables <= zero."""
+    """do_check_variables() should return a warning message when variables <= zero."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['hardware_id'] = 100
     ATTRIBUTES['piE'] = 1.0
@@ -367,14 +367,14 @@ def test_check_variable_zero():
     ATTRIBUTES['piP'] = 1.0
 
     ATTRIBUTES['lambda_b'] = -1.3
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
     )
 
     ATTRIBUTES['lambda_b'] = 0.0
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
@@ -382,14 +382,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['lambda_b'] = 1.0
     ATTRIBUTES['piQ'] = -1.3
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
     )
 
     ATTRIBUTES['piQ'] = 0.0
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
@@ -397,14 +397,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piQ'] = 1.0
     ATTRIBUTES['piE'] = -1.3
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
     )
 
     ATTRIBUTES['piE'] = 0.0
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
@@ -412,14 +412,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piE'] = 1.0
     ATTRIBUTES['piC'] = -1.3
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piC is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
     )
 
     ATTRIBUTES['piC'] = 0.0
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piC is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
@@ -427,14 +427,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piC'] = 1.0
     ATTRIBUTES['piK'] = -1.3
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piK is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
     )
 
     ATTRIBUTES['piK'] = 0.0
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piK is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
@@ -442,14 +442,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piK'] = 1.0
     ATTRIBUTES['piP'] = -1.3
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piP is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'
     )
 
     ATTRIBUTES['piP'] = 0.0
-    _msg = Connection._do_check_variables(ATTRIBUTES)
+    _msg = Connection.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piP is 0.0 when ' \
             'calculating connection, hardware ID: 100.\n'

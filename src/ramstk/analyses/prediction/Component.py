@@ -1306,7 +1306,6 @@ def _get_quality_factor(**attributes):
                 2: [1.0, 2.9],
             },
         }
-
     try:
         attributes['piQ'] = _dic_piQ[attributes['category_id']][
             attributes['subcategory_id']
@@ -1382,43 +1381,56 @@ def do_calculate_217f_part_count(**attributes):
     attributes = _get_quality_factor(**attributes)
 
     _dic_functions = {
-        1: IntegratedCircuit.calculate_217f_part_count_lambda_b,
-        2: Semiconductor.calculate_217f_part_count_lambda_b,
-        3: Resistor.calculate_217f_part_count_lambda_b,
-        4: Capacitor.calculate_217f_part_count_lambda_b,
-        5: Inductor.calculate_217f_part_count_lambda_b,
-        6: Relay.calculate_217f_part_count_lambda_b,
-        7: Switch.calculate_217f_part_count_lambda_b,
-        8: Connection.calculate_217f_part_count_lambda_b,
-        9: Meter.calculate_217f_part_count_lambda_b,
+        1: [IntegratedCircuit.calculate_217f_part_count_lambda_b, IntegratedCircuit.do_check_variables],
+        2: [Semiconductor.calculate_217f_part_count_lambda_b, Semiconductor.do_check_variables],
+        3: [Resistor.calculate_217f_part_count_lambda_b, Resistor.do_check_variables],
+        4: [Capacitor.calculate_217f_part_count_lambda_b, Capacitor.do_check_variables],
+        5: [Inductor.calculate_217f_part_count_lambda_b, Inductor.do_check_variables],
+        6: [Relay.calculate_217f_part_count_lambda_b, Relay.do_check_variables],
+        7: [Switch.calculate_217f_part_count_lambda_b, Switch.do_check_variables],
+        8: [Connection.calculate_217f_part_count_lambda_b, Connection.do_check_variables],
+        9: [Meter.calculate_217f_part_count_lambda_b, Meter.do_check_variables],
         10: {
-            1: Crystal.calculate_217f_part_count_lambda_b,
-            2: Filter.calculate_217f_part_count_lambda_b,
-            3: Fuse.calculate_217f_part_count_lambda_b,
-            4: Lamp.calculate_217f_part_count_lambda_b,
+            1: [Crystal.calculate_217f_part_count_lambda_b, Crystal.do_check_variables],
+            2: [Filter.calculate_217f_part_count_lambda_b, Filter.do_check_variables],
+            3: [Fuse.calculate_217f_part_count_lambda_b, Fuse.do_check_variables],
+            4: [Lamp.calculate_217f_part_count_lambda_b, Lamp.do_check_variables],
         },
     }
 
     try:
-        _function = _dic_functions[attributes['category_id']]
-        (attributes, _msg,) = _function(attributes)
-    except (KeyError, TypeError):
+        (_part_count, _do_check,) = _dic_functions[attributes['category_id']]
+        _lst_base_hr = _part_count(attributes)
+    except (KeyError, TypeError, ValueError):
+        # ValueError is raised with category ID 10 because only the dict is
+        # returned.  TypeError is raised when attempting to call _part_count
+        # for category ID 10 since a dict is returned.  In these cases, try to
+        # get the functions by also using subcategory ID.
         try:
-            _function = _dic_functions[
+            (_part_count, _do_check,) = _dic_functions[
                 attributes['category_id']
             ][
                 attributes['subcategory_id']
             ]
-            (attributes, _msg,) = _function(attributes)
+            _lst_base_hr = _part_count(attributes)
         except KeyError:
             _msg = (
                 "RAMSTK ERROR: No MIL-HDBK-217F parts count function found "
                 "for Hardware ID: {0:d}.\n"
             ).format(attributes['hardware_id'])
 
+    try:
+        attributes['lambda_b'] = _lst_base_hr[
+            attributes['environment_active_id'] - 1
+        ]
+    except IndexError:
+        attributes['lambda_b'] = 0.0
+
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piQ']
     )
+
+    _msg = _do_check(attributes)
 
     return attributes, _msg
 

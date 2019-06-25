@@ -117,7 +117,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
 
 @pytest.mark.unit
 def test_check_variable_zero():
-    """_do_check_variables() should return a warning message when variables <= zero."""
+    """do_check_variables() should return a warning message when variables <= zero."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['hardware_id'] = 100
     ATTRIBUTES['piE'] = 1.0
@@ -125,7 +125,7 @@ def test_check_variable_zero():
     ATTRIBUTES['piU'] = 1.0
 
     ATTRIBUTES['lambda_b'] = 0.0
-    _msg = Lamp._do_check_variables(ATTRIBUTES)
+    _msg = Lamp.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating lamp, ' \
         'hardware ID: 100, active environment ID: 4.\n'
@@ -133,7 +133,7 @@ def test_check_variable_zero():
 
     ATTRIBUTES['lambda_b'] = 1.0
     ATTRIBUTES['piE'] = 0.0
-    _msg = Lamp._do_check_variables(ATTRIBUTES)
+    _msg = Lamp.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when ' \
             'calculating lamp, hardware ID: 100.\n'
@@ -141,7 +141,7 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piE'] = 1.0
     ATTRIBUTES['piA'] = 0.0
-    _msg = Lamp._do_check_variables(ATTRIBUTES)
+    _msg = Lamp.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piA is 0.0 when calculating lamp, hardware ID: ' \
         '100, application ID: 1.\n'
@@ -149,7 +149,7 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piA'] = 1.0
     ATTRIBUTES['piU'] = 0.0
-    _msg = Lamp._do_check_variables(ATTRIBUTES)
+    _msg = Lamp.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piU is 0.0 when calculating lamp, hardware ID: ' \
         '100, duty cycle: 50.000000.\n'

@@ -230,7 +230,7 @@ def test_calculate_mil_hdbk_217f_part_stress_panel_meter():
 
 @pytest.mark.unit
 def test_check_variable_zero():
-    """_do_check_variables() should return a warning message when variables <= zero."""
+    """do_check_variables() should return a warning message when variables <= zero."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['hardware_id'] = 100
     ATTRIBUTES['piE'] = 1.0
@@ -240,7 +240,7 @@ def test_check_variable_zero():
     ATTRIBUTES['piT'] = 1.0
 
     ATTRIBUTES['lambda_b'] = -1.3
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, ' \
         'hardware ID: 100, subcategory ID: 2, type ID: 2, and active ' \
@@ -248,7 +248,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['lambda_b'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating meter, ' \
         'hardware ID: 100, subcategory ID: 2, type ID: 2, and active ' \
@@ -257,14 +257,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['lambda_b'] = 1.0
     ATTRIBUTES['piE'] = -1.3
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: ' \
         '100, active environment ID: 4.\n'
     )
 
     ATTRIBUTES['piE'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating meter, hardware ID: ' \
         '100, active environment ID: 4.\n'
@@ -272,14 +272,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piE'] = 1.0
     ATTRIBUTES['piA'] = -1.3
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piA is 0.0 when calculating meter, hardware ID: ' \
         '100, type ID: 2.\n'
     )
 
     ATTRIBUTES['piA'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piA is 0.0 when calculating meter, hardware ID: ' \
         '100, type ID: 2.\n'
@@ -287,14 +287,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piA'] = 1.0
     ATTRIBUTES['piF'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piF is 0.0 when calculating meter, hardware ID: ' \
         '100, application ID: 2.\n'
     )
 
     ATTRIBUTES['piF'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piF is 0.0 when calculating meter, hardware ID: ' \
         '100, application ID: 2.\n'
@@ -302,14 +302,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piF'] = 1.0
     ATTRIBUTES['piQ'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: ' \
         '100, quality ID: 1.\n'
     )
 
     ATTRIBUTES['piQ'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating meter, hardware ID: ' \
         '100, quality ID: 1.\n'
@@ -317,7 +317,7 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piQ'] = 1.0
     ATTRIBUTES['piT'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piF is 0.0 when calculating meter, hardware ID: ' \
         '100, active temperature: 32.000000, and max rated ' \
@@ -325,7 +325,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['piT'] = 0.0
-    _msg = Meter._do_check_variables(ATTRIBUTES)
+    _msg = Meter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piF is 0.0 when calculating meter, hardware ID: ' \
         '100, active temperature: 32.000000, and max rated ' \

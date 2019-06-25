@@ -566,7 +566,184 @@ def _calculate_vhisc_vlsi_variables(attributes):
     return attributes
 
 
-def _do_check_variables(attributes):
+def _get_error_correction_factor(attributes):
+    """Retrieve the error code correction factor (piECC) for."""
+    if attributes['type_id'] == 1:
+        attributes['piECC'] = 1.0
+    elif attributes['type_id'] == 2:
+        attributes['piECC'] = 0.72
+    elif attributes['type_id'] == 3:
+        attributes['piECC'] = 0.68
+    else:
+        attributes['piECC'] = 0.0
+
+    return attributes
+
+
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. technology id; if the IC subcategory is NOT technology dependent,
+            then the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |       Integrated Circuit \    | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Linear                        |        5.1      |
+    +----------------+-------------------------------+-----------------+
+    |        2       | Logic                         |        5.1      |
+    +----------------+-------------------------------+-----------------+
+    |        3       | PAL/PLA                       |        5.1      |
+    +----------------+-------------------------------+-----------------+
+    |        4       | Microprocessor/Microcontroller|        5.1      |
+    +----------------+-------------------------------+-----------------+
+    |        5       | Memory, ROM                   |        5.2      |
+    +----------------+-------------------------------+-----------------+
+    |        6       | Memory, EEPROM                |        5.2      |
+    +----------------+-------------------------------+-----------------+
+    |        7       | Memory, DRAM                  |        5.2      |
+    +----------------+-------------------------------+-----------------+
+    |        8       | Memory, SRAM                  |        5.2      |
+    +----------------+-------------------------------+-----------------+
+    |        9       | GaAS                          |        5.4      |
+    +----------------+-------------------------------+-----------------+
+    |       10       | VHSIC/VLSI                    |        5.3      |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
+
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
+    """
+    # Dictionary containing the number of element breakpoints for determining
+    # the base hazard rate list to use.
+    _dic_breakpoints = {
+        1: [100, 300, 1000],
+        2: [100, 1000, 3000, 10000, 30000],
+        3: {
+            1: [200, 1000],
+            2: [16000, 64000, 256000],
+        },
+        4: [8, 16, 32],
+        5: [16000, 64000, 256000],
+        6: [16000, 64000, 256000],
+        7: [16000, 64000, 256000],
+        8: [16000, 64000, 256000],
+        9: {
+            1: [
+                10,
+            ],
+            2: [
+                1000,
+            ],
+        },
+    }
+
+    try:
+        if attributes['subcategory_id'] in [3, 9]:
+            _breaks = _dic_breakpoints[attributes['subcategory_id']][
+                attributes['technology_id']
+            ]
+        else:
+            _breaks = _dic_breakpoints[attributes['subcategory_id']]
+
+        _idx = -1
+        for _idx, _value in enumerate(_breaks):
+            _diff = _value - attributes['n_elements']
+            if len(_breaks) == 1 and _diff < 0:
+                _idx += 1
+                break
+            elif _diff >= 0:
+                break
+
+        _index = _idx + 1
+        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[attributes['subcategory_id']][
+            attributes[
+                'technology_id'
+            ]
+        ][_index]
+    except KeyError:
+        _lst_base_hr = [0.0]
+
+    return _lst_base_hr
+
+
+def calculate_217f_part_stress(**attributes):
+    """
+    Calculate the part stress hazard rate for a integrated circuit.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
+        dictionary with updated values and the error message, if any.
+    :rtype: (dict, str)
+    """
+    attributes = _calculate_die_complexity_hazard_rate(attributes)
+    attributes = _calculate_package_hazard_rate(attributes)
+    attributes = _calculate_temperature_factor(**attributes)
+    attributes[
+        'piL'
+    ] = 0.01 * exp(5.35 - 0.35 * attributes['years_in_production'])
+    try:
+        attributes['piA'] = PI_A[attributes['type_id']][
+            attributes['application_id'] - 1
+        ]
+    except(IndexError, KeyError):
+        attributes['piA'] = 0.0
+
+    _msg = do_check_variables(attributes)
+
+    if attributes['subcategory_id'] in [1, 2, 3, 4]:
+        attributes['hazard_rate_active'] = (
+            (
+                attributes['C1'] * attributes['piT'] + attributes['C2']
+                * attributes['piE']
+            ) * attributes['piQ'] * attributes['piL']
+        )
+    elif attributes['subcategory_id'] in [5, 6, 7, 8]:
+        attributes = _calculate_lambda_cyclic(**attributes)
+        attributes['hazard_rate_active'] = (
+            (
+                attributes['C1'] * attributes['piT']
+                + attributes['C2'] * attributes['piE']
+                + attributes['lambda_cyc']
+            ) * attributes['piQ'] * attributes['piL']
+        )
+    elif attributes['subcategory_id'] == 9:
+        attributes['hazard_rate_active'] = (
+            (
+                attributes['C1'] * attributes['piT'] * attributes['piA']
+                + attributes['C2'] * attributes['piE']
+            ) * attributes['piQ'] * attributes['piL']
+        )
+    elif attributes['subcategory_id'] == 10:
+        attributes = _calculate_vhisc_vlsi_variables(attributes)
+        attributes['hazard_rate_active'] = (
+            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT']
+            * attributes['piCD'] + attributes['lambdaBP'] * attributes['piE']
+            * attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS']
+        )
+
+    return attributes, _msg
+
+
+def do_check_variables(attributes):
     """
     Check calculation variable to ensure they are all greater than zero.
 
@@ -652,191 +829,3 @@ def _do_check_variables(attributes):
                 )
 
     return _msg
-
-
-def _get_error_correction_factor(attributes):
-    """Retrieve the error code correction factor (piECC) for."""
-    if attributes['type_id'] == 1:
-        attributes['piECC'] = 1.0
-    elif attributes['type_id'] == 2:
-        attributes['piECC'] = 0.72
-    elif attributes['type_id'] == 3:
-        attributes['piECC'] = 0.68
-    else:
-        attributes['piECC'] = 0.0
-
-    return attributes
-
-
-def calculate_217f_part_count_lambda_b(attributes):
-    r"""
-    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
-
-        #. subcategory_id
-        #. technology id; if the IC subcategory is NOT technology dependent,
-            then the second key will be zero.
-
-    Current subcategory IDs are:
-
-    +----------------+-------------------------------+-----------------+
-    | Subcategory \  |       Integrated Circuit \    | MIL-HDBK-217F \ |
-    |       ID       |              Style            |    Section      |
-    +================+===============================+=================+
-    |        1       | Linear                        |        5.1      |
-    +----------------+-------------------------------+-----------------+
-    |        2       | Logic                         |        5.1      |
-    +----------------+-------------------------------+-----------------+
-    |        3       | PAL/PLA                       |        5.1      |
-    +----------------+-------------------------------+-----------------+
-    |        4       | Microprocessor/Microcontroller|        5.1      |
-    +----------------+-------------------------------+-----------------+
-    |        5       | Memory, ROM                   |        5.2      |
-    +----------------+-------------------------------+-----------------+
-    |        6       | Memory, EEPROM                |        5.2      |
-    +----------------+-------------------------------+-----------------+
-    |        7       | Memory, DRAM                  |        5.2      |
-    +----------------+-------------------------------+-----------------+
-    |        8       | Memory, SRAM                  |        5.2      |
-    +----------------+-------------------------------+-----------------+
-    |        9       | GaAS                          |        5.4      |
-    +----------------+-------------------------------+-----------------+
-    |       10       | VHSIC/VLSI                    |        5.3      |
-    +----------------+-------------------------------+-----------------+
-
-    These keys return a list of base hazard rates.  The hazard rate to use is
-    selected from the list depending on the active environment.
-
-    :param dict attributes: the attributes for the integrated circuit being
-        calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
-    """
-    # Dictionary containing the number of element breakpoints for determining
-    # the base hazard rate list to use.
-    _dic_breakpoints = {
-        1: [100, 300, 1000],
-        2: [100, 1000, 3000, 10000, 30000],
-        3: {
-            1: [200, 1000],
-            2: [16000, 64000, 256000],
-        },
-        4: [8, 16, 32],
-        5: [16000, 64000, 256000],
-        6: [16000, 64000, 256000],
-        7: [16000, 64000, 256000],
-        8: [16000, 64000, 256000],
-        9: {
-            1: [
-                10,
-            ],
-            2: [
-                1000,
-            ],
-        },
-    }
-
-    try:
-        if attributes['subcategory_id'] in [3, 9]:
-            _breaks = _dic_breakpoints[attributes['subcategory_id']][
-                attributes['technology_id']
-            ]
-        else:
-            _breaks = _dic_breakpoints[attributes['subcategory_id']]
-
-        _idx = -1
-        for _idx, _value in enumerate(_breaks):
-            _diff = _value - attributes['n_elements']
-            if len(_breaks) == 1 and _diff < 0:
-                _idx += 1
-                break
-            elif _diff >= 0:
-                break
-
-        _index = _idx + 1
-        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[attributes['subcategory_id']][
-            attributes[
-                'technology_id'
-            ]
-        ][_index]
-    except KeyError:
-        _lst_base_hr = [0.0]
-
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    _msg = _do_check_variables(attributes)
-
-    return attributes, _msg
-
-
-def calculate_217f_part_stress(**attributes):
-    """
-    Calculate the part stress hazard rate for a integrated circuit.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-        dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    attributes = _calculate_die_complexity_hazard_rate(attributes)
-    attributes = _calculate_package_hazard_rate(attributes)
-    attributes = _calculate_temperature_factor(**attributes)
-    attributes[
-        'piL'
-    ] = 0.01 * exp(5.35 - 0.35 * attributes['years_in_production'])
-    try:
-        attributes['piA'] = PI_A[attributes['type_id']][
-            attributes['application_id'] - 1
-        ]
-    except(IndexError, KeyError):
-        attributes['piA'] = 0.0
-
-    _msg = _do_check_variables(attributes)
-
-    if attributes['subcategory_id'] in [1, 2, 3, 4]:
-        attributes['hazard_rate_active'] = (
-            (
-                attributes['C1'] * attributes['piT'] + attributes['C2']
-                * attributes['piE']
-            ) * attributes['piQ'] * attributes['piL']
-        )
-    elif attributes['subcategory_id'] in [5, 6, 7, 8]:
-        attributes = _calculate_lambda_cyclic(**attributes)
-        attributes['hazard_rate_active'] = (
-            (
-                attributes['C1'] * attributes['piT']
-                + attributes['C2'] * attributes['piE']
-                + attributes['lambda_cyc']
-            ) * attributes['piQ'] * attributes['piL']
-        )
-    elif attributes['subcategory_id'] == 9:
-        attributes['hazard_rate_active'] = (
-            (
-                attributes['C1'] * attributes['piT'] * attributes['piA']
-                + attributes['C2'] * attributes['piE']
-            ) * attributes['piQ'] * attributes['piL']
-        )
-    elif attributes['subcategory_id'] == 10:
-        attributes = _calculate_vhisc_vlsi_variables(attributes)
-        attributes['hazard_rate_active'] = (
-            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT']
-            * attributes['piCD'] + attributes['lambdaBP'] * attributes['piE']
-            * attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS']
-        )
-
-    return attributes, _msg

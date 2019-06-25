@@ -471,7 +471,226 @@ def _calculate_temperature_factor(attributes):
     return attributes
 
 
-def _do_check_variables(attributes):
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the MIL-HDBK-217F base hazard rate for the semiconductor device.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. type id; if the semiconductor subcategory is NOT type dependent,
+            then the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |          Semiconductor \      | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Diode, Low Frequency          |        6.1      |
+    +----------------+-------------------------------+-----------------+
+    |        2       | Diode, High Frequency         |        6.2      |
+    +----------------+-------------------------------+-----------------+
+    |        3       | Transistor, Low Frequency, \  |        6.3      |
+    |                | Bipolar                       |                 |
+    +----------------+-------------------------------+-----------------+
+    |        4       | Transistor, Low Frequency, \  |        6.4      |
+    |                | Si FET                        |                 |
+    +----------------+-------------------------------+-----------------+
+    |        5       | Transistor, Unijunction       |        6.5      |
+    +----------------+-------------------------------+-----------------+
+    |        6       | Transistor, High Frequency, \ |        6.6      |
+    |                | Low Noise,Bipolar             |                 |
+    +----------------+-------------------------------+-----------------+
+    |        7       | Transistor, High Frequency, \ |        6.7      |
+    |                | High Power, Bipolar           |                 |
+    +----------------+-------------------------------+-----------------+
+    |        8       | Transistor, High Frequency, \ |        6.8      |
+    |                | GaAs FET                      |                 |
+    +----------------+-------------------------------+-----------------+
+    |        9       | Transistor, High Frequency, \ |        6.9      |
+    |                | Si FET                        |                 |
+    +----------------+-------------------------------+-----------------+
+    |       10       | Thyristor/SCR                 |       6.10      |
+    +----------------+-------------------------------+-----------------+
+    |       11       | Optoelectronic, Detector, \   |       6.11      |
+    |                | Isolator, Emitter             |                 |
+    +----------------+-------------------------------+-----------------+
+    |       12       | Optoelectronic, Alphanumeric \|       6.12      |
+    |                | Display                       |                 |
+    +----------------+-------------------------------+-----------------+
+    |       13       | Optoelectronic, Laser Diode   |       6.13      |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
+
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
+    """
+    try:
+        if attributes['subcategory_id'] in [1, 2, 3, 8, 11, 13]:
+            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+                attributes['subcategory_id']
+            ][
+                attributes['type_id']
+            ]
+        else:
+            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+                attributes['subcategory_id']
+            ]
+    except KeyError:
+        _lst_base_hr = [0.0]
+
+    attributes = _get_part_count_quality_factor(attributes)
+
+    return _lst_base_hr
+
+
+
+def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
+    """
+    Calculate the part stress hazard rate for a semiconductor.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
+             dictionary with updated values and the error message, if any.
+    :rtype: (dict, str)
+    """
+    attributes = _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes)
+    attributes = _calculate_junction_temperature(attributes)
+    attributes = _get_part_stress_quality_factor(attributes)
+    attributes = _calculate_temperature_factor(attributes)
+    attributes = _calculate_application_factor(attributes)
+    attributes = _calculate_power_rating_factor(attributes)
+    attributes = _calculate_electrical_stress_factor(attributes)
+
+    # Calculate the matching network factor (piM).
+    if attributes['subcategory_id'] in [7, 8]:
+        attributes['piM'] = PI_M[attributes['matching_id'] - 1]
+
+    # Retrieve the construction factor (piC).
+    if attributes['subcategory_id'] == 1:
+        attributes['piC'] = PI_C[attributes['construction_id'] - 1]
+
+    # Calculate forward current factor (piI).
+    if attributes['subcategory_id'] == 13:
+        attributes['piI'] = attributes['current_operating']**0.68
+
+    # Calculate the power degradation factor (piP).
+    if attributes['subcategory_id'] == 13:
+        attributes['piP'] = 1.0 / (2.0 * (1.0 - attributes['power_ratio']))
+
+    _msg = do_check_variables(attributes)
+
+    attributes = _calculate_active_hazard_rate(attributes)
+
+    return attributes, _msg
+
+
+def _get_part_count_quality_factor(attributes):
+    """
+    Select the MIL-HDBK-217F quality factor for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    # Dictionary containing piQ values for parts count method.  The key is the
+    # subcategory_id.  The quality_id attribute is used to select the proper
+    # value of piQ from the returned list.
+    _dic_piQ = {
+        1: [0.7, 1.0, 2.4, 5.5, 8.0],
+        2: [[0.5, 1.0, 5.0, 25, 50], [0.5, 1.0, 1.8, 2.5]],
+        3: [0.7, 1.0, 2.4, 5.5, 8.0],
+        4: [0.7, 1.0, 2.4, 5.5, 8.0],
+        5: [0.7, 1.0, 2.4, 5.5, 8.0],
+        6: [0.7, 1.0, 2.4, 5.5, 8.0],
+        7: [0.7, 1.0, 2.4, 5.5, 8.0],
+        8: [0.7, 1.0, 2.4, 5.5, 8.0],
+        9: [0.7, 1.0, 2.4, 5.5, 8.0],
+        10: [0.7, 1.0, 2.4, 5.5, 8.0],
+        11: [0.7, 1.0, 2.4, 5.5, 8.0],
+        12: [0.7, 1.0, 2.4, 5.5, 8.0],
+        13: [1.0, 1.0, 3.3],
+    }
+
+    try:
+        if attributes['subcategory_id'] == 2:
+            if attributes['type_id'] == 5:
+                attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][1][
+                    attributes['quality_id'] - 1
+                ]
+            else:
+                attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][0][
+                    attributes['quality_id'] - 1
+                ]
+        else:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['quality_id'] - 1
+            ]
+    except (KeyError, IndexError):
+        attributes['piQ'] = 0.0
+
+    return attributes
+
+
+def _get_part_stress_quality_factor(attributes):
+    """
+    Select the MIL-HDBK-217F quality factor for the semiconductor device.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
+    :rtype: dict
+    """
+    _dic_piQ = {
+        1: [0.7, 1.0, 2.4, 5.5, 8.0],
+        2: {
+            1: [0.5, 1.0, 5.0, 25.0, 50.0],
+            2: [0.5, 1.0, 5.0, 25.0, 50.0],
+            3: [0.5, 1.0, 5.0, 25.0, 50.0],
+            4: [0.5, 1.0, 5.0, 25.0, 50.0],
+            5: [0.5, 1.0, 1.8, 2.5],
+            6: [0.5, 1.0, 5.0, 25.0, 50.0],
+        },
+        3: [0.7, 1.0, 2.4, 5.5, 8.0],
+        4: [0.7, 1.0, 2.4, 5.5, 8.0],
+        5: [0.7, 1.0, 2.4, 5.5, 8.0],
+        6: [0.5, 1.0, 2.0, 5.0],
+        7: [0.5, 1.0, 2.0, 5.0],
+        8: [0.5, 1.0, 2.0, 5.0],
+        9: [0.5, 1.0, 2.0, 5.0],
+        10: [0.7, 1.0, 2.4, 5.5, 8.0],
+        11: [0.7, 1.0, 2.4, 5.5, 8.0],
+        12: [0.7, 1.0, 2.4, 5.5, 8.0],
+        13: [1.0, 1.0, 3.3],
+    }
+
+    try:
+        if attributes['subcategory_id'] == 2:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['type_id']
+            ][attributes['quality_id'] - 1]
+        else:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['quality_id'] - 1
+            ]
+    except (KeyError, IndexError):
+        attributes['piQ'] = 0.0
+
+    return attributes
+
+
+def do_check_variables(attributes):
     """
     Check calculation variable to ensure they are all greater than zero.
 
@@ -597,232 +816,3 @@ def _do_check_variables(attributes):
                 )
 
     return _msg
-
-
-def calculate_217f_part_count_lambda_b(attributes):
-    r"""
-    Calculate the MIL-HDBK-217F base hazard rate for the semiconductor device.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
-
-        #. subcategory_id
-        #. type id; if the semiconductor subcategory is NOT type dependent,
-            then the second key will be zero.
-
-    Current subcategory IDs are:
-
-    +----------------+-------------------------------+-----------------+
-    | Subcategory \  |          Semiconductor \      | MIL-HDBK-217F \ |
-    |       ID       |              Style            |    Section      |
-    +================+===============================+=================+
-    |        1       | Diode, Low Frequency          |        6.1      |
-    +----------------+-------------------------------+-----------------+
-    |        2       | Diode, High Frequency         |        6.2      |
-    +----------------+-------------------------------+-----------------+
-    |        3       | Transistor, Low Frequency, \  |        6.3      |
-    |                | Bipolar                       |                 |
-    +----------------+-------------------------------+-----------------+
-    |        4       | Transistor, Low Frequency, \  |        6.4      |
-    |                | Si FET                        |                 |
-    +----------------+-------------------------------+-----------------+
-    |        5       | Transistor, Unijunction       |        6.5      |
-    +----------------+-------------------------------+-----------------+
-    |        6       | Transistor, High Frequency, \ |        6.6      |
-    |                | Low Noise,Bipolar             |                 |
-    +----------------+-------------------------------+-----------------+
-    |        7       | Transistor, High Frequency, \ |        6.7      |
-    |                | High Power, Bipolar           |                 |
-    +----------------+-------------------------------+-----------------+
-    |        8       | Transistor, High Frequency, \ |        6.8      |
-    |                | GaAs FET                      |                 |
-    +----------------+-------------------------------+-----------------+
-    |        9       | Transistor, High Frequency, \ |        6.9      |
-    |                | Si FET                        |                 |
-    +----------------+-------------------------------+-----------------+
-    |       10       | Thyristor/SCR                 |       6.10      |
-    +----------------+-------------------------------+-----------------+
-    |       11       | Optoelectronic, Detector, \   |       6.11      |
-    |                | Isolator, Emitter             |                 |
-    +----------------+-------------------------------+-----------------+
-    |       12       | Optoelectronic, Alphanumeric \|       6.12      |
-    |                | Display                       |                 |
-    +----------------+-------------------------------+-----------------+
-    |       13       | Optoelectronic, Laser Diode   |       6.13      |
-    +----------------+-------------------------------+-----------------+
-
-    These keys return a list of base hazard rates.  The hazard rate to use is
-    selected from the list depending on the active environment.
-
-    :param dict attributes: the attributes for the semiconductor being
-        calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
-    """
-    try:
-        if attributes['subcategory_id'] in [1, 2, 3, 8, 11, 13]:
-            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
-                attributes['subcategory_id']
-            ][
-                attributes['type_id']
-            ]
-        else:
-            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
-                attributes['subcategory_id']
-            ]
-    except KeyError:
-        _lst_base_hr = [0.0]
-
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    attributes = _get_part_count_quality_factor(attributes)
-
-    _msg = _do_check_variables(attributes)
-
-    return attributes, _msg
-
-
-def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
-    """
-    Calculate the part stress hazard rate for a semiconductor.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    attributes = _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes)
-    attributes = _calculate_junction_temperature(attributes)
-    attributes = _get_part_stress_quality_factor(attributes)
-    attributes = _calculate_temperature_factor(attributes)
-    attributes = _calculate_application_factor(attributes)
-    attributes = _calculate_power_rating_factor(attributes)
-    attributes = _calculate_electrical_stress_factor(attributes)
-
-    # Calculate the matching network factor (piM).
-    if attributes['subcategory_id'] in [7, 8]:
-        attributes['piM'] = PI_M[attributes['matching_id'] - 1]
-
-    # Retrieve the construction factor (piC).
-    if attributes['subcategory_id'] == 1:
-        attributes['piC'] = PI_C[attributes['construction_id'] - 1]
-
-    # Calculate forward current factor (piI).
-    if attributes['subcategory_id'] == 13:
-        attributes['piI'] = attributes['current_operating']**0.68
-
-    # Calculate the power degradation factor (piP).
-    if attributes['subcategory_id'] == 13:
-        attributes['piP'] = 1.0 / (2.0 * (1.0 - attributes['power_ratio']))
-
-    _msg = _do_check_variables(attributes)
-
-    attributes = _calculate_active_hazard_rate(attributes)
-
-    return attributes, _msg
-
-
-def _get_part_count_quality_factor(attributes):
-    """
-    Select the MIL-HDBK-217F quality factor for the semiconductor device.
-
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-             with updated values
-    :rtype: dict
-    """
-    # Dictionary containing piQ values for parts count method.  The key is the
-    # subcategory_id.  The quality_id attribute is used to select the proper
-    # value of piQ from the returned list.
-    _dic_piQ = {
-        1: [0.7, 1.0, 2.4, 5.5, 8.0],
-        2: [[0.5, 1.0, 5.0, 25, 50], [0.5, 1.0, 1.8, 2.5]],
-        3: [0.7, 1.0, 2.4, 5.5, 8.0],
-        4: [0.7, 1.0, 2.4, 5.5, 8.0],
-        5: [0.7, 1.0, 2.4, 5.5, 8.0],
-        6: [0.7, 1.0, 2.4, 5.5, 8.0],
-        7: [0.7, 1.0, 2.4, 5.5, 8.0],
-        8: [0.7, 1.0, 2.4, 5.5, 8.0],
-        9: [0.7, 1.0, 2.4, 5.5, 8.0],
-        10: [0.7, 1.0, 2.4, 5.5, 8.0],
-        11: [0.7, 1.0, 2.4, 5.5, 8.0],
-        12: [0.7, 1.0, 2.4, 5.5, 8.0],
-        13: [1.0, 1.0, 3.3],
-    }
-
-    try:
-        if attributes['subcategory_id'] == 2:
-            if attributes['type_id'] == 5:
-                attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][1][
-                    attributes['quality_id'] - 1
-                ]
-            else:
-                attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][0][
-                    attributes['quality_id'] - 1
-                ]
-        else:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['quality_id'] - 1
-            ]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
-
-    return attributes
-
-
-def _get_part_stress_quality_factor(attributes):
-    """
-    Select the MIL-HDBK-217F quality factor for the semiconductor device.
-
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-             with updated values
-    :rtype: dict
-    """
-    _dic_piQ = {
-        1: [0.7, 1.0, 2.4, 5.5, 8.0],
-        2: {
-            1: [0.5, 1.0, 5.0, 25.0, 50.0],
-            2: [0.5, 1.0, 5.0, 25.0, 50.0],
-            3: [0.5, 1.0, 5.0, 25.0, 50.0],
-            4: [0.5, 1.0, 5.0, 25.0, 50.0],
-            5: [0.5, 1.0, 1.8, 2.5],
-            6: [0.5, 1.0, 5.0, 25.0, 50.0],
-        },
-        3: [0.7, 1.0, 2.4, 5.5, 8.0],
-        4: [0.7, 1.0, 2.4, 5.5, 8.0],
-        5: [0.7, 1.0, 2.4, 5.5, 8.0],
-        6: [0.5, 1.0, 2.0, 5.0],
-        7: [0.5, 1.0, 2.0, 5.0],
-        8: [0.5, 1.0, 2.0, 5.0],
-        9: [0.5, 1.0, 2.0, 5.0],
-        10: [0.7, 1.0, 2.4, 5.5, 8.0],
-        11: [0.7, 1.0, 2.4, 5.5, 8.0],
-        12: [0.7, 1.0, 2.4, 5.5, 8.0],
-        13: [1.0, 1.0, 3.3],
-    }
-
-    try:
-        if attributes['subcategory_id'] == 2:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['type_id']
-            ][attributes['quality_id'] - 1]
-        else:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['quality_id'] - 1
-            ]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
-
-    return attributes

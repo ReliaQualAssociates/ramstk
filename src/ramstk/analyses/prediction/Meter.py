@@ -96,81 +96,6 @@ PART_STRESS_217F_LAMBDA_B = {1: [20.0, 30.0, 80.0], 2: 0.09}
 PI_F = [1.0, 1.0, 2.8]
 
 
-def _do_check_variables(attributes):
-    """
-    Check calculation variable to ensure they are all greater than zero.
-
-    All variables are checked regardless of whether they'll be used in the
-    calculation for the meter type which is why a WARKING message is
-    issued rather than an ERROR message.
-
-    :param dict attributes: the attributes for the meter being calculated.
-    :return: _msg; a message indicating all the variables that are less than or
-        equal to zero in value.
-    :rtype: str
-    """
-    _msg = ''
-
-    if attributes['lambda_b'] <= 0.0:
-        _msg = (
-            "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
-            "meter, hardware ID: {0:d}, subcategory ID: {1:d}, type "
-            "ID: {3:d}, and active environment ID: {2:d}.\n"
-        ).format(
-            attributes['hardware_id'],
-            attributes['subcategory_id'],
-            attributes['environment_active_id'],
-            attributes['type_id'],
-        )
-
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + (
-            "RAMSTK WARNING: piQ is 0.0 when calculating meter, "
-            "hardware ID: {0:d}, quality ID: {1:d}.\n"
-        ).format(
-            attributes['hardware_id'],
-            attributes['quality_id'],
-        )
-
-    if attributes['hazard_rate_method_id'] == 2:
-        if attributes['piE'] <= 0.0:
-            _msg = _msg + (
-                "RAMSTK WARNING: piE is 0.0 when calculating meter, "
-                "hardware ID: {0:d}, active environment ID: {1:d}.\n"
-            ).format(
-                attributes['hardware_id'],
-                attributes['environment_active_id'],
-            )
-
-        if attributes['piA'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piA is 0.0 when calculating ' \
-                'meter, hardware ID: {0:d}, ' \
-                'type ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['type_id'],
-                )
-
-        if attributes['piF'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piF is 0.0 when calculating ' \
-                'meter, hardware ID: {0:d}, ' \
-                'application ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['application_id'],
-                )
-
-        if attributes['piT'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piF is 0.0 when calculating ' \
-                'meter, hardware ID: {0:d}, ' \
-                'active temperature: {1:f}, and max rated temperature: ' \
-                '{2:f}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['temperature_active'],
-                    attributes['temperature_rated_max'],
-                )
-
-    return _msg
-
-
 def _get_temperature_stress_factor(attributes):
     """
     Retrieve the temperature stress factor (piT).
@@ -255,25 +180,20 @@ def calculate_217f_part_count_lambda_b(attributes):
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param dict attributes: the attributes for the meter being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
     """
     try:
-        attributes['lambda_b'] = PART_COUNT_217F_LAMBDA_B[
+        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
             attributes['subcategory_id']
         ][
             attributes['type_id'] - 1
-        ][
-            attributes['environment_active_id'] - 1
         ]
     except (IndexError, KeyError):
-        attributes['lambda_b'] = 0.0
+        _lst_base_hr = [0.0]
 
-    _msg = _do_check_variables(attributes)
-
-    return attributes, _msg
+    return _lst_base_hr
 
 
 def calculate_217f_part_stress(**attributes):
@@ -295,7 +215,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['piA'] = (1.7 if (attributes['type_id']) - (1) else 1.0)
         attributes['piF'] = PI_F[attributes['application_id'] - 1]
 
-    _msg = _do_check_variables(attributes)
+    _msg = do_check_variables(attributes)
 
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piE']
@@ -311,3 +231,78 @@ def calculate_217f_part_stress(**attributes):
         )
 
     return attributes, _msg
+
+
+def do_check_variables(attributes):
+    """
+    Check calculation variable to ensure they are all greater than zero.
+
+    All variables are checked regardless of whether they'll be used in the
+    calculation for the meter type which is why a WARKING message is
+    issued rather than an ERROR message.
+
+    :param dict attributes: the attributes for the meter being calculated.
+    :return: _msg; a message indicating all the variables that are less than or
+        equal to zero in value.
+    :rtype: str
+    """
+    _msg = ''
+
+    if attributes['lambda_b'] <= 0.0:
+        _msg = (
+            "RAMSTK WARNING: Base hazard rate is 0.0 when calculating "
+            "meter, hardware ID: {0:d}, subcategory ID: {1:d}, type "
+            "ID: {3:d}, and active environment ID: {2:d}.\n"
+        ).format(
+            attributes['hardware_id'],
+            attributes['subcategory_id'],
+            attributes['environment_active_id'],
+            attributes['type_id'],
+        )
+
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + (
+            "RAMSTK WARNING: piQ is 0.0 when calculating meter, "
+            "hardware ID: {0:d}, quality ID: {1:d}.\n"
+        ).format(
+            attributes['hardware_id'],
+            attributes['quality_id'],
+        )
+
+    if attributes['hazard_rate_method_id'] == 2:
+        if attributes['piE'] <= 0.0:
+            _msg = _msg + (
+                "RAMSTK WARNING: piE is 0.0 when calculating meter, "
+                "hardware ID: {0:d}, active environment ID: {1:d}.\n"
+            ).format(
+                attributes['hardware_id'],
+                attributes['environment_active_id'],
+            )
+
+        if attributes['piA'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piA is 0.0 when calculating ' \
+                'meter, hardware ID: {0:d}, ' \
+                'type ID: {1:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['type_id'],
+                )
+
+        if attributes['piF'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piF is 0.0 when calculating ' \
+                'meter, hardware ID: {0:d}, ' \
+                'application ID: {1:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['application_id'],
+                )
+
+        if attributes['piT'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piF is 0.0 when calculating ' \
+                'meter, hardware ID: {0:d}, ' \
+                'active temperature: {1:f}, and max rated temperature: ' \
+                '{2:f}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['temperature_active'],
+                    attributes['temperature_rated_max'],
+                )
+
+    return _msg

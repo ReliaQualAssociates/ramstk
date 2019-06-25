@@ -232,66 +232,6 @@ def _calculate_series_resistance_factor(attributes):
     return attributes
 
 
-def _do_check_variables(attributes):
-    """
-    Check calculation variable to ensure they are all greater than zero.
-
-    All variables are checked regardless of whether they'll be used in the
-    calculation for the capacitor type which is why a WARKING message is issued
-    rather than an ERROR message.
-
-    :param dict attributes: the attributes for the capacitor being calculated.
-    :return: _msg; a message indicating all the variables that are less than or
-        equal to zero in value.
-    :rtype: str
-    """
-    _msg = ''
-
-    if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating capacitor, hardware ID: ' \
-            '{0:d}.\n'.format(attributes['hardware_id'])
-
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}.\n'.format(
-                attributes['hardware_id'],
-            )
-
-    if attributes['hazard_rate_method_id'] == 2:
-        if attributes['piE'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-                'capacitor, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-
-        if attributes['piC'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piC is 0.0 when calculating ' \
-                'capacitor, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-
-        if attributes['piCF'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piCF is 0.0 when calculating ' \
-                'capacitor, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-
-        if attributes['piCR'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piCR is 0.0 when calculating ' \
-                'capacitor, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-
-        if attributes['piSR'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piSR is 0.0 when calculating ' \
-                'capacitor, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-
-    return _msg
-
-
 def calculate_217f_part_count_lambda_b(attributes):
     r"""
     Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
@@ -367,9 +307,8 @@ def calculate_217f_part_count_lambda_b(attributes):
     selected from the list depending on the active environment.
 
     :param dict attributes: the attributes for the capacitor being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
     """
     try:
         if attributes['subcategory_id'] == 1:
@@ -385,16 +324,7 @@ def calculate_217f_part_count_lambda_b(attributes):
     except KeyError:
         _lst_base_hr = [0.0]
 
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    _msg = _do_check_variables(attributes)
-
-    return attributes, _msg
+    return _lst_base_hr
 
 
 def calculate_217f_part_stress(**attributes):
@@ -425,7 +355,7 @@ def calculate_217f_part_stress(**attributes):
     except (IndexError, KeyError):
         attributes['piCF'] = 0.0
 
-    _msg = _do_check_variables(attributes)
+    _msg = do_check_variables(attributes)
 
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
@@ -450,3 +380,63 @@ def calculate_217f_part_stress(**attributes):
         )
 
     return attributes, _msg
+
+
+def do_check_variables(attributes):
+    """
+    Check calculation variable to ensure they are all greater than zero.
+
+    All variables are checked regardless of whether they'll be used in the
+    calculation for the capacitor type which is why a WARKING message is issued
+    rather than an ERROR message.
+
+    :param dict attributes: the attributes for the capacitor being calculated.
+    :return: _msg; a message indicating all the variables that are less than or
+        equal to zero in value.
+    :rtype: str
+    """
+    _msg = ''
+
+    if attributes['lambda_b'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating capacitor, hardware ID: ' \
+            '{0:d}.\n'.format(attributes['hardware_id'])
+
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+            'capacitor, hardware ID: {0:d}.\n'.format(
+                attributes['hardware_id'],
+            )
+
+    if attributes['hazard_rate_method_id'] == 2:
+        if attributes['piE'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
+                'capacitor, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+
+        if attributes['piC'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piC is 0.0 when calculating ' \
+                'capacitor, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+
+        if attributes['piCF'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piCF is 0.0 when calculating ' \
+                'capacitor, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+
+        if attributes['piCR'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piCR is 0.0 when calculating ' \
+                'capacitor, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+
+        if attributes['piSR'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piSR is 0.0 when calculating ' \
+                'capacitor, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+
+    return _msg

@@ -362,7 +362,7 @@ def test_power_overstress_mild_environment(
 
 @pytest.mark.unit
 def test_check_variable_zero():
-    """_do_check_variables() should return a warning message when variables <= zero."""
+    """do_check_variables() should return a warning message when variables <= zero."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['hardware_id'] = 100
     ATTRIBUTES['piE'] = 1.0
@@ -373,7 +373,7 @@ def test_check_variable_zero():
     ATTRIBUTES['piV'] = 1.0
 
     ATTRIBUTES['lambda_b'] = -1.3
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating resistor, '
         'hardware ID: 100, subcategory ID: 10, specification ID: 1, active '
@@ -381,7 +381,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['lambda_b'] = 0.0
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating resistor, '
         'hardware ID: 100, subcategory ID: 10, specification ID: 1, active '
@@ -390,14 +390,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['lambda_b'] = 1.0
     ATTRIBUTES['piQ'] = -1.3
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating resistor, hardware ID: '
         '100, quality ID: 2.\n'
     )
 
     ATTRIBUTES['piQ'] = 0.0
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating resistor, hardware ID: '
         '100, quality ID: 2.\n'
@@ -405,14 +405,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piQ'] = 1.0
     ATTRIBUTES['piE'] = -1.3
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating resistor, hardware ID: '
         '100, active environment ID: 11.\n'
     )
 
     ATTRIBUTES['piE'] = 0.0
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating resistor, hardware ID: '
         '100, active environment ID: 11.\n'
@@ -420,14 +420,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piE'] = 1.0
     ATTRIBUTES['piC'] = -1.3
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piC is 0.0 when calculating resistor, hardware ID: '
         '100, construction ID: 2.\n'
     )
 
     ATTRIBUTES['piC'] = 0.0
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piC is 0.0 when calculating resistor, hardware ID: '
         '100, construction ID: 2.\n'
@@ -435,7 +435,7 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piC'] = 1.0
     ATTRIBUTES['piR'] = -1.3
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piR is 0.0 when calculating resistor, hardware ID: '
         '100, subcategory ID: 10, specification ID: 1, family ID: 0, # of '
@@ -443,7 +443,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['piR'] = 0.0
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piR is 0.0 when calculating resistor, hardware ID: '
         '100, subcategory ID: 10, specification ID: 1, family ID: 0, # of '
@@ -452,7 +452,7 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piR'] = 1.0
     ATTRIBUTES['piT'] = -1.3
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piT is 0.0 when calculating resistor, hardware ID: '
         '100, subcategory ID: 10, case temperature: 0.000000, ambient '
@@ -460,7 +460,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['piT'] = 0.0
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piT is 0.0 when calculating resistor, hardware ID: '
         '100, subcategory ID: 10, case temperature: 0.000000, ambient '
@@ -469,14 +469,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piT'] = 1.0
     ATTRIBUTES['piV'] = -1.3
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piV is 0.0 when calculating resistor, hardware ID: '
         '100, subcategory ID: 10, voltage ratio: 0.000000.\n'
     )
 
     ATTRIBUTES['piV'] = 0.0
-    _msg = Resistor._do_check_variables(ATTRIBUTES)
+    _msg = Resistor.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piV is 0.0 when calculating resistor, hardware ID: '
         '100, subcategory ID: 10, voltage ratio: 0.000000.\n'

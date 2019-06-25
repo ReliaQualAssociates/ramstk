@@ -214,21 +214,21 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_environment():
 
 @pytest.mark.unit
 def test_check_variable_zero():
-    """_do_check_variables() should return a warning message when variables <= zero."""
+    """do_check_variables() should return a warning message when variables <= zero."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['hardware_id'] = 100
     ATTRIBUTES['piE'] = 1.0
     ATTRIBUTES['piQ'] = 1.0
 
     ATTRIBUTES['lambda_b'] = -1.3
-    _msg = Filter._do_check_variables(ATTRIBUTES)
+    _msg = Filter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating filter, ' \
         'hardware ID: 100, type ID: 2, active environment ID: 40.\n'
     )
 
     ATTRIBUTES['lambda_b'] = 0.0
-    _msg = Filter._do_check_variables(ATTRIBUTES)
+    _msg = Filter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating filter, ' \
         'hardware ID: 100, type ID: 2, active environment ID: 40.\n'
@@ -236,14 +236,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['lambda_b'] = 1.0
     ATTRIBUTES['piQ'] = -1.3
-    _msg = Filter._do_check_variables(ATTRIBUTES)
+    _msg = Filter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating filter, hardware ' \
         'ID: 100, quality ID: 1.\n'
     )
 
     ATTRIBUTES['piQ'] = 0.0
-    _msg = Filter._do_check_variables(ATTRIBUTES)
+    _msg = Filter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating filter, hardware ' \
         'ID: 100, quality ID: 1.\n'
@@ -251,14 +251,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piQ'] = 1.0
     ATTRIBUTES['piE'] = -1.3
-    _msg = Filter._do_check_variables(ATTRIBUTES)
+    _msg = Filter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating filter, hardware ' \
         'ID: 100.\n'
     )
 
     ATTRIBUTES['piE'] = 0.0
-    _msg = Filter._do_check_variables(ATTRIBUTES)
+    _msg = Filter.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating filter, hardware ' \
         'ID: 100.\n'

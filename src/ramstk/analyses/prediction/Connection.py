@@ -259,57 +259,6 @@ def _calculate_insert_temperature(attributes):
     return attributes
 
 
-def _do_check_variables(attributes):
-    """
-    Check calculation variable to ensure they are all greater than zero.
-
-    All variables are checked regardless of whether they'll be used in the
-    calculation for the connection type which is why a WARKING message is
-    issued rather than an ERROR message.
-
-    :param dict attributes: the attributes for the connection being calculated.
-    :return: _msg; a message indicating all the variables that are less than or
-        equal to zero in value.
-    :rtype: str
-    """
-    _msg = ''
-
-    if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating connection, hardware ID: ' \
-            '{0:d}.\n'.format(attributes['hardware_id'])
-
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'connection, hardware ID: {0:d}.\n'.format(
-                attributes['hardware_id'],
-            )
-
-    if attributes['hazard_rate_method_id'] == 2:
-        if attributes['piC'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piC is 0.0 when calculating ' \
-                'connection, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-        if attributes['piE'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-                'connection, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-        if attributes['piK'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piK is 0.0 when calculating ' \
-                'connection, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-        if attributes['piP'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piP is 0.0 when calculating ' \
-                'connection, hardware ID: {0:d}.\n'.format(
-                    attributes['hardware_id'],
-                )
-
-    return _msg
-
-
 def _get_environment_factor(attributes):
     """
     Retrieve the environment factor (piE).
@@ -394,9 +343,8 @@ def calculate_217f_part_count_lambda_b(attributes):
     selected from the list depending on the active environment.
 
     :param dict attributes: the attributes for the connection being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
     """
     try:
         if attributes['subcategory_id'] in [1, 5]:
@@ -412,16 +360,7 @@ def calculate_217f_part_count_lambda_b(attributes):
     except KeyError:
         _lst_base_hr = [0.0]
 
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    _msg = _do_check_variables(attributes)
-
-    return attributes, _msg
+    return _lst_base_hr
 
 
 def calculate_217f_part_stress(**attributes):
@@ -454,7 +393,7 @@ def calculate_217f_part_stress(**attributes):
         else:
             attributes['piC'] = 1.0
 
-    _msg = _do_check_variables(attributes)
+    _msg = do_check_variables(attributes)
 
     # Calculate the active hazard rate.
     attributes[
@@ -484,3 +423,54 @@ def calculate_217f_part_stress(**attributes):
         )
 
     return attributes, _msg
+
+
+def do_check_variables(attributes):
+    """
+    Check calculation variable to ensure they are all greater than zero.
+
+    All variables are checked regardless of whether they'll be used in the
+    calculation for the connection type which is why a WARKING message is
+    issued rather than an ERROR message.
+
+    :param dict attributes: the attributes for the connection being calculated.
+    :return: _msg; a message indicating all the variables that are less than or
+        equal to zero in value.
+    :rtype: str
+    """
+    _msg = ''
+
+    if attributes['lambda_b'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating connection, hardware ID: ' \
+            '{0:d}.\n'.format(attributes['hardware_id'])
+
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+            'connection, hardware ID: {0:d}.\n'.format(
+                attributes['hardware_id'],
+            )
+
+    if attributes['hazard_rate_method_id'] == 2:
+        if attributes['piC'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piC is 0.0 when calculating ' \
+                'connection, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+        if attributes['piE'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
+                'connection, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+        if attributes['piK'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piK is 0.0 when calculating ' \
+                'connection, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+        if attributes['piP'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piP is 0.0 when calculating ' \
+                'connection, hardware ID: {0:d}.\n'.format(
+                    attributes['hardware_id'],
+                )
+
+    return _msg

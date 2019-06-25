@@ -180,7 +180,143 @@ def _calculate_load_stress_factor(attributes):
     return attributes
 
 
-def _do_check_variables(attributes):
+def _get_application_construction_factor(attributes):
+    """
+    Calculate the construction factor (piF) for the relay.
+
+    :param dict attributes: the dict of relay attributes.
+    :return: attributes with lambda_b updated.
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] == 1:
+        if attributes['quality_id'] in [1, 2, 3, 4, 5, 6]:
+            _quality = 0
+        else:
+            _quality = 1
+        attributes['piF'] = PI_F[attributes['contact_rating_id']][
+            attributes['application_id'] - 1
+        ][
+            attributes['construction_id'] - 1
+        ][_quality]
+
+    return attributes
+
+
+def _get_environment_factor(attributes):
+    """
+    Retrieve the environment factor (pi_E).
+
+    :param dict attributes: the attributes dictionary of the relay being
+        calculated.
+    :return: attributes; the attributes dictionary updated with pi_E.
+    :rtype: dict
+    """
+    if attributes['quality_id'] in [1, 2, 3, 4, 5, 6]:
+        _quality = 0
+    else:
+        _quality = 1
+
+    if attributes['subcategory_id'] == 1:
+        try:
+            attributes['piE'] = PI_E[1][_quality][
+                attributes['environment_active_id'] - 1
+            ]
+        except IndexError:
+            attributes['piE'] = 1.0
+    else:
+        try:
+            attributes['piE'] = PI_E[2][
+                attributes['environment_active_id']
+                - 1
+            ]
+        except (KeyError, IndexError):
+            attributes['piE'] = 1.0
+
+    return attributes
+
+
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. type id; if the relay subcategory is NOT type dependent, then
+            the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |              Relay \          | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Mechanical                    |       13.1      |
+    +----------------+-------------------------------+-----------------+
+    |        2       | Solid State                   |       13.2      |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
+
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
+    """
+    try:
+        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[attributes['subcategory_id']][
+            attributes['type_id'] - 1
+        ]
+    except (KeyError, IndexError):
+        _lst_base_hr = [0.0]
+
+    return _lst_base_hr
+
+
+def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
+    """
+    Calculate the part stress hazard rate for a relay.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
+             dictionary with updated values and the error message, if any.
+    :rtype: (dict, str)
+    """
+    attributes = _calculate_lambda_b(attributes)
+    attributes = _calculate_cycling_factor(attributes)
+    attributes = _calculate_load_stress_factor(attributes)
+    attributes = _get_environment_factor(attributes)
+    attributes = _get_application_construction_factor(attributes)
+
+    # Determine the contact form factor (piC).
+    if attributes['subcategory_id'] == 1:
+        attributes['piC'] = PI_C[attributes['subcategory_id']][
+            attributes['contact_form_id'] - 1
+        ]
+
+    _msg = do_check_variables(attributes)
+
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
+    )
+    if attributes['subcategory_id'] == 1:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piL'] *
+            attributes['piC'] * attributes['piCYC'] * attributes['piF']
+        )
+
+    return attributes, _msg
+
+
+def do_check_variables(attributes):
     """
     Check calculation variable to ensure they are all greater than zero.
 
@@ -269,149 +405,3 @@ def _do_check_variables(attributes):
                 )
 
     return _msg
-
-
-def _get_application_construction_factor(attributes):
-    """
-    Calculate the construction factor (piF) for the relay.
-
-    :param dict attributes: the dict of relay attributes.
-    :return: attributes with lambda_b updated.
-    :rtype: dict
-    """
-    if attributes['subcategory_id'] == 1:
-        if attributes['quality_id'] in [1, 2, 3, 4, 5, 6]:
-            _quality = 0
-        else:
-            _quality = 1
-        attributes['piF'] = PI_F[attributes['contact_rating_id']][
-            attributes['application_id'] - 1
-        ][
-            attributes['construction_id'] - 1
-        ][_quality]
-
-    return attributes
-
-
-def _get_environment_factor(attributes):
-    """
-    Retrieve the environment factor (pi_E).
-
-    :param dict attributes: the attributes dictionary of the relay being
-        calculated.
-    :return: attributes; the attributes dictionary updated with pi_E.
-    :rtype: dict
-    """
-    if attributes['quality_id'] in [1, 2, 3, 4, 5, 6]:
-        _quality = 0
-    else:
-        _quality = 1
-
-    if attributes['subcategory_id'] == 1:
-        try:
-            attributes['piE'] = PI_E[1][_quality][
-                attributes['environment_active_id'] - 1
-            ]
-        except IndexError:
-            attributes['piE'] = 1.0
-    else:
-        try:
-            attributes['piE'] = PI_E[2][
-                attributes['environment_active_id']
-                - 1
-            ]
-        except (KeyError, IndexError):
-            attributes['piE'] = 1.0
-
-    return attributes
-
-
-def calculate_217f_part_count_lambda_b(attributes):
-    r"""
-    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
-
-        #. subcategory_id
-        #. type id; if the relay subcategory is NOT type dependent, then
-            the second key will be zero.
-
-    Current subcategory IDs are:
-
-    +----------------+-------------------------------+-----------------+
-    | Subcategory \  |              Relay \          | MIL-HDBK-217F \ |
-    |       ID       |              Style            |    Section      |
-    +================+===============================+=================+
-    |        1       | Mechanical                    |       13.1      |
-    +----------------+-------------------------------+-----------------+
-    |        2       | Solid State                   |       13.2      |
-    +----------------+-------------------------------+-----------------+
-
-    These keys return a list of base hazard rates.  The hazard rate to use is
-    selected from the list depending on the active environment.
-
-    :param dict attributes: the attributes for the relay being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
-    """
-    try:
-        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[attributes['subcategory_id']][
-            attributes['type_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        _lst_base_hr = [0.0]
-
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    _msg = _do_check_variables(attributes)
-
-    return attributes, _msg
-
-
-def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
-    """
-    Calculate the part stress hazard rate for a relay.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    attributes = _calculate_lambda_b(attributes)
-    attributes = _calculate_cycling_factor(attributes)
-    attributes = _calculate_load_stress_factor(attributes)
-    attributes = _get_environment_factor(attributes)
-    attributes = _get_application_construction_factor(attributes)
-
-    # Determine the contact form factor (piC).
-    if attributes['subcategory_id'] == 1:
-        attributes['piC'] = PI_C[attributes['subcategory_id']][
-            attributes['contact_form_id'] - 1
-        ]
-
-    _msg = _do_check_variables(attributes)
-
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
-    )
-    if attributes['subcategory_id'] == 1:
-        attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] * attributes['piL'] *
-            attributes['piC'] * attributes['piCYC'] * attributes['piF']
-        )
-
-    return attributes, _msg

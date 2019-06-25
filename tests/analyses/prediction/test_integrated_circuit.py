@@ -635,7 +635,7 @@ def test_temperature_overstress_harsh_environment(
 
 @pytest.mark.unit
 def test_check_variable_zero():
-    """_do_check_variables() should return a warning message when variables <= zero."""
+    """do_check_variables() should return a warning message when variables <= zero."""
     ATTRIBUTES['hazard_rate_method_id'] = 1
     ATTRIBUTES['hardware_id'] = 100
     ATTRIBUTES['piQ'] = 1.0
@@ -647,14 +647,14 @@ def test_check_variable_zero():
     ATTRIBUTES['piT'] = 1.0
 
     ATTRIBUTES['lambda_b'] = -1.3
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating ' \
         'integrated circuit, hardware ID: 100.\n'
     )
 
     ATTRIBUTES['lambda_b'] = 0.0
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating ' \
         'integrated circuit, hardware ID: 100.\n'
@@ -662,14 +662,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['lambda_b'] = 1.0
     ATTRIBUTES['piQ'] = -1.3
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, quality ID: 2.\n'
     )
 
     ATTRIBUTES['piQ'] = 0.0
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, quality ID: 2.\n'
@@ -678,14 +678,14 @@ def test_check_variable_zero():
     ATTRIBUTES['piQ'] = 1.0
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['piE'] = -1.3
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, environment ID: 14.\n'
     )
 
     ATTRIBUTES['piE'] = 0.0
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, environment ID: 14.\n'
@@ -693,14 +693,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piE'] = 1.0
     ATTRIBUTES['piA'] = -1.3
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piA is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, application ID: 1.\n'
     )
 
     ATTRIBUTES['piA'] = 0.0
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piA is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, application ID: 1.\n'
@@ -708,14 +708,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piA'] = 1.0
     ATTRIBUTES['piL'] = -1.3
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piL is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, years in production: 1.000000.\n'
     )
 
     ATTRIBUTES['piL'] = 0.0
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piL is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, years in production: 1.000000.\n'
@@ -723,14 +723,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piL'] = 1.0
     ATTRIBUTES['piT'] = -1.3
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piT is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, application ID: 1, type ID: 2.\n'
     )
 
     ATTRIBUTES['piT'] = 0.0
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piT is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, application ID: 1, type ID: 2.\n'
@@ -738,14 +738,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piT'] = 1.0
     ATTRIBUTES['C1'] = -1.3
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: C1 is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, application ID: 1, technology ID: 1.\n'
     )
 
     ATTRIBUTES['C1'] = 0.0
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: C1 is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, application ID: 1, technology ID: 1.\n'
@@ -753,14 +753,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['C1'] = 1.0
     ATTRIBUTES['C2'] = -1.3
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: C2 is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, package ID: 2, # active pins: 16.\n'
     )
 
     ATTRIBUTES['C2'] = 0.0
-    _msg = IntegratedCircuit._do_check_variables(ATTRIBUTES)
+    _msg = IntegratedCircuit.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: C2 is 0.0 when calculating integrated circuit, ' \
         'hardware ID: 100, package ID: 2, # active pins: 16.\n'

@@ -405,7 +405,7 @@ def test_current_overstress_mild_environment(
 
 @pytest.mark.unit
 def test_check_variable_zero():
-    """_do_check_variables() should return a warning message when variables <= zero."""
+    """do_check_variables() should return a warning message when variables <= zero."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['hardware_id'] = 100
     ATTRIBUTES['piE'] = 1.0
@@ -416,7 +416,7 @@ def test_check_variable_zero():
     ATTRIBUTES['piU'] = 1.0
 
     ATTRIBUTES['lambda_b'] = -1.3
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating switch, '
         'hardware ID: 100, subcategory ID: 2, construction ID: 2, and active '
@@ -424,7 +424,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['lambda_b'] = 0.0
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: Base hazard rate is 0.0 when calculating switch, '
         'hardware ID: 100, subcategory ID: 2, construction ID: 2, and active '
@@ -433,14 +433,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['lambda_b'] = 1.0
     ATTRIBUTES['piQ'] = -1.3
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating switch, hardware ID: '
         '100, subcategory ID: 2, and quality ID: 1.\n'
     )
 
     ATTRIBUTES['piQ'] = 0.0
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piQ is 0.0 when calculating switch, hardware ID: '
         '100, subcategory ID: 2, and quality ID: 1.\n'
@@ -448,14 +448,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piQ'] = 1.0
     ATTRIBUTES['piE'] = -1.3
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating switch, hardware ID: '
         '100, active environment ID: 11.\n'
     )
 
     ATTRIBUTES['piE'] = 0.0
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piE is 0.0 when calculating switch, hardware ID: '
         '100, active environment ID: 11.\n'
@@ -463,14 +463,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piE'] = 1.0
     ATTRIBUTES['piC'] = -1.3
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piC is 0.0 when calculating switch, hardware ID: '
         '100, subcategory ID: 2, and contact form ID: 3.\n'
     )
 
     ATTRIBUTES['piC'] = 0.0
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piC is 0.0 when calculating switch, hardware ID: '
         '100, subcategory ID: 2, and contact form ID: 3.\n'
@@ -478,14 +478,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piC'] = 1.0
     ATTRIBUTES['piCYC'] = -1.3
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piCYC is 0.0 when calculating switch, hardware ID: '
         '100 and # of cycles: 5.000000.\n'
     )
 
     ATTRIBUTES['piCYC'] = 0.0
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piCYC is 0.0 when calculating switch, hardware ID: '
         '100 and # of cycles: 5.000000.\n'
@@ -493,7 +493,7 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piCYC'] = 1.0
     ATTRIBUTES['piL'] = -1.3
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piL is 0.0 when calculating switch, hardware ID: '
         '100, subcategory ID: 2, application ID: 1, and current ratio: '
@@ -501,7 +501,7 @@ def test_check_variable_zero():
     )
 
     ATTRIBUTES['piL'] = 0.0
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piL is 0.0 when calculating switch, hardware ID: '
         '100, subcategory ID: 2, application ID: 1, and current ratio: '
@@ -510,14 +510,14 @@ def test_check_variable_zero():
 
     ATTRIBUTES['piL'] = 1.0
     ATTRIBUTES['piU'] = -1.3
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piU is 0.0 when calculating switch, hardware ID: '
         '100 and application ID: 1.\n'
     )
 
     ATTRIBUTES['piU'] = 0.0
-    _msg = Switch._do_check_variables(ATTRIBUTES)
+    _msg = Switch.do_check_variables(ATTRIBUTES)
     assert _msg == (
         'RAMSTK WARNING: piU is 0.0 when calculating switch, hardware ID: '
         '100 and application ID: 1.\n'

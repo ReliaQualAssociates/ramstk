@@ -455,10 +455,9 @@ def calculate_217f_part_count_lambda_b(attributes):
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param dict attributes: the attributes for the resistor being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
     """
     try:
         if attributes['subcategory_id'] in [2, 6]:
@@ -474,19 +473,64 @@ def calculate_217f_part_count_lambda_b(attributes):
     except KeyError:
         _lst_base_hr = [0.0]
 
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
+    return _lst_base_hr
 
-    _msg = _do_check_variables(attributes)
+
+def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
+    """
+    Calculate the part stress hazard rate for a resistor.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
+             dictionary with updated values and the error message, if any.
+    :rtype: (dict, str)
+    """
+    attributes = _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes)
+    attributes = _calculate_resistance_factor(attributes)
+    attributes = _calculate_voltage_factor(attributes)
+    attributes = _calculate_temperature_factor(attributes)
+
+    # Calculate the taps factor (piTAPS).
+    if attributes['subcategory_id'] in [9, 10, 11, 12, 13, 14, 15]:
+        attributes['piTAPS'] = (attributes['n_elements']**1.5 / 25.0) + 0.792
+
+    # Determine the consruction class factor (piC).
+    if attributes['subcategory_id'] in [10, 12]:
+        attributes['piC'] = PI_C[attributes['subcategory_id']][
+            attributes['construction_id'] - 1
+        ]
+
+    _msg = do_check_variables(attributes)
+
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
+    )
+    if attributes['subcategory_id'] == 4:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piT'] *
+            attributes['n_elements']
+        )
+    elif attributes['subcategory_id'] in [9, 11, 13, 14, 15]:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piTAPS'] *
+            attributes['piR'] * attributes['piV']
+        )
+    elif attributes['subcategory_id'] in [10, 12]:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piTAPS'] *
+            attributes['piC'] * attributes['piR'] * attributes['piV']
+        )
+    elif attributes['subcategory_id'] != 8:
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active'] * attributes['piR']
+        )
 
     return attributes, _msg
 
 
-def _do_check_variables(attributes):
+def do_check_variables(attributes):
     """
     Check calculation variable to ensure they are all greater than zero.
 
@@ -576,59 +620,5 @@ def _do_check_variables(attributes):
                     attributes['subcategory_id'],
                     attributes['voltage_ratio'],
                 )
-    print(_msg)
+
     return _msg
-
-
-def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
-    """
-    Calculate the part stress hazard rate for a resistor.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    attributes = _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes)
-    attributes = _calculate_resistance_factor(attributes)
-    attributes = _calculate_voltage_factor(attributes)
-    attributes = _calculate_temperature_factor(attributes)
-
-    # Calculate the taps factor (piTAPS).
-    if attributes['subcategory_id'] in [9, 10, 11, 12, 13, 14, 15]:
-        attributes['piTAPS'] = (attributes['n_elements']**1.5 / 25.0) + 0.792
-
-    # Determine the consruction class factor (piC).
-    if attributes['subcategory_id'] in [10, 12]:
-        attributes['piC'] = PI_C[attributes['subcategory_id']][
-            attributes['construction_id'] - 1
-        ]
-
-    _msg = _do_check_variables(attributes)
-
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
-    )
-    if attributes['subcategory_id'] == 4:
-        attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] * attributes['piT'] *
-            attributes['n_elements']
-        )
-    elif attributes['subcategory_id'] in [9, 11, 13, 14, 15]:
-        attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] * attributes['piTAPS'] *
-            attributes['piR'] * attributes['piV']
-        )
-    elif attributes['subcategory_id'] in [10, 12]:
-        attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] * attributes['piTAPS'] *
-            attributes['piC'] * attributes['piR'] * attributes['piV']
-        )
-    elif attributes['subcategory_id'] != 8:
-        attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] * attributes['piR']
-        )
-
-    return attributes, _msg

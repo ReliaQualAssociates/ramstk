@@ -168,60 +168,6 @@ def _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes):
     return attributes
 
 
-def _do_check_variables(attributes):
-    """
-    Check calculation variable to ensure they are all greater than zero.
-
-    All variables are checked regardless of whether they'll be used in the
-    calculation for the fuse type which is why a WARKING message is
-    issued rather than an ERROR message.
-
-    :param dict attributes: the attributes for the fuse being calculated.
-    :return: _msg; a message indicating all the variables that are less than or
-        equal to zero in value.
-    :rtype: str
-    """
-    _msg = ''
-
-    if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating inductor, hardware ID: ' \
-            '{0:d}, subcategory ID: {1:d}, family ID: {2:d}, and active ' \
-            'environment ID: {3:d}.\n'.format(
-                attributes['hardware_id'],
-                attributes['subcategory_id'],
-                attributes['family_id'],
-                attributes['environment_active_id'],
-            )
-
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
-            'inductor, hardware ID: {0:d}, quality ID: ' \
-            '{1:d}.\n'.format(
-                attributes['hardware_id'],
-                attributes['quality_id'],
-            )
-
-    if attributes['hazard_rate_method_id'] == 2:
-        if attributes['piE'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
-                'inductor, hardware ID: {0:d}, ' \
-                'active environment ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['environment_active_id'],
-                )
-
-        if attributes['piC'] <= 0.0:
-            _msg = _msg + 'RAMSTK WARNING: piC is 0.0 when calculating ' \
-                'inductor, hardware ID: {0:d}, ' \
-                'construction ID: {1:d}.\n'.format(
-                    attributes['hardware_id'],
-                    attributes['construction_id'],
-                )
-
-    return _msg
-
-
 def _get_part_stress_quality_factor(attributes):
     """
     Select the MIL-HDBK-217F quality factor for the inductor device.
@@ -276,10 +222,9 @@ def calculate_217f_part_count_lambda_b(attributes):
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param dict attributes: the attributes for the inductor being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
+    :param dict attributes: the attributes for the crystal being calculated.
+    :return: _lst_base_hr; the list of base hazard rates.
+    :rtype: list
     """
     try:
         _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
@@ -290,16 +235,7 @@ def calculate_217f_part_count_lambda_b(attributes):
     except KeyError:
         _lst_base_hr = [0.0]
 
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    _msg = _do_check_variables(attributes)
-
-    return attributes, _msg
+    return _lst_base_hr
 
 
 def calculate_217f_part_stress(**attributes):
@@ -326,7 +262,7 @@ def calculate_217f_part_stress(**attributes):
     except IndexError:
         attributes['piC'] = 0.0
 
-    _msg = _do_check_variables(attributes)
+    _msg = do_check_variables(attributes)
 
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piQ'] * attributes['piE']
@@ -337,3 +273,57 @@ def calculate_217f_part_stress(**attributes):
         )
 
     return attributes, _msg
+
+
+def do_check_variables(attributes):
+    """
+    Check calculation variable to ensure they are all greater than zero.
+
+    All variables are checked regardless of whether they'll be used in the
+    calculation for the fuse type which is why a WARKING message is
+    issued rather than an ERROR message.
+
+    :param dict attributes: the attributes for the fuse being calculated.
+    :return: _msg; a message indicating all the variables that are less than or
+        equal to zero in value.
+    :rtype: str
+    """
+    _msg = ''
+
+    if attributes['lambda_b'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating inductor, hardware ID: ' \
+            '{0:d}, subcategory ID: {1:d}, family ID: {2:d}, and active ' \
+            'environment ID: {3:d}.\n'.format(
+                attributes['hardware_id'],
+                attributes['subcategory_id'],
+                attributes['family_id'],
+                attributes['environment_active_id'],
+            )
+
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + 'RAMSTK WARNING: piQ is 0.0 when calculating ' \
+            'inductor, hardware ID: {0:d}, quality ID: ' \
+            '{1:d}.\n'.format(
+                attributes['hardware_id'],
+                attributes['quality_id'],
+            )
+
+    if attributes['hazard_rate_method_id'] == 2:
+        if attributes['piE'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piE is 0.0 when calculating ' \
+                'inductor, hardware ID: {0:d}, ' \
+                'active environment ID: {1:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['environment_active_id'],
+                )
+
+        if attributes['piC'] <= 0.0:
+            _msg = _msg + 'RAMSTK WARNING: piC is 0.0 when calculating ' \
+                'inductor, hardware ID: {0:d}, ' \
+                'construction ID: {1:d}.\n'.format(
+                    attributes['hardware_id'],
+                    attributes['construction_id'],
+                )
+
+    return _msg
