@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.gui.gtk.ramstk.Button &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.gui.gtk.ramstk.Button</h1><div class="highlight"><pre>
+<span></span><span class="c1"># pylint: disable=protected-access, non-parent-init-called</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.gui.gtk.ramstk.Button.py is part of the RAMSTK Project</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2017 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;RAMSTK Button Module.&quot;&quot;&quot;</span>
+
+<span class="c1"># RAMSTK Local Imports</span>
+<span class="kn">from</span> <span class="nn">.Widget</span> <span class="k">import</span> <span class="n">GdkPixbuf</span><span class="p">,</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">_</span>
+
+
+<div class="viewcode-block" id="do_make_buttonbox"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.Button.do_make_buttonbox">[docs]</a><span class="k">def</span> <span class="nf">do_make_buttonbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create the buttonbox for RAMSTK Views.</span>
+
+<span class="sd">    This method creates the base buttonbox used by all RAMSTK Views.  Use a</span>
+<span class="sd">    buttonbox for a RAMSTK View if there are only buttons to be added.</span>
+
+<span class="sd">    :return: _buttonbox</span>
+<span class="sd">    :rtype: :class:`Gtk.ButtonBox`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_icons</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;icons&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">_icons</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_tooltips</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tooltips&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">_tooltips</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_callbacks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;callbacks&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">_callbacks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_orientation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;orientation&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">_orientation</span> <span class="o">=</span> <span class="s1">&#39;vertical&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_height</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">_height</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">_width</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="c1"># Append the default save and save-all buttons found on all toolbars to</span>
+    <span class="c1"># List Views, Module Views, and Work Views.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_icons</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="s1">&#39;save-all&#39;</span><span class="p">])</span>
+        <span class="n">_tooltips</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Save the currently selected item.&quot;</span><span class="p">),</span>
+                <span class="n">_</span><span class="p">(</span><span class="s2">&quot;Save all items.&quot;</span><span class="p">),</span>
+            <span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">_callbacks</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_do_request_update</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_request_update_all</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="n">_orientation</span> <span class="o">==</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">:</span>
+        <span class="n">_buttonbox</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">HButtonBox</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_buttonbox</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">VButtonBox</span><span class="p">()</span>
+
+    <span class="n">_buttonbox</span><span class="o">.</span><span class="n">set_layout</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">ButtonBoxStyle</span><span class="o">.</span><span class="n">START</span><span class="p">)</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">_icon</span> <span class="ow">in</span> <span class="n">_icons</span><span class="p">:</span>
+        <span class="n">_image</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+        <span class="n">_icon</span> <span class="o">=</span> <span class="n">GdkPixbuf</span><span class="o">.</span><span class="n">Pixbuf</span><span class="o">.</span><span class="n">new_from_file_at_size</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dic_icons</span><span class="p">[</span><span class="n">_icon</span><span class="p">],</span>
+            <span class="n">_height</span><span class="p">,</span> <span class="n">_width</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">_image</span><span class="o">.</span><span class="n">set_from_pixbuf</span><span class="p">(</span><span class="n">_icon</span><span class="p">)</span>
+
+        <span class="n">_button</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Button</span><span class="p">()</span>
+        <span class="n">_button</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="n">_image</span><span class="p">)</span>
+
+        <span class="n">_button</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">width_request</span> <span class="o">=</span> <span class="n">_width</span>
+        <span class="n">_button</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">height_request</span> <span class="o">=</span> <span class="n">_height</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_button</span><span class="o">.</span><span class="n">set_tooltip_markup</span><span class="p">(</span><span class="n">_tooltips</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">_button</span><span class="o">.</span><span class="n">set_tooltip_markup</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_button</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;clicked&#39;</span><span class="p">,</span> <span class="n">_callbacks</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">_button</span><span class="o">.</span><span class="n">set_sensitive</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">_buttonbox</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="n">_button</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">_buttonbox</span></div>
+
+
+<div class="viewcode-block" id="RAMSTKButton"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.Button.RAMSTKButton">[docs]</a><span class="k">class</span> <span class="nc">RAMSTKButton</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">Button</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the RAMSTK Button class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of the RAMSTK Button.</span>
+
+<span class="sd">        :keyword int height: the height of the Gtk.Button().</span>
+<span class="sd">        Default is 40.</span>
+<span class="sd">        :keyword int  width: the width of the Gtk.Button().</span>
+<span class="sd">        Default is 200.</span>
+<span class="sd">        :keyword str label: the text to display on the Gtk.Button().</span>
+<span class="sd">        Default is an ellipsis (...).</span>
+<span class="sd">        :keyword str icon: the image to display on the Gtk.Button().</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+        <span class="c1"># TODO: Remove the call to do_set_properties() in the RAMSTKButton.__init__() method when all instances of RAMSTKButton() have been refactored.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_set_properties</span><span class="p">(</span>
+            <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">tooltip</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">,</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="RAMSTKButton.do_set_properties"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.Button.RAMSTKButton.do_set_properties">[docs]</a>    <span class="k">def</span> <span class="nf">do_set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the properties of the RAMSTK button.</span>
+
+<span class="sd">        :param \**kwargs: See below</span>
+
+<span class="sd">        :Keyword Arguments:</span>
+<span class="sd">            * *height* (int) -- height of the Gtk.Button() widget.</span>
+<span class="sd">                                Default is 30.</span>
+<span class="sd">            * *icon* (str) -- the icon to display on the button.  Default is</span>
+<span class="sd">                              None.</span>
+<span class="sd">            * *tooltip* (str) -- the tooltip, if any, for the button.</span>
+<span class="sd">                                 Default is an empty string.</span>
+<span class="sd">            * *width* (int) -- width of the Gtk.Button() widget.</span>
+<span class="sd">                               Default is 200.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_height</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_height</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_icon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;icon&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_icon</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_tooltip</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tooltip&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_tooltip</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_width</span> <span class="o">=</span> <span class="mi">200</span>
+
+        <span class="k">if</span> <span class="n">_width</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">_width</span> <span class="o">=</span> <span class="mi">200</span>
+
+        <span class="k">if</span> <span class="n">_icon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_image</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+            <span class="n">_icon</span> <span class="o">=</span> <span class="n">GdkPixbuf</span><span class="o">.</span><span class="n">Pixbuf</span><span class="o">.</span><span class="n">new_from_file_at_size</span><span class="p">(</span>
+                <span class="n">_icon</span><span class="p">,</span> <span class="n">_height</span><span class="p">,</span> <span class="n">_width</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">_image</span><span class="o">.</span><span class="n">set_from_pixbuf</span><span class="p">(</span><span class="n">_icon</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_image</span><span class="p">(</span><span class="n">_image</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">width_request</span> <span class="o">=</span> <span class="n">_width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">height_request</span> <span class="o">=</span> <span class="n">_height</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_tooltip_text</span><span class="p">(</span><span class="n">_tooltip</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="RAMSTKCheckButton"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.Button.RAMSTKCheckButton">[docs]</a><span class="k">class</span> <span class="nc">RAMSTKCheckButton</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">CheckButton</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the RAMSTK Check Button class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of the RAMSTK CheckButton.</span>
+
+<span class="sd">        :keyword str label: the text to display with the Gtk.CheckButton().</span>
+<span class="sd">                            Default is an empty string.</span>
+<span class="sd">        :keyword int width: the desired width of the Gtk.CheckButton().</span>
+<span class="sd">                            Default is -1 or a natural request.</span>
+<span class="sd">        :keyword str tooltip: the tooltip to display when hovering over the</span>
+<span class="sd">                              CheckButton.</span>
+<span class="sd">        :return: _checkbutton</span>
+<span class="sd">        :rtype: :py:class:`Gtk.CheckButton`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">use_underline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RAMSTKCheckButton.do_set_properties"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.Button.RAMSTKCheckButton.do_set_properties">[docs]</a>    <span class="k">def</span> <span class="nf">do_set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the properties of the RAMSTK button.</span>
+
+<span class="sd">        :param \**kwargs: See below</span>
+
+<span class="sd">        :Keyword Arguments:</span>
+<span class="sd">            * *height* (int) -- height of the Gtk.Button() widget.</span>
+<span class="sd">                                Default is 40.</span>
+<span class="sd">            * *tooltip* (str) -- the tooltip, if any, for the button.</span>
+<span class="sd">                                 Default is an empty string.</span>
+<span class="sd">            * *width* (int) -- width of the Gtk.Button() widget.</span>
+<span class="sd">                               Default is 200.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_height</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_height</span> <span class="o">=</span> <span class="mi">40</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_tooltip</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;tooltip&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_tooltip</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;RAMSTK WARNING: Missing tooltip.  Please register &quot;</span>
+                <span class="s2">&quot;an Enhancement type bug.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">_width</span> <span class="o">=</span> <span class="mi">200</span>
+
+        <span class="k">if</span> <span class="n">_width</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">_width</span> <span class="o">=</span> <span class="mi">200</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_child</span><span class="p">()</span><span class="o">.</span><span class="n">set_use_markup</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_child</span><span class="p">()</span><span class="o">.</span><span class="n">set_line_wrap</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_child</span><span class="p">()</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">height_request</span> <span class="o">=</span> <span class="n">_height</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_child</span><span class="p">()</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">width_request</span> <span class="o">=</span> <span class="n">_width</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_tooltip_markup</span><span class="p">(</span><span class="n">_tooltip</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTKCheckButton.do_update"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.Button.RAMSTKCheckButton.do_update">[docs]</a>    <span class="k">def</span> <span class="nf">do_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">handler_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the RAMSTK CheckButton with a new value.</span>
+
+<span class="sd">        :param str value: the information to update the RAMSTKCheckButton() to</span>
+<span class="sd">                          display.</span>
+<span class="sd">        :param int handler_id: the handler ID associated with the</span>
+<span class="sd">                               RAMSTKCheckButton().</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler_block</span><span class="p">(</span><span class="n">handler_id</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handler_unblock</span><span class="p">(</span><span class="n">handler_id</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="RAMSTKOptionButton"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.Button.RAMSTKOptionButton">[docs]</a><span class="k">class</span> <span class="nc">RAMSTKOptionButton</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">RadioButton</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the RAMSTK Option Button class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">btngroup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">btnlabel</span><span class="o">=</span><span class="n">_</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of the RAMSTK OptionButton.</span>
+
+<span class="sd">        :keyword str btngroup: the group the Gtk.RadioButton() belongs to, if</span>
+<span class="sd">                               any.  Default is None.</span>
+<span class="sd">        :keyword str btnlabel: the text to place in the label on the</span>
+<span class="sd">                               Gtk.RadioButton().  Default is an empty string.</span>
+<span class="sd">        :return: _optbutton</span>
+<span class="sd">        :rtype: :py:class:`Gtk.RadioButton`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="n">btngroup</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">btnlabel</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

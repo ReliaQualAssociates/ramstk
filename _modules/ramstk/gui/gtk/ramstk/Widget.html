@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.gui.gtk.ramstk.Widget &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.gui.gtk.ramstk.Widget</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.gui.gtk.ramstk.Widget.py is part of the RAMSTK Project</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2017 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;The RAMSTK Widget Module.&quot;&quot;&quot;</span>
+
+<span class="c1"># Standard Library Imports</span>
+<span class="kn">import</span> <span class="nn">gettext</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># Third Party Imports</span>
+<span class="c1"># Disable the unused-import because Gtk, Gdk, GObject, and Pango are all</span>
+<span class="c1"># imported from this module by all the other GUI modules.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">gi</span>
+    <span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;Gdk&#39;</span><span class="p">,</span> <span class="s1">&#39;3.0&#39;</span><span class="p">)</span>
+    <span class="n">gi</span><span class="o">.</span><span class="n">require_version</span><span class="p">(</span><span class="s1">&#39;Gtk&#39;</span><span class="p">,</span> <span class="s1">&#39;3.0&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed to import package gi; exiting.&quot;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">gi.repository</span> <span class="k">import</span> <span class="p">(</span>  <span class="c1"># pylint: disable=unused-import</span>
+    <span class="n">Gdk</span><span class="p">,</span> <span class="n">GdkPixbuf</span><span class="p">,</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">Pango</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">gettext</span><span class="o">.</span><span class="n">gettext</span>
+
+
+<div class="viewcode-block" id="set_cursor"><a class="viewcode-back" href="../../../../../api/gui/gtk.widgets.html#ramstk.gui.gtk.ramstk.Widget.set_cursor">[docs]</a><span class="k">def</span> <span class="nf">set_cursor</span><span class="p">(</span><span class="n">controller</span><span class="p">,</span> <span class="n">cursor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the cursor for the Module, List, and Work Book Gdk.Window().</span>
+
+<span class="sd">    :param controller: the RAMSTK master data controller.</span>
+<span class="sd">    :type controller: :class:`ramstk.RAMSTK.RAMSTK`</span>
+<span class="sd">    :param Gdk.Cursor cursor: the Gdk.Cursor.new() to set.  Only handles</span>
+<span class="sd">                                  one of the following:</span>
+<span class="sd">                                  - Gdk.CursorType.X_CURSOR</span>
+<span class="sd">                                  - Gdk.CursorType.ARROW</span>
+<span class="sd">                                  - Gdk.CursorType.CENTER_PTR</span>
+<span class="sd">                                  - Gdk.CIRCLE</span>
+<span class="sd">                                  - Gdk.CROSS</span>
+<span class="sd">                                  - Gdk.CROSS_REVERSE</span>
+<span class="sd">                                  - Gdk.CursorType.CROSSHAIR</span>
+<span class="sd">                                  - Gdk.DIAMOND_CROSS</span>
+<span class="sd">                                  - Gdk.DOUBLE_ARROW</span>
+<span class="sd">                                  - Gdk.DRAFT_LARGE</span>
+<span class="sd">                                  - Gdk.DRAFT_SMALL</span>
+<span class="sd">                                  - Gdk.EXCHANGE</span>
+<span class="sd">                                  - Gdk.FLEUR</span>
+<span class="sd">                                  - Gdk.GUMBY</span>
+<span class="sd">                                  - Gdk.HAND1</span>
+<span class="sd">                                  - Gdk.HAND2</span>
+<span class="sd">                                  - Gdk.CursorType.LEFT_PTR - non-busy cursor</span>
+<span class="sd">                                  - Gdk.PENCIL</span>
+<span class="sd">                                  - Gdk.PLUS</span>
+<span class="sd">                                  - Gdk.QUESTION_ARROW</span>
+<span class="sd">                                  - Gdk.CursorType.RIGHT_PTR</span>
+<span class="sd">                                  - Gdk.SB_DOWN_ARROW</span>
+<span class="sd">                                  - Gdk.SB_H_DOUBLE_ARROW</span>
+<span class="sd">                                  - Gdk.SB_LEFT_ARROW</span>
+<span class="sd">                                  - Gdk.SB_RIGHT_ARROW</span>
+<span class="sd">                                  - Gdk.SB_UP_ARROW</span>
+<span class="sd">                                  - Gdk.SB_V_DOUBLE_ARROW</span>
+<span class="sd">                                  - Gdk.TCROSS</span>
+<span class="sd">                                  - Gdk.TOP_LEFT_ARROW</span>
+<span class="sd">                                  - Gdk.CursorType.WATCH - when application is busy</span>
+<span class="sd">                                  - Gdk.XTERM - selection bar</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">dic_books</span><span class="p">[</span><span class="s1">&#39;listbook&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_window</span><span class="p">()</span><span class="o">.</span><span class="n">set_cursor</span><span class="p">(</span>
+        <span class="n">Gdk</span><span class="o">.</span><span class="n">Cursor</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">cursor</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">dic_books</span><span class="p">[</span><span class="s1">&#39;modulebook&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_window</span><span class="p">()</span><span class="o">.</span><span class="n">set_cursor</span><span class="p">(</span>
+        <span class="n">Gdk</span><span class="o">.</span><span class="n">Cursor</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">cursor</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">controller</span><span class="o">.</span><span class="n">dic_books</span><span class="p">[</span><span class="s1">&#39;workbook&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_window</span><span class="p">()</span><span class="o">.</span><span class="n">set_cursor</span><span class="p">(</span>
+        <span class="n">Gdk</span><span class="o">.</span><span class="n">Cursor</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">cursor</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">Gdk</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

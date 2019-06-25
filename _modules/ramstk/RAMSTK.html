@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.RAMSTK &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.RAMSTK</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.RAMSTK.py is part of the RAMSTK Project</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2017 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;This is the main program for the RAMSTK application.&quot;&quot;&quot;</span>
+
+<span class="c1"># Standard Library Imports</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span>
+
+<span class="c1"># Third Party Imports</span>
+<span class="kn">from</span> <span class="nn">pubsub</span> <span class="k">import</span> <span class="n">pub</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.orm</span> <span class="k">import</span> <span class="n">scoped_session</span>
+<span class="kn">from</span> <span class="nn">treelib</span> <span class="k">import</span> <span class="n">Tree</span>
+
+<span class="c1"># RAMSTK Package Imports</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKCategory</span> <span class="k">import</span> <span class="n">RAMSTKCategory</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKFailureMode</span> <span class="k">import</span> <span class="n">RAMSTKFailureMode</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKGroup</span> <span class="k">import</span> <span class="n">RAMSTKGroup</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKHazards</span> <span class="k">import</span> <span class="n">RAMSTKHazards</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKLoadHistory</span> <span class="k">import</span> <span class="n">RAMSTKLoadHistory</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKManufacturer</span> <span class="k">import</span> <span class="n">RAMSTKManufacturer</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKMeasurement</span> <span class="k">import</span> <span class="n">RAMSTKMeasurement</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKMethod</span> <span class="k">import</span> <span class="n">RAMSTKMethod</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKModel</span> <span class="k">import</span> <span class="n">RAMSTKModel</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKRPN</span> <span class="k">import</span> <span class="n">RAMSTKRPN</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKSiteInfo</span> <span class="k">import</span> <span class="n">RAMSTKSiteInfo</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKStakeholders</span> <span class="k">import</span> <span class="n">RAMSTKStakeholders</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKStatus</span> <span class="k">import</span> <span class="n">RAMSTKStatus</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKSubCategory</span> <span class="k">import</span> <span class="n">RAMSTKSubCategory</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKType</span> <span class="k">import</span> <span class="n">RAMSTKType</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.commondb.RAMSTKUser</span> <span class="k">import</span> <span class="n">RAMSTKUser</span>
+<span class="kn">from</span> <span class="nn">ramstk.dao.DAO</span> <span class="k">import</span> <span class="n">DAO</span>
+<span class="kn">from</span> <span class="nn">ramstk.gui.gtk</span> <span class="k">import</span> <span class="n">ramstk</span>
+<span class="kn">from</span> <span class="nn">ramstk.gui.gtk.mwi</span> <span class="k">import</span> <span class="n">ListBook</span><span class="p">,</span> <span class="n">ModuleBook</span><span class="p">,</span> <span class="n">WorkBook</span>
+<span class="kn">from</span> <span class="nn">ramstk.gui.gtk.ramstk.Widget</span> <span class="k">import</span> <span class="n">GdkPixbuf</span><span class="p">,</span> <span class="n">Gtk</span><span class="p">,</span> <span class="n">_</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.allocation</span> <span class="k">import</span> <span class="n">dtcAllocation</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.exports</span> <span class="k">import</span> <span class="n">dtcExports</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.failure_definition</span> <span class="k">import</span> <span class="n">dtcFailureDefinition</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.fmea</span> <span class="k">import</span> <span class="n">dtcFMEA</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.function</span> <span class="k">import</span> <span class="n">dtcFunction</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.hardware</span> <span class="k">import</span> <span class="n">dtcHardwareBoM</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.hazops</span> <span class="k">import</span> <span class="n">dtcHazardAnalysis</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.imports</span> <span class="k">import</span> <span class="n">dtcImports</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.options</span> <span class="k">import</span> <span class="n">dtcOptions</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.pof</span> <span class="k">import</span> <span class="n">dtcPoF</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.preferences</span> <span class="k">import</span> <span class="n">dtcPreferences</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.requirement</span> <span class="k">import</span> <span class="n">dtcRequirement</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.revision</span> <span class="k">import</span> <span class="n">dtcRevision</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.similar_item</span> <span class="k">import</span> <span class="n">dtcSimilarItem</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.stakeholder</span> <span class="k">import</span> <span class="n">dtcStakeholder</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.usage</span> <span class="k">import</span> <span class="n">dtcUsageProfile</span>
+<span class="kn">from</span> <span class="nn">ramstk.modules.validation</span> <span class="k">import</span> <span class="n">dtcValidation</span>
+
+<span class="c1"># RAMSTK Local Imports</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Utilities</span>
+<span class="kn">from</span> <span class="nn">.Configuration</span> <span class="k">import</span> <span class="n">Configuration</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Launch the RAMSTK application.&quot;&quot;&quot;</span>
+    <span class="c1"># splScreen = SplashScreen()</span>
+
+    <span class="c1"># If you don&#39;t do this, the splash screen will show, but wont render it&#39;s</span>
+    <span class="c1"># contents</span>
+    <span class="c1"># while Gtk.events_pending():</span>
+    <span class="c1">#     Gtk.main_iteration()</span>
+
+    <span class="c1"># sleep(3)</span>
+    <span class="n">_app</span> <span class="o">=</span> <span class="n">RAMSTK</span><span class="p">(</span><span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># splScreen.window.destroy()</span>
+
+    <span class="c1"># Create RAMSTK Books.  These need to be initialized after reading the</span>
+    <span class="c1"># configuration.</span>
+    <span class="k">if</span> <span class="n">_app</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_GUI_LAYOUT</span> <span class="o">==</span> <span class="s1">&#39;basic&#39;</span><span class="p">:</span>  <span class="c1"># Single window.</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Multiple windows.</span>
+        <span class="n">ListBook</span><span class="p">(</span><span class="n">_app</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">)</span>
+        <span class="n">ModuleBook</span><span class="p">(</span><span class="n">_app</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">)</span>
+        <span class="n">WorkBook</span><span class="p">(</span><span class="n">_app</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">)</span>
+
+    <span class="n">Gtk</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="mi">0</span></div>
+
+
+<div class="viewcode-block" id="_initialize_loggers"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK._initialize_loggers">[docs]</a><span class="k">def</span> <span class="nf">_initialize_loggers</span><span class="p">(</span><span class="n">configuration</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create loggers for the RAMSTK application.</span>
+
+<span class="sd">    :param configuration: the RAMSTK Configuration() object instance holding all</span>
+<span class="sd">                          the configuration values for the current instance of</span>
+<span class="sd">                          RAMSTK.</span>
+<span class="sd">    :type configuration: :class:`ramstk.Configuration.Configuration()`</span>
+<span class="sd">    :return: (_debug_log, _user_log, _import_log)</span>
+<span class="sd">    :rtype: tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Create loggers for the application.  The first is to store log</span>
+    <span class="c1"># information for RAMSTK developers.  The second is to log errors for the</span>
+    <span class="c1"># user.  The user can use these errors to help find problems with their</span>
+    <span class="c1"># inputs and sich.  The third is for logging errors encountered when</span>
+    <span class="c1"># importing data to RAMSTK.</span>
+    <span class="n">__error_log</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_LOG_DIR</span> <span class="o">+</span> <span class="s1">&#39;/RAMSTK_debug.log&#39;</span>
+    <span class="n">__user_log</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_LOG_DIR</span> <span class="o">+</span> <span class="s1">&#39;/RAMSTK_user.log&#39;</span>
+    <span class="n">__import_log</span> <span class="o">=</span> <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_LOG_DIR</span> <span class="o">+</span> <span class="s1">&#39;/RAMSTK_import.log&#39;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">dir_exists</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_LOG_DIR</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_LOG_DIR</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">file_exists</span><span class="p">(</span><span class="n">__user_log</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">__user_log</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">_error</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Could not delete </span><span class="si">{0:s}</span><span class="s2"> because </span><span class="si">{1:s}</span><span class="s2">.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">__user_log</span><span class="p">,</span>
+                <span class="n">_error</span><span class="p">,</span>
+            <span class="p">))</span>
+    <span class="k">if</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">file_exists</span><span class="p">(</span><span class="n">__error_log</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">__error_log</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">_error</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Could not delete </span><span class="si">{0:s}</span><span class="s2"> because </span><span class="si">{1:s}</span><span class="s2">.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">__user_log</span><span class="p">,</span>
+                <span class="n">_error</span><span class="p">,</span>
+            <span class="p">))</span>
+    <span class="k">if</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">file_exists</span><span class="p">(</span><span class="n">__import_log</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">__import_log</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">_error</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;Could not delete </span><span class="si">{0:s}</span><span class="s2"> because </span><span class="si">{1:s}</span><span class="s2">.&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">__user_log</span><span class="p">,</span>
+                <span class="n">_error</span><span class="p">,</span>
+            <span class="p">))</span>
+
+    <span class="n">_debug_log</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">create_logger</span><span class="p">(</span>
+        <span class="s2">&quot;RAMSTK.debug&quot;</span><span class="p">,</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+        <span class="n">__error_log</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">_user_log</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">create_logger</span><span class="p">(</span>
+        <span class="s2">&quot;RAMSTK.user&quot;</span><span class="p">,</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+        <span class="n">__user_log</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">_import_log</span> <span class="o">=</span> <span class="n">Utilities</span><span class="o">.</span><span class="n">create_logger</span><span class="p">(</span>
+        <span class="s2">&quot;RAMSTK.import&quot;</span><span class="p">,</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">,</span>
+        <span class="n">__import_log</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">_debug_log</span><span class="p">,</span> <span class="n">_user_log</span><span class="p">,</span> <span class="n">_import_log</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NoOptionError"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.NoOptionError">[docs]</a><span class="k">class</span> <span class="nc">NoOptionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raise error when no option is available in the configuration file.&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the RAMSTK data model class.</span>
+
+<span class="sd">    The attributes of a RAMSTK data model are:</span>
+
+<span class="sd">    :ivar site_dao: the data access object used to communicate with the RAMSTK</span>
+<span class="sd">                    Common database.</span>
+<span class="sd">    :type site_dao: :class:`ramstk.dao.DAO.DAO()`</span>
+<span class="sd">    :ivar program_dao: the data access object used to communicate with the RAMSTK</span>
+<span class="sd">                       Program database</span>
+<span class="sd">    :type program_dao: :class:`ramstk.dao.DAO.DAO()`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sitedao</span><span class="p">,</span> <span class="n">programdao</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize an instance of the RAMSTK data model.</span>
+
+<span class="sd">        :param sitedao: the `:class:ramstk.dao.DAO.DAO` instance connected to</span>
+<span class="sd">                        the RAMSTK Common database.</span>
+<span class="sd">        :param programdao: the `:class:ramstk.dao.DAO.DAO` instance connected</span>
+<span class="sd">                           to the RAMSTK Program database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize private dictionary attributes.</span>
+
+        <span class="c1"># Initialize private list attributes.</span>
+
+        <span class="c1"># Initialize private scalar attributes.</span>
+
+        <span class="c1"># Initialize public dictionary attributes.</span>
+
+        <span class="c1"># Initialize public list attributes.</span>
+
+        <span class="c1"># Initialize public scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">site_dao</span> <span class="o">=</span> <span class="n">sitedao</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">program_dao</span> <span class="o">=</span> <span class="n">programdao</span>
+
+        <span class="c1"># Create a session for communicating with the RAMSTK Common database</span>
+        <span class="n">site_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_dao</span><span class="o">.</span><span class="n">RAMSTK_SESSION</span>
+        <span class="n">site_session</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+            <span class="n">bind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">site_dao</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span>
+            <span class="n">autoflush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span> <span class="o">=</span> <span class="n">scoped_session</span><span class="p">(</span><span class="n">site_session</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">program_session</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Model.do_create_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.Model.do_create_program">[docs]</a>    <span class="k">def</span> <span class="nf">do_create_program</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new RAMSTK Program database.</span>
+
+<span class="sd">        :param str database: the RFC1738 URL path to the database to connect</span>
+<span class="sd">                             with.</span>
+<span class="sd">        :return: (_error_code, _msg); the error code and associated message.</span>
+<span class="sd">        :rtype: (int, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK SUCCESS: Creating RAMSTK Program database </span><span class="si">{0:s}</span><span class="s1">.&#39;</span><span class="o">.</span>\
+            <span class="nb">format</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">program_dao</span><span class="o">.</span><span class="n">db_create_program</span><span class="p">(</span><span class="n">database</span><span class="p">):</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Failed to create RAMSTK Program database &#39;</span> \
+                   <span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div>
+
+<div class="viewcode-block" id="Model.do_open_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.Model.do_open_program">[docs]</a>    <span class="k">def</span> <span class="nf">do_open_program</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open an RAMSTK Program database for analyses.</span>
+
+<span class="sd">        :param str database: the RFC1738 URL path to the database to connect</span>
+<span class="sd">                             with.</span>
+<span class="sd">        :return: (_error_code, _msg); the error code and associated message.</span>
+<span class="sd">        :rtype: (int, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK SUCCESS: Opening RAMSTK Program database </span><span class="si">{0:s}</span><span class="s1">.&#39;</span><span class="o">.</span>\
+            <span class="nb">format</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">program_dao</span><span class="o">.</span><span class="n">db_connect</span><span class="p">(</span><span class="n">database</span><span class="p">):</span>
+            <span class="n">program_session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">program_dao</span><span class="o">.</span><span class="n">RAMSTK_SESSION</span>
+            <span class="n">program_session</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span>
+                <span class="n">bind</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">program_dao</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span>
+                <span class="n">autoflush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">expire_on_commit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">program_session</span> <span class="o">=</span> <span class="n">scoped_session</span><span class="p">(</span><span class="n">program_session</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">1001</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;RAMSTK ERROR: Failed to open RAMSTK Program &#39;</span>
+                <span class="s1">&#39;database </span><span class="si">{0:s}</span><span class="s1">.&#39;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div>
+
+<div class="viewcode-block" id="Model.do_close_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.Model.do_close_program">[docs]</a>    <span class="k">def</span> <span class="nf">do_close_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the open RAMSTK Program database.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">program_dao</span><span class="o">.</span><span class="n">db_close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Model.do_save_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.Model.do_save_program">[docs]</a>    <span class="k">def</span> <span class="nf">do_save_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the open RAMSTK Program database.</span>
+
+<span class="sd">        :return: (_error_code, _msg); the error code and associated message.</span>
+<span class="sd">        :rtype: (int, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">program_dao</span><span class="o">.</span><span class="n">db_update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">program_session</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div>
+
+<div class="viewcode-block" id="Model.do_delete_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.Model.do_delete_program">[docs]</a>    <span class="k">def</span> <span class="nf">do_delete_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete an existing RAMSTK Program database.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+    <span class="c1"># pylint: disable=too-many-branches</span>
+<div class="viewcode-block" id="Model.do_load_globals"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.Model.do_load_globals">[docs]</a>    <span class="k">def</span> <span class="nf">do_load_globals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the RAMSTK Program global constants.</span>
+
+<span class="sd">        :param configuration: the currently active RAMSTK Program Configuration()</span>
+<span class="sd">                              object.</span>
+<span class="sd">        :type configuration: :class:`ramstk.Configuration.Configuration()`</span>
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Build the component category, component subcategory, failure modes  #</span>
+        <span class="c1"># tree.                                                               #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKCategory</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKCategory</span><span class="o">.</span><span class="n">cat_type</span> <span class="o">==</span> <span class="s1">&#39;hardware&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+
+            <span class="n">_subcats</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_FAILURE_MODES</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_STRESS_LIMITS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">harsh_ir_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">mild_ir_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">harsh_pr_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">mild_pr_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">harsh_vr_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">mild_vr_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">harsh_deltat_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">mild_deltat_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">harsh_maxt_limit</span><span class="p">,</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">mild_maxt_limit</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">_subcat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKSubCategory</span><span class="p">)</span><span class="o">.</span>\
+                    <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKSubCategory</span><span class="o">.</span><span class="n">category_id</span> <span class="o">==</span> <span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">)</span><span class="o">.</span>\
+                    <span class="nb">all</span><span class="p">():</span>
+                <span class="n">_subcats</span><span class="p">[</span><span class="n">_subcat</span><span class="o">.</span><span class="n">subcategory_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">_subcat</span><span class="o">.</span><span class="n">description</span>
+
+                <span class="n">_modes</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_FAILURE_MODES</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">][</span>
+                    <span class="n">_subcat</span><span class="o">.</span><span class="n">subcategory_id</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+                <span class="k">for</span> <span class="n">_mode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKFailureMode</span><span class="p">)</span><span class="o">.</span>\
+                        <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKFailureMode</span><span class="o">.</span><span class="n">category_id</span> <span class="o">==</span> <span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">)</span><span class="o">.</span>\
+                        <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKFailureMode</span><span class="o">.</span><span class="n">subcategory_id</span> <span class="o">==</span> <span class="n">_subcat</span><span class="o">.</span><span class="n">subcategory_id</span><span class="p">)</span><span class="o">.</span>\
+                        <span class="nb">all</span><span class="p">():</span>
+                    <span class="n">_modes</span><span class="p">[</span><span class="n">_mode</span><span class="o">.</span><span class="n">mode_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="n">_mode</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                        <span class="n">_mode</span><span class="o">.</span><span class="n">mode_ratio</span><span class="p">,</span>
+                        <span class="n">_mode</span><span class="o">.</span><span class="n">source</span><span class="p">,</span>
+                    <span class="p">]</span>
+
+                <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_FAILURE_MODES</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">][</span>
+                    <span class="n">_subcat</span><span class="o">.</span><span class="n">subcategory_id</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="n">_modes</span>
+
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_CATEGORIES</span><span class="p">[</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">category_id</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">description</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_SUBCATEGORIES</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">_subcats</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Load dictionaries from RAMSTKCategory.                                 #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKCategory</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKCategory</span><span class="o">.</span><span class="n">cat_type</span> <span class="o">==</span> <span class="s1">&#39;action&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_ACTION_CATEGORY</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;category_type&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKCategory</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKCategory</span><span class="o">.</span><span class="n">cat_type</span> <span class="o">==</span> <span class="s1">&#39;incident&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_INCIDENT_CATEGORY</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;category_type&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKCategory</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKCategory</span><span class="o">.</span><span class="n">cat_type</span> <span class="o">==</span> <span class="s1">&#39;risk&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_SEVERITY</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">category_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;category_type&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Load dictionaries from RAMSTKGroup.                                    #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKGroup</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKGroup</span><span class="o">.</span><span class="n">group_type</span> <span class="o">==</span> <span class="s1">&#39;affinity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_AFFINITY_GROUPS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;group_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKGroup</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKGroup</span><span class="o">.</span><span class="n">group_type</span> <span class="o">==</span> <span class="s1">&#39;workgroup&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_WORKGROUPS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">group_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;group_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Load the dictionaries from RAMSTKMethod.                               #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKMethod</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKMethod</span><span class="o">.</span><span class="n">method_type</span> <span class="o">==</span> <span class="s1">&#39;detection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_DETECTION_METHODS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">method_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;method_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Load the dictionaries from RAMSTKModel.                                #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKModel</span><span class="p">)</span><span class="o">.</span>\
+            <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKModel</span><span class="o">.</span><span class="n">model_type</span> <span class="o">==</span> <span class="s1">&#39;damage&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_DAMAGE_MODELS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">model_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span> <span class="p">)</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Load dictionaries from RAMSTKRPN.                                      #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKRPN</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKRPN</span><span class="o">.</span><span class="n">rpn_type</span> <span class="o">==</span> <span class="s1">&#39;detection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_RPN_DETECTION</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKRPN</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKRPN</span><span class="o">.</span><span class="n">rpn_type</span> <span class="o">==</span> <span class="s1">&#39;occurrence&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_RPN_OCCURRENCE</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKRPN</span><span class="p">)</span><span class="o">.</span> \
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKRPN</span><span class="o">.</span><span class="n">rpn_type</span> <span class="o">==</span> <span class="s1">&#39;severity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_RPN_SEVERITY</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Load dictionaries from RAMSTKStatus.                                   #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKStatus</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKStatus</span><span class="o">.</span><span class="n">status_type</span> <span class="o">==</span> <span class="s1">&#39;action&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_ACTION_STATUS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">status_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;status_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKStatus</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKStatus</span><span class="o">.</span><span class="n">status_type</span> <span class="o">==</span> <span class="s1">&#39;incident&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_INCIDENT_STATUS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">status_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;status_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Load dictionaries from RAMSTKType.                                     #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKType</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKType</span><span class="o">.</span><span class="n">type_type</span> <span class="o">==</span> <span class="s1">&#39;incident&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_INCIDENT_TYPE</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;type_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKType</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKType</span><span class="o">.</span><span class="n">type_type</span> <span class="o">==</span> <span class="s1">&#39;requirement&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_REQUIREMENT_TYPE</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;type_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKType</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKType</span><span class="o">.</span><span class="n">type_type</span> <span class="o">==</span> <span class="s1">&#39;validation&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_VALIDATION_TYPE</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">type_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;type_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="c1"># Load dictionaries from tables not requiring a filter.               #</span>
+        <span class="c1"># ------------------------------------------------------------------- #</span>
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKHazards</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_HAZARDS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">hazard_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;subcategory&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKLoadHistory</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_LOAD_HISTORY</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">history_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span> <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKManufacturer</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_MANUFACTURERS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">manufacturer_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;cage_code&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKMeasurement</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKMeasurement</span><span class="o">.</span><span class="n">measurement_type</span> <span class="o">==</span> <span class="s1">&#39;unit&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_MEASUREMENT_UNITS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">measurement_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;measurement_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKMeasurement</span><span class="p">)</span><span class="o">.</span>\
+                <span class="nb">filter</span><span class="p">(</span><span class="n">RAMSTKMeasurement</span><span class="o">.</span><span class="n">measurement_type</span> <span class="o">==</span> <span class="s1">&#39;damage&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_MEASURABLE_PARAMETERS</span><span class="p">[</span>
+                <span class="n">_record</span><span class="o">.</span><span class="n">measurement_id</span>
+            <span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;measurement_type&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKStakeholders</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_STAKEHOLDERS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">stakeholders_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;stakeholder&#39;</span><span class="p">],</span> <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKUser</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="n">_record</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
+            <span class="n">configuration</span><span class="o">.</span><span class="n">RAMSTK_USERS</span><span class="p">[</span><span class="n">_record</span><span class="o">.</span><span class="n">user_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;user_lname&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;user_fname&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;user_email&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;user_phone&#39;</span><span class="p">],</span>
+                <span class="n">_attributes</span><span class="p">[</span><span class="s1">&#39;user_group_id&#39;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+<div class="viewcode-block" id="Model.do_validate_license"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.Model.do_validate_license">[docs]</a>    <span class="k">def</span> <span class="nf">do_validate_license</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">license_key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the license and the license expiration date.</span>
+
+<span class="sd">        :param str license_key: the license key for the current RAMSTK</span>
+<span class="sd">                                installation.</span>
+<span class="sd">        :return: (_error_code, _msg)</span>
+<span class="sd">        :rtype: (int, str)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK SUCCESS: Validating RAMSTK License.&#39;</span>
+
+        <span class="n">_site_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">RAMSTKSiteInfo</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">license_key</span> <span class="o">!=</span> <span class="n">_site_info</span><span class="o">.</span><span class="n">product_key</span><span class="p">:</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Invalid license (Invalid key).  Your license &#39;</span> \
+                   <span class="s1">&#39;key is incorrect.  Closing the RAMSTK application.&#39;</span>
+
+        <span class="n">_today</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">_expire_date</span> <span class="o">=</span> <span class="n">_site_info</span><span class="o">.</span><span class="n">expire_on</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_today</span> <span class="o">&gt;</span> <span class="n">_expire_date</span><span class="p">:</span>
+            <span class="n">_error_code</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">_msg</span> <span class="o">=</span> <span class="s1">&#39;RAMSTK ERROR: Invalid license (Expired).  Your license &#39;</span> \
+                   <span class="s1">&#39;expired on </span><span class="si">{0:s}</span><span class="s1">.  Closing the RAMSTK application.&#39;</span><span class="o">.</span> \
+                <span class="nb">format</span><span class="p">(</span><span class="n">_expire_date</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span></div></div>
+
+
+<div class="viewcode-block" id="RAMSTK"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.RAMSTK">[docs]</a><span class="k">class</span> <span class="nc">RAMSTK</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class representing the RAMSTK data controller.</span>
+
+<span class="sd">    This is the master controller for the entire RAMSTK application.</span>
+<span class="sd">    Attributes of a RAMSTK data controller are:</span>
+
+<span class="sd">    :ivar dict dic_controllers: dictionary of data controllers available in the</span>
+<span class="sd">        running instance of RAMSTK. Keys are:</span>
+
+<span class="sd">            &#39;allocation&#39;</span>
+<span class="sd">            &#39;function&#39;</span>
+<span class="sd">            &#39;hardware&#39;</span>
+<span class="sd">            &#39;revision&#39;</span>
+<span class="sd">            &#39;requirement&#39;</span>
+<span class="sd">            &#39;validation&#39;</span>
+<span class="sd">            &#39;survival&#39;</span>
+<span class="sd">            &#39;matrices&#39;</span>
+<span class="sd">            &#39;profile&#39;</span>
+<span class="sd">            &#39;definition&#39;</span>
+<span class="sd">            &#39;fmea&#39;</span>
+<span class="sd">            &#39;stakeholder&#39;</span>
+<span class="sd">            &#39;hazard&#39;</span>
+<span class="sd">            &#39;similaritem&#39;</span>
+<span class="sd">            &#39;pof&#39;</span>
+<span class="sd">            &#39;growth&#39;</span>
+<span class="sd">            &#39;options&#39;</span>
+<span class="sd">            &#39;imports&#39;</span>
+
+<span class="sd">        Values are the instance of each RAMSTK data controller.</span>
+<span class="sd">    :ivar dict dic_books: dictionary of GUI books used by the running instance</span>
+<span class="sd">        of RAMSTK. Keys are:</span>
+
+<span class="sd">            &#39;listbook&#39;</span>
+<span class="sd">            &#39;modulebook&#39;</span>
+<span class="sd">            &#39;workbook&#39;</span>
+
+<span class="sd">        Values are the instance of each RAMSTK book.</span>
+<span class="sd">    :ivar ramstk_model: the instance of :class:`ramstk.RAMSTK.Model` managed by</span>
+<span class="sd">        this data controller.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">RAMSTK_CONFIGURATION</span> <span class="o">=</span> <span class="n">Configuration</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize an instance of the RAMSTK data controller.&quot;&quot;&quot;</span>
+        <span class="c1"># Read the site configuration file.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">set_site_variables</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">set_user_variables</span><span class="p">():</span>
+            <span class="n">_prompt</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;A user-specific configuration directory could not &quot;</span>
+                <span class="s2">&quot;be found at </span><span class="si">{0:s}</span><span class="s2">.  You will be given the option to &quot;</span>
+                <span class="s2">&quot;create and populate this directory.  If you choose &quot;</span>
+                <span class="s2">&quot;not to, you will recieve this prompt every time you &quot;</span>
+                <span class="s2">&quot;execute RAMSTK.  Would you like to create and populate &quot;</span>
+                <span class="s2">&quot;a user-specific configuration directory?&quot;</span><span class="p">,</span> <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_HOME_DIR</span>
+                    <span class="o">+</span> <span class="s2">&quot;/.config/RAMSTK&quot;</span><span class="p">,</span> <span class="p">)</span>
+            <span class="n">_dialog</span> <span class="o">=</span> <span class="n">ramstk</span><span class="o">.</span><span class="n">RAMSTKMessageDialog</span><span class="p">(</span><span class="n">_prompt</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;question&#39;</span><span class="p">)</span>
+            <span class="n">_response</span> <span class="o">=</span> <span class="n">_dialog</span><span class="o">.</span><span class="n">do_run</span><span class="p">()</span>
+            <span class="n">_dialog</span><span class="o">.</span><span class="n">do_destroy</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">_response</span> <span class="o">==</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ResponseType</span><span class="o">.</span><span class="n">YES</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">create_user_configuration</span><span class="p">()</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">set_user_variables</span><span class="p">(</span><span class="n">first_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">get_user_configuration</span><span class="p">()</span>
+
+        <span class="c1"># Create loggers.</span>
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DEBUG_LOG</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_USER_LOG</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_IMPORT_LOG</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> \
+            <span class="n">_initialize_loggers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">)</span>
+
+        <span class="c1"># Initialize private dictionary instance attributes.</span>
+
+        <span class="c1"># Initialize private list instance attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__test</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lst_modules</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;requirement&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;function&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;hardware&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;validation&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Initialize private scalar instance attributes.</span>
+
+        <span class="c1"># Initialize public dictionary instance attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;allocation&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;definition&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;function&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;revision&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;requirement&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;hardware&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;validation&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;matrices&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;profile&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;ffmea&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;fmea&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;stakeholder&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;hazard&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;similaritem&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;pof&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;imports&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s1">&#39;exports&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Define public list attributes.</span>
+
+        <span class="c1"># Define public scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icoStatus</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">StatusIcon</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Connect to the RAMSTK Common database.</span>
+        <span class="n">_database</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_COM_BACKEND</span> <span class="o">==</span> <span class="s1">&#39;sqlite&#39;</span><span class="p">:</span>
+            <span class="n">_database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_COM_BACKEND</span> <span class="o">+</span> \
+                        <span class="s1">&#39;:///&#39;</span> <span class="o">+</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_COM_INFO</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">]</span>
+        <span class="n">_dao</span> <span class="o">=</span> <span class="n">DAO</span><span class="p">()</span>
+        <span class="n">_dao</span><span class="o">.</span><span class="n">db_connect</span><span class="p">(</span><span class="n">_database</span><span class="p">)</span>
+
+        <span class="c1"># Create an instance of the RAMSTK Data Model and load global constants.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">_dao</span><span class="p">,</span> <span class="n">DAO</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request_do_load_globals</span><span class="p">()</span>
+
+        <span class="c1"># Create an Options module instance and read the Site options.</span>
+        <span class="n">_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;site&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;program&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcOptions</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+            <span class="n">site_dao</span><span class="o">=</span><span class="n">_dao</span><span class="p">,</span>
+            <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">request_do_select_all</span><span class="p">(</span><span class="n">_attributes</span><span class="p">)</span>
+
+        <span class="c1"># Create a Preferences module instance and read the user preferences.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;preferences&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcPreferences</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+            <span class="n">site_dao</span><span class="o">=</span><span class="n">_dao</span><span class="p">,</span>
+            <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;preferences&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">request_do_select_all</span><span class="p">(</span><span class="n">_attributes</span><span class="p">)</span>
+
+        <span class="c1"># Create an Import module instance.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;imports&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcImports</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+            <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create an Export module instance.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;exports&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcExports</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+            <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Validate the license.</span>
+        <span class="c1"># if self._validate_license():</span>
+        <span class="c1">#    sys.exit(2)</span>
+
+        <span class="n">_icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_ICON_DIR</span> <span class="o">+</span> \
+            <span class="s1">&#39;/32x32/db-disconnected.png&#39;</span>
+        <span class="n">_icon</span> <span class="o">=</span> <span class="n">GdkPixbuf</span><span class="o">.</span><span class="n">Pixbuf</span><span class="o">.</span><span class="n">new_from_file_at_size</span><span class="p">(</span><span class="n">_icon</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icoStatus</span><span class="o">.</span><span class="n">set_from_pixbuf</span><span class="p">(</span><span class="n">_icon</span><span class="p">)</span>
+        <span class="c1"># Deprecated since version 3.14: Use Gio.Notification and Gtk.Application to provide status notifications; there is no direct replacement for this function</span>
+        <span class="c1">#self.icoStatus.set_tooltip(</span>
+        <span class="c1">#    _(u&quot;RAMSTK is not currently connected to a &quot;</span>
+        <span class="c1">#      u&quot;project database.&quot;))</span>
+
+        <span class="c1"># Subscribe to PyPubSub messages.</span>
+        <span class="n">pub</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">request_do_open_program</span><span class="p">,</span> <span class="s1">&#39;request_do_open_program&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RAMSTK.request_do_create_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.RAMSTK.request_do_create_program">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_create_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request a new RAMSTK Program database be created.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_database</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_BACKEND</span> <span class="o">==</span> <span class="s1">&#39;sqlite&#39;</span><span class="p">:</span>
+            <span class="n">_database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_BACKEND</span> <span class="o">+</span> <span class="s1">&#39;:///&#39;</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_PROG_INFO</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">]</span>
+
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">do_create_program</span><span class="p">(</span><span class="n">_database</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_error_code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request_do_open_program</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_USER_LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">_msg</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test</span><span class="p">:</span>
+                <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="s1">&#39;createdProgram&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DEBUG_LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">_msg</span><span class="p">)</span>
+            <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+<div class="viewcode-block" id="RAMSTK.request_do_load_globals"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.RAMSTK.request_do_load_globals">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_load_globals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request to load all the global Configuration variables.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">do_load_globals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RAMSTK.request_do_open_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.RAMSTK.request_do_open_program">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_open_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request an RAMSTK Program database be opened for analyses.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">_database</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_BACKEND</span> <span class="o">==</span> <span class="s1">&#39;sqlite&#39;</span><span class="p">:</span>
+            <span class="n">_database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_BACKEND</span> <span class="o">+</span> <span class="s1">&#39;:///&#39;</span> <span class="o">+</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_PROG_INFO</span><span class="p">[</span><span class="s1">&#39;database&#39;</span><span class="p">]</span>
+
+        <span class="c1"># If the database was successfully opened, create an instance of each</span>
+        <span class="c1"># of the slave data controllers.</span>
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">do_open_program</span><span class="p">(</span><span class="n">_database</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_error_code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="s1">&#39;requestOpen&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;revision&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcRevision</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;function&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcFunction</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;requirement&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcRequirement</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;hardware&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcHardwareBoM</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;validation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcValidation</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;profile&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcUsageProfile</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;definition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcFailureDefinition</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;ffmea&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcFMEA</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">functional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;stakeholder&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcStakeholder</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;allocation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcAllocation</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;hazops&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcHazardAnalysis</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;similaritem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcSimilarItem</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;dfmeca&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcFMEA</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">functional</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;pof&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dtcPoF</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">program_dao</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="p">,</span>
+                <span class="n">test</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Find which modules are active for the program being opened.</span>
+            <span class="n">_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;site&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;program&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;options&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">request_do_select_all</span><span class="p">(</span><span class="n">_attributes</span><span class="p">)</span>
+            <span class="n">_program_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span>
+                <span class="s1">&#39;options&#39;</span>
+            <span class="p">]</span><span class="o">.</span><span class="n">request_get_options</span><span class="p">(</span>
+                <span class="n">site</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">program</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_MODULES</span><span class="p">[</span><span class="s1">&#39;function&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">_program_info</span><span class="p">[</span><span class="s1">&#39;function_active&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_MODULES</span><span class="p">[</span><span class="s1">&#39;requirement&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">_program_info</span><span class="p">[</span><span class="s1">&#39;requirement_active&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_MODULES</span><span class="p">[</span><span class="s1">&#39;hardware&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">_program_info</span><span class="p">[</span><span class="s1">&#39;hardware_active&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_MODULES</span><span class="p">[</span><span class="s1">&#39;validation&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">_program_info</span><span class="p">[</span><span class="s1">&#39;vandv_active&#39;</span><span class="p">]</span>
+
+            <span class="n">_page</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">_module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lst_modules</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_MODULES</span><span class="p">[</span><span class="n">_module</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_PAGE_NUMBER</span><span class="p">[</span>
+                        <span class="n">_page</span>
+                    <span class="p">]</span> <span class="o">=</span> <span class="n">_module</span>
+                    <span class="n">_page</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># ISSUE: See issue #228 at https://github.com/ReliaQualAssociates/ramstk/issues/228</span>
+            <span class="n">_icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_ICON_DIR</span> <span class="o">+</span> \
+                <span class="s1">&#39;/32x32/db-connected.png&#39;</span>
+            <span class="n">_icon</span> <span class="o">=</span> <span class="n">GdkPixbuf</span><span class="o">.</span><span class="n">Pixbuf</span><span class="o">.</span><span class="n">new_from_file_at_size</span><span class="p">(</span><span class="n">_icon</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">icoStatus</span><span class="o">.</span><span class="n">set_from_pixbuf</span><span class="p">(</span><span class="n">_icon</span><span class="p">)</span>
+            <span class="c1"># Deprecated since version 3.14: Use Gio.Notification and Gtk.Application to provide status notifications; there is no direct replacement for this function</span>
+            <span class="c1">#self.icoStatus.set_tooltip(</span>
+            <span class="c1">#    _(u&quot;RAMSTK is connected to program database &quot;</span>
+            <span class="c1">#      u&quot;{0:s}.&quot;.format(</span>
+            <span class="c1">#          self.RAMSTK_CONFIGURATION.RAMSTK_PROG_INFO[&#39;database&#39;])))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_USER_LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">_msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test</span><span class="p">:</span>
+                <span class="n">_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;revision_id&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dic_controllers</span><span class="p">[</span><span class="s1">&#39;revision&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">request_do_select_all</span><span class="p">(</span>
+                    <span class="n">_attributes</span><span class="p">,</span> <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DEBUG_LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">_msg</span><span class="p">)</span>
+            <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+<div class="viewcode-block" id="RAMSTK.request_do_close_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.RAMSTK.request_do_close_program">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_close_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the open RAMSTK Program database be closed.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_icon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_ICON_DIR</span> <span class="o">+</span> \
+            <span class="s1">&#39;/32x32/db-disconnected.png&#39;</span>
+        <span class="n">_icon</span> <span class="o">=</span> <span class="n">GdkPixbuf</span><span class="o">.</span><span class="n">Pixbuf</span><span class="o">.</span><span class="n">new_from_file_at_size</span><span class="p">(</span><span class="n">_icon</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">22</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icoStatus</span><span class="o">.</span><span class="n">set_from_pixbuf</span><span class="p">(</span><span class="n">_icon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icoStatus</span><span class="o">.</span><span class="n">set_tooltip</span><span class="p">(</span>
+            <span class="n">_</span><span class="p">(</span>
+                <span class="s2">&quot;RAMSTK is not currently connected to a &quot;</span>
+                <span class="s2">&quot;project database.&quot;</span><span class="p">,</span> <span class="p">),</span> <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test</span><span class="p">:</span>
+            <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="s1">&#39;closed_program&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">do_close_program</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">loaded</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="RAMSTK.request_do_save_program"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.RAMSTK.request_do_save_program">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_save_program</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the open RAMSTK Program database be saved.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">do_save_program</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">_error_code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_USER_LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">_msg</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__test</span><span class="p">:</span>
+                <span class="n">pub</span><span class="o">.</span><span class="n">sendMessage</span><span class="p">(</span><span class="s1">&#39;savedProgram&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DEBUG_LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">_msg</span><span class="p">)</span>
+            <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+<div class="viewcode-block" id="RAMSTK.request_do_validate_license"><a class="viewcode-back" href="../../apidocuments.html#ramstk.RAMSTK.RAMSTK.request_do_validate_license">[docs]</a>    <span class="k">def</span> <span class="nf">request_do_validate_license</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Request the RAMSTK license be validated.</span>
+
+<span class="sd">        :return: False if successful or True if an error is encountered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_return</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Read the license file and compare to the product key in the site</span>
+        <span class="c1"># database.  If they are not equal, quit the application.</span>
+        <span class="n">_license_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_DATA_DIR</span> <span class="o">+</span> <span class="s1">&#39;/license.key&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_license_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">_license_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+            <span class="c1">#ramstk_warning(</span>
+            <span class="c1">#    _(</span>
+            <span class="c1">#        &quot;Cannot find license file {0:s}.  If your &quot;</span>
+            <span class="c1">#        &quot;license file is elsewhere, please place &quot;</span>
+            <span class="c1">#        &quot;it in {1:s}.&quot;,</span>
+            <span class="c1">#    ).format(</span>
+            <span class="c1">#      _license_file,</span>
+            <span class="c1">#      self.RAMSTK_CONFIGURATION.RAMSTK_DATA_DIR,</span>
+            <span class="c1">#    ),</span>
+            <span class="c1">#)</span>
+            <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">_license_key</span> <span class="o">=</span> <span class="n">_license_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">_expire_date</span> <span class="o">=</span> <span class="n">_license_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">_license_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">_error_code</span><span class="p">,</span> <span class="n">_msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ramstk_model</span><span class="o">.</span><span class="n">validate_license</span><span class="p">(</span><span class="n">_license_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_error_code</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1">#ramstk_error(</span>
+            <span class="c1">#    _(</span>
+            <span class="c1">#        &quot;Invalid license (Invalid key).  Your &quot;</span>
+            <span class="c1">#        &quot;license key is incorrect.  Closing the RAMSTK &quot;</span>
+            <span class="c1">#        &quot;application.&quot;,</span>
+            <span class="c1">#    ),</span>
+            <span class="c1">#)</span>
+            <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">_error_code</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># noinspection PyUnresolvedReferences</span>
+            <span class="c1">#ramstk_error(</span>
+            <span class="c1">#    _(</span>
+            <span class="c1">#        &quot;Invalid license (Expired).  Your license &quot;</span>
+            <span class="c1">#        &quot;expired on {0:s}.  Closing the RAMSTK &quot;</span>
+            <span class="c1">#        &quot;application.&quot;,</span>
+            <span class="c1">#    ).format(_expire_date.strftime(&#39;%Y-%d-%m&#39;)),</span>
+            <span class="c1">#)</span>
+            <span class="n">_return</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">_return</span></div>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete the running instance of RAMSTK.&quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="bp">self</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>

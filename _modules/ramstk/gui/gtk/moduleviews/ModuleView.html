@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ramstk.gui.gtk.moduleviews.ModuleView &#8212; RAMSTK 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../../../../_static/pydoctheme.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/sidebar.js"></script>
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+
+  </head><body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../../../index.html">RAMSTK 2.0.0 documentation</a> &#187;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for ramstk.gui.gtk.moduleviews.ModuleView</h1><div class="highlight"><pre>
+<span></span><span class="c1"># pylint: disable=non-parent-init-called</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1">#       ramstk.gui.gtk.moduleviews.ModuleView.py is part of the RAMSTK Project</span>
+<span class="c1">#</span>
+<span class="c1"># All rights reserved.</span>
+<span class="c1"># Copyright 2007 - 2019 Doyle Rowland doyle.rowland &lt;AT&gt; reliaqual &lt;DOT&gt; com</span>
+<span class="sd">&quot;&quot;&quot;The RAMSTKModuleView Module.&quot;&quot;&quot;</span>
+
+<span class="c1"># RAMSTK Package Imports</span>
+<span class="kn">from</span> <span class="nn">ramstk.gui.gtk.ramstk</span> <span class="k">import</span> <span class="n">RAMSTKBaseView</span>
+<span class="c1">#from ramstk.gui.gtk.assistants import ExportModule</span>
+<span class="kn">from</span> <span class="nn">ramstk.gui.gtk.ramstk.Widget</span> <span class="k">import</span> <span class="n">GObject</span><span class="p">,</span> <span class="n">Gtk</span>
+
+
+<div class="viewcode-block" id="RAMSTKModuleView"><a class="viewcode-back" href="../../../../../api/gui/gtk.moduleview.html#ramstk.gui.gtk.moduleviews.ModuleView.RAMSTKModuleView">[docs]</a><span class="k">class</span> <span class="nc">RAMSTKModuleView</span><span class="p">(</span><span class="n">Gtk</span><span class="o">.</span><span class="n">HBox</span><span class="p">,</span> <span class="n">RAMSTKBaseView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display data in the RAMSTK Module Book.</span>
+
+<span class="sd">    This is the meta class for all RAMSTK Module View classes.  Attributes of</span>
+<span class="sd">    the RAMSTKModuleView are:</span>
+
+<span class="sd">    :ivar _img_tab: the :class:`Gtk.Image` to display on the tab.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the RAMSTKModuleView meta-class.</span>
+
+<span class="sd">        :param configuration: the RAMSTK Configuration class instance.</span>
+<span class="sd">        :type configuration: :class:`ramstk.Configuration.Configuration`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_module</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;module&#39;</span><span class="p">]</span>
+
+        <span class="n">GObject</span><span class="o">.</span><span class="n">GObject</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">RAMSTKBaseView</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configuration</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Initialize private dictionary attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dic_icons</span><span class="p">[</span><span class="s1">&#39;insert_part&#39;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">RAMSTK_CONFIGURATION</span><span class="o">.</span><span class="n">RAMSTK_ICON_DIR</span> <span class="o">+</span> \
+            <span class="s1">&#39;/32x32/insert_part.png&#39;</span>
+
+        <span class="c1"># Initialize private list attributes.</span>
+
+        <span class="c1"># Initialize private scalar attributes.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img_tab</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">Image</span><span class="p">()</span>
+
+        <span class="c1"># Initialize public dictionary attributes.</span>
+
+        <span class="c1"># Initialize public list attributes.</span>
+
+        <span class="c1"># Initialize public scalar attributes.</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_properties</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_callbacks</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__set_callbacks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set common callback methods for the ModuleView and widgets.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">treeview</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;cursor_changed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_row_change</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lst_handler_id</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">treeview</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;button_press_event&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_on_button_press</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set common properties of the ModuleView and widgets.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">treeview</span><span class="o">.</span><span class="n">set_rubber_banding</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RAMSTKModuleView.do_request_export"><a class="viewcode-back" href="../../../../../api/gui/gtk.moduleview.html#ramstk.gui.gtk.moduleviews.ModuleView.RAMSTKModuleView.do_request_export">[docs]</a>    <span class="k">def</span> <span class="nf">do_request_export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Launch the Export assistant.</span>
+
+<span class="sd">        :param __button: the Gtk.ToolButton() that called this method.</span>
+<span class="sd">        :type __button: :class:`Gtk.ToolButton`</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+        <span class="c1">#_tree = self._dtc_data_controller.request_do_select_all(</span>
+        <span class="c1">#    revision_id=self._revision_id)</span>
+        <span class="c1">#ExportModule(self._mdcRAMSTK, module, _tree)</span>
+
+<div class="viewcode-block" id="RAMSTKModuleView.make_ui"><a class="viewcode-back" href="../../../../../api/gui/gtk.moduleview.html#ramstk.gui.gtk.moduleviews.ModuleView.RAMSTKModuleView.make_ui">[docs]</a>    <span class="k">def</span> <span class="nf">make_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the user interface.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_img_tab</span><span class="o">.</span><span class="n">set_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dic_icons</span><span class="p">[</span><span class="s1">&#39;tab&#39;</span><span class="p">])</span>
+
+        <span class="n">_scrolledwindow</span> <span class="o">=</span> <span class="n">Gtk</span><span class="o">.</span><span class="n">ScrolledWindow</span><span class="p">()</span>
+        <span class="n">_scrolledwindow</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">treeview</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pack_end</span><span class="p">(</span><span class="n">_scrolledwindow</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hbx_tab_label</span><span class="o">.</span><span class="n">pack_start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_img_tab</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hbx_tab_label</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_all</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RAMSTKModuleView.on_button_press"><a class="viewcode-back" href="../../../../../api/gui/gtk.moduleview.html#ramstk.gui.gtk.moduleviews.ModuleView.RAMSTKModuleView.on_button_press">[docs]</a>    <span class="k">def</span> <span class="nf">on_button_press</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle mouse clicks on the Module View RAMSTKTreeView().</span>
+
+<span class="sd">        :param event: the Gdk.Event() that called this method (the</span>
+<span class="sd">                      important attribute is which mouse button was clicked).</span>
+<span class="sd">                                    * 1 = left</span>
+<span class="sd">                                    * 2 = scrollwheel</span>
+<span class="sd">                                    * 3 = right</span>
+<span class="sd">                                    * 4 = forward</span>
+<span class="sd">                                    * 5 = backward</span>
+<span class="sd">                                    * 8 =</span>
+<span class="sd">                                    * 9 =</span>
+<span class="sd">        :type event: :class:`Gdk.Event`</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_icons</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;icons&#39;</span><span class="p">]</span>
+        <span class="n">_labels</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>
+        <span class="n">_callbacks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;callbacks&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Append the default save and save-all buttons found on all Module View</span>
+        <span class="c1"># pop-up menus.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_icons</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;remove&#39;</span><span class="p">,</span> <span class="s1">&#39;save&#39;</span><span class="p">,</span> <span class="s1">&#39;save-all&#39;</span><span class="p">])</span>
+            <span class="n">_callbacks</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_request_delete</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_request_update</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_do_request_update_all</span><span class="p">,</span>
+            <span class="p">])</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">RAMSTKBaseView</span><span class="o">.</span><span class="n">on_button_press</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">icons</span><span class="o">=</span><span class="n">_icons</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">_labels</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="n">_callbacks</span><span class="p">,</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+    <a id="sidebar-anchor"></a>
+    
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+      </ul>
+    </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2007 - 2019, Doyle Rowland.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
+    </div>
+  </body>
+</html>
