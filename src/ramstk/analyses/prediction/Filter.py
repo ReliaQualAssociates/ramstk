@@ -66,7 +66,7 @@ def _do_check_variables(attributes):
     return _msg
 
 
-def calculate_217f_part_count(**attributes):
+def calculate_217f_part_count_lambda_b(attributes):
     """
     Calculate the part count hazard rate for a filter.
 
@@ -77,8 +77,6 @@ def calculate_217f_part_count(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _msg = ''
-
     try:
         attributes['lambda_b'] = PART_COUNT_217F_LAMBDA_B[
             attributes['type_id']
@@ -89,10 +87,6 @@ def calculate_217f_part_count(**attributes):
         attributes['lambda_b'] = 0.0
 
     _msg = _do_check_variables(attributes)
-
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ']
-    )
 
     return attributes, _msg
 

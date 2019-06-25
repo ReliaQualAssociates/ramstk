@@ -201,7 +201,31 @@ def _get_temperature_stress_factor(attributes):
     return attributes
 
 
-def _calculate_mil_hdbk_217f_part_count_lambda_b(attributes):
+def _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes):
+    """
+    Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    stress method.
+
+    :param dict attributes: the attributes for the meter being calculated.
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
+    :rtype: dict
+    """
+    if attributes['subcategory_id'] == 1:
+        attributes['lambda_b'] = PART_STRESS_217F_LAMBDA_B[1][
+            attributes['type_id'] - 1
+        ]
+    elif attributes['subcategory_id'] == 2:
+        attributes['lambda_b'] = PART_STRESS_217F_LAMBDA_B[2]
+    else:
+        attributes['lambda_b'] = 0.0
+
+    return attributes
+
+
+def calculate_217f_part_count_lambda_b(attributes):
     r"""
     Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -247,51 +271,7 @@ def _calculate_mil_hdbk_217f_part_count_lambda_b(attributes):
     except (IndexError, KeyError):
         attributes['lambda_b'] = 0.0
 
-    return attributes
-
-
-def _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes):
-    """
-    Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    stress method.
-
-    :param dict attributes: the attributes for the meter being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
-    """
-    if attributes['subcategory_id'] == 1:
-        attributes['lambda_b'] = PART_STRESS_217F_LAMBDA_B[1][
-            attributes['type_id'] - 1
-        ]
-    elif attributes['subcategory_id'] == 2:
-        attributes['lambda_b'] = PART_STRESS_217F_LAMBDA_B[2]
-    else:
-        attributes['lambda_b'] = 0.0
-
-    return attributes
-
-
-def calculate_217f_part_count(**attributes):
-    """
-    Calculate the part count hazard rate for a meter.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    attributes = _calculate_mil_hdbk_217f_part_count_lambda_b(attributes)
-
     _msg = _do_check_variables(attributes)
-
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ']
-    )
 
     return attributes, _msg
 

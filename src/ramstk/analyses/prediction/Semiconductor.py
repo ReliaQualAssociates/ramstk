@@ -317,96 +317,6 @@ def _calculate_junction_temperature(attributes):
     return attributes
 
 
-def _calculate_mil_hdbk_217f_part_count_lambda_b(attributes):
-    r"""
-    Calculate the MIL-HDBK-217F base hazard rate for the semiconductor device.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
-
-        #. subcategory_id
-        #. type id; if the semiconductor subcategory is NOT type dependent,
-            then the second key will be zero.
-
-    Current subcategory IDs are:
-
-    +----------------+-------------------------------+-----------------+
-    | Subcategory \  |          Semiconductor \      | MIL-HDBK-217F \ |
-    |       ID       |              Style            |    Section      |
-    +================+===============================+=================+
-    |        1       | Diode, Low Frequency          |        6.1      |
-    +----------------+-------------------------------+-----------------+
-    |        2       | Diode, High Frequency         |        6.2      |
-    +----------------+-------------------------------+-----------------+
-    |        3       | Transistor, Low Frequency, \  |        6.3      |
-    |                | Bipolar                       |                 |
-    +----------------+-------------------------------+-----------------+
-    |        4       | Transistor, Low Frequency, \  |        6.4      |
-    |                | Si FET                        |                 |
-    +----------------+-------------------------------+-----------------+
-    |        5       | Transistor, Unijunction       |        6.5      |
-    +----------------+-------------------------------+-----------------+
-    |        6       | Transistor, High Frequency, \ |        6.6      |
-    |                | Low Noise,Bipolar             |                 |
-    +----------------+-------------------------------+-----------------+
-    |        7       | Transistor, High Frequency, \ |        6.7      |
-    |                | High Power, Bipolar           |                 |
-    +----------------+-------------------------------+-----------------+
-    |        8       | Transistor, High Frequency, \ |        6.8      |
-    |                | GaAs FET                      |                 |
-    +----------------+-------------------------------+-----------------+
-    |        9       | Transistor, High Frequency, \ |        6.9      |
-    |                | Si FET                        |                 |
-    +----------------+-------------------------------+-----------------+
-    |       10       | Thyristor/SCR                 |       6.10      |
-    +----------------+-------------------------------+-----------------+
-    |       11       | Optoelectronic, Detector, \   |       6.11      |
-    |                | Isolator, Emitter             |                 |
-    +----------------+-------------------------------+-----------------+
-    |       12       | Optoelectronic, Alphanumeric \|       6.12      |
-    |                | Display                       |                 |
-    +----------------+-------------------------------+-----------------+
-    |       13       | Optoelectronic, Laser Diode   |       6.13      |
-    +----------------+-------------------------------+-----------------+
-
-    These keys return a list of base hazard rates.  The hazard rate to use is
-    selected from the list depending on the active environment.
-
-    :param dict attributes: the attributes for the semiconductor being
-        calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
-    """
-    try:
-        if attributes['subcategory_id'] in [1, 2, 3, 8, 11, 13]:
-            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
-                attributes['subcategory_id']
-            ][
-                attributes['type_id']
-            ]
-        else:
-            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
-                attributes['subcategory_id']
-            ]
-    except KeyError:
-        _lst_base_hr = [0.0]
-
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    return attributes
-
-
 def _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes):
     """
     Retrieve the MIL-HDBK-217F base hazard rate for the semiconductor device.
@@ -685,29 +595,100 @@ def _do_check_variables(attributes):
                     attributes['temperature_junction'],
                     attributes['voltage_ratio'],
                 )
-    print(_msg)
+
     return _msg
 
 
-def calculate_217f_part_count(**attributes):
-    """
-    Calculate the part count hazard rate for a semiconductor.
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the MIL-HDBK-217F base hazard rate for the semiconductor device.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
 
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. type id; if the semiconductor subcategory is NOT type dependent,
+            then the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |          Semiconductor \      | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Diode, Low Frequency          |        6.1      |
+    +----------------+-------------------------------+-----------------+
+    |        2       | Diode, High Frequency         |        6.2      |
+    +----------------+-------------------------------+-----------------+
+    |        3       | Transistor, Low Frequency, \  |        6.3      |
+    |                | Bipolar                       |                 |
+    +----------------+-------------------------------+-----------------+
+    |        4       | Transistor, Low Frequency, \  |        6.4      |
+    |                | Si FET                        |                 |
+    +----------------+-------------------------------+-----------------+
+    |        5       | Transistor, Unijunction       |        6.5      |
+    +----------------+-------------------------------+-----------------+
+    |        6       | Transistor, High Frequency, \ |        6.6      |
+    |                | Low Noise,Bipolar             |                 |
+    +----------------+-------------------------------+-----------------+
+    |        7       | Transistor, High Frequency, \ |        6.7      |
+    |                | High Power, Bipolar           |                 |
+    +----------------+-------------------------------+-----------------+
+    |        8       | Transistor, High Frequency, \ |        6.8      |
+    |                | GaAs FET                      |                 |
+    +----------------+-------------------------------+-----------------+
+    |        9       | Transistor, High Frequency, \ |        6.9      |
+    |                | Si FET                        |                 |
+    +----------------+-------------------------------+-----------------+
+    |       10       | Thyristor/SCR                 |       6.10      |
+    +----------------+-------------------------------+-----------------+
+    |       11       | Optoelectronic, Detector, \   |       6.11      |
+    |                | Isolator, Emitter             |                 |
+    +----------------+-------------------------------+-----------------+
+    |       12       | Optoelectronic, Alphanumeric \|       6.12      |
+    |                | Display                       |                 |
+    +----------------+-------------------------------+-----------------+
+    |       13       | Optoelectronic, Laser Diode   |       6.13      |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
+
+    :param dict attributes: the attributes for the semiconductor being
+        calculated.
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
+    :rtype: dict
     """
-    attributes = _calculate_mil_hdbk_217f_part_count_lambda_b(attributes)
+    try:
+        if attributes['subcategory_id'] in [1, 2, 3, 8, 11, 13]:
+            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+                attributes['subcategory_id']
+            ][
+                attributes['type_id']
+            ]
+        else:
+            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+                attributes['subcategory_id']
+            ]
+    except KeyError:
+        _lst_base_hr = [0.0]
+
+    try:
+        attributes['lambda_b'] = _lst_base_hr[
+            attributes['environment_active_id'] - 1
+        ]
+    except IndexError:
+        attributes['lambda_b'] = 0.0
+
     attributes = _get_part_count_quality_factor(attributes)
 
     _msg = _do_check_variables(attributes)
-
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ']
-    )
 
     return attributes, _msg
 

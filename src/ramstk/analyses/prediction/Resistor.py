@@ -196,100 +196,6 @@ REF_TEMPS = {
     15: 343.0,
 }
 
-
-def _calculate_mil_hdbk_217f_part_count_lambda_b(attributes):
-    r"""
-    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
-
-        #. subcategory_id
-        #. specification id; if the resistor subcategory is NOT specification
-            dependent, then the second key will be zero.
-
-    Current subcategory IDs are:
-
-    +----------------+-------------------------------+-----------------+
-    | Subcategory \  |            Resistor \         | MIL-HDBK-217F \ |
-    |       ID       |              Style            |    Section      |
-    +================+===============================+=================+
-    |        1       | Fixed, Composition (RC, RCR)  |        9.1      |
-    +----------------+-------------------------------+-----------------+
-    |        2       | Fixed, Film (RL, RLR, RN, \   |        9.2      |
-    |                | RNC, RNN, RNR)                |                 |
-    +----------------+-------------------------------+-----------------+
-    |        3       | Fixed, Film, Power (RD)       |        9.3      |
-    +----------------+-------------------------------+-----------------+
-    |        4       | Fixed, Film, Network (RZ)     |        9.4      |
-    +----------------+-------------------------------+-----------------+
-    |        5       | Fixed, Wirewound (RB, RBR)    |        9.5      |
-    +----------------+-------------------------------+-----------------+
-    |        6       | Fixed, Wirewound, Power \     |        9.6      |
-    |                | (RW, RWR)                     |                 |
-    +----------------+-------------------------------+-----------------+
-    |        7       | Fixed, Wirewound, Power, \    |        9.7      |
-    |                | Chassis Mounted (RE, RER)     |                 |
-    +----------------+-------------------------------+-----------------+
-    |        8       | Thermistor                    |        9.8      |
-    +----------------+-------------------------------+-----------------+
-    |        9       | Variable, Wirewound (RT, RTR) |        9.9      |
-    +----------------+-------------------------------+-----------------+
-    |       10       | Variable, Wirewound, \        |       9.10      |
-    |                | Precision (RR)                |                 |
-    +----------------+-------------------------------+-----------------+
-    |       11       | Variable, Wirewound, \        |       9.11      |
-    |                | Semiprecision (RA, RK)        |                 |
-    +----------------+-------------------------------+-----------------+
-    |       12       | Variable, Wirewound, Power \  |       9.12      |
-    |                | (RP)                          |                 |
-    +----------------+-------------------------------+-----------------+
-    |       13       | Variable, Non-Wirewound \     |       9.13      |
-    |                | (RJ, RJR)                     |                 |
-    +----------------+-------------------------------+-----------------+
-    |       14       | Variable, Composition (RV)    |       9.14      |
-    +----------------+-------------------------------+-----------------+
-    |       15       | Variable,Non-Wirewound, \     |       9.15      |
-    |                | Film and Precision (RQ, RVC)  |                 |
-    +----------------+-------------------------------+-----------------+
-
-    These keys return a list of base hazard rates.  The hazard rate to use is
-    selected from the list depending on the active environment.
-
-    :param dict attributes: the attributes for the resistor being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
-    """
-    try:
-        if attributes['subcategory_id'] in [2, 6]:
-            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
-                attributes['subcategory_id']
-            ][
-                attributes['specification_id']
-            ]
-        else:
-            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
-                attributes['subcategory_id']
-            ]
-    except KeyError:
-        _lst_base_hr = [0.0]
-
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    return attributes
-
-
 def _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes):
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
@@ -485,24 +391,97 @@ def _calculate_resistance_factor(attributes):
     return attributes
 
 
-def calculate_217f_part_count(**attributes):
-    """
-    Calculate the part count hazard rate for a resistor.
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
 
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. specification id; if the resistor subcategory is NOT specification
+            dependent, then the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |            Resistor \         | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Fixed, Composition (RC, RCR)  |        9.1      |
+    +----------------+-------------------------------+-----------------+
+    |        2       | Fixed, Film (RL, RLR, RN, \   |        9.2      |
+    |                | RNC, RNN, RNR)                |                 |
+    +----------------+-------------------------------+-----------------+
+    |        3       | Fixed, Film, Power (RD)       |        9.3      |
+    +----------------+-------------------------------+-----------------+
+    |        4       | Fixed, Film, Network (RZ)     |        9.4      |
+    +----------------+-------------------------------+-----------------+
+    |        5       | Fixed, Wirewound (RB, RBR)    |        9.5      |
+    +----------------+-------------------------------+-----------------+
+    |        6       | Fixed, Wirewound, Power \     |        9.6      |
+    |                | (RW, RWR)                     |                 |
+    +----------------+-------------------------------+-----------------+
+    |        7       | Fixed, Wirewound, Power, \    |        9.7      |
+    |                | Chassis Mounted (RE, RER)     |                 |
+    +----------------+-------------------------------+-----------------+
+    |        8       | Thermistor                    |        9.8      |
+    +----------------+-------------------------------+-----------------+
+    |        9       | Variable, Wirewound (RT, RTR) |        9.9      |
+    +----------------+-------------------------------+-----------------+
+    |       10       | Variable, Wirewound, \        |       9.10      |
+    |                | Precision (RR)                |                 |
+    +----------------+-------------------------------+-----------------+
+    |       11       | Variable, Wirewound, \        |       9.11      |
+    |                | Semiprecision (RA, RK)        |                 |
+    +----------------+-------------------------------+-----------------+
+    |       12       | Variable, Wirewound, Power \  |       9.12      |
+    |                | (RP)                          |                 |
+    +----------------+-------------------------------+-----------------+
+    |       13       | Variable, Non-Wirewound \     |       9.13      |
+    |                | (RJ, RJR)                     |                 |
+    +----------------+-------------------------------+-----------------+
+    |       14       | Variable, Composition (RV)    |       9.14      |
+    +----------------+-------------------------------+-----------------+
+    |       15       | Variable,Non-Wirewound, \     |       9.15      |
+    |                | Film and Precision (RQ, RVC)  |                 |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
+
+    :param dict attributes: the attributes for the resistor being calculated.
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
+    :rtype: dict
     """
-    attributes = _calculate_mil_hdbk_217f_part_count_lambda_b(attributes)
+    try:
+        if attributes['subcategory_id'] in [2, 6]:
+            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+                attributes['subcategory_id']
+            ][
+                attributes['specification_id']
+            ]
+        else:
+            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+                attributes['subcategory_id']
+            ]
+    except KeyError:
+        _lst_base_hr = [0.0]
+
+    try:
+        attributes['lambda_b'] = _lst_base_hr[
+            attributes['environment_active_id'] - 1
+        ]
+    except IndexError:
+        attributes['lambda_b'] = 0.0
 
     _msg = _do_check_variables(attributes)
-
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ']
-    )
 
     return attributes, _msg
 

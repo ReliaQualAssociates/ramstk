@@ -109,72 +109,6 @@ PI_K = [1.0, 1.5, 2.0, 3.0, 4.0]
 REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0}
 
 
-def _calculate_mil_hdbk_217f_part_count_lambda_b(attributes):
-    r"""
-    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
-
-        #. subcategory_id
-        #. type id; if the connection subcategory is NOT type dependent, then
-            the second key will be zero.
-
-    Current subcategory IDs are:
-
-    +----------------+-------------------------------+-----------------+
-    | Subcategory \  |           Connection \        | MIL-HDBK-217F \ |
-    |       ID       |              Style            |    Section      |
-    +================+===============================+=================+
-    |        1       | Circular, Rack and Panel, \   |       15.1      |
-    |                | Coaxial, Triaxial             |                 |
-    +----------------+-------------------------------+-----------------+
-    |        2       | PCB/PWA Edge                  |       15.2      |
-    +----------------+-------------------------------+-----------------+
-    |        3       | IC Socket                     |       15.3      |
-    +----------------+-------------------------------+-----------------+
-    |        4       | Plated Through Hole (PTH)     |       16.1      |
-    +----------------+-------------------------------+-----------------+
-    |        5       | Non-PTH                       |       17.1      |
-    +----------------+-------------------------------+-----------------+
-
-    These keys return a list of base hazard rates.  The hazard rate to use is
-    selected from the list depending on the active environment.
-
-    :param dict attributes: the attributes for the connection being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
-    """
-    try:
-        if attributes['subcategory_id'] in [1, 5]:
-            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
-                attributes['subcategory_id']
-            ][
-                attributes['type_id']
-            ]
-        else:
-            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
-                attributes['subcategory_id']
-            ]
-    except KeyError:
-        _lst_base_hr = [0.0]
-
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    return attributes
-
-
 def _calculate_mil_hdbk_217f_part_stress_lambda_b(attributes):
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
@@ -422,21 +356,70 @@ def _get_mate_unmate_factor(attributes):
     return attributes
 
 
-def calculate_217f_part_count(**attributes):
-    """
-    Calculate the part count hazard rate for a connection.
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. type id; if the connection subcategory is NOT type dependent, then
+            the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |           Connection \        | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Circular, Rack and Panel, \   |       15.1      |
+    |                | Coaxial, Triaxial             |                 |
+    +----------------+-------------------------------+-----------------+
+    |        2       | PCB/PWA Edge                  |       15.2      |
+    +----------------+-------------------------------+-----------------+
+    |        3       | IC Socket                     |       15.3      |
+    +----------------+-------------------------------+-----------------+
+    |        4       | Plated Through Hole (PTH)     |       16.1      |
+    +----------------+-------------------------------+-----------------+
+    |        5       | Non-PTH                       |       17.1      |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
 
     :param dict attributes: the attributes for the connection being calculated.
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
+    :rtype: dict
     """
-    attributes = _calculate_mil_hdbk_217f_part_count_lambda_b(attributes)
-    _msg = _do_check_variables(attributes)
+    try:
+        if attributes['subcategory_id'] in [1, 5]:
+            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+                attributes['subcategory_id']
+            ][
+                attributes['type_id']
+            ]
+        else:
+            _lst_base_hr = PART_COUNT_217F_LAMBDA_B[
+                attributes['subcategory_id']
+            ]
+    except KeyError:
+        _lst_base_hr = [0.0]
 
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ']
-    )
+    try:
+        attributes['lambda_b'] = _lst_base_hr[
+            attributes['environment_active_id'] - 1
+        ]
+    except IndexError:
+        attributes['lambda_b'] = 0.0
+
+    _msg = _do_check_variables(attributes)
 
     return attributes, _msg
 

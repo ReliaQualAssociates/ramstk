@@ -180,58 +180,6 @@ def _calculate_load_stress_factor(attributes):
     return attributes
 
 
-def _calculate_mil_hdbk_217f_part_count_lambda_b(attributes):
-    r"""
-    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
-
-        #. subcategory_id
-        #. type id; if the relay subcategory is NOT type dependent, then
-            the second key will be zero.
-
-    Current subcategory IDs are:
-
-    +----------------+-------------------------------+-----------------+
-    | Subcategory \  |              Relay \          | MIL-HDBK-217F \ |
-    |       ID       |              Style            |    Section      |
-    +================+===============================+=================+
-    |        1       | Mechanical                    |       13.1      |
-    +----------------+-------------------------------+-----------------+
-    |        2       | Solid State                   |       13.2      |
-    +----------------+-------------------------------+-----------------+
-
-    These keys return a list of base hazard rates.  The hazard rate to use is
-    selected from the list depending on the active environment.
-
-    :param dict attributes: the attributes for the relay being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: dict
-    """
-    try:
-        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[attributes['subcategory_id']][
-            attributes['type_id'] - 1
-        ]
-    except (KeyError, IndexError):
-        _lst_base_hr = [0.0]
-
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1
-        ]
-    except IndexError:
-        attributes['lambda_b'] = 0.0
-
-    return attributes
-
-
 def _do_check_variables(attributes):
     """
     Check calculation variable to ensure they are all greater than zero.
@@ -378,24 +326,56 @@ def _get_environment_factor(attributes):
     return attributes
 
 
-def calculate_217f_part_count(**attributes):
-    """
-    Calculate the part count hazard rate for a relay.
+def calculate_217f_part_count_lambda_b(attributes):
+    r"""
+    Calculate the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
 
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
+    This function calculates the MIL-HDBK-217F hazard rate using the parts
+    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
+    MIL-HDBK-217F parts count base hazard rates.  Keys are for
+    PART_COUNT_217F_LAMBDA_B are:
+
+        #. subcategory_id
+        #. type id; if the relay subcategory is NOT type dependent, then
+            the second key will be zero.
+
+    Current subcategory IDs are:
+
+    +----------------+-------------------------------+-----------------+
+    | Subcategory \  |              Relay \          | MIL-HDBK-217F \ |
+    |       ID       |              Style            |    Section      |
+    +================+===============================+=================+
+    |        1       | Mechanical                    |       13.1      |
+    +----------------+-------------------------------+-----------------+
+    |        2       | Solid State                   |       13.2      |
+    +----------------+-------------------------------+-----------------+
+
+    These keys return a list of base hazard rates.  The hazard rate to use is
+    selected from the list depending on the active environment.
+
+    :param dict attributes: the attributes for the relay being calculated.
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
+    :rtype: dict
     """
-    attributes = _calculate_mil_hdbk_217f_part_count_lambda_b(attributes)
+    try:
+        _lst_base_hr = PART_COUNT_217F_LAMBDA_B[attributes['subcategory_id']][
+            attributes['type_id'] - 1
+        ]
+    except (KeyError, IndexError):
+        _lst_base_hr = [0.0]
+
+    try:
+        attributes['lambda_b'] = _lst_base_hr[
+            attributes['environment_active_id'] - 1
+        ]
+    except IndexError:
+        attributes['lambda_b'] = 0.0
 
     _msg = _do_check_variables(attributes)
-
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b'] * attributes['piQ']
-    )
 
     return attributes, _msg
 

@@ -1219,7 +1219,6 @@ def _get_quality_factor(**attributes):
     :return: attributes; the attributes dictionary updated with pi_Q.
     :rtype: dict
     """
-    # Dictionaries containing piQ values.
     if attributes['hazard_rate_method_id'] == 1:
         _dic_piQ = {
             1: [0.25, 1.0, 2.0],
@@ -1308,7 +1307,6 @@ def _get_quality_factor(**attributes):
             },
         }
 
-    # Select the piQ.
     try:
         attributes['piQ'] = _dic_piQ[attributes['category_id']][
             attributes['subcategory_id']
@@ -1383,35 +1381,44 @@ def do_calculate_217f_part_count(**attributes):
     _msg = ''
     attributes = _get_quality_factor(**attributes)
 
-    if attributes['category_id'] == 1:
-        attributes, _msg = IntegratedCircuit.calculate_217f_part_count(
-            **attributes, )
-    elif attributes['category_id'] == 2:
-        attributes, _msg = Semiconductor.calculate_217f_part_count(
-            **attributes, )
-    elif attributes['category_id'] == 3:
-        attributes, _msg = Resistor.calculate_217f_part_count(**attributes)
-    elif attributes['category_id'] == 4:
-        attributes, _msg = Capacitor.calculate_217f_part_count(**attributes)
-    elif attributes['category_id'] == 5:
-        attributes, _msg = Inductor.calculate_217f_part_count(**attributes)
-    elif attributes['category_id'] == 6:
-        attributes, _msg = Relay.calculate_217f_part_count(**attributes)
-    elif attributes['category_id'] == 7:
-        attributes, _msg = Switch.calculate_217f_part_count(**attributes)
-    elif attributes['category_id'] == 8:
-        attributes, _msg = Connection.calculate_217f_part_count(**attributes)
-    elif attributes['category_id'] == 9:
-        attributes, _msg = Meter.calculate_217f_part_count(**attributes)
-    elif attributes['category_id'] == 10:
-        if attributes['subcategory_id'] == 1:
-            attributes, _msg = Crystal.calculate_217f_part_count(**attributes)
-        elif attributes['subcategory_id'] == 4:
-            attributes, _msg = Lamp.calculate_217f_part_count(**attributes)
-        elif attributes['subcategory_id'] == 3:
-            attributes, _msg = Fuse.calculate_217f_part_count(**attributes)
-        elif attributes['subcategory_id'] == 2:
-            attributes, _msg = Filter.calculate_217f_part_count(**attributes)
+    _dic_functions = {
+        1: IntegratedCircuit.calculate_217f_part_count_lambda_b,
+        2: Semiconductor.calculate_217f_part_count_lambda_b,
+        3: Resistor.calculate_217f_part_count_lambda_b,
+        4: Capacitor.calculate_217f_part_count_lambda_b,
+        5: Inductor.calculate_217f_part_count_lambda_b,
+        6: Relay.calculate_217f_part_count_lambda_b,
+        7: Switch.calculate_217f_part_count_lambda_b,
+        8: Connection.calculate_217f_part_count_lambda_b,
+        9: Meter.calculate_217f_part_count_lambda_b,
+        10: {
+            1: Crystal.calculate_217f_part_count_lambda_b,
+            2: Filter.calculate_217f_part_count_lambda_b,
+            3: Fuse.calculate_217f_part_count_lambda_b,
+            4: Lamp.calculate_217f_part_count_lambda_b,
+        },
+    }
+
+    try:
+        _function = _dic_functions[attributes['category_id']]
+        (attributes, _msg,) = _function(attributes)
+    except (KeyError, TypeError):
+        try:
+            _function = _dic_functions[
+                attributes['category_id']
+            ][
+                attributes['subcategory_id']
+            ]
+            (attributes, _msg,) = _function(attributes)
+        except KeyError:
+            _msg = (
+                "RAMSTK ERROR: No MIL-HDBK-217F parts count function found "
+                "for Hardware ID: {0:d}.\n"
+            ).format(attributes['hardware_id'])
+
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b'] * attributes['piQ']
+    )
 
     return attributes, _msg
 
