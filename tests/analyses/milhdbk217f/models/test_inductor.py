@@ -21,6 +21,7 @@ ATTRIBUTES = {
     'family_id': 1,
     'construction_id': 1,
     'specification_id': 1,
+    'quality_id': 1,
     'page_number': 3,
     'area': 12.5,
     'weight': 0.612,
@@ -29,7 +30,6 @@ ATTRIBUTES = {
     'current_operating': 0.00108778877888,
     'temperature_active': 43.2,
     'piE': 5.0,
-    'piQ': 0.1,
     'lambda_b': 0.0
 }
 
@@ -325,6 +325,17 @@ def test_calculate_part_stress_lambda_b_no_insulation():
 
 @pytest.mark.unit
 @pytest.mark.calculation
+@pytest.mark.parametrize("subcategory_id", [1, 2])
+def test_get_part_stress_quality_factor(subcategory_id):
+    """get_part_stress_quality_factor() should return a float value for piQ on success."""
+    _pi_q = Inductor.get_part_stress_quality_factor(subcategory_id, 1, 1)
+
+    assert isinstance(_pi_q, float)
+    assert _pi_q == {1: 1.5, 2: 0.03}[subcategory_id]
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
 def test_calculate_part_stress_inductor():
     """calculate_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['subcategory_id'] = 2
@@ -334,7 +345,7 @@ def test_calculate_part_stress_inductor():
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx(0.00046712295)
     assert _attributes['piC'] == 2.0
-    assert _attributes['hazard_rate_active'] == pytest.approx(0.00046712295)
+    assert _attributes['hazard_rate_active'] == pytest.approx(0.00014013688)
 
 
 @pytest.mark.unit
@@ -348,4 +359,4 @@ def test_calculate_part_stress_xfmr():
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx(0.0026358035)
     assert _attributes['piC'] == 1.0
-    assert _attributes['hazard_rate_active'] == pytest.approx(0.0013179017)
+    assert _attributes['hazard_rate_active'] == pytest.approx(0.15814821)

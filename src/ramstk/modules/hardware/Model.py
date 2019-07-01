@@ -14,10 +14,10 @@ from pubsub import pub
 from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
 # RAMSTK Package Imports
-from ramstk.analyses.prediction import Component
+from ramstk.analyses.milhdbk217f import MilHdbk217f
 from ramstk.dao.programdb import (
     RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability,
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability
 )
 from ramstk.modules import RAMSTKDataModel
 
@@ -148,7 +148,8 @@ class HardwareBoMDataModel(RAMSTKDataModel):
         if _attributes is not None:
             if _attributes['category_id'] > 0:
                 # ISSUE: See issue #248 at https://github.com/ReliaQualAssociates/ramstk/issues/248
-                _attributes, _msg = Component.calculate(_limits, **_attributes)
+                #_attributes = MilHdbk217f.calculate(_limits, **_attributes)
+                print("Update when refactoring this.")
             else:
                 # If the assembly is to be assessed, set the attributes that
                 # are the sum of the child attributes to zero.  Without doing

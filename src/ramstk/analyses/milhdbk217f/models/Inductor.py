@@ -117,6 +117,9 @@ def calculate_part_stress(**attributes):
     :rtype: dict
     """
     attributes['piC'] = float(attributes['construction_id'])
+    attributes['piQ'] = get_part_stress_quality_factor(
+        attributes['subcategory_id'], attributes['quality_id'],
+        attributes['family_id'])
 
     _power_input = attributes['voltage_dc_operating'] * attributes[
         'current_operating']
@@ -275,26 +278,24 @@ def get_part_count_lambda_b(subcategory_id, family_id, environment_active_id):
                                                           - 1]
 
 
-def get_part_stress_quality_factor(attributes):
+def get_part_stress_quality_factor(subcategory_id, quality_id, family_id):
     """
     Select the MIL-HDBK-217F quality factor for the inductor device.
 
-    :param dict attributes: the hardware attributes for the inductor.
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values
-    :rtype: dict
+    :param int subcategory_id: the subcategory identifier.
+    :param int quality_id: the quality level identifier.
+    :param int family_id: the device family identifier.
+    :return: _pi_q; the selected quality factor
+    :rtype: float
+    :raise: IndexError if passed an unknown quality ID.
+    :raise: KeyError if passed an unknown subcategory ID or family ID.
     """
-    try:
-        if attributes['subcategory_id'] == 1:
-            attributes['piQ'] = PART_STRESS_PI_Q[attributes['subcategory_id']][
-                attributes['family_id']][attributes['quality_id'] - 1]
-        else:
-            attributes['piQ'] = PART_STRESS_PI_Q[attributes['subcategory_id']][
-                attributes['quality_id'] - 1]
-    except (KeyError, IndexError):
-        attributes['piQ'] = 0.0
+    if subcategory_id == 1:
+        _pi_q = PART_STRESS_PI_Q[subcategory_id][family_id][quality_id - 1]
+    else:
+        _pi_q = PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
 
-    return attributes
+    return _pi_q
 
 
 def get_temperature_rise_spec_sheet(page_number):

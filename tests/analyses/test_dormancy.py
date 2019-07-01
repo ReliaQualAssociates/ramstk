@@ -16,16 +16,23 @@ from ramstk.analyses import Dormancy
 
 @pytest.mark.unit
 @pytest.mark.calculation
-def test_dormant_hazard_rate():
+@pytest.mark.parametrize("subcategory_id", [1, 3])
+def test_dormant_hazard_rate(subcategory_id):
     """do_calculate_dormant_hazard_rate() should return a float value for the dormant hazard rate on success."""
-    _hr_dormant = Dormancy.do_calculate_dormant_hazard_rate(4, 5, 3, 2, 0.008642374)
+    _hr_dormant = Dormancy.do_calculate_dormant_hazard_rate(
+        2, subcategory_id, 3, 2, 0.008642374)
 
-    assert pytest.approx(_hr_dormant, 0.0008642374)
+    assert isinstance(_hr_dormant, float)
+    assert _hr_dormant == pytest.approx({
+        1: 0.00034569496,
+        3: 0.0004321187
+    }[subcategory_id])
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_dormant_hazard_rate_bad_index():
-    """do_calculate_dormant_hazard_rate() should raise an index error when a bad index value is passed."""
+    """do_calculate_dormant_hazard_rate() should raise an IndexError when a bad index value is passed."""
     with pytest.raises(IndexError):
-        _hr_dormant = Dormancy.do_calculate_dormant_hazard_rate(4, 5, 3, 12, 0.008642374)
+        _hr_dormant = Dormancy.do_calculate_dormant_hazard_rate(
+            4, 5, 3, 12, 0.008642374)
