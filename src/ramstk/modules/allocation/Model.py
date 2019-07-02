@@ -11,7 +11,7 @@ from pubsub import pub
 from treelib.exceptions import DuplicatedNodeIdError, NodeIDAbsentError
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import RAMSTKAllocation
+from ramstk.data.storage.programdb import RAMSTKAllocation
 from ramstk.modules import RAMSTKDataModel
 
 

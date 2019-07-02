@@ -286,8 +286,8 @@ def do_calculate_active_hazard_rate(**attributes):
         attributes['hazard_rate_active']
         + attributes['add_adj_factor']
     ) * (
-        (attributes['duty_cycle'] / 100.0) * \
-        attributes['mult_adj_factor'] * attributes['quantity']
+        (attributes['duty_cycle'] / 100.0)
+        * attributes['mult_adj_factor'] * attributes['quantity']
     )
     print(attributes['hazard_rate_active'])
     return attributes

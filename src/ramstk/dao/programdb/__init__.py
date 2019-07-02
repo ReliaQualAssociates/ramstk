@@ -8,7 +8,6 @@
 """The RAMSTK program database package."""
 # RAMSTK Local Imports
 from .RAMSTKAction import RAMSTKAction
-from .RAMSTKAllocation import RAMSTKAllocation
 from .RAMSTKCause import RAMSTKCause
 from .RAMSTKControl import RAMSTKControl
 from .RAMSTKDesignElectric import RAMSTKDesignElectric

@@ -17,10 +17,11 @@ from dateutil import parser
 
 # RAMSTK Package Imports
 from ramstk.dao.programdb import (
-    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
+    RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKFunction, RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability,
-    RAMSTKRequirement, RAMSTKSimilarItem, RAMSTKValidation,
+    RAMSTKRequirement, RAMSTKSimilarItem, RAMSTKValidation
 )
+from ramstk.data.storage.programdb import RAMSTKAllocation
 from ramstk.modules import RAMSTKDataModel
 
 

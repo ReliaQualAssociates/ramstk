@@ -12,6 +12,7 @@
 #   calling function to be handled.</description>
 # </requirement>
 
+
 def check_overstress(op_stress, limits):
     """
     Check if an operating condition results in an overstressed condition.

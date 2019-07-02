@@ -128,17 +128,17 @@ def calculate_part_stress(**attributes):
         attributes['temperature_rise'] = get_temperature_rise_spec_sheet(
             attributes['page_number'])
     elif (attributes['power_operating'] > 0.0 and attributes['area'] > 0.0):
-        attributes[
-            'temperature_rise'] = calculate_temperature_rise_power_loss_surface(
-                attributes['power_operating'], attributes['area'])
+        attributes['temperature_rise'] = (
+            calculate_temperature_rise_power_loss_surface(
+                attributes['power_operating'], attributes['area']))
     elif (attributes['power_operating'] > 0.0 and attributes['weight'] > 0.0):
         attributes[
             'temperature_rise'] = calculate_temperature_rise_power_loss_weight(
                 attributes['power_operating'], attributes['weight'])
     elif (_power_input > 0.0 and attributes['weight'] > 0.0):
-        attributes[
-            'temperature_rise'] = calculate_temperature_rise_input_power_weight(
-                _power_input, attributes['weight'])
+        attributes['temperature_rise'] = (
+            calculate_temperature_rise_input_power_weight(
+                _power_input, attributes['weight']))
     attributes['temperature_hot_spot'] = calculate_hot_spot_temperature(
         attributes['temperature_active'], attributes['temperature_rise'])
     attributes['lambda_b'] = calculate_part_stress_lambda_b(

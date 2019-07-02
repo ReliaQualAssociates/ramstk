@@ -13,15 +13,18 @@ import gettext
 from sqlalchemy import MetaData, create_engine, exc
 from sqlalchemy.orm import scoped_session, sessionmaker
 
+# RAMSTK Package Imports
+from ramstk.data.storage.programdb import RAMSTKAllocation
+
 # RAMSTK Local Imports
 from .commondb import (
     RAMSTKRPN, RAMSTKCategory, RAMSTKCondition, RAMSTKFailureMode, RAMSTKGroup,
     RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer, RAMSTKMeasurement,
     RAMSTKMethod, RAMSTKModel, RAMSTKSiteInfo, RAMSTKStakeholders,
-    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser,
+    RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
 )
 from .programdb import (
-    RAMSTKNSWC, RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl,
+    RAMSTKNSWC, RAMSTKAction, RAMSTKCause, RAMSTKControl,
     RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,
     RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKGrowthTest, RAMSTKHardware,
     RAMSTKHazardAnalysis, RAMSTKIncident, RAMSTKIncidentAction,
@@ -31,13 +34,13 @@ from .programdb import (
     RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem, RAMSTKSoftware,
     RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview, RAMSTKSoftwareTest,
     RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest,
-    RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation,
+    RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
 )
 from .RAMSTKCommonDB import (
     RAMSTK_CATEGORIES, RAMSTK_CONDITIONS, RAMSTK_FAILURE_MODES,
     RAMSTK_GROUPS, RAMSTK_HAZARDS, RAMSTK_HISTORIES, RAMSTK_MANUFACTURERS,
     RAMSTK_MEASUREMENTS, RAMSTK_METHODS, RAMSTK_MODELS, RAMSTK_RPNS,
-    RAMSTK_STAKEHOLDERS, RAMSTK_STATUSES, RAMSTK_SUBCATEGORIES, RAMSTK_TYPES,
+    RAMSTK_STAKEHOLDERS, RAMSTK_STATUSES, RAMSTK_SUBCATEGORIES, RAMSTK_TYPES
 )
 
 # Add localization support.

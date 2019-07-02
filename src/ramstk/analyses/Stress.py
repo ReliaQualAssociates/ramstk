@@ -26,6 +26,8 @@
 #   <example>The MIL-HDBK-217F models for capacitors reside in
 #   `analyses/models/milhdbk217f/Capacitor.py`.</example>
 # </requirement>
+
+
 def calculate_stress_ratio(stress_operating, stress_rated):
     """
     Calculate the operating electrical stress ratio of a device.

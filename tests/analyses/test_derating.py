@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for the electrical stress module."""
+"""Test class for the stress derating module."""
 
 # Third Party Imports
 import pytest
