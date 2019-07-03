@@ -253,9 +253,13 @@ def test_calculate_foo_string_input():
 
 @pytest.mark.unit
 @pytest.mark.calculation
-def test_calculate_allocation():
+@pytest.mark.parametrize("method_id", [1, 2, 3, 4])
+def test_calculate_allocation(method_id):
     """calculate_allocation() should return the Allocation attributes dict with updated values on success."""
-    _attributes = Allocation.do_calculate_allocation(0.999, **ATTRIBUTES)
+    ATTRIBUTES['method_id'] = method_id
+    ATTRIBUTES['system_hr'] = 0.003418
+    ATTRIBUTES['hazard_rate'] = 0.00004328
+    _attributes = Allocation.do_calculate_allocation(0.999, 3528, **ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
 

@@ -14,7 +14,7 @@ from sqlalchemy import MetaData, create_engine, exc
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 # RAMSTK Package Imports
-from ramstk.data.storage.programdb import RAMSTKAllocation
+from ramstk.data.storage.programdb import RAMSTKAllocation, RAMSTKSimilarItem
 
 # RAMSTK Local Imports
 from .commondb import (
@@ -24,17 +24,16 @@ from .commondb import (
     RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
 )
 from .programdb import (
-    RAMSTKNSWC, RAMSTKAction, RAMSTKCause, RAMSTKControl,
-    RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,
-    RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKGrowthTest, RAMSTKHardware,
-    RAMSTKHazardAnalysis, RAMSTKIncident, RAMSTKIncidentAction,
-    RAMSTKIncidentDetail, RAMSTKMatrix, RAMSTKMechanism, RAMSTKMilHdbkF,
-    RAMSTKMission, RAMSTKMissionPhase, RAMSTKMode, RAMSTKOpLoad,
-    RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus, RAMSTKReliability,
-    RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem, RAMSTKSoftware,
-    RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview, RAMSTKSoftwareTest,
-    RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest,
-    RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
+    RAMSTKNSWC, RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKDesignElectric,
+    RAMSTKDesignMechanic, RAMSTKEnvironment, RAMSTKFailureDefinition,
+    RAMSTKFunction, RAMSTKGrowthTest, RAMSTKHardware, RAMSTKHazardAnalysis,
+    RAMSTKIncident, RAMSTKIncidentAction, RAMSTKIncidentDetail, RAMSTKMatrix,
+    RAMSTKMechanism, RAMSTKMilHdbkF, RAMSTKMission, RAMSTKMissionPhase,
+    RAMSTKMode, RAMSTKOpLoad, RAMSTKOpStress, RAMSTKProgramInfo,
+    RAMSTKProgramStatus, RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision,
+    RAMSTKSoftware, RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview,
+    RAMSTKSoftwareTest, RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData,
+    RAMSTKTest, RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
 )
 from .RAMSTKCommonDB import (
     RAMSTK_CATEGORIES, RAMSTK_CONDITIONS, RAMSTK_FAILURE_MODES,

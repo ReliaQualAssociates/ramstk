@@ -4,11 +4,13 @@
 #       tests.dao.programdb.test_ramstksimilaritem.py is part of The RAMSTK Project
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKSimilarItem module algorithms and models."""
+"""Test class for testing RAMSTKSimilarItem module algorithms and models."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.programdb.RAMSTKSimilarItem import RAMSTKSimilarItem
+# RAMSTK Package Imports
+from ramstk.data.storage.programdb.RAMSTKSimilarItem import RAMSTKSimilarItem
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -38,7 +40,6 @@ ATTRIBUTES = {
     'user_blob_3': b'',
     'environment_from_id': 0,
     'change_description_7': b'',
-    'hardware_id': 1,
     'environment_to_id': 0,
     'result_3': 0.0,
     'temperature_to': 30.0,
@@ -74,7 +75,7 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_ramstkallocation_create(test_dao):
+def test_ramstksimilaritem_create(test_dao):
     """__init__() should create an RAMSTKSimilarItem model."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
@@ -113,7 +114,7 @@ def test_ramstkallocation_create(test_dao):
     assert DUT.function_3 == ''
     assert DUT.function_4 == ''
     assert DUT.function_5 == ''
-    assert DUT.method_id == 0
+    assert DUT.method_id == 1
     assert DUT.parent_id == 0
     assert DUT.quality_from_id == 0
     assert DUT.quality_to_id == 0
@@ -180,7 +181,7 @@ def test_get_attributes(test_dao):
     assert _attributes['function_3'] == ''
     assert _attributes['function_4'] == ''
     assert _attributes['function_5'] == ''
-    assert _attributes['method_id'] == 0
+    assert _attributes['method_id'] == 1
     assert _attributes['parent_id'] == 0
     assert _attributes['quality_from_id'] == 0
     assert _attributes['quality_to_id'] == 0
@@ -210,187 +211,33 @@ def test_get_attributes(test_dao):
 
 @pytest.mark.integration
 def test_set_attributes(test_dao):
-    """set_attributes() should return a zero error code on success."""
+    """set_attributes() should return None on success."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKSimilarItem).first()
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKSimilarItem 1 attributes.")
+    assert DUT.set_attributes(ATTRIBUTES) is None
 
 
 @pytest.mark.integration
-def test_set_attributes_too_few_passed(test_dao):
-    """set_attributes() should return a 40 error code when passed a dict with missing attributes."""
+def test_set_attributes_none_value(test_dao):
+    """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKSimilarItem).first()
 
-    _error_code, _msg = DUT.set_attributes({
-        'method_id': 0,
-        'quality_to_id': 0,
-        'parent_id': 0,
-        'change_factor_4': 1.0,
-        'change_factor_5': 1.0,
-        'change_factor_6': 1.0,
-        'change_factor_7': 1.0,
-        'change_factor_1': 1.0,
-        'change_factor_2': 1.0,
-        'change_factor_3': 1.0,
-        'change_factor_8': 1.0,
-        'change_factor_9': 1.0,
-        'function_5': '',
-        'function_4': '',
-        'function_3': '',
-        'function_2': '',
-        'function_1': '',
-        'quality_from_id': 0,
-        'change_factor_10': 1.0,
-        'user_blob_3': '',
-        'environment_from_id': 0,
-        'change_description_7': '',
-        'hardware_id': 1,
-        'environment_to_id': 0,
-        'result_3': 0.0,
-        'temperature_to': 30.0,
-        'user_blob_2': '',
-        'user_blob_1': '',
-        'user_blob_5': '',
-        'user_blob_4': '',
-        'result_2': 0.0,
-        'change_description_10': '',
-        'result_1': 0.0,
-        'result_4': 0.0,
-        'result_5': 0.0,
-        'user_float_5': 0.0,
-        'user_float_4': 0.0,
-        'user_float_2': 0.0,
-        'user_float_1': 0.0,
-        'user_int_4': 0,
-        'user_int_5': 0,
-        'user_int_1': 0,
-        'user_int_2': 0,
-        'user_int_3': 0,
-        'change_description_6': '',
-        'temperature_from': 30.0,
-        'change_description_4': '',
-        'change_description_5': '',
-        'change_description_2': '',
-        'change_description_3': '',
-        'change_description_1': '',
-        'change_description_8': '',
-        'change_description_9': ''
-    })
+    ATTRIBUTES['change_factor_3'] = None
 
-    assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'user_float_3' in attribute "
-                    "dictionary passed to RAMSTKSimilarItem.set_attributes().")
+    assert DUT.set_attributes(ATTRIBUTES) is None
+    assert DUT.get_attributes()['change_factor_3'] == 1.0
 
 
 @pytest.mark.integration
-def test_topic_633(test_dao):
-    """topic_633() should return False on success."""
+def test_set_attributes_unknown_attributes(test_dao):
+    """set_attributes() should raise an AttributeError when passed an unknown attribute."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKSimilarItem).filter(
-        RAMSTKSimilarItem.hardware_id == 2).all()[0]
+    DUT = _session.query(RAMSTKSimilarItem).first()
 
-    DUT.environment_from_id = 4
-    DUT.environment_to_id = 6
-    DUT.quality_from_id = 2
-    DUT.quality_to_id = 3
-    DUT.temperature_from = 38.0
-    DUT.temperature_to = 27.5
-
-    assert not DUT.topic_633(0.000003335)
-    assert DUT.change_factor_1 == 0.6
-    assert DUT.change_factor_2 == 3.3
-    assert DUT.change_factor_3 == 1.1
-    assert DUT.result_1 == pytest.approx(1.5312213e-06)
-
-
-@pytest.mark.integration
-def test_topic_633_quality_key_error(test_dao):
-    """topic_633() should return True when passed a quality ID that isn't in the dict."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKSimilarItem).filter(
-        RAMSTKSimilarItem.hardware_id == 2).all()[0]
-
-    DUT.environment_from_id = 4
-    DUT.environment_to_id = 6
-    DUT.quality_from_id = 2
-    DUT.quality_to_id = 30
-    DUT.temperature_from = 38.0
-    DUT.temperature_to = 27.5
-
-    assert DUT.topic_633(0.000003335)
-    assert DUT.change_factor_1 == 1.0
-    assert DUT.change_factor_2 == 3.3
-    assert DUT.change_factor_3 == 1.1
-    assert DUT.result_1 == pytest.approx(9.1873278e-07)
-
-
-@pytest.mark.integration
-def test_topic_633_environment_key_error(test_dao):
-    """topic_633() should return True when passed an environment ID that isn't in the dict."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKSimilarItem).filter(
-        RAMSTKSimilarItem.hardware_id == 2).all()[0]
-
-    DUT.environment_from_id = 4
-    DUT.environment_to_id = 60
-    DUT.quality_from_id = 2
-    DUT.quality_to_id = 3
-    DUT.temperature_from = 38.0
-    DUT.temperature_to = 27.5
-
-    assert DUT.topic_633(0.000003335)
-    assert DUT.change_factor_1 == 0.6
-    assert DUT.change_factor_2 == 1.0
-    assert DUT.change_factor_3 == 1.1
-    assert DUT.result_1 == pytest.approx(5.0530303e-06)
-
-
-@pytest.mark.integration
-def test_topic_633_temperature_key_error(test_dao):
-    """topic_633() should return True when passed a temperature that can't be converted to a key in the dict."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKSimilarItem).filter(
-        RAMSTKSimilarItem.hardware_id == 2).all()[0]
-
-    DUT.environment_from_id = 4
-    DUT.environment_to_id = 6
-    DUT.quality_from_id = 2
-    DUT.quality_to_id = 3
-    DUT.temperature_from = 380.0
-    DUT.temperature_to = 27.5
-
-    assert DUT.topic_633(0.000003335)
-    assert DUT.change_factor_1 == 0.6
-    assert DUT.change_factor_2 == 3.3
-    assert DUT.change_factor_3 == 1.0
-    assert DUT.result_1 == pytest.approx(1.6843434e-06)
-
-
-@pytest.mark.integration
-def test_user_defined(test_dao):
-    """user_defined() should return False on success."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKSimilarItem).filter(
-        RAMSTKSimilarItem.hardware_id == 2).all()[0]
-
-    DUT.change_factor_1 = 1.1
-    DUT.change_factor_2 = 0.9
-    DUT.change_factor_3 = 1.0
-    DUT.change_factor_4 = 0.95
-    DUT.change_factor_5 = 1.25
-    DUT.function_1 = 'hr * pi1 * pi2 * pi3 * pi4 * pi5'
-
-    assert not DUT.user_defined(0.000003335)
-    assert DUT.result_1 == pytest.approx(3.9207094e-06)
+    with pytest.raises(AttributeError):
+        DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})

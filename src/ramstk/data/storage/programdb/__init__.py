@@ -9,3 +9,4 @@
 
 # RAMSTK Local Imports
 from .RAMSTKAllocation import RAMSTKAllocation
+from .RAMSTKSimilarItem import RAMSTKSimilarItem

@@ -124,7 +124,7 @@ def test_set_attributes(test_dao):
 
 @pytest.mark.integration
 def test_set_attributes_none_value(test_dao):
-    """set_attributes() should sett an attribute to it's default value when the attribute is passed with a None value."""
+    """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKAllocation).first()
@@ -137,7 +137,7 @@ def test_set_attributes_none_value(test_dao):
 
 @pytest.mark.integration
 def test_set_attributes_unknown_attributes(test_dao):
-    """set_attributes() should raise an AttributeError when passed an unknown attributes."""
+    """set_attributes() should raise an AttributeError when passed an unknown attribute."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKAllocation).first()

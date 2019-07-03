@@ -114,10 +114,13 @@ def _calculate_foo_apportionment(factors, mission_time, cum_weight,
             _weight_factor, _percent_weight_factor)
 
 
-def do_calculate_allocation(parent_goal, **attributes):
+def do_calculate_allocation(parent_goal, cumulative_weight, **attributes):
     """
     Calculate the reliability allocation.
 
+    :param float parent_goal: the parent assembly's reliability goal.
+    :param cumulative_weight: the cumulative weighting of all child assemblies.
+        Used for feasibility of objectives method only.
     :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
@@ -130,19 +133,25 @@ def do_calculate_allocation(parent_goal, **attributes):
     elif attributes['method_id'] == 2:
         (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
          attributes['reliability_alloc']) = _calculate_arinc_apportionment(
-             attributes['mission_time'], attributes['system_hr'],
-             parent_goal, attributes['hazard_rate'])
+             attributes['mission_time'], attributes['system_hr'], parent_goal,
+             attributes['hazard_rate'])
     elif attributes['method_id'] == 3:
         (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
          attributes['reliability_alloc']) = _calculate_equal_apportionment(
-             attributes['mission_time'], attributes['n_children'],
+             attributes['mission_time'], attributes['n_sub_systems'],
              parent_goal)
     elif attributes['method_id'] == 4:
+        _factors = {
+            'intricacy': attributes['int_factor'],
+            'state_of_art': attributes['soa_factor'],
+            'operating_time': attributes['op_time_factor'],
+            'environment': attributes['env_factor']
+        }
         (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
          attributes['reliability_alloc'], attributes['weight_factor'],
          attributes['_percent_weight_factor']) = _calculate_foo_apportionment(
-             attributes['mission_time'], attributes['system_hr'],
-             parent_goal, attributes['hazard_rate'])
+             _factors, attributes['mission_time'], cumulative_weight,
+             parent_goal)
 
     return attributes
 

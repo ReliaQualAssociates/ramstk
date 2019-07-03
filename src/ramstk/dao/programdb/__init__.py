@@ -35,7 +35,6 @@ from .RAMSTKProgramStatus import RAMSTKProgramStatus
 from .RAMSTKReliability import RAMSTKReliability
 from .RAMSTKRequirement import RAMSTKRequirement
 from .RAMSTKRevision import RAMSTKRevision
-from .RAMSTKSimilarItem import RAMSTKSimilarItem
 from .RAMSTKSoftware import RAMSTKSoftware
 from .RAMSTKSoftwareDevelopment import RAMSTKSoftwareDevelopment
 from .RAMSTKSoftwareReview import RAMSTKSoftwareReview

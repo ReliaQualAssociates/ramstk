@@ -7,4 +7,4 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Data storage package."""
 # RAMSTK Local Imports
-from .programdb import RAMSTKAllocation
+from .programdb import RAMSTKAllocation, RAMSTKSimilarItem

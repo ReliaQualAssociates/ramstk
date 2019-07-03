@@ -167,10 +167,10 @@ class Model():
     The attributes of a RAMSTK data model are:
 
     :ivar site_dao: the data access object used to communicate with the RAMSTK
-                    Common database.
+        Common database.
     :type site_dao: :class:`ramstk.dao.DAO.DAO()`
-    :ivar program_dao: the data access object used to communicate with the RAMSTK
-                       Program database
+    :ivar program_dao: the data access object used to communicate with the
+        RAMSTK Program database
     :type program_dao: :class:`ramstk.dao.DAO.DAO()`
     """
 
@@ -178,9 +178,9 @@ class Model():
         """
         Initialize an instance of the RAMSTK data model.
 
-        :param sitedao: the `:class:ramstk.dao.DAO.DAO` instance connected to
+        :param sitedao: the :class:`ramstk.dao.DAO.DAO` instance connected to
                         the RAMSTK Common database.
-        :param programdao: the `:class:ramstk.dao.DAO.DAO` instance connected
+        :param programdao: the :class:`ramstk.dao.DAO.DAO` instance connected
                            to the RAMSTK Program database.
         """
         # Initialize private dictionary attributes.
