@@ -101,7 +101,6 @@ def _calculate_foo_apportionment(factors, mission_time, cum_weight,
     :raise: TypeError if passed a string for any argument.
     :raise: ZeroDivisionError if passed a cumulative weight=0.0.
     """
-    # TODO: Add range check on input factors (1 - 10) in RAMSTKAllocation.foo_apportionment().
     _weight_factor = (factors['intricacy'] * factors['state_of_art']
                       * factors['operating_time'] * factors['environment'])
     _percent_weight_factor = (float(_weight_factor) / float(cum_weight))

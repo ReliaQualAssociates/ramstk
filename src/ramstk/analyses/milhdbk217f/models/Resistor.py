@@ -5,14 +5,14 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Resistor Reliability Calculations Module."""
-#<requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <topic>Coding style</topic>
 #    <name>Trailing comma only for singletons</name>
 #    <description>Only singleton lists and tuples should include the trailing
 #    comma.</description>
 #    <rationale>This is a preference.</rationale>
-#</requirement>
+# </requirement>
 
 # Standard Library Imports
 from math import exp

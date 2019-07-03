@@ -6,7 +6,7 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit MIL-HDBK-217F Constants and Calculations Module."""
-#<requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <topic<naming convention</topic>
 #    <name>GUI element callback naming criteria</name>
@@ -17,8 +17,8 @@
 #    calculate a component's hazard rate.  She would press the `Calculate`
 #    button whose callback method would be named
 #    `send_request_do_calculate_hardware`.</rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <topic<naming convention</topic>
 #    <name>Data controller method naming criteria</name>
@@ -30,8 +30,8 @@
 #    to perform the requested action.  For example,
 #    `request_do_calculate_hardware` would be called in response to the
 #    `send_request_do_calculate_hardware` from the GUI.</rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <topic<naming convention</topic>
 #    <name>Data model method naming criteria</name>
@@ -40,8 +40,8 @@
 #    convention accurately describes that because data models "do" things.  For
 #    example, the data controller `request_do_calculate_hardware` method would
 #    call the Hardware data model's `do_calculate` method.</rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <topic<naming convention</topic>
 #    <name>GUI published message naming criteria</name>
@@ -50,8 +50,8 @@
 #    <rationale>The GUI is the interface for the user to perform the actions
 #    the user desires.  It is through the GUI the user "requests" these actions
 #    to be perofrmed.</rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <topic>naming convention</topic>
 #    <name>Data model published message naming criteria on success</name>
@@ -61,8 +61,8 @@
 #    <rationale>This forms the closure of the loop between the requestor (GUI),
 #    manager (data controller), supervisor (data model), worker
 #    (method/function).</rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <topic>naming convention</topic>
 #    <name>Data model published message naming criteria on failure</name>
@@ -70,7 +70,7 @@
 #    `abort_[action]` when the requested action could not be
 #    completed.</description>
 #    <rationale></rationale>
-#</requirement>
+# </requirement>
 
 # Standard Library Imports
 from math import exp, log

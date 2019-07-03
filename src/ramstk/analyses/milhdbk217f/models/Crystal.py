@@ -7,13 +7,13 @@
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Crystal MIL-HDBK-217F Constants and Calculations Module."""
 
-#<requirement>
+# <requirement>
 #   <module>ramstk</module>
 #   <name>Exceptions not used for flow control</name>
 #   <description>Exceptions shall not be used for flow control.</description>
 #   <rationale></rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #   <module>ramstk</module>
 #   <name>Handle exceptions at the level that knows how to handle them</name>
 #   <description>Exceptions shall be handled at the lowest level there is
@@ -21,16 +21,16 @@
 #   <rationale>Exceptions need to be handled at the level that can produce an
 #   informative error log message as well as an informative error, warning, or
 #   information dialog for the user.</rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <name>Do not handle programming exceptions</name>
 #    <description>Exceptions such as IndexError, TypeError, KeyError, and
 #    NameError are programming errors and should not be handled by RAMSTK, they
 #    should be handled by the programmer.</description>
 #    <rationale>Handling programming exceptions simply hides bugs.</rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #   <module>ramstk</module>
 #   <name>Document the exceptions thrown by a function/method</name>
 #   <description>Add :raise: directives to the docstrings of functions and
@@ -40,8 +40,8 @@
 #   <rationale>Documenting raised exceptions ensures the programmer of client
 #   functions/methods prevents passing bad inputs and is aware of the possible
 #   need to handle a run-time/user exception in their code.</rationale>
-#</requirement>
-#<requirement>
+# </requirement>
+# <requirement>
 #   <module>ramstk</module>
 #   <name>Dict keys start with one (1)</name>
 #   <description>When using integer dict keys, start with one (1).
@@ -50,7 +50,7 @@
 #   whose value is the index in a combobox.  Since comboboxes always contain
 #   a blank in position zero, starting the dict index at 1 provides a 1:1
 #   correlation.</rationale>
-#</requirement>
+# </requirement>
 
 PART_COUNT_LAMBDA_B = [
     0.032, 0.096, 0.32, 0.19, 0.51, 0.38, 0.54, 0.70, 0.90, 0.74, 0.016, 0.42,

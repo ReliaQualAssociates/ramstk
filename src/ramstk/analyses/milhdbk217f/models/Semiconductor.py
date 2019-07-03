@@ -8,7 +8,7 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Semiconductor MIL-HDBK-217F Calculations Module."""
 
-#<requirement>
+# <requirement>
 #    <module>ramstk</module>
 #    <topic>analysis</topic>
 #    <name>Return values when value is not used.</name>
@@ -24,7 +24,7 @@
 #    calculating piS, just calculate the piS value and then don't use it.  In
 #    the function for calculating piS, if there's an if-then construct based on
 #    subcategory ID, end it with a default else: piS = 0.0.</rationale>
-#</requirement>
+# </requirement>
 
 # Standard Library Imports
 from math import exp, log, sqrt
