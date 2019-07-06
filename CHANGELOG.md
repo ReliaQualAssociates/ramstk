@@ -75,6 +75,7 @@
 - build\(deps\): bump sqlalchemy from 1.2.11 to 1.2.12 [\#148](https://github.com/ReliaQualAssociates/ramstk/pull/148) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - build\(deps\): bump xlsxwriter from 1.1.0 to 1.1.1 [\#147](https://github.com/ReliaQualAssociates/ramstk/pull/147) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - build\(deps\): bump sqlalchemy-utils from 0.33.4 to 0.33.5 [\#146](https://github.com/ReliaQualAssociates/ramstk/pull/146) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- build\(deps\): bump openpyxl from 2.5.6 to 2.5.7 [\#145](https://github.com/ReliaQualAssociates/ramstk/pull/145) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - build\(deps\): bump lxml from 4.2.4 to 4.2.5 [\#144](https://github.com/ReliaQualAssociates/ramstk/pull/144) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - build\(deps\): bump sqlalchemy-utils from 0.33.3 to 0.33.4 [\#143](https://github.com/ReliaQualAssociates/ramstk/pull/143) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
@@ -160,7 +161,6 @@
 
 **Merged pull requests:**
 
-- build\(deps\): bump openpyxl from 2.5.6 to 2.5.7 [\#145](https://github.com/ReliaQualAssociates/ramstk/pull/145) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - build\(deps\): bump openpyxl from 2.5.5 to 2.5.6 [\#138](https://github.com/ReliaQualAssociates/ramstk/pull/138) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - build\(deps\): bump xlsxwriter from 1.0.9 to 1.1.0 [\#137](https://github.com/ReliaQualAssociates/ramstk/pull/137) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - build\(deps\): bump sqlalchemy from 1.2.2 to 1.2.11 [\#136](https://github.com/ReliaQualAssociates/ramstk/pull/136) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
