@@ -140,14 +140,21 @@ def do_calculate_dormant_hazard_rate(
     :rtype: float
     :raise: IndexError if an indexing argument asks for a non-existent index.
     """
-    _dormant_hr_mult = DORMANT_HR_MULT[category_id
-                                       - 1][environment_active_id
-                                            - 1][environment_dormant_id - 1]
-
     if category_id == 2:
         if subcategory_id in [1, 2]:
-            _dormant_hr_mult = _dormant_hr_mult[0]
+            _dormant_hr_mult = DORMANT_HR_MULT[category_id
+                                               - 1][environment_active_id
+                                                    - 1][environment_dormant_id
+                                                         - 1][0]
         else:
-            _dormant_hr_mult = _dormant_hr_mult[1]
+            _dormant_hr_mult = DORMANT_HR_MULT[category_id
+                                               - 1][environment_active_id
+                                                    - 1][environment_dormant_id
+                                                         - 1][1]
+    else:
+        _dormant_hr_mult = DORMANT_HR_MULT[category_id
+                                           - 1][environment_active_id
+                                                - 1][environment_dormant_id
+                                                     - 1]
 
     return _dormant_hr_mult * hazard_rate_active

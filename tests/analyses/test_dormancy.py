@@ -16,17 +16,18 @@ from ramstk.analyses import Dormancy
 
 @pytest.mark.unit
 @pytest.mark.calculation
+@pytest.mark.parametrize("category_id", [1, 2])
 @pytest.mark.parametrize("subcategory_id", [1, 3])
-def test_dormant_hazard_rate(subcategory_id):
+def test_dormant_hazard_rate(category_id, subcategory_id):
     """do_calculate_dormant_hazard_rate() should return a float value for the dormant hazard rate on success."""
     _hr_dormant = Dormancy.do_calculate_dormant_hazard_rate(
-        2, subcategory_id, 3, 2, 0.008642374)
+        category_id, subcategory_id, 3, 2, 0.008642374)
 
     assert isinstance(_hr_dormant, float)
     assert _hr_dormant == pytest.approx({
-        1: 0.00034569496,
-        3: 0.0004321187
-    }[subcategory_id])
+        1: [0.00069138992, 0.00034569496],
+        3: [0.00069138992, 0.0004321187]
+    }[subcategory_id][category_id - 1])
 
 
 @pytest.mark.unit

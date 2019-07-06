@@ -120,19 +120,14 @@ def test_calculate_part_count(subcategory_id, type_id):
 
     assert isinstance(_attributes, dict)
     if subcategory_id == 1 and type_id == 1:
-        assert _attributes['piQ'] == 0.7
         assert _attributes['lambda_b'] == 0.049
     elif subcategory_id == 1 and type_id == 5:
-        assert _attributes['piQ'] == 0.7
         assert _attributes['lambda_b'] == 0.04
     elif subcategory_id == 2 and type_id == 1:
-        assert _attributes['piQ'] == 0.5
         assert _attributes['lambda_b'] == 8.9
     elif subcategory_id == 2 and type_id == 5:
-        assert _attributes['piQ'] == 0.5
         assert _attributes['lambda_b'] == 0.31
     elif subcategory_id == 4:
-        assert _attributes['piQ'] == 0.7
         assert _attributes['lambda_b'] == 0.16
 
 

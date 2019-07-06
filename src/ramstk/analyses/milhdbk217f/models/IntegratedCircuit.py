@@ -6,71 +6,6 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit MIL-HDBK-217F Constants and Calculations Module."""
-# <requirement>
-#    <module>ramstk</module>
-#    <topic<naming convention</topic>
-#    <name>GUI element callback naming criteria</name>
-#    <description>GUI element callback method/function shall be named
-#    `send_request_do_[action]`.  </description>
-#    <rationale>This naming convention represents what a user is doing when
-#    interacting with the application.  For example, a user wants to
-#    calculate a component's hazard rate.  She would press the `Calculate`
-#    button whose callback method would be named
-#    `send_request_do_calculate_hardware`.</rationale>
-# </requirement>
-# <requirement>
-#    <module>ramstk</module>
-#    <topic<naming convention</topic>
-#    <name>Data controller method naming criteria</name>
-#    <description>Data controller methods shall be named
-#    `request_do_[action]`.</description>
-#    <rationale>The data controller's function is to coordinate the wishes of
-#    the user and the actions of the models.  The data controller listens for
-#    requested actions from the user (via the GUI) and directs the data model
-#    to perform the requested action.  For example,
-#    `request_do_calculate_hardware` would be called in response to the
-#    `send_request_do_calculate_hardware` from the GUI.</rationale>
-# </requirement>
-# <requirement>
-#    <module>ramstk</module>
-#    <topic<naming convention</topic>
-#    <name>Data model method naming criteria</name>
-#    <description>Data model methods shall be named `do_[action]`</description>
-#    <rationale>Data models are the workhorses of the application.  This naming
-#    convention accurately describes that because data models "do" things.  For
-#    example, the data controller `request_do_calculate_hardware` method would
-#    call the Hardware data model's `do_calculate` method.</rationale>
-# </requirement>
-# <requirement>
-#    <module>ramstk</module>
-#    <topic<naming convention</topic>
-#    <name>GUI published message naming criteria</name>
-#    <description>Messages published by the GUI shall be named
-#    'request_do_[action]'.</description>
-#    <rationale>The GUI is the interface for the user to perform the actions
-#    the user desires.  It is through the GUI the user "requests" these actions
-#    to be perofrmed.</rationale>
-# </requirement>
-# <requirement>
-#    <module>ramstk</module>
-#    <topic>naming convention</topic>
-#    <name>Data model published message naming criteria on success</name>
-#    <description>Messages published by the data model shall be named
-#    `succeed_[action]` when the requested action was successfully
-#    completed.</description>
-#    <rationale>This forms the closure of the loop between the requestor (GUI),
-#    manager (data controller), supervisor (data model), worker
-#    (method/function).</rationale>
-# </requirement>
-# <requirement>
-#    <module>ramstk</module>
-#    <topic>naming convention</topic>
-#    <name>Data model published message naming criteria on failure</name>
-#    <description>Messages published by the data model shall be named
-#    `abort_[action]` when the requested action could not be
-#    completed.</description>
-#    <rationale></rationale>
-# </requirement>
 
 # Standard Library Imports
 from math import exp, log
@@ -94,7 +29,9 @@ ACTIVATION_ENERGY = {
     0.6,
     8:
     0.6,
-    9: [1.5, 1.4]
+    9: [1.5, 1.4],
+    10:
+    0.35
 }
 C1 = {
     1: [[0.01, 0.02, 0.04, 0.06], [0.01, 0.02, 0.04, 0.06]],
@@ -446,7 +383,7 @@ def calculate_lambda_cyclic_factors(n_cycles, construction_id, n_elements,
     if construction_id == 1:
         _b_1 = ((n_elements / 16000.0)**0.5) * (exp(
             (-0.15 / 8.63E-5) * ((1.0 / (temperature_junction + 273.0)) -
-                                 (1.0 / 333.0)), ))
+                                 (1.0 / 333.0))))
         _b_2 = 0.0
     elif construction_id == 2:
         if 300000 < n_cycles <= 400000:
@@ -456,10 +393,10 @@ def calculate_lambda_cyclic_factors(n_cycles, construction_id, n_elements,
 
         _b_1 = ((n_elements / 64000.0)**0.25) * (exp(
             (0.1 / 8.63E-5) * ((1.0 / (temperature_junction + 273.0)) -
-                               (1.0 / 303.0)), ))
+                               (1.0 / 303.0))))
         _b_2 = ((n_elements / 64000.0)**0.25) * (exp(
             (-0.12 / 8.63E-5) * ((1.0 / (temperature_junction + 273.0)) -
-                                 (1.0 / 303.0)), ))
+                                 (1.0 / 303.0))))
     else:
         _b_1 = 0.0
         _b_2 = 0.0
@@ -576,12 +513,6 @@ def calculate_part_stress(**attributes):
         dictionary with updated values.
     :rtype: dict
     """
-    attributes['C1'] = get_die_complexity_factor(attributes['subcategory_id'],
-                                                 attributes['technology_id'],
-                                                 attributes['application_id'],
-                                                 attributes['n_elements'])
-    attributes['C2'] = calculate_package_factor(attributes['package_id'],
-                                                attributes['n_active_pins'])
     attributes['temperature_junction'] = calculate_junction_temperature(
         attributes['temperature_case'], attributes['power_operating'],
         attributes['theta_jc'])
@@ -594,11 +525,21 @@ def calculate_part_stress(**attributes):
                                                attributes['application_id'])
 
     if attributes['subcategory_id'] in [1, 2, 3, 4]:
+        attributes['C1'] = get_die_complexity_factor(
+            attributes['subcategory_id'], attributes['technology_id'],
+            attributes['application_id'], attributes['n_elements'])
+        attributes['C2'] = calculate_package_factor(
+            attributes['package_id'], attributes['n_active_pins'])
         attributes['hazard_rate_active'] = (
             (attributes['C1'] * attributes['piT']
              + attributes['C2'] * attributes['piE']) * attributes['piQ']
             * attributes['piL'])
     elif attributes['subcategory_id'] in [5, 6, 7, 8]:
+        attributes['C1'] = get_die_complexity_factor(
+            attributes['subcategory_id'], attributes['technology_id'],
+            attributes['application_id'], attributes['n_elements'])
+        attributes['C2'] = calculate_package_factor(
+            attributes['package_id'], attributes['n_active_pins'])
         if attributes['subcategory_id'] == 6:
             attributes['piECC'] = get_error_correction_factor(
                 attributes['type_id'])
@@ -617,6 +558,11 @@ def calculate_part_stress(**attributes):
             * attributes['piQ'] * attributes['piL'])
 
     elif attributes['subcategory_id'] == 9:
+        attributes['C1'] = get_die_complexity_factor(
+            attributes['subcategory_id'], attributes['technology_id'],
+            attributes['application_id'], attributes['n_elements'])
+        attributes['C2'] = calculate_package_factor(
+            attributes['package_id'], attributes['n_active_pins'])
         attributes['hazard_rate_active'] = (
             (attributes['C1'] * attributes['piT'] * attributes['piA']
              + attributes['C2'] * attributes['piE']) * attributes['piQ']

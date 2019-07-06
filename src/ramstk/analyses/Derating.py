@@ -6,12 +6,6 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Component Derating Calculations Module."""
 
-# <requirement module="analyses">
-#   <name>Analyses function exception handling</name>
-#   <description>Low level analysis functions shall pass all exceptions to the
-#   calling function to be handled.</description>
-# </requirement>
-
 
 def check_overstress(op_stress, limits):
     """

@@ -308,7 +308,7 @@ def calculate_series_resistance_factor(
         message raised by this function.
     :rtype: tuple
     :raise: TypeError if passed a non-numerical input.
-    :raise: ZeroDivision error if passed both ac and DC voltages = 1.0.
+    :raise: ZeroDivisionError if passed both ac and DC voltages = 0.0.
     """
     _ckt_resistance = resistance / (voltage_dc_operating
                                     + voltage_ac_operating)

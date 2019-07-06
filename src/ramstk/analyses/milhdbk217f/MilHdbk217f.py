@@ -6,6 +6,9 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """MilHdbk217f Calculations Class."""
 
+# Third Party Imports
+from pubsub import pub
+
 # RAMSTK Local Imports
 from .models import (
     Capacitor, Connection, Crystal, Filter, Fuse, Inductor,
@@ -22,7 +25,7 @@ def _do_calculate_part_count(**attributes):
     :return: attributes; the attributes dict with updated values.
     :rtype: dict
     :raise: IndexError if there is no entry for the active environment ID.
-    :raise: KeyError if there is no entry for category ID.
+    :raise: KeyError if there is no entry for category ID or subcategory ID.
     """
     _part_count = {
         1: IntegratedCircuit.calculate_part_count,
@@ -51,12 +54,16 @@ def _do_calculate_part_count(**attributes):
         attributes['lambda_b'] = _part_count[attributes['category_id']](
             **attributes)
 
-    if attributes['category_id'] in [1, 3, 4, 6, 7, 8, 9, 10]:
+    if attributes['category_id'] != 2:
         attributes['piQ'] = _get_part_count_quality_factor(
             attributes['category_id'],
             attributes['subcategory_id'],
             attributes['quality_id'],
         )
+    else:
+        attributes['piQ'] = Semiconductor.get_part_count_quality_factor(
+            attributes['subcategory_id'], attributes['quality_id'],
+            attributes['type_id'])
 
     attributes['hazard_rate_active'] = (attributes['lambda_b']
                                         * attributes['piQ'])
@@ -73,7 +80,7 @@ def _do_calculate_part_stress(**attributes):
     :return: attributes; the attributes dict with updated values.
     :rtype: dict
     :raise: IndexError if there is no entry for the active environment ID.
-    :raise: KeyError if there is no entry for category ID.
+    :raise: KeyError if there is no entry for category ID or subcategory ID.
     """
     _functions = {
         1: IntegratedCircuit.calculate_part_stress,
@@ -178,6 +185,10 @@ def _get_part_count_quality_factor(category_id, subcategory_id, quality_id):
 
     .. note:: Fuses and Lamps have no piQ input.
 
+    .. note:: Semiconductors have a more complicated piQ listing and the
+    function to select the correct value is included in the semiconductor model
+    file.
+
     :param int category_id: the category ID of the component.
     :param int subcategory_id: the subcategory ID of the component.
     :param int quality_id: the quality level ID for the component.
@@ -248,12 +259,13 @@ def _get_part_stress_quality_factor(category_id, subcategory_id, quality_id):
           and subcategory_id in [4, 5]) or (category_id == 7
                                             and subcategory_id == 5):
         _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    # pytest: disable=too-many-boolean-expressions
-    elif (category_id == 7 and subcategory_id != 5) or (
-            category_id == 8 and subcategory_id not in [4, 5]) or (
-                category_id == 9
-                and subcategory_id == 1) or (category_id == 10
-                                             and subcategory_id in [3, 4]):
+    elif (category_id == 7 and subcategory_id != 5):
+        _pi_q = 0.0
+    elif (category_id == 8 and subcategory_id not in [4, 5]):
+        _pi_q = 0.0
+    elif (category_id == 9 and subcategory_id == 1):
+        _pi_q = 0.0
+    elif (category_id == 10 and subcategory_id in [3, 4]):
         _pi_q = 0.0
     else:
         _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
@@ -261,7 +273,7 @@ def _get_part_stress_quality_factor(category_id, subcategory_id, quality_id):
     return _pi_q
 
 
-def do_calculate_active_hazard_rate(**attributes):
+def do_predict_active_hazard_rate(**attributes):
     """
     Calculate the active hazard rate for a hardware item.
 
@@ -273,21 +285,56 @@ def do_calculate_active_hazard_rate(**attributes):
     .. important:: The calling object is responsible for handling any
         exceptions raised by or passed through this method.
 
-    :return: attributes; the keyword argument (hardware attribute)
-        dictionary with updated values.
-    :rtype: dict
+    :return: None
+    :rtype: None
     """
-    if attributes['hazard_rate_method_id'] == 1:
-        attributes = _do_calculate_part_count(**attributes)
-    elif attributes['hazard_rate_method_id'] == 2:
-        attributes = _do_calculate_part_stress(**attributes)
+    try:
+        if attributes['hazard_rate_method_id'] == 1:
+            attributes = _do_calculate_part_count(**attributes)
+        elif attributes['hazard_rate_method_id'] == 2:
+            attributes = _do_calculate_part_stress(**attributes)
 
-    attributes['hazard_rate_active'] = (
-        attributes['hazard_rate_active']
-        + attributes['add_adj_factor']
-    ) * (
-        (attributes['duty_cycle'] / 100.0)
-        * attributes['mult_adj_factor'] * attributes['quantity']
-    )
-    print(attributes['hazard_rate_active'])
-    return attributes
+        attributes['hazard_rate_active'] = (
+            attributes['hazard_rate_active']
+            + attributes['add_adj_factor']) * (
+                (attributes['duty_cycle'] / 100.0)
+                * attributes['mult_adj_factor'] * attributes['quantity'])
+
+        pub.sendMessage('succeed_predict_reliability', attributes=attributes)
+    except ValueError:
+        pub.sendMessage('fail_predict_reliability',
+                        error_msg=("Failed to predict MIL-HDBK-217F hazard "
+                                   "rate for hardware ID {0:d}; one or more "
+                                   "inputs has a negative or missing value. "
+                                   "Hardware item category ID={1:d}, "
+                                   "subcategory ID={2:d}, rated power={3:f}, "
+                                   "number of elements={4:d}.").format(
+                                       attributes['hardware_id'],
+                                       attributes['category_id'],
+                                       attributes['subcategory_id'],
+                                       attributes['power_rated'],
+                                       attributes['n_elements']))
+    except ZeroDivisionError:
+        pub.sendMessage('fail_predict_reliability',
+                        error_msg=("Failed to predict MIL-HDBK-217F hazard "
+                                   "rate for hardware ID {0:d}; one or more "
+                                   "inputs has a value of 0.0.  Hardware item "
+                                   "category ID={1:d}, subcategory ID={2:d}, "
+                                   "operating ac voltage={3:f}, operating DC "
+                                   "voltage={4:f}, operating "
+                                   "temperature={5:f}, temperature "
+                                   "rise={10:f}, rated maximum "
+                                   "temperature={6:f}, feature size={7:f}, "
+                                   "surface area={8:f}, and item "
+                                   "weight={9:f}.").format(
+                                       attributes['hardware_id'],
+                                       attributes['category_id'],
+                                       attributes['subcategory_id'],
+                                       attributes['voltage_ac_operating'],
+                                       attributes['voltage_dc_operating'],
+                                       attributes['temperature_active'],
+                                       attributes['temperature_rated_max'],
+                                       attributes['feature_size'],
+                                       attributes['area'],
+                                       attributes['weight'],
+                                       attributes['temperature_rise']))

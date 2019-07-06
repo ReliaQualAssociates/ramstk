@@ -8,24 +8,6 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Semiconductor MIL-HDBK-217F Calculations Module."""
 
-# <requirement>
-#    <module>ramstk</module>
-#    <topic>analysis</topic>
-#    <name>Return values when value is not used.</name>
-#    <description>In some instances not all component subcategories will use
-#    every intermediate value.  For methods/functions that calculate
-#    intermediate values, return a 0.0 as the default value.</description>
-#    <rationale>Rather than littering the code with if-then structures to only
-#    calculate the needed intermediate values, just call all the functions and
-#    return 0.0 for the unused values.  They're unused, so they won't affect
-#    the final output anyway.  For example, in MIL-HDBK-217F calculations for
-#    semiconductor devices, there is no electrical stress (piS) for diodes.
-#    Rather than putting an if(subcategory != 2) statement to prevent
-#    calculating piS, just calculate the piS value and then don't use it.  In
-#    the function for calculating piS, if there's an if-then construct based on
-#    subcategory ID, end it with a default else: piS = 0.0.</rationale>
-# </requirement>
-
 # Standard Library Imports
 from math import exp, log, sqrt
 
@@ -311,7 +293,6 @@ def calculate_application_factor(subcategory_id, application_id, duty_cycle):
     :return: _pi_a; the calculated application factor.
     :rtype: float
     :raise: IndexError if passed an unknown application ID.
-    :raise: ValueError if passed a negative value for the duty cycle.
     """
     if subcategory_id in [2, 3, 4, 8]:
         _pi_a = PI_A[subcategory_id][application_id - 1]
@@ -402,10 +383,6 @@ def calculate_part_count(**attributes):
         with updated values.
     :rtype: dict
     """
-    attributes['piQ'] = get_part_count_quality_factor(
-        attributes['subcategory_id'], attributes['quality_id'],
-        attributes['type_id'])
-
     attributes['lambda_b'] = get_part_count_lambda_b(
         attributes['subcategory_id'], attributes['environment_active_id'],
         attributes['type_id'])

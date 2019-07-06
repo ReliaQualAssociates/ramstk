@@ -17,17 +17,21 @@ from ramstk.analyses.milhdbk217f.models import IntegratedCircuit
 ATTRIBUTES = {
     'category_id': 1,
     'subcategory_id': 1,
-    'environment_active_id': 3,
-    'technology_id': 1,
     'application_id': 2,
-    'package_id': 1,
+    'area': 0.5,
+    'environment_active_id': 3,
     'family_id': 2,
-    'type_id': 1,
+    'feature_size': 0.8,
+    'manufacturing_id': 1,
     'n_elements': 100,
     'n_active_pins': 32,
-    'temperature_case': 48.3,
+    'package_id': 1,
     'power_operating': 0.038,
+    'technology_id': 1,
+    'temperature_case': 48.3,
     'theta_jc': 125,
+    'type_id': 1,
+    'voltage_esd': 2000,
     'years_in_production': 3,
     'piE': 1.0,
     'piQ': 2.0
@@ -534,6 +538,7 @@ def test_calculate_eos_hazard_rate():
 @pytest.mark.calculation
 def test_calculate_part_stress():
     """calculate_part_stress() should return a the attributes dict updated with calculated values."""
+    ATTRIBUTES['subcategory_id'] = 1
     _attributes = IntegratedCircuit.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
@@ -544,3 +549,40 @@ def test_calculate_part_stress():
     assert _attributes['piT'] == pytest.approx(1.04718497)
     assert _attributes['piA'] == 3.0
     assert _attributes['hazard_rate_active'] == pytest.approx(0.032862208)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_part_stress_gaas():
+    """calculate_part_stress() should return a the attributes dict updated with calculated values."""
+    ATTRIBUTES['subcategory_id'] = 9
+    ATTRIBUTES['n_elements'] = 1000
+    _attributes = IntegratedCircuit.calculate_part_stress(**ATTRIBUTES)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['piL'] == pytest.approx(0.73699794)
+    assert _attributes['C1'] == 4.5
+    assert _attributes['C2'] == pytest.approx(0.011822791)
+    assert _attributes['temperature_junction'] == 53.05
+    assert _attributes['piT'] == pytest.approx(4.84999145e-07)
+    assert _attributes['piA'] == 3.0
+    assert _attributes['hazard_rate_active'] == pytest.approx(0.017436396)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_part_stress_vlsi():
+    """calculate_part_stress() should return a the attributes dict updated with calculated values."""
+    ATTRIBUTES['subcategory_id'] = 10
+    ATTRIBUTES['n_elements'] = 100
+    _attributes = IntegratedCircuit.calculate_part_stress(**ATTRIBUTES)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['lambdaBD'] == 0.16
+    assert _attributes['lambdaBP'] == 0.0027504
+    assert _attributes['lambdaEOS'] == pytest.approx(0.043625050)
+    assert _attributes['temperature_junction'] == 53.05
+    assert _attributes['piCD'] == pytest.approx(9.88380952)
+    assert _attributes['piMFG'] == 0.55
+    assert _attributes['piPT'] == 1.0
+    assert _attributes['hazard_rate_active'] == pytest.approx(0.35719656)

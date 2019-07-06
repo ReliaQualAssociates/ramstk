@@ -6,27 +6,6 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Component Stress Calculations Module."""
 
-# <requirement module="analyses">
-#   <name>Analyses file location</name>
-#   <description>Each type of analyses shall have a single file in the analyses
-#   directory such that it can be imported as
-#   from ramstk.analyses import [name of analysis].  This file may contain
-#   functions, classes, or both as necessary to implement the
-#   analysis.</description>
-#   <example>analyses/MilHdbk217f.py contains the class MilHdbk217F.  This
-#   class contains methods to perform the MIL-HDBK-217F parts count and parts
-#   stress analyses.</example>
-# </requirement>
-# <requirement module="analyses">
-#   <name>Analyses model location</name>
-#   <description>For analyses that rely on engineering or mathematical models
-#   and/or constants specific to each component type, the associated models
-#   and constants shall reside in a single file for each component type in the
-#   `analyses/models/[analysis name]` directory.</description>
-#   <example>The MIL-HDBK-217F models for capacitors reside in
-#   `analyses/models/milhdbk217f/Capacitor.py`.</example>
-# </requirement>
-
 
 def calculate_stress_ratio(stress_operating, stress_rated):
     """

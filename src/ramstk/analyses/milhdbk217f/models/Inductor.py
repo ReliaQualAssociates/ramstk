@@ -139,6 +139,8 @@ def calculate_part_stress(**attributes):
         attributes['temperature_rise'] = (
             calculate_temperature_rise_input_power_weight(
                 _power_input, attributes['weight']))
+    else:
+        attributes['temperature_rise'] = 0.0
     attributes['temperature_hot_spot'] = calculate_hot_spot_temperature(
         attributes['temperature_active'], attributes['temperature_rise'])
     attributes['lambda_b'] = calculate_part_stress_lambda_b(

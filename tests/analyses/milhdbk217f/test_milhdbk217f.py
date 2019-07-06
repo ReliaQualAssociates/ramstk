@@ -9,6 +9,7 @@
 
 # Third Party Imports
 import pytest
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses.milhdbk217f import MilHdbk217f
@@ -32,6 +33,7 @@ ATTRIBUTES = {
     'duty_cycle': 100.0,
     'environment_active_id': 1,
     'family_id': 1,
+    'feature_size': 1.5,
     'frequency_operating': 1.5,
     'hazard_rate_method_id': 1,
     'insert_id': 1,
@@ -56,12 +58,14 @@ ATTRIBUTES = {
     'temperature_active': 45.0,
     'temperature_case': 38.2,
     'temperature_rated_max': 105.0,
+    'temperature_rise': 10.0,
     'theta_jc': 12.0,
     'type_id': 1,
     'voltage_ac_operating': 0.04,
     'voltage_dc_operating': 3.3,
     'voltage_rated': 12.0,
     'voltage_ratio': 0.54,
+    'weight': 0.5,
     'years_in_production': 3,
     'hazard_rate_active': 0.0,
     'lambda_b': 0.0,
@@ -76,6 +80,7 @@ ATTRIBUTES = {
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_get_part_count_quality_factor(category_id, subcategory_id):
     """_get_part_count_quality_factor() should return a float value for piQ on success."""
+    ATTRIBUTES['type_id'] = 1
     _pi_q = MilHdbk217f._get_part_count_quality_factor(category_id,
                                                        subcategory_id, 2)
 
@@ -100,6 +105,7 @@ def test_get_part_count_quality_factor(category_id, subcategory_id):
         assert _pi_q == {1: 1.0, 3: 0.1, 4: 0.1, 5: 1.0, 8: 2.0}[category_id]
 
 
+# ----- ----- ----- ----- BEGIN PARTS COUNT TESTS ----- ----- ----- ----- #
 @pytest.mark.unit
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -116,10 +122,10 @@ def test_do_calculate_part_count_integrated_circuit(subcategory_id):
     elif subcategory_id in [5, 6, 7, 8]:
         ATTRIBUTES['n_elements'] = 64000
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {
         1: 0.033,
         2: 0.01,
         3: 0.0061,
@@ -129,7 +135,7 @@ def test_do_calculate_part_count_integrated_circuit(subcategory_id):
         7: 0.0055,
         8: 0.014,
         9: 0.0085
-    }[subcategory_id]
+        }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -139,11 +145,13 @@ def test_do_calculate_part_count_integrated_circuit(subcategory_id):
 def test_do_calculate_part_count_semiconductor(subcategory_id):
     """_do_calculate_part_count() should return the Semiconductor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 2
+    ATTRIBUTES['type_id'] = 1
+    ATTRIBUTES['quality_id'] = 2
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {
         1: 0.0036,
         2: 0.86,
         3: 0.00015,
@@ -157,7 +165,22 @@ def test_do_calculate_part_count_semiconductor(subcategory_id):
         11: 0.011,
         12: 0.0062,
         13: 5.1
-    }[subcategory_id]
+        }[attributes['subcategory_id']]
+    assert attributes['piQ'] == {
+        1: 1.0,
+        2: 1.0,
+        3: 1.0,
+        4: 1.0,
+        5: 1.0,
+        6: 1.0,
+        7: 1.0,
+        8: 1.0,
+        9: 1.0,
+        10: 1.0,
+        11: 1.0,
+        12: 1.0,
+        13: 1.0
+        }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -168,10 +191,10 @@ def test_do_calculate_part_count_resistor(subcategory_id):
     """_do_calculate_part_count() should return the Resistor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 3
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {
         1: 0.0005,
         2: 0.0012,
         3: 0.012,
@@ -187,7 +210,7 @@ def test_do_calculate_part_count_resistor(subcategory_id):
         13: 0.043,
         14: 0.05,
         15: 0.048
-    }[subcategory_id]
+        }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -199,10 +222,10 @@ def test_do_calculate_part_count_capacitor(subcategory_id):
     """_do_calculate_part_count() should return the Capacitor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 4
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {
         1: 0.0036,
         2: 0.0047,
         3: 0.0021,
@@ -222,7 +245,7 @@ def test_do_calculate_part_count_capacitor(subcategory_id):
         17: 0.033,
         18: 0.8,
         19: 0.4
-    }[subcategory_id]
+        }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -232,10 +255,10 @@ def test_do_calculate_part_count_inductor(subcategory_id):
     """_do_calculate_part_count() should return the Inductor attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 5
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {1: 0.0035, 2: 0.0017}[subcategory_id]
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {1: 0.0035, 2: 0.0017}[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -245,10 +268,10 @@ def test_do_calculate_part_count_relay(subcategory_id):
     """_do_calculate_part_count() should return the Relay attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 6
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {1: 0.13, 2: 0.4}[subcategory_id]
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {1: 0.13, 2: 0.4}[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -258,16 +281,16 @@ def test_do_calculate_part_count_switch(subcategory_id):
     """_do_calculate_part_count() should return the Switch attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 7
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {
         1: 0.001,
         2: 0.15,
         3: 0.33,
         4: 0.56,
         5: 0.11
-    }[subcategory_id]
+        }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -277,16 +300,16 @@ def test_do_calculate_part_count_connection(subcategory_id):
     """_do_calculate_part_count() should return the Connection attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 8
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {
         1: 0.011,
         2: 0.0054,
         3: 0.0019,
         4: 0.053,
         5: 0.0026
-    }[subcategory_id]
+        }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -296,10 +319,10 @@ def test_do_calculate_part_count_meter(subcategory_id):
     """_do_calculate_part_count() should return the Meter attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 9
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {1: 10.0, 2: 0.09}[subcategory_id]
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {1: 10.0, 2: 0.09}[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -309,15 +332,16 @@ def test_do_calculate_part_count_miscellaneous(subcategory_id):
     """_do_calculate_part_count() should return the misscellaneous component attribute dict with updated values on success."""
     ATTRIBUTES['category_id'] = 10
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
+    attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == {
+    assert isinstance(attributes, dict)
+    assert attributes['lambda_b'] == {
         1: 0.032,
         2: 0.022,
         3: 0.01,
         4: 3.9
-    }[subcategory_id]
+        }[attributes['subcategory_id']]
+# ----- ----- ----- ----- END PARTS COUNT TESTS ----- ----- ----- ----- #
 
 
 @pytest.mark.unit
@@ -657,10 +681,61 @@ def test_do_calculate_part_stress_miscellaneous(subcategory_id):
 def test_do_calculate_active_hazard_rate(hazard_rate_method_id):
     """do_calculate_active_hazard_rate() should return the component attribute dict with updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = hazard_rate_method_id
-    _attributes = MilHdbk217f.do_calculate_active_hazard_rate(**ATTRIBUTES)
 
-    assert isinstance(_attributes, dict)
-    assert _attributes['hazard_rate_active'] == {
-        1: 3.9,
-        2: 1.8254734762892308
-    }[hazard_rate_method_id]
+    def on_message(attributes):
+        assert isinstance(attributes, dict)
+        assert attributes['hazard_rate_active'] == {
+            1: 3.9,
+            2: 1.8254734762892308
+        }[attributes['hazard_rate_method_id']]
+    pub.subscribe(on_message, 'succeed_predict_reliability')
+
+    assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_do_calculate_active_hazard_rate_negative_input():
+    """do_calculate_active_hazard_rate() should raise a ZeroDivisionError when passed a negative input for various components."""
+    ATTRIBUTES['category_id'] = 2
+    ATTRIBUTES['subcategory_id'] = 2
+    ATTRIBUTES['type_id'] = 4
+    ATTRIBUTES['power_rated'] = -0.05
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+
+    def on_message(error_msg):
+        assert error_msg == ('Failed to predict MIL-HDBK-217F hazard rate for '
+                             'hardware ID 12; one or more inputs has a '
+                             'negative or missing value. Hardware item '
+                             'category ID=2, subcategory ID=2, rated '
+                             'power=-0.050000, number of elements=1000.')
+    pub.subscribe(on_message, 'fail_predict_reliability')
+
+    assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_do_calculate_active_hazard_rate_zero_input():
+    """do_calculate_active_hazard_rate() should raise a ZeroDivisionError when passed an input equal to 0.0 for various components."""
+    ATTRIBUTES['category_id'] = 4
+    ATTRIBUTES['subcategory_id'] = 4
+    ATTRIBUTES['voltage_ac_operating'] = 0.0
+    ATTRIBUTES['voltage_dc_operating'] = 0.0
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+
+    def on_message(error_msg):
+        assert error_msg == ('Failed to predict MIL-HDBK-217F hazard rate for '
+                             'hardware ID 12; one or more inputs has a value '
+                             'of 0.0.  Hardware item category ID=4, '
+                             'subcategory ID=4, operating ac '
+                             'voltage=0.000000, operating DC '
+                             'voltage=0.000000, operating '
+                             'temperature=45.000000, temperature '
+                             'rise=0.500000, rated maximum '
+                             'temperature=105.000000, feature '
+                             'size=1.500000, surface area=1.500000, and item '
+                             'weight=0.500000.')
+    pub.subscribe(on_message, 'fail_predict_reliability')
+
+    assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None

@@ -232,7 +232,7 @@ def test_get_temperature_rise_no_spec_sheet():
 def test_calculate_temperature_rise_input_power_weight():
     """calculate_temperature_rise_input_power_weight() should return a float value on success."""
     _temperature_rise = Inductor.calculate_temperature_rise_input_power_weight(
-        0.387, .015)
+        0.387, 0.015)
 
     assert isinstance(_temperature_rise, float)
     assert _temperature_rise == pytest.approx(13.93114825)
@@ -350,7 +350,7 @@ def test_calculate_part_stress_inductor():
 
 @pytest.mark.unit
 @pytest.mark.calculation
-def test_calculate_part_stress_xfmr():
+def test_calculate_part_stress_xfmr_with_surface_area():
     """calculate_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['subcategory_id'] = 1
     ATTRIBUTES['construction_id'] = 1
@@ -360,3 +360,60 @@ def test_calculate_part_stress_xfmr():
     assert _attributes['lambda_b'] == pytest.approx(0.0026358035)
     assert _attributes['piC'] == 1.0
     assert _attributes['hazard_rate_active'] == pytest.approx(0.15814821)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_part_stress_xfmr_with_weight():
+    """calculate_part_stress() should return a dictionary of updated values on success."""
+    ATTRIBUTES['subcategory_id'] = 1
+    ATTRIBUTES['construction_id'] = 1
+    ATTRIBUTES['power_operating'] = 0.387
+    ATTRIBUTES['voltage_dc_operating'] = 0.0
+    ATTRIBUTES['area'] = 0.0
+    ATTRIBUTES['weight'] = 2.5
+    _attributes = Inductor.calculate_part_stress(**ATTRIBUTES)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['temperature_rise'] == pytest.approx(2.39421196)
+    assert _attributes['lambda_b'] == pytest.approx(0.0024684654)
+    assert _attributes['piC'] == 1.0
+    assert _attributes['hazard_rate_active'] == pytest.approx(0.14810792)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_part_stress_xfmr_with_input_power():
+    """calculate_part_stress() should return a dictionary of updated values on success."""
+    ATTRIBUTES['subcategory_id'] = 1
+    ATTRIBUTES['construction_id'] = 1
+    ATTRIBUTES['power_operating'] = 0.0
+    ATTRIBUTES['voltage_dc_operating'] = 3.3
+    ATTRIBUTES['area'] = 0.0
+    ATTRIBUTES['weight'] = 2.5
+    _attributes = Inductor.calculate_part_stress(**ATTRIBUTES)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['temperature_rise'] == pytest.approx(0.0040553804)
+    assert _attributes['lambda_b'] == pytest.approx(0.0024148713)
+    assert _attributes['piC'] == 1.0
+    assert _attributes['hazard_rate_active'] == pytest.approx(0.14489228)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_part_stress_xfmr_no_temperature_rise():
+    """calculate_part_stress() should return a dictionary of updated values on success."""
+    ATTRIBUTES['subcategory_id'] = 1
+    ATTRIBUTES['construction_id'] = 1
+    ATTRIBUTES['power_operating'] = 0.0
+    ATTRIBUTES['voltage_dc_operating'] = 0.0
+    ATTRIBUTES['area'] = 0.0
+    ATTRIBUTES['weight'] = 0.0
+    _attributes = Inductor.calculate_part_stress(**ATTRIBUTES)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['temperature_rise'] == 0.0
+    assert _attributes['lambda_b'] == pytest.approx(0.0024147842)
+    assert _attributes['piC'] == 1.0
+    assert _attributes['hazard_rate_active'] == pytest.approx(0.14488705)
