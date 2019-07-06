@@ -1,3 +1,58 @@
-.eggs
-.coverage
+# Generic files to ignore
+*~
+*.fuse*
+*.lock
+*.DS_Store
+*.out
+.Rhistory
+.ropeproject
+*.swp
+*.idea
+*.goutputstream*
+*.geanyprj
+*.tox
+*.e5s
+*.geany
+*:p
 tags
+
+# Python specific directories and files to ignore
+build/
+dist/
+.mypy_cache/
+.pytest_cache/
+target/
+*.egg*
+*.pyc
+*.pyo
+
+# Sphinx and LaTeX intermediatei, working, and output directories and files to ignore.
+*.aux
+*.dot
+*.log
+*.pdf
+*.synctex.gz
+_build/
+_static/
+_templates/
+
+# RAMSTK specific directories and files to ignore
+.gtm/
+*.csv
+*.glade
+*.html
+*.log
+*.txt
+*.xls*
+.coverage
+_temp/
+pylintout
+coverage.xml
+
+# Override settings for some specific files.
+!/license.txt
+!/requirements_dev.txt
+!/requirements_doc.txt
+!/requirements_run.txt
+/.gtm/
+/.project
