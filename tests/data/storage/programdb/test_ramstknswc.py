@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_ramstknswc.py is part of The RAMSTK Project
+#       tests.data.storage.programdb.test_ramstknswc.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 """Test class for testing the RAMSTKNSWC module algorithms and models. """
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.programdb.RAMSTKNSWC import RAMSTKNSWC
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+# RAMSTK Package Imports
+from ramstk.data.storage.programdb.RAMSTKNSWC import RAMSTKNSWC
 
 ATTRIBUTES = {
     'Clc': 0.0,
@@ -53,7 +51,6 @@ ATTRIBUTES = {
     'Csv': 0.0,
     'Cgl': 0.0,
     'Cga': 0.0,
-    'hardware_id': 1,
     'Cgp': 0.0,
     'Cgs': 0.0,
     'Cgt': 0.0,
@@ -154,7 +151,66 @@ def test_get_attributes(test_dao):
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKNSWC).first()
 
-    assert DUT.get_attributes() == ATTRIBUTES
+    _attributes = DUT.get_attributes()
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['Clc'] == 0.0
+    assert _attributes['Crd'] == 0.0
+    assert _attributes['Cac'] == 0.0
+    assert _attributes['Cmu'] == 0.0
+    assert _attributes['Ck'] == 0.0
+    assert _attributes['Ci'] == 0.0
+    assert _attributes['Ch'] == 0.0
+    assert _attributes['Cn'] == 0.0
+    assert _attributes['Cm'] == 0.0
+    assert _attributes['Cl'] == 0.0
+    assert _attributes['Cc'] == 0.0
+    assert _attributes['Cb'] == 0.0
+    assert _attributes['Cg'] == 0.0
+    assert _attributes['Cf'] == 0.0
+    assert _attributes['Ce'] == 0.0
+    assert _attributes['Cd'] == 0.0
+    assert _attributes['Cy'] == 0.0
+    assert _attributes['Cbv'] == 0.0
+    assert _attributes['Cbt'] == 0.0
+    assert _attributes['Cs'] == 0.0
+    assert _attributes['Cr'] == 0.0
+    assert _attributes['Cq'] == 0.0
+    assert _attributes['Cp'] == 0.0
+    assert _attributes['Cw'] == 0.0
+    assert _attributes['Cv'] == 0.0
+    assert _attributes['Ct'] == 0.0
+    assert _attributes['Cnw'] == 0.0
+    assert _attributes['Cnp'] == 0.0
+    assert _attributes['Csf'] == 0.0
+    assert _attributes['Calt'] == 0.0
+    assert _attributes['Csc'] == 0.0
+    assert _attributes['Cbl'] == 0.0
+    assert _attributes['Csz'] == 0.0
+    assert _attributes['Cst'] == 0.0
+    assert _attributes['Csw'] == 0.0
+    assert _attributes['Csv'] == 0.0
+    assert _attributes['Cgl'] == 0.0
+    assert _attributes['Cga'] == 0.0
+    assert _attributes['Cgp'] == 0.0
+    assert _attributes['Cgs'] == 0.0
+    assert _attributes['Cgt'] == 0.0
+    assert _attributes['Cgv'] == 0.0
+    assert _attributes['Ccw'] == 0.0
+    assert _attributes['Ccv'] == 0.0
+    assert _attributes['Cpd'] == 0.0
+    assert _attributes['Ccp'] == 0.0
+    assert _attributes['Cpf'] == 0.0
+    assert _attributes['Ccs'] == 0.0
+    assert _attributes['Ccf'] == 0.0
+    assert _attributes['Cpv'] == 0.0
+    assert _attributes['Cdc'] == 0.0
+    assert _attributes['Cdl'] == 0.0
+    assert _attributes['Cdt'] == 0.0
+    assert _attributes['Cdw'] == 0.0
+    assert _attributes['Cdp'] == 0.0
+    assert _attributes['Cds'] == 0.0
+    assert _attributes['Cdy'] == 0.0
 
 
 @pytest.mark.integration
@@ -164,26 +220,28 @@ def test_set_attributes(test_dao):
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKNSWC).first()
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKNSWC {0:d} "
-                    "attributes.".format(DUT.hardware_id))
+    assert DUT.set_attributes(ATTRIBUTES) is None
 
 
 @pytest.mark.integration
-def test_set_attributes_missing_key(test_dao):
-    """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
+def test_set_attributes_none_value(test_dao):
+    """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKNSWC).first()
 
-    ATTRIBUTES.pop('Csz')
+    ATTRIBUTES['Cpv'] = None
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+    assert DUT.set_attributes(ATTRIBUTES) is None
+    assert DUT.get_attributes()['Cpv'] == 0.0
 
-    assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'Csz' in attribute "
-                    "dictionary passed to RAMSTKNSWC.set_attributes().")
 
-    ATTRIBUTES['Csz'] = 0.0
+@pytest.mark.integration
+def test_set_attributes_unknown_attributes(test_dao):
+    """set_attributes() should raise an AttributeError when passed an unknown attribute."""
+    _session = test_dao.RAMSTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RAMSTKNSWC).first()
+
+    with pytest.raises(AttributeError):
+        DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})

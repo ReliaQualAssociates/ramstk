@@ -18,14 +18,12 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.dao import DAO
 from ramstk.modules.hardware import (
-    dtcHardwareBoM, dtmDesignElectric, dtmDesignMechanic, dtmHardware,
-    dtmHardwareBoM, dtmMilHdbkF, dtmNSWC, dtmReliability,
+    dtcHardwareBoM, dtmDesignElectric, dtmDesignMechanic,
+    dtmHardware, dtmMilHdbkF, dtmNSWC, dtmReliability
 )
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
+from ramstk.modules.hardware.Model import (
+    HardwareBoMDataModel as dtmHardwareBoM
+)
 
 ATTRIBUTES = {
     'revision_id': 1,

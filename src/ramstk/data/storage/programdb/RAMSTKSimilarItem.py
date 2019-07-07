@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.programdb.RAMSTKSimilarItem.py is part of The RAMSTK Project
+#       ramstk.data.storage.programdb.RAMSTKSimilarItem.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -352,6 +353,9 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
     def set_attributes(self, attributes):
         """
         Set the RAMSTKSimilarItem data model attributes.
+
+        .. note:: you should pop the revision ID and hardware ID entries from
+        the attributes dict before passing it to this method.
 
         :param dict attributes: dict of key:value pairs to assign to the
             instance attributes.

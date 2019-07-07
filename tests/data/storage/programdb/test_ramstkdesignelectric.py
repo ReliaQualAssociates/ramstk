@@ -1,4 +1,3 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
 #       tests.dao.programdb.test_ramstkdesignelectric.py is part of The RAMSTK
@@ -7,14 +6,13 @@
 # All rights reserved.
 """Test class for testing RAMSTKDesignElectric module algorithms and models. """
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.programdb.RAMSTKDesignElectric import RAMSTKDesignElectric
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+# RAMSTK Package Imports
+from ramstk.data.storage.programdb.RAMSTKDesignElectric import (
+    RAMSTKDesignElectric
+)
 
 ATTRIBUTES = {
     'voltage_ac_operating': 0.0,
@@ -59,7 +57,6 @@ ATTRIBUTES = {
     'temperature_rated_min': 0.0,
     'power_rated': 0.0,
     'environment_active_id': 0,
-    'hardware_id': 1,
     'specification_id': 0,
     'matching_id': 0,
     'n_elements': 0,
@@ -78,8 +75,9 @@ ATTRIBUTES = {
 @pytest.mark.integration
 def test_ramstkdesignelectric_create(test_dao):
     """ __init__() should create an RAMSTKDesignElectric model. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
     DUT = _session.query(RAMSTKDesignElectric).first()
 
     assert isinstance(DUT, RAMSTKDesignElectric)
@@ -119,7 +117,7 @@ def test_ramstkdesignelectric_create(test_dao):
     assert DUT.power_operating == 0.0
     assert DUT.power_rated == 0.0
     assert DUT.power_ratio == 0.0
-    assert DUT.reason == ''
+    assert DUT.reason == b''
     assert DUT.resistance == 0.0
     assert DUT.specification_id == 0
     assert DUT.technology_id == 0
@@ -145,40 +143,103 @@ def test_ramstkdesignelectric_create(test_dao):
 @pytest.mark.integration
 def test_get_attributes(test_dao):
     """ get_attributes() should return a tuple of attribute values. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
     DUT = _session.query(RAMSTKDesignElectric).first()
 
-    assert DUT.get_attributes() == ATTRIBUTES
+    _attributes = DUT.get_attributes()
+
+    assert isinstance(_attributes, dict)
+    assert _attributes['voltage_ac_operating'] == 0.0
+    assert _attributes['frequency_operating'] == 0.0
+    assert _attributes['type_id'] == 0
+    assert _attributes['resistance'] == 0.0
+    assert _attributes['package_id'] == 0
+    assert _attributes['technology_id'] == 0
+    assert _attributes['n_cycles'] == 0
+    assert _attributes['n_circuit_planes'] == 1
+    assert _attributes['contact_gauge'] == 0
+    assert _attributes['current_operating'] == 0.0
+    assert _attributes['n_hand_soldered'] == 0
+    assert _attributes['contact_rating_id'] == 0
+    assert _attributes['area'] == 0.0
+    assert _attributes['contact_form_id'] == 0
+    assert _attributes['years_in_production'] == 1
+    assert _attributes['n_active_pins'] == 0
+    assert _attributes['capacitance'] == 0.0
+    assert _attributes['temperature_case'] == 0.0
+    assert _attributes['current_rated'] == 0.0
+    assert _attributes['power_operating'] == 0.0
+    assert _attributes['configuration_id'] == 0
+    assert _attributes['temperature_hot_spot'] == 0.0
+    assert _attributes['temperature_junction'] == 0.0
+    assert _attributes['current_ratio'] == 0.0
+    assert _attributes['insulation_id'] == 0
+    assert _attributes['construction_id'] == 0
+    assert _attributes['insert_id'] == 0
+    assert _attributes['theta_jc'] == 0.0
+    assert _attributes['voltage_dc_operating'] == 0.0
+    assert _attributes['power_ratio'] == 0.0
+    assert _attributes['family_id'] == 0
+    assert _attributes['overstress'] == 0
+    assert _attributes['voltage_rated'] == 0.0
+    assert _attributes['feature_size'] == 0.0
+    assert _attributes['operating_life'] == 0.0
+    assert _attributes['application_id'] == 0
+    assert _attributes['weight'] == 0.0
+    assert _attributes['temperature_rated_max'] == 0.0
+    assert _attributes['voltage_ratio'] == 0.0
+    assert _attributes['temperature_rated_min'] == 0.0
+    assert _attributes['power_rated'] == 0.0
+    assert _attributes['environment_active_id'] == 0
+    assert _attributes['hardware_id'] == 1
+    assert _attributes['specification_id'] == 0
+    assert _attributes['matching_id'] == 0
+    assert _attributes['n_elements'] == 0
+    assert _attributes['environment_dormant_id'] == 0
+    assert _attributes['reason'] == b''
+    assert _attributes['voltage_esd'] == 0.0
+    assert _attributes['manufacturing_id'] == 0
+    assert _attributes['n_wave_soldered'] == 0
+    assert _attributes['temperature_knee'] == 25.0
+    assert _attributes['temperature_rise'] == 0.0
+    assert _attributes['temperature_active'] == 35.0
+    assert _attributes['temperature_dormant'] == 25.0
 
 
 @pytest.mark.integration
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
     DUT = _session.query(RAMSTKDesignElectric).first()
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKDesignElectric {0:d} "
-                    "attributes.".format(DUT.hardware_id))
+    assert DUT.set_attributes(ATTRIBUTES) is None
 
 
 @pytest.mark.integration
-def test_set_attributes_missing_key(test_dao):
-    """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+def test_set_attributes_none_value(test_dao):
+    """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
     DUT = _session.query(RAMSTKDesignElectric).first()
 
-    ATTRIBUTES.pop('family_id')
+    ATTRIBUTES['type_id'] = None
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+    assert DUT.set_attributes(ATTRIBUTES) is None
+    assert DUT.get_attributes()['type_id'] == 0
 
-    assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'family_id' in attribute "
-                    "dictionary passed to RAMSTKDesignElectric.set_attributes().")
 
-    ATTRIBUTES['family_id'] = 0
+@pytest.mark.integration
+def test_set_attributes_unknown_attributes(test_dao):
+    """set_attributes() should raise an AttributeError when passed an unknown attribute."""
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
+    DUT = _session.query(RAMSTKDesignElectric).first()
+
+    with pytest.raises(AttributeError):
+        DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})

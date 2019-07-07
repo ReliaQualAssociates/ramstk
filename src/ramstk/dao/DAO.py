@@ -14,7 +14,10 @@ from sqlalchemy import MetaData, create_engine, exc
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 # RAMSTK Package Imports
-from ramstk.data.storage.programdb import RAMSTKAllocation, RAMSTKSimilarItem
+from ramstk.data.storage.programdb import (
+    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
+)
 
 # RAMSTK Local Imports
 from .commondb import (
@@ -24,13 +27,12 @@ from .commondb import (
     RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
 )
 from .programdb import (
-    RAMSTKNSWC, RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKDesignElectric,
-    RAMSTKDesignMechanic, RAMSTKEnvironment, RAMSTKFailureDefinition,
-    RAMSTKFunction, RAMSTKGrowthTest, RAMSTKHardware, RAMSTKHazardAnalysis,
-    RAMSTKIncident, RAMSTKIncidentAction, RAMSTKIncidentDetail, RAMSTKMatrix,
-    RAMSTKMechanism, RAMSTKMilHdbkF, RAMSTKMission, RAMSTKMissionPhase,
-    RAMSTKMode, RAMSTKOpLoad, RAMSTKOpStress, RAMSTKProgramInfo,
-    RAMSTKProgramStatus, RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision,
+    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKEnvironment,
+    RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKGrowthTest,
+    RAMSTKHazardAnalysis, RAMSTKIncident, RAMSTKIncidentAction,
+    RAMSTKIncidentDetail, RAMSTKMatrix, RAMSTKMechanism, RAMSTKMission,
+    RAMSTKMissionPhase, RAMSTKMode, RAMSTKOpLoad, RAMSTKOpStress,
+    RAMSTKProgramInfo, RAMSTKProgramStatus, RAMSTKRequirement, RAMSTKRevision,
     RAMSTKSoftware, RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview,
     RAMSTKSoftwareTest, RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData,
     RAMSTKTest, RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
@@ -113,11 +115,9 @@ def do_create_common_db(**kwargs):
             for _mkey in RAMSTK_FAILURE_MODES[_ckey][_skey]:
                 _record.mode_id = _mkey
                 _record.description = RAMSTK_FAILURE_MODES[_ckey][_skey][
-                    _mkey
-                ][0]
+                    _mkey][0]
                 _record.mode_ratio = RAMSTK_FAILURE_MODES[_ckey][_skey][_mkey][
-                    1
-                ]
+                    1]
                 _record.source = RAMSTK_FAILURE_MODES[_ckey][_skey][_mkey][2]
                 session.add(_record)
 
@@ -217,17 +217,14 @@ def do_create_common_db(**kwargs):
 
         if _yn.lower() == 'y':
             _user.user_lname = input(
-                _("Enter the RAMSTK Administrator's last name (surname): "),
-            )
+                _("Enter the RAMSTK Administrator's last name (surname): "), )
             _user.user_fname = input(
-                _("Enter the RAMSTK Administrator's first name (given name): "),
-            )
+                _("Enter the RAMSTK Administrator's first name (given name): "
+                  ), )
             _user.user_email = input(
-                _("Enter the RAMSTK Administrator's e-mail address: "),
-            )
+                _("Enter the RAMSTK Administrator's e-mail address: "), )
             _user.user_phone = input(
-                _("Enter the RAMSTK Administrator's phone number: "),
-            )
+                _("Enter the RAMSTK Administrator's phone number: "), )
             _user.user_group_id = '1'
     else:
         _user.user_lname = 'Tester'
@@ -350,29 +347,23 @@ def do_create_test_database(database):
         _cause = RAMSTKCause()
         _cause.mode_id = _mode.mode_id
         _cause.mechanism_id = -1
-        _cause.description = (
-            "Test Functional FMEA Cause "
-            "#{0:d} for Mode ID {1:d}"
-        ).format(
-            i, _mode.mode_id,
-        )
+        _cause.description = ("Test Functional FMEA Cause "
+                              "#{0:d} for Mode ID {1:d}").format(
+                                  i, _mode.mode_id)
         session.add(_cause)
         session.commit()
 
         _control = RAMSTKControl()
         _control.cause_id = _cause.cause_id
         _control.description = (
-            "Test Functional FMEA Control #{0:d} for Cause ID {1:d}"
-        ).format(
-            i, _cause.cause_id,
-        )
+            "Test Functional FMEA Control #{0:d} for Cause ID {1:d}").format(
+                i, _cause.cause_id)
         _action = RAMSTKAction()
         _action.cause_id = _cause.cause_id
         _action.action_recommended = bytes(
-            (
-                "Test Functional FMEA Recommended "
-                "Action #{0:d} for Cause ID {1:d}"
-            ).format(i, _cause.cause_id), 'utf-8',
+            ("Test Functional FMEA Recommended "
+             "Action #{0:d} for Cause ID {1:d}").format(i, _cause.cause_id),
+            'utf-8',
         )
         session.add(_control)
         session.add(_action)
@@ -437,31 +428,26 @@ def do_create_test_database(database):
     # Build a Hardware FMEA for the system.
     _mechanism = RAMSTKMechanism()
     _mechanism.mode_id = _mode.mode_id
-    _mechanism.description = 'Test Failure Mechanism #1 for Mode ID {0:d}'.format(
-        _mode.mode_id,
-    )
+    _mechanism.description = ('Test Failure Mechanism #1 for Mode ID '
+                              '{0:d}').format(_mode.mode_id)
     session.add(_mechanism)
     session.commit()
     _cause = RAMSTKCause()
     _cause.mode_id = _mode.mode_id
     _cause.mechanism_id = _mechanism.mechanism_id
     _cause.description = 'Test Failure Cause #1 for Mechanism ID {0:d}'.format(
-        _mechanism.mechanism_id,
-    )
+        _mechanism.mechanism_id)
     session.add(_cause)
     session.commit()
     _control = RAMSTKControl()
     _control.cause_id = _cause.cause_id
     _control.description = 'Test FMEA Control #1 for Cause ID {0:d}'.format(
-        _cause.cause_id,
-    )
+        _cause.cause_id)
     _action = RAMSTKAction()
     _action.cause_id = _cause.cause_id
     _action.action_recommended = bytes(
         'Test FMEA Recommended Action #1 for Cause ID {0:d}'.format(
-            _cause.cause_id,
-        ), 'utf-8',
-    )
+            _cause.cause_id), 'utf-8')
 
     # Build the PoF for the system.
     _opload = RAMSTKOpLoad()
@@ -777,7 +763,8 @@ class DAO():
         _return = False
 
         if not self.engine.dialect.has_table(
-                self.engine.connect(), str(table),
+                self.engine.connect(),
+                str(table),
         ):
             table.create(bind=self.engine)
 
@@ -797,7 +784,9 @@ class DAO():
         try:
             return do_create_common_db(database=database, test=_test)
         except (
-                IOError, exc.SQLAlchemyError, exc.DBAPIError,
+                IOError,
+                exc.SQLAlchemyError,
+                exc.DBAPIError,
                 exc.OperationalError,
         ) as _error:
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
@@ -870,37 +859,27 @@ class DAO():
                 session.rollback()
                 if 'Could not locate a bind' in _error:
                     _error_code = 2
-                    _msg = (
-                        'RAMSTK ERROR: No database open when attempting '
-                        'to insert record.'
-                    )
+                    _msg = ('RAMSTK ERROR: No database open when attempting '
+                            'to insert record.')
                 elif ('PRIMARY KEY must be unique' in _error) or (
-                        'UNIQUE constraint failed:' in _error
-                ):
+                        'UNIQUE constraint failed:' in _error):
                     _error_code = 3
-                    _msg = (
-                        'RAMSTK ERROR: Primary key error: '
-                        '{0:s}'
-                    ).format(_error)
+                    _msg = ('RAMSTK ERROR: Primary key error: '
+                            '{0:s}').format(_error)
                 elif 'Date type only accepts Python date objects as input' in _error:
                     _error_code = 4
-                    _msg = (
-                        'RAMSTK ERROR: Date field did not contain Python '
-                        'date object: {0:s}'
-                    ).format(_error)
+                    _msg = ('RAMSTK ERROR: Date field did not contain Python '
+                            'date object: {0:s}').format(_error)
                 else:
                     # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
                     _error_code = 1
                     _msg = (
                         'RAMSTK ERROR: Adding one or more items to the RAMSTK '
-                        'Program database.'
-                    )
+                        'Program database.')
             except ValueError as _error:
                 _error_code = 4
-                _msg = (
-                    'RAMSTK ERROR: Date field did not contain Python '
-                    'date object: {0:s}'
-                ).format(_error)
+                _msg = ('RAMSTK ERROR: Date field did not contain Python '
+                        'date object: {0:s}').format(_error)
 
         return _error_code, _msg
 
@@ -927,8 +906,7 @@ class DAO():
             _error_code = 1
             _msg = (
                 "RAMSTK ERROR: Updating the RAMSTK Program database failed "
-                "with error: {0:s}."
-            ).format(_error)
+                "with error: {0:s}.").format(_error)
 
         return _error_code, _msg
 
@@ -947,7 +925,8 @@ class DAO():
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program database."
+        _msg = ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
+                "database.")
 
         try:
             session.delete(item)
@@ -956,10 +935,8 @@ class DAO():
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
             session.rollback()
             _error_code = 1
-            _msg = (
-                "RAMSTK ERROR: Deleting an item from the RAMSTK Program "
-                "database with error: {0:s}."
-            ).format(str(_error))
+            _msg = ("RAMSTK ERROR: Deleting an item from the RAMSTK Program "
+                    "database with error: {0:s}.").format(str(_error))
 
         return _error_code, _msg
 

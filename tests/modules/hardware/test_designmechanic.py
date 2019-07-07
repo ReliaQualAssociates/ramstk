@@ -14,13 +14,8 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao.programdb import RAMSTKDesignMechanic
+from ramstk.data.storage.programdb import RAMSTKDesignMechanic
 from ramstk.modules.hardware import dtmDesignMechanic
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Doyle "weibullguy" Rowland'
 
 
 @pytest.mark.integration

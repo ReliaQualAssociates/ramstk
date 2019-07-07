@@ -11,11 +11,6 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.data.storage.programdb.RAMSTKAllocation import RAMSTKAllocation
 
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
-
 ATTRIBUTES = {
     'availability_alloc': 0.9998,
     'duty_cycle': 100.0,

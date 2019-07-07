@@ -1,4 +1,3 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
 #       tests.dao.programdb.test_ramstkdesignmechanic.py is part of The RAMSTK
@@ -7,14 +6,13 @@
 # All rights reserved.
 """Test class for testing the RAMSTKDesignMechanic module algorithms and models. """
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.programdb.RAMSTKDesignMechanic import RAMSTKDesignMechanic
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+# RAMSTK Package Imports
+from ramstk.data.storage.programdb.RAMSTKDesignMechanic import (
+    RAMSTKDesignMechanic
+)
 
 ATTRIBUTES = {
     'pressure_upstream': 0.0,
@@ -49,7 +47,6 @@ ATTRIBUTES = {
     'filter_size': 0.0,
     'diameter_inner': 0.0,
     'pressure_rated': 0.0,
-    'hardware_id': 1,
     'altitude_operating': 0.0,
     'thickness': 0.0,
     'diameter_outer': 0.0,
@@ -76,8 +73,9 @@ ATTRIBUTES = {
 @pytest.mark.integration
 def test_ramstkdesignmechanic_create(test_dao):
     """ __init__() should create an RAMSTKDesignMechanic model. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
     DUT = _session.query(RAMSTKDesignMechanic).first()
 
     assert isinstance(DUT, RAMSTKDesignMechanic)
@@ -142,40 +140,100 @@ def test_ramstkdesignmechanic_create(test_dao):
 @pytest.mark.integration
 def test_get_attributes(test_dao):
     """ get_attributes() should return a tuple of attribute values. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
     DUT = _session.query(RAMSTKDesignMechanic).first()
 
-    assert DUT.get_attributes() == ATTRIBUTES
+    _attributes = DUT.get_attributes()
+    assert isinstance(_attributes, dict)
+    assert _attributes['pressure_upstream'] == 0.0
+    assert _attributes['frequency_operating'] == 0.0
+    assert _attributes['surface_finish'] == 0.0
+    assert _attributes['friction'] == 0.0
+    assert _attributes['length_compressed'] == 0.0
+    assert _attributes['load_id'] == 0
+    assert _attributes['n_cycles'] == 0
+    assert _attributes['balance_id'] == 0
+    assert _attributes['lubrication_id'] == 0
+    assert _attributes['water_per_cent'] == 0.0
+    assert _attributes['misalignment_angle'] == 0.0
+    assert _attributes['type_id'] == 0
+    assert _attributes['rpm_design'] == 0.0
+    assert _attributes['pressure_downstream'] == 0.0
+    assert _attributes['diameter_coil'] == 0.0
+    assert _attributes['manufacturing_id'] == 0
+    assert _attributes['pressure_contact'] == 0.0
+    assert _attributes['meyer_hardness'] == 0.0
+    assert _attributes['rpm_operating'] == 0.0
+    assert _attributes['length_relaxed'] == 0.0
+    assert _attributes['impact_id'] == 0
+    assert _attributes['n_ten'] == 0
+    assert _attributes['material_id'] == 0
+    assert _attributes['technology_id'] == 0
+    assert _attributes['service_id'] == 0
+    assert _attributes['flow_design'] == 0.0
+    assert _attributes['application_id'] == 0
+    assert _attributes['diameter_wire'] == 0.0
+    assert _attributes['deflection'] == 0.0
+    assert _attributes['filter_size'] == 0.0
+    assert _attributes['diameter_inner'] == 0.0
+    assert _attributes['pressure_rated'] == 0.0
+    assert _attributes['hardware_id'] == 1
+    assert _attributes['altitude_operating'] == 0.0
+    assert _attributes['thickness'] == 0.0
+    assert _attributes['diameter_outer'] == 0.0
+    assert _attributes['n_elements'] == 0
+    assert _attributes['contact_pressure'] == 0.0
+    assert _attributes['particle_size'] == 0.0
+    assert _attributes['casing_id'] == 0
+    assert _attributes['viscosity_dynamic'] == 0.0
+    assert _attributes['viscosity_design'] == 0.0
+    assert _attributes['torque_id'] == 0
+    assert _attributes['leakage_allowable'] == 0.0
+    assert _attributes['offset'] == 0.0
+    assert _attributes['width_minimum'] == 0.0
+    assert _attributes['load_operating'] == 0.0
+    assert _attributes['spring_index'] == 0.0
+    assert _attributes['flow_operating'] == 0.0
+    assert _attributes['pressure_delta'] == 0.0
+    assert _attributes['length'] == 0.0
+    assert _attributes['load_design'] == 0.0
+    assert _attributes['clearance'] == 0.0
 
 
 @pytest.mark.integration
 def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
     DUT = _session.query(RAMSTKDesignMechanic).first()
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKDesignMechanic {0:d} "
-                    "attributes.".format(DUT.hardware_id))
+    assert DUT.set_attributes(ATTRIBUTES) is None
 
 
 @pytest.mark.integration
-def test_set_attributes_missing_key(test_dao):
-    """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+def test_set_attributes_none_value(test_dao):
+    """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
     DUT = _session.query(RAMSTKDesignMechanic).first()
 
-    ATTRIBUTES.pop('length')
+    ATTRIBUTES['type_id'] = None
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+    assert DUT.set_attributes(ATTRIBUTES) is None
+    assert DUT.get_attributes()['type_id'] == 0.0
 
-    assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'length' in attribute "
-                    "dictionary passed to RAMSTKDesignMechanic.set_attributes().")
 
-    ATTRIBUTES['length'] = 0.0
+@pytest.mark.integration
+def test_set_attributes_unknown_attributes(test_dao):
+    """set_attributes() should raise an AttributeError when passed an unknown attribute."""
+    _session = test_dao.RAMSTK_SESSION(bind=test_dao.engine,
+                                       autoflush=False,
+                                       expire_on_commit=False)
+    DUT = _session.query(RAMSTKDesignMechanic).first()
+
+    with pytest.raises(AttributeError):
+        DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})

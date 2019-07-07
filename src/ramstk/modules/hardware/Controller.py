@@ -11,12 +11,13 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.dao.programdb import (
-    RAMSTKHardware, RAMSTKRequirement, RAMSTKTest, RAMSTKValidation,
+    RAMSTKRequirement, RAMSTKTest, RAMSTKValidation
 )
+from ramstk.data.storage.programdb import RAMSTKHardware
 from ramstk.modules import RAMSTKDataController, RAMSTKDataMatrix
 
 # RAMSTK Local Imports
-from . import dtmHardwareBoM
+from .Model import HardwareBoMDataModel as dtmHardwareBoM
 
 
 class HardwareBoMDataController(RAMSTKDataController):
@@ -425,7 +426,7 @@ class HardwareBoMDataController(RAMSTKDataController):
         Set the attributes of the record associated with the Module ID.
 
         :param int module_id: the ID of the record in the RAMSTK Program
-                              database table whose attributes are to be set.
+            database table whose attributes are to be set.
         :param str key: the key in the attributes dict.
         :param value: the new value of the attribute to set.
         :return: False if successful or True if an error is encountered.
@@ -438,6 +439,9 @@ class HardwareBoMDataController(RAMSTKDataController):
             _attributes[key] = value
         else:
             _return = True
+
+        _attributes.pop('revision_id')
+        _attributes.pop('hardware_id')
 
         # Set the attributes for the individual tables.
         _error_code, _msg = self._dtm_data_model.dtm_hardware.do_select(

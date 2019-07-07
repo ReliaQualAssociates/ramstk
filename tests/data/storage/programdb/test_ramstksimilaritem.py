@@ -1,7 +1,7 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_ramstksimilaritem.py is part of The RAMSTK Project
+#       tests.data.storage.programdb.test_ramstksimilaritem.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 """Test class for testing RAMSTKSimilarItem module algorithms and models."""
@@ -11,11 +11,6 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.data.storage.programdb.RAMSTKSimilarItem import RAMSTKSimilarItem
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
     'method_id': 0,
