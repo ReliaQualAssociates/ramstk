@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.data.storage.programdb.RAMSTKNSWC import RAMSTKNSWC
+from ramstk.models.programdb.RAMSTKNSWC import RAMSTKNSWC
 
 ATTRIBUTES = {
     'Clc': 0.0,

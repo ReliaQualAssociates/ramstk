@@ -135,7 +135,7 @@ def test_do_calculate_part_count_integrated_circuit(subcategory_id):
         7: 0.0055,
         8: 0.014,
         9: 0.0085
-        }[attributes['subcategory_id']]
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -165,7 +165,7 @@ def test_do_calculate_part_count_semiconductor(subcategory_id):
         11: 0.011,
         12: 0.0062,
         13: 5.1
-        }[attributes['subcategory_id']]
+    }[attributes['subcategory_id']]
     assert attributes['piQ'] == {
         1: 1.0,
         2: 1.0,
@@ -180,7 +180,7 @@ def test_do_calculate_part_count_semiconductor(subcategory_id):
         11: 1.0,
         12: 1.0,
         13: 1.0
-        }[attributes['subcategory_id']]
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -210,7 +210,7 @@ def test_do_calculate_part_count_resistor(subcategory_id):
         13: 0.043,
         14: 0.05,
         15: 0.048
-        }[attributes['subcategory_id']]
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -245,7 +245,7 @@ def test_do_calculate_part_count_capacitor(subcategory_id):
         17: 0.033,
         18: 0.8,
         19: 0.4
-        }[attributes['subcategory_id']]
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -258,7 +258,10 @@ def test_do_calculate_part_count_inductor(subcategory_id):
     attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
-    assert attributes['lambda_b'] == {1: 0.0035, 2: 0.0017}[attributes['subcategory_id']]
+    assert attributes['lambda_b'] == {
+        1: 0.0035,
+        2: 0.0017
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -271,7 +274,10 @@ def test_do_calculate_part_count_relay(subcategory_id):
     attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
-    assert attributes['lambda_b'] == {1: 0.13, 2: 0.4}[attributes['subcategory_id']]
+    assert attributes['lambda_b'] == {
+        1: 0.13,
+        2: 0.4
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -290,7 +296,7 @@ def test_do_calculate_part_count_switch(subcategory_id):
         3: 0.33,
         4: 0.56,
         5: 0.11
-        }[attributes['subcategory_id']]
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -309,7 +315,7 @@ def test_do_calculate_part_count_connection(subcategory_id):
         3: 0.0019,
         4: 0.053,
         5: 0.0026
-        }[attributes['subcategory_id']]
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -322,7 +328,10 @@ def test_do_calculate_part_count_meter(subcategory_id):
     attributes = MilHdbk217f._do_calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(attributes, dict)
-    assert attributes['lambda_b'] == {1: 10.0, 2: 0.09}[attributes['subcategory_id']]
+    assert attributes['lambda_b'] == {
+        1: 10.0,
+        2: 0.09
+    }[attributes['subcategory_id']]
 
 
 @pytest.mark.unit
@@ -340,7 +349,9 @@ def test_do_calculate_part_count_miscellaneous(subcategory_id):
         2: 0.022,
         3: 0.01,
         4: 3.9
-        }[attributes['subcategory_id']]
+    }[attributes['subcategory_id']]
+
+
 # ----- ----- ----- ----- END PARTS COUNT TESTS ----- ----- ----- ----- #
 
 
@@ -688,6 +699,7 @@ def test_do_calculate_active_hazard_rate(hazard_rate_method_id):
             1: 3.9,
             2: 1.8254734762892308
         }[attributes['hazard_rate_method_id']]
+
     pub.subscribe(on_message, 'succeed_predict_reliability')
 
     assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
@@ -709,6 +721,7 @@ def test_do_calculate_active_hazard_rate_negative_input():
                              'negative or missing value. Hardware item '
                              'category ID=2, subcategory ID=2, rated '
                              'power=-0.050000, number of elements=1000.')
+
     pub.subscribe(on_message, 'fail_predict_reliability')
 
     assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None
@@ -736,6 +749,7 @@ def test_do_calculate_active_hazard_rate_zero_input():
                              'temperature=105.000000, feature '
                              'size=1.500000, surface area=1.500000, and item '
                              'weight=0.500000.')
+
     pub.subscribe(on_message, 'fail_predict_reliability')
 
     assert MilHdbk217f.do_predict_active_hazard_rate(**ATTRIBUTES) is None

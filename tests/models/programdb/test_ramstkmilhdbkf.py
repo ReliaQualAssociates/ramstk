@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.data.storage.programdb.RAMSTKMilHdbkF import RAMSTKMilHdbkF
+from ramstk.models.programdb.RAMSTKMilHdbkF import RAMSTKMilHdbkF
 
 ATTRIBUTES = {
     'A1': 0.0,

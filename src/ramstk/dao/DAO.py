@@ -14,7 +14,8 @@ from sqlalchemy import MetaData, create_engine, exc
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 # RAMSTK Package Imports
-from ramstk.data.storage.programdb import (
+from ramstk.Exceptions import DataAccessError
+from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
 )
@@ -876,10 +877,12 @@ class DAO():
                     _msg = (
                         'RAMSTK ERROR: Adding one or more items to the RAMSTK '
                         'Program database.')
+                raise DataAccessError(_msg)
             except ValueError as _error:
                 _error_code = 4
                 _msg = ('RAMSTK ERROR: Date field did not contain Python '
                         'date object: {0:s}').format(_error)
+                raise DataAccessError(_msg)
 
         return _error_code, _msg
 

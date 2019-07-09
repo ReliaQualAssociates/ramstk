@@ -81,7 +81,7 @@ class RAMSTKDataModel():
 
         :param int node_id: the Node ID of the data package to retrieve.
         :return: the instance of the RAMSTK<MODULE> class that was requested
-                 or None if the requested Node ID does not exist.
+            or None if the requested Node ID does not exist.
         """
         try:
             _entity = self.tree.get_node(node_id).data

@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.data.storage.programdb.RAMSTKSimilarItem import RAMSTKSimilarItem
+from ramstk.models.programdb.RAMSTKSimilarItem import RAMSTKSimilarItem
 
 ATTRIBUTES = {
     'method_id': 0,

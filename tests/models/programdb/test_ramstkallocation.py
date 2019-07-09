@@ -9,7 +9,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.data.storage.programdb.RAMSTKAllocation import RAMSTKAllocation
+from ramstk.models.programdb.RAMSTKAllocation import RAMSTKAllocation
 
 ATTRIBUTES = {
     'availability_alloc': 0.9998,

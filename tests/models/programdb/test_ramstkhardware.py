@@ -12,7 +12,7 @@ from datetime import date
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.data.storage.programdb.RAMSTKHardware import RAMSTKHardware
+from ramstk.models.programdb.RAMSTKHardware import RAMSTKHardware
 
 ATTRIBUTES = {
     'alt_part_number': '',

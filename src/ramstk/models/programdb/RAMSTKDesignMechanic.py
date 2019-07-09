@@ -16,7 +16,6 @@ from ramstk import RAMSTK_BASE
 from ramstk.Utilities import none_to_default
 
 
-# pylint: disable=R0902
 class RAMSTKDesignMechanic(RAMSTK_BASE):
     """
     Represent the ramstk_design_mechanic table in the RAMSTK Program database.
