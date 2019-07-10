@@ -96,36 +96,23 @@ class RAMSTKDataModel():
         """
         Retrieve and build the RAMSTK Module tree.
 
-        :return: an SQLAlchemy session instance.
-        :rtype:
+        :return: None
+        :rtype: None
         """
-        _root = self.tree.root
-        for _node in self.tree.children(_root):
+        for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
-
-        return self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
-        )
 
     def do_insert(self, **kwargs):
         """
         Add the list of RAMSTK<MODULE> instance to the RAMSTK Program database.
 
         :param list entities: the list of RAMSTK<MODULE> entities to add to the
-                              RAMSTK Program database.
+            RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _entities = kwargs['entities']
-        _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
-        )
-
-        _error_code, _msg = self.dao.db_add(_entities, _session)
-
-        _session.close()
-
-        return _error_code, _msg
+        return self.dao.db_add(_entities, None)
 
     def do_delete(self, node_id):
         """

@@ -720,8 +720,8 @@ class DAO():
         Connect to the database using settings from the configuration file.
 
         :param str database: the absolute path to the database to connect to.
-        :return: False if successful, True if an error occurs.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self.database = database
         self.engine = create_engine(self.database, echo=False)
@@ -734,14 +734,12 @@ class DAO():
             expire_on_commit=False,
         )
 
-        return False
-
     def db_close(self):
         """
         Close the current session.
 
-        :return: False if successful, True if an error occurs.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
         self.session.close()
         self.RAMSTK_SESSION.close_all()
@@ -751,25 +749,19 @@ class DAO():
         self.metadata = None
         self.database = None
 
-        return False
-
     def _db_table_create(self, table):
         """
         Check if the passed table exists and create it if not.
 
         :param table: the table to check for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
         if not self.engine.dialect.has_table(
                 self.engine.connect(),
                 str(table),
         ):
             table.create(bind=self.engine)
-
-        return _return
 
     @staticmethod
     def db_create_common(database, **kwargs):
@@ -834,15 +826,11 @@ class DAO():
 
         return _return
 
-    @staticmethod
-    def db_add(item, session):
+    def db_add(self, item, session):
         """
         Add a new item to the RAMSTK Program database.
 
         :param item: the object to add to the RAMSTK Program database.
-        :param session: the SQLAlchemy scoped_session instance used to
-                        communicate with the RAMSTK Program database.
-        :type session: :class:`sqlalchemy.orm.scoped_session`
         :return: (_error_code, _msg); the error code and associated error
                                       message.
         :rtype: (int, str)
@@ -853,11 +841,11 @@ class DAO():
 
         for _item in item:
             try:
-                session.add(_item)
-                session.commit()
+                self.session.add(_item)
+                self.session.commit()
             except (exc.SQLAlchemyError, exc.DBAPIError) as error:
                 _error = '{0:s}'.format(str(error))
-                session.rollback()
+                self.session.rollback()
                 if 'Could not locate a bind' in _error:
                     _error_code = 2
                     _msg = ('RAMSTK ERROR: No database open when attempting '
@@ -886,26 +874,22 @@ class DAO():
 
         return _error_code, _msg
 
-    @staticmethod
-    def db_update(session):
+    def db_update(self, session):
         """
         Update the RAMSTK Program database with any pending changes.
 
-        :param session: the SQLAlchemy scoped_session instance used to
-                        communicate with the RAMSTK Program database.
-        :type session: :py:class:`sqlalchemy.orm.scoped_session`
         :return: (_error_code, _Msg); the error code and associated error
-                                      message.
+            message.
         :rtype: (int, str)
         """
         _error_code = 0
         _msg = "RAMSTK SUCCESS: Updating the RAMSTK Program database."
 
         try:
-            session.commit()
+            self.session.commit()
         except (exc.SQLAlchemyError, exc.DBAPIError) as _error:
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
-            session.rollback()
+            self.session.rollback()
             _error_code = 1
             _msg = (
                 "RAMSTK ERROR: Updating the RAMSTK Program database failed "
@@ -913,16 +897,12 @@ class DAO():
 
         return _error_code, _msg
 
-    @staticmethod
-    def db_delete(item, session):
+    def db_delete(self, item, session):
         """
         Delete a record from the RAMSTK Program database.
 
         :param item: the item to remove from the RAMSTK Program database.
         :type item: Object()
-        :param session: the SQLAlchemy scoped_session instance used to
-                        communicate with the RAMSTK Program database.
-        :type session: :py:class:`sqlalchemy.orm.scoped_session`
         :return: (_error_code, _Msg); the error code and associated error
                                       message.
         :rtype: (int, str)
@@ -932,11 +912,11 @@ class DAO():
                 "database.")
 
         try:
-            session.delete(item)
-            session.commit()
+            self.session.delete(item)
+            self.session.commit()
         except (exc.SQLAlchemyError, exc.DBAPIError) as _error:
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
-            session.rollback()
+            self.session.rollback()
             _error_code = 1
             _msg = ("RAMSTK ERROR: Deleting an item from the RAMSTK Program "
                     "database with error: {0:s}.").format(str(_error))
