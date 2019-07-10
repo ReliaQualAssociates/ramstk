@@ -263,10 +263,7 @@ class RAMSTKDesignElectric(RAMSTK_BASE):
                                  default=__defaults__['years_in_production'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship(
-        'RAMSTKHardware',
-        back_populates='design_electric',
-    )  # pragma: no cover
+    hardware = relationship('RAMSTKHardware', back_populates='design_electric')
 
     def get_attributes(self):
         """

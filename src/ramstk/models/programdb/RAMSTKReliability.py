@@ -134,8 +134,7 @@ class RAMSTKReliability(RAMSTK_BASE):
     hazard_rate_specified = Column(
         'fld_hazard_rate_specified',
         Float,
-        default=__defaults__['hazard_rate_specified'],
-    )
+        default=__defaults__['hazard_rate_specified'])
     hazard_rate_type_id = Column('fld_hazard_rate_type_id',
                                  Integer,
                                  default=__defaults__['hazard_rate_type_id'])
@@ -206,13 +205,11 @@ class RAMSTKReliability(RAMSTK_BASE):
     reliability_log_variance = Column(
         'fld_reliability_log_variance',
         Float,
-        default=__defaults__['reliability_log_variance'],
-    )
+        default=__defaults__['reliability_log_variance'])
     reliability_miss_variance = Column(
         'fld_reliability_mis_variance',
         Float,
-        default=__defaults__['reliability_miss_variance'],
-    )
+        default=__defaults__['reliability_miss_variance'])
     scale_parameter = Column('fld_scale_parameter',
                              Float,
                              default=__defaults__['scale_parameter'])
@@ -222,14 +219,10 @@ class RAMSTKReliability(RAMSTK_BASE):
     survival_analysis_id = Column(
         'fld_survival_analysis_id',
         Integer,
-        default=__defaults__['survival_analysis_id'],
-    )
+        default=__defaults__['survival_analysis_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship(
-        'RAMSTKHardware',
-        back_populates='reliability',
-    )  # pragma: no cover
+    hardware = relationship('RAMSTKHardware', back_populates='reliability')
 
     def get_attributes(self):
         """

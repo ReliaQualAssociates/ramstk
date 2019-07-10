@@ -22,15 +22,17 @@ class RAMSTKHardware(RAMSTK_BASE):
     """
     Class to represent ramstk_hardware table in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_revision.
-    This table shares a One-to-Many relationship with ramstk_hazard.
-    This table shares a One-to-Many relationship with ramstk_similar_item.
-    This table shares a One-to-One relationship with ramstk_allocation.
-    This table shares a One-to-One relationship with ramstk_reliability.
-    This table shares a One-to-One relationship with ramstk_mil_hdbk_f.
-    This table shares a One-to-One relationship with ramstk_nswc.
-    This table shares a One-to-One relationship with ramstk_design_electric.
-    This table shares a One-to-One relationship with ramstk_design_mechanic.
+    This table shares a:
+        * Many-to-One relationship with ramstk_revision.
+        * One-to-Many relationship with ramstk_hazard.
+        * One-to-Many relationship with ramstk_modes.
+        * One-to-Many relationship with ramstk_similar_item.
+        * One-to-One relationship with ramstk_allocation.
+        * One-to-One relationship with ramstk_reliability.
+        * One-to-One relationship with ramstk_mil_hdbk_f.
+        * One-to-One relationship with ramstk_nswc.
+        * One-to-One relationship with ramstk_design_electric.
+        * One-to-One relationship with ramstk_design_mechanic.
     """
 
     __defaults__ = {
@@ -196,7 +198,6 @@ class RAMSTKHardware(RAMSTK_BASE):
         back_populates='hardware',
         cascade='all,delete',
     )
-
     reliability = relationship(
         'RAMSTKReliability',
         uselist=False,

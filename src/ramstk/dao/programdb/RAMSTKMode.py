@@ -63,7 +63,9 @@ class RAMSTKMode(RAMSTK_BASE):
     effect_next = Column('fld_effect_next', String(512), default='')
     effect_probability = Column('fld_effect_probability', Float, default=0.0)
     hazard_rate_source = Column(
-        'fld_hazard_rate_source', String(512), default='',
+        'fld_hazard_rate_source',
+        String(512),
+        default='',
     )
     isolation_method = Column('fld_isolation_method', String(512), default='')
     mission = Column('fld_mission', String(64), default='Default Mission')
@@ -75,7 +77,9 @@ class RAMSTKMode(RAMSTK_BASE):
     mode_ratio = Column('fld_mode_ratio', Float, default=0.0)
     operator_actions = Column('fld_operator_actions', BLOB, default=b'')
     other_indications = Column(
-        'fld_other_indications', String(512), default='',
+        'fld_other_indications',
+        String(512),
+        default='',
     )
     remarks = Column('fld_remarks', BLOB, default=b'')
     rpn_severity = Column('fld_rpn_severity', Integer, default=1)
@@ -87,12 +91,12 @@ class RAMSTKMode(RAMSTK_BASE):
     # Define the relationships to other tables in the RAMSTK Program database.
     function = relationship('RAMSTKFunction', back_populates='mode')
     hardware = relationship('RAMSTKHardware', back_populates='mode')
-    mechanism = relationship(
-        'RAMSTKMechanism', back_populates='mode', cascade='all,delete',
-    )
-    cause = relationship(
-        'RAMSTKCause', back_populates='mode', cascade='all,delete',
-    )
+    mechanism = relationship('RAMSTKMechanism',
+                             back_populates='mode',
+                             cascade='all,delete')
+    cause = relationship('RAMSTKCause',
+                         back_populates='mode',
+                         cascade='all,delete')
 
     is_mode = True
     is_mechanism = False
@@ -164,76 +168,58 @@ class RAMSTKMode(RAMSTK_BASE):
 
         try:
             self.critical_item = int(
-                none_to_default(attributes['critical_item'], 0),
-            )
+                none_to_default(attributes['critical_item'], 0), )
             self.description = str(
                 none_to_default(
                     attributes['description'],
                     'Failure Mode Description',
-                ),
-            )
+                ), )
             self.design_provisions = none_to_default(
-                attributes['design_provisions'], b'',
+                attributes['design_provisions'],
+                b'',
             )
             self.detection_method = str(
-                none_to_default(attributes['detection_method'], ''),
-            )
+                none_to_default(attributes['detection_method'], ''), )
             self.effect_end = str(
-                none_to_default(attributes['effect_end'], 'End Effect'),
-            )
+                none_to_default(attributes['effect_end'], 'End Effect'), )
             self.effect_local = str(
-                none_to_default(attributes['effect_local'], 'Local Effect'),
-            )
+                none_to_default(attributes['effect_local'], 'Local Effect'), )
             self.effect_next = str(
-                none_to_default(attributes['effect_next'], 'Next Effect'),
-            )
+                none_to_default(attributes['effect_next'], 'Next Effect'), )
             self.effect_probability = float(
-                none_to_default(attributes['effect_probability'], 0.0),
-            )
+                none_to_default(attributes['effect_probability'], 0.0), )
             self.hazard_rate_source = str(
-                none_to_default(attributes['hazard_rate_source'], ''),
-            )
+                none_to_default(attributes['hazard_rate_source'], ''), )
             self.isolation_method = str(
-                none_to_default(attributes['isolation_method'], ''),
-            )
+                none_to_default(attributes['isolation_method'], ''), )
             self.mission = str(none_to_default(attributes['mission'], ''))
             self.mission_phase = str(
-                none_to_default(attributes['mission_phase'], ''),
-            )
+                none_to_default(attributes['mission_phase'], ''), )
             self.mode_criticality = float(
-                none_to_default(attributes['mode_criticality'], 0.0),
-            )
+                none_to_default(attributes['mode_criticality'], 0.0), )
             self.mode_hazard_rate = float(
-                none_to_default(attributes['mode_hazard_rate'], 0.0),
-            )
+                none_to_default(attributes['mode_hazard_rate'], 0.0), )
             self.mode_op_time = float(
-                none_to_default(attributes['mode_op_time'], 0.0),
-            )
+                none_to_default(attributes['mode_op_time'], 0.0), )
             self.mode_probability = str(
-                none_to_default(attributes['mode_probability'], ''),
-            )
+                none_to_default(attributes['mode_probability'], ''), )
             self.mode_ratio = float(
-                none_to_default(attributes['mode_ratio'], 0.0),
-            )
+                none_to_default(attributes['mode_ratio'], 0.0), )
             self.operator_actions = none_to_default(
-                attributes['operator_actions'], b'',
+                attributes['operator_actions'],
+                b'',
             )
             self.other_indications = str(
-                none_to_default(attributes['other_indications'], ''),
-            )
+                none_to_default(attributes['other_indications'], ''), )
             self.remarks = none_to_default(attributes['remarks'], b'')
             self.rpn_severity = int(
-                none_to_default(attributes['rpn_severity'], 1),
-            )
+                none_to_default(attributes['rpn_severity'], 1), )
             self.rpn_severity_new = int(
-                none_to_default(attributes['rpn_severity_new'], 1),
-            )
+                none_to_default(attributes['rpn_severity_new'], 1), )
             self.severity_class = str(
-                none_to_default(attributes['severity_class'], ''),
-            )
+                none_to_default(attributes['severity_class'], ''), )
             self.single_point = int(
-                none_to_default(attributes['single_point'], 0),
-            )
+                none_to_default(attributes['single_point'], 0), )
             self.type_id = int(none_to_default(attributes['type_id'], 0))
         except KeyError as _err:
             _error_code = 40
@@ -267,8 +253,7 @@ class RAMSTKMode(RAMSTK_BASE):
             _error_code = 2010
             _msg = _(
                 "RAMSTK ERROR: Failure mode ratio is outside the range of "
-                "[0.0, 1.0].",
-            )
+                "[0.0, 1.0].", )
             raise OutOfRangeError(_msg)
         if self.mode_op_time < 0.0:
             _error_code = 2010
@@ -278,8 +263,7 @@ class RAMSTKMode(RAMSTK_BASE):
             _error_code = 2010
             _msg = _(
                 "Failure effect probability is outside the range "
-                "[0.0, 1.0].",
-            )
+                "[0.0, 1.0].", )
             raise OutOfRangeError(_msg)
 
         self.mode_hazard_rate = item_hr * self.mode_ratio
