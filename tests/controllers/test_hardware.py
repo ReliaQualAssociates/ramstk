@@ -7,16 +7,13 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hardware BoM module algorithms and models. """
 
-# Standard Library Imports
-from datetime import date
-
 # Third Party Imports
 import pytest
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import amHardware, dmHardware
+from ramstk.controllers.hardware import amHardware, dmHardware
 from ramstk.dao import DAO
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
@@ -294,9 +291,9 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
-def test_data_manager_create(test_dao, test_configuration):
+def test_data_manager_create(test_dao):
     """__init__() should return a Hardware data manager."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
 
     assert isinstance(DUT, dmHardware)
     assert isinstance(DUT.tree, Tree)
@@ -306,9 +303,9 @@ def test_data_manager_create(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_all(test_dao, test_configuration):
+def test_do_select_all(test_dao):
     """do_select_all() should return a Tree() object populated with RAMSTKHardware instances on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
 
     def on_message(tree):
         assert isinstance(tree, Tree)
@@ -329,9 +326,9 @@ def test_do_select_all(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_design_electric(test_dao, test_configuration):
+def test_do_select_design_electric(test_dao):
     """do_select() should return an instance of the RAMSTKDesignElectric on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(1, table='design_electric')
@@ -342,9 +339,9 @@ def test_do_select_design_electric(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_design_mechanic(test_dao, test_configuration):
+def test_do_select_design_mechanic(test_dao):
     """do_select() should return an instance of the RAMSTKDesignMechanic on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(1, table='design_mechanic')
@@ -355,9 +352,9 @@ def test_do_select_design_mechanic(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_hardware(test_dao, test_configuration):
+def test_do_select_hardware(test_dao):
     """do_select() should return an instance of the RAMSTKHardware on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(1, table='hardware')
@@ -368,9 +365,9 @@ def test_do_select_hardware(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_mil_hdbk_f(test_dao, test_configuration):
+def test_do_select_mil_hdbk_f(test_dao):
     """do_select() should return an instance of the RAMSTKMilHdbkF on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(1, table='mil_hdbk_217f')
@@ -381,9 +378,9 @@ def test_do_select_mil_hdbk_f(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_nswc(test_dao, test_configuration):
+def test_do_select_nswc(test_dao):
     """do_select() should return an instance of the RAMSTKNSWC on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(1, table='nswc')
@@ -394,9 +391,9 @@ def test_do_select_nswc(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_reliability(test_dao, test_configuration):
+def test_do_select_reliability(test_dao):
     """do_select() should return an instance of the RAMSTKReliability on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(1, table='reliability')
@@ -407,9 +404,9 @@ def test_do_select_reliability(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_unknown_table(test_dao, test_configuration):
+def test_do_select_unknown_table(test_dao):
     """do_select() should raise a KeyError when an unknown table name is requested."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     with pytest.raises(KeyError):
@@ -417,19 +414,18 @@ def test_do_select_unknown_table(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_select_non_existent_id(test_dao, test_configuration):
-    """do_select() should raise a TypeError when a non-existent Hardware ID is requested."""
-    DUT = dmHardware(test_dao, test_configuration)
+def test_do_select_non_existent_id(test_dao):
+    """do_select() should return None when a non-existent Hardware ID is requested."""
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
-    with pytest.raises(TypeError):
-        DUT.do_select(100, table='hardware')
+    assert DUT.do_select(100, table='hardware') is None
 
 
 @pytest.mark.integration
-def test_do_delete(test_dao, test_configuration):
-    """ do_delete() should send the success message with the treelib Tree. """
-    DUT = dmHardware(test_dao, test_configuration)
+def test_do_delete(test_dao):
+    """_do_delete() should send the success message with the treelib Tree."""
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(node_id):
@@ -442,9 +438,9 @@ def test_do_delete(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_delete_non_existent_id(test_dao, test_configuration):
-    """ do_delete() should send the fail message. """
-    DUT = dmHardware(test_dao, test_configuration)
+def test_do_delete_non_existent_id(test_dao):
+    """_do_delete() should send the fail message."""
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(error_msg):
@@ -452,13 +448,13 @@ def test_do_delete_non_existent_id(test_dao, test_configuration):
 
     pub.subscribe(on_message, 'fail_delete_hardware')
 
-    DUT.do_delete(300)
+    DUT._do_delete(300)
 
 
 @pytest.mark.integration
-def test_do_insert_sibling_assembly(test_dao, test_configuration):
+def test_do_insert_sibling_assembly(test_dao):
     """do_insert() should send the success message after successfully inserting a new sibling hardware assembly."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(node_id):
@@ -489,9 +485,9 @@ def test_do_insert_sibling_assembly(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_insert_child_assembly(test_dao, test_configuration):
+def test_do_insert_child_assembly(test_dao):
     """do_insert() should send the success message after successfully inserting a new child hardware assembly."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(node_id):
@@ -519,9 +515,9 @@ def test_do_insert_child_assembly(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_insert_part(test_dao, test_configuration):
+def test_do_insert_part(test_dao):
     """do_insert() should send the success message after successfully inserting a new hardware part."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(node_id):
@@ -549,9 +545,9 @@ def test_do_insert_part(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_insert_part_to_part(test_dao, test_configuration):
+def test_do_insert_part_to_part(test_dao):
     """do_insert() should send the fail message when attempting to add a child to a hardware part."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(error_msg):
@@ -565,9 +561,9 @@ def test_do_insert_part_to_part(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_update(test_dao, test_configuration):
+def test_do_update(test_dao):
     """ do_update() should return a zero error code on success. """
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(node_id):
@@ -575,6 +571,7 @@ def test_do_update(test_dao, test_configuration):
         assert node_id == 10
         assert _hardware.parent_id == 9
         assert _hardware.cost == 0.9832
+
     pub.subscribe(on_message, 'succeed_update_hardware')
 
     _hardware = DUT.do_select(10, table='hardware')
@@ -584,36 +581,38 @@ def test_do_update(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_update_non_existent_id(test_dao, test_configuration):
+def test_do_update_non_existent_id(test_dao):
     """ do_update() should return a non-zero error code when passed a Hardware ID that doesn't exist. """
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(error_msg):
         assert error_msg == ('Attempted to save non-existent hardware item '
                              'with hardware ID 100.')
+
     pub.subscribe(on_message, 'fail_update_hardware')
 
     DUT.do_update(100)
 
 
 @pytest.mark.integration
-def test_do_update_all(test_dao, test_configuration):
+def test_do_update_all(test_dao):
     """ do_update_all() should return a zero error code on success. """
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(node_id):
         assert DUT.do_select(node_id, table='hardware').hardware_id == node_id
+
     pub.subscribe(on_message, 'succeed_update_hardware')
 
     pub.sendMessage('request_update_all_hardware')
 
 
 @pytest.mark.integration
-def test_do_make_comp_ref_des(test_dao, test_configuration):
+def test_do_make_comp_ref_des(test_dao):
     """do_make_comp_ref_des() should return a zero error code on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     _hardware = DUT.do_select(8, table='hardware')
@@ -631,9 +630,9 @@ def test_do_make_comp_ref_des(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_do_get_attributes_hardware(test_dao, test_configuration):
+def test_do_get_attributes_hardware(test_dao):
     """do_get_attributes() should return a dict of hardware attributes on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(attributes):
@@ -642,15 +641,15 @@ def test_do_get_attributes_hardware(test_dao, test_configuration):
         assert attributes['ref_des'] == 'C1'
         assert attributes['comp_ref_des'] == 'S1:SS8:A9:C1'
 
-    pub.subscribe(on_message, 'succeed_get_attributes')
+    pub.subscribe(on_message, 'succeed_get_hardware_attributes')
 
-    pub.sendMessage('request_get_attributes', node_id=10, table='hardware')
+    pub.sendMessage('request_get_hardware_attributes', node_id=10, table='hardware')
 
 
 @pytest.mark.integration
-def test_do_get_all_attributes(test_dao, test_configuration):
-    """do_get_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
-    DUT = dmHardware(test_dao, test_configuration)
+def test_do_get_all_attributes_data_manager(test_dao):
+    """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
     def on_message(attributes):
@@ -662,25 +661,25 @@ def test_do_get_all_attributes(test_dao, test_configuration):
         assert attributes['piE'] == 0.0
         assert attributes['hazard_rate_active'] == 0.0
 
-    pub.subscribe(on_message, 'succeed_get_all_attributes')
+    pub.subscribe(on_message, 'succeed_get_all_hardware_attributes')
 
-    pub.sendMessage('request_get_all_attributes', node_id=10)
+    pub.sendMessage('request_get_all_hardware_attributes', node_id=10)
 
 
 @pytest.mark.integration
-def test_do_set_attributes(test_dao, test_configuration):
+def test_do_set_attributes(test_dao):
     """do_set_attributes() should send the success message."""
-    DUT = dmHardware(test_dao, test_configuration)
+    DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
 
-    pub.sendMessage('request_set_attributes',
+    pub.sendMessage('request_set_hardware_attributes',
                     node_id=10,
                     key='name',
                     value='Testing set name from moduleview.')
     assert DUT.do_select(
         10, table='hardware').name == 'Testing set name from moduleview.'
 
-    pub.sendMessage('request_set_attributes',
+    pub.sendMessage('request_set_hardware_attributes',
                     node_id=10,
                     key='lambdaBD',
                     value=0.003862)
@@ -695,16 +694,17 @@ def test_analysis_manager_create(test_configuration):
     assert isinstance(DUT, amHardware)
     assert isinstance(DUT._attributes, dict)
     assert DUT._attributes == {}
+    assert DUT._tree is None
 
 
 @pytest.mark.integration
-def test_get_all_attributes(test_dao, test_configuration):
+def test_get_all_attributes_analysis_manager(test_dao, test_configuration):
     """_get_all_attributes() should update the attributes dict on success."""
-    DATAMGR = dmHardware(test_dao, test_configuration)
+    DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
     DUT = amHardware(test_configuration)
 
-    pub.sendMessage('request_get_all_attributes', node_id=1)
+    pub.sendMessage('request_get_all_hardware_attributes', node_id=1)
 
     assert DUT._attributes == ATTRIBUTES
 
@@ -713,7 +713,7 @@ def test_get_all_attributes(test_dao, test_configuration):
 def test_do_calculate_assembly_specified_hazard_rate(test_dao,
                                                      test_configuration):
     """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the h(t)."""
-    DATAMGR = dmHardware(test_dao, test_configuration)
+    DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
     DUT = amHardware(test_configuration)
 
@@ -764,7 +764,7 @@ def test_do_calculate_assembly_specified_hazard_rate(test_dao,
 @pytest.mark.integration
 def test_do_calculate_assembly_specified_mtbf(test_dao, test_configuration):
     """do_calculate() should calculate reliability metrics and update the _attributes dict with results when specifying the MTBF."""
-    DATAMGR = dmHardware(test_dao, test_configuration)
+    DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
     DUT = amHardware(test_configuration)
 
@@ -802,7 +802,7 @@ def test_do_calculate_assembly_specified_mtbf(test_dao, test_configuration):
 @pytest.mark.integration
 def test_do_calculate_assembly_zero_hazard_rates(test_dao, test_configuration):
     """do_calculate() should send the fail message when all hazard rates=0.0."""
-    DATAMGR = dmHardware(test_dao, test_configuration)
+    DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
     DUT = amHardware(test_configuration)
 
@@ -827,7 +827,7 @@ def test_do_calculate_assembly_zero_hazard_rates(test_dao, test_configuration):
 def test_do_calculate_assembly_zero_specified_mtbf(test_dao,
                                                    test_configuration):
     """do_calculate() should send the fail message when the specified MTBF=0.0."""
-    DATAMGR = dmHardware(test_dao, test_configuration)
+    DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
     DUT = amHardware(test_configuration)
 
@@ -852,13 +852,14 @@ def test_do_calculate_assembly_zero_specified_mtbf(test_dao,
 def test_do_calculate_part_mil_hdbk_217f_parts_count(test_dao,
                                                      test_configuration):
     """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F parts count prediction."""
-    DATAMGR = dmHardware(test_dao, test_configuration)
+    DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
         assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
         assert attributes['hazard_rate_type_id'] == 1
+        assert attributes['hazard_rate_method_id'] == 1
         assert attributes['hazard_rate_active'] == pytest.approx(9.75e-09)
         assert attributes['hazard_rate_dormant'] == 7.8e-10
         assert attributes['hazard_rate_software'] == 3.876e-07
@@ -880,6 +881,7 @@ def test_do_calculate_part_mil_hdbk_217f_parts_count(test_dao,
         assert attributes['cost_type_id'] == 2
         assert attributes['total_cost'] == 5.28
         assert attributes['cost_hour'] == pytest.approx(2.098008e-06)
+
     pub.subscribe(on_message, 'succeed_calculate_hardware')
 
     DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
@@ -903,7 +905,319 @@ def test_do_calculate_part_mil_hdbk_217f_parts_count(test_dao,
     pub.sendMessage('request_calculate_hardware', node_id=10)
 
 
+@pytest.mark.integration
+def test_do_calculate_part_mil_hdbk_217f_parts_stress(test_dao,
+                                                      test_configuration):
+    """do_calculate() should calculate reliability metrics and update the _attributes dict with results when performing a MIL-HDBK-217F part stress prediction."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
 
+    def on_message(attributes):
+        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert attributes['hazard_rate_type_id'] == 1
+        assert attributes['hazard_rate_method_id'] == 2
+        assert attributes['voltage_ratio'] == 0.5344
+        assert attributes['hazard_rate_active'] == pytest.approx(
+            2.75691476e-07)
+        assert attributes['hazard_rate_dormant'] == pytest.approx(
+            2.75691476e-08)
+        assert attributes['hazard_rate_software'] == 0.0
+        assert attributes['hazard_rate_logistics'] == pytest.approx(
+            3.03260624e-07)
+        assert attributes['mtbf_logistics'] == pytest.approx(3297493.71115455)
+        assert attributes['reliability_logistics'] == pytest.approx(0.73840662)
+        assert attributes['hazard_rate_mission'] == pytest.approx(
+            2.75691476e-07)
+        assert attributes['mtbf_mission'] == pytest.approx(3627243.08227001)
+        assert attributes['reliability_mission'] == pytest.approx(0.99999712)
+        assert attributes['hr_specified_variance'] == 0.0
+        assert attributes['hr_logistics_variance'] == pytest.approx(
+            1.77431343e-13)
+        assert attributes['hr_mission_variance'] == pytest.approx(
+            1.57887023e-13)
+        assert attributes['mtbf_logistics_variance'] == 10873464775103.824
+        assert attributes['mtbf_mission_variance'] == 13156892377875.629
+        assert attributes['total_part_count'] == 1
+        assert attributes['total_power_dissipation'] == 0.05
+        assert attributes['cost_type_id'] == 2
+        assert attributes['total_cost'] == 1.35
+        assert attributes['cost_hour'] == pytest.approx(3.7218349e-07)
+
+    pub.subscribe(on_message, 'succeed_calculate_hardware')
+
+    DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_method_id', 2)
+    DATAMGR.do_set_attributes(10, 'category_id', 4)
+    DATAMGR.do_set_attributes(10, 'subcategory_id', 1)
+    DATAMGR.do_set_attributes(10, 'quality_id', 1)
+    DATAMGR.do_set_attributes(10, 'environment_active_id', 3)
+    DATAMGR.do_set_attributes(10, 'environment_dormant_id', 2)
+    DATAMGR.do_set_attributes(10, 'capacitance', 0.0000033)
+    DATAMGR.do_set_attributes(10, 'construction_id', 1)
+    DATAMGR.do_set_attributes(10, 'configuration_id', 1)
+    DATAMGR.do_set_attributes(10, 'resistance', 0.05)
+    DATAMGR.do_set_attributes(10, 'voltage_dc_operating', 3.3)
+    DATAMGR.do_set_attributes(10, 'voltage_ac_operating', 0.04)
+    DATAMGR.do_set_attributes(10, 'voltage_rated', 6.25)
+    DATAMGR.do_set_attributes(10, 'temperature_rated_max', 105.0)
+    DATAMGR.do_set_attributes(10, 'temperature_active', 45.0)
+    DATAMGR.do_set_attributes(10, 'power_operating', 0.05)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_software', 0.0)
+    DATAMGR.do_set_attributes(10, 'add_adj_factor', 0.0)
+    DATAMGR.do_set_attributes(10, 'mult_adj_factor', 1.0)
+    DATAMGR.do_set_attributes(10, 'mission_time', 10.0)
+    DATAMGR.do_set_attributes(10, 'quantity', 1)
+    DATAMGR.do_set_attributes(10, 'cost_type_id', 2)
+    DATAMGR.do_set_attributes(10, 'cost', 1.35)
+    DATAMGR.do_update(10)
+
+    pub.sendMessage('request_calculate_hardware', node_id=10)
+
+
+@pytest.mark.integration
+def test_do_calculate_part_zero_rated_current(test_dao, test_configuration):
+    """do_calculate() should send the stress ratio calculation fail message when rated current is zero."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(error_msg):
+        assert error_msg == ('Failed to calculate current ratio for hardware '
+                             'ID 10; rated current is zero.')
+
+    pub.subscribe(on_message, 'fail_stress_analysis')
+
+    DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_method_id', 2)
+    DATAMGR.do_set_attributes(10, 'category_id', 1)
+    DATAMGR.do_set_attributes(10, 'current_operating', 0.005)
+    DATAMGR.do_set_attributes(10, 'current_rated', 0.0)
+
+
+@pytest.mark.integration
+def test_do_calculate_part_zero_rated_power(test_dao, test_configuration):
+    """do_calculate() should send the stress ratio calculation fail message when rated power is zero."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(error_msg):
+        assert error_msg == ('Failed to calculate power ratio for hardware '
+                             'ID 10; rated power is zero.')
+
+    pub.subscribe(on_message, 'fail_stress_analysis')
+
+    DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_method_id', 2)
+    DATAMGR.do_set_attributes(10, 'category_id', 3)
+    DATAMGR.do_set_attributes(10, 'power_operating', 0.05)
+    DATAMGR.do_set_attributes(10, 'power_rated', 0.0)
+
+    pub.sendMessage('request_calculate_hardware', node_id=10)
+
+    pub.sendMessage('request_calculate_hardware', node_id=10)
+
+
+@pytest.mark.integration
+def test_do_calculate_part_zero_rated_voltage(test_dao, test_configuration):
+    """do_calculate() should send the stress ratio calculation fail message when rated voltage is zero."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(error_msg):
+        assert error_msg == ('Failed to calculate voltage ratio for hardware '
+                             'ID 10; rated voltage is zero.')
+
+    pub.subscribe(on_message, 'fail_stress_analysis')
+
+    DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_method_id', 2)
+    DATAMGR.do_set_attributes(10, 'category_id', 4)
+    DATAMGR.do_set_attributes(10, 'voltage_dc_operating', 3.3)
+    DATAMGR.do_set_attributes(10, 'voltage_ac_operating', 0.04)
+    DATAMGR.do_set_attributes(10, 'voltage_rated', 0.0)
+
+    pub.sendMessage('request_calculate_hardware', node_id=10)
+
+
+@pytest.mark.integration
+def test_do_derating_analysis_current_stress(test_dao, test_configuration):
+    """do_derating_analysis() should set overstress attribute True and build reason message when a component is current overstressed."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(attributes):
+        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert attributes['overstress']
+        assert attributes['reason'] == (b'Operating current is greater than '
+                                        b'limit in a harsh environment.\n'
+                                        b'Operating current is greater than '
+                                        b'limit in a mild environment.\n')
+
+    pub.subscribe(on_message, 'succeed_derate_hardware')
+
+    DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_method_id', 2)
+    DATAMGR.do_set_attributes(10, 'category_id', 8)
+    DATAMGR.do_set_attributes(10, 'current_ratio', 0.95)
+    DATAMGR.do_update(10)
+
+    pub.sendMessage('request_derate_hardware', node_id=10)
+
+
+@pytest.mark.integration
+def test_do_derating_analysis_power_stress(test_dao, test_configuration):
+    """do_derating_analysis() should set overstress attribute True and build reason message when a component is power overstressed."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(attributes):
+        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert attributes['overstress']
+        assert attributes['reason'] == (b'Operating power is greater than '
+                                        b'limit in a harsh environment.\n'
+                                        b'Operating power is greater than '
+                                        b'limit in a mild environment.\n')
+
+    pub.subscribe(on_message, 'succeed_derate_hardware')
+
+    DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_method_id', 2)
+    DATAMGR.do_set_attributes(10, 'category_id', 3)
+    DATAMGR.do_set_attributes(10, 'power_ratio', 0.95)
+    DATAMGR.do_update(10)
+
+    pub.sendMessage('request_derate_hardware', node_id=10)
+
+
+@pytest.mark.integration
+def test_do_derating_analysis_voltage_stress(test_dao, test_configuration):
+    """do_derating_analysis() should set overstress attribute True and build reason message when a component is voltage overstressed."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(attributes):
+        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert attributes['overstress']
+        assert attributes['reason'] == (b'Operating voltage is greater than '
+                                        b'limit in a harsh environment.\n'
+                                        b'Operating voltage is greater than '
+                                        b'limit in a mild environment.\n')
+
+    pub.subscribe(on_message, 'succeed_derate_hardware')
+
+    DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_method_id', 2)
+    DATAMGR.do_set_attributes(10, 'category_id', 4)
+    DATAMGR.do_set_attributes(10, 'voltage_ratio', 0.95)
+    DATAMGR.do_update(10)
+
+    pub.sendMessage('request_derate_hardware', node_id=10)
+
+
+@pytest.mark.integration
+def test_do_derating_analysis_no_overstress(test_dao, test_configuration):
+    """do_derating_analysis() should set overstress attribute False and the reason message should='' when a component is not overstressed."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(attributes):
+        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert not attributes['overstress']
+        assert attributes['reason'] == b''
+
+    pub.subscribe(on_message, 'succeed_derate_hardware')
+
+    DATAMGR.do_set_attributes(10, 'hazard_rate_type_id', 1)
+    DATAMGR.do_set_attributes(10, 'hazard_rate_method_id', 2)
+    DATAMGR.do_set_attributes(10, 'category_id', 4)
+    DATAMGR.do_set_attributes(10, 'current_ratio', 0.45)
+    DATAMGR.do_set_attributes(10, 'power_ratio', 0.35)
+    DATAMGR.do_set_attributes(10, 'voltage_ratio', 0.5344)
+    DATAMGR.do_update(10)
+
+    pub.sendMessage('request_derate_hardware', node_id=10)
+
+
+@pytest.mark.integration
+def test_on_get_tree(test_dao, test_configuration):
+    """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_hardware_tree message."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(DUT._tree, Tree)
+        assert DUT._tree == tree
+        assert isinstance(DUT._tree.get_node(1).data['nswc'], RAMSTKNSWC)
+
+    pub.subscribe(on_message, 'succeed_get_hardware_tree')
+
+    pub.sendMessage('request_get_hardware_tree')
+
+
+@pytest.mark.integration
+def test_do_calculate_all_hardware(test_dao, test_configuration):
+    """do_calculate_all_hardware() should calculate the entire system and roll-up results from child to parent hardware items."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = amHardware(test_configuration)
+
+    def on_message(module_tree):
+        assert isinstance(module_tree, Tree)
+        assert DUT._attributes['hazard_rate_active'] == pytest.approx(
+            3.77515059e-05)
+        assert DUT._attributes['hazard_rate_dormant'] == pytest.approx(
+            3.10691476e-08)
+        assert DUT._attributes['hazard_rate_software'] == 2.345e-06
+        assert DUT._attributes['total_cost'] == 3993.61
+        assert DUT._attributes['total_part_count'] == 313
+        assert DUT._attributes['total_power_dissipation'] == pytest.approx(
+            63.877)
+
+    pub.subscribe(on_message, 'succeed_calculate_all_hardware')
+
+    # Do a couple of assemblies with a specified h(t)
+    DATAMGR.do_set_attributes(5, 'hazard_rate_type_id', 2)
+    DATAMGR.do_set_attributes(5, 'hazard_rate_specified', 0.15)
+    DATAMGR.do_set_attributes(5, 'hazard_rate_dormant', 0.0035)
+    DATAMGR.do_set_attributes(5, 'total_part_count', 89)
+    DATAMGR.do_set_attributes(5, 'total_power_dissipation', 45.89)
+    DATAMGR.do_set_attributes(5, 'cost', 438.19)
+    DATAMGR.do_update(5)
+
+    DATAMGR.do_set_attributes(6, 'hazard_rate_type_id', 2)
+    DATAMGR.do_set_attributes(6, 'hazard_rate_specified', 0.045)
+    DATAMGR.do_set_attributes(6, 'hazard_rate_software', 2.3)
+    DATAMGR.do_set_attributes(6, 'total_part_count', 132)
+    DATAMGR.do_set_attributes(6, 'total_power_dissipation', 12.3)
+    DATAMGR.do_set_attributes(6, 'cost', 832.98)
+    DATAMGR.do_update(6)
+
+    # Do a couple of assemblies with a specified MTBF
+    DATAMGR.do_set_attributes(3, 'hazard_rate_type_id', 3)
+    DATAMGR.do_set_attributes(3, 'mtbf_specified', 38292)
+    DATAMGR.do_set_attributes(3, 'hazard_rate_software', 0.045)
+    DATAMGR.do_set_attributes(3, 'total_part_count', 55)
+    DATAMGR.do_set_attributes(3, 'total_power_dissipation', 4.67)
+    DATAMGR.do_set_attributes(3, 'cost', 1282.95)
+    DATAMGR.do_update(3)
+
+    DATAMGR.do_set_attributes(7, 'hazard_rate_type_id', 3)
+    DATAMGR.do_set_attributes(7, 'mtbf_specified', 89560)
+    DATAMGR.do_set_attributes(7, 'total_part_count', 26)
+    DATAMGR.do_set_attributes(7, 'total_power_dissipation', 0.967)
+    DATAMGR.do_set_attributes(7, 'cost', 1432.86)
+    DATAMGR.do_update(7)
+
+    pub.sendMessage('request_calculate_all_hardware')
 
 
 @pytest.mark.integration

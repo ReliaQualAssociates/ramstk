@@ -826,7 +826,7 @@ class DAO():
 
         return _return
 
-    def db_add(self, item, session):
+    def db_add(self, item, session=None):
         """
         Add a new item to the RAMSTK Program database.
 
@@ -874,7 +874,7 @@ class DAO():
 
         return _error_code, _msg
 
-    def db_update(self, session):
+    def db_update(self, session=None):
         """
         Update the RAMSTK Program database with any pending changes.
 
@@ -897,7 +897,7 @@ class DAO():
 
         return _error_code, _msg
 
-    def db_delete(self, item, session):
+    def db_delete(self, item, session=None):
         """
         Delete a record from the RAMSTK Program database.
 

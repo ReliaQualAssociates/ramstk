@@ -10,15 +10,15 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.controllers import RAMSTKDataManager
 from ramstk.Exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
     RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability
 )
-from ramstk.modules import RAMSTKDataModel
 
 
-class DataManager(RAMSTKDataModel):
+class DataManager(RAMSTKDataManager):
     """
     Contain the attributes and methods of the Hardware data manager.
 
@@ -30,18 +30,15 @@ class DataManager(RAMSTKDataModel):
     _tag = 'HardwareBoM'
     _root = 0
 
-    def __init__(self, dao, configuration, **kwargs):   # pylint: disable=unused-argument
+    def __init__(self, dao, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize a Hardware data manager instance.
 
         :param dao: the data access object for communicating with the RAMSTK
             Program database.
         :type dao: :class:`ramstk.dao.DAO.DAO`
-        :param configuration: the Configuration instance associated with the
-            current instance of the RAMSTK application.
-        :type configuration: :class:`ramstk.Configuration.Configuration`
         """
-        RAMSTKDataModel.__init__(self, dao)
+        RAMSTKDataManager.__init__(self, dao, **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -54,109 +51,26 @@ class DataManager(RAMSTKDataModel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.RAMSTK_CONFIGURATION = configuration
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_all, 'succeed_select_revision')
-        pub.subscribe(self.do_delete, 'request_delete_hardware')
+        pub.subscribe(self.do_set_tree, 'succeed_calculate_all_hardware')
+        pub.subscribe(self._do_delete, 'request_delete_hardware')
         pub.subscribe(self.do_insert, 'request_insert_hardware')
         pub.subscribe(self.do_update, 'request_update_hardware')
         pub.subscribe(self.do_update_all, 'request_update_all_hardware')
         pub.subscribe(self.do_make_composite_ref_des,
                       'request_make_comp_ref_des')
-        pub.subscribe(self.do_get_attributes, 'request_get_attributes')
-        pub.subscribe(self.do_get_all_attributes, 'request_get_all_attributes')
-        pub.subscribe(self.do_set_attributes, 'request_set_attributes')
+        pub.subscribe(self.do_get_attributes,
+                      'request_get_hardware_attributes')
+        pub.subscribe(self.do_get_all_attributes,
+                      'request_get_all_hardware_attributes')
+        pub.subscribe(self.do_get_tree, 'request_get_hardware_tree')
+        pub.subscribe(self.do_set_attributes,
+                      'request_set_hardware_attributes')
         pub.subscribe(self.do_set_all_attributes, 'succeed_calculate_hardware')
 
-    def do_calculate_all(self, **kwargs):
-        """
-        Calculate all items in the system.
-
-        :param float hr_multiplier: the hazard rate multiplier.  This is used
-            to allow the hazard rates to be entered and displayed in more human
-            readable numbers, but have the calculations work out.  Default
-            value is 1E6 so hazard rates will be entered and displayed as
-            failures/million hours.
-        :param int node_id: the ID of the treelib Tree() node to start the
-            calculation at.
-        :return: _cum_results; the list of cumulative results.  The list order
-            is:
-
-                    * 0 - active hazard rate
-                    * 1 - dormant hazard rate
-                    * 2 - software hazard rate
-                    * 3 - total cost
-                    * 4 - part count
-                    * 5 - power dissipation
-
-        :rtype: list
-        """
-        _node_id = kwargs['node_id']
-        _limits = kwargs['limits']
-        _hr_multiplier = kwargs['hr_multiplier']
-        _cum_results = [0.0, 0.0, 0.0, 0.0, 0, 0.0]
-
-        # Check if there are children nodes of the node passed.
-        if self.tree.get_node(_node_id).fpointer:
-            _attributes = self.tree.get_node(_node_id).data
-
-            # If there are children, calculate each of them first.
-            for _subnode_id in self.tree.get_node(_node_id).fpointer:
-                _results = self.do_calculate_all(
-                    node_id=_subnode_id,
-                    limits=_limits,
-                    hr_multiplier=_hr_multiplier,
-                )
-                _cum_results[0] += _results[0]
-                _cum_results[1] += _results[1]
-                _cum_results[2] += _results[2]
-                _cum_results[3] += _results[3]
-                _cum_results[4] += int(_results[4])
-                _cum_results[5] += _results[5]
-            # Then calculate the parent node.
-            _attributes = self.do_calculate(
-                _node_id,
-                limits=_limits,
-                hr_multiplier=_hr_multiplier,
-            )
-            if _attributes is not None:
-                _cum_results[0] += _attributes['hazard_rate_active']
-                _cum_results[1] += _attributes['hazard_rate_dormant']
-                _cum_results[2] += _attributes['hazard_rate_software']
-                _cum_results[3] += _attributes['total_cost']
-                _cum_results[4] += int(_attributes['total_part_count'])
-                _cum_results[5] += _attributes['total_power_dissipation']
-        else:
-            if self.tree.get_node(_node_id).data is not None:
-                _attributes = self.do_calculate(
-                    _node_id,
-                    limits=_limits,
-                    hr_multiplier=_hr_multiplier,
-                )
-                _cum_results[0] += _attributes['hazard_rate_active']
-                _cum_results[1] += _attributes['hazard_rate_dormant']
-                _cum_results[2] += _attributes['hazard_rate_software']
-                _cum_results[3] += _attributes['total_cost']
-                _cum_results[4] += int(_attributes['total_part_count'])
-                _cum_results[5] += _attributes['total_power_dissipation']
-
-        if self.tree.get_node(
-                _node_id, ).data is not None and _attributes['part'] == 0:
-            _attributes['hazard_rate_active'] = _cum_results[0]
-            _attributes['hazard_rate_dormant'] = _cum_results[1]
-            _attributes['hazard_rate_software'] = _cum_results[2]
-            _attributes['total_cost'] = _cum_results[3]
-            _attributes['total_part_count'] = int(_cum_results[4])
-            _attributes['total_power_dissipation'] = _cum_results[5]
-
-            _attributes = self._do_calculate_reliability_metrics(_attributes)
-            _attributes = self._do_calculate_cost_metrics(_attributes)
-            _attributes = self._do_calculate_metric_variances(_attributes)
-
-        return _cum_results
-
-    def do_delete(self, node_id):
+    def _do_delete(self, node_id):
         """
         Remove a Hardware item.
 
@@ -165,44 +79,20 @@ class DataManager(RAMSTKDataModel):
         :return: None
         :rtype: None
         """
-        _error_code = 0
-        _error_msg = ''
-
-        # Delete the RAMSTKHardware entry.  Other RAMSTK Program database
-        # tables will delete their entries based on CASCADE behavior.
-        try:
-            _hardware = self.tree.get_node(node_id).data['hardware']
-            (_error_code,
-             _error_msg) = self.dao.db_delete(_hardware, self.dao.session)
-        except AttributeError:
-            _error_code = 1
-            _error_msg = ("Attempted to delete non-existent hardware ID "
-                          "{0:s}.").format(str(node_id))
+        (_error_code,
+         _error_msg) = RAMSTKDataManager.do_delete(self, node_id, 'hardware')
 
         # pylint: disable=attribute-defined-outside-init
-        # self.last_id is defined in RAMSTKDataModel.__init__
+        # self.last_id is defined in RAMSTKDataManager.__init__
         if _error_code == 0:
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage('succeed_delete_hardware', node_id=node_id)
         else:
+            _error_msg = ("Attempted to delete non-existent hardware ID "
+                          "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_hardware', error_msg=_error_msg)
-
-    def do_get_attributes(self, node_id, table):
-        """
-        Retrieve the RAMSTK data table attributes for the hardware item.
-
-        :param int node_id: the node (hardware) ID of the hardware item to
-            get the attributes for.
-        :param str table: the RAMSTK data table to retrieve the attributes
-            from.
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage('succeed_get_attributes',
-                        attributes=self.do_select(
-                            node_id, table=table).get_attributes())
 
     def do_get_all_attributes(self, node_id):
         """
@@ -225,9 +115,33 @@ class DataManager(RAMSTKDataModel):
             _attributes.update(
                 self.do_select(node_id, table=_table).get_attributes())
 
-        pub.sendMessage('succeed_get_all_attributes', attributes=_attributes)
+        pub.sendMessage('succeed_get_all_hardware_attributes', attributes=_attributes)
 
-    def do_insert(self, revision_id, parent_id, part):  # pytest: disable=arguments-differ
+    def do_get_attributes(self, node_id, table):
+        """
+        Retrieve the RAMSTK data table attributes for the hardware item.
+
+        :param int node_id: the node (hardware) ID of the hardware item to
+            get the attributes for.
+        :param str table: the RAMSTK data table to retrieve the attributes
+            from.
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_hardware_attributes',
+                        attributes=self.do_select(
+                            node_id, table=table).get_attributes())
+
+    def do_get_tree(self):
+        """
+        Retrieve the hardware treelib Tree.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('succeed_get_hardware_tree', tree=self.tree)
+
+    def do_insert(self, revision_id, parent_id, part):  # pylint: disable=arguments-differ
         """
         Add a new hardware item.
 
@@ -313,27 +227,7 @@ class DataManager(RAMSTKDataModel):
         for _child_node in self.tree.children(node_id):
             self.do_make_composite_ref_des(node_id=_child_node.identifier)
 
-    def do_select(self, node_id, **kwargs):
-        """
-        Retrieve the data package for the requested table.
-
-        :param int node_id: the ID of the node in the treelib Tree() to select.
-            This is the Hardware ID.
-        :return: the requested table record for the node ID.  This will be a
-            record from the RAMSTKDesignElectric, RAMSTKDesignMechanic,
-            RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKNSWC, or RAMSTKReliability
-            table.
-        :rtype: :class:`ramstk.data.models.RAMSTKDesignElectric`
-        :raise: KeyError if passed the name of a table that isn't managed by
-            this manager.
-        :raise: TypeError if passed a node (hardware) ID that doesn't exist in
-            the tree.
-        """
-        _table = kwargs['table']
-
-        return RAMSTKDataModel.do_select(self, node_id)[_table]
-
-    def do_select_all(self, revision_id):   # pytest: disable=arguments-differ
+    def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
         """
         Retrieve all the Hardware BoM data from the RAMSTK Program database.
 
@@ -383,6 +277,22 @@ class DataManager(RAMSTKDataModel):
 
         pub.sendMessage('succeed_retrieve_hardware', tree=self.tree)
 
+    def do_set_all_attributes(self, attributes):
+        """
+        Set all the attributes of the record associated with the Module ID.
+
+        This is a helper function to set a group of attributes in a single
+        call.  Used mainly by the AnalysisManager.
+
+        :param dict attributes: the aggregate attributes dict for the hardware
+            item.
+        :return: None
+        :rtype: None
+        """
+        for _key in attributes:
+            self.do_set_attributes(attributes['hardware_id'], _key,
+                                   attributes[_key])
+
     def do_set_attributes(self, node_id, key, value):
         """
         Set the attributes of the record associated with the Module ID.
@@ -409,22 +319,6 @@ class DataManager(RAMSTKDataModel):
 
                 self.do_select(node_id,
                                table=_table).set_attributes(_attributes)
-
-    def do_set_all_attributes(self, attributes):
-        """
-        Set all the attributes of the record associated with the Module ID.
-
-        This is a helper function to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param dict attributes: the aggregate attributes dict for the hardware
-            item.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            self.do_set_attributes(attributes['hardware_id'], _key,
-                                   attributes[_key])
 
     def do_update(self, node_id):
         """
@@ -462,13 +356,3 @@ class DataManager(RAMSTKDataModel):
                                 error_msg=('No data package found for '
                                            'hardware ID {0:s}.').format(
                                                str(node_id)))
-
-    def do_update_all(self, **kwargs):
-        """
-        Update all RAMSTKHardware table records in the RAMSTK Program database.
-
-        :return: None
-        :rtype: None
-        """
-        for _node in self.tree.all_nodes():
-            self.do_update(_node.identifier)

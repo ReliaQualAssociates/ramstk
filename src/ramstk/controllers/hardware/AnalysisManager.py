@@ -14,7 +14,7 @@ from math import exp
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.analyses import Dormancy
+from ramstk.analyses import Derating, Dormancy, Stress
 from ramstk.analyses.milhdbk217f import MilHdbk217f
 
 
@@ -29,7 +29,7 @@ class AnalysisManager():
         the hardware item being analyzed.
     """
 
-    def __init__(self, configuration, **kwargs):    # pylint: disable=unused-argument
+    def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an instance of the hardware analysis manager.
 
@@ -43,6 +43,7 @@ class AnalysisManager():
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._tree = None
 
         # Initialize public dictionary attributes.
 
@@ -53,10 +54,14 @@ class AnalysisManager():
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._on_get_all_attributes,
-                      'succeed_get_all_attributes')
+                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._on_get_tree, 'succeed_get_hardware_tree')
         pub.subscribe(self._on_predict_reliability,
                       'succeed_predict_reliability')
         pub.subscribe(self.do_calculate_hardware, 'request_calculate_hardware')
+        pub.subscribe(self._request_do_calculate_all_hardware,
+                      'request_calculate_all_hardware')
+        pub.subscribe(self.do_derating_analysis, 'request_derate_hardware')
 
     def _do_calculate_cost_metrics(self):
         """
@@ -80,6 +85,25 @@ class AnalysisManager():
             self._attributes['total_part_count'] = (
                 self._attributes['total_part_count']
                 * self._attributes['quantity'])
+
+    def _do_calculate_current_ratio(self):
+        """
+        Calculate the current ratio.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._attributes['current_ratio'] = Stress.calculate_stress_ratio(
+                self._attributes['current_operating'],
+                self._attributes['current_rated'])
+        except ZeroDivisionError:
+            pub.sendMessage(
+                'fail_stress_analysis',
+                error_msg=("Failed to calculate current ratio for "
+                           "hardware ID {0:s}; rated current is "
+                           "zero.").format(str(
+                               self._attributes['hardware_id'])))
 
     def _do_calculate_hazard_rate_metrics(self):
         """
@@ -145,6 +169,25 @@ class AnalysisManager():
             self._attributes['mtbf_specified_variance'] = (
                 1.0 / (1.0 / self._attributes['mtbf_specified'])**2.0)
 
+    def _do_calculate_power_ratio(self):
+        """
+        Calculate the power ratio.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self._attributes['power_ratio'] = Stress.calculate_stress_ratio(
+                self._attributes['power_operating'],
+                self._attributes['power_rated'])
+        except ZeroDivisionError:
+            pub.sendMessage(
+                'fail_stress_analysis',
+                error_msg=("Failed to calculate power ratio for "
+                           "hardware ID {0:s}; rated power is "
+                           "zero.").format(str(
+                               self._attributes['hardware_id'])))
+
     def _do_calculate_reliability_metrics(self):
         """
         Calculate the reliability related metrics.
@@ -175,6 +218,27 @@ class AnalysisManager():
             -1.0 * (self._attributes['hazard_rate_mission'])
             * self._attributes['mission_time'])
 
+    def _do_calculate_voltage_ratio(self):
+        """
+        Calculate the voltage ratio.
+
+        :return: None
+        :rtype: None
+        """
+        _voltage_operating = (self._attributes['voltage_ac_operating']
+                              + self._attributes['voltage_dc_operating'])
+
+        try:
+            self._attributes['voltage_ratio'] = Stress.calculate_stress_ratio(
+                _voltage_operating, self._attributes['voltage_rated'])
+        except ZeroDivisionError:
+            pub.sendMessage(
+                'fail_stress_analysis',
+                error_msg=("Failed to calculate voltage ratio for "
+                           "hardware ID {0:s}; rated voltage is "
+                           "zero.").format(str(
+                               self._attributes['hardware_id'])))
+
     def _on_get_all_attributes(self, attributes):
         """
         Request all the attributes for the hardware associated with node ID.
@@ -185,6 +249,17 @@ class AnalysisManager():
         :rtype: None
         """
         self._attributes = attributes
+
+    def _on_get_tree(self, tree):
+        """
+        Request the hardware treelib Tree().
+
+        :param tree: the hardware treelib Tree().
+        :type tree: :class:`treelib.Tree`
+        :return: None
+        :rtype: None
+        """
+        self._tree = tree
 
     def _on_predict_reliability(self, attributes):
         """
@@ -197,6 +272,24 @@ class AnalysisManager():
         """
         self._attributes = attributes
 
+    def _request_do_calculate_all_hardware(self):
+        """
+        Request that the entire hardware system be calculated.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage('request_get_hardware_tree')
+
+        _cum_results = self.do_calculate_all_hardware(node_id=1)
+
+        # If the sum of the results is greater than zero, SOMETHING got
+        # calculated.  We'll assume that was a success and send the message.
+        if sum(_cum_results) > 0.0:
+            pub.sendMessage('succeed_calculate_all_hardware',
+                            module_tree=self._tree)
+            pub.sendMessage('request_update_all_hardware')
+
     def _request_do_predict_active_hazard_rate(self):
         """
         Request that the hazard rate prediction be performed.
@@ -207,11 +300,87 @@ class AnalysisManager():
         if self._attributes['hazard_rate_method_id'] in [1, 2]:
             MilHdbk217f.do_predict_active_hazard_rate(**self._attributes)
 
-    def do_calculate_hardware(self, node_id):
+    def _request_do_stress_analysis(self):
+        """
+        Perform a stress analysis.
+
+        :return: None
+        :rtype: None
+        """
+        if self._attributes['category_id'] in [1, 2, 5, 6, 7, 8]:
+            self._do_calculate_current_ratio()
+
+        if self._attributes['category_id'] == 3:
+            self._do_calculate_power_ratio()
+
+        if self._attributes['category_id'] in [4, 5, 8]:
+            self._do_calculate_voltage_ratio()
+
+    def do_calculate_all_hardware(self, **kwargs):
+        """
+        Calculate all items in the system.
+
+        :return: _cum_results; the list of cumulative results.  The list order
+            is:
+                * 0 - active hazard rate
+                * 1 - dormant hazard rate
+                * 2 - software hazard rate
+                * 3 - total cost
+                * 4 - part count
+                * 5 - power dissipation
+        :rtype: list
+        """
+        _node_id = kwargs['node_id']
+        _cum_results = [0.0, 0.0, 0.0, 0.0, 0, 0.0]
+
+        # Check if there are children nodes of the node passed.
+        if self._tree.get_node(_node_id).fpointer:
+            # If there are children, calculate each of them first.
+            for _subnode_id in self._tree.get_node(_node_id).fpointer:
+                _results = self.do_calculate_all_hardware(node_id=_subnode_id)
+                _cum_results[0] += _results[0]
+                _cum_results[1] += _results[1]
+                _cum_results[2] += _results[2]
+                _cum_results[3] += _results[3]
+                _cum_results[4] += int(_results[4])
+                _cum_results[5] += _results[5]
+            # Then calculate the parent node.
+            self.do_calculate_hardware(_node_id, system=True)
+            if self._attributes is not None:
+                _cum_results[0] += self._attributes['hazard_rate_active']
+                _cum_results[1] += self._attributes['hazard_rate_dormant']
+                _cum_results[2] += self._attributes['hazard_rate_software']
+                _cum_results[3] += self._attributes['total_cost']
+                _cum_results[4] += int(self._attributes['total_part_count'])
+                _cum_results[5] += self._attributes['total_power_dissipation']
+        else:
+            if self._tree.get_node(_node_id).data is not None:
+                self.do_calculate_hardware(_node_id, system=True)
+                _cum_results[0] += self._attributes['hazard_rate_active']
+                _cum_results[1] += self._attributes['hazard_rate_dormant']
+                _cum_results[2] += self._attributes['hazard_rate_software']
+                _cum_results[3] += self._attributes['total_cost']
+                _cum_results[4] += int(self._attributes['total_part_count'])
+                _cum_results[5] += self._attributes['total_power_dissipation']
+
+        if (self._tree.get_node(_node_id).data is not None
+                and self._attributes['part'] == 0):
+            self._attributes['hazard_rate_active'] = _cum_results[0]
+            self._attributes['hazard_rate_dormant'] = _cum_results[1]
+            self._attributes['hazard_rate_software'] = _cum_results[2]
+            self._attributes['total_cost'] = _cum_results[3]
+            self._attributes['total_part_count'] = int(_cum_results[4])
+            self._attributes['total_power_dissipation'] = _cum_results[5]
+
+        return _cum_results
+
+    def do_calculate_hardware(self, node_id, system=False):
         """
         Calculate all metrics for the hardware associated with node ID.
 
         :param int node_id: the node (hardware) ID to calculate metrics.
+        :keyword bool system: indicates whether a single item (default) or the
+            entire system is being calculated.
         :return: None
         :rtype: None
         """
@@ -220,7 +389,7 @@ class AnalysisManager():
         # Retrieve all the attributes from all the RAMSTK data tables for the
         # requested hardware item.  We need to build a comprehensive dict of
         # attributes to pass to the various analysis methods/functions.
-        pub.sendMessage('request_get_all_attributes', node_id=node_id)
+        pub.sendMessage('request_get_all_hardware_attributes', node_id=node_id)
 
         # If the assembly is to be calculated, set the attributes that are the
         # sum of the child attributes to zero.  Without doing this, they will
@@ -238,9 +407,10 @@ class AnalysisManager():
             if self._attributes['cost_type_id'] == 2:
                 self._attributes['total_cost'] = 0.0
         else:
+            self._request_do_stress_analysis()
             self._request_do_predict_active_hazard_rate()
-            self._attributes[
-                'hazard_rate_dormant'] = Dormancy.do_calculate_dormant_hazard_rate(
+            self._attributes['hazard_rate_dormant'] = \
+                Dormancy.do_calculate_dormant_hazard_rate(
                     self._attributes['category_id'],
                     self._attributes['subcategory_id'],
                     self._attributes['environment_active_id'],
@@ -261,6 +431,91 @@ class AnalysisManager():
         self._do_calculate_reliability_metrics()
         self._do_calculate_cost_metrics()
 
-        pub.sendMessage('succeed_calculate_hardware',
-                        attributes=self._attributes)
-        pub.sendMessage('request_update_hardware', node_id=node_id)
+        # If we're only calculating a single component/piece part, we send the
+        # success message and a request to update that part in the database.
+        # If we're calculating the entire system, we suppress this and make the
+        # equivalent *all* calls.
+        if not system:
+            pub.sendMessage('succeed_calculate_hardware',
+                            attributes=self._attributes)
+            pub.sendMessage('request_update_hardware', node_id=node_id)
+
+    def do_derating_analysis(self, node_id):
+        """
+        Perform a derating analysis.
+
+        :param int node_id: the node (hardware) ID to derate.
+        :return: None
+        :rtype: None
+        """
+        self._attributes['reason'] = b""
+        self._attributes['overstress'] = False
+
+        def _do_check(overstress, stress_type):
+            """
+            Check the overstress condition and build a reason message.
+
+            :param dict overstress: the dict containing the results of the
+                overstress analysis.
+            :param str stress_type: the overstress type being checked.
+            :return: None
+            :rtype: None
+            """
+            if overstress['harsh'][0]:
+                self._attributes['overstress'] = True
+                self._attributes['reason'] = self._attributes['reason'] + (
+                    "Operating {0:s} is less than limit in a "
+                    "harsh environment.\n".format(
+                        str(stress_type))).encode('utf-8')
+            if overstress['harsh'][1]:
+                self._attributes['overstress'] = True
+                self._attributes['reason'] = self._attributes['reason'] + (
+                    "Operating {0:s} is greater than limit "
+                    "in a harsh environment.\n".format(
+                        str(stress_type))).encode('utf-8')
+            if overstress['mild'][0]:
+                self._attributes['overstress'] = True
+                self._attributes['reason'] = self._attributes['reason'] + (
+                    "Operating {0:s} is less than limit in a "
+                    "mild environment.\n".format(
+                        str(stress_type))).encode('utf-8')
+            if overstress['mild'][1]:
+                self._attributes['overstress'] = True
+                self._attributes['reason'] = self._attributes['reason'] + (
+                    "Operating {0:s} is greater than limit "
+                    "in a mild environment.\n".format(
+                        str(stress_type))).encode('utf-8')
+
+        # Retrieve all the attributes from all the RAMSTK data tables for the
+        # requested hardware item.  We need to build a comprehensive dict of
+        # attributes to pass to the various analysis methods/functions.
+        pub.sendMessage('request_get_all_hardware_attributes', node_id=node_id)
+
+        _limits = self.RAMSTK_CONFIGURATION.RAMSTK_STRESS_LIMITS[
+            self._attributes['category_id']]
+        _current_limits = {
+            'harsh': [0.0, _limits[0]],
+            'mild': [0.0, _limits[1]]
+        }
+        _power_limits = {'harsh': [0.0, _limits[2]], 'mild': [0.0, _limits[3]]}
+        _voltage_limits = {
+            'harsh': [0.0, _limits[4]],
+            'mild': [0.0, _limits[5]]
+        }
+        _deltat_limits = {
+            'harsh': [0.0, _limits[6]],
+            'mild': [0.0, _limits[7]]
+        }
+        _maxt_limits = {'harsh': [0.0, _limits[8]], 'mild': [0.0, _limits[9]]}
+
+        _overstress = Derating.check_overstress(
+            self._attributes['current_ratio'], _current_limits)
+        _do_check(_overstress, "current")
+        _overstress = Derating.check_overstress(
+            self._attributes['power_ratio'], _power_limits)
+        _do_check(_overstress, "power")
+        _overstress = Derating.check_overstress(
+            self._attributes['voltage_ratio'], _voltage_limits)
+        _do_check(_overstress, "voltage")
+
+        pub.sendMessage('succeed_derate_hardware', attributes=self._attributes)

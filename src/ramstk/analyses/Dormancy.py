@@ -82,7 +82,7 @@ def do_calculate_dormant_hazard_rate(
         subcategory_id,
         environment_active_id,
         environment_dormant_id,
-        hazard_rate_active,
+        hazard_rate_active
 ):
     r"""
     Calculate the dormant hazard rate for a hardware item.

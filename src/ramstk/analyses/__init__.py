@@ -2,4 +2,4 @@
 """The RAMSTK Analyses Package."""
 
 # RAMSTK Local Imports
-from . import Derating, Dormancy, Stress
+from . import Allocation, Derating, Dormancy, SimilarItem, Stress
