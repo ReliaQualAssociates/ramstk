@@ -10,3 +10,4 @@
 # RAMSTK Local Imports
 from .AnalysisManager import AnalysisManager as amHardware
 from .DataManager import DataManager as dmHardware
+from .MatrixManager import MatrixManager as mmHardware

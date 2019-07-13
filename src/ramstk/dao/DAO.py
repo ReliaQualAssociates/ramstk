@@ -16,8 +16,9 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 # RAMSTK Package Imports
 from ramstk.Exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
+    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric,
+    RAMSTKDesignMechanic, RAMSTKHardware, RAMSTKMatrix,
+    RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
 )
 
 # RAMSTK Local Imports
@@ -31,12 +32,12 @@ from .programdb import (
     RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKEnvironment,
     RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKGrowthTest,
     RAMSTKHazardAnalysis, RAMSTKIncident, RAMSTKIncidentAction,
-    RAMSTKIncidentDetail, RAMSTKMatrix, RAMSTKMechanism, RAMSTKMission,
-    RAMSTKMissionPhase, RAMSTKMode, RAMSTKOpLoad, RAMSTKOpStress,
-    RAMSTKProgramInfo, RAMSTKProgramStatus, RAMSTKRequirement, RAMSTKRevision,
-    RAMSTKSoftware, RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview,
-    RAMSTKSoftwareTest, RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData,
-    RAMSTKTest, RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
+    RAMSTKIncidentDetail, RAMSTKMechanism, RAMSTKMission, RAMSTKMissionPhase,
+    RAMSTKMode, RAMSTKOpLoad, RAMSTKOpStress, RAMSTKProgramInfo,
+    RAMSTKProgramStatus, RAMSTKRequirement, RAMSTKRevision, RAMSTKSoftware,
+    RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview, RAMSTKSoftwareTest,
+    RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest,
+    RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
 )
 from .RAMSTKCommonDB import (
     RAMSTK_CATEGORIES, RAMSTK_CONDITIONS, RAMSTK_FAILURE_MODES,
@@ -597,6 +598,7 @@ def do_create_test_database(database):
         _matrix.column_item_id = 1
         _matrix.row_id = _ckey
         _matrix.row_item_id = _dic_cols[_ckey]
+        _matrix.value = 2
         session.add(_matrix)
         _matrix = RAMSTKMatrix()
         _matrix.revision_id = _revision.revision_id

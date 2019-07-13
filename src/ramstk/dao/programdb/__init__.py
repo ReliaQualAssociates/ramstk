@@ -18,7 +18,6 @@ from .RAMSTKHazardAnalysis import RAMSTKHazardAnalysis
 from .RAMSTKIncident import RAMSTKIncident
 from .RAMSTKIncidentAction import RAMSTKIncidentAction
 from .RAMSTKIncidentDetail import RAMSTKIncidentDetail
-from .RAMSTKMatrix import RAMSTKMatrix
 from .RAMSTKMechanism import RAMSTKMechanism
 from .RAMSTKMission import RAMSTKMission
 from .RAMSTKMissionPhase import RAMSTKMissionPhase

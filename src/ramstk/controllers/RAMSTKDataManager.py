@@ -4,10 +4,15 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Controllers Package RAMSTKDataManager."""
+"""Controllers Package RAMSTKDataManager meta-class."""
 
 # Third Party Imports
+from pubsub import pub
+from sqlalchemy import and_
 from treelib import Tree, tree
+
+# RAMSTK Package Imports
+from ramstk.models.programdb import RAMSTKMatrix
 
 
 class RAMSTKDataManager():
@@ -35,6 +40,7 @@ class RAMSTKDataManager():
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._revision_id = 0
 
         # Initialize public dictionary attributes.
 
@@ -61,6 +67,10 @@ class RAMSTKDataManager():
                 tree.DuplicatedNodeIdError,
         ):
             pass
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_select_matrix, 'request_select_matrix')
+        pub.subscribe(self.do_update_matrix, 'request_update_matrix')
 
     def do_delete(self, node_id, table):
         """
@@ -97,6 +107,31 @@ class RAMSTKDataManager():
 
         return _entity
 
+    def do_select_matrix(self, matrix_type):
+        """
+        Retrieve all the values for the matrix.
+
+        :param str matrix_type: the type of the Matrix to select from.  This
+            selects the correct matrix from the dict of matrices managed by
+            this matrix manager.
+        :return: None
+        :rtype: None
+        """
+        _lst_matrix = []
+
+        # Retrieve the matrix values for the desired Matrix ID.
+        for _matrix in self.dao.session.query(RAMSTKMatrix).filter(
+                and_(
+                    RAMSTKMatrix.revision_id == self._revision_id,
+                    RAMSTKMatrix.matrix_type == matrix_type,
+                ), ).all():
+            _lst_matrix.append(
+                (_matrix.column_item_id, _matrix.row_item_id, _matrix.value))
+
+        pub.sendMessage('succeed_retrieve_matrix',
+                        matrix_type=matrix_type,
+                        matrix=_lst_matrix)
+
     def do_set_tree(self, module_tree):
         """
         Set the MODULE treelib Tree().
@@ -120,3 +155,46 @@ class RAMSTKDataManager():
         """
         for _node in self.tree.all_nodes():
             self.do_update(_node.identifier)
+
+    def do_update_matrix(self, revision_id, matrix_type, matrix):
+        """
+        Update the matrix values in the RAMSTK Program database.
+
+        :param int revision_id: the revisiond ID associated with the matrix to
+            update.
+        :param str matrix_type: the type (name) of the matrix to update.
+        :param matrix: the actual matrix whose values are being updated in the
+            database.
+        :type matrix: :class:`pandas.DataFrame`
+        :return: None
+        :rtype: None
+        """
+        _row_ids = list(matrix.index[1:])
+        _column_ids = list(matrix.columns[1:])
+        for _row_id in _row_ids:
+            for _col_id in _column_ids:
+                _entity = self.dao.session.query(RAMSTKMatrix).filter(
+                    and_(RAMSTKMatrix.revision_id == revision_id,
+                         RAMSTKMatrix.matrix_type == matrix_type,
+                         RAMSTKMatrix.column_item_id == int(_col_id),
+                         RAMSTKMatrix.row_item_id == int(_row_id))).first()
+
+                # If there is no corresponding record in RAMSTKMatrix, then
+                # create a new RAMSTKMatrix record and add it.
+                if _entity is None:
+                    _entity = RAMSTKMatrix()
+                    _entity.revision_id = revision_id
+                    _entity.matrix_type = matrix_type
+                    _entity.column_item_id = int(_col_id)
+                    _entity.row_item_id = int(_row_id)
+
+                _entity.value = int(matrix[_col_id][_row_id])
+
+                self.dao.session.add(_entity)
+
+        (_error_code, _error_msg) = self.dao.db_update()
+
+        if _error_code == 0:
+            pub.sendMessage('succeed_update_matrix')
+        else:
+            pub.sendMessage('fail_update_matrix', error_msg=_error_msg)

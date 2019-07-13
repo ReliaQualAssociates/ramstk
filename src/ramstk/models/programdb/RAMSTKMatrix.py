@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.RAMSTKMatrix.py is part of The RAMSTK Project
+#       ramstk.models.programdb.RAMSTKMatrix.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKMatrix Table Module."""
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""RAMSTKMatrix Data Table Module."""
 
 # Third Party Imports
 from sqlalchemy import Column, ForeignKey, Integer, String
@@ -50,6 +50,16 @@ class RAMSTKMatrix(RAMSTK_BASE):
     This table shares a Many-to-One relationship with ramstk_revision.
     """
 
+    __defaults__ = {
+        'matrix_id': 0,
+        'column_id': 0,
+        'column_item_id': 0,
+        'matrix_type': '',
+        'parent_id': 0,
+        'row_id': 0,
+        'row_item_id': 0,
+        'value': 0
+    }
     __tablename__ = 'ramstk_matrix'
     __table_args__ = {'extend_existing': True}
 
@@ -60,19 +70,30 @@ class RAMSTKMatrix(RAMSTK_BASE):
         primary_key=True,
         nullable=False,
     )
-    matrix_id = Column('fld_matrix_id', Integer, primary_key=True, default=0)
+    matrix_id = Column('fld_matrix_id',
+                       Integer,
+                       primary_key=True,
+                       default=__defaults__['matrix_id'])
 
-    column_id = Column('fld_column_id', Integer, default=0)
-    column_item_id = Column(
-        'fld_column_item_id', Integer, primary_key=True, default=0,
-    )
-    matrix_type = Column('fld_matrix_type', String(128), default='')
-    parent_id = Column('fld_parent_id', Integer, default=0)
-    row_id = Column('fld_row_id', Integer, default=0)
-    row_item_id = Column(
-        'fld_row_item_id', Integer, primary_key=True, default=0,
-    )
-    value = Column('fld_value', Integer, default=0)
+    column_id = Column('fld_column_id',
+                       Integer,
+                       default=__defaults__['column_id'])
+    column_item_id = Column('fld_column_item_id',
+                            Integer,
+                            primary_key=True,
+                            default=__defaults__['column_item_id'])
+    matrix_type = Column('fld_matrix_type',
+                         String(128),
+                         default=__defaults__['matrix_type'])
+    parent_id = Column('fld_parent_id',
+                       Integer,
+                       default=__defaults__['parent_id'])
+    row_id = Column('fld_row_id', Integer, default=__defaults__['row_id'])
+    row_item_id = Column('fld_row_item_id',
+                         Integer,
+                         primary_key=True,
+                         default=__defaults__['row_item_id'])
+    value = Column('fld_value', Integer, default=__defaults__['value'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='matrix')
@@ -99,33 +120,21 @@ class RAMSTKMatrix(RAMSTK_BASE):
 
         return _attributes
 
-    def set_attributes(self, values):
+    def set_attributes(self, attributes):
         """
-        Set the RAMSTKMatrix data model attributes.
+        Set the current values of the RAMSTKMatrix data model attributes.
 
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
+        .. note:: you should pop the revision ID and matrix ID entries from
+        the attributes dict before passing it to this method.
+
+        :param tuple attributes: tuple of values to assign to the instance
+            attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKMatrix {0:d} attributes.". \
-               format(self.matrix_id)
-
-        try:
-            self.column_id = int(none_to_default(values['column_id'], 0))
-            self.column_item_id = int(
-                none_to_default(values['column_item_id'], 0),
-            )
-            self.matrix_type = str(none_to_default(values['matrix_type'], ''))
-            self.parent_id = int(none_to_default(values['parent_id'], 0))
-            self.row_id = int(none_to_default(values['row_id'], 0))
-            self.row_item_id = int(none_to_default(values['row_item_id'], 0))
-            self.value = float(none_to_default(values['value'], 0.0))
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKMatrix.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

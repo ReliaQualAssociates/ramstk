@@ -13,7 +13,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers.hardware import amHardware, dmHardware
+from ramstk.controllers.hardware import amHardware, dmHardware, mmHardware
 from ramstk.dao import DAO
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
@@ -298,14 +298,14 @@ def test_data_manager_create(test_dao):
     assert isinstance(DUT, dmHardware)
     assert isinstance(DUT.tree, Tree)
     assert isinstance(DUT.dao, DAO)
-    assert DUT._tag == 'HardwareBoM'
+    assert DUT._tag == 'hardware'
     assert DUT._root == 0
 
 
 @pytest.mark.integration
 def test_do_select_all(test_dao):
     """do_select_all() should return a Tree() object populated with RAMSTKHardware instances on success."""
-    DUT = dmHardware(test_dao)
+    dmHardware(test_dao)
 
     def on_message(tree):
         assert isinstance(tree, Tree)
@@ -478,10 +478,7 @@ def test_do_insert_sibling_assembly(test_dao):
 
     pub.subscribe(on_message, 'succeed_insert_hardware')
 
-    pub.sendMessage('request_insert_hardware',
-                    revision_id=1,
-                    parent_id=1,
-                    part=0)
+    pub.sendMessage('request_insert_hardware', parent_id=1, part=0)
 
 
 @pytest.mark.integration
@@ -511,7 +508,7 @@ def test_do_insert_child_assembly(test_dao):
 
     pub.subscribe(on_message, 'succeed_insert_hardware')
 
-    assert DUT.do_insert(revision_id=1, parent_id=8, part=0) is None
+    assert DUT.do_insert(parent_id=8, part=0) is None
 
 
 @pytest.mark.integration
@@ -541,7 +538,7 @@ def test_do_insert_part(test_dao):
 
     pub.subscribe(on_message, 'succeed_insert_hardware')
 
-    assert DUT.do_insert(revision_id=1, parent_id=9, part=1) is None
+    assert DUT.do_insert(parent_id=9, part=1) is None
 
 
 @pytest.mark.integration
@@ -557,11 +554,11 @@ def test_do_insert_part_to_part(test_dao):
 
     pub.subscribe(on_message, 'fail_insert_hardware')
 
-    assert DUT.do_insert(revision_id=1, parent_id=10, part=1) is None
+    assert DUT.do_insert(parent_id=10, part=1) is None
 
 
 @pytest.mark.integration
-def test_do_update(test_dao):
+def test_do_update_data_manager(test_dao):
     """ do_update() should return a zero error code on success. """
     DUT = dmHardware(test_dao)
     DUT.do_select_all(revision_id=1)
@@ -643,7 +640,9 @@ def test_do_get_attributes_hardware(test_dao):
 
     pub.subscribe(on_message, 'succeed_get_hardware_attributes')
 
-    pub.sendMessage('request_get_hardware_attributes', node_id=10, table='hardware')
+    pub.sendMessage('request_get_hardware_attributes',
+                    node_id=10,
+                    table='hardware')
 
 
 @pytest.mark.integration
@@ -804,7 +803,7 @@ def test_do_calculate_assembly_zero_hazard_rates(test_dao, test_configuration):
     """do_calculate() should send the fail message when all hazard rates=0.0."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = amHardware(test_configuration)
+    amHardware(test_configuration)
 
     def on_message(error_msg):
         assert error_msg == ("Failed to calculate hazard rate and/or MTBF "
@@ -829,7 +828,7 @@ def test_do_calculate_assembly_zero_specified_mtbf(test_dao,
     """do_calculate() should send the fail message when the specified MTBF=0.0."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = amHardware(test_configuration)
+    amHardware(test_configuration)
 
     def on_message(error_msg):
         assert error_msg == ("Failed to calculate hazard rate and/or MTBF "
@@ -980,7 +979,7 @@ def test_do_calculate_part_zero_rated_current(test_dao, test_configuration):
     """do_calculate() should send the stress ratio calculation fail message when rated current is zero."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = amHardware(test_configuration)
+    amHardware(test_configuration)
 
     def on_message(error_msg):
         assert error_msg == ('Failed to calculate current ratio for hardware '
@@ -1000,7 +999,7 @@ def test_do_calculate_part_zero_rated_power(test_dao, test_configuration):
     """do_calculate() should send the stress ratio calculation fail message when rated power is zero."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = amHardware(test_configuration)
+    amHardware(test_configuration)
 
     def on_message(error_msg):
         assert error_msg == ('Failed to calculate power ratio for hardware '
@@ -1024,7 +1023,7 @@ def test_do_calculate_part_zero_rated_voltage(test_dao, test_configuration):
     """do_calculate() should send the stress ratio calculation fail message when rated voltage is zero."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = amHardware(test_configuration)
+    amHardware(test_configuration)
 
     def on_message(error_msg):
         assert error_msg == ('Failed to calculate voltage ratio for hardware '
@@ -1221,9 +1220,220 @@ def test_do_calculate_all_hardware(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_request_do_create_matrix(test_dao, test_configuration):
-    """ request_do_create_matrix should return None. """
-    DUT = dtcHardwareBoM(test_dao, test_configuration, test=True)
-    DUT.request_do_select_all(ATTRIBUTES)
+def test_matrix_manager_create(test_dao):
+    """__init__() should create an instance of the hardware matrix manager."""
+    DUT = mmHardware(test_dao)
 
-    assert DUT._request_do_create_matrix(1, 'hrdwr_vldtn') is None
+    assert isinstance(DUT, mmHardware)
+    assert isinstance(DUT.dao, DAO)
+    assert isinstance(DUT._column_tables, dict)
+    assert isinstance(DUT._col_tree, Tree)
+    assert isinstance(DUT._row_tree, Tree)
+    assert DUT.dic_matrices == {}
+    assert DUT.dic_column_hdrs == {}
+    assert DUT.dic_row_hdrs == {}
+    assert DUT.dic_matrices == {}
+    assert DUT.n_row == 1
+    assert DUT.n_col == 1
+
+
+@pytest.mark.integration
+def test_do_create_matrix(test_dao):
+    """_do_create() should create an instance of the hardware matrix manager."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = mmHardware(test_dao)
+    DUT._col_tree.create_node(tag='requirements',
+                              identifier=0,
+                              parent=None,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0001',
+                              identifier=1,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='FUNC-0001',
+                              identifier=2,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0002',
+                              identifier=3,
+                              parent=0,
+                              data=None)
+
+    pub.sendMessage('succeed_select_revision', revision_id=1)
+
+    assert DUT.do_select('hrdwr_rqrmnt', 1, 0) == 'REL-0001'
+    assert DUT.do_select('hrdwr_rqrmnt', 2, 0) == 'FUNC-0001'
+    assert DUT.do_select('hrdwr_rqrmnt', 3, 0) == 'REL-0002'
+    assert DUT.do_select('hrdwr_rqrmnt', 1, 1) == 2
+
+
+@pytest.mark.integration
+def test_do_delete_row(test_dao):
+    """do_delete_row() should remove the appropriate row from the hardware matrices."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = mmHardware(test_dao)
+    DUT._col_tree.create_node(tag='requirements',
+                              identifier=0,
+                              parent=None,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0001',
+                              identifier=1,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='FUNC-0001',
+                              identifier=2,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0002',
+                              identifier=3,
+                              parent=0,
+                              data=None)
+
+    pub.sendMessage('succeed_select_revision', revision_id=1)
+
+    assert DUT.do_select('hrdwr_rqrmnt', 1, 10) == 0
+
+    pub.sendMessage('succeed_delete_hardware', node_id=10)
+
+    with pytest.raises(KeyError):
+        DUT.do_select('hrdwr_rqrmnt', 1, 10)
+
+
+@pytest.mark.integration
+def test_do_delete_matrix_column(test_dao):
+    """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = mmHardware(test_dao)
+    DUT._col_tree.create_node(tag='requirements',
+                              identifier=0,
+                              parent=None,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0001',
+                              identifier=1,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='FUNC-0001',
+                              identifier=2,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0002',
+                              identifier=3,
+                              parent=0,
+                              data=None)
+
+    pub.sendMessage('succeed_select_revision', revision_id=1)
+
+    assert DUT.do_select('hrdwr_rqrmnt', 1, 1) == 2
+
+    pub.sendMessage('succeed_delete_requirement', node_id=1)
+
+    with pytest.raises(KeyError):
+        DUT.do_select('hrdwr_rqrmnt', 1, 1)
+
+@pytest.mark.integration
+def test_do_insert_row(test_dao):
+    """do_insert_row() should add a row to the end of each hardware matrix."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = mmHardware(test_dao)
+    DUT._col_tree.create_node(tag='requirements',
+                              identifier=0,
+                              parent=None,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0001',
+                              identifier=1,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='FUNC-0001',
+                              identifier=2,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0002',
+                              identifier=3,
+                              parent=0,
+                              data=None)
+
+    pub.sendMessage('succeed_select_revision', revision_id=1)
+
+    with pytest.raises(KeyError):
+        DUT.do_select('hrdwr_rqrmnt', 1, 11)
+
+    pub.sendMessage('succeed_insert_hardware', node_id=11)
+
+    assert DUT.do_select('hrdwr_rqrmnt', 1, 11) == 0
+
+
+@pytest.mark.integration
+def test_do_insert_column(test_dao):
+    """do_insert_column() should add a column to the right of the requested hardware matrix."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = mmHardware(test_dao)
+    DUT._col_tree.create_node(tag='requirements',
+                              identifier=0,
+                              parent=None,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0001',
+                              identifier=1,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='FUNC-0001',
+                              identifier=2,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0002',
+                              identifier=3,
+                              parent=0,
+                              data=None)
+
+    pub.sendMessage('succeed_select_revision', revision_id=1)
+
+    with pytest.raises(KeyError):
+        DUT.do_select('hrdwr_rqrmnt', 4, 10)
+
+    pub.sendMessage('succeed_insert_requirement', node_id=6)
+
+    assert DUT.do_select('hrdwr_rqrmnt', 6, 10) == 0
+
+
+@pytest.mark.integration
+def test_do_update_analysis_manager(test_dao):
+    """do_update() should ."""
+    DATAMGR = dmHardware(test_dao)
+    DATAMGR.do_select_all(revision_id=1)
+    DUT = mmHardware(test_dao)
+    DUT._col_tree.create_node(tag='requirements',
+                              identifier=0,
+                              parent=None,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0001',
+                              identifier=1,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='FUNC-0001',
+                              identifier=2,
+                              parent=0,
+                              data=None)
+    DUT._col_tree.create_node(tag='REL-0002',
+                              identifier=3,
+                              parent=0,
+                              data=None)
+
+    def on_message():
+        assert True
+
+    pub.subscribe(on_message, 'succeed_update_matrix')
+
+    pub.sendMessage('succeed_select_revision', revision_id=1)
+
+    DUT.dic_matrices['hrdwr_rqrmnt'][1][2] = 1
+    DUT.dic_matrices['hrdwr_rqrmnt'][1][3] = 2
+    DUT.dic_matrices['hrdwr_rqrmnt'][2][2] = 2
+    DUT.dic_matrices['hrdwr_rqrmnt'][3][5] = 1
+
+    pub.sendMessage('request_update_hardware_matrix',
+                    revision_id=1,
+                    matrix_type='hrdwr_rqrmnt')

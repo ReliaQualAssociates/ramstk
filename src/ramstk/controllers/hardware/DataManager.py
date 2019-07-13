@@ -27,7 +27,7 @@ class DataManager(RAMSTKDataManager):
     RAMSKTReliability data models.
     """
 
-    _tag = 'HardwareBoM'
+    _tag = 'hardware'
     _root = 0
 
     def __init__(self, dao, **kwargs):  # pylint: disable=unused-argument
@@ -115,7 +115,8 @@ class DataManager(RAMSTKDataManager):
             _attributes.update(
                 self.do_select(node_id, table=_table).get_attributes())
 
-        pub.sendMessage('succeed_get_all_hardware_attributes', attributes=_attributes)
+        pub.sendMessage('succeed_get_all_hardware_attributes',
+                        attributes=_attributes)
 
     def do_get_attributes(self, node_id, table):
         """
@@ -141,11 +142,10 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_hardware_tree', tree=self.tree)
 
-    def do_insert(self, revision_id, parent_id, part):  # pylint: disable=arguments-differ
+    def do_insert(self, parent_id, part):  # pylint: disable=arguments-differ
         """
         Add a new hardware item.
 
-        :param int revision_id: the revision ID to add the hardware item.
         :param int parent_id: the parent hardware item'd ID.
         :param int part: whether to insert a part (1) or assembly (0).
         :return: None
@@ -160,7 +160,7 @@ class DataManager(RAMSTKDataManager):
                                        "part."))
         else:
             try:
-                _hardware = RAMSTKHardware(revision_id=revision_id,
+                _hardware = RAMSTKHardware(revision_id=self._revision_id,
                                            parent_id=parent_id,
                                            part=part)
 
@@ -235,11 +235,13 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        self._revision_id = revision_id
+
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
         for _hardware in self.dao.session.query(RAMSTKHardware).filter(
-                RAMSTKHardware.revision_id == revision_id).all():
+                RAMSTKHardware.revision_id == self._revision_id).all():
 
             _design_e = self.dao.session.query(RAMSTKDesignElectric).filter(
                 RAMSTKDesignElectric.hardware_id ==

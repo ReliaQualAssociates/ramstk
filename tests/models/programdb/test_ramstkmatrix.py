@@ -5,14 +5,11 @@
 # All rights reserved.
 """Test class for testing the RAMSTKMatrix module algorithms and models."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.programdb.RAMSTKMatrix import RAMSTKMatrix
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+# RAMSTK Package Imports
+from ramstk.models.programdb.RAMSTKMatrix import RAMSTKMatrix
 
 ATTRIBUTES = {
     'revision_id': 1,
@@ -23,13 +20,13 @@ ATTRIBUTES = {
     'parent_id': 0,
     'row_id': 1,
     'row_item_id': 1,
-    'value': 0.0
+    'value': 0
 }
 
 
 @pytest.mark.integration
 def test_ramstkmatrix_create(test_dao):
-    """ __init__() should create an RAMSTKMatrix model. """
+    """__init__() should create an RAMSTKMatrix model."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKMatrix).first()
@@ -51,7 +48,7 @@ def test_ramstkmatrix_create(test_dao):
 
 @pytest.mark.integration
 def test_get_attributes(test_dao):
-    """ get_attributes() should return a tuple of attribute values. """
+    """get_attributes() should return a tuple of attribute values."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKMatrix).first()
@@ -61,31 +58,25 @@ def test_get_attributes(test_dao):
 
 @pytest.mark.integration
 def test_set_attributes(test_dao):
-    """ set_attributes() should return a zero error code on success. """
+    """set_attributes() should return a zero error code on success."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKMatrix).first()
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+    ATTRIBUTES.pop('revision_id')
+    ATTRIBUTES.pop('matrix_id')
+    ATTRIBUTES['value'] = None
 
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKMatrix {0:d} "
-                    "attributes.".format(DUT.matrix_id))
+    assert DUT.set_attributes(ATTRIBUTES) is None
+    assert DUT.get_attributes()['value'] == 0
 
 
 @pytest.mark.integration
-def test_set_attributes_mission_key(test_dao):
-    """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
+def test_set_attributes_unknown_attributes(test_dao):
+    """set_attributes() should raise an AttributeError when passed an unknown attribute."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
     DUT = _session.query(RAMSTKMatrix).first()
 
-    ATTRIBUTES.pop('matrix_type')
-
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'matrix_type' in attribute "
-                    "dictionary passed to RAMSTKMatrix.set_attributes().")
-
-    ATTRIBUTES['matrix_type'] = 'rqrmnt_hrdwr'
+    with pytest.raises(AttributeError):
+        DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
