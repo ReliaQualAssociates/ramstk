@@ -745,7 +745,7 @@ def test_do_calculate_active_hazard_rate_zero_input():
                              'voltage=0.000000, operating DC '
                              'voltage=0.000000, operating '
                              'temperature=45.000000, temperature '
-                             'rise=0.500000, rated maximum '
+                             'rise=10.000000, rated maximum '
                              'temperature=105.000000, feature '
                              'size=1.500000, surface area=1.500000, and item '
                              'weight=0.500000.')

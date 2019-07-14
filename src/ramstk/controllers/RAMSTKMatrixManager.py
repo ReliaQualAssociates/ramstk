@@ -19,19 +19,13 @@ class RAMSTKMatrixManager():
     The Matrix data model is an aggregate model of N x M cell data models.  The
     attributes of a Matrix are:
 
-    :ivar dict dic_row_hdrs: dictionary of the row heading text to use in
-                             views.  Key is the <MODULE> ID; values are the
-                             noun name to use in the row heading.
-    :ivar dict dic_column_hdrs: dictionary of the column heading text to use
-                                in views.  Key is the <MODULE> ID; values are
-                                the noun name to use in the column heading.
-    :ivar object _column_table: the RAMSTK Progam database table to use for the
-                                matrix columns.  This is an SQLAlchemy object.
     :ivar object _row_table: the RAMSTK Progam database table to use for the
-                             matrix rows.  This is an SQLAlchemy object.
-    :ivar dtf_matrix: the :class:`pd.DataFrame` storing the Matrix.
-    :ivar dao: the :class:`ramstk.dao.DAO` object used to communicate with the
-               RAMSTK Program database.
+        matrix rows.  This is an SQLAlchemy object.
+    :ivar list column_tables: a list of RAMSTK data table objects that
+        comprise the columns.  One table per matrix managed by an instance of
+        the matrix manager.
+    :ivar dict dic_matrices: the dictionary containing all the matrices managed
+        by an instance of the matrix manager.
     :ivar int n_row: the number of rows in the Matrix.
     :ivar int n_col: the number of columns in the Matrix.
 
@@ -61,13 +55,10 @@ class RAMSTKMatrixManager():
 
     _tag = 'matrix'
 
-    def __init__(self, dao, column_tables=None, row_table=None):
+    def __init__(self, column_tables=None, row_table=None):
         """
         Initialize a Matrix data model instance.
 
-        :param dao: the data access object for communicating with the RAMSTK
-            Program database.
-        :type dao: :class:`ramstk.dao.DAO.DAO`
         :param list column_tables: a list of RAMSTK data table objects that
             comprise the columns.  One table per matrix managed by this
             manager.
@@ -86,13 +77,10 @@ class RAMSTKMatrixManager():
 
         # Initialize public dictionary attributes.
         self.dic_matrices = {}
-        self.dic_column_hdrs = {}
-        self.dic_row_hdrs = {}
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
         self.n_row = 1
         self.n_col = 1
 

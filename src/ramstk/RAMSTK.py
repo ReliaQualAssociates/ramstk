@@ -18,6 +18,7 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 # RAMSTK Package Imports
+from ramstk.controllers.hardware import dmHardware
 from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
 from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
 from ramstk.dao.commondb.RAMSTKGroup import RAMSTKGroup
@@ -43,7 +44,6 @@ from ramstk.modules.exports import dtcExports
 from ramstk.modules.failure_definition import dtcFailureDefinition
 from ramstk.modules.fmea import dtcFMEA
 from ramstk.modules.function import dtcFunction
-from ramstk.modules.hardware import dtcHardwareBoM
 from ramstk.modules.hazops import dtcHazardAnalysis
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.options import dtcOptions
@@ -826,10 +826,8 @@ class RAMSTK():
                 self.RAMSTK_CONFIGURATION,
                 test=False,
             )
-            self.dic_controllers['hardware'] = dtcHardwareBoM(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
+            self.dic_controllers['hardware'] = dmHardware(
+                self.ramstk_model.program_dao
             )
             self.dic_controllers['validation'] = dtcValidation(
                 self.ramstk_model.program_dao,

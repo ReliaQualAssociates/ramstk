@@ -13,11 +13,12 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.dao.programdb import (
-    RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase,
+    RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
 )
+from ramstk.Exceptions import DataAccessError
 from ramstk.modules.usage import (
     dtcUsageProfile, dtmEnvironment, dtmMission,
-    dtmMissionPhase, dtmUsageProfile,
+    dtmMissionPhase, dtmUsageProfile
 )
 
 __author__ = 'Doyle Rowland'
@@ -141,17 +142,18 @@ def test_do_insert_non_existent_type(test_dao):
     DUT = dtmUsageProfile(test_dao, test=True)
     DUT.do_select_all(revision_id=1)
 
-    _error_code, _msg = DUT.do_insert(
-        entity_id=1, parent_id=0, level='scadamoosh',
-    )
+    with pytest.raises(DataAccessError):
+        _error_code, _msg = DUT.do_insert(
+            entity_id=1, parent_id=0, level='scadamoosh',
+        )
 
-    assert _error_code == 2005
-    assert _msg == (
-        "RAMSTK ERROR: Attempted to add an item to the Usage "
-        "Profile with an undefined indenture level.  Level "
-        "scadamoosh was requested.  Must be one of mission, "
-        "phase, or environment."
-    )
+    #assert _error_code == 2005
+    #assert _msg == (
+    #    "RAMSTK ERROR: Attempted to add an item to the Usage "
+    #    "Profile with an undefined indenture level.  Level "
+    #   "scadamoosh was requested.  Must be one of mission, "
+    #    "phase, or environment."
+    #)
 
 
 @pytest.mark.integration

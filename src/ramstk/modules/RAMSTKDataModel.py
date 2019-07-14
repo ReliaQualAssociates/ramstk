@@ -9,11 +9,6 @@
 # Third Party Imports
 from treelib import Tree, tree  # pylint: disable=E0401
 
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
-
 
 class RAMSTKDataModel():
     """
@@ -96,11 +91,15 @@ class RAMSTKDataModel():
         """
         Retrieve and build the RAMSTK Module tree.
 
-        :return: None
-        :rtype: None
+        :return: an SQLAlchemy session instance.
+        :rtype:
         """
-        for _node in self.tree.children(self.tree.root):
+        _root = self.tree.root
+        for _node in self.tree.children(_root):
             self.tree.remove_node(_node.identifier)
+
+        return self.dao.RAMSTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
     def do_insert(self, **kwargs):
         """

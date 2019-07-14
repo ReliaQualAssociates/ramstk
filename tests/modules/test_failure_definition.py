@@ -16,7 +16,7 @@ from treelib import Tree
 from ramstk.dao import DAO
 from ramstk.dao.programdb import RAMSTKFailureDefinition
 from ramstk.modules.failure_definition import (
-    dtcFailureDefinition, dtmFailureDefinition,
+    dtcFailureDefinition, dtmFailureDefinition
 )
 
 __author__ = 'Doyle Rowland'
@@ -209,7 +209,7 @@ def test_request_get_attributes(test_dao, test_configuration):
     _attributes = DUT.request_get_attributes(1)
 
     assert isinstance(_attributes, dict)
-    assert _attributes['definition'] == b'Test Failure Definition'
+    assert _attributes['definition'] == b'Failure Definition'
 
 
 @pytest.mark.integration

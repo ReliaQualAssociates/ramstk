@@ -10,8 +10,8 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.controllers.hardware import dmHardware
 from ramstk.modules import RAMSTKDataController
-from ramstk.modules.hardware import dtmHardwareBoM
 
 # RAMSTK Local Imports
 from . import dtmAllocation
@@ -48,7 +48,7 @@ class AllocationDataController(RAMSTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtm_hardware_bom = dtmHardwareBoM(dao, **kwargs)
+        self._dtm_hardware_bom = dmHardware(dao, **kwargs)
 
         # Initialize public dictionary attributes.
         self.dic_hardware_data = {}

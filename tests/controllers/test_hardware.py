@@ -717,7 +717,7 @@ def test_do_calculate_assembly_specified_hazard_rate(test_dao,
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
-        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert float(DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
         assert attributes['hazard_rate_type_id'] == 2
         assert attributes['hazard_rate_active'] == pytest.approx(3.1095e-06)
         assert attributes['hazard_rate_dormant'] == 2.3876e-08
@@ -768,7 +768,7 @@ def test_do_calculate_assembly_specified_mtbf(test_dao, test_configuration):
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
-        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert float(DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
         assert attributes['hazard_rate_type_id'] == 3
         assert attributes['hazard_rate_active'] == pytest.approx(
             3.50877193e-06)
@@ -856,7 +856,7 @@ def test_do_calculate_part_mil_hdbk_217f_parts_count(test_dao,
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
-        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert float(DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
         assert attributes['hazard_rate_type_id'] == 1
         assert attributes['hazard_rate_method_id'] == 1
         assert attributes['hazard_rate_active'] == pytest.approx(9.75e-09)
@@ -913,7 +913,7 @@ def test_do_calculate_part_mil_hdbk_217f_parts_stress(test_dao,
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
-        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert float(DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
         assert attributes['hazard_rate_type_id'] == 1
         assert attributes['hazard_rate_method_id'] == 2
         assert attributes['voltage_ratio'] == 0.5344
@@ -1049,7 +1049,7 @@ def test_do_derating_analysis_current_stress(test_dao, test_configuration):
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
-        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert float(DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
         assert attributes['overstress']
         assert attributes['reason'] == (b'Operating current is greater than '
                                         b'limit in a harsh environment.\n'
@@ -1075,7 +1075,7 @@ def test_do_derating_analysis_power_stress(test_dao, test_configuration):
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
-        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert float(DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
         assert attributes['overstress']
         assert attributes['reason'] == (b'Operating power is greater than '
                                         b'limit in a harsh environment.\n'
@@ -1101,7 +1101,7 @@ def test_do_derating_analysis_voltage_stress(test_dao, test_configuration):
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
-        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert float(DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
         assert attributes['overstress']
         assert attributes['reason'] == (b'Operating voltage is greater than '
                                         b'limit in a harsh environment.\n'
@@ -1127,7 +1127,7 @@ def test_do_derating_analysis_no_overstress(test_dao, test_configuration):
     DUT = amHardware(test_configuration)
 
     def on_message(attributes):
-        assert DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER == '1000000.0'
+        assert float(DUT.RAMSTK_CONFIGURATION.RAMSTK_HR_MULTIPLIER) == 1000000.0
         assert not attributes['overstress']
         assert attributes['reason'] == b''
 
@@ -1220,18 +1220,14 @@ def test_do_calculate_all_hardware(test_dao, test_configuration):
 
 
 @pytest.mark.integration
-def test_matrix_manager_create(test_dao):
+def test_matrix_manager_create():
     """__init__() should create an instance of the hardware matrix manager."""
-    DUT = mmHardware(test_dao)
+    DUT = mmHardware()
 
     assert isinstance(DUT, mmHardware)
-    assert isinstance(DUT.dao, DAO)
     assert isinstance(DUT._column_tables, dict)
     assert isinstance(DUT._col_tree, Tree)
     assert isinstance(DUT._row_tree, Tree)
-    assert DUT.dic_matrices == {}
-    assert DUT.dic_column_hdrs == {}
-    assert DUT.dic_row_hdrs == {}
     assert DUT.dic_matrices == {}
     assert DUT.n_row == 1
     assert DUT.n_col == 1
@@ -1242,7 +1238,7 @@ def test_do_create_matrix(test_dao):
     """_do_create() should create an instance of the hardware matrix manager."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = mmHardware(test_dao)
+    DUT = mmHardware()
     DUT._col_tree.create_node(tag='requirements',
                               identifier=0,
                               parent=None,
@@ -1273,7 +1269,7 @@ def test_do_delete_row(test_dao):
     """do_delete_row() should remove the appropriate row from the hardware matrices."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = mmHardware(test_dao)
+    DUT = mmHardware()
     DUT._col_tree.create_node(tag='requirements',
                               identifier=0,
                               parent=None,
@@ -1306,7 +1302,7 @@ def test_do_delete_matrix_column(test_dao):
     """do_delete_column() should remove the appropriate column from the requested hardware matrix."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = mmHardware(test_dao)
+    DUT = mmHardware()
     DUT._col_tree.create_node(tag='requirements',
                               identifier=0,
                               parent=None,
@@ -1338,7 +1334,7 @@ def test_do_insert_row(test_dao):
     """do_insert_row() should add a row to the end of each hardware matrix."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = mmHardware(test_dao)
+    DUT = mmHardware()
     DUT._col_tree.create_node(tag='requirements',
                               identifier=0,
                               parent=None,
@@ -1371,7 +1367,7 @@ def test_do_insert_column(test_dao):
     """do_insert_column() should add a column to the right of the requested hardware matrix."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = mmHardware(test_dao)
+    DUT = mmHardware()
     DUT._col_tree.create_node(tag='requirements',
                               identifier=0,
                               parent=None,
@@ -1404,7 +1400,7 @@ def test_do_update_analysis_manager(test_dao):
     """do_update() should ."""
     DATAMGR = dmHardware(test_dao)
     DATAMGR.do_select_all(revision_id=1)
-    DUT = mmHardware(test_dao)
+    DUT = mmHardware()
     DUT._col_tree.create_node(tag='requirements',
                               identifier=0,
                               parent=None,

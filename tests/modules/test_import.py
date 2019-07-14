@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
 #
 #       ramstk.tests.modules.test_imports.py is part of The RAMSTK Project
@@ -7,18 +8,17 @@
 """Test class for testing the Imports class."""
 #pylint: disable=protected-access
 
+# Standard Library Imports
 from collections import OrderedDict
-import pandas as pd
 
+# Third Party Imports
+import pandas as pd
 import pytest
 
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.modules.imports import dtmImports, dtcImports
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2018 Doyle "weibullguy" Rowland'
+from ramstk.Exceptions import DataAccessError
+from ramstk.modules.imports import dtcImports, dtmImports
 
 
 @pytest.mark.integration
@@ -495,7 +495,8 @@ def test_request_do_insert_function_primary_key_violation(
             'Function',
             list(DUT._dtm_data_model._input_data)[_idx], _key)
 
-    _count, _error_code, _msg = DUT.request_do_insert('Function')
+    with pytest.raises(DataAccessError):
+        _count, _error_code, _msg = DUT.request_do_insert('Function')
 
-    assert _count == 0
-    assert _error_code == 3
+    #assert _count == 0
+    #assert _error_code == 3

@@ -27,17 +27,10 @@ class MatrixManager(RAMSTKMatrixManager):
         the hardware item being analyzed.
     """
 
-    def __init__(self, dao, **kwargs):  # pylint: disable=unused-argument
-        """
-        Initialize an instance of the hardware matrix manager.
-
-        :param dao: the data access object for communicating with the RAMSTK
-            Program database.
-        :type dao: :class:`ramstk.dao.DAO.DAO`
-        """
+    def __init__(self, **kwargs):  # pylint: disable=unused-argument
+        """Initialize an instance of the hardware matrix manager."""
         RAMSTKMatrixManager.__init__(
             self,
-            dao,
             column_tables={
                 'hrdwr_rqrmnt':
                 [RAMSTKRequirement, 'requirement_id', 'requirement_code'],
