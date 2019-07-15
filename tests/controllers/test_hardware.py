@@ -1607,7 +1607,7 @@ class TestAllocation():
         DUT._attributes['hazard_rate_goal'] = 0.00002681
         DUT._attributes['reliability_goal'] = 0.9995
 
-        _goal = DUT.do_get_allocation_goal(6)
+        _goal = DUT.do_get_allocation_goal()
 
         if method_id in [2, 4]:
             assert _goal == 0.00002681
