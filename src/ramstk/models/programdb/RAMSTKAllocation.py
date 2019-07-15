@@ -32,7 +32,7 @@ class RAMSTKAllocation(RAMSTK_BASE):
         'hazard_rate_goal': 0.0,
         'included': 1,
         'int_factor': 1,
-        'method_id': 1,
+        'allocation_method_id': 1,
         'mission_time': 100.0,
         'mtbf_alloc': 0.0,
         'mtbf_goal': 0.0,
@@ -87,9 +87,9 @@ class RAMSTKAllocation(RAMSTK_BASE):
     int_factor = Column('fld_int_factor',
                         Integer,
                         default=__defaults__['int_factor'])
-    method_id = Column('fld_method_id',
-                       Integer,
-                       default=__defaults__['method_id'])
+    allocation_method_id = Column('fld_allocation_method_id',
+                                  Integer,
+                                  default=__defaults__['allocation_method_id'])
     mission_time = Column('fld_mission_time',
                           Float,
                           default=__defaults__['mission_time'])
@@ -155,7 +155,7 @@ class RAMSTKAllocation(RAMSTK_BASE):
             'hazard_rate_goal': self.hazard_rate_goal,
             'included': self.included,
             'int_factor': self.int_factor,
-            'method_id': self.method_id,
+            'allocation_method_id': self.allocation_method_id,
             'mission_time': self.mission_time,
             'mtbf_alloc': self.mtbf_alloc,
             'mtbf_goal': self.mtbf_goal,

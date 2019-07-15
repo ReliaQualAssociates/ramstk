@@ -23,7 +23,7 @@ ATTRIBUTES = {
     'hazard_rate_goal': 0.0,
     'included': 1,
     'int_factor': 3,
-    'method_id': 1,
+    'allocation_method_id': 1,
     'mission_time': 100.0,
     'mtbf_alloc': 0.0,
     'mtbf_goal': 0.0,
@@ -389,7 +389,7 @@ def test_calculate_foo_string_input():
 @pytest.mark.parametrize("method_id", [1, 2, 3, 4, 5])
 def test_do_allocate_reliability(method_id):
     """do_allocate_reliability() should return the Allocation attributes dict with updated values on success."""
-    ATTRIBUTES['method_id'] = method_id
+    ATTRIBUTES['allocation_method_id'] = method_id
     ATTRIBUTES['system_hr'] = 0.003418
     ATTRIBUTES['hazard_rate'] = 0.00004328
     ATTRIBUTES['mission_time'] = 100.0
@@ -405,21 +405,21 @@ def test_do_allocate_reliability(method_id):
             3: 299849.97498753,
             4: 3343.51171082,
             5: 0.0
-        }[attributes['method_id']])
+        }[attributes['allocation_method_id']])
         assert attributes['hazard_rate_alloc'] == pytest.approx({
             1: 1.95029305e-05,
             2: 0.00089808218,
             3: 3.33500111e-06,
             4: 0.00029908673,
             5: 0.0
-        }[attributes['method_id']])
+        }[attributes['allocation_method_id']])
         assert attributes['reliability_alloc'] == pytest.approx({
             1: 0.99805161,
             2: 0.91410648,
             3: 0.99966656,
             4: 0.97053417,
             5: 1.0
-        }[attributes['method_id']])
+        }[attributes['allocation_method_id']])
 
     pub.subscribe(on_message, 'succeed_allocate_reliability')
 
@@ -555,7 +555,7 @@ def test_calculate_goals_zero_mtbf_goal():
 @pytest.mark.parametrize("method_id", [1, 2, 3, 4])
 def test_get_allocation_goal(method_id):
     """get_allocation_goal() should return the proper allocation goal (hazard rate or reliability) on success."""
-    ATTRIBUTES['method_id'] = method_id
+    ATTRIBUTES['allocation_method_id'] = method_id
     ATTRIBUTES['hazard_rate_goal'] = 0.0058621
     ATTRIBUTES['mtbf_goal'] = 175.0
     ATTRIBUTES['reliability_goal'] = 0.99995

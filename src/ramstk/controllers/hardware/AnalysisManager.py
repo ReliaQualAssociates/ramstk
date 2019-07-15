@@ -14,7 +14,7 @@ from math import exp
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.analyses import Derating, Dormancy, Stress
+from ramstk.analyses import Allocation, Derating, Dormancy, Stress
 from ramstk.analyses.milhdbk217f import MilHdbk217f
 
 
@@ -62,6 +62,12 @@ class AnalysisManager():
         pub.subscribe(self._request_do_calculate_all_hardware,
                       'request_calculate_all_hardware')
         pub.subscribe(self.do_derating_analysis, 'request_derate_hardware')
+        pub.subscribe(self.do_calculate_allocation_goals,
+                      'request_calculate_goals')
+        pub.subscribe(self.do_calculate_allocation,
+                      'request_allocate_reliability')
+        pub.subscribe(self._on_allocate_reliability,
+                      'succeed_allocate_reliability')
 
     def _do_calculate_cost_metrics(self):
         """
@@ -239,6 +245,25 @@ class AnalysisManager():
                            "zero.").format(str(
                                self._attributes['hardware_id'])))
 
+    def _on_allocate_reliability(self, attributes):
+        """
+        Respond to a successful reliability allocation message.
+
+        :param dict attributes: the aggregate attributes dict updated with
+            predicted values.
+        :return: None
+        :rtype: None
+        """
+        _attributes = self._tree.get_node(attributes['hardware_id']).data['allocation'].get_attributes()
+
+        _attributes['hazard_rate_alloc'] = attributes['hazard_rate_alloc']
+        _attributes['mtbf_alloc'] = attributes['mtbf_alloc']
+        _attributes['reliability_alloc'] = attributes['reliability_alloc']
+
+        _attributes.pop('revision_id')
+        _attributes.pop('hardware_id')
+        self._tree.get_node(attributes['hardware_id']).data['allocation'].set_attributes(_attributes)
+
     def _on_get_all_attributes(self, attributes):
         """
         Request all the attributes for the hardware associated with node ID.
@@ -373,6 +398,97 @@ class AnalysisManager():
             self._attributes['total_power_dissipation'] = _cum_results[5]
 
         return _cum_results
+
+    def _do_calculate_agree_total_elements(self, node_id):
+        """
+        Calculate the total number of elements for the AGREE method.
+
+        :param int node_id: the node (hardware) ID of the hardware item whose
+            goal is to be allocated.
+        :return: _n_elements; the total number of sub-elements under the
+            hardware item to be allocated.
+        :rtype: int
+        """
+        _n_elements = 0
+        for _node in self._tree.children(node_id):
+            _attributes = _node.data['allocation'].get_attributes()
+            _n_elements += _attributes['n_sub_elements']
+
+        return _n_elements
+
+    def _do_calculate_foo_cumulative_weight(self, node_id):
+        """
+        Calculate the cumulative weight for the FOO method.
+
+        :param int node_id: the node (hardware) ID of the hardware item whose
+            goal is to be allocated.
+        :return: _cum_weight; the cumulative weighting factor for the hardware
+            item to be allocated.
+        :rtype: int
+        """
+        _cum_weight = 0
+        for _node in self._tree.children(node_id):
+            _attributes = _node.data['allocation'].get_attributes()
+            _attributes['weight_factor'] = (_attributes['int_factor']
+                                            * _attributes['soa_factor']
+                                            * _attributes['op_time_factor']
+                                            * _attributes['env_factor'])
+            _cum_weight += _attributes['weight_factor']
+
+        return _cum_weight
+
+    def do_calculate_allocation(self, node_id):
+        """
+        Allocate a parent reliability goal to it's children.
+
+        :param int node_id: the node (hardware) ID of the hardware item whose
+            goal is to be allocated.
+        :return: None
+        :rtype: None
+        """
+        self._attributes['n_sub_systems'] = len(self._tree.children(node_id))
+        for _node in self._tree.children(node_id):
+            _attributes = _node.data['allocation'].get_attributes()
+            _method_old = _attributes['allocation_method_id']
+            _mission_time_old = _attributes['mission_time']
+            _attributes['allocation_method_id'] = self._attributes['allocation_method_id']
+            _attributes['mission_time'] = self._attributes['mission_time']
+            if self._attributes['allocation_method_id'] == 1:
+                self._attributes[
+                    'n_sub_systems'] = self._do_calculate_agree_total_elements(
+                        node_id)
+                _attributes['n_sub_systems'] = self._attributes['n_sub_systems']
+                _parent_goal = self._attributes['reliability_goal']
+                _cum_weight = 0.0
+            elif self._attributes['allocation_method_id'] == 2:
+                _attributes['weight_factor'] = (
+                    _node.data['reliability'].get_attributes()['hazard_rate_active'] / self._tree.children(
+                        0)[0].data['reliability'].get_attributes()['hazard_rate_active'])
+                _parent_goal = self._attributes['hazard_rate_goal']
+                _cum_weight = 0.0
+            elif self._attributes['allocation_method_id'] == 3:
+                _attributes['weight_factor'] = (
+                    1.0 / self._attributes['n_sub_systems'])
+                _parent_goal = self._attributes['reliability_goal']
+                _cum_weight = 0.0
+            elif self._attributes['allocation_method_id'] == 4:
+                _parent_goal = self._attributes['hazard_rate_goal']
+                _cum_weight = self._do_calculate_foo_cumulative_weight(node_id)
+
+            Allocation.do_allocate_reliability(_parent_goal, _cum_weight,
+                                               **_attributes)
+
+            _attributes['allocation_method_id'] = _method_old
+            _attributes['mission_time'] = _mission_time_old
+
+    def do_calculate_allocation_goals(self):
+        """
+        Calculate the allocation goals.
+
+        :return: None
+        :rtype: None
+        """
+        self._attributes = Allocation.do_calculate_goals(**self._attributes)
 
     def do_calculate_hardware(self, node_id, system=False):
         """
@@ -519,3 +635,12 @@ class AnalysisManager():
         _do_check(_overstress, "voltage")
 
         pub.sendMessage('succeed_derate_hardware', attributes=self._attributes)
+
+    def do_get_allocation_goal(self):
+        """
+        Retrieve the proper allocation goal.
+
+        :return: _goal; the allocation goal measure.
+        :rtype: float
+        """
+        return Allocation.get_allocation_goal(**self._attributes)

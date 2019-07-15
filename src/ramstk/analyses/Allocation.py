@@ -18,8 +18,17 @@ def _calculate_agree_apportionment(mission_time, duty_cycle, weight_factor,
     """
     Perform an AGREE apportionment of a reliability requirement.
 
-    :param int n_sub_systems: the number of immediate children comprising the
-        parent hardware item.
+    .. note:: the AGREE method uses MTBF as the parent goal.
+
+    :param float mission_time: the mission time for the entire system.
+    :param float duty_cycle: the duty cycle of the sub-system currently being
+        allocated.
+    :param float weight_factor: the importance factor for the sub-system
+        currently being allocated.
+    :param int n_sub_systems: the total number of sub-elements in all the
+        sub-systems comprising the hardware item to be allocated.
+    :param int n_sub_elements: the number of sub-elements in the sub-system
+        currently being allocated.
     :param float parent_goal: the reliability goal of the parent hardware
         item.
     :return: (_mtbf_alloc, _hazard_rate_alloc, _reliability_alloc); the
@@ -31,7 +40,7 @@ def _calculate_agree_apportionment(mission_time, duty_cycle, weight_factor,
         _time_i = mission_time * duty_cycle / 100.0
 
         _mtbf_alloc = ((n_sub_systems * weight_factor * _time_i) /
-                       (-1.0 * n_sub_elements * log(parent_goal)))
+                       (n_sub_elements * (-log(parent_goal))))
         _hazard_rate_alloc = 1.0 / _mtbf_alloc
         _reliability_alloc = exp(-1.0 * _hazard_rate_alloc * mission_time, )
 
@@ -69,6 +78,7 @@ def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
     :rtype: tuple
     :raise: TypeError if passed a string for any argument.
     """
+    print(mission_time, weight_factor, parent_goal)
     try:
         _hazard_rate_alloc = weight_factor * parent_goal
         _mtbf_alloc = 1.0 / _hazard_rate_alloc
@@ -257,23 +267,23 @@ def do_allocate_reliability(parent_goal, cumulative_weight, **attributes):
     :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
-    if attributes['method_id'] == 1:
+    if attributes['allocation_method_id'] == 1:
         (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
          attributes['reliability_alloc']) = _calculate_agree_apportionment(
              attributes['mission_time'], attributes['duty_cycle'],
              attributes['weight_factor'], attributes['n_sub_systems'],
              attributes['n_sub_elements'], parent_goal)
-    elif attributes['method_id'] == 2:
+    elif attributes['allocation_method_id'] == 2:
         (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
          attributes['reliability_alloc']) = _calculate_arinc_apportionment(
              attributes['mission_time'], attributes['weight_factor'],
              parent_goal)
-    elif attributes['method_id'] == 3:
+    elif attributes['allocation_method_id'] == 3:
         (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
          attributes['reliability_alloc']) = _calculate_equal_apportionment(
              attributes['mission_time'], attributes['weight_factor'],
              parent_goal)
-    elif attributes['method_id'] == 4:
+    elif attributes['allocation_method_id'] == 4:
         _factors = {
             'intricacy': attributes['int_factor'],
             'state_of_art': attributes['soa_factor'],
@@ -286,8 +296,8 @@ def do_allocate_reliability(parent_goal, cumulative_weight, **attributes):
              _factors, attributes['mission_time'], cumulative_weight,
              parent_goal)
     else:
-        attributes['mtbf_alloc'] = 0.0
         attributes['hazard_rate_alloc'] = 0.0
+        attributes['mtbf_alloc'] = 0.0
         attributes['reliability_alloc'] = 1.0
 
     pub.sendMessage('succeed_allocate_reliability', attributes=attributes)
@@ -331,10 +341,10 @@ def get_allocation_goal(**attributes):
     :param dict attributes: the selected item's Allocation attributes dict.
     :return: _goal
     :rtype: float
-    :raise: KeyError if the passed attributes dict idoesn't contain the
-        method_id, hazard_rate_goal, and/or reliability_goal key.
+    :raise: KeyError if the passed attributes dict doesn't contain the
+        allocation_method_id, hazard_rate_goal, and/or reliability_goal key.
     """
-    if attributes['method_id'] in [2, 4]:  # ARINC or FOO.
+    if attributes['allocation_method_id'] in [2, 4]:  # ARINC or FOO.
         _goal = attributes['hazard_rate_goal']
     else:
         _goal = attributes['reliability_goal']

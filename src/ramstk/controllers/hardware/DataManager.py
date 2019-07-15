@@ -13,8 +13,8 @@ from pubsub import pub
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.Exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKNSWC, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability
+    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric,
+    RAMSTKDesignMechanic, RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability
 )
 
 
@@ -110,7 +110,7 @@ class DataManager(RAMSTKDataManager):
         _attributes = {}
         for _table in [
                 'hardware', 'design_electric', 'design_mechanic',
-                'mil_hdbk_217f', 'nswc', 'reliability'
+                'mil_hdbk_217f', 'nswc', 'reliability', 'allocation'
         ]:
             _attributes.update(
                 self.do_select(node_id, table=_table).get_attributes())
@@ -173,9 +173,13 @@ class DataManager(RAMSTKDataManager):
                 _milhdbkf = RAMSTKMilHdbkF(hardware_id=self.last_id)
                 _nswc = RAMSTKNSWC(hardware_id=self.last_id)
                 _reliability = RAMSTKReliability(hardware_id=self.last_id)
+                _allocation = RAMSTKAllocation(revision_id=self._revision_id,
+                                               hardware_id=self.last_id,
+                                               parent_id=parent_id)
 
                 _error_code, _msg = self.dao.db_add(
-                    [_design_e, _design_m, _milhdbkf, _nswc, _reliability],
+                    [_design_e, _design_m, _milhdbkf, _nswc, _reliability,
+                     _allocation],
                     None)
 
                 _data_package = {
@@ -184,7 +188,8 @@ class DataManager(RAMSTKDataManager):
                     'design_mechanic': _design_m,
                     'mil_hdbk_217f': _milhdbkf,
                     'nswc': _nswc,
-                    'reliability': _reliability
+                    'reliability': _reliability,
+                    'allocation': _allocation
                 }
                 self.tree.create_node(tag=_hardware.comp_ref_des,
                                       identifier=_hardware.hardware_id,
@@ -219,9 +224,12 @@ class DataManager(RAMSTKDataManager):
             _node.data[
                 'hardware'].comp_ref_des = _p_comp_ref_des + ':' + _node.data[
                     'hardware'].ref_des
+            _node.tag = _p_comp_ref_des + ':' + _node.data[
+                'hardware'].ref_des
         else:
             _node.data['hardware'].comp_ref_des = _node.data[
                 'hardware'].ref_des
+            _node.tag = _node.data['hardware'].ref_des
 
         # Now make the composite reference designator for all the child nodes.
         for _child_node in self.tree.children(node_id):
@@ -261,13 +269,18 @@ class DataManager(RAMSTKDataManager):
                 RAMSTKReliability.hardware_id ==
                 _hardware.hardware_id).first()
 
+            _allocation = self.dao.session.query(RAMSTKAllocation).filter(
+                RAMSTKAllocation.hardware_id ==
+                _hardware.hardware_id).first()
+
             _data_package = {
                 'hardware': _hardware,
                 'design_electric': _design_e,
                 'design_mechanic': _design_m,
                 'mil_hdbk_217f': _milhdbkf,
                 'nswc': _nswc,
-                'reliability': _reliability
+                'reliability': _reliability,
+                'allocation': _allocation
             }
 
             self.tree.create_node(tag=_hardware.comp_ref_des,
@@ -308,14 +321,14 @@ class DataManager(RAMSTKDataManager):
         """
         for _table in [
                 'hardware', 'design_electric', 'design_mechanic',
-                'mil_hdbk_217f', 'nswc', 'reliability'
+                'mil_hdbk_217f', 'nswc', 'reliability', 'allocation'
         ]:
             _attributes = self.do_select(node_id,
                                          table=_table).get_attributes()
             if key in _attributes:
                 _attributes[key] = value
 
-                if _table == 'hardware':
+                if _table in ['hardware', 'allocation']:
                     _attributes.pop('revision_id')
                 _attributes.pop('hardware_id')
 
@@ -341,7 +354,9 @@ class DataManager(RAMSTKDataManager):
             self.dao.session.add(self.tree.get_node(node_id).data['nswc'])
             self.dao.session.add(
                 self.tree.get_node(node_id).data['reliability'])
-            _error_code, _error_msg = self.dao.db_update(None)
+            self.dao.session.add(
+                self.tree.get_node(node_id).data['allocation'])
+            _error_code, _error_msg = self.dao.db_update()
 
             if _error_code == 0:
                 pub.sendMessage('succeed_update_hardware', node_id=node_id)
