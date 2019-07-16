@@ -39,7 +39,6 @@ from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
-from ramstk.modules.allocation import dtcAllocation
 from ramstk.modules.exports import dtcExports
 from ramstk.modules.failure_definition import dtcFailureDefinition
 from ramstk.modules.fmea import dtcFMEA
@@ -586,7 +585,6 @@ class RAMSTK():
     :ivar dict dic_controllers: dictionary of data controllers available in the
         running instance of RAMSTK. Keys are:
 
-            'allocation'
             'function'
             'hardware'
             'revision'
@@ -668,7 +666,6 @@ class RAMSTK():
         # Initialize public dictionary instance attributes.
         self.dic_controllers = {
             'options': None,
-            'allocation': None,
             'definition': None,
             'function': None,
             'revision': None,
@@ -851,11 +848,6 @@ class RAMSTK():
                 functional=True,
             )
             self.dic_controllers['stakeholder'] = dtcStakeholder(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
-            )
-            self.dic_controllers['allocation'] = dtcAllocation(
                 self.ramstk_model.program_dao,
                 self.RAMSTK_CONFIGURATION,
                 test=False,
