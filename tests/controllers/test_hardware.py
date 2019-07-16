@@ -1626,11 +1626,11 @@ class TestAllocation():
             if attributes['hardware_id'] == 6:
                 assert attributes['hazard_rate_alloc'] == pytest.approx(0.0017327054)
                 assert attributes['mtbf_alloc'] == pytest.approx(577.1321514)
-                assert attributes['reliability_alloc'] == pytest.approx(0.84091008)
+                assert attributes['reliability_alloc'] == pytest.approx(0.87056188)
             elif attributes['hardware_id'] == 7:
                 assert attributes['hazard_rate_alloc'] == pytest.approx(0.0025939917)
                 assert attributes['mtbf_alloc'] == pytest.approx(385.50624175)
-                assert attributes['reliability_alloc'] == pytest.approx(0.77151499)
+                assert attributes['reliability_alloc'] == pytest.approx(0.79178986)
 
         pub.subscribe(on_message, 'succeed_allocate_reliability')
 

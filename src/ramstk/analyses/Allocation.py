@@ -13,16 +13,14 @@ from math import exp, log
 from pubsub import pub
 
 
-def _calculate_agree_apportionment(mission_time, duty_cycle, weight_factor,
+def _calculate_agree_apportionment(time_i, weight_factor,
                                    n_sub_systems, n_sub_elements, parent_goal):
     """
     Perform an AGREE apportionment of a reliability requirement.
 
     .. note:: the AGREE method uses MTBF as the parent goal.
 
-    :param float mission_time: the mission time for the entire system.
-    :param float duty_cycle: the duty cycle of the sub-system currently being
-        allocated.
+    :param float time_i: the mission time for the subsystem being calculated.
     :param float weight_factor: the importance factor for the sub-system
         currently being allocated.
     :param int n_sub_systems: the total number of sub-elements in all the
@@ -37,12 +35,10 @@ def _calculate_agree_apportionment(mission_time, duty_cycle, weight_factor,
     :raise: TypeError if passed a string for any argument.
     """
     try:
-        _time_i = mission_time * duty_cycle / 100.0
-
-        _mtbf_alloc = ((n_sub_systems * weight_factor * _time_i) /
+        _mtbf_alloc = ((n_sub_systems * weight_factor * time_i) /
                        (n_sub_elements * (-log(parent_goal))))
         _hazard_rate_alloc = 1.0 / _mtbf_alloc
-        _reliability_alloc = exp(-1.0 * _hazard_rate_alloc * mission_time, )
+        _reliability_alloc = exp(-1.0 * _hazard_rate_alloc * time_i)
 
         return _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc
     except ValueError:
@@ -56,12 +52,12 @@ def _calculate_agree_apportionment(mission_time, duty_cycle, weight_factor,
         pub.sendMessage('fail_allocate_reliability',
                         error_msg=("Failed to apportion reliability using the "
                                    "AGREE method; one or more inputs had a "
-                                   "value of 0.0. Mission time={0:f}, duty "
-                                   "cycle={1:f}, weight factor={2:f}, # of "
-                                   "subsystems={3:d}, # of "
-                                   "subelements={4:d}.").format(
-                                       mission_time, duty_cycle, weight_factor,
-                                       n_sub_systems, n_sub_elements))
+                                   "value of 0.0.  Subsystem mission "
+                                   "time={0:f}, weight factor={1:f}, # of "
+                                   "subsystems={2:d}, # of "
+                                   "subelements={3:d}.").format(
+                                       time_i, weight_factor, n_sub_systems,
+                                       n_sub_elements))
 
 
 def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
@@ -78,7 +74,6 @@ def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
     :rtype: tuple
     :raise: TypeError if passed a string for any argument.
     """
-    print(mission_time, weight_factor, parent_goal)
     try:
         _hazard_rate_alloc = weight_factor * parent_goal
         _mtbf_alloc = 1.0 / _hazard_rate_alloc
@@ -268,10 +263,10 @@ def do_allocate_reliability(parent_goal, cumulative_weight, **attributes):
     :rtype: dict
     """
     if attributes['allocation_method_id'] == 1:
+        _time_i = attributes['mission_time'] * attributes['duty_cycle'] / 100.0
         (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],
          attributes['reliability_alloc']) = _calculate_agree_apportionment(
-             attributes['mission_time'], attributes['duty_cycle'],
-             attributes['weight_factor'], attributes['n_sub_systems'],
+             _time_i, attributes['weight_factor'], attributes['n_sub_systems'],
              attributes['n_sub_elements'], parent_goal)
     elif attributes['allocation_method_id'] == 2:
         (attributes['mtbf_alloc'], attributes['hazard_rate_alloc'],

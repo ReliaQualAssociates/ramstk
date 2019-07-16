@@ -222,16 +222,18 @@ def calculate_part_stress(**attributes):
         attributes['n_active_pins'], )
     attributes['piK'] = get_mate_unmate_factor(attributes['n_cycles'])
 
+    if attributes['subcategory_id'] == 1:
+        _factor_key = get_factor_key(attributes['type_id'],
+                                     attributes['specification_id'],
+                                     attributes['insert_id'])
+    else:
+        _factor_key = 5
     _contact_temp = (attributes['temperature_active']
                      + attributes['temperature_rise'] + 273.0)
 
     attributes['lambda_b'] = calculate_part_stress_lambda_b(
-        attributes['subcategory_id'],
-        attributes['type_id'],
-        attributes['specification_id'],
-        attributes['insert_id'],
-        _contact_temp,
-    )
+        attributes['subcategory_id'], attributes['type_id'], _contact_temp,
+        _factor_key)
 
     attributes['hazard_rate_active'] = (attributes['lambda_b']
                                         * attributes['piE'])
@@ -240,10 +242,10 @@ def calculate_part_stress(**attributes):
                                             * attributes['piP'])
     elif attributes['subcategory_id'] == 4:
         attributes['hazard_rate_active'] = (
-            attributes['hazard_rate_active'] *
-            (attributes['n_wave_soldered'] * attributes['piC']
-             + attributes['n_hand_soldered'] *
-             (attributes['piC'] + 13.0)) * attributes['piQ'])
+            attributes['hazard_rate_active']
+            * (attributes['n_wave_soldered'] * attributes['piC']
+               + attributes['n_hand_soldered']
+               * (attributes['piC'] + 13.0)) * attributes['piQ'])
     elif attributes['subcategory_id'] == 5:
         attributes['hazard_rate_active'] = (attributes['hazard_rate_active']
                                             * attributes['piQ'])
@@ -255,13 +257,8 @@ def calculate_part_stress(**attributes):
     return attributes
 
 
-def calculate_part_stress_lambda_b(
-        subcategory_id,
-        type_id,
-        specification_id,
-        insert_id,
-        contact_temperature,
-):
+def calculate_part_stress_lambda_b(subcategory_id, type_id,
+                                   contact_temperature, factor_key):
     """
     Calculate the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -273,16 +270,52 @@ def calculate_part_stress_lambda_b(
 
     :param int subcategory_id: the subcategory identifier.
     :param int type_id: the connection type identifier.
-    :param int specification_id: the connection governing specification
-        identifier.
-    :param int insert_id: the insert material identifier.
     :param float contact_temperature: the operating temperature of the
         contacts.
     :return: _base_hr; the calculates base hazard rate.
     :rtype: float
-    :raise: KeyError if passed an unknown type ID or specification ID.
-    :raise: IndexError if passed an unkown insert ID.
+    :raise: IndexError if passed an unknown type ID.
     :raise: ZeroDivisionError if passed contact temperature = 0.0.
+    """
+    # Factors are used to calculate base hazard rate for circular/rack and
+    # panel connectors.  Key is from dictionary above (1 - 4) or contact
+    # gauge (22 - 12).
+    _dic_factors = {
+        1: [0.2, -1592.0, 5.36],
+        2: [0.431, -2073.6, 4.66],
+        3: [0.19, -1298.0, 4.25],
+        4: [0.77, -1528.8, 4.72],
+        5: [0.216, -2073.6, 4.66],
+    }
+
+    _ref_temp = REF_TEMPS[factor_key]
+    _f0 = _dic_factors[factor_key][0]
+    _f1 = _dic_factors[factor_key][1]
+    _f2 = _dic_factors[factor_key][2]
+
+    if subcategory_id in [4, 5]:
+        _lambda_b = PART_STRESS_LAMBDA_B[subcategory_id][type_id - 1]
+    elif subcategory_id == 3:
+        _lambda_b = 0.00042
+    else:
+        _lambda_b = _f0 * exp((_f1 / contact_temperature)
+                              + (contact_temperature / _ref_temp)**_f2)
+
+    return _lambda_b
+
+
+def get_factor_key(type_id, specification_id, insert_id):
+    """
+    Retrieve the reference temperature key for the connection.
+
+    :param int subcategory_id: the subcategory identifier.
+    :param int type_id: the connection type identifier.
+    :param int specification_id: the connection governing specification
+        identifier.
+    :param int insert_id: the insert material identifier.
+    :return: _key; the key to use to select the reference temperature and other
+        factors.
+    :rtype: int
     """
     # Reference temperature is used to calculate base hazard rate for
     # circular/rack and panel connectors.  To get the reference temperature
@@ -323,35 +356,7 @@ def calculate_part_stress_lambda_b(
             1: [3, 3, 2, 2, 2, 2, 2, 2],
         },
     }
-    # Factors are used to calculate base hazard rate for circular/rack and
-    # panel connectors.  Key is from dictionary above (1 - 4) or contact
-    # gauge (22 - 12).
-    _dic_factors = {
-        1: [0.2, -1592.0, 5.36],
-        2: [0.431, -2073.6, 4.66],
-        3: [0.19, -1298.0, 4.25],
-        4: [0.77, -1528.8, 4.72],
-        5: [0.216, -2073.6, 4.66],
-    }
-    if subcategory_id == 1:
-        _key = _dic_keys[type_id][specification_id][insert_id - 1]
-    else:
-        _key = 5
-
-    _ref_temp = REF_TEMPS[_key]
-    _f0 = _dic_factors[_key][0]
-    _f1 = _dic_factors[_key][1]
-    _f2 = _dic_factors[_key][2]
-
-    if subcategory_id in [4, 5]:
-        _lambda_b = PART_STRESS_LAMBDA_B[subcategory_id][type_id - 1]
-    elif subcategory_id == 3:
-        _lambda_b = 0.00042
-    else:
-        _lambda_b = _f0 * exp((_f1 / contact_temperature) +
-                              (contact_temperature / _ref_temp)**_f2, )
-
-    return _lambda_b
+    return _dic_keys[type_id][specification_id][insert_id - 1]
 
 
 def get_mate_unmate_factor(n_cycles):

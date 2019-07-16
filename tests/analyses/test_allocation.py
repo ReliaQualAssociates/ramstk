@@ -44,7 +44,7 @@ ATTRIBUTES = {
 def test_calculate_agree_apportionment():
     """_calculate_agree_apportionment() should return a tuple of allocated measures on success."""
     _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
-        100.0, 100.0, 1, 4, 2, 0.999)
+        100.0, 1, 4, 2, 0.999)
 
     assert _mtbf_alloc == pytest.approx(199899.98332499)
     assert _hazard_rate_alloc == pytest.approx(5.00250167e-06)
@@ -58,14 +58,14 @@ def test_calculate_agree_apportionment_zero_sub_elements():
 
     def on_message(error_msg):
         assert error_msg == ("Failed to apportion reliability using the AGREE "
-                             "method; one or more inputs had a value of 0.0. "
-                             "Mission time=100.000000, duty cycle=100.000000, "
-                             "weight factor=1.000000, # of subsystems=4, # of "
+                             "method; one or more inputs had a value of 0.0.  "
+                             "Subsystem mission time=100.000000, weight "
+                             "factor=1.000000, # of subsystems=4, # of "
                              "subelements=0.")
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_agree_apportionment(100.0, 100.0, 1, 4, 0, 0.999)
+    Allocation._calculate_agree_apportionment(100.0, 1, 4, 0, 0.999)
 
 
 @pytest.mark.unit
@@ -74,27 +74,23 @@ def test_calculate_agree_apportionment_string_input():
     """_calculate_agree_apportionment() should raise a TypeError when passed a string for any input."""
     with pytest.raises(TypeError):
         _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
-            '100.0', 100.0, 1, 4, 2, 0.999)
+            '100.0', 1, 4, 2, 0.999)
 
     with pytest.raises(TypeError):
         _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
-            100.0, '100.0', 1, 4, 2, 0.999)
+            100.0, '1', 4, 2, 0.999)
 
     with pytest.raises(TypeError):
         _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
-            100.0, 100.0, '1', 4, 2, 0.999)
+            100.0, 1, '4', 2, 0.999)
 
     with pytest.raises(TypeError):
         _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
-            100.0, 100.0, 1, '4', 2, 0.999)
+            100.0, 1, 4, '2', 0.999)
 
     with pytest.raises(TypeError):
         _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
-            100.0, 100.0, 1, 4, '2', 0.999)
-
-    with pytest.raises(TypeError):
-        _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc = Allocation._calculate_agree_apportionment(
-            100.0, 100.0, 1, 4, 2, '0.999')
+            100.0, 1, 4, 2, '0.999')
 
 
 @pytest.mark.unit
@@ -110,7 +106,7 @@ def test_calculate_agree_apportionment_negative_parent_goal():
 
     pub.subscribe(on_message, 'fail_allocate_reliability')
 
-    Allocation._calculate_agree_apportionment(100.0, 100.0, 1, 4, 0, -0.999)
+    Allocation._calculate_agree_apportionment(100.0, 1, 4, 0, -0.999)
 
 
 @pytest.mark.unit
@@ -414,7 +410,7 @@ def test_do_allocate_reliability(method_id):
             5: 0.0
         }[attributes['allocation_method_id']])
         assert attributes['reliability_alloc'] == pytest.approx({
-            1: 0.99805161,
+            1: 0.99824628,
             2: 0.91410648,
             3: 0.99966656,
             4: 0.97053417,

@@ -172,8 +172,12 @@ def test_get_mate_unmate_factor(n_cycles):
 @pytest.mark.parametrize("subcategory_id", [1, 3, 5])
 def test_calculate_part_stress_lambda_b(subcategory_id):
     """calculate_part_stress_lamba_b() should return a float value for the part stress base hazard rate on success."""
+    if subcategory_id == 1:
+        _factor_key = 2
+    else:
+        _factor_key = 5
     _lambda_b = Connection.calculate_part_stress_lambda_b(
-        subcategory_id, 4, 8, 3, 325)
+        subcategory_id, 4, 325, _factor_key)
 
     assert isinstance(_lambda_b, float)
     if subcategory_id == 1:
@@ -187,17 +191,9 @@ def test_calculate_part_stress_lambda_b(subcategory_id):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_lambda_no_type():
-    """calculate_part_stress_lamba_b() should raise a KeyError when passed an unknown type ID."""
-    with pytest.raises(KeyError):
-        _lambda_b = Connection.calculate_part_stress_lambda_b(1, 6, 8, 3, 325)
-
-
-@pytest.mark.unit
-@pytest.mark.calculation
-def test_calculate_part_stress_lambda_no_specification():
-    """calculate_part_stress_lamba_b() should raise a KeyError when passed an unknown specification ID."""
-    with pytest.raises(KeyError):
-        _lambda_b = Connection.calculate_part_stress_lambda_b(1, 4, 18, 3, 325)
+    """calculate_part_stress_lamba_b() should raise an IndexError when passed an unknown type ID."""
+    with pytest.raises(IndexError):
+        _lambda_b = Connection.calculate_part_stress_lambda_b(4, 26, 325, 5)
 
 
 @pytest.mark.unit
@@ -205,7 +201,7 @@ def test_calculate_part_stress_lambda_no_specification():
 def test_calculate_part_stress_lambda_zero_contact_temperature():
     """calculate_part_stress_lamba_b() should raise a ZeroDivisionError when passed a contact temperature=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _lambda_b = Connection.calculate_part_stress_lambda_b(1, 4, 8, 3, 0.0)
+        _lambda_b = Connection.calculate_part_stress_lambda_b(1, 4, 0.0, 2)
 
 
 @pytest.mark.unit
