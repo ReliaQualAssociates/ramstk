@@ -9,11 +9,6 @@
 # Third Party Imports
 from treelib import Tree, tree  # pylint: disable=E0401
 
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
-
 
 class RAMSTKDataModel():
     """
@@ -81,7 +76,7 @@ class RAMSTKDataModel():
 
         :param int node_id: the Node ID of the data package to retrieve.
         :return: the instance of the RAMSTK<MODULE> class that was requested
-                 or None if the requested Node ID does not exist.
+            or None if the requested Node ID does not exist.
         """
         try:
             _entity = self.tree.get_node(node_id).data
@@ -104,28 +99,19 @@ class RAMSTKDataModel():
             self.tree.remove_node(_node.identifier)
 
         return self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
-        )
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
     def do_insert(self, **kwargs):
         """
         Add the list of RAMSTK<MODULE> instance to the RAMSTK Program database.
 
         :param list entities: the list of RAMSTK<MODULE> entities to add to the
-                              RAMSTK Program database.
+            RAMSTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
         _entities = kwargs['entities']
-        _session = self.dao.RAMSTK_SESSION(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False,
-        )
-
-        _error_code, _msg = self.dao.db_add(_entities, _session)
-
-        _session.close()
-
-        return _error_code, _msg
+        return self.dao.db_add(_entities, None)
 
     def do_delete(self, node_id):
         """

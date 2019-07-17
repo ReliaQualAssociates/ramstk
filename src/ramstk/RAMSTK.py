@@ -18,6 +18,7 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 # RAMSTK Package Imports
+from ramstk.controllers.hardware import dmHardware
 from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
 from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
 from ramstk.dao.commondb.RAMSTKGroup import RAMSTKGroup
@@ -38,12 +39,10 @@ from ramstk.dao.DAO import DAO
 from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
-from ramstk.modules.allocation import dtcAllocation
 from ramstk.modules.exports import dtcExports
 from ramstk.modules.failure_definition import dtcFailureDefinition
 from ramstk.modules.fmea import dtcFMEA
 from ramstk.modules.function import dtcFunction
-from ramstk.modules.hardware import dtcHardwareBoM
 from ramstk.modules.hazops import dtcHazardAnalysis
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.options import dtcOptions
@@ -167,10 +166,10 @@ class Model():
     The attributes of a RAMSTK data model are:
 
     :ivar site_dao: the data access object used to communicate with the RAMSTK
-                    Common database.
+        Common database.
     :type site_dao: :class:`ramstk.dao.DAO.DAO()`
-    :ivar program_dao: the data access object used to communicate with the RAMSTK
-                       Program database
+    :ivar program_dao: the data access object used to communicate with the
+        RAMSTK Program database
     :type program_dao: :class:`ramstk.dao.DAO.DAO()`
     """
 
@@ -178,9 +177,9 @@ class Model():
         """
         Initialize an instance of the RAMSTK data model.
 
-        :param sitedao: the `:class:ramstk.dao.DAO.DAO` instance connected to
+        :param sitedao: the :class:`ramstk.dao.DAO.DAO` instance connected to
                         the RAMSTK Common database.
-        :param programdao: the `:class:ramstk.dao.DAO.DAO` instance connected
+        :param programdao: the :class:`ramstk.dao.DAO.DAO` instance connected
                            to the RAMSTK Program database.
         """
         # Initialize private dictionary attributes.
@@ -586,7 +585,6 @@ class RAMSTK():
     :ivar dict dic_controllers: dictionary of data controllers available in the
         running instance of RAMSTK. Keys are:
 
-            'allocation'
             'function'
             'hardware'
             'revision'
@@ -668,7 +666,6 @@ class RAMSTK():
         # Initialize public dictionary instance attributes.
         self.dic_controllers = {
             'options': None,
-            'allocation': None,
             'definition': None,
             'function': None,
             'revision': None,
@@ -826,10 +823,8 @@ class RAMSTK():
                 self.RAMSTK_CONFIGURATION,
                 test=False,
             )
-            self.dic_controllers['hardware'] = dtcHardwareBoM(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
+            self.dic_controllers['hardware'] = dmHardware(
+                self.ramstk_model.program_dao
             )
             self.dic_controllers['validation'] = dtcValidation(
                 self.ramstk_model.program_dao,
@@ -853,11 +848,6 @@ class RAMSTK():
                 functional=True,
             )
             self.dic_controllers['stakeholder'] = dtcStakeholder(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
-            )
-            self.dic_controllers['allocation'] = dtcAllocation(
                 self.ramstk_model.program_dao,
                 self.RAMSTK_CONFIGURATION,
                 test=False,

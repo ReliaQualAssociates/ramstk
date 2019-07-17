@@ -136,7 +136,7 @@ def test_do_insert(test_dao):
         "RAMSTK SUCCESS: Adding one or more items to the RAMSTK "
         "Program database."
     )
-    assert DUT.last_id == 9
+    assert DUT.last_id == 8
 
 
 @pytest.mark.integration
@@ -152,7 +152,7 @@ def test_do_delete(test_dao):
         "RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
         "database."
     )
-    assert DUT.last_id == '8.8'
+    assert DUT.last_id == '7.7'
 
 
 @pytest.mark.integration

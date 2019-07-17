@@ -22,5 +22,3 @@ graft docs
 graft locale
 
 global-exclude *.py[co]
-global-exclude *.sh
-global-exclude *.hooks

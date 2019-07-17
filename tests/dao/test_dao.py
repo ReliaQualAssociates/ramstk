@@ -18,6 +18,7 @@ from sqlalchemy.orm import sessionmaker
 # RAMSTK Package Imports
 from ramstk.dao.DAO import DAO
 from ramstk.dao.programdb.RAMSTKRevision import RAMSTKRevision
+from ramstk.Exceptions import DataAccessError
 
 TEMPDIR = tempfile.gettempdir()
 
@@ -126,7 +127,7 @@ def test_dao_db_add(test_configuration):
 
 @pytest.mark.integration
 def test_dao_db_add_no_item(test_configuration):
-    """ db_add() should return a 1003 error code on failure. """
+    """db_add() should raise a DataAccessError when no item is passed to add."""
     DUT = DAO()
     _database = (
         test_configuration.RAMSTK_BACKEND + ':///' + TEMPDIR +
@@ -134,17 +135,8 @@ def test_dao_db_add_no_item(test_configuration):
     )
     DUT.db_connect(_database)
 
-    _error_code, _msg = DUT.db_add(
-        [
-            None,
-        ], DUT.session,
-    )
-
-    assert _error_code == 1
-    assert _msg == (
-        "RAMSTK ERROR: Adding one or more items to the RAMSTK "
-        "Program database."
-    )
+    with pytest.raises(DataAccessError):
+        DUT.db_add([None])
 
 
 @pytest.mark.integration

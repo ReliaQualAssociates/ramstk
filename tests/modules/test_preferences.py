@@ -21,7 +21,7 @@ from ramstk.dao import DAO
 from ramstk.dao.commondb import RAMSTKUser
 from ramstk.modules.preferences import dtcPreferences, dtmPreferences
 from ramstk.modules.preferences.Model import (
-    SitePreferencesDataModel, UserPreferencesDataModel,
+    SitePreferencesDataModel, UserPreferencesDataModel
 )
 
 ATTRIBUTES = {'revision_id': 1, 'site_dao': '', 'site': True, 'user': True}
@@ -190,7 +190,7 @@ def test_do_update_site_preferences(
     DUT.do_select_all(site=True, user=True)
     assert DUT.site_preferences['damage_models'][
         0
-    ].description == 'Damage Model #9'
+    ].description == 'Adhesion Wear Model for Bearings'
 
 
 @pytest.mark.integration
