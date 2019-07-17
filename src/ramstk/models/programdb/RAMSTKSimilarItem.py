@@ -47,12 +47,12 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         'change_factor_10': 1.0,
         'environment_from_id': 0,
         'environment_to_id': 0,
-        'function_1': '',
-        'function_2': '',
-        'function_3': '',
-        'function_4': '',
-        'function_5': '',
-        'method_id': 1,
+        'function_1': '0',
+        'function_2': '0',
+        'function_3': '0',
+        'function_4': '0',
+        'function_5': '0',
+        'similar_item_method_id': 1,
         'parent_id': 0,
         'quality_from_id': 0,
         'quality_to_id': 0,
@@ -197,9 +197,10 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
     function_5 = Column('fld_function_5',
                         String(128),
                         default=__defaults__['function_5'])
-    method_id = Column('fld_method_id',
-                       Integer,
-                       default=__defaults__['method_id'])
+    similar_item_method_id = Column(
+        'fld_similar_item_method_id',
+        Integer,
+        default=__defaults__['similar_item_method_id'])
     parent_id = Column('fld_parent_id',
                        Integer,
                        default=__defaults__['parent_id'])
@@ -282,13 +283,14 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
                   change_factor_5, change_factor_6, change_factor_7,
                   change_factor_8, change_factor_9, change_factor_10,
                   environment_from_id, environment_to_id, function_1,
-                  function_2, function_3, function_4, function_5, method_id,
-                  parent_id, quality_from_id, quality_to_id, result_1,
-                  result_2, result_3, result_4, result_5, temperature_from,
-                  temperature_to, user_blob_1, user_blob_2, user_blob_3,
-                  user_blob_4, user_blob_5, user_float_1, user_float_2,
-                  user_float_3, user_float_4, user_float_5, user_int_1,
-                  user_int_2, user_int_3, user_int_4, user_int_5}
+                  function_2, function_3, function_4, function_5,
+                  similar_item_method_id, parent_id, quality_from_id,
+                  quality_to_id, result_1, result_2, result_3, result_4,
+                  result_5, temperature_from, temperature_to, user_blob_1,
+                  user_blob_2, user_blob_3, user_blob_4, user_blob_5,
+                  user_float_1, user_float_2, user_float_3, user_float_4,
+                  user_float_5, user_int_1, user_int_2, user_int_3, user_int_4,
+                  user_int_5}
         :rtype: tuple
         """
         _attributes = {
@@ -320,7 +322,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
             'function_3': self.function_3,
             'function_4': self.function_4,
             'function_5': self.function_5,
-            'method_id': self.method_id,
+            'similar_item_method_id': self.similar_item_method_id,
             'parent_id': self.parent_id,
             'quality_from_id': self.quality_from_id,
             'quality_to_id': self.quality_to_id,

@@ -13,8 +13,8 @@ from pubsub import pub
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.Exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric,
-    RAMSTKDesignMechanic, RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability
+    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
 )
 
 
@@ -110,7 +110,8 @@ class DataManager(RAMSTKDataManager):
         _attributes = {}
         for _table in [
                 'hardware', 'design_electric', 'design_mechanic',
-                'mil_hdbk_217f', 'nswc', 'reliability', 'allocation'
+                'mil_hdbk_217f', 'nswc', 'reliability', 'allocation',
+                'similar_item'
         ]:
             _attributes.update(
                 self.do_select(node_id, table=_table).get_attributes())
@@ -176,10 +177,13 @@ class DataManager(RAMSTKDataManager):
                 _allocation = RAMSTKAllocation(revision_id=self._revision_id,
                                                hardware_id=self.last_id,
                                                parent_id=parent_id)
+                _similaritem = RAMSTKSimilarItem(revision_id=self._revision_id,
+                                                 hardware_id=self.last_id,
+                                                 parent_id=parent_id)
 
                 _error_code, _msg = self.dao.db_add(
                     [_design_e, _design_m, _milhdbkf, _nswc, _reliability,
-                     _allocation],
+                     _allocation, _similaritem],
                     None)
 
                 _data_package = {
@@ -273,6 +277,10 @@ class DataManager(RAMSTKDataManager):
                 RAMSTKAllocation.hardware_id ==
                 _hardware.hardware_id).first()
 
+            _similaritem = self.dao.session.query(RAMSTKSimilarItem).filter(
+                RAMSTKSimilarItem.hardware_id ==
+                _hardware.hardware_id).first()
+
             _data_package = {
                 'hardware': _hardware,
                 'design_electric': _design_e,
@@ -280,7 +288,8 @@ class DataManager(RAMSTKDataManager):
                 'mil_hdbk_217f': _milhdbkf,
                 'nswc': _nswc,
                 'reliability': _reliability,
-                'allocation': _allocation
+                'allocation': _allocation,
+                'similar_item': _similaritem
             }
 
             self.tree.create_node(tag=_hardware.comp_ref_des,
@@ -321,15 +330,18 @@ class DataManager(RAMSTKDataManager):
         """
         for _table in [
                 'hardware', 'design_electric', 'design_mechanic',
-                'mil_hdbk_217f', 'nswc', 'reliability', 'allocation'
+                'mil_hdbk_217f', 'nswc', 'reliability', 'allocation',
+                'similar_item'
         ]:
             _attributes = self.do_select(node_id,
                                          table=_table).get_attributes()
             if key in _attributes:
                 _attributes[key] = value
 
-                if _table in ['hardware', 'allocation']:
+                try:
                     _attributes.pop('revision_id')
+                except KeyError:
+                    pass
                 _attributes.pop('hardware_id')
 
                 self.do_select(node_id,

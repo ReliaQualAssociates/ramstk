@@ -8,13 +8,14 @@
 """Hardware Controller Package analysis manager."""
 
 # Standard Library Imports
+from collections import OrderedDict
 from math import exp
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.analyses import Allocation, Derating, Dormancy, Stress
+from ramstk.analyses import Allocation, Derating, Dormancy, SimilarItem, Stress
 from ramstk.analyses.milhdbk217f import MilHdbk217f
 
 
@@ -68,6 +69,10 @@ class AnalysisManager():
                       'request_allocate_reliability')
         pub.subscribe(self._on_allocate_reliability,
                       'succeed_allocate_reliability')
+        pub.subscribe(self.do_calculate_similar_item,
+                      'request_calculate_similar_item')
+        pub.subscribe(self.do_roll_up_change_descriptions,
+                      'request_roll_up_change_descriptions')
 
     def _do_calculate_cost_metrics(self):
         """
@@ -224,6 +229,102 @@ class AnalysisManager():
             -1.0 * (self._attributes['hazard_rate_mission'])
             * self._attributes['mission_time'])
 
+    def _do_calculate_topic_633(self):
+        """
+        Calculate the similar item hazard rate per topic 6.3.3.
+
+        .. note:: this analysis uses the adjustment factors from RAC/RiAC's The
+        Reliability Tookkit, Commercial Practices Edition, section 6.3.3.
+
+        :return: None
+        :rtype: None
+        """
+        _environment = {
+            'from': self._attributes['environment_from_id'],
+            'to': self._attributes['environment_to_id']
+        }
+        _quality = {
+            'from': self._attributes['quality_from_id'],
+            'to': self._attributes['quality_to_id']
+        }
+        _temperature = {
+            'from': self._attributes['temperature_from'],
+            'to': self._attributes['temperature_to']
+        }
+
+        (self._attributes['change_factor_1'],
+         self._attributes['change_factor_2'],
+         self._attributes['change_factor_3'],
+         self._attributes['result_1']) = SimilarItem.calculate_topic_633(
+             _environment, _quality, _temperature,
+             self._attributes['hazard_rate_active'])
+
+    def _do_calculate_user_defined(self):
+        """
+        Calculate the user-defined similar item hazard rate.
+
+        :return: None
+        :rtype: None
+        """
+        _sia = OrderedDict({
+            _key: None
+            for _key in [
+                'hr', 'pi1', 'pi2', 'pi3', 'pi3', 'pi4', 'pi5', 'pi6', 'pi7',
+                'pi8', 'pi9', 'pi10', 'uf1', 'uf2', 'uf3', 'uf4', 'uf5', 'ui1',
+                'ui2', 'ui3', 'ui4', 'ui5', 'equation1', 'equation2',
+                'equation3', 'equation4', 'equation5', 'res1', 'res2', 'res3',
+                'res4', 'res5'
+            ]
+        })
+
+        _sia['hr'] = self._attributes['hazard_rate_active']
+
+        _sia = SimilarItem.set_user_defined_change_factors(
+            _sia, [
+                self._attributes['change_factor_1'],
+                self._attributes['change_factor_2'],
+                self._attributes['change_factor_3'],
+                self._attributes['change_factor_4'],
+                self._attributes['change_factor_5'],
+                self._attributes['change_factor_6'],
+                self._attributes['change_factor_7'],
+                self._attributes['change_factor_8'],
+                self._attributes['change_factor_9'],
+                self._attributes['change_factor_10']
+            ])
+
+        _sia = SimilarItem.set_user_defined_floats(_sia, [
+            self._attributes['user_float_1'], self._attributes['user_float_2'],
+            self._attributes['user_float_3'], self._attributes['user_float_4'],
+            self._attributes['user_float_5']
+        ])
+
+        _sia = SimilarItem.set_user_defined_ints(_sia, [
+            self._attributes['user_int_1'], self._attributes['user_int_2'],
+            self._attributes['user_int_3'], self._attributes['user_int_4'],
+            self._attributes['user_int_5']
+        ])
+
+        _sia = SimilarItem.set_user_defined_functions(_sia, [
+            self._attributes['function_1'], self._attributes['function_2'],
+            self._attributes['function_3'], self._attributes['function_4'],
+            self._attributes['function_5']
+        ])
+
+        _sia = SimilarItem.set_user_defined_results(_sia, [
+            self._attributes['result_1'], self._attributes['result_2'],
+            self._attributes['result_3'], self._attributes['result_4'],
+            self._attributes['result_5']
+        ])
+
+        _sia = SimilarItem.calculate_user_defined(_sia)
+
+        self._attributes['result_1'] = _sia['res1']
+        self._attributes['result_2'] = _sia['res2']
+        self._attributes['result_3'] = _sia['res3']
+        self._attributes['result_4'] = _sia['res4']
+        self._attributes['result_5'] = _sia['res5']
+
     def _do_calculate_voltage_ratio(self):
         """
         Calculate the voltage ratio.
@@ -254,7 +355,8 @@ class AnalysisManager():
         :return: None
         :rtype: None
         """
-        _attributes = self._tree.get_node(attributes['hardware_id']).data['allocation'].get_attributes()
+        _attributes = self._tree.get_node(
+            attributes['hardware_id']).data['allocation'].get_attributes()
 
         _attributes['hazard_rate_alloc'] = attributes['hazard_rate_alloc']
         _attributes['mtbf_alloc'] = attributes['mtbf_alloc']
@@ -262,7 +364,9 @@ class AnalysisManager():
 
         _attributes.pop('revision_id')
         _attributes.pop('hardware_id')
-        self._tree.get_node(attributes['hardware_id']).data['allocation'].set_attributes(_attributes)
+        self._tree.get_node(
+            attributes['hardware_id']).data['allocation'].set_attributes(
+                _attributes)
 
     def _on_get_all_attributes(self, attributes):
         """
@@ -446,24 +550,32 @@ class AnalysisManager():
         :return: None
         :rtype: None
         """
+        # Retrieve all the attributes from all the RAMSTK data tables for the
+        # requested hardware item.  We need to build a comprehensive dict of
+        # attributes to pass to the various analysis methods/functions.
+        pub.sendMessage('request_get_all_hardware_attributes', node_id=node_id)
+
         self._attributes['n_sub_systems'] = len(self._tree.children(node_id))
         for _node in self._tree.children(node_id):
             _attributes = _node.data['allocation'].get_attributes()
             _method_old = _attributes['allocation_method_id']
             _mission_time_old = _attributes['mission_time']
-            _attributes['allocation_method_id'] = self._attributes['allocation_method_id']
+            _attributes['allocation_method_id'] = self._attributes[
+                'allocation_method_id']
             _attributes['mission_time'] = self._attributes['mission_time']
             if self._attributes['allocation_method_id'] == 1:
                 self._attributes[
                     'n_sub_systems'] = self._do_calculate_agree_total_elements(
                         node_id)
-                _attributes['n_sub_systems'] = self._attributes['n_sub_systems']
+                _attributes['n_sub_systems'] = self._attributes[
+                    'n_sub_systems']
                 _parent_goal = self._attributes['reliability_goal']
                 _cum_weight = 0.0
             elif self._attributes['allocation_method_id'] == 2:
                 _attributes['weight_factor'] = (
-                    _node.data['reliability'].get_attributes()['hazard_rate_active'] / self._tree.children(
-                        0)[0].data['reliability'].get_attributes()['hazard_rate_active'])
+                    _node.data['reliability'].get_attributes()
+                    ['hazard_rate_active'] / self._tree.children(0)[0].
+                    data['reliability'].get_attributes()['hazard_rate_active'])
                 _parent_goal = self._attributes['hazard_rate_goal']
                 _cum_weight = 0.0
             elif self._attributes['allocation_method_id'] == 3:
@@ -556,6 +668,24 @@ class AnalysisManager():
                             attributes=self._attributes)
             pub.sendMessage('request_update_hardware', node_id=node_id)
 
+    def do_calculate_similar_item(self, node_id):
+        """
+        Perform a similar item calculates for currently selected item.
+
+        :param int node_id: the node (hardware) ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        # Retrieve all the attributes from all the RAMSTK data tables for the
+        # requested hardware item.  We need to build a comprehensive dict of
+        # attributes to pass to the various analysis methods/functions.
+        pub.sendMessage('request_get_all_hardware_attributes', node_id=node_id)
+
+        if self._attributes['similar_item_method_id'] == 1:
+            self._do_calculate_topic_633()
+        elif self._attributes['similar_item_method_id'] == 2:
+            self._do_calculate_user_defined()
+
     def do_derating_analysis(self, node_id):
         """
         Perform a derating analysis.
@@ -644,3 +774,71 @@ class AnalysisManager():
         :rtype: float
         """
         return Allocation.get_allocation_goal(**self._attributes)
+
+    def do_roll_up_change_descriptions(self, node_id):
+        """
+        Concatenate all child change descriptions for the node ID hardware.
+
+        :param int node_id: the node (hardware) ID to "roll-up."
+        :return: None
+        :rtype: None
+        """
+        _change_description_1 = ''
+        _change_description_2 = ''
+        _change_description_3 = ''
+        _change_description_4 = ''
+        _change_description_5 = ''
+        _change_description_6 = ''
+        _change_description_7 = ''
+        _change_description_8 = ''
+        _change_description_9 = ''
+        _change_description_10 = ''
+
+        for _node in self._tree.children(node_id):
+            _name = _node.data['hardware'].get_attributes()['name']
+            _attributes = _node.data['similar_item'].get_attributes()
+
+            _change_description_1 += _name + ':\n' + _attributes[
+                'change_description_1'].decode('utf-8') + '\n\n'
+            _change_description_2 += _name + ':\n' + _attributes[
+                'change_description_2'].decode('utf-8') + '\n\n'
+            _change_description_3 += _name + ':\n' + _attributes[
+                'change_description_3'].decode('utf-8') + '\n\n'
+            _change_description_4 += _name + ':\n' + _attributes[
+                'change_description_4'].decode('utf-8') + '\n\n'
+            _change_description_5 += _name + ':\n' + _attributes[
+                'change_description_5'].decode('utf-8') + '\n\n'
+            _change_description_6 += _name + ':\n' + _attributes[
+                'change_description_6'].decode('utf-8') + '\n\n'
+            _change_description_7 += _name + ':\n' + _attributes[
+                'change_description_7'].decode('utf-8') + '\n\n'
+            _change_description_8 += _name + ':\n' + _attributes[
+                'change_description_8'].decode('utf-8') + '\n\n'
+            _change_description_9 += _name + ':\n' + _attributes[
+                'change_description_9'].decode('utf-8') + '\n\n'
+            _change_description_10 += _name + ':\n' + _attributes[
+                'change_description_10'].decode('utf-8') + '\n\n'
+
+        self._attributes[
+            'change_description_1'] = _change_description_1.encode('utf-8')
+        self._attributes[
+            'change_description_2'] = _change_description_2.encode('utf-8')
+        self._attributes[
+            'change_description_3'] = _change_description_3.encode('utf-8')
+        self._attributes[
+            'change_description_4'] = _change_description_4.encode('utf-8')
+        self._attributes[
+            'change_description_5'] = _change_description_5.encode('utf-8')
+        self._attributes[
+            'change_description_6'] = _change_description_6.encode('utf-8')
+        self._attributes[
+            'change_description_7'] = _change_description_7.encode('utf-8')
+        self._attributes[
+            'change_description_8'] = _change_description_8.encode('utf-8')
+        self._attributes[
+            'change_description_9'] = _change_description_9.encode('utf-8')
+        self._attributes[
+            'change_description_10'] = _change_description_10.encode('utf-8')
+
+        pub.sendMessage('succeed_roll_up_change_descriptions',
+                        attributes=self._attributes)

@@ -18,8 +18,8 @@ from ramstk import Configuration
 from ramstk.controllers.hardware import amHardware, dmHardware, mmHardware
 from ramstk.dao import DAO
 from ramstk.models.programdb import (
-    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric,
-    RAMSTKDesignMechanic, RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability
+    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
+    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
 )
 
 ATTRIBUTES = {
@@ -305,7 +305,60 @@ ATTRIBUTES = {
     'reliability_alloc': 1.0,
     'op_time_factor': 1,
     'soa_factor': 1,
-    'weight_factor': 1
+    'weight_factor': 1,
+    'change_description_1': b'',
+    'change_description_2': b'',
+    'change_description_3': b'',
+    'change_description_4': b'',
+    'change_description_5': b'',
+    'change_description_6': b'',
+    'change_description_7': b'',
+    'change_description_8': b'',
+    'change_description_9': b'',
+    'change_description_10': b'',
+    'change_factor_1': 1.0,
+    'change_factor_2': 1.0,
+    'change_factor_3': 1.0,
+    'change_factor_4': 1.0,
+    'change_factor_5': 1.0,
+    'change_factor_6': 1.0,
+    'change_factor_7': 1.0,
+    'change_factor_8': 1.0,
+    'change_factor_9': 1.0,
+    'change_factor_10': 1.0,
+    'environment_from_id': 0,
+    'environment_to_id': 0,
+    'function_1': '0',
+    'function_2': '0',
+    'function_3': '0',
+    'function_4': '0',
+    'function_5': '0',
+    'similar_item_method_id': 1,
+    'parent_id': 0,
+    'quality_from_id': 0,
+    'quality_to_id': 0,
+    'result_1': 0.0,
+    'result_2': 0.0,
+    'result_3': 0.0,
+    'result_4': 0.0,
+    'result_5': 0.0,
+    'temperature_from': 30.0,
+    'temperature_to': 30.0,
+    'user_blob_1': b'',
+    'user_blob_2': b'',
+    'user_blob_3': b'',
+    'user_blob_4': b'',
+    'user_blob_5': b'',
+    'user_float_1': 0.0,
+    'user_float_2': 0.0,
+    'user_float_3': 0.0,
+    'user_float_4': 0.0,
+    'user_float_5': 0.0,
+    'user_int_1': 0,
+    'user_int_2': 0,
+    'user_int_3': 0,
+    'user_int_4': 0,
+    'user_int_5': 0
 }
 
 
@@ -373,6 +426,8 @@ class TestDataManager():
                 tree.get_node(1).data['reliability'], RAMSTKReliability)
             assert isinstance(
                 tree.get_node(1).data['allocation'], RAMSTKAllocation)
+            assert isinstance(
+                tree.get_node(1).data['similar_item'], RAMSTKSimilarItem)
 
         pub.subscribe(on_message, 'succeed_retrieve_hardware')
 
@@ -461,6 +516,18 @@ class TestDataManager():
         assert isinstance(_hardware, RAMSTKAllocation)
         assert _hardware.goal_measure_id == 1
         assert _hardware.mtbf_alloc == 0.0
+
+    @pytest.mark.integration
+    def test_do_select_similar_item(self, test_dao):
+        """do_select() should return an instance of the RAMSTKSimilarItem on success."""
+        DUT = dmHardware(test_dao)
+        DUT.do_select_all(revision_id=1)
+
+        _hardware = DUT.do_select(1, table='similar_item')
+
+        assert isinstance(_hardware, RAMSTKSimilarItem)
+        assert _hardware.change_description_1 == b''
+        assert _hardware.temperature_from == 30.0
 
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_dao):
@@ -763,6 +830,11 @@ class TestDataManager():
                         value=0.9995)
         assert DUT.do_select(6, table='reliability').reliability_goal == 0.9995
         assert DUT.do_select(6, table='allocation').reliability_goal == 0.9995
+        pub.sendMessage('request_set_hardware_attributes',
+                        node_id=6,
+                        key='change_factor_5',
+                        value=0.95)
+        assert DUT.do_select(6, table='similar_item').change_factor_5 == 0.95
 
 
 @pytest.mark.usefixtures('test_dao', 'test_configuration')
@@ -1624,13 +1696,17 @@ class TestAllocation():
         def on_message(attributes):
             assert isinstance(attributes, dict)
             if attributes['hardware_id'] == 6:
-                assert attributes['hazard_rate_alloc'] == pytest.approx(0.0017327054)
+                assert attributes['hazard_rate_alloc'] == pytest.approx(
+                    0.0017327054)
                 assert attributes['mtbf_alloc'] == pytest.approx(577.1321514)
-                assert attributes['reliability_alloc'] == pytest.approx(0.87056188)
+                assert attributes['reliability_alloc'] == pytest.approx(
+                    0.87056188)
             elif attributes['hardware_id'] == 7:
-                assert attributes['hazard_rate_alloc'] == pytest.approx(0.0025939917)
+                assert attributes['hazard_rate_alloc'] == pytest.approx(
+                    0.0025939917)
                 assert attributes['mtbf_alloc'] == pytest.approx(385.50624175)
-                assert attributes['reliability_alloc'] == pytest.approx(0.79178986)
+                assert attributes['reliability_alloc'] == pytest.approx(
+                    0.79178986)
 
         pub.subscribe(on_message, 'succeed_allocate_reliability')
 
@@ -1648,10 +1724,10 @@ class TestAllocation():
         _assembly.weight_factor = 0.95
         DATAMGR.do_update(7)
 
-        pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
-
-        DUT._attributes['allocation_method_id'] = 1
-        DUT._attributes['reliability_goal'] = 0.717
+        _assembly = DATAMGR.do_select(2, 'allocation')
+        _assembly.allocation_method_id = 1
+        _assembly.reliability_goal = 0.717
+        DATAMGR.do_update(2)
 
         pub.sendMessage('request_allocate_reliability', node_id=2)
 
@@ -1665,13 +1741,18 @@ class TestAllocation():
         def on_message(attributes):
             assert isinstance(attributes, dict)
             if attributes['hardware_id'] == 6:
-                assert attributes['hazard_rate_alloc'] == pytest.approx(0.00050819205)
+                assert attributes['hazard_rate_alloc'] == pytest.approx(
+                    0.00050819205)
                 assert attributes['mtbf_alloc'] == pytest.approx(1967.76002301)
-                assert attributes['reliability_alloc'] == pytest.approx(0.95045049)
+                assert attributes['reliability_alloc'] == pytest.approx(
+                    0.95045049)
             elif attributes['hardware_id'] == 7:
-                assert attributes['hazard_rate_alloc'] == pytest.approx(1.9905654e-05)
-                assert attributes['mtbf_alloc'] == pytest.approx(50236.98291953)
-                assert attributes['reliability_alloc'] == pytest.approx(0.99801141)
+                assert attributes['hazard_rate_alloc'] == pytest.approx(
+                    1.9905654e-05)
+                assert attributes['mtbf_alloc'] == pytest.approx(
+                    50236.98291953)
+                assert attributes['reliability_alloc'] == pytest.approx(
+                    0.99801141)
 
         pub.subscribe(on_message, 'succeed_allocate_reliability')
 
@@ -1685,10 +1766,10 @@ class TestAllocation():
         _assembly.hazard_rate_active = 1.132e-07
         DATAMGR.do_update(7)
 
-        pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
-
-        DUT._attributes['allocation_method_id'] = 2
-        DUT._attributes['hazard_rate_goal'] = 0.000617
+        _assembly = DATAMGR.do_select(2, 'allocation')
+        _assembly.allocation_method_id = 2
+        _assembly.hazard_rate_goal = 0.000617
+        DATAMGR.do_update(2)
 
         pub.sendMessage('request_allocate_reliability', node_id=2)
 
@@ -1701,17 +1782,19 @@ class TestAllocation():
 
         def on_message(attributes):
             assert isinstance(attributes, dict)
-            assert attributes['hazard_rate_alloc'] == pytest.approx(2.50627091e-05)
+            assert attributes['hazard_rate_alloc'] == pytest.approx(
+                2.50627091e-05)
             assert attributes['mtbf_alloc'] == pytest.approx(39899.91645767)
             assert attributes['reliability_alloc'] == pytest.approx(0.99749687)
 
         pub.subscribe(on_message, 'succeed_allocate_reliability')
 
         pub.sendMessage('request_get_hardware_tree')
-        pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
 
-        DUT._attributes['allocation_method_id'] = 3
-        DUT._attributes['reliability_goal'] = 0.995
+        _assembly = DATAMGR.do_select(2, 'allocation')
+        _assembly.allocation_method_id = 3
+        _assembly.reliability_goal = 0.995
+        DATAMGR.do_update(2)
 
         pub.sendMessage('request_allocate_reliability', node_id=2)
 
@@ -1725,13 +1808,17 @@ class TestAllocation():
         def on_message(attributes):
             assert isinstance(attributes, dict)
             if attributes['hardware_id'] == 6:
-                assert attributes['hazard_rate_alloc'] == pytest.approx(0.00015753191)
+                assert attributes['hazard_rate_alloc'] == pytest.approx(
+                    0.00015753191)
                 assert attributes['mtbf_alloc'] == pytest.approx(6347.92004322)
-                assert attributes['reliability_alloc'] == pytest.approx(0.98437024)
+                assert attributes['reliability_alloc'] == pytest.approx(
+                    0.98437024)
             elif attributes['hardware_id'] == 7:
-                assert attributes['hazard_rate_alloc'] == pytest.approx(0.00045946809)
+                assert attributes['hazard_rate_alloc'] == pytest.approx(
+                    0.00045946809)
                 assert attributes['mtbf_alloc'] == pytest.approx(2176.42972910)
-                assert attributes['reliability_alloc'] == pytest.approx(0.95509276)
+                assert attributes['reliability_alloc'] == pytest.approx(
+                    0.95509276)
 
         pub.subscribe(on_message, 'succeed_allocate_reliability')
 
@@ -1751,9 +1838,128 @@ class TestAllocation():
         _assembly.int_factor = 5
         DATAMGR.do_update(7)
 
-        pub.sendMessage('request_get_all_hardware_attributes', node_id=2)
-
-        DUT._attributes['allocation_method_id'] = 4
-        DUT._attributes['hazard_rate_goal'] = 0.000617
+        _assembly = DATAMGR.do_select(2, 'allocation')
+        _assembly.allocation_method_id = 4
+        _assembly.hazard_rate_goal = 0.000617
+        DATAMGR.do_update(2)
 
         pub.sendMessage('request_allocate_reliability', node_id=2)
+
+
+@pytest.mark.usefixtures('test_dao', 'test_configuration')
+class TestSimilarItem():
+    """Class for similar item methods test suite."""
+
+    @pytest.mark.integration
+    def test_do_calculate_topic_633(self, test_dao, test_configuration):
+        """do_calculate_goal() should calculate the Topic 6.3.3 similar item."""
+        DATAMGR = dmHardware(test_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = amHardware(test_configuration)
+
+        pub.sendMessage('request_get_hardware_tree')
+
+        _assembly = DATAMGR.do_select(2, 'reliability')
+        _assembly.hazard_rate_active = 0.00617
+        _assembly = DATAMGR.do_select(2, 'similar_item')
+        _assembly.similar_item_method_id = 1
+        _assembly.change_description_1 = (b'Test change description for '
+                                          b'factor #1.')
+        _assembly.environment_from_id = 2
+        _assembly.environment_to_id = 3
+        _assembly.quality_from_id = 1
+        _assembly.quality_to_id = 2
+        _assembly.temperature_from = 55.0
+        _assembly.temperature_to = 65.0
+        DATAMGR.do_update(2)
+
+        pub.sendMessage('request_calculate_similar_item', node_id=2)
+
+        assert DUT._attributes['change_factor_1'] == 0.8
+        assert DUT._attributes['change_factor_2'] == 1.4
+        assert DUT._attributes['change_factor_3'] == 1.0
+        assert DUT._attributes['result_1'] == pytest.approx(0.0055089286)
+
+    @pytest.mark.integration
+    def test_do_calculate_user_defined(self, test_dao, test_configuration):
+        """do_calculate_goal() should calculate the Topic 644 similar item."""
+        DATAMGR = dmHardware(test_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = amHardware(test_configuration)
+
+        pub.sendMessage('request_get_hardware_tree')
+
+        _assembly = DATAMGR.do_select(2, 'similar_item')
+        _assembly.similar_item_method_id = 2
+        _assembly.change_description_1 = (b'Test change description for '
+                                          b'factor #1.')
+        _assembly.change_factor_1 = 0.85
+        _assembly.change_factor_2 = 1.2
+        _assembly.function_1 = 'pi1*pi2*hr'
+        _assembly.function_2 = '0'
+        _assembly.function_3 = '0'
+        _assembly.function_4 = '0'
+        _assembly.function_5 = '0'
+        _assembly.hazard_rate_active = 0.00617
+        DATAMGR.do_update(2)
+
+        pub.sendMessage('request_calculate_similar_item', node_id=2)
+
+        assert DUT._attributes['change_description_1'] == (
+            b'Test change description for factor #1.')
+        assert DUT._attributes['change_factor_1'] == 0.85
+        assert DUT._attributes['change_factor_2'] == 1.2
+        assert DUT._attributes['result_1'] == pytest.approx(0.0062934)
+
+    @pytest.mark.integration
+    def test_do_roll_up_change_descriptions(self, test_dao,
+                                            test_configuration):
+        """do_roll_up_change_descriptions() should combine all child change descriptions into a single change description for the parent."""
+        DATAMGR = dmHardware(test_dao)
+        DATAMGR.do_select_all(revision_id=1)
+        DUT = amHardware(test_configuration)
+
+        def on_message(attributes):
+            assert attributes['change_description_1'] == (
+                b'Test Assembly 6:\nThis is change decription 1 for assembly '
+                b'6\n\nTest Assembly 7:\nThis is change decription 1 for '
+                b'assembly 7\n\n'
+            )
+            assert attributes['change_description_2'] == (
+                b'Test Assembly 6:\nThis is change decription 2 for assembly '
+                b'6\n\nTest Assembly 7:\nThis is change decription 2 for '
+                b'assembly 7\n\n'
+            )
+            assert attributes['change_description_3'] == (
+                b'Test Assembly 6:\nThis is change decription 3 for assembly '
+                b'6\n\nTest Assembly 7:\nThis is change decription 3 for '
+                b'assembly 7\n\n'
+            )
+
+        pub.subscribe(on_message, 'succeed_roll_up_change_descriptions')
+
+        pub.sendMessage('request_get_hardware_tree')
+
+        _assembly = DATAMGR.do_select(6, 'hardware')
+        _assembly.name = 'Test Assembly 6'
+        _assembly = DATAMGR.do_select(6, 'similar_item')
+        _assembly.change_description_1 = (b'This is change decription 1 for '
+                                          b'assembly 6')
+        _assembly.change_description_2 = (b'This is change decription 2 for '
+                                          b'assembly 6')
+        _assembly.change_description_3 = (b'This is change decription 3 for '
+                                          b'assembly 6')
+        DATAMGR.do_update(6)
+
+        _assembly = DATAMGR.do_select(7, 'hardware')
+        _assembly.name = 'Test Assembly 7'
+        _assembly = DATAMGR.do_select(7, 'similar_item')
+        _assembly.change_description_1 = (b'This is change decription 1 for '
+                                          b'assembly 7')
+        _assembly.change_description_2 = (b'This is change decription 2 for '
+                                          b'assembly 7')
+        _assembly.change_description_3 = (b'This is change decription 3 for '
+                                          b'assembly 7')
+        DATAMGR.do_update(7)
+
+        pub.sendMessage('request_roll_up_change_descriptions', node_id=2)

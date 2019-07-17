@@ -13,7 +13,7 @@ import pytest
 from ramstk.models.programdb.RAMSTKSimilarItem import RAMSTKSimilarItem
 
 ATTRIBUTES = {
-    'method_id': 0,
+    'similar_item_method_id': 0,
     'quality_to_id': 0,
     'parent_id': 0,
     'change_factor_4': 1.0,
@@ -25,11 +25,11 @@ ATTRIBUTES = {
     'change_factor_3': 1.0,
     'change_factor_8': 1.0,
     'change_factor_9': 1.0,
-    'function_5': '',
-    'function_4': '',
-    'function_3': '',
-    'function_2': '',
-    'function_1': '',
+    'function_5': '0',
+    'function_4': '0',
+    'function_3': '0',
+    'function_2': '0',
+    'function_1': '0',
     'quality_from_id': 0,
     'change_factor_10': 1.0,
     'user_blob_3': b'',
@@ -104,12 +104,12 @@ def test_ramstksimilaritem_create(test_dao):
     assert DUT.change_factor_10 == 1.0
     assert DUT.environment_from_id == 0
     assert DUT.environment_to_id == 0
-    assert DUT.function_1 == ''
-    assert DUT.function_2 == ''
-    assert DUT.function_3 == ''
-    assert DUT.function_4 == ''
-    assert DUT.function_5 == ''
-    assert DUT.method_id == 1
+    assert DUT.function_1 == '0'
+    assert DUT.function_2 == '0'
+    assert DUT.function_3 == '0'
+    assert DUT.function_4 == '0'
+    assert DUT.function_5 == '0'
+    assert DUT.similar_item_method_id == 1
     assert DUT.parent_id == 0
     assert DUT.quality_from_id == 0
     assert DUT.quality_to_id == 0
@@ -171,12 +171,12 @@ def test_get_attributes(test_dao):
     assert _attributes['change_factor_10'] == 1.0
     assert _attributes['environment_from_id'] == 0
     assert _attributes['environment_to_id'] == 0
-    assert _attributes['function_1'] == ''
-    assert _attributes['function_2'] == ''
-    assert _attributes['function_3'] == ''
-    assert _attributes['function_4'] == ''
-    assert _attributes['function_5'] == ''
-    assert _attributes['method_id'] == 1
+    assert _attributes['function_1'] == '0'
+    assert _attributes['function_2'] == '0'
+    assert _attributes['function_3'] == '0'
+    assert _attributes['function_4'] == '0'
+    assert _attributes['function_5'] == '0'
+    assert _attributes['similar_item_method_id'] == 1
     assert _attributes['parent_id'] == 0
     assert _attributes['quality_from_id'] == 0
     assert _attributes['quality_to_id'] == 0
