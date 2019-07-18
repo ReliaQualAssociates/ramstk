@@ -12,7 +12,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.Exceptions import DataAccessError
-from ramstk.models.programdb import RAMSTKRevision
+from ramstk.models.programdb import RAMSTKFailureDefinition, RAMSTKRevision
 
 
 class DataManager(RAMSTKDataManager):
@@ -89,6 +89,39 @@ class DataManager(RAMSTKDataManager):
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_revision', error_msg=_error_msg)
 
+    def _do_set_failure_definition(self, node_id, key, value, definition_id):
+        """
+        Set the attributes of the record associated with definition ID.
+
+        This is a helper method to set the desired failure definition attribute
+        since the failure definitions are carried in a dict and we need to
+        select the correct record to update.
+
+        :param int node_id: the ID of the record in the RAMSTK Program
+            database table whose attributes are to be set.
+        :param str key: the key in the attributes dict.
+        :param value: the new value of the attribute to set.
+        :param int definition_id: the failure definition ID if the attribute
+            being set is a failure definition attribute.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _attributes = self.do_select(
+                node_id,
+                table='failure_definitions')[definition_id].get_attributes()
+            _attributes.pop('revision_id')
+            _attributes.pop('definition_id')
+        except KeyError:
+            _attributes = {}
+
+        if key in _attributes:
+            _attributes[key] = value
+            self.do_select(
+                node_id,
+                table='failure_definitions')[definition_id].set_attributes(
+                    _attributes)
+
     def do_get_all_attributes(self, node_id):
         """
         Retrieve all RAMSTK data tables' attributes for the revision.
@@ -102,12 +135,14 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _attributes = {}
-        for _table in [
-                'revision'
-        ]:
-            _attributes.update(
-                self.do_select(node_id, table=_table).get_attributes())
+        _attributes = {'failure_definitions': {}}
+        for _table in ['revision', 'failure_definitions']:
+            if _table == 'failure_definitions':
+                _attributes['failure_definitions'].update(
+                    self.do_select(node_id, table=_table))
+            else:
+                _attributes.update(
+                    self.do_select(node_id, table=_table).get_attributes())
 
         pub.sendMessage('succeed_get_all_revision_attributes',
                         attributes=_attributes)
@@ -123,9 +158,13 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        if table == 'failure_definitions':
+            _attributes = self.do_select(node_id, table=table)
+        else:
+            _attributes = self.do_select(node_id, table=table).get_attributes()
+
         pub.sendMessage('succeed_get_revision_attributes',
-                        attributes=self.do_select(
-                            node_id, table=table).get_attributes())
+                        attributes=_attributes)
 
     def do_get_tree(self):
         """
@@ -150,16 +189,13 @@ class DataManager(RAMSTKDataManager):
 
             self.last_id = _revision.revision_id
 
-            _data_package = {
-                'revision': _revision
-                }
+            _data_package = {'revision': _revision, 'failure_definitions': {}}
             self.tree.create_node(tag=_revision.name,
                                   identifier=_revision.revision_id,
                                   parent=self._root,
                                   data=_data_package)
 
-            pub.sendMessage('succeed_insert_revision',
-                            node_id=self.last_id)
+            pub.sendMessage('succeed_insert_revision', node_id=self.last_id)
         except DataAccessError as _error:
             print(_error)
             pub.sendMessage("fail_insert_revision", error_message=_error)
@@ -176,8 +212,17 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(_node.identifier)
 
         for _revision in self.dao.session.query(RAMSTKRevision).all():
+
+            _failure_definitions = self.dao.session.query(
+                RAMSTKFailureDefinition).filter(
+                    RAMSTKFailureDefinition.revision_id ==
+                    _revision.revision_id).all()
+            _failure_definitions = self.do_build_dict(_failure_definitions,
+                                                      'definition_id')
+
             _data_package = {
-                'revision': _revision
+                'revision': _revision,
+                'failure_definitions': _failure_definitions
             }
 
             self.tree.create_node(tag=_revision.name,
@@ -189,7 +234,7 @@ class DataManager(RAMSTKDataManager):
 
         pub.sendMessage('succeed_retrieve_revisions', tree=self.tree)
 
-    def do_set_all_attributes(self, attributes):
+    def do_set_all_attributes(self, attributes, definition_id=None):
         """
         Set all the attributes of the record associated with the Module ID.
 
@@ -197,14 +242,16 @@ class DataManager(RAMSTKDataManager):
         call.  Used mainly by the AnalysisManager.
 
         :param dict attributes: the aggregate attributes dict for the revision.
+        :keyword int definition_id: the failure definition ID if the attribute
+            being set is a failure definition attribute.
         :return: None
         :rtype: None
         """
         for _key in attributes:
             self.do_set_attributes(attributes['revision_id'], _key,
-                                   attributes[_key])
+                                   attributes[_key], definition_id)
 
-    def do_set_attributes(self, node_id, key, value):
+    def do_set_attributes(self, node_id, key, value, definition_id=None):
         """
         Set the attributes of the record associated with the Module ID.
 
@@ -212,24 +259,28 @@ class DataManager(RAMSTKDataManager):
             database table whose attributes are to be set.
         :param str key: the key in the attributes dict.
         :param value: the new value of the attribute to set.
+        :keyword int definition_id: the failure definition ID if the attribute
+            being set is a failure definition attribute.
         :return: None
         :rtype: None
         """
-        for _table in [
-                'revision'
-        ]:
-            _attributes = self.do_select(node_id,
-                                         table=_table).get_attributes()
-            if key in _attributes:
-                _attributes[key] = value
+        for _table in ['revision', 'failure_definitions']:
+            if _table == 'failure_definitions':
+                self._do_set_failure_definition(node_id, key, value,
+                                                definition_id)
+            else:
+                _attributes = self.do_select(node_id,
+                                             table=_table).get_attributes()
+                if key in _attributes:
+                    _attributes[key] = value
 
-                try:
-                    _attributes.pop('revision_id')
-                except KeyError:
-                    pass
+                    try:
+                        _attributes.pop('revision_id')
+                    except KeyError:
+                        pass
 
-                self.do_select(node_id,
-                               table=_table).set_attributes(_attributes)
+                    self.do_select(node_id,
+                                   table=_table).set_attributes(_attributes)
 
     def do_update(self, node_id):
         """

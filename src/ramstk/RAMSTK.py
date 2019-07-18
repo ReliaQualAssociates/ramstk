@@ -19,6 +19,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers.hardware import dmHardware
+from ramstk.controllers.revision import dmRevision
 from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
 from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
 from ramstk.dao.commondb.RAMSTKGroup import RAMSTKGroup
@@ -49,7 +50,6 @@ from ramstk.modules.options import dtcOptions
 from ramstk.modules.pof import dtcPoF
 from ramstk.modules.preferences import dtcPreferences
 from ramstk.modules.requirement import dtcRequirement
-from ramstk.modules.revision import dtcRevision
 from ramstk.modules.similar_item import dtcSimilarItem
 from ramstk.modules.stakeholder import dtcStakeholder
 from ramstk.modules.usage import dtcUsageProfile
@@ -808,10 +808,8 @@ class RAMSTK():
         _error_code, _msg = self.ramstk_model.do_open_program(_database)
         if _error_code == 0:
             pub.sendMessage('requestOpen')
-            self.dic_controllers['revision'] = dtcRevision(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
+            self.dic_controllers['revision'] = dmRevision(
+                self.ramstk_model.program_dao
             )
             self.dic_controllers['function'] = dtcFunction(
                 self.ramstk_model.program_dao,
