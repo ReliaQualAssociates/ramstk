@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.modules.hardware.Model.py is part of The RAMSTK Project
+#       ramstk.controllers.hardware.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -193,7 +193,8 @@ class DataManager(RAMSTKDataManager):
                     'mil_hdbk_217f': _milhdbkf,
                     'nswc': _nswc,
                     'reliability': _reliability,
-                    'allocation': _allocation
+                    'allocation': _allocation,
+                    'similar_item': _similaritem
                 }
                 self.tree.create_node(tag=_hardware.comp_ref_des,
                                       identifier=_hardware.hardware_id,

@@ -600,6 +600,9 @@ class TestDataManager():
             assert isinstance(
                 DUT.tree.get_node(node_id).data['allocation'],
                 RAMSTKAllocation)
+            assert isinstance(
+                DUT.tree.get_node(node_id).data['similar_item'],
+                RAMSTKSimilarItem)
             assert DUT.tree.get_node(node_id).data['hardware'].revision_id == 1
             assert DUT.tree.get_node(node_id).data['hardware'].parent_id == 1
             assert DUT.tree.get_node(node_id).data['hardware'].part == 0
@@ -635,6 +638,9 @@ class TestDataManager():
             assert isinstance(
                 DUT.tree.get_node(node_id).data['allocation'],
                 RAMSTKAllocation)
+            assert isinstance(
+                DUT.tree.get_node(node_id).data['similar_item'],
+                RAMSTKSimilarItem)
             assert DUT.tree.get_node(node_id).data['hardware'].revision_id == 1
             assert DUT.tree.get_node(node_id).data['hardware'].parent_id == 8
             assert DUT.tree.get_node(node_id).data['hardware'].part == 0
@@ -670,6 +676,9 @@ class TestDataManager():
             assert isinstance(
                 DUT.tree.get_node(node_id).data['allocation'],
                 RAMSTKAllocation)
+            assert isinstance(
+                DUT.tree.get_node(node_id).data['similar_item'],
+                RAMSTKSimilarItem)
             assert DUT.tree.get_node(node_id).data['hardware'].revision_id == 1
             assert DUT.tree.get_node(node_id).data['hardware'].parent_id == 9
             assert DUT.tree.get_node(node_id).data['hardware'].part == 1
