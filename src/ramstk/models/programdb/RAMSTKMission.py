@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.RAMSTKMission.py is part of The RAMSTK Project
+#       ramstk.models.programdb.RAMSTKMission.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -23,6 +23,11 @@ class RAMSTKMission(RAMSTK_BASE):
     This table shares a One-to-Many relationship with ramstk_mission_phase.
     """
 
+    __defaults__ = {
+        'description': b'',
+        'mission_time': 0.0,
+        'time_units': 'hours'
+    }
     __tablename__ = 'ramstk_mission'
     __table_args__ = {'extend_existing': True}
 
@@ -39,9 +44,15 @@ class RAMSTKMission(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    description = Column('fld_description', BLOB, default=b'')
-    mission_time = Column('fld_mission_time', Float, default=0.0)
-    time_units = Column('fld_time_units', String(256), default='hours')
+    description = Column('fld_description',
+                         BLOB,
+                         default=__defaults__['description'])
+    mission_time = Column('fld_mission_time',
+                          Float,
+                          default=__defaults__['mission_time'])
+    time_units = Column('fld_time_units',
+                        String(256),
+                        default=__defaults__['time_units'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='mission')
@@ -71,27 +82,19 @@ class RAMSTKMission(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKMission data model attributes.
+        Set the current values of RAMSTKMission data model attributes.
 
-        :param tuple attributes: tuple containing the values to set.
-        :return:
+        .. note:: you should pop the revision ID and mission ID entries from
+        the attributes dict before passing it to this method.
+
+        :param dict attributes: dict of values to assign to the instance
+            attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKMission {0:d} attributes.". \
-            format(self.mission_id)
-
-        try:
-            self.description = none_to_default(attributes['description'], b'')
-            self.mission_time = float(
-                none_to_default(attributes['mission_time'], 0.0),
-            )
-            self.time_units = str(
-                none_to_default(attributes['time_units'], 'hours'),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKMission.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

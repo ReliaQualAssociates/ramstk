@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.RAMSTKEnvironment.py is part of The RAMSTK Project
+#       ramstk.models.programdb.RAMSTKEnvironment.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -22,6 +23,17 @@ class RAMSTKEnvironment(RAMSTK_BASE):
     This table shares a Many-to-One relationship with ramstk_mission_phase.
     """
 
+    __defaults__ = {
+        'name': 'Condition Name',
+        'units': 'Units',
+        'minimum': 0.0,
+        'maximum': 0.0,
+        'mean': 0.0,
+        'variance': 0.0,
+        'ramp_rate': 0.0,
+        'low_dwell_time': 0.0,
+        'high_dwell_time': 0.0
+    }
     __tablename__ = 'ramstk_environment'
     __table_args__ = {'extend_existing': True}
 
@@ -42,15 +54,21 @@ class RAMSTKEnvironment(RAMSTK_BASE):
         nullable=False,
     )
 
-    name = Column('fld_name', String(256), default='Condition Name')
-    units = Column('fld_units', String(128), default='Units')
-    minimum = Column('fld_minimum', Float, default=0.0)
-    maximum = Column('fld_maximum', Float, default=0.0)
-    mean = Column('fld_mean', Float, default=0.0)
-    variance = Column('fld_variance', Float, default=0.0)
-    ramp_rate = Column('fld_ramp_rate', Float, default=0.0)
-    low_dwell_time = Column('fld_low_dwell_time', Float, default=0.0)
-    high_dwell_time = Column('fld_high_dwell_time', Float, default=0.0)
+    name = Column('fld_name', String(256), default=__defaults__['name'])
+    units = Column('fld_units', String(128), default=__defaults__['units'])
+    minimum = Column('fld_minimum', Float, default=__defaults__['minimum'])
+    maximum = Column('fld_maximum', Float, default=__defaults__['maximum'])
+    mean = Column('fld_mean', Float, default=__defaults__['mean'])
+    variance = Column('fld_variance', Float, default=__defaults__['variance'])
+    ramp_rate = Column('fld_ramp_rate',
+                       Float,
+                       default=__defaults__['ramp_rate'])
+    low_dwell_time = Column('fld_low_dwell_time',
+                            Float,
+                            default=__defaults__['low_dwell_time'])
+    high_dwell_time = Column('fld_high_dwell_time',
+                             Float,
+                             default=__defaults__['high_dwell_time'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     phase = relationship('RAMSTKMissionPhase', back_populates='environment')
@@ -86,39 +104,19 @@ class RAMSTKEnvironment(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKEnvironment data model attributes.
+        Set the current values of RAMSTKEnvironment data model attributes.
 
-        :param dict attributes: dict containing {attr name:attr value} pairs
-                                of the values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the phase ID and environment ID entries from
+        the attributes dict before passing it to this method.
+
+        :param dict attributes: dict of values to assign to the instance
+            attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKEnvironment {0:d} attributes.". \
-            format(self.environment_id)
-
-        try:
-            self.name = str(
-                none_to_default(attributes['name'], 'Condition Name'),
-            )
-            self.units = str(none_to_default(attributes['units'], 'Units'))
-            self.minimum = float(none_to_default(attributes['minimum'], 0.0))
-            self.maximum = float(none_to_default(attributes['maximum'], 0.0))
-            self.mean = float(none_to_default(attributes['mean'], 0.0))
-            self.variance = float(none_to_default(attributes['variance'], 0.0))
-            self.ramp_rate = float(
-                none_to_default(attributes['ramp_rate'], 0.0),
-            )
-            self.low_dwell_time = float(
-                none_to_default(attributes['low_dwell_time'], 0.0),
-            )
-            self.high_dwell_time = float(
-                none_to_default(attributes['high_dwell_time'], 0.0),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKEnvironment.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
