@@ -1,28 +1,29 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.RAMSTKFailureDefinition.py is part of The RAMSTK Project
+#       ramstk.models.programdb..RAMSTKFailureDefinition.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKFailureDefinition Table Module."""
 
 # Third Party Imports
-# Import third party modules.
 from sqlalchemy import BLOB, Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.Utilities import error_handler, none_to_default
+from ramstk.Utilities import none_to_default
 
 
 class RAMSTKFailureDefinition(RAMSTK_BASE):
     """
-    Class representing ramstk_failure_definition table in RAMSTK Program database.
+    Class representing ramstk_failure_definition table in RAMSTK Program db.
 
     This table shares a Many-to-One relationship with ramstk_revision.
     """
 
+    __defaults__ = {'definition': b'Failure Definition'}
     __tablename__ = 'ramstk_failure_definition'
     __table_args__ = {'extend_existing': True}
 
@@ -40,7 +41,9 @@ class RAMSTKFailureDefinition(RAMSTK_BASE):
         nullable=False,
     )
 
-    definition = Column('fld_definition', BLOB, default=b'Failure Definition')
+    definition = Column('fld_definition',
+                        BLOB,
+                        default=__defaults__['definition'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='failures')
@@ -62,30 +65,19 @@ class RAMSTKFailureDefinition(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKFailureDefinition attributes.
+        Set current values of RAMSTKFailureDefinition data model attributes.
 
-        :param dict attributes: dict containing {attr name:attr value} pairs
-                                of the values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the revision ID and failure definition ID
+        entries from the attributes dict before passing it to this method.
+
+        :param dict attributes: dict of values to assign to the instance
+            attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKFailureDefinition {0:d} attributes.".\
-            format(self.definition_id)
-
-        try:
-            self.definition = none_to_default(
-                attributes['definition'],
-                b'Failure Definition',
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKFailureDefinition.set_attributes().".format(str(_err))
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RAMSTK ERROR: Incorrect data type when converting one or " \
-                   "more RAMSTKFailureDefinition attributes."
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

@@ -17,8 +17,8 @@ from sqlalchemy.orm import sessionmaker
 
 # RAMSTK Package Imports
 from ramstk.dao.DAO import DAO
-from ramstk.dao.programdb.RAMSTKRevision import RAMSTKRevision
 from ramstk.Exceptions import DataAccessError
+from ramstk.models.programdb.RAMSTKRevision import RAMSTKRevision
 
 TEMPDIR = tempfile.gettempdir()
 
