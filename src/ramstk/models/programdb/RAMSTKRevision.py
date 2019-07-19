@@ -253,7 +253,7 @@ class RAMSTKRevision(RAMSTK_BASE):
         Set the current values of RAMSTKRevision data model attributes.
 
         .. note:: you should pop the revision IDentry from the attributes dict
-        before passing it to this method.
+            before passing it to this method.
 
         :param dict attributes: dict of values to assign to the instance
             attributes.

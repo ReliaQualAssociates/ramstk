@@ -93,7 +93,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE):
         Set the current values of RAMSTKMissionPhase data model attributes.
 
         .. note:: you should pop the mission ID and phase ID entries from
-        the attributes dict before passing it to this method.
+            the attributes dict before passing it to this method.
 
         :param dict attributes: dict of values to assign to the instance
             attributes.

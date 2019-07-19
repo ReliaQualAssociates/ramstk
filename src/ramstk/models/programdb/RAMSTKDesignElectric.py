@@ -353,7 +353,7 @@ class RAMSTKDesignElectric(RAMSTK_BASE):
         Set the curent values of RAMSTKDesignElectric data model attributes.
 
         .. note:: you should pop the revision ID and hardware ID entries from
-        the attributes dict before passing it to this method.
+            the attributes dict before passing it to this method.
 
         :param tuple attributes: tuple of values to assign to the instance
             attributes.

@@ -357,7 +357,7 @@ class RAMSTKSimilarItem(RAMSTK_BASE):
         Set the RAMSTKSimilarItem data model attributes.
 
         .. note:: you should pop the revision ID and hardware ID entries from
-        the attributes dict before passing it to this method.
+            the attributes dict before passing it to this method.
 
         :param dict attributes: dict of key:value pairs to assign to the
             instance attributes.

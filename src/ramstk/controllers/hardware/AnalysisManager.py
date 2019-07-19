@@ -234,7 +234,7 @@ class AnalysisManager():
         Calculate the similar item hazard rate per topic 6.3.3.
 
         .. note:: this analysis uses the adjustment factors from RAC/RiAC's The
-        Reliability Tookkit, Commercial Practices Edition, section 6.3.3.
+            Reliability Tookkit, Commercial Practices Edition, section 6.3.3.
 
         :return: None
         :rtype: None

@@ -288,7 +288,7 @@ class RAMSTKHardware(RAMSTK_BASE):
         Set the current values of the RAMSTKHardware data model attributes.
 
         .. note:: you should pop the revision ID and hardware ID entries from
-        the attributes dict before passing it to this method.
+            the attributes dict before passing it to this method.
 
         :param tuple attributes: tuple of attribute values to assign to the
             attributes.
