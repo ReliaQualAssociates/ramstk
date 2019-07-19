@@ -60,7 +60,8 @@ class RAMSTKRevision(RAMSTK_BASE):
         'program_time': 0.0,
         'program_time_sd': 0.0,
         'program_cost': 0.0,
-        'program_cost_sd': 0.0}
+        'program_cost_sd': 0.0
+    }
     __tablename__ = 'ramstk_revision'
     __table_args__ = {'extend_existing': True}
 
@@ -72,74 +73,119 @@ class RAMSTKRevision(RAMSTK_BASE):
         nullable=False,
     )
     availability_logistics = Column(
-        'fld_availability_logistics', Float, nullable=False, default=__defaults__['availability_logistics']
-    )
-    availability_mission = Column(
-        'fld_availability_mission', Float, nullable=False, default=__defaults__['availability_mission']
-    )
-    cost = Column('fld_cost', Float, nullable=False, default=__defaults__['cost'])
-    cost_failure = Column(
-        'fld_cost_failure', Float, nullable=False, default=__defaults__['cost_failure']
-    )
-    cost_hour = Column('fld_cost_hour', Float, nullable=False, default=__defaults__['cost_hour'])
-    hazard_rate_active = Column(
-        'fld_hazard_rate_active', Float, nullable=False, default=__defaults__['hazard_rate_active']
-    )
-    hazard_rate_dormant = Column(
-        'fld_hazard_rate_dormant', Float, nullable=False, default=__defaults__['hazard_rate_dormant']
-    )
+        'fld_availability_logistics',
+        Float,
+        nullable=False,
+        default=__defaults__['availability_logistics'])
+    availability_mission = Column('fld_availability_mission',
+                                  Float,
+                                  nullable=False,
+                                  default=__defaults__['availability_mission'])
+    cost = Column('fld_cost',
+                  Float,
+                  nullable=False,
+                  default=__defaults__['cost'])
+    cost_failure = Column('fld_cost_failure',
+                          Float,
+                          nullable=False,
+                          default=__defaults__['cost_failure'])
+    cost_hour = Column('fld_cost_hour',
+                       Float,
+                       nullable=False,
+                       default=__defaults__['cost_hour'])
+    hazard_rate_active = Column('fld_hazard_rate_active',
+                                Float,
+                                nullable=False,
+                                default=__defaults__['hazard_rate_active'])
+    hazard_rate_dormant = Column('fld_hazard_rate_dormant',
+                                 Float,
+                                 nullable=False,
+                                 default=__defaults__['hazard_rate_dormant'])
     hazard_rate_logistics = Column(
-        'fld_hazard_rate_logistics', Float, nullable=False, default=__defaults__['hazard_rate_logistics']
-    )
-    hazard_rate_mission = Column(
-        'fld_hazard_rate_mission', Float, nullable=False, default=__defaults__['hazard_rate_mission']
-    )
-    hazard_rate_software = Column(
-        'fld_hazard_rate_software', Float, nullable=False, default=__defaults__['hazard_rate_software']
-    )
+        'fld_hazard_rate_logistics',
+        Float,
+        nullable=False,
+        default=__defaults__['hazard_rate_logistics'])
+    hazard_rate_mission = Column('fld_hazard_rate_mission',
+                                 Float,
+                                 nullable=False,
+                                 default=__defaults__['hazard_rate_mission'])
+    hazard_rate_software = Column('fld_hazard_rate_software',
+                                  Float,
+                                  nullable=False,
+                                  default=__defaults__['hazard_rate_software'])
     mmt = Column('fld_mmt', Float, nullable=False, default=__defaults__['mmt'])
-    mcmt = Column('fld_mcmt', Float, nullable=False, default=__defaults__['mcmt'])
-    mpmt = Column('fld_mpmt', Float, nullable=False, default=__defaults__['mpmt'])
-    mtbf_logistics = Column(
-        'fld_mtbf_logistics', Float, nullable=False, default=__defaults__['mtbf_logistics']
-    )
-    mtbf_mission = Column(
-        'fld_mtbf_mission', Float, nullable=False, default=__defaults__['mtbf_mission']
-    )
-    mttr = Column('fld_mttr', Float, nullable=False, default=__defaults__['mttr'])
-    name = Column('fld_name', String(128), nullable=False, default=__defaults__['name'])
+    mcmt = Column('fld_mcmt',
+                  Float,
+                  nullable=False,
+                  default=__defaults__['mcmt'])
+    mpmt = Column('fld_mpmt',
+                  Float,
+                  nullable=False,
+                  default=__defaults__['mpmt'])
+    mtbf_logistics = Column('fld_mtbf_logistics',
+                            Float,
+                            nullable=False,
+                            default=__defaults__['mtbf_logistics'])
+    mtbf_mission = Column('fld_mtbf_mission',
+                          Float,
+                          nullable=False,
+                          default=__defaults__['mtbf_mission'])
+    mttr = Column('fld_mttr',
+                  Float,
+                  nullable=False,
+                  default=__defaults__['mttr'])
+    name = Column('fld_name',
+                  String(128),
+                  nullable=False,
+                  default=__defaults__['name'])
     reliability_logistics = Column(
-        'fld_reliability_logistics', Float, nullable=False, default=__defaults__['reliability_logistics']
-    )
-    reliability_mission = Column(
-        'fld_reliability_mission', Float, nullable=False, default=__defaults__['reliability_mission']
-    )
-    remarks = Column('fld_remarks', BLOB, nullable=False, default=__defaults__['remarks'])
-    total_part_count = Column(
-        'fld_total_part_count', Integer, nullable=False, default=__defaults__['total_part_count']
-    )
-    revision_code = Column(
-        'fld_revision_code', String(8), nullable=False, default=__defaults__['revision_code']
-    )
-    program_time = Column(
-        'fld_program_time', Float, nullable=False, default=__defaults__['program_time']
-    )
-    program_time_sd = Column(
-        'fld_program_time_sd', Float, nullable=False, default=__defaults__['program_time_sd']
-    )
-    program_cost = Column(
-        'fld_program_cost', Float, nullable=False, default=__defaults__['program_cost']
-    )
-    program_cost_sd = Column(
-        'fld_program_cost_sd', Float, nullable=False, default=__defaults__['program_cost_sd']
-    )
+        'fld_reliability_logistics',
+        Float,
+        nullable=False,
+        default=__defaults__['reliability_logistics'])
+    reliability_mission = Column('fld_reliability_mission',
+                                 Float,
+                                 nullable=False,
+                                 default=__defaults__['reliability_mission'])
+    remarks = Column('fld_remarks',
+                     BLOB,
+                     nullable=False,
+                     default=__defaults__['remarks'])
+    total_part_count = Column('fld_total_part_count',
+                              Integer,
+                              nullable=False,
+                              default=__defaults__['total_part_count'])
+    revision_code = Column('fld_revision_code',
+                           String(8),
+                           nullable=False,
+                           default=__defaults__['revision_code'])
+    program_time = Column('fld_program_time',
+                          Float,
+                          nullable=False,
+                          default=__defaults__['program_time'])
+    program_time_sd = Column('fld_program_time_sd',
+                             Float,
+                             nullable=False,
+                             default=__defaults__['program_time_sd'])
+    program_cost = Column('fld_program_cost',
+                          Float,
+                          nullable=False,
+                          default=__defaults__['program_cost'])
+    program_cost_sd = Column('fld_program_cost_sd',
+                             Float,
+                             nullable=False,
+                             default=__defaults__['program_cost_sd'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     mission = relationship(
-        'RAMSTKMission', back_populates='revision', cascade='delete',
+        'RAMSTKMission',
+        back_populates='revision',
+        cascade='delete',
     )
     failures = relationship(
-        'RAMSTKFailureDefinition', back_populates='revision',
+        'RAMSTKFailureDefinition',
+        back_populates='revision',
     )
     function = relationship('RAMSTKFunction', back_populates='revision')
     requirement = relationship('RAMSTKRequirement', back_populates='revision')
@@ -153,12 +199,13 @@ class RAMSTKRevision(RAMSTK_BASE):
     matrix = relationship('RAMSTKMatrix', back_populates='revision')
     hazard = relationship('RAMSTKHazardAnalysis', back_populates='revision')
     program_status = relationship(
-        'RAMSTKProgramStatus', back_populates='revision',
+        'RAMSTKProgramStatus',
+        back_populates='revision',
     )
 
     def get_attributes(self):
         """
-        Retrieve the current values of the RAMSTKRevision data model attributes.
+        Retrieve current values of the RAMSTKRevision data model attributes.
 
         :return: {revision_id, availability, mission_availability, cost,
                   cost_per_failure, cost_per_hour, active_hazard_rate,
