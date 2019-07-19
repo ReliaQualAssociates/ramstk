@@ -349,10 +349,10 @@ def calculate_junction_temperature(temperature_case, environment_active_id,
     Calculate the junction temperature of the semiconductor device.
 
     .. note:: This function will also estimate the case temperature if it is
-    passed in at less than or equal to zero.
+        passed in at less than or equal to zero.
 
     .. note:: This function will also estimate the junction-case thermal
-    resistance (thetaJC) if it is passed in at less than or equal to zero.
+        resistance (thetaJC) if it is passed in at less than or equal to zero.
 
     :param float temperature_case: the case temperature of the device in C.
     :param int environment_active_id: the active environment identifier.

@@ -319,7 +319,7 @@ class RAMSTKDesignMechanic(RAMSTK_BASE):
         Set the current values of RAMSTKDesignMechanic data model attributes.
 
         .. note:: you should pop the revision ID and hardware ID entries from
-        the attributes dict before passing it to this method.
+            the attributes dict before passing it to this method.
 
         :param dict attributes: dict of values to assign to the instance
             attributes.

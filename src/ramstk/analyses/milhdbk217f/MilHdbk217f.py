@@ -186,8 +186,8 @@ def _get_part_count_quality_factor(category_id, subcategory_id, quality_id):
     .. note:: Fuses and Lamps have no piQ input.
 
     .. note:: Semiconductors have a more complicated piQ listing and the
-    function to select the correct value is included in the semiconductor model
-    file.
+        function to select the correct value is included in the semiconductor
+        model file.
 
     :param int category_id: the category ID of the component.
     :param int subcategory_id: the subcategory ID of the component.

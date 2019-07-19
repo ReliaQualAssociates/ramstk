@@ -85,7 +85,7 @@ class RAMSTKMission(RAMSTK_BASE):
         Set the current values of RAMSTKMission data model attributes.
 
         .. note:: you should pop the revision ID and mission ID entries from
-        the attributes dict before passing it to this method.
+            the attributes dict before passing it to this method.
 
         :param dict attributes: dict of values to assign to the instance
             attributes.

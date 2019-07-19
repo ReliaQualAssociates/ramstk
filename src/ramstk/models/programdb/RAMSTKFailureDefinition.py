@@ -68,7 +68,7 @@ class RAMSTKFailureDefinition(RAMSTK_BASE):
         Set current values of RAMSTKFailureDefinition data model attributes.
 
         .. note:: you should pop the revision ID and failure definition ID
-        entries from the attributes dict before passing it to this method.
+            entries from the attributes dict before passing it to this method.
 
         :param dict attributes: dict of values to assign to the instance
             attributes.
