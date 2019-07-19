@@ -1,11 +1,12 @@
+********
 Overview
-========
+********
 
 `RAMSTK` provides several analytical tools for estimating the RAMS metrics for
 electromechanical systems.
 
 Requirements
-------------
+============
 
 Currently RAMSTK supports Python 3.7+ and requires the following Python
 packages to be installed somewhere in your PYTHONPATH.
@@ -29,7 +30,7 @@ whatever Sphinx theme you'd like.  I happen to prefer the
 `py3doc enhanced theme <https://github.com/ionelmc/sphinx-py3doc-enhanced-theme>`_.
 
 Installation
-------------
+============
 
 `RAMSTK` can be installed in several ways.  Firstly, `RAMSTK` is available from
 PyPi.
@@ -51,7 +52,7 @@ where the *--user* switch is optional if you're sure you want to install
 `RAMSTK` in a system-wide location.
 
 License
--------
+=======
 
 `RAMSTK` is provided to you under the BSD, 3-clause license, reproduced below.
 
