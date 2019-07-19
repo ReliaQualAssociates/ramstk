@@ -26,7 +26,7 @@ target/
 *.pyc
 *.pyo
 
-# Sphinx and LaTeX intermediatei, working, and output directories and files to ignore.
+# Sphinx and LaTeX intermediate, working, and output directories and files to ignore.
 *.aux
 *.dot
 *.log
@@ -46,6 +46,7 @@ _templates/
 *.xls*
 .coverage
 _temp/
+devtools/update_docs.txt
 pylintout
 coverage.xml
 
