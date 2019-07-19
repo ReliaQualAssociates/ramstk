@@ -41,7 +41,6 @@ from ramstk.gui.gtk import ramstk
 from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
 from ramstk.modules.exports import dtcExports
-from ramstk.modules.failure_definition import dtcFailureDefinition
 from ramstk.modules.fmea import dtcFMEA
 from ramstk.modules.function import dtcFunction
 from ramstk.modules.hazops import dtcHazardAnalysis
@@ -52,7 +51,6 @@ from ramstk.modules.preferences import dtcPreferences
 from ramstk.modules.requirement import dtcRequirement
 from ramstk.modules.similar_item import dtcSimilarItem
 from ramstk.modules.stakeholder import dtcStakeholder
-from ramstk.modules.usage import dtcUsageProfile
 from ramstk.modules.validation import dtcValidation
 
 # RAMSTK Local Imports
@@ -592,8 +590,6 @@ class RAMSTK():
             'validation'
             'survival'
             'matrices'
-            'profile'
-            'definition'
             'fmea'
             'stakeholder'
             'hazard'
@@ -666,14 +662,12 @@ class RAMSTK():
         # Initialize public dictionary instance attributes.
         self.dic_controllers = {
             'options': None,
-            'definition': None,
             'function': None,
             'revision': None,
             'requirement': None,
             'hardware': None,
             'validation': None,
             'matrices': None,
-            'profile': None,
             'ffmea': None,
             'fmea': None,
             'stakeholder': None,
@@ -825,16 +819,6 @@ class RAMSTK():
                 self.ramstk_model.program_dao
             )
             self.dic_controllers['validation'] = dtcValidation(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
-            )
-            self.dic_controllers['profile'] = dtcUsageProfile(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
-            )
-            self.dic_controllers['definition'] = dtcFailureDefinition(
                 self.ramstk_model.program_dao,
                 self.RAMSTK_CONFIGURATION,
                 test=False,

@@ -18,7 +18,7 @@ from ramstk.Utilities import none_to_default
 
 class RAMSTKEnvironment(RAMSTK_BASE):
     """
-    Class to represent the ramstk_environment table in the RAMSTK Program database.
+    Class to represent ramstk_environment table in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mission_phase.
     """

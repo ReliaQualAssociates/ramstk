@@ -1,4 +1,4 @@
-# pylint: disable=protected-access
+# pylint: disable=protected-access, no-self-use
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_revision.py is part of The RAMSTK Project
@@ -15,7 +15,10 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers.revision import dmRevision
 from ramstk.dao import DAO
-from ramstk.models.programdb import RAMSTKFailureDefinition, RAMSTKRevision
+from ramstk.models.programdb import (
+    RAMSTKEnvironment, RAMSTKFailureDefinition,
+    RAMSTKMission, RAMSTKMissionPhase, RAMSTKRevision
+)
 
 ATTRIBUTES = {
     'revision_id': 1,
@@ -79,6 +82,12 @@ class TestDataManager():
             assert isinstance(tree, Tree)
             assert isinstance(
                 tree.get_node(1).data['revision'], RAMSTKRevision)
+            assert isinstance(
+                tree.get_node(1).data['failure_definitions'], dict)
+            assert isinstance(
+                tree.get_node(1).data['failure_definitions'][1], RAMSTKFailureDefinition)
+            assert isinstance(
+                tree.get_node(1).data['usage_profile'], Tree)
 
         pub.subscribe(on_message, 'succeed_retrieve_revisions')
 
@@ -107,6 +116,19 @@ class TestDataManager():
         assert isinstance(_failure_definition, dict)
         assert isinstance(_failure_definition[1], RAMSTKFailureDefinition)
         assert _failure_definition[1].definition == b'Failure Definition'
+
+    @pytest.mark.integration
+    def test_do_select_usage_profile(self, test_dao):
+        """do_select() should return the usage profile treelib Tree() on success."""
+        DUT = dmRevision(test_dao)
+        DUT.do_select_all()
+
+        _usage_profile = DUT.do_select(1, table='usage_profile')
+
+        assert isinstance(_usage_profile, Tree)
+        assert isinstance(_usage_profile.get_node('1').data, RAMSTKMission)
+        assert isinstance(_usage_profile.get_node('1.1').data, RAMSTKMissionPhase)
+        assert isinstance(_usage_profile.get_node('1.1.1').data, RAMSTKEnvironment)
 
     @pytest.mark.integration
     def test_do_select_unknown_table(self, test_dao):
@@ -140,6 +162,8 @@ class TestDataManager():
                 node_id).data['revision'].name == 'New Revision'
             assert isinstance(
                 DUT.tree.get_node(node_id).data['failure_definitions'], dict)
+            assert isinstance(
+                DUT.tree.get_node(node_id).data['usage_profile'], Tree)
 
         pub.subscribe(on_message, 'succeed_insert_revision')
 
@@ -186,6 +210,8 @@ class TestDataManager():
             _failure_definition = DUT.do_select(node_id,
                                                 table='failure_definitions')
             assert _failure_definition[1].definition == b'Failure Definition'
+            _usage_profile = DUT.do_select(1, table='usage_profile')
+            assert _usage_profile.get_node('1.1').data.phase_end == 0.0
 
         pub.subscribe(on_message, 'succeed_update_revision')
 
@@ -193,6 +219,8 @@ class TestDataManager():
         _revision.name = 'Test Revision'
         _failure_definition = DUT.do_select(1, table='failure_definitions')
         _failure_definition[1].definition = b'Failure Definition'
+        _usage_profile = DUT.do_select(1, table='usage_profile')
+        _usage_profile.get_node('1.1').data.phase_end = 0.0
 
         pub.sendMessage('request_update_revision', node_id=1)
 
@@ -222,6 +250,8 @@ class TestDataManager():
                                  table='revision').revision_id == node_id
             assert DUT.do_select(
                 node_id, table='failure_definitions')[1].revision_id == node_id
+            assert DUT.do_select(
+                node_id, table='usage_profile').get_node('1').revision_id == node_id
 
         pub.subscribe(on_message, 'succeed_update_revision')
 
@@ -263,6 +293,23 @@ class TestDataManager():
                         table='failure_definitions')
 
     @pytest.mark.integration
+    def test_do_get_attributes_usage_profile(self, test_dao):
+        """do_get_attributes() should return treelib Tree() on success."""
+        DUT = dmRevision(test_dao)
+        DUT.do_select_all()
+
+        def on_message(attributes):
+            assert isinstance(attributes, Tree)
+            assert attributes.get_node('1').data.revision_id == 1
+            assert attributes.get_node('1').data.time_units == 'hours'
+
+        pub.subscribe(on_message, 'succeed_get_revision_attributes')
+
+        pub.sendMessage('request_get_revision_attributes',
+                        node_id=1,
+                        table='usage_profile')
+
+    @pytest.mark.integration
     def test_do_get_all_attributes_data_manager(self, test_dao):
         """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
         DUT = dmRevision(test_dao)
@@ -278,6 +325,8 @@ class TestDataManager():
             assert isinstance(attributes['failure_definitions'][1],
                               RAMSTKFailureDefinition)
             assert attributes['failure_definitions'][1].revision_id == 1
+            assert isinstance(attributes['usage_profile'], Tree)
+            assert attributes['usage_profile'].get_node('1').data.revision_id == 1
 
         pub.subscribe(on_message, 'succeed_get_all_revision_attributes')
 
@@ -298,10 +347,16 @@ class TestDataManager():
                         key='definition',
                         value=b'Test Description',
                         definition_id=1)
+        pub.sendMessage('request_set_revision_attributes',
+                        node_id=1,
+                        key='phase_end',
+                        value=5.12,
+                        usage_id='1.1')
         assert DUT.do_select(1, table='revision').revision_code == '-'
         assert DUT.do_select(
             1,
             table='failure_definitions')[1].definition == b'Test Description'
+        assert DUT.do_select(1, table='usage_profile').get_node('1.1').data.phase_end == 5.12
 
     @pytest.mark.integration
     def test_do_set_all_attributes(self, test_dao):
@@ -315,9 +370,11 @@ class TestDataManager():
                             'revision_code': '1',
                             'remarks': b'These are remarks added by a test.',
                             'total_part_count': 28,
-                            'definition': b'Failure Definition'
+                            'definition': b'Failure Definition',
+                            'phase_end': 0.0
                         },
-                        definition_id=1)
+                        definition_id=1,
+                        usage_id='1.1')
         assert DUT.do_select(1, table='revision').revision_code == '1'
         assert DUT.do_select(
             1,
@@ -326,15 +383,18 @@ class TestDataManager():
         assert DUT.do_select(
             1,
             table='failure_definitions')[1].definition == b'Failure Definition'
+        assert DUT.do_select(1, table='usage_profile').get_node('1.1').data.phase_end == 0.0
 
         pub.sendMessage('request_set_all_revision_attributes',
                         attributes={
                             'revision_id': 1,
                             'revision_code': '',
                             'remarks': b'',
-                            'total_part_count': 1
+                            'total_part_count': 1,
+                            'phase_end': 0.0
                         },
-                        definition_id=1)
+                        definition_id=1,
+                        usage_id='1.1')
 
     @pytest.mark.integration
     def test_go_get_tree(self, test_dao):
@@ -351,6 +411,15 @@ class TestDataManager():
             assert isinstance(
                 tree.get_node(1).data['failure_definitions'][1],
                 RAMSTKFailureDefinition)
+            assert isinstance(
+                tree.get_node(1).data['usage_profile'].get_node('1').data,
+                RAMSTKMission)
+            assert isinstance(
+                tree.get_node(1).data['usage_profile'].get_node('1.1').data,
+                RAMSTKMissionPhase)
+            assert isinstance(
+                tree.get_node(1).data['usage_profile'].get_node('1.1.1').data,
+                RAMSTKEnvironment)
 
         pub.subscribe(on_message, 'succeed_get_revision_tree')
 

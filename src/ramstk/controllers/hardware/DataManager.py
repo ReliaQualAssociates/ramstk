@@ -183,8 +183,7 @@ class DataManager(RAMSTKDataManager):
 
                 _error_code, _msg = self.dao.db_add(
                     [_design_e, _design_m, _milhdbkf, _nswc, _reliability,
-                     _allocation, _similaritem],
-                    None)
+                     _allocation, _similaritem])
 
                 _data_package = {
                     'hardware': _hardware,
