@@ -163,7 +163,7 @@ def set_user_defined_floats(fha, floats):
             fha[_key] = float(floats[_idx])
         except IndexError:
             fha[_key] = 0.0
-    print(fha)
+
     return fha
 
 
@@ -191,6 +191,9 @@ def set_user_defined_functions(fha, functions):
     """
     Set the user-defined functions for the user-defined calculations.
 
+    .. note:: by default we set the function equal to 0.0.  This prevents Sympy
+        errors resulting from empty strings.
+
     :param dict fha: the functional hazard assessment dict.
     :param list functions: the list of functions; list items are str.
     :return: fha; the functional hazard assessment dict with updated functions.
@@ -199,9 +202,12 @@ def set_user_defined_functions(fha, functions):
     for _idx in [6, 7, 8, 9, 10]:
         try:
             _key = list(fha.keys())[_idx]
-            fha[_key] = str(functions[_idx - 6])
+            if str(functions[_idx - 6]) == '':
+                fha[_key] = '0.0'
+            else:
+                fha[_key] = str(functions[_idx - 6])
         except IndexError:
-            fha[_key] = ''
+            fha[_key] = '0.0'
 
     return fha
 

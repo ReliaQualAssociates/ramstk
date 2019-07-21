@@ -130,9 +130,9 @@ def test_set_user_defined_functions_set_unused_empty():
     assert isinstance(_fha, dict)
     assert _fha['equation1'] == 'hr*pi1*pi2*uf1'
     assert _fha['equation2'] == 'ui1+ui2'
-    assert _fha['equation3'] == ''
-    assert _fha['equation4'] == ''
-    assert _fha['equation5'] == ''
+    assert _fha['equation3'] == '0.0'
+    assert _fha['equation4'] == '0.0'
+    assert _fha['equation5'] == '0.0'
 
 
 @pytest.mark.unit
