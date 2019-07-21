@@ -30,10 +30,10 @@ __trove__ = [
 
 # Lists of required packages for RAMSTK.
 INSTALL_REQUIRES = [
-    'defusedxml', 'lifelines>=0.13,<15.0', 'matplotlib', 'numpy',
+    'defusedxml', 'lifelines>=0.13,<15.0', 'matplotlib', 'numpy', 'openpyxl',
     'pandas', 'pycairo', 'PyGObject>=2.28', 'PyPubSub', 'scipy',
     'sortedcontainers==2.1.0', 'SQLAlchemy', 'SQLAlchemy-Utils', 'statsmodels',
-    'treelib', 'xlrd', 'xlwt',
+    'sympy', 'treelib', 'xlrd', 'xlsxwriter', 'xlwt',
 ]
 TEST_REQUIRES = [
     'pytest', 'pytest-cov', 'coverage', 'coveralls', 'codacy-coverage',

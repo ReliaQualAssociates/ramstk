@@ -26,7 +26,6 @@ repos:
           - id: debug-statements
           - id: end-of-file-fixer
           - id: no-commit-to-branch
-          - id: requirements-txt-fixer
           - id: trailing-whitespace
     - repo: https://github.com/pre-commit/mirrors-pylint
       rev: v2.3.1
