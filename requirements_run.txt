@@ -138,9 +138,8 @@ patsy==0.5.1 \
     # via statsmodels
 pycairo==1.18.1 \
     --hash=sha256:70172e58b6bad7572a3518c26729b074acdde15e6fee6cbab6d3528ad552b786
-# WARNING: pip install will require the following package to be hashed.
-# Consider using a hashable URL like https://github.com/jazzband/pip-tools/archive/SOMECOMMIT.zip
-git+https://git.gnome.org/browse/pygobject#egg=pygobject==3.18.2
+pygobject==3.32.2 \
+    --hash=sha256:fa82746df059b9e0dcf473e0a9ff0693aa5e064f1ca1e2c46b5ac815bceda1ad
 pyparsing==2.4.0 \
     --hash=sha256:1873c03321fc118f4e9746baf201ff990ceb915f433f23b395f5580d1840cb2a \
     --hash=sha256:9b6323ef4ab914af344ba97510e966d64ba91055d6b9afa6b30799340e89cc03 \

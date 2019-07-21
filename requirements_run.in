@@ -15,4 +15,4 @@ treelib>=1.5.3
 xlrd
 XlsxWriter
 xlwt
-git+https://git.gnome.org/browse/pygobject#egg=pygobject==3.18.2
+pygobject
