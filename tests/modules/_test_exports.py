@@ -11,10 +11,10 @@
 import pytest
 
 # RAMSTK Package Imports
+from ramstk.controllers.function import dmFunction
 from ramstk.controllers.hardware import dmHardware
 from ramstk.dao import DAO
 from ramstk.modules.exports import dtcExports, dtmExports
-from ramstk.modules.function import dtmFunction
 from ramstk.modules.requirement import dtmRequirement
 from ramstk.modules.validation import dtmValidation
 
@@ -92,7 +92,7 @@ def test_do_load_output_function(test_dao):
     """do_load_output() should return None when loading Functions for export."""
     DUT = dtmExports(test_dao)
 
-    _function = dtmFunction(test_dao, test=True)
+    _function = dmFunction(test_dao)
     _function.do_select_all(revision_id=1)
 
     assert DUT.do_load_output('Function', _function.tree) is None
@@ -136,7 +136,7 @@ def test_do_export_to_csv(test_dao, test_export_file):
     """do_export() should return None when exporting to a CSV file."""
     DUT = dtmExports(test_dao)
 
-    _function = dtmFunction(test_dao, test=True)
+    _function = dmFunction(test_dao)
     _function.do_select_all(revision_id=1)
     DUT.do_load_output('Function', _function.tree)
 
@@ -187,7 +187,7 @@ def test_do_export_to_text(test_dao, test_export_file):
     """do_export() should return None when exporting to a text file."""
     DUT = dtmExports(test_dao)
 
-    _function = dtmFunction(test_dao, test=True)
+    _function = dmFunction(test_dao)
     _function.do_select_all(revision_id=1)
     DUT.do_load_output('Function', _function.tree)
 
@@ -210,7 +210,7 @@ def test_request_do_load_output(test_dao, test_configuration):
     request_do_load_output() should return None."""
     DUT = dtcExports(test_dao, test_configuration, test=True)
 
-    _function = dtmFunction(test_dao, test=True)
+    _function = dmFunction(test_dao)
     _function.do_select_all(revision_id=1)
 
     assert DUT.request_do_load_output('Function', _function.tree) is None
@@ -223,7 +223,7 @@ def test_request_do_export_to_csv(test_dao, test_configuration, test_export_file
     """
     DUT = dtcExports(test_dao, test_configuration, test=True)
 
-    _function = dtmFunction(test_dao, test=True)
+    _function = dmFunction(test_dao)
     _function.do_select_all(revision_id=1)
     DUT.request_do_load_output('Function', _function.tree)
 

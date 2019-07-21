@@ -339,18 +339,18 @@ class TestDataManager():
                         hazard_id=1)
 
     @pytest.mark.integration
-    def test_go_get_tree(self, test_dao):
-        """do_get_tree() should return the function treelib Tree."""
+    def test_on_get_tree(self, test_dao):
+        """on_get_tree() should return the function treelib Tree."""
         DUT = dmFunction(test_dao)
         DUT.do_select_all(revision_id=1)
 
-        def on_message(tree):
-            assert isinstance(tree, Tree)
+        def on_message(dmtree):
+            assert isinstance(dmtree, Tree)
             assert isinstance(
-                tree.get_node(1).data['function'], RAMSTKFunction)
-            assert isinstance(tree.get_node(1).data['hazards'], dict)
+                dmtree.get_node(1).data['function'], RAMSTKFunction)
+            assert isinstance(dmtree.get_node(1).data['hazards'], dict)
             assert isinstance(
-                tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
+                dmtree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
 
         pub.subscribe(on_message, 'succeed_get_function_tree')
 
@@ -382,10 +382,10 @@ class TestAnalysisManager():
         DATAMGR.do_select_all(revision_id=1)
         DUT = amFunction(test_configuration)
 
-        def on_message(tree):
-            assert isinstance(tree, Tree)
+        def on_message(dmtree):
+            assert isinstance(dmtree, Tree)
             assert isinstance(DUT._tree, Tree)
-            assert DUT._tree == tree
+            assert DUT._tree == dmtree
             assert isinstance(
                 DUT._tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
 

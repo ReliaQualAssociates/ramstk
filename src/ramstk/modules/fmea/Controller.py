@@ -10,8 +10,8 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.exceptions import OutOfRangeError
 from ramstk.modules import RAMSTKDataController
-from ramstk.Utilities import OutOfRangeError
 
 # RAMSTK Local Imports
 from . import dtmFMEA

@@ -397,28 +397,28 @@ class TestDataManager():
                         usage_id='1.1')
 
     @pytest.mark.integration
-    def test_go_get_tree(self, test_dao):
-        """do_get_tree() should return the revision treelib Tree."""
+    def test_on_get_tree(self, test_dao):
+        """on_get_tree() should return the revision treelib Tree."""
         DUT = dmRevision(test_dao)
         DUT.do_select_all()
 
-        def on_message(tree):
-            assert isinstance(tree, Tree)
+        def on_message(dmtree):
+            assert isinstance(dmtree, Tree)
             assert isinstance(
-                tree.get_node(1).data['revision'], RAMSTKRevision)
+                dmtree.get_node(1).data['revision'], RAMSTKRevision)
             assert isinstance(
-                tree.get_node(1).data['failure_definitions'], dict)
+                dmtree.get_node(1).data['failure_definitions'], dict)
             assert isinstance(
-                tree.get_node(1).data['failure_definitions'][1],
+                dmtree.get_node(1).data['failure_definitions'][1],
                 RAMSTKFailureDefinition)
             assert isinstance(
-                tree.get_node(1).data['usage_profile'].get_node('1').data,
+                dmtree.get_node(1).data['usage_profile'].get_node('1').data,
                 RAMSTKMission)
             assert isinstance(
-                tree.get_node(1).data['usage_profile'].get_node('1.1').data,
+                dmtree.get_node(1).data['usage_profile'].get_node('1.1').data,
                 RAMSTKMissionPhase)
             assert isinstance(
-                tree.get_node(1).data['usage_profile'].get_node('1.1.1').data,
+                dmtree.get_node(1).data['usage_profile'].get_node('1.1.1').data,
                 RAMSTKEnvironment)
 
         pub.subscribe(on_message, 'succeed_get_revision_tree')

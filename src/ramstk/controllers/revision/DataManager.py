@@ -274,7 +274,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_revision_tree', tree=self.tree)
+        pub.sendMessage('succeed_get_revision_tree', dmtree=self.tree)
 
     def do_insert(self):  # pylint: disable=arguments-differ
         """

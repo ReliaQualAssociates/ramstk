@@ -80,7 +80,7 @@ def test_do_select_mechanism(test_dao):
     _entity = DUT.do_select('0.4.1')
 
     assert isinstance(_entity, RAMSTKMechanism)
-    assert _entity.description == 'Test Failure Mechanism #1 for Mode ID 4'
+    assert _entity.description == ''
 
 
 @pytest.mark.integration

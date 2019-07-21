@@ -51,7 +51,7 @@ def test_do_select(test_dao):
 
     assert isinstance(_mechanism, RAMSTKMechanism)
     assert _mechanism.mechanism_id == 1
-    assert _mechanism.description == 'Test Failure Mechanism #1 for Mode ID 4'
+    assert _mechanism.description == ''
 
 
 @pytest.mark.integration

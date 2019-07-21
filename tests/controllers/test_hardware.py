@@ -869,10 +869,10 @@ class TestAnalysisManager():
         DATAMGR.do_select_all(revision_id=1)
         DUT = amHardware(test_configuration)
 
-        def on_message(tree):
-            assert isinstance(tree, Tree)
+        def on_message(dmtree):
+            assert isinstance(dmtree, Tree)
             assert isinstance(DUT._tree, Tree)
-            assert DUT._tree == tree
+            assert DUT._tree == dmtree
             assert isinstance(DUT._tree.get_node(1).data['nswc'], RAMSTKNSWC)
 
         pub.subscribe(on_message, 'succeed_get_hardware_tree')

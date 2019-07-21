@@ -183,7 +183,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_function_tree', tree=self.tree)
+        pub.sendMessage('succeed_get_function_tree', dmtree=self.tree)
 
     def do_insert(self):  # pylint: disable=arguments-differ
         """

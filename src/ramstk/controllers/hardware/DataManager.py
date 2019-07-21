@@ -141,7 +141,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_hardware_tree', tree=self.tree)
+        pub.sendMessage('succeed_get_hardware_tree', dmtree=self.tree)
 
     def do_insert(self, parent_id, part):  # pylint: disable=arguments-differ
         """

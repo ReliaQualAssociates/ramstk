@@ -279,7 +279,7 @@ def do_create_test_database(database):
     Create a new RAMSTK Program test database.
 
     :param str database: the RFC1738 URL path to the database to connect
-                         with.
+        with.
     :return: False if successful or True if an error occurs.
     :rtype: bool
     """

@@ -134,16 +134,16 @@ class MatrixManager(RAMSTKMatrixManager):
         return RAMSTKMatrixManager.do_insert_column(self, node_id,
                                                     'hrdwr_vldtn')
 
-    def _on_get_tree(self, tree):
+    def _on_get_tree(self, dmtree):
         """
         Request the hardware treelib Tree().
 
-        :param tree: the hardware treelib Tree().
-        :type tree: :class:`treelib.Tree`
+        :param dmtree: the hardware treelib Tree().
+        :type dmtree: :class:`treelib.Tree`
         :return: None
         :rtype: None
         """
-        if tree.get_node(0).tag == 'hardware':
-            self._row_tree = tree
+        if dmtree.get_node(0).tag == 'hardware':
+            self._row_tree = dmtree
         else:
-            self._col_tree = tree
+            self._col_tree = dmtree

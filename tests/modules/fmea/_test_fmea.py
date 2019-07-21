@@ -549,11 +549,14 @@ def test_do_calculate_mechanism_rpn(test_dao):
             if _node.data.is_mode:
                 _attributes['rpn_severity'] = 7
                 _attributes['rpn_severity_new'] = 4
+                _attributes.pop['hardware_id']
+                _attributes.pop['function_id']
             if _node.data.is_mechanism or _node.data.is_cause:
                 _attributes['rpn_detection'] = 4
                 _attributes['rpn_occurrence'] = 7
                 _attributes['rpn_detection_new'] = 3
                 _attributes['rpn_occurrence_new'] = 5
+                _attributes.pop['mode_id']
 
             _node.data.set_attributes(_attributes)
         except AttributeError:
@@ -581,11 +584,14 @@ def test_do_calculate_cause_rpn(test_dao):
             if _node.data.is_mode:
                 _attributes['rpn_severity'] = 7
                 _attributes['rpn_severity_new'] = 4
+                _attributes.pop('function_id')
+                _attributes.pop('mode_id')
             if _node.data.is_mechanism or _node.data.is_cause:
                 _attributes['rpn_detection'] = 4
                 _attributes['rpn_occurrence'] = 7
                 _attributes['rpn_detection_new'] = 3
                 _attributes['rpn_occurrence_new'] = 5
+                _attributes.pop('mode_id')
 
             _node.data.set_attributes(_attributes)
         except AttributeError:

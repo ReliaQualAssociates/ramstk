@@ -154,13 +154,12 @@ def test_set_user_defined_change_factors_set_unused_none():
     assert _sia['pi9'] == 0.0
     assert _sia['pi10'] == 0.0
 
-
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_set_user_defined_floats():
     """set_user_defined_floats() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_floats(TEST_SIA,
-                                               [3.4, 7.8, 11.12, 15.16, 19.2])
+    _sia = SimilarItem.set_user_defined_floats(
+        TEST_SIA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_sia, dict)
     assert _sia['uf1'] == 3.4
@@ -172,9 +171,10 @@ def test_set_user_defined_floats():
 
 @pytest.mark.unit
 @pytest.mark.calculation
-def test_set_user_defined_floats_set_unused_zero():
-    """set_user_defined_floats() should set unused floats to zero."""
-    _sia = SimilarItem.set_user_defined_floats(TEST_SIA, [3.4, 7.8])
+def test_set_user_defined_floats_set_unused_none():
+    """set_user_defined_floats() should set unused floats to None."""
+    _sia = SimilarItem.set_user_defined_floats(
+        TEST_SIA, [3.4, 7.8])
 
     assert isinstance(_sia, dict)
     assert _sia['uf1'] == 3.4
@@ -188,8 +188,8 @@ def test_set_user_defined_floats_set_unused_zero():
 @pytest.mark.calculation
 def test_set_user_defined_ints():
     """set_user_defined_ints() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_ints(TEST_SIA,
-                                             [3.4, 7.8, 11.12, 15.16, 19.2])
+    _sia = SimilarItem.set_user_defined_ints(
+        TEST_SIA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_sia, dict)
     assert _sia['ui1'] == 3
@@ -201,9 +201,10 @@ def test_set_user_defined_ints():
 
 @pytest.mark.unit
 @pytest.mark.calculation
-def test_set_user_defined_ints_set_unused_zero():
-    """set_user_defined_ints() should set unused ints to zero."""
-    _sia = SimilarItem.set_user_defined_ints(TEST_SIA, [3.4, 7.8, 11.12])
+def test_set_user_defined_ints_set_unused_none():
+    """set_user_defined_ints() should set unused ints to None."""
+    _sia = SimilarItem.set_user_defined_ints(
+        TEST_SIA, [3.4, 7.8, 11.12])
 
     assert isinstance(_sia, dict)
     assert _sia['ui1'] == 3
@@ -218,8 +219,7 @@ def test_set_user_defined_ints_set_unused_zero():
 def test_set_user_defined_functions():
     """set_user_defined_functions() should return an updated similar item assessment dict on success."""
     _sia = SimilarItem.set_user_defined_functions(
-        TEST_SIA,
-        ['hr*pi1*pi2*uf1', 'ui1+ui2', 'res2*pi4', 'res1-uf3', 'hr*(pi3+pi5)'])
+        TEST_SIA, ['hr*pi1*pi2*uf1', 'ui1+ui2', 'res2*pi4', 'res1-uf3', 'hr*(pi3+pi5)'])
 
     assert isinstance(_sia, dict)
     assert _sia['equation1'] == 'hr*pi1*pi2*uf1'
@@ -231,8 +231,8 @@ def test_set_user_defined_functions():
 
 @pytest.mark.unit
 @pytest.mark.calculation
-def test_set_user_defined_functions_set_unused_empty():
-    """set_user_defined_functions() should set unused functiosn to an empty string."""
+def test_set_user_defined_functions_set_unused_none():
+    """set_user_defined_functions() should set unused functiosn to None."""
     _sia = SimilarItem.set_user_defined_functions(
         TEST_SIA, ['hr*pi1*pi2*uf1', 'ui1+ui2'])
 
@@ -248,8 +248,8 @@ def test_set_user_defined_functions_set_unused_empty():
 @pytest.mark.calculation
 def test_set_user_defined_results():
     """set_user_defined_results() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_results(TEST_SIA,
-                                                [3.4, 7.8, 11.12, 15.16, 19.2])
+    _sia = SimilarItem.set_user_defined_results(
+        TEST_SIA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_sia, dict)
     assert _sia['res1'] == 3.4
@@ -261,10 +261,10 @@ def test_set_user_defined_results():
 
 @pytest.mark.unit
 @pytest.mark.calculation
-def test_set_user_defined_results_set_unused_zero():
-    """set_user_defined_results() should set unused results to zero."""
-    _sia = SimilarItem.set_user_defined_results(TEST_SIA,
-                                                [3.4, 7.8, 11.12, 15.16])
+def test_set_user_defined_results_set_unused_none():
+    """set_user_defined_results() should set unused results to None."""
+    _sia = SimilarItem.set_user_defined_results(
+        TEST_SIA, [3.4, 7.8, 11.12, 15.16])
 
     assert isinstance(_sia, dict)
     assert _sia['res1'] == 3.4
@@ -281,8 +281,7 @@ def test_calculate_user_defined():
     _sia = SimilarItem.set_user_defined_change_factors(
         TEST_SIA, [1.2, 3.4, 5.6, 7.8, 9.10, 11.12, 13.14, 15.16, 17.18, 19.2])
     _sia = SimilarItem.set_user_defined_functions(
-        _sia,
-        ['hr*pi1*pi2*uf1', 'ui1+ui2', 'res2*pi4', 'res1-uf3', 'hr*(pi3+pi5)'])
+        _sia, ['hr*pi1*pi2*uf1', 'ui1+ui2', 'res2*pi4', 'res1-uf3', 'hr*(pi3+pi5)'])
     _sia = SimilarItem.calculate_user_defined(_sia)
 
     assert isinstance(_sia, dict)

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.models.programdb.test_ramstkallocation.py is part of The RAMSTK
-#       Project
+#       tests.dao.programdb.test_ramstkallocation.py is part of The RAMSTK Project
 #
 # All rights reserved.
 """ Test class for testing the RAMSTKAllocation module algorithms and models. """
@@ -113,7 +112,9 @@ def test_get_attributes(test_dao):
 @pytest.mark.integration
 def test_set_attributes(test_dao):
     """set_attributes() should return None on success."""
-    DUT = test_dao.session.query(RAMSTKAllocation).first()
+    _session = test_dao.RAMSTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RAMSTKAllocation).first()
 
     assert DUT.set_attributes(ATTRIBUTES) is None
 
@@ -121,7 +122,9 @@ def test_set_attributes(test_dao):
 @pytest.mark.integration
 def test_set_attributes_none_value(test_dao):
     """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
-    DUT = test_dao.session.query(RAMSTKAllocation).first()
+    _session = test_dao.RAMSTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RAMSTKAllocation).first()
 
     ATTRIBUTES['reliability_alloc'] = None
 
@@ -132,7 +135,9 @@ def test_set_attributes_none_value(test_dao):
 @pytest.mark.integration
 def test_set_attributes_unknown_attributes(test_dao):
     """set_attributes() should raise an AttributeError when passed an unknown attribute."""
-    DUT = test_dao.session.query(RAMSTKAllocation).first()
+    _session = test_dao.RAMSTK_SESSION(
+        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
+    DUT = _session.query(RAMSTKAllocation).first()
 
     with pytest.raises(AttributeError):
         DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
