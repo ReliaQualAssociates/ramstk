@@ -17,9 +17,10 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.analyses import Allocation, Derating, Dormancy, SimilarItem, Stress
 from ramstk.analyses.milhdbk217f import MilHdbk217f
+from ramstk.controllers.managers import RAMSTKAnalysisManager
 
 
-class AnalysisManager():
+class AnalysisManager(RAMSTKAnalysisManager):
     """
     Contain the attributes and methods of the Hardware analysis manager.
 
@@ -38,25 +39,24 @@ class AnalysisManager():
             current instance of the RAMSTK application.
         :type configuration: :class:`ramstk.Configuration.Configuration`
         """
+        super(AnalysisManager, self).__init__(configuration, **kwargs)
+
         # Initialize private dictionary attributes.
-        self._attributes = {}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._tree = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.RAMSTK_CONFIGURATION = configuration
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_get_all_attributes,
+        pub.subscribe(self.on_get_all_attributes,
                       'succeed_get_all_hardware_attributes')
-        pub.subscribe(self._on_get_tree, 'succeed_get_hardware_tree')
+        pub.subscribe(self.on_get_tree, 'succeed_get_hardware_tree')
         pub.subscribe(self._on_predict_reliability,
                       'succeed_predict_reliability')
         pub.subscribe(self.do_calculate_hardware, 'request_calculate_hardware')
@@ -367,28 +367,6 @@ class AnalysisManager():
         self._tree.get_node(
             attributes['hardware_id']).data['allocation'].set_attributes(
                 _attributes)
-
-    def _on_get_all_attributes(self, attributes):
-        """
-        Request all the attributes for the hardware associated with node ID.
-
-        :param dict attributes: the attributes dict for the table that was
-            selected.
-        :return: None
-        :rtype: None
-        """
-        self._attributes = attributes
-
-    def _on_get_tree(self, tree):
-        """
-        Request the hardware treelib Tree().
-
-        :param tree: the hardware treelib Tree().
-        :type tree: :class:`treelib.Tree`
-        :return: None
-        :rtype: None
-        """
-        self._tree = tree
 
     def _on_predict_reliability(self, attributes):
         """

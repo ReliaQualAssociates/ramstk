@@ -8,5 +8,6 @@
 """The RAMSTK controllers package."""
 
 # RAMSTK Local Imports
-from .RAMSTKDataManager import RAMSTKDataManager
-from .RAMSTKMatrixManager import RAMSTKMatrixManager
+from .managers import (
+    RAMSTKAnalysisManager, RAMSTKDataManager, RAMSTKMatrixManager
+)
