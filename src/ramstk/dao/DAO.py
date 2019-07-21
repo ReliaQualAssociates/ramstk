@@ -339,6 +339,11 @@ def do_create_test_database(database):
         session.add(_function)
         session.commit()
 
+        _hazardanalysis = RAMSTKHazardAnalysis()
+        _hazardanalysis.revision_id = _revision.revision_id
+        _hazardanalysis.function_id = _function.function_id
+        session.add(_hazardanalysis)
+
         _mode = RAMSTKMode()
         _mode.function_id = _function.function_id
         _mode.hardware_id = -1
@@ -409,9 +414,6 @@ def do_create_test_database(database):
     _similaritem.revision_id = _revision.revision_id
     _similaritem.hardware_id = _system.hardware_id
     _similaritem.parent_id = 0
-    _hazardanalysis = RAMSTKHazardAnalysis()
-    _hazardanalysis.revision_id = _revision.revision_id
-    _hazardanalysis.hardware_id = _system.hardware_id
     _mode = RAMSTKMode()
     _mode.function_id = -1
     _mode.hardware_id = _system.hardware_id
@@ -423,7 +425,6 @@ def do_create_test_database(database):
     session.add(_design_mechanic)
     session.add(_allocation)
     session.add(_similaritem)
-    session.add(_hazardanalysis)
     session.add(_mode)
     session.commit()
 
@@ -506,9 +507,6 @@ def do_create_test_database(database):
         _similaritem.revision_id = _revision.revision_id
         _similaritem.hardware_id = i + 1
         _similaritem.parent_id = _system.hardware_id
-        _hazardanalysis = RAMSTKHazardAnalysis()
-        _hazardanalysis.revision_id = _revision.revision_id
-        _hazardanalysis.hardware_id = i + 1
         _reliability = RAMSTKReliability()
         _reliability.hardware_id = i + 1
         _mil_hdbk_217 = RAMSTKMilHdbkF()
@@ -537,9 +535,6 @@ def do_create_test_database(database):
         _similaritem.revision_id = _revision.revision_id
         _similaritem.hardware_id = i + 1
         _similaritem.parent_id = 2
-        _hazardanalysis = RAMSTKHazardAnalysis()
-        _hazardanalysis.revision_id = _revision.revision_id
-        _hazardanalysis.hardware_id = i + 1
 
         _reliability = RAMSTKReliability()
         _reliability.hardware_id = i + 1

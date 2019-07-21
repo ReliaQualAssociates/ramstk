@@ -73,7 +73,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
         ForeignKey('ramstk_revision.fld_revision_id'),
         nullable=False,
     )
-    hardware_id = Column(
+    function_id = Column(
         'fld_function_id',
         Integer,
         ForeignKey('ramstk_function.fld_function_id'),
@@ -87,44 +87,109 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
         nullable=False,
     )
 
-    potential_hazard = Column('fld_potential_hazard', String(256), default=__defaults__['potential_hazard'])
-    potential_cause = Column('fld_potential_cause', String(512), default=__defaults__['potential_cause'])
-    assembly_effect = Column('fld_assembly_effect', String(512), default=__defaults__['assembly_effect'])
-    assembly_severity = Column('fld_assembly_severity', String(256), default=__defaults__['assembly_severity'])
-    assembly_probability = Column('fld_assembly_probability', String(256), default=__defaults__['assembly_probability'])
-    assembly_hri = Column('fld_assembly_hri', Integer, default=__defaults__['assembly_hri'])
-    assembly_mitigation = Column('fld_assembly_mitigation', BLOB, default=__defaults__['assembly_mitigation'])
-    assembly_severity_f = Column('fld_assembly_severity_f', String(256), default=__defaults__['assembly_severity_f'])
-    assembly_probability_f = Column('fld_assembly_probability_f', String(256), default=__defaults__['assembly_probability_f'])
-    assembly_hri_f = Column('fld_assembly_hri_f', Integer, default=__defaults__['assembly_hri_f'])
-    function_1 = Column('fld_function_1', String(128), default=__defaults__['function_1'])
-    function_2 = Column('fld_function_2', String(128), default=__defaults__['function_2'])
-    function_3 = Column('fld_function_3', String(128), default=__defaults__['function_3'])
-    function_4 = Column('fld_function_4', String(128), default=__defaults__['function_4'])
-    function_5 = Column('fld_function_5', String(128), default=__defaults__['function_5'])
+    potential_hazard = Column('fld_potential_hazard',
+                              String(256),
+                              default=__defaults__['potential_hazard'])
+    potential_cause = Column('fld_potential_cause',
+                             String(512),
+                             default=__defaults__['potential_cause'])
+    assembly_effect = Column('fld_assembly_effect',
+                             String(512),
+                             default=__defaults__['assembly_effect'])
+    assembly_severity = Column('fld_assembly_severity',
+                               String(256),
+                               default=__defaults__['assembly_severity'])
+    assembly_probability = Column('fld_assembly_probability',
+                                  String(256),
+                                  default=__defaults__['assembly_probability'])
+    assembly_hri = Column('fld_assembly_hri',
+                          Integer,
+                          default=__defaults__['assembly_hri'])
+    assembly_mitigation = Column('fld_assembly_mitigation',
+                                 BLOB,
+                                 default=__defaults__['assembly_mitigation'])
+    assembly_severity_f = Column('fld_assembly_severity_f',
+                                 String(256),
+                                 default=__defaults__['assembly_severity_f'])
+    assembly_probability_f = Column(
+        'fld_assembly_probability_f',
+        String(256),
+        default=__defaults__['assembly_probability_f'])
+    assembly_hri_f = Column('fld_assembly_hri_f',
+                            Integer,
+                            default=__defaults__['assembly_hri_f'])
+    function_1 = Column('fld_function_1',
+                        String(128),
+                        default=__defaults__['function_1'])
+    function_2 = Column('fld_function_2',
+                        String(128),
+                        default=__defaults__['function_2'])
+    function_3 = Column('fld_function_3',
+                        String(128),
+                        default=__defaults__['function_3'])
+    function_4 = Column('fld_function_4',
+                        String(128),
+                        default=__defaults__['function_4'])
+    function_5 = Column('fld_function_5',
+                        String(128),
+                        default=__defaults__['function_5'])
     remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
     result_1 = Column('fld_result_1', Float, default=__defaults__['result_1'])
     result_2 = Column('fld_result_2', Float, default=__defaults__['result_2'])
     result_3 = Column('fld_result_3', Float, default=__defaults__['result_3'])
     result_4 = Column('fld_result_4', Float, default=__defaults__['result_4'])
     result_5 = Column('fld_result_5', Float, default=__defaults__['result_5'])
-    system_effect = Column('fld_system_effect', String(512), default=__defaults__['system_effect'])
-    system_severity = Column('fld_system_severity', String(256), default=__defaults__['system_severity'])
-    system_probability = Column('fld_system_probability', String(256), default=__defaults__['system_probability'])
-    system_hri = Column('fld_system_hri', Integer, default=__defaults__['system_hri'])
-    system_mitigation = Column('fld_system_mitigation', BLOB, default=__defaults__['system_mitigation'])
-    system_severity_f = Column('fld_system_severity_f', String(256), default=__defaults__['system_severity_f'])
-    system_probability_f = Column('fld_system_probability_f', String(256), default=__defaults__['system_probability_f'])
-    system_hri_f = Column('fld_system_hri_f', Integer, default=__defaults__['system_hri_f'])
-    user_blob_1 = Column('fld_user_blob_1', BLOB, default=__defaults__['user_blob_1'])
-    user_blob_2 = Column('fld_user_blob_2', BLOB, default=__defaults__['user_blob_2'])
-    user_blob_3 = Column('fld_user_blob_3', BLOB, default=__defaults__['user_blob_3'])
-    user_float_1 = Column('fld_user_float_1', Float, default=__defaults__['user_float_1'])
-    user_float_2 = Column('fld_user_float_2', Float, default=__defaults__['user_float_2'])
-    user_float_3 = Column('fld_user_float_3', Float, default=__defaults__['user_float_3'])
-    user_int_1 = Column('fld_user_int_1', Integer, default=__defaults__['user_int_1'])
-    user_int_2 = Column('fld_user_int_2', Integer, default=__defaults__['user_int_2'])
-    user_int_3 = Column('fld_user_int_3', Integer, default=__defaults__['user_int_3'])
+    system_effect = Column('fld_system_effect',
+                           String(512),
+                           default=__defaults__['system_effect'])
+    system_severity = Column('fld_system_severity',
+                             String(256),
+                             default=__defaults__['system_severity'])
+    system_probability = Column('fld_system_probability',
+                                String(256),
+                                default=__defaults__['system_probability'])
+    system_hri = Column('fld_system_hri',
+                        Integer,
+                        default=__defaults__['system_hri'])
+    system_mitigation = Column('fld_system_mitigation',
+                               BLOB,
+                               default=__defaults__['system_mitigation'])
+    system_severity_f = Column('fld_system_severity_f',
+                               String(256),
+                               default=__defaults__['system_severity_f'])
+    system_probability_f = Column('fld_system_probability_f',
+                                  String(256),
+                                  default=__defaults__['system_probability_f'])
+    system_hri_f = Column('fld_system_hri_f',
+                          Integer,
+                          default=__defaults__['system_hri_f'])
+    user_blob_1 = Column('fld_user_blob_1',
+                         BLOB,
+                         default=__defaults__['user_blob_1'])
+    user_blob_2 = Column('fld_user_blob_2',
+                         BLOB,
+                         default=__defaults__['user_blob_2'])
+    user_blob_3 = Column('fld_user_blob_3',
+                         BLOB,
+                         default=__defaults__['user_blob_3'])
+    user_float_1 = Column('fld_user_float_1',
+                          Float,
+                          default=__defaults__['user_float_1'])
+    user_float_2 = Column('fld_user_float_2',
+                          Float,
+                          default=__defaults__['user_float_2'])
+    user_float_3 = Column('fld_user_float_3',
+                          Float,
+                          default=__defaults__['user_float_3'])
+    user_int_1 = Column('fld_user_int_1',
+                        Integer,
+                        default=__defaults__['user_int_1'])
+    user_int_2 = Column('fld_user_int_2',
+                        Integer,
+                        default=__defaults__['user_int_2'])
+    user_int_3 = Column('fld_user_int_3',
+                        Integer,
+                        default=__defaults__['user_int_3'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='hazard')
@@ -150,7 +215,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
         """
         _attributes = {
             'revision_id': self.revision_id,
-            'hardware_id': self.hardware_id,
+            'function_id': self.function_id,
             'hazard_id': self.hazard_id,
             'potential_hazard': self.potential_hazard,
             'potential_cause': self.potential_cause,

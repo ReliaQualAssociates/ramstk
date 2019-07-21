@@ -63,37 +63,61 @@ class RAMSTKFunction(RAMSTK_BASE):
     )
 
     availability_logistics = Column(
-        'fld_availability_logistics', Float, default=__defaults__['availability_logistics'],
+        'fld_availability_logistics',
+        Float,
+        default=__defaults__['availability_logistics'],
     )
     availability_mission = Column(
-        'fld_availability_mission', Float, default=__defaults__['availability_mission'],
+        'fld_availability_mission',
+        Float,
+        default=__defaults__['availability_mission'],
     )
     cost = Column('fld_cost', Float, default=__defaults__['cost'])
     function_code = Column(
-        'fld_function_code', String(16), default=__defaults__['function_code'],
+        'fld_function_code',
+        String(16),
+        default=__defaults__['function_code'],
     )
     hazard_rate_logistics = Column(
-        'fld_hazard_rate_logistics', Float, default=__defaults__['hazard_rate_logistics'],
+        'fld_hazard_rate_logistics',
+        Float,
+        default=__defaults__['hazard_rate_logistics'],
     )
-    hazard_rate_mission = Column('fld_hazard_rate_mission', Float, default=__defaults__['hazard_rate_mission'])
+    hazard_rate_mission = Column('fld_hazard_rate_mission',
+                                 Float,
+                                 default=__defaults__['hazard_rate_mission'])
     level = Column('fld_level', Integer, default=__defaults__['level'])
     mmt = Column('fld_mmt', Float, default=__defaults__['mmt'])
     mcmt = Column('fld_mcmt', Float, default=__defaults__['mcmt'])
     mpmt = Column('fld_mpmt', Float, default=__defaults__['mpmt'])
-    mtbf_logistics = Column('fld_mtbf_logistics', Float, default=__defaults__['mtbf_logistics'])
-    mtbf_mission = Column('fld_mtbf_mission', Float, default=__defaults__['mtbf_mission'])
+    mtbf_logistics = Column('fld_mtbf_logistics',
+                            Float,
+                            default=__defaults__['mtbf_logistics'])
+    mtbf_mission = Column('fld_mtbf_mission',
+                          Float,
+                          default=__defaults__['mtbf_mission'])
     mttr = Column('fld_mttr', Float, default=__defaults__['mttr'])
     name = Column('fld_name', String(256), default=__defaults__['name'])
-    parent_id = Column('fld_parent_id', Integer, default=__defaults__['parent_id'])
+    parent_id = Column('fld_parent_id',
+                       Integer,
+                       default=__defaults__['parent_id'])
     remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
-    safety_critical = Column('fld_safety_critical', Integer, default=__defaults__['safety_critical'])
-    total_mode_count = Column('fld_total_mode_count', Integer, default=__defaults__['total_mode_count'])
-    total_part_count = Column('fld_total_part_count', Integer, default=__defaults__['total_part_count'])
+    safety_critical = Column('fld_safety_critical',
+                             Integer,
+                             default=__defaults__['safety_critical'])
+    total_mode_count = Column('fld_total_mode_count',
+                              Integer,
+                              default=__defaults__['total_mode_count'])
+    total_part_count = Column('fld_total_part_count',
+                              Integer,
+                              default=__defaults__['total_part_count'])
     type_id = Column('fld_type_id', Integer, default=__defaults__['type_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='function')
-    hazard = relationship('RAMSTKHazardAnalysis', back_populates='function', cascade='all,delete')
+    hazard = relationship('RAMSTKHazardAnalysis',
+                          back_populates='function',
+                          cascade='all,delete')
     mode = relationship('RAMSTKMode', back_populates='function')
 
     def get_attributes(self):
