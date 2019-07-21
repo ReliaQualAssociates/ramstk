@@ -3,7 +3,7 @@
 #       ramstk.dao.RAMSTKControl.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKControl Table Module."""
 
 # Third Party Imports
@@ -22,6 +22,7 @@ class RAMSTKControl(RAMSTK_BASE):
     This table shares a Many-to-One relationship with ramstk_cause.
     """
 
+    __defaults__ = {'description': '', 'type_id': ''}
     __tablename__ = 'ramstk_control'
     __table_args__ = {'extend_existing': True}
 
@@ -39,8 +40,8 @@ class RAMSTKControl(RAMSTK_BASE):
         nullable=False,
     )
 
-    description = Column('fld_description', String(512), default='')
-    type_id = Column('fld_type_id', String(512), default='')
+    description = Column('fld_description', String(512), default=__defaults__['description'])
+    type_id = Column('fld_type_id', String(512), default=__defaults__['type_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     cause = relationship('RAMSTKCause', back_populates='control')
@@ -69,25 +70,19 @@ class RAMSTKControl(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKControl data model attributes.
+        Set one or more RAMSTKControl attributes.
 
-        :param dict attributes: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
+        .. note:: you should pop the cause ID and control ID entries from
+            the attributes dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKControl {0:d} attributes.". \
-               format(self.control_id)
-
-        try:
-            self.description = str(
-                none_to_default(attributes['description'], ''),
-            )
-            self.type_id = str(none_to_default(attributes['type_id'], ''))
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKControl.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

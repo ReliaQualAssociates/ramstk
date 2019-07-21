@@ -183,11 +183,6 @@ class RAMSTKHardware(RAMSTK_BASE):
         back_populates='hardware',
         cascade='all,delete',
     )
-    hazard = relationship(
-        'RAMSTKHazardAnalysis',
-        back_populates='hardware',
-        cascade='all,delete',
-    )
     sia = relationship(
         'RAMSTKSimilarItem',
         back_populates='hardware',

@@ -7,14 +7,11 @@
 # All rights reserved.
 """Test class for testing RAMSTKHazardAnalysis module algorithms and models."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.programdb.RAMSTKHazardAnalysis import RAMSTKHazardAnalysis
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+# RAMSTK Package Imports
+from ramstk.models.programdb.RAMSTKHazardAnalysis import RAMSTKHazardAnalysis
 
 ATTRIBUTES = {
     'user_blob_3': b'',
@@ -35,7 +32,6 @@ ATTRIBUTES = {
     'user_float_1': 0.0,
     'potential_hazard': '',
     'remarks': b'',
-    'hazard_id': 1,
     'system_hri_f': 20,
     'result_5': 0.0,
     'assembly_severity': 'Medium',
@@ -45,7 +41,6 @@ ATTRIBUTES = {
     'function_4': '',
     'potential_cause': '',
     'system_mitigation': b'',
-    'hardware_id': 1,
     'function_3': '',
     'function_2': '',
     'function_1': '',
@@ -63,9 +58,7 @@ ATTRIBUTES = {
 @pytest.mark.integration
 def test_ramstkallocation_create(test_dao):
     """__init__() should create an RAMSTKHazardAnalysis model."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazardAnalysis).first()
+    DUT = test_dao.session.query(RAMSTKHazardAnalysis).first()
 
     assert isinstance(DUT, RAMSTKHazardAnalysis)
 
@@ -117,9 +110,7 @@ def test_ramstkallocation_create(test_dao):
 @pytest.mark.integration
 def test_get_attributes(test_dao):
     """get_attributes() should return a dict of attribute values."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazardAnalysis).first()
+    DUT = test_dao.session.query(RAMSTKHazardAnalysis).first()
 
     _attributes = DUT.get_attributes()
 
@@ -171,153 +162,26 @@ def test_get_attributes(test_dao):
 @pytest.mark.integration
 def test_set_attributes(test_dao):
     """set_attributes() should return a zero error code on success."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazardAnalysis).first()
+    DUT = test_dao.session.query(RAMSTKHazardAnalysis).first()
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKHazardAnalysis 1 attributes.")
+    assert DUT.set_attributes(ATTRIBUTES) is None
 
 
 @pytest.mark.integration
-def test_set_attributes_too_few_passed(test_dao):
-    """set_attributes() should return a 40 error code when passed a dict with missing attributes."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazardAnalysis).first()
+def test_set_attributes_none_value(test_dao):
+    """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
+    DUT = test_dao.session.query(RAMSTKHazardAnalysis).first()
 
-    _error_code, _msg = DUT.set_attributes({
-        'user_blob_3':
-        '',
-        'user_blob_2':
-        '',
-        'user_blob_1':
-        '',
-        'system_severity':
-        'Medium',
-        'result_2':
-        0.0,
-        'result_3':
-        0.0,
-        'assembly_probability':
-        'Level A - Frequent',
-        'system_probability':
-        'Level A - Frequent',
-        'system_probability_f':
-        'Level A - Frequent',
-        'assembly_hri':
-        20,
-        'system_hri':
-        20,
-        'system_effect':
-        '',
-        'user_int_1':
-        0,
-        'user_float_3':
-        0.0,
-        'result_4':
-        0.0,
-        'user_float_1':
-        0.0,
-        'potential_hazard':
-        '',
-        'remarks':
-        '',
-        'hazard_id':
-        1,
-        'system_hri_f':
-        20,
-        'result_5':
-        0.0,
-        'assembly_severity':
-        'Medium',
-        'assembly_probability_f':
-        'Level A - Frequent',
-        'assembly_hri_f':
-        4,
-        'assembly_effect':
-        '',
-        'function_4':
-        '',
-        'potential_cause':
-        '',
-        'system_mitigation':
-        '',
-        'hardware_id':
-        1,
-        'function_3':
-        '',
-        'function_2':
-        '',
-        'function_1':
-        '',
-        'user_int_3':
-        0,
-        'user_int_2':
-        0,
-        'assembly_severity_f':
-        'Medium',
-        'system_severity_f':
-        'Medium',
-        'assembly_mitigation':
-        '',
-        'function_5':
-        '',
-        'result_1':
-        0.0
-    })
+    ATTRIBUTES['remarks'] = None
 
-    assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'user_float_2' in attribute "
-                    "dictionary passed to RAMSTKHazardAnalysis.set_attributes().")
+    assert DUT.set_attributes(ATTRIBUTES) is None
+    assert DUT.get_attributes()['remarks'] == b''
 
 
 @pytest.mark.integration
-def test_calculate_hri(test_dao):
-    """calculate() should return False on success."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazardAnalysis).filter(
-        RAMSTKHazardAnalysis.hardware_id == 2).all()[0]
+def test_set_attributes_unknown_attributes(test_dao):
+    """set_attributes() should raise an AttributeError when passed an unknown attribute."""
+    DUT = test_dao.session.query(RAMSTKHazardAnalysis).first()
 
-    DUT.assembly_severity = 'Medium'
-    DUT.assembly_probability = 'Level A - Frequent'
-    DUT.assembly_severity_f = 'Slight'
-    DUT.assembly_probability_f = 'Level C - Occasional'
-    DUT.system_severity = 'Medium'
-    DUT.system_probability = 'Level B - Reasonably Probable'
-    DUT.system_severity_f = 'Low'
-    DUT.system_probability_f = 'Level D - Remote'
-
-    assert not DUT.calculate()
-    assert DUT.assembly_hri == 20
-    assert DUT.assembly_hri_f == 6
-    assert DUT.system_hri == 16
-    assert DUT.system_hri_f == 6
-
-
-@pytest.mark.integration
-def test_calculate_user_defined(test_dao):
-    """calculate() should return False when calculating user-defined risks."""
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKHazardAnalysis).filter(
-        RAMSTKHazardAnalysis.hardware_id == 2).all()[0]
-
-    DUT.assembly_severity = 'Medium'
-    DUT.assembly_probability = 'Level A - Frequent'
-    DUT.assembly_severity_f = 'Slight'
-    DUT.assembly_probability_f = 'Level C - Occasional'
-    DUT.system_severity = 'Medium'
-    DUT.system_probability = 'Level B - Reasonably Probable'
-    DUT.system_severity_f = 'Low'
-    DUT.system_probability_f = 'Level D - Remote'
-    DUT.user_float_1 = 4.4
-    DUT.user_float_2 = 6.0
-    DUT.user_int_1 = 2
-    DUT.function_1 = "(uf1 + ui1) / uf2"
-
-    assert not DUT.calculate()
-    assert DUT.result_1 == pytest.approx(1.06666667)
+    with pytest.raises(AttributeError):
+        DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
