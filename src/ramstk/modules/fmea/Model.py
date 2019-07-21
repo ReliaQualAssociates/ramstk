@@ -11,11 +11,11 @@ from pubsub import pub
 from treelib import tree
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import (
-    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode,
+from ramstk.exceptions import OutOfRangeError
+from ramstk.models.programdb import (
+    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
 )
 from ramstk.modules import RAMSTKDataModel
-from ramstk.Utilities import OutOfRangeError
 
 
 class ModeDataModel(RAMSTKDataModel):

@@ -12,11 +12,11 @@ import pytest
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import (
-    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode,
+from ramstk.models.programdb import (
+    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
 )
 from ramstk.modules.fmea import (
-    dtcFMEA, dtmAction, dtmCause, dtmControl, dtmFMEA, dtmMechanism, dtmMode,
+    dtcFMEA, dtmAction, dtmCause, dtmControl, dtmFMEA, dtmMechanism, dtmMode
 )
 
 __author__ = 'Doyle Rowland'

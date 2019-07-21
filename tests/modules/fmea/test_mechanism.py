@@ -12,7 +12,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao.programdb import RAMSTKMechanism
+from ramstk.models.programdb import RAMSTKMechanism
 from ramstk.modules.fmea import dtmMechanism
 
 __author__ = 'Doyle Rowland'

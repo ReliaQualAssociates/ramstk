@@ -12,7 +12,7 @@ from treelib import tree
 from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import RAMSTKHazardAnalysis
+from ramstk.models.programdb import RAMSTKHazardAnalysis
 from ramstk.modules import RAMSTKDataModel
 
 

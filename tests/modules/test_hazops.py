@@ -13,7 +13,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.dao.programdb import RAMSTKHazardAnalysis
+from ramstk.models.programdb import RAMSTKHazardAnalysis
 from ramstk.modules.hazops import dtcHazardAnalysis, dtmHazardAnalysis
 
 __author__ = 'Doyle Rowland'

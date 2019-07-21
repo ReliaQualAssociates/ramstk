@@ -17,7 +17,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.Exceptions import DataAccessError
+from ramstk.exceptions import DataAccessError
 from ramstk.modules.imports import dtcImports, dtmImports
 
 

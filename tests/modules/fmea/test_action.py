@@ -15,7 +15,7 @@ import pytest
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import RAMSTKAction
+from ramstk.models.programdb import RAMSTKAction
 from ramstk.modules.fmea import dtmAction
 
 __author__ = 'Doyle Rowland'

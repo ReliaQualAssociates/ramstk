@@ -11,8 +11,8 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import RAMSTKFunction, RAMSTKSoftware
-from ramstk.models.programdb import RAMSTKHardware
+from ramstk.dao.programdb import RAMSTKSoftware
+from ramstk.models.programdb import RAMSTKFunction, RAMSTKHardware
 from ramstk.modules import RAMSTKDataController, RAMSTKDataMatrix
 
 # RAMSTK Local Imports

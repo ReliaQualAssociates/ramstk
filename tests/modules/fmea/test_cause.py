@@ -12,7 +12,7 @@ import pytest
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import RAMSTKCause
+from ramstk.models.programdb import RAMSTKCause
 from ramstk.modules.fmea import dtmCause
 
 __author__ = 'Doyle Rowland'

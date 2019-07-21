@@ -12,7 +12,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.Exceptions import DataAccessError
+from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKEnvironment, RAMSTKFailureDefinition,
     RAMSTKMission, RAMSTKMissionPhase, RAMSTKRevision
