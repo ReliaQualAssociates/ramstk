@@ -69,9 +69,10 @@ class TestCreateControllers():
         assert DUT._tree is None
 
 
-@pytest.mark.usefixtures('test_dao', 'test_configuration')
-class TestDataManager():
-    """Class for the data manager test suite."""
+@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+class TestSelectMethods():
+    """Class for testing data manager select_all() and select() methods."""
+
     @pytest.mark.integration
     def test_do_select_all(self, test_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKFunction instances on success."""
@@ -130,26 +131,10 @@ class TestDataManager():
 
         assert DUT.do_select(100, table='function') is None
 
-    @pytest.mark.integration
-    def test_do_insert(self, test_dao):
-        """do_insert() should send the success message after successfully inserting a new function."""
-        DUT = dmFunction(test_dao)
-        DUT.do_select_all(revision_id=1)
 
-        def on_message(node_id):
-            assert node_id == 2
-            assert isinstance(
-                DUT.tree.get_node(node_id).data['function'], RAMSTKFunction)
-            assert DUT.tree.get_node(node_id).data['function'].function_id == 2
-            assert DUT.tree.get_node(
-                node_id).data['function'].name == 'New Function'
-            assert isinstance(DUT.tree.get_node(node_id).data['hazards'], dict)
-            assert DUT.tree.get_node(
-                node_id).data['hazards'][1].function_id == 2
-
-        pub.subscribe(on_message, 'succeed_insert_function')
-
-        pub.sendMessage('request_insert_function')
+@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+class TestDeleteMethods():
+    """Class for testing the data manager delete() method."""
 
     @pytest.mark.integration
     def test_do_delete(self, test_dao):
@@ -179,59 +164,10 @@ class TestDataManager():
 
         DUT._do_delete(300)
 
-    @pytest.mark.integration
-    def test_do_update_data_manager(self, test_dao):
-        """ do_update() should return a zero error code on success. """
-        DUT = dmFunction(test_dao)
-        DUT.do_select_all(revision_id=1)
 
-        def on_message(node_id):
-            DUT.do_select_all()
-            _function = DUT.do_select(node_id, table='function')
-            assert node_id == 1
-            assert _function.name == 'Test Function'
-            _hazards = DUT.do_select(node_id, table='hazards')
-            assert _hazards[1].potential_hazard == 'Big Hazard'
-
-        pub.subscribe(on_message, 'succeed_update_function')
-
-        _function = DUT.do_select(1, table='function')
-        _function.name = 'Test Function'
-        _hazards = DUT.do_select(1, table='hazards')
-        _hazards[1].definition = 'Big Hazard'
-
-        pub.sendMessage('request_update_function', node_id=1)
-
-    @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_dao):
-        """ do_update() should return a non-zero error code when passed a Function ID that doesn't exist. """
-        DUT = dmFunction(test_dao)
-        DUT.do_select_all(revision_id=1)
-
-        def on_message(error_msg):
-            assert error_msg == (
-                'Attempted to save non-existent function with function ID '
-                '100.')
-
-        pub.subscribe(on_message, 'fail_update_function')
-
-        DUT.do_update(100)
-
-    @pytest.mark.integration
-    def test_do_update_all(self, test_dao):
-        """ do_update_all() should return a zero error code on success. """
-        DUT = dmFunction(test_dao)
-        DUT.do_select_all(revision_id=1)
-
-        def on_message(node_id):
-            assert DUT.do_select(node_id,
-                                 table='function').function_id == node_id
-            assert DUT.do_select(
-                node_id, table='hazards')[node_id].function_id == node_id
-
-        pub.subscribe(on_message, 'succeed_update_function')
-
-        pub.sendMessage('request_update_all_functions')
+@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+class TestGetterSetter():
+    """Class for testing methods that get or set."""
 
     @pytest.mark.integration
     def test_do_get_attributes_function(self, test_dao):
@@ -242,7 +178,7 @@ class TestDataManager():
         def on_message(attributes):
             assert isinstance(attributes, dict)
             assert attributes['function_id'] == 1
-            assert attributes['name'] == 'Test Function'
+            assert attributes['name'] == 'Function Name'
             assert attributes['safety_critical'] == 0
 
         pub.subscribe(on_message, 'succeed_get_function_attributes')
@@ -277,7 +213,7 @@ class TestDataManager():
         def on_message(attributes):
             assert isinstance(attributes, dict)
             assert attributes['function_id'] == 1
-            assert attributes['name'] == 'Test Function'
+            assert attributes['name'] == 'Function Name'
             assert isinstance(attributes['hazards'], dict)
             assert isinstance(attributes['hazards'][1], RAMSTKHazardAnalysis)
             assert attributes['hazards'][1].function_id == 1
@@ -355,11 +291,6 @@ class TestDataManager():
         pub.subscribe(on_message, 'succeed_get_function_tree')
 
         pub.sendMessage('request_get_function_tree')
-
-
-@pytest.mark.usefixtures('test_dao', 'test_configuration')
-class TestAnalysisManager():
-    """Class for the analysis manager test suite."""
     @pytest.mark.integration
     def test_get_all_attributes_analysis_manager(self, test_dao,
                                                  test_configuration):
@@ -394,9 +325,95 @@ class TestAnalysisManager():
         pub.sendMessage('request_get_function_tree')
 
 
-@pytest.mark.usefixtures('test_dao', 'test_configuration')
-class TestHazardAnalysis():
-    """Class for hazard analysis methods test suite."""
+@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+class TestInsertMethods():
+    """Class for testing the data manager insert() method."""
+
+    @pytest.mark.integration
+    def test_do_insert(self, test_dao):
+        """do_insert() should send the success message after successfully inserting a new function."""
+        DUT = dmFunction(test_dao)
+        DUT.do_select_all(revision_id=1)
+
+        def on_message(node_id):
+            assert node_id == 2
+            assert isinstance(
+                DUT.tree.get_node(node_id).data['function'], RAMSTKFunction)
+            assert DUT.tree.get_node(node_id).data['function'].function_id == 2
+            assert DUT.tree.get_node(
+                node_id).data['function'].name == 'New Function'
+            assert isinstance(DUT.tree.get_node(node_id).data['hazards'], dict)
+            assert DUT.tree.get_node(
+                node_id).data['hazards'][1].function_id == 2
+
+        pub.subscribe(on_message, 'succeed_insert_function')
+
+        pub.sendMessage('request_insert_function')
+
+
+@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+class TestUpdateMethods():
+    """Class for testing update() and update_all() methods."""
+
+    @pytest.mark.integration
+    def test_do_update_data_manager(self, test_dao):
+        """ do_update() should return a zero error code on success. """
+        DUT = dmFunction(test_dao)
+        DUT.do_select_all(revision_id=1)
+
+        def on_message(node_id):
+            DUT.do_select_all()
+            _function = DUT.do_select(node_id, table='function')
+            assert node_id == 1
+            assert _function.name == 'Test Function'
+            _hazards = DUT.do_select(node_id, table='hazards')
+            assert _hazards[1].potential_hazard == 'Big Hazard'
+
+        pub.subscribe(on_message, 'succeed_update_function')
+
+        _function = DUT.do_select(1, table='function')
+        _function.name = 'Test Function'
+        _hazards = DUT.do_select(1, table='hazards')
+        _hazards[1].definition = 'Big Hazard'
+
+        pub.sendMessage('request_update_function', node_id=1)
+
+    @pytest.mark.integration
+    def test_do_update_non_existent_id(self, test_dao):
+        """ do_update() should return a non-zero error code when passed a Function ID that doesn't exist. """
+        DUT = dmFunction(test_dao)
+        DUT.do_select_all(revision_id=1)
+
+        def on_message(error_msg):
+            assert error_msg == (
+                'Attempted to save non-existent function with function ID '
+                '100.')
+
+        pub.subscribe(on_message, 'fail_update_function')
+
+        DUT.do_update(100)
+
+    @pytest.mark.integration
+    def test_do_update_all(self, test_dao):
+        """ do_update_all() should return a zero error code on success. """
+        DUT = dmFunction(test_dao)
+        DUT.do_select_all(revision_id=1)
+
+        def on_message(node_id):
+            assert DUT.do_select(node_id,
+                                 table='function').function_id == node_id
+            assert DUT.do_select(
+                node_id, table='hazards')[node_id].function_id == node_id
+
+        pub.subscribe(on_message, 'succeed_update_function')
+
+        pub.sendMessage('request_update_all_functions')
+
+
+@pytest.mark.usefixtures('test_program_dao', 'test_configuration')
+class TestAnalysisMethods():
+    """Class for testing analytical methods."""
+
     @pytest.mark.integration
     def test_do_calculate_hri(self, test_dao, test_configuration):
         """do_calculate_hri() should calculate the hazard risk index hazard analysis."""

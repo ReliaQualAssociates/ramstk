@@ -290,8 +290,9 @@ class DataManager(RAMSTKDataManager):
 
             self.last_id = _revision.revision_id
 
+            _failure_definition = RAMSTKFailureDefinition(revision_id=self.last_id)
             _mission = RAMSTKMission(revision_id=self.last_id)
-            _error_code, _msg = self.dao.db_add([_mission])
+            _error_code, _msg = self.dao.db_add([_failure_definition, _mission])
             _tree.create_node(tag='usage_profile',
                               identifier=self.last_id,
                               parent=None)
@@ -302,7 +303,7 @@ class DataManager(RAMSTKDataManager):
 
             _data_package = {
                 'revision': _revision,
-                'failure_definitions': {},
+                'failure_definitions': {_failure_definition.definition_id: _failure_definition},
                 'usage_profile': _tree
             }
             self.tree.create_node(tag=_revision.name,

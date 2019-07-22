@@ -78,9 +78,8 @@ def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
         _hazard_rate_alloc = weight_factor * parent_goal
         _mtbf_alloc = 1.0 / _hazard_rate_alloc
         _reliability_alloc = exp(-1.0 * _hazard_rate_alloc * mission_time)
-
-        return _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc
     except ZeroDivisionError:
+        _mtbf_alloc = _hazard_rate_alloc = _reliability_alloc = 0.0
         pub.sendMessage('fail_allocate_reliability',
                         error_msg=("Failed to apportion reliability using the "
                                    "ARINC method; one or more inputs had a "
@@ -88,6 +87,7 @@ def _calculate_arinc_apportionment(mission_time, weight_factor, parent_goal):
                                    "parent goal={1:f}.").format(
                                        weight_factor, parent_goal))
 
+    return _mtbf_alloc, _hazard_rate_alloc, _reliability_alloc
 
 def _calculate_equal_apportionment(mission_time, weight_factor, parent_goal):
     """

@@ -6,5 +6,6 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Data Access Object (DAO) package."""
+
 # RAMSTK Local Imports
-from .DAO import DAO, do_create_test_database
+from .DAO import DAO

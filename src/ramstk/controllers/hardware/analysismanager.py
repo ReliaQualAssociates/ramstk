@@ -30,7 +30,6 @@ class AnalysisManager(RAMSTKAnalysisManager):
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
         the hardware item being analyzed.
     """
-
     def __init__(self, configuration, **kwargs):  # pylint: disable=unused-argument
         """
         Initialize an instance of the hardware analysis manager.
@@ -498,6 +497,37 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         return _n_elements
 
+    def _do_calculate_arinc_weight_factor(self, node_id):
+        """
+        Calculate the weight factor for the hardware at node ID.
+
+        The ARINC weight factor is the quotient of the hardware item's hazard
+        rate and the overall system hazard rate.
+
+        :param int node_id: the node (hardware) ID of the hardware item whose
+            weight factor is being allocated.
+        :return: _weight_factor; the ratio of the hardware item's hazard rate
+            and the overall system hazard rate.
+        :rtype: float
+        :raise: ZeroDivisionError if the parent hardware item's hazard rate is
+            zero.
+        """
+        _node = self._tree.get_node(node_id)
+        _parent_node = self._tree.parent(node_id)
+        try:
+            _weight_factor = (_node.data['reliability'].get_attributes()
+                              ['hazard_rate_active']
+                              / _parent_node.data['reliability'].
+                              get_attributes()['hazard_rate_active'])
+        except ZeroDivisionError:
+            _weight_factor = 0.0
+            pub.sendMessage(
+                'fail_calculate_arinc_weight_factor',
+                error_msg=("Failed to allocate the reliability for hardware "
+                           "ID {0:s}; zero hazard rate.").format(str(node_id)))
+
+        return _weight_factor
+
     def _do_calculate_foo_cumulative_weight(self, node_id):
         """
         Calculate the cumulative weight for the FOO method.
@@ -550,10 +580,9 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _parent_goal = self._attributes['reliability_goal']
                 _cum_weight = 0.0
             elif self._attributes['allocation_method_id'] == 2:
-                _attributes['weight_factor'] = (
-                    _node.data['reliability'].get_attributes()
-                    ['hazard_rate_active'] / self._tree.children(0)[0].
-                    data['reliability'].get_attributes()['hazard_rate_active'])
+                _attributes[
+                    'weight_factor'] = self._do_calculate_arinc_weight_factor(
+                        _node.identifier)
                 _parent_goal = self._attributes['hazard_rate_goal']
                 _cum_weight = 0.0
             elif self._attributes['allocation_method_id'] == 3:
