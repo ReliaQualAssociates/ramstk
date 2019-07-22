@@ -17,7 +17,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.analyses import Allocation, Derating, Dormancy, SimilarItem, Stress
 from ramstk.analyses.milhdbk217f import MilHdbk217f
-from ramstk.controllers.managers import RAMSTKAnalysisManager
+from ramstk.controllers import RAMSTKAnalysisManager
 
 
 class AnalysisManager(RAMSTKAnalysisManager):

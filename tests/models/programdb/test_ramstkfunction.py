@@ -13,44 +13,45 @@ import pytest
 from ramstk.models.programdb.RAMSTKFunction import RAMSTKFunction
 
 ATTRIBUTES = {
-        'type_id': 0,
-        'total_part_count': 0,
-        'availability_mission': 1.0,
-        'cost': 0.0,
-        'hazard_rate_mission': 0.0,
-        'mpmt': 0.0,
-        'parent_id': 0,
-        'mtbf_logistics': 0.0,
-        'safety_critical': 0,
-        'mmt': 0.0,
-        'hazard_rate_logistics': 0.0,
-        'remarks': b'',
-        'mtbf_mission': 0.0,
-        'function_code': 'FUNC-0001',
-        'name': 'Function Name',
-        'level': 0,
-        'mttr': 0.0,
-        'mcmt': 0.0,
-        'availability_logistics': 1.0,
-        'total_mode_count': 0
-    }
+    'availability_logistics': 1.0,
+    'availability_mission': 1.0,
+    'cost': 0.0,
+    'function_code': 'FUNC-0001',
+    'hazard_rate_logistics': 0.0,
+    'hazard_rate_mission': 0.0,
+    'level': 0,
+    'mcmt': 0.0,
+    'mmt': 0.0,
+    'mpmt': 0.0,
+    'mtbf_logistics': 0.0,
+    'mtbf_mission': 0.0,
+    'mttr': 0.0,
+    'name': 'Function Name',
+    'parent_id': 0,
+    'remarks': b'',
+    'safety_critical': 0,
+    'total_part_count': 0,
+    'total_mode_count': 0,
+    'type_id': 0
+}
 
 
 @pytest.mark.integration
 def test_ramstkfunction_create(test_dao):
     """ __init__() should create an RAMSTKFunction model. """
-    DUT = test_dao.session.query(RAMSTKFunction).first()
+    DUT = test_dao.session.query(RAMSTKFunction).filter(
+        RAMSTKFunction.function_id == 3).first()
 
     assert isinstance(DUT, RAMSTKFunction)
 
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'ramstk_function'
     assert DUT.revision_id == 1
-    assert DUT.function_id == 1
+    assert DUT.function_id == 3
     assert DUT.availability_logistics == 1.0
     assert DUT.availability_mission == 1.0
     assert DUT.cost == 0.0
-    #assert DUT.function_code == 'FUNC-0001'
+    assert DUT.function_code == 'FUNC-0003'
     assert DUT.hazard_rate_logistics == 0.0
     assert DUT.hazard_rate_mission == 0.0
     assert DUT.level == 0
@@ -60,7 +61,7 @@ def test_ramstkfunction_create(test_dao):
     assert DUT.mtbf_logistics == 0.0
     assert DUT.mtbf_mission == 0.0
     assert DUT.mttr == 0.0
-    #assert DUT.name == 'Function Name'
+    assert DUT.name == 'Function Name'
     assert DUT.parent_id == 0
     assert DUT.remarks == b''
     assert DUT.safety_critical == 0
@@ -97,6 +98,7 @@ def test_get_attributes(test_dao):
     assert _attributes['total_mode_count'] == 0
     assert _attributes['total_part_count'] == 0
     assert _attributes['type_id'] == 0
+
 
 @pytest.mark.integration
 def test_set_attributes(test_dao):
