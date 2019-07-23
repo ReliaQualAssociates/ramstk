@@ -53,7 +53,9 @@ class DataManager(RAMSTKDataManager):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_all, 'request_retrieve_functions')
         pub.subscribe(self._do_delete, 'request_delete_function')
+        pub.subscribe(self._do_delete_hazard, 'request_delete_hazard')
         pub.subscribe(self.do_insert, 'request_insert_function')
+        pub.subscribe(self.do_insert_hazard, 'request_insert_hazard')
         pub.subscribe(self.do_update, 'request_update_function')
         pub.subscribe(self.do_update_all, 'request_update_all_functions')
         pub.subscribe(self.do_get_attributes,
@@ -89,6 +91,30 @@ class DataManager(RAMSTKDataManager):
             _error_msg = ("Attempted to delete non-existent function ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_function', error_msg=_error_msg)
+
+    def _do_delete_hazard(self, function_id, node_id):
+        """
+        Remove a hazard from function ID.
+
+        :param int function_id: the function ID to remove the hazard from.
+        :param int node_id: the node (hazard) ID to remove.
+        :return: None
+        :rtype: None
+        """
+        _hazards = RAMSTKDataManager.do_select(self, function_id, 'hazards')
+        try:
+            _error_code, _error_msg = self.dao.db_delete(_hazards[node_id])
+
+            if _error_code == 0:
+                _hazards.pop(node_id)
+                self.tree.get_node(function_id).data['hazards'] = _hazards
+
+                pub.sendMessage('succeed_delete_hazard', node_id=node_id)
+        except KeyError:
+            pub.sendMessage('fail_delete_hazard',
+                            error_msg=("Attempted to delete non-existent "
+                                       "hazard ID {0:s} from function ID "
+                                       "{1:s}.").format(str(node_id), str(function_id)))
 
     def _do_set_hazard(self, node_id, key, value, hazard_id):
         """
@@ -185,30 +211,70 @@ class DataManager(RAMSTKDataManager):
         """
         pub.sendMessage('succeed_get_function_tree', dmtree=self.tree)
 
-    def do_insert(self):  # pylint: disable=arguments-differ
+    def do_insert(self, parent_id=0):  # pylint: disable=arguments-differ
         """
-        Add a new function.
+        Add a new function as child of the parent ID function.
 
+        :param int parent_id: the parent (function) ID of the function to
+            insert the child.  Default is to add a top-level function.
         :return: None
         :rtype: None
         """
         _tree = Tree()
-        try:
-            _function = RAMSTKFunction(name='New Function')
-            _error_code, _msg = self.dao.db_add([_function])
 
-            self.last_id = _function.function_id
+        if self.tree.get_node(parent_id) is not None:
+            try:
+                _function = RAMSTKFunction(revision_id=self._revision_id,
+                                           name='New Function',
+                                           parent_id=parent_id)
+                _error_code, _msg = self.dao.db_add([_function])
 
-            _data_package = {'function': _function, 'hazards': {}}
-            self.tree.create_node(tag=_function.name,
-                                  identifier=_function.function_id,
-                                  parent=self._root,
-                                  data=_data_package)
+                self.last_id = _function.function_id
 
-            pub.sendMessage('succeed_insert_function', node_id=self.last_id)
-        except DataAccessError as _error:
-            print(_error)
-            pub.sendMessage("fail_insert_function", error_message=_error)
+                _data_package = {'function': _function, 'hazards': {}}
+                self.tree.create_node(tag=_function.name,
+                                      identifier=_function.function_id,
+                                      parent=_function.parent_id,
+                                      data=_data_package)
+
+                pub.sendMessage('succeed_insert_function', node_id=self.last_id)
+            except DataAccessError as _error:
+                print(_error)
+                pub.sendMessage("fail_insert_function", error_msg=_error)
+        else:
+            pub.sendMessage("fail_insert_function",
+                            error_msg=("Attempting to add a function as a "
+                                       "child of non-existent parent node "
+                                       "{0:s}.".format(str(parent_id))))
+
+    def do_insert_hazard(self, function_id):
+        """
+        Add a new hazard to function ID.
+
+        :param int function_id: the function ID to associate the new hazard
+            with.
+        :return: None
+        :rtype: None
+        """
+        _node = self.tree.get_node(function_id)
+
+        if _node is not None:
+            try:
+                _hazard = RAMSTKHazardAnalysis(revision_id=self._revision_id,
+                                               function_id=function_id)
+                _error_code, _msg = self.dao.db_add([_hazard])
+
+                _node.data['hazards'][_hazard.hazard_id] = _hazard
+
+                pub.sendMessage('succeed_insert_hazard', node_id=_hazard.hazard_id)
+            except DataAccessError as _error:
+                print(_error)
+                pub.sendMessage("fail_insert_hazard", error_msg=_error)
+        else:
+            pub.sendMessage("fail_insert_hazard",
+                            error_msg=("Attempting to add a hazard to a "
+                                       "non-existent function ID "
+                                       "{0:s}.".format(str(function_id))))
 
     def do_select_all(self, revision_id):  # pylint: disable=arguments-differ
         """
@@ -295,6 +361,9 @@ class DataManager(RAMSTKDataManager):
     def do_update(self, node_id):
         """
         Update the record associated with node ID in RAMSTK Program database.
+
+        .. note:: This will also update all the hazards associated with the
+            function.
 
         :param int node_id: the node (function) ID of the function to save.
         :return: None
