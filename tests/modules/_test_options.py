@@ -7,14 +7,18 @@
 # Copyright 2007 - 2018 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Options class. """
 
+# Standard Library Imports
 from datetime import date, timedelta
 
+# Third Party Imports
 import pytest
 
+# RAMSTK Package Imports
 from ramstk.dao import DAO
-from ramstk.modules.options import dtmOptions, dtcOptions
-from ramstk.modules.options.Model import (SiteOptionsDataModel,
-                                       ProgramOptionsDataModel)
+from ramstk.modules.options import dtcOptions, dtmOptions
+from ramstk.modules.options.Model import (
+    ProgramOptionsDataModel, SiteOptionsDataModel
+)
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
