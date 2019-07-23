@@ -6,7 +6,6 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """FMEA Criticality Analysis Module."""
 
-
 # RAMSTK Package Imports
 from ramstk.exceptions import OutOfRangeError
 

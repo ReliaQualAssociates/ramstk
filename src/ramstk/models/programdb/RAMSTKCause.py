@@ -56,13 +56,23 @@ class RAMSTKCause(RAMSTK_BASE):
         nullable=False,
     )
 
-    description = Column('fld_description', String(512), default=__defaults__['description'])
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
     rpn = Column('fld_rpn', Integer, default=__defaults__['rpn'])
-    rpn_detection = Column('fld_rpn_detection', Integer, default=__defaults__['rpn_detection'])
-    rpn_detection_new = Column('fld_rpn_detection_new', Integer, default=__defaults__['rpn_detection_new'])
+    rpn_detection = Column('fld_rpn_detection',
+                           Integer,
+                           default=__defaults__['rpn_detection'])
+    rpn_detection_new = Column('fld_rpn_detection_new',
+                               Integer,
+                               default=__defaults__['rpn_detection_new'])
     rpn_new = Column('fld_rpn_new', Integer, default=__defaults__['rpn_new'])
-    rpn_occurrence = Column('fld_rpn_occurrence', Integer, default=__defaults__['rpn_occurrence'])
-    rpn_occurrence_new = Column('fld_rpn_occurrence_new', Integer, default=__defaults__['rpn_occurrence_new'])
+    rpn_occurrence = Column('fld_rpn_occurrence',
+                            Integer,
+                            default=__defaults__['rpn_occurrence'])
+    rpn_occurrence_new = Column('fld_rpn_occurrence_new',
+                                Integer,
+                                default=__defaults__['rpn_occurrence_new'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     mode = relationship('RAMSTKMode', back_populates='cause')

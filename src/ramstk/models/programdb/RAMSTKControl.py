@@ -40,8 +40,12 @@ class RAMSTKControl(RAMSTK_BASE):
         nullable=False,
     )
 
-    description = Column('fld_description', String(512), default=__defaults__['description'])
-    type_id = Column('fld_type_id', String(512), default=__defaults__['type_id'])
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    type_id = Column('fld_type_id',
+                     String(512),
+                     default=__defaults__['type_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     cause = relationship('RAMSTKCause', back_populates='control')

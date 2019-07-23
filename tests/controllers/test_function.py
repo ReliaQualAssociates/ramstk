@@ -205,8 +205,8 @@ class TestInsertMethods():
         def on_message(node_id):
             yield DUT
             assert node_id == 4
-            assert isinstance(
-                DUT[0].tree.get_node(node_id).data['function'], RAMSTKFunction)
+            assert isinstance(DUT[0].tree.get_node(node_id).data['function'],
+                              RAMSTKFunction)
             assert DUT[0].tree.get_node(
                 node_id).data['function'].function_id == node_id
             assert DUT[0].tree.get_node(
@@ -226,8 +226,8 @@ class TestInsertMethods():
         def on_message(node_id):
             yield DUT
             assert node_id == 5
-            assert isinstance(
-                DUT[0].tree.get_node(node_id).data['function'], RAMSTKFunction)
+            assert isinstance(DUT[0].tree.get_node(node_id).data['function'],
+                              RAMSTKFunction)
             assert DUT[0].tree.get_node(
                 node_id).data['function'].function_id == node_id
             assert DUT[0].tree.get_node(
@@ -261,7 +261,8 @@ class TestInsertMethods():
         def on_message(node_id):
             yield DUT
             assert node_id == 4
-            assert isinstance(DUT[0].tree.get_node(1).data['hazards'][node_id], RAMSTKHazardAnalysis)
+            assert isinstance(DUT[0].tree.get_node(1).data['hazards'][node_id],
+                              RAMSTKHazardAnalysis)
 
         pub.subscribe(on_message, 'succeed_insert_hazard')
 
@@ -424,7 +425,8 @@ class TestGetterSetter():
         assert DUT._attributes['availability_logistics'] == 1.0
 
     @pytest.mark.integration
-    def test_on_get_tree_analysis_manager(self, test_program_dao, test_configuration):
+    def test_on_get_tree_analysis_manager(self, test_program_dao,
+                                          test_configuration):
         """_on_get_tree() should assign the data manager's tree to the _tree attribute in response to the succeed_get_function_tree message."""
         DATAMGR = dmFunction(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)

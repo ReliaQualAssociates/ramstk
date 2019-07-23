@@ -197,7 +197,7 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE):
 
     def get_attributes(self):
         """
-        Retrieve current values of the RAMSTKHazardAnalysis data model attributes.
+        Retrieve current values of RAMSTKHazardAnalysis data model attributes.
 
         :return: {revision_id, hardware_id, hazard_id, potential_hazard,
                   potential_cause, assembly_effect, assembly_severity_id,

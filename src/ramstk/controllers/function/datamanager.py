@@ -114,7 +114,8 @@ class DataManager(RAMSTKDataManager):
             pub.sendMessage('fail_delete_hazard',
                             error_msg=("Attempted to delete non-existent "
                                        "hazard ID {0:s} from function ID "
-                                       "{1:s}.").format(str(node_id), str(function_id)))
+                                       "{1:s}.").format(
+                                           str(node_id), str(function_id)))
 
     def _do_set_hazard(self, node_id, key, value, hazard_id):
         """
@@ -237,7 +238,8 @@ class DataManager(RAMSTKDataManager):
                                       parent=_function.parent_id,
                                       data=_data_package)
 
-                pub.sendMessage('succeed_insert_function', node_id=self.last_id)
+                pub.sendMessage('succeed_insert_function',
+                                node_id=self.last_id)
             except DataAccessError as _error:
                 print(_error)
                 pub.sendMessage("fail_insert_function", error_msg=_error)
@@ -266,7 +268,8 @@ class DataManager(RAMSTKDataManager):
 
                 _node.data['hazards'][_hazard.hazard_id] = _hazard
 
-                pub.sendMessage('succeed_insert_hazard', node_id=_hazard.hazard_id)
+                pub.sendMessage('succeed_insert_hazard',
+                                node_id=_hazard.hazard_id)
             except DataAccessError as _error:
                 print(_error)
                 pub.sendMessage("fail_insert_hazard", error_msg=_error)

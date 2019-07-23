@@ -122,7 +122,7 @@ class RAMSTKFunction(RAMSTK_BASE):
 
     def get_attributes(self):
         """
-        Retrieve the current values of the RAMSTKFunction data model attributes.
+        Retrieve current values of the RAMSTKFunction data model attributes.
 
         :return: {revision_id, function_id, availability_logistics,
                   availability_mission, cost, function_code,

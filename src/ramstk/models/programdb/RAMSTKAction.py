@@ -54,16 +54,36 @@ class RAMSTKAction(RAMSTK_BASE):
         nullable=False,
     )
 
-    action_recommended = Column('fld_action_recommended', BLOB, default=__defaults__['action_recommended'])
-    action_category = Column('fld_action_category', String(512), default=__defaults__['action_category'])
-    action_owner = Column('fld_action_owner', String(512), default=__defaults__['action_owner'])
-    action_due_date = Column('fld_action_due_date', Date, default=__defaults__['action_due_date'])
-    action_status = Column('fld_action_status', String(512), default=__defaults__['action_status'])
-    action_taken = Column('fld_action_taken', BLOB, default=__defaults__['action_taken'])
-    action_approved = Column('fld_action_approved', Integer, default=__defaults__['action_approved'])
-    action_approve_date = Column('fld_action_approve_date', Date, default=__defaults__['action_approve_date'])
-    action_closed = Column('fld_action_closed', Integer, default=__defaults__['action_closed'])
-    action_close_date = Column('fld_action_close_date', Date, default=__defaults__['action_close_date'])
+    action_recommended = Column('fld_action_recommended',
+                                BLOB,
+                                default=__defaults__['action_recommended'])
+    action_category = Column('fld_action_category',
+                             String(512),
+                             default=__defaults__['action_category'])
+    action_owner = Column('fld_action_owner',
+                          String(512),
+                          default=__defaults__['action_owner'])
+    action_due_date = Column('fld_action_due_date',
+                             Date,
+                             default=__defaults__['action_due_date'])
+    action_status = Column('fld_action_status',
+                           String(512),
+                           default=__defaults__['action_status'])
+    action_taken = Column('fld_action_taken',
+                          BLOB,
+                          default=__defaults__['action_taken'])
+    action_approved = Column('fld_action_approved',
+                             Integer,
+                             default=__defaults__['action_approved'])
+    action_approve_date = Column('fld_action_approve_date',
+                                 Date,
+                                 default=__defaults__['action_approve_date'])
+    action_closed = Column('fld_action_closed',
+                           Integer,
+                           default=__defaults__['action_closed'])
+    action_close_date = Column('fld_action_close_date',
+                               Date,
+                               default=__defaults__['action_close_date'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     cause = relationship('RAMSTKCause', back_populates='action')
