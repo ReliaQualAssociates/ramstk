@@ -6,8 +6,10 @@
 # All rights reserved.
 """Test class for testing the RAMSTKStakeholder module algorithms and models."""
 
+# Third Party Imports
 import pytest
 
+# RAMSTK Package Imports
 from ramstk.dao.programdb.RAMSTKStakeholder import RAMSTKStakeholder
 
 __author__ = 'Doyle Rowland'

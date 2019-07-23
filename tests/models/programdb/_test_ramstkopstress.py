@@ -1,14 +1,17 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.test_ramstkopload.py is part of The RAMSTK Project
+#       tests._dao.programdb.test_ramstkopstress.py is part of The RAMSTK Project
+
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKOpLoad module algorithms and models."""
+"""Test class for testing the RAMSTKOpStress module algorithms and models."""
 
+# Third Party Imports
 import pytest
 
-from ramstk.dao.programdb.RAMSTKOpLoad import RAMSTKOpLoad
+# RAMSTK Package Imports
+from ramstk.dao.programdb.RAMSTKOpStress import RAMSTKOpStress
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
@@ -16,30 +19,32 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 ATTRIBUTES = {
-    'priority_id': 0,
-    'damage_model': '',
+    'description': 'Test Operating Stress',
     'load_id': 1,
-    'mechanism_id': 1,
-    'description': 'Test Operating Load'
+    'load_history': '',
+    'measurable_parameter': '',
+    'remarks': b'',
+    'stress_id': 1
 }
 
 
 @pytest.mark.integration
-def test_ramstkopload_create(test_dao):
-    """ __init__() should create an RAMSTKOpLoad model. """
+def test_ramstkopstress_create(test_dao):
+    """ __init__() should create an RAMSTKOpStress model."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKOpLoad).first()
+    DUT = _session.query(RAMSTKOpStress).first()
 
-    assert isinstance(DUT, RAMSTKOpLoad)
+    assert isinstance(DUT, RAMSTKOpStress)
 
     # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'ramstk_op_load'
-    assert DUT.mechanism_id == 1
+    assert DUT.__tablename__ == 'ramstk_op_stress'
     assert DUT.load_id == 1
-    assert DUT.description == 'Test Operating Load'
-    assert DUT.damage_model == ''
-    assert DUT.priority_id == 0
+    assert DUT.stress_id == 1
+    assert DUT.description == 'Test Operating Stress'
+    assert DUT.measurable_parameter == ''
+    assert DUT.load_history == ''
+    assert DUT.remarks == b''
 
 
 @pytest.mark.integration
@@ -47,17 +52,18 @@ def test_get_attributes(test_dao):
     """ get_attributes() should return a dict of attribute:value pairs. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKOpLoad).first()
+    DUT = _session.query(RAMSTKOpStress).first()
 
     _attributes = DUT.get_attributes()
 
     assert isinstance(_attributes, dict)
 
-    assert _attributes['mechanism_id'] == 1
     assert _attributes['load_id'] == 1
-    assert _attributes['description'] == 'Test Operating Load'
-    assert _attributes['damage_model'] == ''
-    assert _attributes['priority_id'] == 0
+    assert _attributes['stress_id'] == 1
+    assert _attributes['description'] == 'Test Operating Stress'
+    assert _attributes['load_history'] == ''
+    assert _attributes['measurable_parameter'] == ''
+    assert _attributes['remarks'] == b''
 
 
 @pytest.mark.integration
@@ -65,13 +71,13 @@ def test_set_attributes(test_dao):
     """ set_attributes() should return a zero error code on success. """
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKOpLoad).first()
+    DUT = _session.query(RAMSTKOpStress).first()
 
     _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
 
     assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKOpLoad {0:d} "
-                    "attributes.".format(DUT.load_id))
+    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKOpStress {0:d} "
+                    "attributes.".format(DUT.stress_id))
 
 
 @pytest.mark.integration
@@ -79,7 +85,7 @@ def test_set_attributes_missing_key(test_dao):
     """ set_attributes() should return a 40 error code when passed a dict with a missing key."""
     _session = test_dao.RAMSTK_SESSION(
         bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKOpLoad).first()
+    DUT = _session.query(RAMSTKOpStress).first()
 
     ATTRIBUTES.pop('description')
 
@@ -87,6 +93,6 @@ def test_set_attributes_missing_key(test_dao):
 
     assert _error_code == 40
     assert _msg == ("RAMSTK ERROR: Missing attribute 'description' in attribute "
-                    "dictionary passed to RAMSTKOpLoad.set_attributes().")
+                    "dictionary passed to RAMSTKOpStress.set_attributes().")
 
-    ATTRIBUTES['description'] = 'Test Operating Load'
+    ATTRIBUTES['description'] = 'Test Operating Stress'

@@ -24,72 +24,75 @@ ATTRIBUTES = {
 }
 
 
-@pytest.mark.integration
-def test_ramstkmechanism_create(test_dao):
-    """ __init__() should create an RAMSTKMechanism model. """
-    DUT = test_dao.session.query(RAMSTKMechanism).first()
+@pytest.mark.usefixtures('test_program_dao')
+class TestRAMSTKMechanism():
+    """Class for testing the RAMSTKMechanism model."""
+    @pytest.mark.integration
+    def test_ramstkmechanism_create(self, test_program_dao):
+        """ __init__() should create an RAMSTKMechanism model. """
+        DUT = test_program_dao.session.query(RAMSTKMechanism).first()
 
-    assert isinstance(DUT, RAMSTKMechanism)
+        assert isinstance(DUT, RAMSTKMechanism)
 
-    # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'ramstk_mechanism'
-    assert DUT.mode_id == 4
-    assert DUT.mechanism_id == 1
-    assert DUT.description == 'Test Failure Mechanism #1 for Mode ID 4'
-    assert DUT.pof_include == 1
-    assert DUT.rpn == 0
-    assert DUT.rpn_detection == 0
-    assert DUT.rpn_detection_new == 0
-    assert DUT.rpn_new == 0
-    assert DUT.rpn_occurrence == 0
-    assert DUT.rpn_occurrence_new == 0
-
-
-@pytest.mark.integration
-def test_get_attributes(test_dao):
-    """ get_attributes() should return a dict of attribute:value pairs. """
-    DUT = test_dao.session.query(RAMSTKMechanism).first()
-
-    _attributes = DUT.get_attributes()
-
-    assert isinstance(_attributes, dict)
-
-    assert _attributes['mode_id'] == 4
-    assert _attributes['mechanism_id'] == 1
-    assert _attributes['description'] == ('Test Failure Mechanism #1 for Mode '
-                                          'ID 4')
-    assert _attributes['pof_include'] == 1
-    assert _attributes['rpn'] == 0
-    assert _attributes['rpn_detection'] == 0
-    assert _attributes['rpn_detection_new'] == 0
-    assert _attributes['rpn_new'] == 0
-    assert _attributes['rpn_occurrence'] == 0
-    assert _attributes['rpn_occurrence_new'] == 0
+        # Verify class attributes are properly initialized.
+        assert DUT.__tablename__ == 'ramstk_mechanism'
+        assert DUT.mode_id == 4
+        assert DUT.mechanism_id == 1
+        assert DUT.description == 'Test Failure Mechanism #1 for Mode ID 4'
+        assert DUT.pof_include == 1
+        assert DUT.rpn == 0
+        assert DUT.rpn_detection == 0
+        assert DUT.rpn_detection_new == 0
+        assert DUT.rpn_new == 0
+        assert DUT.rpn_occurrence == 0
+        assert DUT.rpn_occurrence_new == 0
 
 
-@pytest.mark.integration
-def test_set_attributes(test_dao):
-    """ set_attributes() should return a zero error code on success. """
-    DUT = test_dao.session.query(RAMSTKMechanism).first()
+    @pytest.mark.integration
+    def test_get_attributes(self, test_program_dao):
+        """ get_attributes() should return a dict of attribute:value pairs. """
+        DUT = test_program_dao.session.query(RAMSTKMechanism).first()
 
-    assert DUT.set_attributes(ATTRIBUTES) is None
+        _attributes = DUT.get_attributes()
+
+        assert isinstance(_attributes, dict)
+
+        assert _attributes['mode_id'] == 4
+        assert _attributes['mechanism_id'] == 1
+        assert _attributes['description'] == ('Test Failure Mechanism #1 for Mode '
+                                              'ID 4')
+        assert _attributes['pof_include'] == 1
+        assert _attributes['rpn'] == 0
+        assert _attributes['rpn_detection'] == 0
+        assert _attributes['rpn_detection_new'] == 0
+        assert _attributes['rpn_new'] == 0
+        assert _attributes['rpn_occurrence'] == 0
+        assert _attributes['rpn_occurrence_new'] == 0
 
 
-@pytest.mark.integration
-def test_set_attributes_none_value(test_dao):
-    """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
-    DUT = test_dao.session.query(RAMSTKMechanism).first()
+    @pytest.mark.integration
+    def test_set_attributes(self, test_program_dao):
+        """ set_attributes() should return a zero error code on success. """
+        DUT = test_program_dao.session.query(RAMSTKMechanism).first()
 
-    ATTRIBUTES['description'] = None
-
-    assert DUT.set_attributes(ATTRIBUTES) is None
-    assert DUT.get_attributes()['description'] == ''
+        assert DUT.set_attributes(ATTRIBUTES) is None
 
 
-@pytest.mark.integration
-def test_set_attributes_unknown_attributes(test_dao):
-    """set_attributes() should raise an AttributeError when passed an unknown attribute."""
-    DUT = test_dao.session.query(RAMSTKMechanism).first()
+    @pytest.mark.integration
+    def test_set_attributes_none_value(self, test_program_dao):
+        """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
+        DUT = test_program_dao.session.query(RAMSTKMechanism).first()
 
-    with pytest.raises(AttributeError):
-        DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+        ATTRIBUTES['description'] = None
+
+        assert DUT.set_attributes(ATTRIBUTES) is None
+        assert DUT.get_attributes()['description'] == ''
+
+
+    @pytest.mark.integration
+    def test_set_attributes_unknown_attributes(self, test_program_dao):
+        """set_attributes() should raise an AttributeError when passed an unknown attribute."""
+        DUT = test_program_dao.session.query(RAMSTKMechanism).first()
+
+        with pytest.raises(AttributeError):
+            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})

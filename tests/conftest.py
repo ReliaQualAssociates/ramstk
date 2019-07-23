@@ -280,6 +280,8 @@ def test_program_dao():
     # If there are existing test databases, delete them.
     if os.path.exists(TEST_PROGRAM_DB_PATH):
         os.remove(TEST_PROGRAM_DB_PATH)
+    if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
 
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
@@ -311,6 +313,8 @@ def test_dao():
     # If there are existing test databases, delete them.
     if os.path.exists(_TEST_PROGRAM_DB_PATH):
         os.remove(_TEST_PROGRAM_DB_PATH)
+    if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
 
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')

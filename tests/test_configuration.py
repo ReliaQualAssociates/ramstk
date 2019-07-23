@@ -22,7 +22,7 @@ from ramstk.Configuration import (
     RAMSTK_FAILURE_PROBABILITY, RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS,
     RAMSTK_HR_TYPES, RAMSTK_LIFECYCLE, RAMSTK_MTTR_TYPES, RAMSTK_S_DIST,
     RAMSTK_SW_APPLICATION, RAMSTK_SW_DEV_ENVIRONMENTS, RAMSTK_SW_DEV_PHASES,
-    RAMSTK_SW_LEVELS, RAMSTK_SW_TEST_METHODS, Configuration,
+    RAMSTK_SW_LEVELS, RAMSTK_SW_TEST_METHODS, Configuration
 )
 
 try:
@@ -421,7 +421,7 @@ def test_get_user_configuration(test_configuration):
     assert DUT.RAMSTK_BACKEND == 'sqlite'
     assert DUT.RAMSTK_PROG_INFO["host"] == 'localhost'
     assert DUT.RAMSTK_PROG_INFO["socket"] == '3306'
-    assert DUT.RAMSTK_PROG_INFO["database"] == (DUT._INSTALL_PREFIX + '/tmp/TestDB.ramstk')
+    assert DUT.RAMSTK_PROG_INFO["database"] == (DUT._INSTALL_PREFIX + '/tmp/TestProgramDB.ramstk')
     assert DUT.RAMSTK_PROG_INFO["user"] == 'johnny.tester'
     assert DUT.RAMSTK_PROG_INFO["password"] == 'clear.text.password'
     assert DUT.RAMSTK_DATA_DIR == (

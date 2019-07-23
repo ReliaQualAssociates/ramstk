@@ -459,9 +459,9 @@ class DAO():
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
             print("IOError")
             _return = True
-        except exc.OperationalError:
+        except exc.OperationalError as _error:
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
-            print("OperationalError")
+            print(_error)
             _return = True
         except exc.DBAPIError:
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
