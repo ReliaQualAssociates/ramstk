@@ -18,6 +18,7 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 # RAMSTK Package Imports
+from ramstk.controllers.function import dmFunction
 from ramstk.controllers.hardware import dmHardware
 from ramstk.controllers.revision import dmRevision
 from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
@@ -42,14 +43,10 @@ from ramstk.gui.gtk.mwi import ListBook, ModuleBook, WorkBook
 from ramstk.gui.gtk.ramstk.Widget import GdkPixbuf, Gtk, _
 from ramstk.modules.exports import dtcExports
 from ramstk.modules.fmea import dtcFMEA
-from ramstk.modules.function import dtcFunction
-from ramstk.modules.hazops import dtcHazardAnalysis
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.options import dtcOptions
-from ramstk.modules.pof import dtcPoF
 from ramstk.modules.preferences import dtcPreferences
 from ramstk.modules.requirement import dtcRequirement
-from ramstk.modules.similar_item import dtcSimilarItem
 from ramstk.modules.stakeholder import dtcStakeholder
 from ramstk.modules.validation import dtcValidation
 
@@ -592,9 +589,6 @@ class RAMSTK():
             'matrices'
             'fmea'
             'stakeholder'
-            'hazard'
-            'similaritem'
-            'pof'
             'growth'
             'options'
             'imports'
@@ -671,9 +665,6 @@ class RAMSTK():
             'ffmea': None,
             'fmea': None,
             'stakeholder': None,
-            'hazard': None,
-            'similaritem': None,
-            'pof': None,
             'imports': None,
             'exports': None,
         }
@@ -805,10 +796,8 @@ class RAMSTK():
             self.dic_controllers['revision'] = dmRevision(
                 self.ramstk_model.program_dao
             )
-            self.dic_controllers['function'] = dtcFunction(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
+            self.dic_controllers['function'] = dmFunction(
+                self.ramstk_model.program_dao
             )
             self.dic_controllers['requirement'] = dtcRequirement(
                 self.ramstk_model.program_dao,
@@ -834,26 +823,11 @@ class RAMSTK():
                 self.RAMSTK_CONFIGURATION,
                 test=False,
             )
-            self.dic_controllers['hazops'] = dtcHazardAnalysis(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
-            )
-            self.dic_controllers['similaritem'] = dtcSimilarItem(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
-            )
             self.dic_controllers['dfmeca'] = dtcFMEA(
                 self.ramstk_model.program_dao,
                 self.RAMSTK_CONFIGURATION,
                 test=False,
                 functional=False,
-            )
-            self.dic_controllers['pof'] = dtcPoF(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
             )
 
             # Find which modules are active for the program being opened.

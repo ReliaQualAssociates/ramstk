@@ -16,12 +16,11 @@ import pandas as pd
 from dateutil import parser
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import (
-    RAMSTKFunction, RAMSTKRequirement, RAMSTKValidation
-)
+from ramstk.dao.programdb import RAMSTKRequirement, RAMSTKValidation
 from ramstk.models.programdb import (
-    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKHardware, RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
+    RAMSTKNSWC, RAMSTKAllocation, RAMSTKDesignElectric,
+    RAMSTKDesignMechanic, RAMSTKFunction, RAMSTKHardware,
+    RAMSTKMilHdbkF, RAMSTKReliability, RAMSTKSimilarItem
 )
 from ramstk.modules import RAMSTKDataModel
 

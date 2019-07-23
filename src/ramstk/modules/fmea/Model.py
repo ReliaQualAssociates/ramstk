@@ -11,8 +11,8 @@ from pubsub import pub
 from treelib import tree
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import (
-    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode,
+from ramstk.models.programdb import (
+    RAMSTKAction, RAMSTKCause, RAMSTKControl, RAMSTKMechanism, RAMSTKMode
 )
 from ramstk.modules import RAMSTKDataModel
 from ramstk.Utilities import OutOfRangeError
@@ -79,8 +79,6 @@ class ModeDataModel(RAMSTKDataModel):
         for _mode in _modes:
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
-            _attributes = _mode.get_attributes()
-            _mode.set_attributes(_attributes)
             self.tree.create_node(
                 _mode.description,
                 _mode.mode_id,
@@ -244,8 +242,6 @@ class MechanismDataModel(RAMSTKDataModel):
         for _mechanism in _mechanisms:
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
-            _attributes = _mechanism.get_attributes()
-            _mechanism.set_attributes(_attributes)
             self.tree.create_node(
                 _mechanism.description,
                 _mechanism.mechanism_id,
@@ -416,8 +412,6 @@ class CauseDataModel(RAMSTKDataModel):
         for _cause in _causes:
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
-            _attributes = _cause.get_attributes()
-            _cause.set_attributes(_attributes)
             self.tree.create_node(
                 _cause.description,
                 _cause.cause_id,
@@ -584,8 +578,6 @@ class ControlDataModel(RAMSTKDataModel):
         for _control in _controls:
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
-            _attributes = _control.get_attributes()
-            _control.set_attributes(_attributes)
             self.tree.create_node(
                 _control.description,
                 _control.control_id,
@@ -748,8 +740,6 @@ class ActionDataModel(RAMSTKDataModel):
         for _action in _actions:
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
-            _attributes = _action.get_attributes()
-            _action.set_attributes(_attributes)
             self.tree.create_node(
                 _action.action_status,
                 _action.action_id,

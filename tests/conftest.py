@@ -13,6 +13,7 @@ import gettext
 import glob
 import os
 import platform
+import sqlite3
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
@@ -24,7 +25,7 @@ import xlwt
 # RAMSTK Package Imports
 import ramstk.Utilities as Utilities
 from ramstk.Configuration import Configuration
-from ramstk.dao import DAO, do_create_test_database
+from ramstk.dao import DAO
 
 _ = gettext.gettext
 
@@ -49,7 +50,7 @@ DATA_DIR = CONF_DIR + '/layouts'
 ICON_DIR = CONF_DIR + '/icons'
 TMP_DIR = VIRTUAL_ENV + '/tmp'
 LOG_DIR = TMP_DIR + '/logs'
-TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.ramstk'
+TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestProgramDB.ramstk'
 TEST_COMMON_DB_PATH = TMP_DIR + '/TestCommonDB.ramstk'
 TEST_PROGRAM_DB_URI = 'sqlite:///' + TEST_PROGRAM_DB_PATH
 TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
@@ -249,17 +250,29 @@ def test_common_dao():
     if os.path.exists(TEST_COMMON_DB_PATH):
         os.remove(TEST_COMMON_DB_PATH)
 
-    # Create and populate an RAMSTK Program test database.
+    # Create the test database.
+    sql_file = open('./devtools/sqlite_test_common_db.sql', 'r')
+    script_str = sql_file.read().strip()
+    conn = sqlite3.connect(TEST_COMMON_DB_PATH)
+    conn.executescript(script_str)
+    conn.commit()
+    conn.close()
+
+    # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = DAO()
     dao.db_connect(TEST_COMMON_DB_URI)
-    dao.db_create_common(TEST_COMMON_DB_URI, test=True)
 
     yield dao
 
-
-@pytest.fixture(scope='session')
-def test_dao():
+@pytest.fixture(scope='class')
+def test_program_dao():
     """Create a test DAO object for testing against an RAMSTK Program DB."""
+    # This will create a RAMSTK Program database using the
+    # <DB>_test_program_db.sql file in devtools/ (where <DB> = the database
+    # engine to use) for each group of tests collected in a class.  Group tests
+    # in the class in such a way as to produce predictable behavior (e.g., all
+    # the tests for select() and select_all()).
+
     # Create the tmp directory if it doesn't exist.
     if not os.path.exists(TMP_DIR):
         os.makedirs(TMP_DIR)
@@ -267,15 +280,53 @@ def test_dao():
     # If there are existing test databases, delete them.
     if os.path.exists(TEST_PROGRAM_DB_PATH):
         os.remove(TEST_PROGRAM_DB_PATH)
-    if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
-        os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
     if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
         os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
 
-    # Create and populate an RAMSTK Program test database.
+    # Create the test database.
+    sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
+    script_str = sql_file.read().strip()
+    conn = sqlite3.connect(TEST_PROGRAM_DB_PATH)
+    conn.executescript(script_str)
+    conn.commit()
+    conn.close()
+
+    # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = DAO()
     dao.db_connect(TEST_PROGRAM_DB_URI)
-    do_create_test_database(TEST_PROGRAM_DB_URI)
+
+    yield dao
+
+
+# TODO: Delete the test_dao() function after all tests have been updated to use
+# the test_program_dao.
+@pytest.fixture(scope='session')
+def test_dao():
+    """Create a test DAO object for testing against an RAMSTK Program DB."""
+    _TEST_PROGRAM_DB_PATH = TMP_DIR + '/TestDB.ramstk'
+    _TEST_PROGRAM_DB_URI = 'sqlite:///' + _TEST_PROGRAM_DB_PATH
+
+    # Create the tmp directory if it doesn't exist.
+    if not os.path.exists(TMP_DIR):
+        os.makedirs(TMP_DIR)
+
+    # If there are existing test databases, delete them.
+    if os.path.exists(_TEST_PROGRAM_DB_PATH):
+        os.remove(_TEST_PROGRAM_DB_PATH)
+    if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
+
+    # Create the test database.
+    sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
+    script_str = sql_file.read().strip()
+    conn = sqlite3.connect(_TEST_PROGRAM_DB_PATH)
+    conn.executescript(script_str)
+    conn.commit()
+    conn.close()
+
+    # Use the RAMSTK DAO to connect to the fresh, new test database.
+    dao = DAO()
+    dao.db_connect(_TEST_PROGRAM_DB_URI)
 
     yield dao
 

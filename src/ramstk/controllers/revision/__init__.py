@@ -8,4 +8,4 @@
 """The RAMSTK revision controllers package."""
 
 # RAMSTK Local Imports
-from .DataManager import DataManager as dmRevision
+from .datamanager import DataManager as dmRevision

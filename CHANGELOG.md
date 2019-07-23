@@ -8,6 +8,7 @@
 
 -  Handle ValueError with an error code and error message in RAMSTKSimilarItem.set\_attributes\(\). [\#252](https://github.com/ReliaQualAssociates/ramstk/issues/252)
 -  Add range check on input factors \(1 - 10\) in RAMSTKAllocation.foo\_apportionment\(\). [\#247](https://github.com/ReliaQualAssociates/ramstk/issues/247)
+- Handle ValueError with an error code and error message in RAMSTKSimilarItem.set\_attributes\(\). [\#226](https://github.com/ReliaQualAssociates/ramstk/issues/226) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)] [[module:similaritem](https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem)]
 - Move Similar Item Work View \_do\_request\_edit\_function\(\) method to a stand-alone assistant [\#212](https://github.com/ReliaQualAssociates/ramstk/issues/212) [[module:similaritem](https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem)]
 - Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods in component workviews to eliminate duplicate code. [\#208](https://github.com/ReliaQualAssociates/ramstk/issues/208) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
 - Refactor workviews to have \_\_make\_ui\(\), \_\_set\_properties\(\), \_\_set\_callbacks\(\) methods [\#207](https://github.com/ReliaQualAssociates/ramstk/issues/207) [[module:fmea](https://github.com/ReliaQualAssociates/ramstk/labels/module:fmea)] [[module:pof](https://github.com/ReliaQualAssociates/ramstk/labels/module:pof)]
@@ -19,6 +20,7 @@
 - Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods to eliminate duplicate code [\#200](https://github.com/ReliaQualAssociates/ramstk/issues/200) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
 - PyGTK deprecation [\#58](https://github.com/ReliaQualAssociates/ramstk/issues/58)
 - Support Python 3 [\#57](https://github.com/ReliaQualAssociates/ramstk/issues/57)
+- update documentation [\#255](https://github.com/ReliaQualAssociates/ramstk/pull/255) ([weibullguy](https://github.com/weibullguy))
 - feature/revision refactor [\#254](https://github.com/ReliaQualAssociates/ramstk/pull/254) [[module:failuredefinition](https://github.com/ReliaQualAssociates/ramstk/labels/module:failuredefinition)] [[module:revision](https://github.com/ReliaQualAssociates/ramstk/labels/module:revision)] [[module:usage](https://github.com/ReliaQualAssociates/ramstk/labels/module:usage)] ([weibullguy](https://github.com/weibullguy))
 - Feature/make analyses mvc [\#253](https://github.com/ReliaQualAssociates/ramstk/pull/253) [[module:allocation](https://github.com/ReliaQualAssociates/ramstk/labels/module:allocation)] [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)] [[module:similaritem](https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem)] ([weibullguy](https://github.com/weibullguy))
 - Add target to docs/Makefile to auto publish gh-pages [\#223](https://github.com/ReliaQualAssociates/ramstk/pull/223) ([weibullguy](https://github.com/weibullguy))

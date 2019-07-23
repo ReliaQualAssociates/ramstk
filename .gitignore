@@ -45,6 +45,7 @@ _templates/
 *.txt
 *.xls*
 .coverage
+.python-version
 _temp/
 devtools/update_docs.txt
 pylintout

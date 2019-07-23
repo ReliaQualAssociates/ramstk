@@ -6,7 +6,7 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Reliability Similar Item Assessment Module."""
 
-# RAMSTK Package Imports
+# Third Party Imports
 from sympy import symbols, sympify
 
 ENVIRONMENT_FROM_TO = {
@@ -156,7 +156,7 @@ def calculate_topic_633(environment, quality, temperature, hazard_rate):
     return _change_factor_1, _change_factor_2, _change_factor_3, _result_1
 
 
-def calculate_user_defined(sia):    # pylint: disable=too-many-locals
+def calculate_user_defined(sia):  # pylint: disable=too-many-locals
     """
     Calculate the user-defined similar item analysis.
 
@@ -177,13 +177,10 @@ def calculate_user_defined(sia):    # pylint: disable=too-many-locals
     :return: sia; the similar item assessment dict with updated results.
     :rtype: dict
     """
-    (
-        hr, pi1, pi2, pi3, pi4, pi5, pi6, pi7, pi8, pi9, pi10, uf1, uf2, uf3,
-        uf4, uf5, ui1, ui2, ui3, ui4, ui5, res1, res2, res3, res4, res5
-    ) = symbols(
-        'hr pi1 pi2 pi3 pi4 pi5 pi6 pi7 pi8 pi9 pi10 uf1 uf2 uf3 uf4 uf5 ui1 '
-        'ui2 ui3 ui4 ui5 res1 res2 res3 res4 res5'
-    )
+    (hr, pi1, pi2, pi3, pi4, pi5, pi6, pi7, pi8, pi9, pi10, uf1, uf2, uf3, uf4,
+     uf5, ui1, ui2, ui3, ui4, ui5, res1, res2, res3, res4, res5) = symbols(
+         'hr pi1 pi2 pi3 pi4 pi5 pi6 pi7 pi8 pi9 pi10 uf1 uf2 uf3 uf4 uf5 ui1 '
+         'ui2 ui3 ui4 ui5 res1 res2 res3 res4 res5')
 
     # pylint: disable=eval-used
     sia['res1'] = sympify(sia['equation1']).evalf(

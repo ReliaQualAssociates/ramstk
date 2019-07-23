@@ -8,6 +8,6 @@
 """The RAMSTK hardware controllers package."""
 
 # RAMSTK Local Imports
-from .AnalysisManager import AnalysisManager as amHardware
-from .DataManager import DataManager as dmHardware
-from .MatrixManager import MatrixManager as mmHardware
+from .analysismanager import AnalysisManager as amHardware
+from .datamanager import DataManager as dmHardware
+from .matrixmanager import MatrixManager as mmHardware
