@@ -511,8 +511,17 @@ class DAO():
                     _error_code = 4
                     _msg = ('RAMSTK ERROR: Date field did not contain Python '
                             'date object: {0:s}').format(_error)
+                elif 'NOT NULL constraint failed' in _error:
+                    _error_code = 5
+                    _msg = ('RAMSTK ERROR: One or more fields with a NOT NULL '
+                            'constraint were provided with a None value.')
+                elif 'database is locked' in _error:
+                    _error_code = 6
+                    _msg = ('RAMSTK ERROR: The data base is locked and cannot '
+                            'be written to.')
                 else:
                     # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
+                    print(_error)
                     _error_code = 1
                     _msg = (
                         'RAMSTK ERROR: Adding one or more items to the RAMSTK '

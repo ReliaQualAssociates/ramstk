@@ -15,3 +15,4 @@ pep8
 pipdeptree
 seed-isort-config
 pre-commit-hooks
+radon
