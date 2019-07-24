@@ -56,7 +56,8 @@ class DataManager(RAMSTKDataManager):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_all, 'request_retrieve_revisions')
         pub.subscribe(self._do_delete, 'request_delete_revision')
-        pub.subscribe(self._do_delete_failure_definition, 'request_delete_failure_definition')
+        pub.subscribe(self._do_delete_failure_definition,
+                      'request_delete_failure_definition')
         pub.subscribe(self.do_insert, 'request_insert_revision')
         pub.subscribe(self.do_update, 'request_update_revision')
         pub.subscribe(self.do_update_all, 'request_update_all_revisions')
@@ -104,15 +105,18 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _definitions = RAMSTKDataManager.do_select(self, revision_id, 'failure_definitions')
+        _definitions = RAMSTKDataManager.do_select(self, revision_id,
+                                                   'failure_definitions')
         try:
             _error_code, _error_msg = self.dao.db_delete(_definitions[node_id])
 
             if _error_code == 0:
                 _definitions.pop(node_id)
-                self.tree.get_node(revision_id).data['failure_definitions'] = _definitions
+                self.tree.get_node(
+                    revision_id).data['failure_definitions'] = _definitions
 
-                pub.sendMessage('succeed_delete_failure_definition', node_id=node_id)
+                pub.sendMessage('succeed_delete_failure_definition',
+                                node_id=node_id)
         except KeyError:
             pub.sendMessage('fail_delete_failure_definition',
                             error_msg=("Attempted to delete non-existent "
