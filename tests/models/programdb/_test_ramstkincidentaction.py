@@ -10,23 +10,28 @@ This is the test class for testing the RAMSTKIncidentAction module algorithms an
 models.
 """
 
+# Standard Library Imports
 import sys
+import unittest
+from datetime import date, timedelta
 from os.path import dirname
+
+# Third Party Imports
+from nose.plugins.attrib import attr
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+# RAMSTK Package Imports
+from dao.RAMSTKIncidentAction import RAMSTKIncidentAction
 
 sys.path.insert(
     0,
     dirname(dirname(dirname(dirname(__file__)))) + "/ramstk",
 )
 
-from datetime import date, timedelta
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 
-import unittest
-from nose.plugins.attrib import attr
 
-from dao.RAMSTKIncidentAction import RAMSTKIncidentAction
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
