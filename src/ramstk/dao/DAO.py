@@ -17,12 +17,17 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 # RAMSTK Package Imports
 from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
-    RAMSTKNSWC, RAMSTKAction, RAMSTKAllocation, RAMSTKCause,
-    RAMSTKControl, RAMSTKDesignElectric, RAMSTKDesignMechanic,
-    RAMSTKEnvironment, RAMSTKFailureDefinition, RAMSTKFunction,
-    RAMSTKHardware, RAMSTKHazardAnalysis, RAMSTKMatrix,
-    RAMSTKMechanism, RAMSTKMilHdbkF, RAMSTKMission, RAMSTKMissionPhase,
-    RAMSTKMode, RAMSTKReliability, RAMSTKRevision, RAMSTKSimilarItem
+    RAMSTKNSWC, RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl,
+    RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,
+    RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKGrowthTest, RAMSTKHardware,
+    RAMSTKHazardAnalysis, RAMSTKIncident, RAMSTKIncidentAction,
+    RAMSTKIncidentDetail, RAMSTKMatrix, RAMSTKMechanism, RAMSTKMilHdbkF,
+    RAMSTKMission, RAMSTKMissionPhase, RAMSTKMode, RAMSTKOpLoad,
+    RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus, RAMSTKReliability,
+    RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem, RAMSTKSoftware,
+    RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview, RAMSTKSoftwareTest,
+    RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest,
+    RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
 )
 
 # RAMSTK Local Imports
@@ -31,14 +36,6 @@ from .commondb import (
     RAMSTKHazards, RAMSTKLoadHistory, RAMSTKManufacturer, RAMSTKMeasurement,
     RAMSTKMethod, RAMSTKModel, RAMSTKSiteInfo, RAMSTKStakeholders,
     RAMSTKStatus, RAMSTKSubCategory, RAMSTKType, RAMSTKUser
-)
-from .programdb import (
-    RAMSTKGrowthTest, RAMSTKIncident, RAMSTKIncidentAction,
-    RAMSTKIncidentDetail, RAMSTKOpLoad, RAMSTKOpStress, RAMSTKProgramInfo,
-    RAMSTKProgramStatus, RAMSTKRequirement, RAMSTKSoftware,
-    RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview, RAMSTKSoftwareTest,
-    RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest,
-    RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
 )
 from .RAMSTKCommonDB import (
     RAMSTK_CATEGORIES, RAMSTK_CONDITIONS, RAMSTK_FAILURE_MODES,
@@ -463,22 +460,23 @@ class DAO():
 
         try:
             do_create_program_db(database=database)
-        except IOError:
+        except IOError as _error:
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
-            print("IOError")
+            print(_error)
             _return = True
         except exc.OperationalError as _error:
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
             print(_error)
             _return = True
-        except exc.DBAPIError:
+        except exc.DBAPIError as _error:
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
-            print("DBAPIError")
+            print(_error)
             _return = True
-        except exc.SQLAlchemyError:
-            # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
-            print("SQLAlchemyError")
-            _return = True
+        except exc.SQLAlchemyError as _error:
+            _error = '{0:s}'.format(str(_error))
+            print(_error)
+            if 'Invalid SQLite URL' in _error:
+                _return = True
         except ArgumentError:  # pylint: disable=undefined-variable  # noqa
             # ISSUE: See issue #238 at https://github.com/ReliaQualAssociates/ramstk/issues/238
             print("Bad program database URI: {0:s}".format(database))

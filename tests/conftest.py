@@ -297,6 +297,10 @@ def test_program_dao():
         os.remove(TEST_PROGRAM_DB_PATH)
     if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
         os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
+    if os.path.exists(TEMPDIR + '/_ramstk_common_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_common_db.ramstk')
+    if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
 
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')
@@ -330,6 +334,10 @@ def test_dao():
         os.remove(_TEST_PROGRAM_DB_PATH)
     if os.path.exists(TEMPDIR + '/_ramstk_test_db.ramstk'):
         os.remove(TEMPDIR + '/_ramstk_test_db.ramstk')
+    if os.path.exists(TEMPDIR + '/_ramstk_common_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_common_db.ramstk')
+    if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
+        os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')
 
     # Create the test database.
     sql_file = open('./devtools/sqlite_test_program_db.sql', 'r')

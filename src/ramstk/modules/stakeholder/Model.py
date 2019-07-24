@@ -7,12 +7,10 @@
 """Stakeholder Package Data Model Module."""
 
 # Third Party Imports
-# Import third party packages.
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import RAMSTKStakeholder
-# Import other RAMSTK modules.
+from ramstk.models.programdb import RAMSTKStakeholder
 from ramstk.modules import RAMSTKDataModel
 
 

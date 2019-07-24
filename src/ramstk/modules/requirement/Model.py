@@ -7,12 +7,10 @@
 """Requirement Package Data Model."""
 
 # Third Party Imports
-# Import third party packages.
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb import RAMSTKRequirement
-# Import other RAMSTK modules.
+from ramstk.models.programdb import RAMSTKRequirement
 from ramstk.modules import RAMSTKDataModel
 
 
