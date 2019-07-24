@@ -32,6 +32,10 @@
 - Feature/similar item undup code [\#213](https://github.com/ReliaQualAssociates/ramstk/pull/213) [[module:similaritem](https://github.com/ReliaQualAssociates/ramstk/labels/module:similaritem)] ([weibullguy](https://github.com/weibullguy))
 - Update to Python 3 and pygobject. [\#198](https://github.com/ReliaQualAssociates/ramstk/pull/198) ([weibullguy](https://github.com/weibullguy))
 
+**Fixed bugs:**
+
+- add method to delete failure definition [\#257](https://github.com/ReliaQualAssociates/ramstk/pull/257) [[module:function](https://github.com/ReliaQualAssociates/ramstk/labels/module:function)] ([weibullguy](https://github.com/weibullguy))
+
 **Merged pull requests:**
 
 - \[ImgBot\] Optimize images [\#219](https://github.com/ReliaQualAssociates/ramstk/pull/219) ([imgbot[bot]](https://github.com/apps/imgbot))
