@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.programdb.RAMSTKOpStress.py is part of The RAMSTK Project
+#       ramstk.models.programdb.RAMSTKOpStress.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -22,6 +22,12 @@ class RAMSTKOpStress(RAMSTK_BASE):
     This table shares a Many-to-One relationship with ramstk_op_load.
     """
 
+    __defaults__ = {
+        'description': '',
+        'load_history': '',
+        'measurable_parameter': '',
+        'remarks': b''
+    }
     __tablename__ = 'ramstk_op_stress'
     __table_args__ = {'extend_existing': True}
 
@@ -39,12 +45,10 @@ class RAMSTKOpStress(RAMSTK_BASE):
         nullable=False,
     )
 
-    description = Column('fld_description', String(512), default='')
-    load_history = Column('fld_load_history', String(512), default='')
-    measurable_parameter = Column(
-        'fld_measurable_parameter', String(512), default='',
-    )
-    remarks = Column('fld_remarks', BLOB, default=b'')
+    description = Column('fld_description', String(512), default=__defaults__['description'])
+    load_history = Column('fld_load_history', String(512), default=__defaults__['load_history'])
+    measurable_parameter = Column('fld_measurable_parameter', String(512), default=__defaults__['measurable_parameter'])
+    remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     op_load = relationship('RAMSTKOpLoad', back_populates='op_stress')
@@ -74,31 +78,21 @@ class RAMSTKOpStress(RAMSTK_BASE):
 
         return _attributes
 
-    def set_attributes(self, values):
+    def set_attributes(self, attributes):
         """
-        Set the Stress data model attributes.
+        Set one or more RAMSTKOpStress attributes.
 
-        :param dict values: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
+        .. note:: you should pop the load ID and stress ID entries from
+            the attributes dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKOpStress {0:d} attributes.". \
-               format(self.stress_id)
-
-        try:
-            self.description = str(none_to_default(values['description'], ''))
-            self.load_history = str(
-                none_to_default(values['load_history'], ''),
-            )
-            self.measurable_parameter = none_to_default(
-                values['measurable_parameter'], b'',
-            )
-            self.remarks = none_to_default(values['remarks'], b'')
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKOpStress.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
