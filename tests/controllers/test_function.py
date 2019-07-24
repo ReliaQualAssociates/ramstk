@@ -56,6 +56,18 @@ class TestCreateControllers():
         assert DUT._tag == 'function'
         assert DUT._root == 0
         assert DUT._revision_id == 0
+        assert pub.isSubscribed(DUT.do_select_all, 'request_retrieve_functions')
+        assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
+        assert pub.isSubscribed(DUT._do_delete_hazard, 'request_delete_hazard')
+        assert pub.isSubscribed(DUT.do_insert, 'request_insert_function')
+        assert pub.isSubscribed(DUT.do_insert_hazard, 'request_insert_hazard')
+        assert pub.isSubscribed(DUT.do_update, 'request_update_function')
+        assert pub.isSubscribed(DUT.do_update_all, 'request_update_all_functions')
+        assert pub.isSubscribed(DUT.do_get_attributes, 'request_get_function_attributes')
+        assert pub.isSubscribed(DUT.do_get_all_attributes, 'request_get_all_function_attributes')
+        assert pub.isSubscribed(DUT.do_get_tree, 'request_get_function_tree')
+        assert pub.isSubscribed(DUT.do_set_attributes, 'request_set_function_attributes')
+        assert pub.isSubscribed(DUT.do_set_all_attributes, 'request_set_all_function_attributes')
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_configuration):
@@ -67,27 +79,33 @@ class TestCreateControllers():
         assert isinstance(DUT._attributes, dict)
         assert DUT._attributes == {}
         assert DUT._tree is None
+        assert pub.isSubscribed(DUT.on_get_all_attributes,
+                      'succeed_get_all_function_attributes')
+        assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_function_tree')
+        assert pub.isSubscribed(DUT.do_calculate_fha, 'request_calculate_fha')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestSelectMethods():
     """Class for testing data manager select_all() and select() methods."""
+    def on_succeed_retrieve_functions(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(
+            tree.get_node(1).data['function'], RAMSTKFunction)
+        assert isinstance(tree.get_node(1).data['hazards'], dict)
+        assert isinstance(
+            tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
+        print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
+
     @pytest.mark.integration
     def test_do_select_all(self, test_program_dao):
         """do_select_all() should return a Tree() object populated with RAMSTKFunction instances on success."""
-        dmFunction(test_program_dao)
+        pub.subscribe(self.on_succeed_retrieve_functions, 'succeed_retrieve_functions')
 
-        def on_message(tree):
-            assert isinstance(tree, Tree)
-            assert isinstance(
-                tree.get_node(1).data['function'], RAMSTKFunction)
-            assert isinstance(tree.get_node(1).data['hazards'], dict)
-            assert isinstance(
-                tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(1)
 
-        pub.subscribe(on_message, 'succeed_retrieve_functions')
-
-        pub.sendMessage('request_retrieve_functions', revision_id=1)
+        pub.unsubscribe(self.on_succeed_retrieve_functions, 'succeed_retrieve_functions')
 
     @pytest.mark.integration
     def test_do_select_function(self, test_program_dao):
@@ -134,210 +152,209 @@ class TestSelectMethods():
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestDeleteMethods():
     """Class for testing the data manager delete() method."""
+    def on_succeed_delete_function(self, node_id):
+        assert node_id == 3
+        print("\033[36m\nsucceed_delete_function topic was broadcast.")
+
+    def on_fail_delete_function(self, error_msg):
+        assert error_msg == ('Attempted to delete non-existent function ID '
+                             '300.')
+        print("\033[35m\nfail_delete_function topic was broadcast.")
+
+    def on_succeed_delete_hazard(self, node_id):
+        assert node_id == 2
+        print("\033[36m\nsucceed_delete_hazard topic was broadcast.")
+
+    def on_fail_delete_hazard(self, error_msg):
+        assert error_msg == ('Attempted to delete non-existent hazard ID 10 '
+                             'from function ID 1.')
+        print("\033[35m\nfail_delete_hazard topic was broadcast.")
+
     @pytest.mark.integration
     def test_do_delete_function(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree."""
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
+        pub.subscribe(self.on_succeed_delete_function, 'succeed_delete_function')
 
-        def on_message(node_id):
-            yield DUT
-            assert node_id == 2
-            assert DUT[0].last_id == 1
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+        DUT._do_delete(DUT.last_id)
 
-        pub.subscribe(on_message, 'succeed_delete_function')
-
-        pub.sendMessage('request_delete_function', node_id=DUT[0].last_id)
+        assert DUT.last_id == 2
 
     @pytest.mark.integration
     def test_do_delete_function_non_existent_id(self, test_program_dao):
         """_do_delete() should send the fail message."""
+        pub.subscribe(self.on_fail_delete_function, 'fail_delete_function')
+
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
-
-        def on_message(error_msg):
-            assert error_msg == ('Attempted to delete non-existent function '
-                                 'ID 300.')
-
-        pub.subscribe(on_message, 'fail_delete_function')
-
         DUT._do_delete(300)
 
     @pytest.mark.integration
     def test_do_delete_hazard(self, test_program_dao):
         """_do_delete_hazard() should send the success method when a hazard is successfully deleted."""
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
+        pub.subscribe(self.on_succeed_delete_hazard, 'succeed_delete_hazard')
 
-        def on_message(node_id):
-            yield DUT
-            assert node_id == 3
-            assert DUT[0].tree.get_node(3).data['hazards'] == {}
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+        DUT._do_delete_hazard(2, 2)
 
-        pub.subscribe(on_message, 'succeed_delete_hazard')
-
-        pub.sendMessage('request_delete_hazard', function_id=3, node_id=3)
+        assert DUT.tree.get_node(2).data['hazards'] == {}
 
     @pytest.mark.integration
     def test_do_delete_hazard_non_existent_id(self, test_program_dao):
         """_do_delete_hazard() should send the success method when a hazard is successfully deleted."""
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
+        pub.subscribe(self.on_fail_delete_hazard, 'fail_delete_hazard')
 
-        def on_message(error_msg):
-            assert error_msg == ('Attempted to delete non-existent hazard ID '
-                                 '10 from function ID 1.')
-
-        pub.subscribe(on_message, 'fail_delete_hazard')
-
-        pub.sendMessage('request_delete_hazard', function_id=1, node_id=10)
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+        DUT._do_delete_hazard(1, 10)
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestInsertMethods():
     """Class for testing the data manager insert() method."""
+    def on_succeed_insert_function(self, node_id):
+        assert node_id == 4
+        print("\033[36m\nsucceed_insert_function topic was broadcast.")
+
+    def on_fail_insert_function(self, error_msg):
+        assert error_msg == ('Attempting to add a function as a child of '
+                             'non-existent parent node 40.')
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
+    def on_succeed_insert_hazard(self, node_id):
+        assert node_id == 4
+        print("\033[36m\nsucceed_insert_hazard topic was broadcast.")
+
+    def on_fail_insert_hazard(self, error_msg):
+        assert error_msg == ('Attempting to add a hazard to a non-existent '
+                             'function ID 10.')
+        print("\033[35m\nfail_insert_hazard topic was broadcast.")
+
     @pytest.mark.integration
     def test_do_insert_sibling_function(self, test_program_dao):
         """do_insert() should send the success message after successfully inserting a sibling function."""
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
+        pub.subscribe(self.on_succeed_insert_function, 'succeed_insert_function')
 
-        def on_message(node_id):
-            yield DUT
-            assert node_id == 4
-            assert isinstance(DUT[0].tree.get_node(node_id).data['function'],
-                              RAMSTKFunction)
-            assert DUT[0].tree.get_node(
-                node_id).data['function'].function_id == node_id
-            assert DUT[0].tree.get_node(
-                node_id).data['function'].name == 'New Function'
-            assert DUT[0].tree.get_node(node_id).data['hazards'] == {}
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+        DUT.do_insert()
 
-        pub.subscribe(on_message, 'succeed_insert_function')
+        assert isinstance(DUT.tree.get_node(4).data['function'], RAMSTKFunction)
+        assert DUT.tree.get_node(4).data['function'].function_id == 4
+        assert DUT.tree.get_node(4).data['function'].name == 'New Function'
+        assert DUT.tree.get_node(4).data['hazards'] == {}
 
-        pub.sendMessage('request_insert_function', parent_id=0)
+        pub.unsubscribe(self.on_succeed_insert_function, 'succeed_insert_function')
 
     @pytest.mark.integration
     def test_do_insert_child_function(self, test_program_dao):
         """do_insert() should send the success message after successfully inserting a child function."""
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+        DUT.do_insert(parent_id=4)
 
-        def on_message(node_id):
-            yield DUT
-            assert node_id == 5
-            assert isinstance(DUT[0].tree.get_node(node_id).data['function'],
-                              RAMSTKFunction)
-            assert DUT[0].tree.get_node(
-                node_id).data['function'].function_id == node_id
-            assert DUT[0].tree.get_node(
-                node_id).data['function'].name == 'New Function'
-            assert DUT[0].tree.get_node(node_id).data['hazards'] == {}
-
-        pub.subscribe(on_message, 'succeed_insert_function')
-
-        pub.sendMessage('request_insert_function', parent_id=4)
+        assert isinstance(DUT.tree.get_node(5).data['function'], RAMSTKFunction)
+        assert DUT.tree.get_node(5).data['function'].function_id == 5
+        assert DUT.tree.get_node(5).data['function'].name == 'New Function'
+        assert DUT.tree.get_node(5).data['hazards'] == {}
 
     @pytest.mark.integration
     def test_do_insert_function_no_parent(self, test_program_dao):
         """do_insert() should send the fail message if attempting to add a function to a non-existent parent ID."""
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
+        pub.subscribe(self.on_fail_insert_function, 'fail_insert_function')
 
-        def on_message(error_msg):
-            assert error_msg == ('Attempting to add a function as a child of '
-                                 'non-existent parent node 40.')
-
-        pub.subscribe(on_message, 'fail_insert_function')
-
-        pub.sendMessage('request_insert_function', parent_id=40)
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+        DUT.do_insert(parent_id=40)
 
     @pytest.mark.integration
     def test_insert_hazard(self, test_program_dao):
         """do_insert_hazard() should send the success message after successfully inserting a new hazard."""
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
+        pub.subscribe(self.on_succeed_insert_hazard, 'succeed_insert_hazard')
 
-        def on_message(node_id):
-            yield DUT
-            assert node_id == 4
-            assert isinstance(DUT[0].tree.get_node(1).data['hazards'][node_id],
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(revision_id=1)
+        DUT.do_insert_hazard(1)
+
+        assert isinstance(DUT.tree.get_node(1).data['hazards'][4],
                               RAMSTKHazardAnalysis)
-
-        pub.subscribe(on_message, 'succeed_insert_hazard')
-
-        pub.sendMessage('request_insert_hazard', function_id=1)
 
     @pytest.mark.integration
     def test_insert_hazard_no_function(self, test_program_dao):
         """do_insert_hazard() should send the fail message when attempting to add a hazard to a non-existent function ID."""
+        pub.subscribe(self.on_fail_insert_hazard, 'fail_insert_hazard')
+
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
-
-        def on_message(error_msg):
-            assert error_msg == ('Attempting to add a hazard to a '
-                                 'non-existent function ID 10.')
-
-        pub.subscribe(on_message, 'fail_insert_hazard')
-
-        pub.sendMessage('request_insert_hazard', function_id=10)
+        DUT.do_insert_hazard(function_id=10)
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestGetterSetter():
     """Class for testing methods that get or set."""
+    def on_succeed_get_function_attrs(self, attributes):
+        assert isinstance(attributes, dict)
+        assert attributes['function_id'] == 1
+        assert attributes['name'] == 'Function Name'
+        assert attributes['safety_critical'] == 0
+        print("\033[36m\nsucceed_get_function_attributes topic was broadcast.")
+
+    def on_succeed_get_hazard_attrs(self, attributes):
+        assert isinstance(attributes, dict)
+        assert attributes[1].function_id == 1
+        assert attributes[1].potential_hazard == ''
+        print("\033[36m\nsucceed_get_hazards_attributes topic was broadcast.")
+
+    def on_succeed_get_all_attrs(self, attributes):
+        assert isinstance(attributes, dict)
+        assert attributes['function_id'] == 1
+        assert attributes['name'] == 'Function Name'
+        assert isinstance(attributes['hazards'], dict)
+        assert isinstance(attributes['hazards'][1], RAMSTKHazardAnalysis)
+        assert attributes['hazards'][1].function_id == 1
+        print(
+            "\033[36m\nsucceed_get_all_function_attributes topic was broadcast"
+        )
+
+    def on_succeed_get_function_tree(self, dmtree):
+        assert isinstance(dmtree, Tree)
+        assert isinstance(
+            dmtree.get_node(1).data['function'], RAMSTKFunction)
+        assert isinstance(dmtree.get_node(1).data['hazards'], dict)
+        assert isinstance(
+            dmtree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
+        print("\033[36m\nsucceed_get_function_tree topic was broadcast")
+
     @pytest.mark.integration
     def test_do_get_attributes_function(self, test_program_dao):
         """do_get_attributes() should return a dict of function attributes on success."""
+        pub.subscribe(self.on_succeed_get_function_attrs, 'succeed_get_function_attributes')
+
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
-
-        def on_message(attributes):
-            assert isinstance(attributes, dict)
-            assert attributes['function_id'] == 1
-            assert attributes['name'] == 'Function Name'
-            assert attributes['safety_critical'] == 0
-
-        pub.subscribe(on_message, 'succeed_get_function_attributes')
-
-        pub.sendMessage('request_get_function_attributes',
-                        node_id=1,
-                        table='function')
+        DUT.do_get_attributes(1, 'function')
 
     @pytest.mark.integration
     def test_do_get_attributes_hazards(self, test_program_dao):
         """do_get_attributes() should return a dict of failure definition records on success."""
+        pub.subscribe(self.on_succeed_get_hazard_attrs, 'succeed_get_hazards_attributes')
+
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
-
-        def on_message(attributes):
-            assert isinstance(attributes, dict)
-            assert attributes[1].function_id == 1
-            assert attributes[1].potential_hazard == ''
-
-        pub.subscribe(on_message, 'succeed_get_function_attributes')
-
-        pub.sendMessage('request_get_function_attributes',
-                        node_id=1,
-                        table='hazards')
+        DUT.do_get_attributes(1, 'hazards')
 
     @pytest.mark.integration
     def test_do_get_all_attributes_data_manager(self, test_program_dao):
         """do_get_all_attributes() should return a dict of all RAMSTK data tables' attributes on success."""
+        pub.subscribe(self.on_succeed_get_all_attrs, 'succeed_get_all_function_attributes')
+
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
+        DUT.do_get_all_attributes(1)
 
-        def on_message(attributes):
-            assert isinstance(attributes, dict)
-            assert attributes['function_id'] == 1
-            assert attributes['name'] == 'Function Name'
-            assert isinstance(attributes['hazards'], dict)
-            assert isinstance(attributes['hazards'][1], RAMSTKHazardAnalysis)
-            assert attributes['hazards'][1].function_id == 1
-
-        pub.subscribe(on_message, 'succeed_get_all_function_attributes')
-
-        pub.sendMessage('request_get_all_function_attributes', node_id=1)
+        pub.unsubscribe(self.on_succeed_get_all_attrs, 'succeed_get_all_function_attributes')
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_program_dao):
@@ -394,20 +411,13 @@ class TestGetterSetter():
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self, test_program_dao):
         """on_get_tree() should return the function treelib Tree."""
+        pub.subscribe(self.on_succeed_get_function_tree, 'succeed_get_function_tree')
+
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
+        DUT.do_get_tree()
 
-        def on_message(dmtree):
-            assert isinstance(dmtree, Tree)
-            assert isinstance(
-                dmtree.get_node(1).data['function'], RAMSTKFunction)
-            assert isinstance(dmtree.get_node(1).data['hazards'], dict)
-            assert isinstance(
-                dmtree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
-
-        pub.subscribe(on_message, 'succeed_get_function_tree')
-
-        pub.sendMessage('request_get_function_tree')
+        pub.unsubscribe(self.on_succeed_get_function_tree, 'succeed_get_function_tree')
 
     @pytest.mark.integration
     def test_get_all_attributes_analysis_manager(self, test_program_dao,
@@ -431,76 +441,51 @@ class TestGetterSetter():
         DATAMGR = dmFunction(test_program_dao)
         DATAMGR.do_select_all(revision_id=1)
         DUT = amFunction(test_configuration)
+        DATAMGR.do_get_tree()
 
-        def on_message(dmtree):
-            assert isinstance(dmtree, Tree)
-            assert isinstance(DUT._tree, Tree)
-            assert DUT._tree == dmtree
-            assert isinstance(
-                DUT._tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
-
-        pub.subscribe(on_message, 'succeed_get_function_tree')
-
-        pub.sendMessage('request_get_function_tree')
+        assert isinstance(DUT._tree, Tree)
+        assert isinstance(
+            DUT._tree.get_node(1).data['hazards'][1], RAMSTKHazardAnalysis)
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
 class TestUpdateMethods():
     """Class for testing update() and update_all() methods."""
+    def on_succeed_update_function(self, node_id):
+        assert node_id == 1
+        print("\033[36m\nsucceed_update_function topic was broadcast")
+
+    def on_fail_update_function(self, error_msg):
+        assert error_msg == (
+            'Attempted to save non-existent function with function ID 100.')
+        print("\033[35m\nfail_update_function topic was broadcast")
+
     @pytest.mark.integration
     def test_do_update_data_manager(self, test_program_dao):
         """ do_update() should return a zero error code on success. """
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
+        pub.subscribe(self.on_succeed_update_function, 'succeed_update_function')
 
-        def on_message(node_id):
-            yield DUT
-            _function = DUT[0].do_select(node_id, table='function')
-            assert node_id == 1
-            assert _function.name == 'Test Function'
-            _hazards = DUT[0].do_select(node_id, table='hazards')
-            assert _hazards[1].potential_hazard == 'Big Hazard'
+        DUT = dmFunction(test_program_dao)
+        DUT.do_select_all(revision_id=1)
 
-        pub.subscribe(on_message, 'succeed_update_function')
+        DUT.tree.get_node(1).data['function'].name = 'Test Function'
+        DUT.tree.get_node(1).data['hazards'][1].potential_hazard = 'Big Hazard'
+        DUT.do_update(1)
 
-        _function = DUT[0].do_select(1, table='function')
-        _function.name = 'Test Function'
-        _hazards = DUT[0].do_select(1, table='hazards')
-        _hazards[1].definition = 'Big Hazard'
+        DUT.do_select_all(revision_id=1)
+        assert DUT.tree.get_node(1).data['function'].name == 'Test Function'
+        assert DUT.tree.get_node(1).data['hazards'][1].potential_hazard == 'Big Hazard'
 
-        pub.sendMessage('request_update_function', node_id=1)
+        pub.unsubscribe(self.on_succeed_update_function, 'succeed_update_function')
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_program_dao):
         """ do_update() should return a non-zero error code when passed a Function ID that doesn't exist. """
+        pub.subscribe(self.on_fail_update_function, 'fail_update_function')
+
         DUT = dmFunction(test_program_dao)
         DUT.do_select_all(revision_id=1)
-
-        def on_message(error_msg):
-            assert error_msg == (
-                'Attempted to save non-existent function with function ID '
-                '100.')
-
-        pub.subscribe(on_message, 'fail_update_function')
-
         DUT.do_update(100)
-
-    @pytest.mark.integration
-    def test_do_update_all(self, test_program_dao):
-        """ do_update_all() should return a zero error code on success. """
-        DUT = [dmFunction(test_program_dao)]
-        DUT[0].do_select_all(revision_id=1)
-
-        def on_message(node_id):
-            yield DUT
-            assert DUT[0].do_select(node_id,
-                                    table='function').function_id == node_id
-            assert DUT[0].do_select(
-                node_id, table='hazards')[node_id].function_id == node_id
-
-        pub.subscribe(on_message, 'succeed_update_function')
-
-        pub.sendMessage('request_update_all_functions')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')

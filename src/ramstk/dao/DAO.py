@@ -10,7 +10,8 @@
 import gettext
 
 # Third Party Imports
-from sqlalchemy import MetaData, create_engine, exc
+from sqlalchemy import MetaData, create_engine, event, exc
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 # RAMSTK Package Imports
@@ -367,6 +368,13 @@ class DAO():
 
         # Initialize public scalar instance attributes.
 
+    @staticmethod
+    @event.listens_for(Engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
+
     def db_connect(self, database):
         """
         Connect to the database using settings from the configuration file.
@@ -572,6 +580,7 @@ class DAO():
         _msg = ("RAMSTK SUCCESS: Deleting an item from the RAMSTK Program "
                 "database.")
 
+        self.session.execute("PRAGMA foreign_keys=ON")
         try:
             self.session.delete(item)
             self.session.commit()
