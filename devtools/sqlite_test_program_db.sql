@@ -236,11 +236,11 @@ CREATE TABLE ramstk_environment (
 );
 INSERT INTO "ramstk_environment" VALUES(1,1,'Condition Name','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_failure_definition (
-    fld_revision_id INTEGER NOT NULL,
+    fld_revision_id INTEGER,
     fld_definition_id INTEGER NOT NULL,
     fld_definition BLOB,
     PRIMARY KEY (fld_definition_id),
-    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id)
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_failure_definition" VALUES(1,1,X'4661696C75726520446566696E6974696F6E');
 CREATE TABLE ramstk_function (
@@ -354,8 +354,8 @@ INSERT INTO "ramstk_hardware" VALUES(1,6,'','','',0,'S1:SS1:A1',832.98,0.0,0.0,0
 INSERT INTO "ramstk_hardware" VALUES(1,7,'','','',0,'S1:SS1:A2',1432.86,0.0,0.0,0,'Test Assembly 2',100.0,'','',0,0,100.0,'Test Assembly 7','','',2,0,'',1,'A2',X'',0,'',0,0,0.0,26,0.967,2019);
 INSERT INTO "ramstk_hardware" VALUES(1,8,'','','',4,'S1:SS1:A2:C1',0.0,0.0,0.0,0,'Test Capacitor 1',100.0,'','',0,0,100.0,'','','',7,1,'',1,'C1',X'',0,'',1,0,0.0,0,0.0,2019);
 CREATE TABLE ramstk_hazard_analysis (
-    fld_revision_id INTEGER NOT NULL,
-    fld_function_id INTEGER NOT NULL,
+    fld_revision_id INTEGER,
+    fld_function_id INTEGER,
     fld_hazard_id INTEGER NOT NULL,
     fld_potential_hazard VARCHAR(256),
     fld_potential_cause VARCHAR(512),
@@ -396,8 +396,8 @@ CREATE TABLE ramstk_hazard_analysis (
     fld_user_int_2 INTEGER,
     fld_user_int_3 INTEGER,
     PRIMARY KEY (fld_hazard_id),
-    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id),
-    FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id)
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
+    FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_hazard_analysis" VALUES(1,1,1,'','','','Medium','Level A - Frequent',20,X'','Medium','Level A - Frequent',4,'','','','','',X'',0.0,0.0,0.0,0.0,0.0,'','Medium','Level A - Frequent',20,X'','Medium','Level A - Frequent',20,X'',X'',X'',0.0,0.0,0.0,0,0,0);
 INSERT INTO "ramstk_hazard_analysis" VALUES(1,2,2,'','','','Major','Level A - Frequent',20,X'','Major','Level A - Frequent',20,'','','','','',X'',0.0,0.0,0.0,0.0,0.0,'','Major','Level A - Frequent',20,X'','Major','Level A - Frequent',20,X'',X'',X'',0.0,0.0,0.0,0,0,0);
@@ -679,8 +679,8 @@ CREATE TABLE ramstk_mission_phase (
 );
 INSERT INTO "ramstk_mission_phase" VALUES(1,1,X'54657374204D697373696F6E2050686173652031','',0.0,0.0);
 CREATE TABLE ramstk_mode (
-    fld_function_id INTEGER NOT NULL,
-    fld_hardware_id INTEGER NOT NULL,
+    fld_function_id INTEGER,
+    fld_hardware_id INTEGER,
     fld_mode_id INTEGER NOT NULL,
     fld_critical_item INTEGER,
     fld_description VARCHAR(512),
@@ -708,8 +708,10 @@ CREATE TABLE ramstk_mode (
     fld_single_point INTEGER,
     fld_type_id INTEGER,
     PRIMARY KEY (fld_mode_id),
-    FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id),
-    FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id)
+    CONSTRAINT fk_function
+        FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE,
+    CONSTRAINT fk_hardware
+        FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_mode" VALUES(1,-1,1,0,'Test Functional Failure Mode #1',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
 INSERT INTO "ramstk_mode" VALUES(2,-1,2,0,'Test Functional Failure Mode #2',X'','','','','',0.0,'','','Default Mission','',0.0,0.0,0.0,'',0.0,X'','',X'',1,1,'',0,0);
@@ -1176,7 +1178,7 @@ CREATE TABLE ramstk_stakeholder (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id)
 );
 INSERT INTO "ramstk_stakeholder" VALUES(1,1,1,X'54657374205374616B65686F6C64657220496E707574','',0.0,0.0,1,1,0,'',1.0,1.0,1.0,1.0,1.0);
-INSERT INTO "ramstk_stakeholder" VALUES(2,3,1,X'5374616B65686F6C64657220496E707574','',0.0,0.0,1,1,0,'',1.0,1.0,1.0,1.0,1.0);
+INSERT INTO "ramstk_stakeholder" VALUES(1,2,1,X'5374616B65686F6C64657220496E707574','',0.0,0.0,1,1,0,'',1.0,1.0,1.0,1.0,1.0);
 CREATE TABLE ramstk_survival (
     fld_revision_id INTEGER NOT NULL,
     fld_survival_id INTEGER NOT NULL,
@@ -1351,3 +1353,4 @@ CREATE TABLE ramstk_validation (
 INSERT INTO "ramstk_validation" VALUES(1,1,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21',X'546573742056616C69646174696F6E','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_validation" VALUES(1,3,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21',X'','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 COMMIT;
+PRAGMA foreign_keys=ON;

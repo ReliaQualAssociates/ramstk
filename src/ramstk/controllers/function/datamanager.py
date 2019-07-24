@@ -200,7 +200,7 @@ class DataManager(RAMSTKDataManager):
         else:
             _attributes = self.do_select(node_id, table=table).get_attributes()
 
-        pub.sendMessage('succeed_get_function_attributes',
+        pub.sendMessage('succeed_get_{0:s}_attributes'.format(table),
                         attributes=_attributes)
 
     def do_get_tree(self):
