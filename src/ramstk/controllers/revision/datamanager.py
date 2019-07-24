@@ -138,18 +138,9 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _profile = RAMSTKDataManager.do_select(self, revision_id,
-                                               'usage_profile')
         try:
-            (_error_code,
-             _error_msg) = self.dao.db_delete(_profile.get_node(node_id).data)
-
-            if _error_code == 0:
-                _profile.remove_node(node_id)
-                self.tree.get_node(
-                    revision_id).data['usage_profile'] = _profile
-
-                pub.sendMessage('succeed_delete_mission', node_id=node_id)
+            self._do_delete_profile(revision_id, node_id)
+            pub.sendMessage('succeed_delete_mission', node_id=node_id)
         except AttributeError:
             pub.sendMessage('fail_delete_mission',
                             error_msg=("Attempted to delete non-existent "
@@ -167,19 +158,10 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _profile = RAMSTKDataManager.do_select(self, revision_id,
-                                               'usage_profile')
         try:
-            (_error_code, _error_msg) = self.dao.db_delete(
-                _profile.get_node(str(node_id)).data)
-
-            if _error_code == 0:
-                _profile.remove_node(str(node_id))
-                self.tree.get_node(
-                    revision_id).data['usage_profile'] = _profile
-
-                pub.sendMessage('succeed_delete_mission_phase',
-                                node_id=str(node_id))
+            self._do_delete_profile(revision_id, node_id)
+            pub.sendMessage('succeed_delete_mission_phase',
+                            node_id=str(node_id))
         except AttributeError:
             pub.sendMessage('fail_delete_mission_phase',
                             error_msg=("Attempted to delete non-existent "
@@ -191,33 +173,42 @@ class DataManager(RAMSTKDataManager):
         """
         Remove a environment.
 
-        :param int revision_id: the revision ID to remove the failure
-            definition from.
+        :param int revision_id: the revision ID to remove the environment from.
         :param int mission_id: the mission phase ID to remove the environment
             from.
         :param int node_id: the environment ID to remove.
         :return: None
         :rtype: None
         """
-        _profile = RAMSTKDataManager.do_select(self, revision_id,
-                                               'usage_profile')
         try:
-            (_error_code, _error_msg) = self.dao.db_delete(
-                _profile.get_node(str(node_id)).data)
-
-            if _error_code == 0:
-                _profile.remove_node(str(node_id))
-                self.tree.get_node(
-                    revision_id).data['usage_profile'] = _profile
-
-                pub.sendMessage('succeed_delete_environment',
-                                node_id=str(node_id))
+            self._do_delete_profile(revision_id, node_id)
+            pub.sendMessage('succeed_delete_environment', node_id=str(node_id))
         except AttributeError:
             pub.sendMessage('fail_delete_environment',
                             error_msg=("Attempted to delete non-existent "
                                        "environment ID {0:s} from mission "
                                        "phase ID {1:s}.").format(
                                            str(node_id), str(phase_id)))
+
+    def _do_delete_profile(self, revision_id, node_id):
+        """
+        Remove a usage profile element.
+
+        :param int revision_id: the revision ID to remove the udage profile
+            element from.
+        :param int node_id: the usage profile element ID to remove.
+        :return: None
+        :rtype: None
+        """
+        _profile = RAMSTKDataManager.do_select(self, revision_id,
+                                               'usage_profile')
+
+        (_error_code, _error_msg) = self.dao.db_delete(
+            _profile.get_node(str(node_id)).data)
+
+        if _error_code == 0:
+            _profile.remove_node(str(node_id))
+            self.tree.get_node(revision_id).data['usage_profile'] = _profile
 
     def _do_select_usage_profile(self, revision_id):
         """
