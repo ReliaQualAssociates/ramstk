@@ -220,7 +220,7 @@ INSERT INTO "ramstk_design_mechanic" VALUES(6,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,
 INSERT INTO "ramstk_design_mechanic" VALUES(7,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_design_mechanic" VALUES(8,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_environment (
-    fld_phase_id INTEGER NOT NULL,
+    fld_phase_id INTEGER,
     fld_environment_id INTEGER NOT NULL,
     fld_name VARCHAR(256),
     fld_units VARCHAR(128),
@@ -232,9 +232,11 @@ CREATE TABLE ramstk_environment (
     fld_low_dwell_time FLOAT,
     fld_high_dwell_time FLOAT,
     PRIMARY KEY (fld_environment_id),
-    FOREIGN KEY(fld_phase_id) REFERENCES ramstk_mission_phase (fld_phase_id)
+    FOREIGN KEY(fld_phase_id) REFERENCES ramstk_mission_phase (fld_phase_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_environment" VALUES(1,1,'Condition Name','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_environment" VALUES(2,2,'Condition Name 2','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_environment" VALUES(3,3,'Condition Name 3','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_failure_definition (
     fld_revision_id INTEGER,
     fld_definition_id INTEGER NOT NULL,
@@ -658,26 +660,30 @@ INSERT INTO "ramstk_mil_hdbk_f" VALUES(6,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 INSERT INTO "ramstk_mil_hdbk_f" VALUES(7,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_mil_hdbk_f" VALUES(8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_mission (
-    fld_revision_id INTEGER NOT NULL,
+    fld_revision_id INTEGER,
     fld_mission_id INTEGER NOT NULL,
     fld_description BLOB,
     fld_mission_time FLOAT,
     fld_time_units VARCHAR(256),
     PRIMARY KEY (fld_mission_id),
-    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id)
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_mission" VALUES(1,1,X'54657374204D697373696F6E',0.0,'hours');
+INSERT INTO "ramstk_mission" VALUES(1,2,X'54657374204D697373696F6E',0.0,'hours');
+INSERT INTO "ramstk_mission" VALUES(1,3,X'54657374204D697373696F6E',0.0,'hours');
 CREATE TABLE ramstk_mission_phase (
-    fld_mission_id INTEGER NOT NULL,
+    fld_mission_id INTEGER,
     fld_phase_id INTEGER NOT NULL,
     fld_description BLOB,
     fld_name VARCHAR(256),
     fld_phase_start FLOAT,
     fld_phase_end FLOAT,
     PRIMARY KEY (fld_phase_id),
-    FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id)
+    FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_mission_phase" VALUES(1,1,X'54657374204D697373696F6E2050686173652031','',0.0,0.0);
+INSERT INTO "ramstk_mission_phase" VALUES(2,2,X'54657374204D697373696F6E2050686173652031','',0.0,0.0);
+INSERT INTO "ramstk_mission_phase" VALUES(3,3,X'54657374204D697373696F6E2050686173652031','',0.0,0.0);
 CREATE TABLE ramstk_mode (
     fld_function_id INTEGER,
     fld_hardware_id INTEGER,

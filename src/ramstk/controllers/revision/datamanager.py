@@ -58,6 +58,11 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_delete, 'request_delete_revision')
         pub.subscribe(self._do_delete_failure_definition,
                       'request_delete_failure_definition')
+        pub.subscribe(self._do_delete_mission, 'request_delete_mission')
+        pub.subscribe(self._do_delete_mission_phase,
+                      'request_delete_mission_phase')
+        pub.subscribe(self._do_delete_environment,
+                      'request_delete_environment')
         pub.subscribe(self.do_insert, 'request_insert_revision')
         pub.subscribe(self.do_update, 'request_update_revision')
         pub.subscribe(self.do_update_all, 'request_update_all_revisions')
@@ -124,6 +129,96 @@ class DataManager(RAMSTKDataManager):
                                        "revision ID {1:s}.").format(
                                            str(node_id), str(revision_id)))
 
+    def _do_delete_mission(self, revision_id, node_id):
+        """
+        Remove a mission from revision ID.
+
+        :param int revision_id: the revision ID to remove the mission from.
+        :param int node_id: the mission ID to remove.
+        :return: None
+        :rtype: None
+        """
+        _profile = RAMSTKDataManager.do_select(self, revision_id,
+                                               'usage_profile')
+        try:
+            (_error_code,
+             _error_msg) = self.dao.db_delete(_profile.get_node(node_id).data)
+
+            if _error_code == 0:
+                _profile.remove_node(node_id)
+                self.tree.get_node(
+                    revision_id).data['usage_profile'] = _profile
+
+                pub.sendMessage('succeed_delete_mission', node_id=node_id)
+        except AttributeError:
+            pub.sendMessage('fail_delete_mission',
+                            error_msg=("Attempted to delete non-existent "
+                                       "mission ID {0:s} from revision ID "
+                                       "{1:s}.").format(
+                                           str(node_id), str(revision_id)))
+
+    def _do_delete_mission_phase(self, revision_id, mission_id, node_id):
+        """
+        Remove a mission phase from mission ID.
+
+        :param int revision_id: the revision ID to remove the mission from.
+        :param int mission_id: the mission ID to remove the mission phase from.
+        :param int node_id: the mission phase ID to remove.
+        :return: None
+        :rtype: None
+        """
+        _profile = RAMSTKDataManager.do_select(self, revision_id,
+                                               'usage_profile')
+        try:
+            (_error_code, _error_msg) = self.dao.db_delete(
+                _profile.get_node(str(node_id)).data)
+
+            if _error_code == 0:
+                _profile.remove_node(str(node_id))
+                self.tree.get_node(
+                    revision_id).data['usage_profile'] = _profile
+
+                pub.sendMessage('succeed_delete_mission_phase',
+                                node_id=str(node_id))
+        except AttributeError:
+            pub.sendMessage('fail_delete_mission_phase',
+                            error_msg=("Attempted to delete non-existent "
+                                       "mission phase ID {0:s} from mission "
+                                       "ID {1:s}.").format(
+                                           str(node_id), str(mission_id)))
+
+    def _do_delete_environment(self, revision_id, phase_id, node_id):
+        """
+        Remove a environment.
+
+        :param int revision_id: the revision ID to remove the failure
+            definition from.
+        :param int mission_id: the mission phase ID to remove the environment
+            from.
+        :param int node_id: the environment ID to remove.
+        :return: None
+        :rtype: None
+        """
+        _profile = RAMSTKDataManager.do_select(self, revision_id,
+                                               'usage_profile')
+        try:
+            (_error_code, _error_msg) = self.dao.db_delete(
+                _profile.get_node(str(node_id)).data)
+
+            if _error_code == 0:
+                _profile.remove_node(str(node_id))
+                self.tree.get_node(
+                    revision_id).data['usage_profile'] = _profile
+
+                pub.sendMessage('succeed_delete_environment',
+                                node_id=str(node_id))
+        except AttributeError:
+            pub.sendMessage('fail_delete_environment',
+                            error_msg=("Attempted to delete non-existent "
+                                       "environment ID {0:s} from mission "
+                                       "phase ID {1:s}.").format(
+                                           str(node_id), str(phase_id)))
+
     def _do_select_usage_profile(self, revision_id):
         """
         Retrieve the usage profile data from the RAMSTK Program database.
@@ -151,7 +246,7 @@ class DataManager(RAMSTKDataManager):
                 _tree.create_node(tag=_phase.description,
                                   identifier='{0:d}.{1:d}'.format(
                                       _mission.mission_id, _phase.phase_id),
-                                  parent=_mission.mission_id,
+                                  parent=str(_mission.mission_id),
                                   data=_phase)
 
                 for _environment in self.dao.session.query(

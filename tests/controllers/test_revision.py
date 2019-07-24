@@ -183,6 +183,33 @@ class TestDeleteMethods():
                              'definition ID 10 from revision ID 1.')
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
+    def on_succeed_delete_mission(self, node_id):
+        assert node_id == '1'
+        print("\033[36m\nsucceed_delete_mission topic was broadcast.")
+
+    def on_fail_delete_mission(self, error_msg):
+        assert error_msg == ('Attempted to delete non-existent mission ID 10 '
+                             'from revision ID 1.')
+        print("\033[35m\nfail_delete_mission topic was broadcast.")
+
+    def on_succeed_delete_mission_phase(self, node_id):
+        assert node_id == '2.2'
+        print("\033[36m\nsucceed_delete_mission_phase topic was broadcast.")
+
+    def on_fail_delete_mission_phase(self, error_msg):
+        assert error_msg == ('Attempted to delete non-existent mission phase '
+                             'ID 2.20 from mission ID 2.')
+        print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
+
+    def on_succeed_delete_environment(self, node_id):
+        assert node_id == '3.3.3'
+        print("\033[36m\nsucceed_delete_environment topic was broadcast.")
+
+    def on_fail_delete_environment(self, error_msg):
+        assert error_msg == ('Attempted to delete non-existent environment ID '
+                             '3.3.30 from mission phase ID 3.3.')
+        print("\033[35m\nfail_delete_environment topic was broadcast.")
+
     @pytest.mark.integration
     def test_do_delete_revision(self, test_program_dao):
         """_do_delete() should send the success message with the treelib Tree."""
@@ -206,7 +233,7 @@ class TestDeleteMethods():
 
     @pytest.mark.integration
     def test_do_delete_failure_definition(self, test_program_dao):
-        """_do_delete_failure_definition() should send the success message after successfully deleting a new definition."""
+        """_do_delete_failure_definition() should send the success message after successfully deleting a definition."""
         pub.subscribe(self.on_succeed_delete_failure_definition,
                       'succeed_delete_failure_definition')
 
@@ -226,6 +253,73 @@ class TestDeleteMethods():
         DUT = dmRevision(test_program_dao)
         DUT.do_select_all()
         DUT._do_delete_failure_definition(1, 10)
+
+    @pytest.mark.integration
+    def test_do_delete_mission(self, test_program_dao):
+        """_do_delete_mission() should send the success message after successfully deleting a mission."""
+        pub.subscribe(self.on_succeed_delete_mission, 'succeed_delete_mission')
+
+        DUT = dmRevision(test_program_dao)
+        DUT.do_select_all()
+        DUT._do_delete_mission(1, '1')
+
+        assert not DUT.tree.get_node(1).data['usage_profile'].contains('1')
+        assert not DUT.tree.get_node(1).data['usage_profile'].contains('1.1')
+        assert not DUT.tree.get_node(1).data['usage_profile'].contains('1.1.1')
+
+    @pytest.mark.integration
+    def test_do_delete_mission_non_existent_id(self, test_program_dao):
+        """_do_delete_mission() should send the sfail message when attempting to delete a non-existent mission ID."""
+        pub.subscribe(self.on_fail_delete_mission, 'fail_delete_mission')
+
+        DUT = dmRevision(test_program_dao)
+        DUT.do_select_all()
+        DUT._do_delete_mission(1, '10')
+
+    @pytest.mark.integration
+    def test_do_delete_mission_phase(self, test_program_dao):
+        """_do_delete_mission_phase() should send the success message after successfully deleting a mission phase."""
+        pub.subscribe(self.on_succeed_delete_mission_phase,
+                      'succeed_delete_mission_phase')
+
+        DUT = dmRevision(test_program_dao)
+        DUT.do_select_all()
+        DUT._do_delete_mission_phase(1, '2', '2.2')
+
+        assert not DUT.tree.get_node(1).data['usage_profile'].contains('2.2')
+        assert not DUT.tree.get_node(1).data['usage_profile'].contains('2.2.2')
+
+    @pytest.mark.integration
+    def test_do_delete_mission_phase_non_existent_id(self, test_program_dao):
+        """_do_delete_mission_phase() should send the fail message when attempting to delete a non-existent mission phase."""
+        pub.subscribe(self.on_fail_delete_mission_phase,
+                      'fail_delete_mission_phase')
+
+        DUT = dmRevision(test_program_dao)
+        DUT.do_select_all()
+        DUT._do_delete_mission_phase(1, '2', '2.20')
+
+    @pytest.mark.integration
+    def test_do_delete_environment(self, test_program_dao):
+        """_do_delete_environment() should send the success message after successfully deleting an environment."""
+        pub.subscribe(self.on_succeed_delete_environment,
+                      'succeed_delete_environment')
+
+        DUT = dmRevision(test_program_dao)
+        DUT.do_select_all()
+        DUT._do_delete_environment(1, '3.3', '3.3.3')
+
+        assert not DUT.tree.get_node(1).data['usage_profile'].contains('3.3.3')
+
+    @pytest.mark.integration
+    def test_do_delete_environment_non_existent_id(self, test_program_dao):
+        """_do_delete_environment() should send the fail message when attempting to delete a non-existent environment."""
+        pub.subscribe(self.on_fail_delete_environment,
+                      'fail_delete_environment')
+
+        DUT = dmRevision(test_program_dao)
+        DUT.do_select_all()
+        DUT._do_delete_environment(1, '3.3', '3.3.30')
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
@@ -406,15 +500,15 @@ class TestInsertMethods():
             "\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
     def on_succeed_insert_mission(self, node_id):
-        assert node_id == 3
+        assert node_id == 5
         print("\033[36m\nsucceed_insert_mission topic was broadcast")
 
     def on_succeed_insert_mission_phase(self, node_id):
-        assert node_id == '1.2'
+        assert node_id == '1.4'
         print("\033[36m\nsucceed_insert_mission_phase topic was broadcast")
 
     def on_succeed_insert_environment(self, node_id):
-        assert node_id == '1.1.2'
+        assert node_id == '1.1.4'
         print("\033[36m\nsucceed_insert_environment topic was broadcast")
 
     @pytest.mark.integration
@@ -478,7 +572,7 @@ class TestInsertMethods():
         assert isinstance(DUT.tree.get_node(1).data['usage_profile'], Tree)
         assert isinstance(
             DUT.tree.get_node(1).data['usage_profile'].get_node(
-                str('1.2')).data, RAMSTKMissionPhase)
+                str('1.4')).data, RAMSTKMissionPhase)
 
     @pytest.mark.integration
     def test_do_insert_environment(self, test_program_dao):
@@ -493,7 +587,7 @@ class TestInsertMethods():
         assert isinstance(DUT.tree.get_node(1).data['usage_profile'], Tree)
         assert isinstance(
             DUT.tree.get_node(1).data['usage_profile'].get_node(
-                str('1.1.2')).data, RAMSTKEnvironment)
+                str('1.1.4')).data, RAMSTKEnvironment)
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
