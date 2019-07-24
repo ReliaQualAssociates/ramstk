@@ -45,9 +45,15 @@ class RAMSTKOpStress(RAMSTK_BASE):
         nullable=False,
     )
 
-    description = Column('fld_description', String(512), default=__defaults__['description'])
-    load_history = Column('fld_load_history', String(512), default=__defaults__['load_history'])
-    measurable_parameter = Column('fld_measurable_parameter', String(512), default=__defaults__['measurable_parameter'])
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    load_history = Column('fld_load_history',
+                          String(512),
+                          default=__defaults__['load_history'])
+    measurable_parameter = Column('fld_measurable_parameter',
+                                  String(512),
+                                  default=__defaults__['measurable_parameter'])
     remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
 
     # Define the relationships to other tables in the RAMSTK Program database.

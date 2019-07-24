@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.RAMSTKStakeholder.py is part of The RAMSTK Project
+#       ramstk.models.RAMSTKStakeholder.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKStakeholder Table Module."""
 
 # Third Party Imports
@@ -22,6 +22,22 @@ class RAMSTKStakeholder(RAMSTK_BASE):
     This table shares a Many-to-One relationship with ramstk_revision.
     """
 
+    __defaults__ = {
+        'customer_rank': 1,
+        'description': b'Stakeholder Input',
+        'group': '',
+        'improvement': 0.0,
+        'overall_weight': 0.0,
+        'planned_rank': 1,
+        'priority': 1,
+        'requirement_id': 0,
+        'stakeholder': '',
+        'user_float_1': 1.0,
+        'user_float_2': 1.0,
+        'user_float_3': 1.0,
+        'user_float_4': 1.0,
+        'user_float_5': 1.0
+    }
     __tablename__ = 'ramstk_stakeholder'
     __table_args__ = {'extend_existing': True}
 
@@ -39,20 +55,46 @@ class RAMSTKStakeholder(RAMSTK_BASE):
         nullable=False,
     )
 
-    customer_rank = Column('fld_customer_rank', Integer, default=1)
-    description = Column('fld_description', TEXT, default=b'Stakeholder Input')
-    group = Column('fld_group', String(128), default='')
-    improvement = Column('fld_improvement', Float, default=0.0)
-    overall_weight = Column('fld_overall_weight', Float, default=0.0)
-    planned_rank = Column('fld_planned_rank', Integer, default=1)
-    priority = Column('fld_priority', Integer, default=1)
-    requirement_id = Column('fld_requirement_id', Integer, default=0)
-    stakeholder = Column('fld_stakeholder', String(128), default='')
-    user_float_1 = Column('fld_user_float_1', Float, default=1.0)
-    user_float_2 = Column('fld_user_float_2', Float, default=1.0)
-    user_float_3 = Column('fld_user_float_3', Float, default=1.0)
-    user_float_4 = Column('fld_user_float_4', Float, default=1.0)
-    user_float_5 = Column('fld_user_float_5', Float, default=1.0)
+    customer_rank = Column('fld_customer_rank',
+                           Integer,
+                           default=__defaults__['customer_rank'])
+    description = Column('fld_description',
+                         TEXT,
+                         default=__defaults__['description'])
+    group = Column('fld_group', String(128), default=__defaults__['group'])
+    improvement = Column('fld_improvement',
+                         Float,
+                         default=__defaults__['improvement'])
+    overall_weight = Column('fld_overall_weight',
+                            Float,
+                            default=__defaults__['overall_weight'])
+    planned_rank = Column('fld_planned_rank',
+                          Integer,
+                          default=__defaults__['planned_rank'])
+    priority = Column('fld_priority',
+                      Integer,
+                      default=__defaults__['priority'])
+    requirement_id = Column('fld_requirement_id',
+                            Integer,
+                            default=__defaults__['requirement_id'])
+    stakeholder = Column('fld_stakeholder',
+                         String(128),
+                         default=__defaults__['stakeholder'])
+    user_float_1 = Column('fld_user_float_1',
+                          Float,
+                          default=__defaults__['user_float_1'])
+    user_float_2 = Column('fld_user_float_2',
+                          Float,
+                          default=__defaults__['user_float_2'])
+    user_float_3 = Column('fld_user_float_3',
+                          Float,
+                          default=__defaults__['user_float_3'])
+    user_float_4 = Column('fld_user_float_4',
+                          Float,
+                          default=__defaults__['user_float_4'])
+    user_float_5 = Column('fld_user_float_5',
+                          Float,
+                          default=__defaults__['user_float_5'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='stakeholder')
@@ -90,68 +132,20 @@ class RAMSTKStakeholder(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKStakeholder data model attributes.
+        Set one or more RAMSTKStakeholder attributes.
 
-        :param dict attributes: dict of values to assign to the instance
-                                attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
+        .. note:: you should pop the revision ID, requirement ID, and
+            stakeholder ID entries from the attributes dict before passing it
+            to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKStakeholder {0:d} attributes.". \
-               format(self.stakeholder_id)
-
-        try:
-            self.customer_rank = int(
-                none_to_default(float(attributes['customer_rank']), 1),
-            )
-            try:
-                self.description = none_to_default(
-                    attributes['description'].encode('utf-8'), b'',
-                )
-            except AttributeError:
-                self.description = none_to_default(
-                    attributes['description'],
-                    b'',
-                )
-            self.group = str(none_to_default(attributes['group'], ''))
-            self.improvement = float(
-                none_to_default(attributes['improvement'], 0.0),
-            )
-            self.overall_weight = float(
-                none_to_default(attributes['overall_weight'], 0.0),
-            )
-            self.planned_rank = int(
-                none_to_default(float(attributes['planned_rank']), 1),
-            )
-            self.priority = int(
-                none_to_default(float(attributes['priority']), 1),
-            )
-            self.requirement_id = int(
-                none_to_default(attributes['requirement_id'], 0),
-            )
-            self.stakeholder = str(
-                none_to_default(attributes['stakeholder'], ''),
-            )
-            self.user_float_1 = float(
-                none_to_default(attributes['user_float_1'], 0.0),
-            )
-            self.user_float_2 = float(
-                none_to_default(attributes['user_float_2'], 0.0),
-            )
-            self.user_float_3 = float(
-                none_to_default(attributes['user_float_3'], 0.0),
-            )
-            self.user_float_4 = float(
-                none_to_default(attributes['user_float_4'], 0.0),
-            )
-            self.user_float_5 = float(
-                none_to_default(attributes['user_float_5'], 0.0),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKStakeholder.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

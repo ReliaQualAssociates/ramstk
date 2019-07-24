@@ -24,11 +24,7 @@ class RAMSTKOpLoad(RAMSTK_BASE):
     This table shares a One-to-Many relationship with ramstk_test_method.
     """
 
-    __defaults__ = {
-        'description': '',
-        'damage_model': '',
-        'priority_id': 0
-    }
+    __defaults__ = {'description': '', 'damage_model': '', 'priority_id': 0}
     __tablename__ = 'ramstk_op_load'
     __table_args__ = {'extend_existing': True}
 
@@ -46,17 +42,27 @@ class RAMSTKOpLoad(RAMSTK_BASE):
         nullable=False,
     )
 
-    description = Column('fld_description', String(512), default=__defaults__['description'])
-    damage_model = Column('fld_damage_model', String(512), default=__defaults__['damage_model'])
-    priority_id = Column('fld_priority_id', Integer, default=__defaults__['priority_id'])
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    damage_model = Column('fld_damage_model',
+                          String(512),
+                          default=__defaults__['damage_model'])
+    priority_id = Column('fld_priority_id',
+                         Integer,
+                         default=__defaults__['priority_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     mechanism = relationship('RAMSTKMechanism', back_populates='op_load')
     op_stress = relationship(
-        'RAMSTKOpStress', back_populates='op_load', cascade='all,delete',
+        'RAMSTKOpStress',
+        back_populates='op_load',
+        cascade='all,delete',
     )
     test_method = relationship(
-        'RAMSTKTestMethod', back_populates='op_load', cascade='all,delete',
+        'RAMSTKTestMethod',
+        back_populates='op_load',
+        cascade='all,delete',
     )
 
     is_mode = False

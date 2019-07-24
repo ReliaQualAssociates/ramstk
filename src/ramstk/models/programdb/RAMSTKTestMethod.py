@@ -45,10 +45,12 @@ class RAMSTKTestMethod(RAMSTK_BASE):
         nullable=False,
     )
 
-    description = Column('fld_description', String(512), default=__defaults__['description'])
-    boundary_conditions = Column(
-        'fld_boundary_conditions', String(512), default=__defaults__['boundary_conditions']
-    )
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    boundary_conditions = Column('fld_boundary_conditions',
+                                 String(512),
+                                 default=__defaults__['boundary_conditions'])
     remarks = Column('fld_remarks', BLOB, default=__defaults__['remarks'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -62,7 +64,7 @@ class RAMSTKTestMethod(RAMSTK_BASE):
 
     def get_attributes(self):
         """
-        Retrieve the current values of the RAMSTKTestMethod data model attributes.
+        Retrieve current values of the RAMSTKTestMethod data model attributes.
 
         :return: {stress_id, test_id, description, boundary_conditions,
                   remarks} pairs
