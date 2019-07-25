@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.programdb.RAMSTKProgramStatus.py is part of The RAMSTK Project
+#       ramstk.models.programdb.RAMSTKProgramStatus.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -25,6 +26,11 @@ class RAMSTKProgramStatus(RAMSTK_BASE):
     This table shares a Many-to-One relationship with ramstk_revision.
     """
 
+    __defaults__ = {
+        'cost_remaining': 0,
+        'date_status': date.today(),
+        'time_remaining': 0.0
+    }
     __tablename__ = 'ramstk_program_status'
     __table_args__ = {'extend_existing': True}
 
@@ -44,7 +50,10 @@ class RAMSTKProgramStatus(RAMSTK_BASE):
 
     cost_remaining = Column('fld_cost_remaining', Float, default=0.0)
     date_status = Column(
-        'fld_date_status', Date, unique=True, default=date.today(),
+        'fld_date_status',
+        Date,
+        unique=True,
+        default=date.today(),
     )
     time_remaining = Column('fld_time_remaining', Float, default=0.0)
 
@@ -53,10 +62,10 @@ class RAMSTKProgramStatus(RAMSTK_BASE):
 
     def get_attributes(self):
         """
-        Retrieve current values of the RAMSTKProgramStatus data model attributes.
+        Retrieve current values of RAMSTKProgramStatus data model attributes.
 
         :return: {revision_id, cost_remaining, date_status, time_remaining}
-                 pairs.
+            pairs.
         :rtype: dict
         """
         _attributes = {
@@ -71,32 +80,19 @@ class RAMSTKProgramStatus(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current value of the RAMSTKProgramStatus data model attributes.
+        Set one or more RAMSTKProgramInfo attributes.
 
-        :param tuple attributes: dicte of values to assign to the instance
-                                 attributes.
-        :return: (_error_code, _msg); the error code and error message.
-        :rtype: tuple
+        .. note:: you should pop the revision ID and status ID entries from the
+            attributes dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKProgramStatus {0:d} attributes.". \
-               format(self.revision_id)
-
-        try:
-            self.cost_remaining = float(
-                none_to_default(attributes['cost_remaining'], 0.0),
-            )
-            self.date_status = none_to_default(
-                attributes['date_status'],
-                date.today(),
-            )
-            self.time_remaining = float(
-                none_to_default(attributes['time_remaining'], 0.0),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKProgramStatus.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

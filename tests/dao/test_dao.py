@@ -76,7 +76,7 @@ def test_dao_db_create_common_bad_db_name(test_configuration):
 
 @pytest.mark.integration
 def test_dao_db_create_program(test_configuration):
-    """ db_create_program() should return False on success. """
+    """db_create_program() should return False on success."""
     # Remove test program database from earlier runs if there is one.
     if os.path.exists(TEMPDIR + '/_ramstk_program_db.ramstk'):
         os.remove(TEMPDIR + '/_ramstk_program_db.ramstk')

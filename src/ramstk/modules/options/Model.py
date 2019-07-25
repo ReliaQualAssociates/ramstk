@@ -8,7 +8,7 @@
 
 # RAMSTK Package Imports
 from ramstk.dao.commondb import RAMSTKSiteInfo
-from ramstk.dao.programdb import RAMSTKProgramInfo
+from ramstk.models.programdb import RAMSTKProgramInfo
 from ramstk.modules import RAMSTKDataModel
 
 

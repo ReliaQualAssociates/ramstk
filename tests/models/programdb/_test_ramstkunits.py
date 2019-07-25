@@ -10,21 +10,26 @@ This is the test class for testing the RAMSTKUnit module algorithms and
 models.
 """
 
+# Standard Library Imports
 import sys
+import unittest
 from os.path import dirname
+
+# Third Party Imports
+from nose.plugins.attrib import attr
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+# RAMSTK Package Imports
+from dao.RAMSTKUnit import RAMSTKUnit
 
 sys.path.insert(
     0,
     dirname(dirname(dirname(dirname(__file__)))) + "/ramstk",
 )
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 
-import unittest
-from nose.plugins.attrib import attr
 
-from dao.RAMSTKUnit import RAMSTKUnit
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'

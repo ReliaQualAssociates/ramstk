@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.programdb.RAMSTKOpLoad.py is part of The RAMSTK Project
+#       ramstk.models.programdb.RAMSTKOpLoad.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -24,6 +24,7 @@ class RAMSTKOpLoad(RAMSTK_BASE):
     This table shares a One-to-Many relationship with ramstk_test_method.
     """
 
+    __defaults__ = {'description': '', 'damage_model': '', 'priority_id': 0}
     __tablename__ = 'ramstk_op_load'
     __table_args__ = {'extend_existing': True}
 
@@ -41,17 +42,27 @@ class RAMSTKOpLoad(RAMSTK_BASE):
         nullable=False,
     )
 
-    description = Column('fld_description', String(512), default='')
-    damage_model = Column('fld_damage_model', String(512), default='')
-    priority_id = Column('fld_priority_id', Integer, default=0)
+    description = Column('fld_description',
+                         String(512),
+                         default=__defaults__['description'])
+    damage_model = Column('fld_damage_model',
+                          String(512),
+                          default=__defaults__['damage_model'])
+    priority_id = Column('fld_priority_id',
+                         Integer,
+                         default=__defaults__['priority_id'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     mechanism = relationship('RAMSTKMechanism', back_populates='op_load')
     op_stress = relationship(
-        'RAMSTKOpStress', back_populates='op_load', cascade='all,delete',
+        'RAMSTKOpStress',
+        back_populates='op_load',
+        cascade='all,delete',
     )
     test_method = relationship(
-        'RAMSTKTestMethod', back_populates='op_load', cascade='all,delete',
+        'RAMSTKTestMethod',
+        back_populates='op_load',
+        cascade='all,delete',
     )
 
     is_mode = False
@@ -80,30 +91,19 @@ class RAMSTKOpLoad(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the RAMSTKOpLoad data model attributes.
+        Set one or more RAMSTKOpLoad attributes.
 
-        :param dict attributes: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
+        .. note:: you should pop the mechanism ID and load ID entries from
+            the attributes dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKOpLoad {0:d} attributes.". \
-               format(self.load_id)
-
-        try:
-            self.description = str(
-                none_to_default(attributes['description'], ''),
-            )
-            self.damage_model = str(
-                none_to_default(attributes['damage_model'], ''),
-            )
-            self.priority_id = int(
-                none_to_default(attributes['priority_id'], 0),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKOpLoad.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

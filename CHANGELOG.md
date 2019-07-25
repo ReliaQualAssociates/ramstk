@@ -34,6 +34,7 @@
 
 **Fixed bugs:**
 
+- add method to delete usage profile elements [\#258](https://github.com/ReliaQualAssociates/ramstk/pull/258) [[module:function](https://github.com/ReliaQualAssociates/ramstk/labels/module:function)] ([weibullguy](https://github.com/weibullguy))
 - add method to delete failure definition [\#257](https://github.com/ReliaQualAssociates/ramstk/pull/257) [[module:function](https://github.com/ReliaQualAssociates/ramstk/labels/module:function)] ([weibullguy](https://github.com/weibullguy))
 
 **Merged pull requests:**
