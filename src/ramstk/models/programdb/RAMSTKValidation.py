@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.RAMSTKValidation.py is part of The RAMSTK Project
+#       ramstk.models.programdb.RAMSTKValidation.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKValidation Table."""
 
 # Standard Library Imports
@@ -26,6 +27,35 @@ class RAMSTKValidation(RAMSTK_BASE):
     This table shares a Many-to-One relationship with ramstk_revision.
     """
 
+    __defaults__ = {
+        'acceptable_maximum': 0.0,
+        'acceptable_mean': 0.0,
+        'acceptable_minimum': 0.0,
+        'acceptable_variance': 0.0,
+        'confidence': 95.0,
+        'cost_average': 0.0,
+        'cost_ll': 0.0,
+        'cost_maximum': 0.0,
+        'cost_mean': 0.0,
+        'cost_minimum': 0.0,
+        'cost_ul': 0.0,
+        'cost_variance': 0.0,
+        'date_end': date.today() + timedelta(days=30),
+        'date_start': date.today(),
+        'description': b'',
+        'measurement_unit': '',
+        'name': '',
+        'status': 0.0,
+        'task_type': '',
+        'task_specification': '',
+        'time_average': 0.0,
+        'time_ll': 0.0,
+        'time_maximum': 0.0,
+        'time_mean': 0.0,
+        'time_minimum': 0.0,
+        'time_ul': 0.0,
+        'time_variance': 0.0
+    }
     __tablename__ = 'ramstk_validation'
     __table_args__ = {'extend_existing': True}
 
@@ -43,44 +73,80 @@ class RAMSTKValidation(RAMSTK_BASE):
         nullable=False,
     )
 
-    acceptable_maximum = Column('fld_acceptable_maximum', Float, default=0.0)
-    acceptable_mean = Column('fld_acceptable_mean', Float, default=0.0)
-    acceptable_minimum = Column('fld_acceptable_minimum', Float, default=0.0)
-    acceptable_variance = Column('fld_acceptable_variance', Float, default=0.0)
-    confidence = Column('fld_confidence', Float, default=95.0)
-    cost_average = Column('fld_cost_average', Float, default=0.0)
-    cost_ll = Column('fld_cost_ll', Float, default=0.0)
-    cost_maximum = Column('fld_cost_maximum', Float, default=0.0)
-    cost_mean = Column('fld_cost_mean', Float, default=0.0)
-    cost_minimum = Column('fld_cost_minimum', Float, default=0.0)
-    cost_ul = Column('fld_cost_ul', Float, default=0.0)
-    cost_variance = Column('fld_cost_variance', Float, default=0.0)
-    date_end = Column(
-        'fld_date_end', Date, default=date.today() + timedelta(days=30),
-    )
-    date_start = Column('fld_date_start', Date, default=date.today())
-    description = Column('fld_description', BLOB, default=b'')
-    measurement_unit = Column('fld_measurement_unit', String(256), default='')
-    name = Column('fld_name', String(256), default='')
-    status = Column('fld_status', Float, default=0.0)
-    task_type = Column('fld_type', String(256), default='')
-    task_specification = Column(
-        'fld_task_specification', String(512), default='',
-    )
-    time_average = Column('fld_time_average', Float, default=0.0)
-    time_ll = Column('fld_time_ll', Float, default=0.0)
-    time_maximum = Column('fld_time_maximum', Float, default=0.0)
-    time_mean = Column('fld_time_mean', Float, default=0.0)
-    time_minimum = Column('fld_time_minimum', Float, default=0.0)
-    time_ul = Column('fld_time_ul', Float, default=0.0)
-    time_variance = Column('fld_time_variance', Float, default=0.0)
+    acceptable_maximum = Column('fld_acceptable_maximum',
+                                Float,
+                                default=__defaults__['acceptable_maximum'])
+    acceptable_mean = Column('fld_acceptable_mean',
+                             Float,
+                             default=__defaults__['acceptable_mean'])
+    acceptable_minimum = Column('fld_acceptable_minimum',
+                                Float,
+                                default=__defaults__['acceptable_minimum'])
+    acceptable_variance = Column('fld_acceptable_variance',
+                                 Float,
+                                 default=__defaults__['acceptable_variance'])
+    confidence = Column('fld_confidence',
+                        Float,
+                        default=__defaults__['confidence'])
+    cost_average = Column('fld_cost_average',
+                          Float,
+                          default=__defaults__['cost_average'])
+    cost_ll = Column('fld_cost_ll', Float, default=__defaults__['cost_ll'])
+    cost_maximum = Column('fld_cost_maximum',
+                          Float,
+                          default=__defaults__['cost_maximum'])
+    cost_mean = Column('fld_cost_mean',
+                       Float,
+                       default=__defaults__['cost_mean'])
+    cost_minimum = Column('fld_cost_minimum',
+                          Float,
+                          default=__defaults__['cost_minimum'])
+    cost_ul = Column('fld_cost_ul', Float, default=__defaults__['cost_ul'])
+    cost_variance = Column('fld_cost_variance',
+                           Float,
+                           default=__defaults__['cost_variance'])
+    date_end = Column('fld_date_end', Date, default=__defaults__['date_end'])
+    date_start = Column('fld_date_start',
+                        Date,
+                        default=__defaults__['date_start'])
+    description = Column('fld_description',
+                         BLOB,
+                         default=__defaults__['description'])
+    measurement_unit = Column('fld_measurement_unit',
+                              String(256),
+                              default=__defaults__['measurement_unit'])
+    name = Column('fld_name', String(256), default=__defaults__['name'])
+    status = Column('fld_status', Float, default=__defaults__['status'])
+    task_type = Column('fld_type',
+                       String(256),
+                       default=__defaults__['task_type'])
+    task_specification = Column('fld_task_specification',
+                                String(512),
+                                default=__defaults__['task_specification'])
+    time_average = Column('fld_time_average',
+                          Float,
+                          default=__defaults__['time_average'])
+    time_ll = Column('fld_time_ll', Float, default=__defaults__['time_ll'])
+    time_maximum = Column('fld_time_maximum',
+                          Float,
+                          default=__defaults__['time_maximum'])
+    time_mean = Column('fld_time_mean',
+                       Float,
+                       default=__defaults__['time_mean'])
+    time_minimum = Column('fld_time_minimum',
+                          Float,
+                          default=__defaults__['time_minimum'])
+    time_ul = Column('fld_time_ul', Float, default=__defaults__['time_ul'])
+    time_variance = Column('fld_time_variance',
+                           Float,
+                           default=__defaults__['time_variance'])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship('RAMSTKRevision', back_populates='validation')
 
     def get_attributes(self):
         """
-        Retrieve the current values of the RAMSTKValidation data model attributes.
+        Retrieve current values of the RAMSTKValidation data model attributes.
 
         :return: {revision_id, validation_id, acceptable_maximum,
                   acceptable_mean, acceptable_minimum, acceptable_variance,
@@ -127,92 +193,22 @@ class RAMSTKValidation(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current value of the RAMSTKValidation data model attributes.
+        Set one or more RAMSTKValidation attributes.
 
-        :param tuple attributes: dicte of values to assign to the instance
-                                 attributes.
-        :return: (_error_code, _msg); the error code and error message.
-        :rtype: tuple
+        .. note:: you should pop the revision ID and validation ID entries from
+            the attributes dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = "RAMSTK SUCCESS: Updating RAMSTKValidation {0:d} attributes.". \
-               format(self.validation_id)
-
-        try:
-            self.acceptable_maximum = float(
-                none_to_default(attributes['acceptable_maximum'], 0.0),
-            )
-            self.acceptable_mean = float(
-                none_to_default(attributes['acceptable_mean'], 0.0),
-            )
-            self.acceptable_minimum = float(
-                none_to_default(attributes['acceptable_minimum'], 0.0),
-            )
-            self.acceptable_variance = float(
-                none_to_default(attributes['acceptable_variance'], 0.0),
-            )
-            self.confidence = float(
-                none_to_default(attributes['confidence'], 95.0),
-            )
-            self.cost_average = float(
-                none_to_default(attributes['cost_average'], 0.0),
-            )
-            self.cost_ll = float(none_to_default(attributes['cost_ll'], 0.0))
-            self.cost_maximum = float(
-                none_to_default(attributes['cost_maximum'], 0.0),
-            )
-            self.cost_mean = float(
-                none_to_default(attributes['cost_mean'], 0.0),
-            )
-            self.cost_minimum = float(
-                none_to_default(attributes['cost_minimum'], 0.0),
-            )
-            self.cost_ul = float(none_to_default(attributes['cost_ul'], 0.0))
-            self.cost_variance = float(
-                none_to_default(attributes['cost_variance'], 0.0),
-            )
-            self.date_end = none_to_default(
-                attributes['date_end'],
-                date.today() + timedelta(days=30),
-            )
-            self.date_start = none_to_default(
-                attributes['date_start'],
-                date.today(),
-            )
-            self.description = none_to_default(attributes['description'], b'')
-            self.measurement_unit = str(
-                none_to_default(attributes['measurement_unit'], ''),
-            )
-            self.name = str(none_to_default(attributes['name'], ''))
-            self.status = float(none_to_default(attributes['status'], 0.0))
-            self.task_type = str(none_to_default(attributes['task_type'], ''))
-            self.task_specification = str(
-                none_to_default(attributes['task_specification'], ''),
-            )
-            self.time_average = float(
-                none_to_default(attributes['time_average'], 0.0),
-            )
-            self.time_ll = float(none_to_default(attributes['time_ll'], 0.0))
-            self.time_maximum = float(
-                none_to_default(attributes['time_maximum'], 0.0),
-            )
-            self.time_mean = float(
-                none_to_default(attributes['time_mean'], 0.0),
-            )
-            self.time_minimum = float(
-                none_to_default(attributes['time_minimum'], 0.0),
-            )
-            self.time_ul = float(none_to_default(attributes['time_ul'], 0.0))
-            self.time_variance = float(
-                none_to_default(attributes['time_variance'], 0.0),
-            )
-        except KeyError as _err:
-            _error_code = 40
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKValidation.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))
 
     def calculate_task_time(self):
         """
@@ -227,11 +223,15 @@ class RAMSTKValidation(RAMSTK_BASE):
         _return = False
 
         (
-            self.time_ll, self.time_mean, self.time_ul,
+            self.time_ll,
+            self.time_mean,
+            self.time_ul,
             _sd,
         ) = calculate_beta_bounds(
-            self.time_minimum, self.time_average,
-            self.time_maximum, self.confidence,
+            self.time_minimum,
+            self.time_average,
+            self.time_maximum,
+            self.confidence,
         )
 
         self.time_variance = _sd**2.0
@@ -251,11 +251,15 @@ class RAMSTKValidation(RAMSTK_BASE):
         _return = False
 
         (
-            self.cost_ll, self.cost_mean, self.cost_ul,
+            self.cost_ll,
+            self.cost_mean,
+            self.cost_ul,
             _sd,
         ) = calculate_beta_bounds(
-            self.cost_minimum, self.cost_average,
-            self.cost_maximum, self.confidence,
+            self.cost_minimum,
+            self.cost_average,
+            self.cost_maximum,
+            self.confidence,
         )
 
         self.cost_variance = _sd**2.0
