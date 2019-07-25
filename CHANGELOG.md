@@ -20,6 +20,7 @@
 - Refactor \_on\_combo\_changed\(\) and \_on\_focus\_out\(\) methods to eliminate duplicate code [\#200](https://github.com/ReliaQualAssociates/ramstk/issues/200) [[module:hardware](https://github.com/ReliaQualAssociates/ramstk/labels/module:hardware)]
 - PyGTK deprecation [\#58](https://github.com/ReliaQualAssociates/ramstk/issues/58)
 - Support Python 3 [\#57](https://github.com/ReliaQualAssociates/ramstk/issues/57)
+- Feature/update programdb models [\#259](https://github.com/ReliaQualAssociates/ramstk/pull/259) ([weibullguy](https://github.com/weibullguy))
 - feature/refactor function [\#256](https://github.com/ReliaQualAssociates/ramstk/pull/256) [[module:function](https://github.com/ReliaQualAssociates/ramstk/labels/module:function)] [[module:hazops](https://github.com/ReliaQualAssociates/ramstk/labels/module:hazops)] ([weibullguy](https://github.com/weibullguy))
 - update documentation [\#255](https://github.com/ReliaQualAssociates/ramstk/pull/255) ([weibullguy](https://github.com/weibullguy))
 - feature/revision refactor [\#254](https://github.com/ReliaQualAssociates/ramstk/pull/254) [[module:failuredefinition](https://github.com/ReliaQualAssociates/ramstk/labels/module:failuredefinition)] [[module:revision](https://github.com/ReliaQualAssociates/ramstk/labels/module:revision)] [[module:usage](https://github.com/ReliaQualAssociates/ramstk/labels/module:usage)] ([weibullguy](https://github.com/weibullguy))

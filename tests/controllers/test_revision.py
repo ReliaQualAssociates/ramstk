@@ -70,7 +70,19 @@ class TestCreateControllers():
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_revision')
         assert pub.isSubscribed(DUT._do_delete_failure_definition,
                                 'request_delete_failure_definition')
+        assert pub.isSubscribed(DUT._do_delete_mission,
+                                'request_delete_mission')
+        assert pub.isSubscribed(DUT._do_delete_mission_phase,
+                                'request_delete_mission_phase')
+        assert pub.isSubscribed(DUT._do_delete_environment,
+                                'request_delete_environment')
         assert pub.isSubscribed(DUT.do_insert, 'request_insert_revision')
+        assert pub.isSubscribed(DUT.do_insert_mission,
+                                'request_insert_mission')
+        assert pub.isSubscribed(DUT.do_insert_mission_phase,
+                                'request_insert_mission_phase')
+        assert pub.isSubscribed(DUT.do_insert_environment,
+                                'request_insert_environment')
         assert pub.isSubscribed(DUT.do_update, 'request_update_revision')
         assert pub.isSubscribed(DUT.do_update_all,
                                 'request_update_all_revisions')

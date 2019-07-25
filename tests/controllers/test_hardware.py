@@ -572,7 +572,7 @@ class TestSelectMethods():
         assert DUT.do_select('hrdwr_rqrmnt', 1, 0) == 'REL-0001'
         assert DUT.do_select('hrdwr_rqrmnt', 2, 0) == 'FUNC-0001'
         assert DUT.do_select('hrdwr_rqrmnt', 3, 0) == 'REL-0002'
-        assert DUT.do_select('hrdwr_rqrmnt', 1, 1) == 2
+        assert DUT.do_select('hrdwr_rqrmnt', 1, 1) == 0
 
 
 @pytest.mark.usefixtures('test_program_dao', 'test_configuration')
@@ -630,7 +630,7 @@ class TestDeleteMethods():
 
         pub.sendMessage('succeed_select_revision', revision_id=1)
 
-        assert DUT.do_select('hrdwr_rqrmnt', 1, 7) == 2
+        assert DUT.do_select('hrdwr_rqrmnt', 1, 7) == 0
 
         pub.sendMessage('succeed_delete_hardware', node_id=7)
 
@@ -662,7 +662,7 @@ class TestDeleteMethods():
 
         pub.sendMessage('succeed_select_revision', revision_id=1)
 
-        assert DUT.do_select('hrdwr_rqrmnt', 1, 1) == 2
+        assert DUT.do_select('hrdwr_rqrmnt', 1, 1) == 0
 
         pub.sendMessage('succeed_delete_requirement', node_id=1)
 

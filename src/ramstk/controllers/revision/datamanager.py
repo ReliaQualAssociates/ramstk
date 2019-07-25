@@ -64,6 +64,12 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_delete_environment,
                       'request_delete_environment')
         pub.subscribe(self.do_insert, 'request_insert_revision')
+        pub.subscribe(self.do_insert_failure_definition,
+                      'request_insert_failure_definition')
+        pub.subscribe(self.do_insert_mission, 'request_insert_mission')
+        pub.subscribe(self.do_insert_mission_phase,
+                      'request_insert_mission_phase')
+        pub.subscribe(self.do_insert_environment, 'request_insert_environment')
         pub.subscribe(self.do_update, 'request_update_revision')
         pub.subscribe(self.do_update_all, 'request_update_all_revisions')
         pub.subscribe(self.do_get_attributes,

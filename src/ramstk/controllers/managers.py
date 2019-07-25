@@ -219,7 +219,7 @@ class RAMSTKDataManager():
                 and_(
                     RAMSTKMatrix.revision_id == self._revision_id,
                     RAMSTKMatrix.matrix_type == matrix_type,
-                ), ).all():
+                )).all():
             _lst_matrix.append(
                 (_matrix.column_item_id, _matrix.row_item_id, _matrix.value))
 
