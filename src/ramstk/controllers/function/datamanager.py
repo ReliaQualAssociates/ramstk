@@ -283,7 +283,7 @@ class DataManager(RAMSTKDataManager):
         """
         Retrieve all the Function data from the RAMSTK Program database.
 
-        :param int revision_id: the Revision ID to select the Hardware BoM for.
+        :param int revision_id: the Revision ID to select the Functions for.
         :return: None
         :rtype: None
         """
@@ -292,7 +292,8 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        for _function in self.dao.session.query(RAMSTKFunction).all():
+        for _function in self.dao.session.query(RAMSTKFunction).filter(
+                RAMSTKFunction.revision_id == self._revision_id).all():
 
             _hazards = self.dao.session.query(RAMSTKHazardAnalysis).filter(
                 RAMSTKHazardAnalysis.function_id ==

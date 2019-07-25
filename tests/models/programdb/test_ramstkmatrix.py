@@ -13,10 +13,10 @@ from ramstk.models.programdb.RAMSTKMatrix import RAMSTKMatrix
 
 ATTRIBUTES = {
     'revision_id': 1,
-    'matrix_id': 2,
+    'matrix_id': 1,
     'column_id': 1,
     'column_item_id': 1,
-    'matrix_type': 'rqrmnt_hrdwr',
+    'matrix_type': 'fnctn_hrdwr',
     'parent_id': 0,
     'row_id': 1,
     'row_item_id': 1,
@@ -36,10 +36,10 @@ def test_ramstkmatrix_create(test_dao):
     # Verify class attributes are properly initialized.
     assert DUT.__tablename__ == 'ramstk_matrix'
     assert DUT.revision_id == 1
-    assert DUT.matrix_id == 2
+    assert DUT.matrix_id == 1
     assert DUT.column_id == 1
     assert DUT.column_item_id == 1
-    assert DUT.matrix_type == 'rqrmnt_hrdwr'
+    assert DUT.matrix_type == 'fnctn_hrdwr'
     assert DUT.parent_id == 0
     assert DUT.row_id == 1
     assert DUT.row_item_id == 1
