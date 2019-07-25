@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.programdb.Test_ramstkprograminfo.py is part of the RAMSTK Project
+#       tests.models.programdb.Test_ramstkprograminfo.py is part of the RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the RAMSTKProgramInfo module algorithms and models."""
 
 # Standard Library Imports
@@ -13,102 +14,106 @@ from datetime import date
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb.RAMSTKProgramInfo import RAMSTKProgramInfo
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+from ramstk.models.programdb.RAMSTKProgramInfo import RAMSTKProgramInfo
 
 ATTRIBUTES = {
-    'vandv_active': 1,
-    'fta_active': 0,
-    'requirement_active': 1,
-    'function_active': 1,
-    'fmea_active': 1,
-    'software_active': 1,
-    'last_saved': date.today(),
-    'revision_id': 1,
-    'method': 'STANDARD',
-    'survival_active': 1,
+    'created_by': '',
     'created_on': date.today(),
+    'fmea_active': 1,
     'fraca_active': 1,
-    'last_saved_by': '',
+    'fta_active': 0,
+    'function_active': 1,
     'hardware_active': 1,
+    'last_saved': date.today(),
+    'last_saved_by': '',
+    'method': 'STANDARD',
     'rbd_active': 0,
     'rcm_active': 0,
-    'created_by': '',
-    'testing_active': 1
+    'requirement_active': 1,
+    'software_active': 1,
+    'survival_active': 1,
+    'testing_active': 1,
+    'vandv_active': 1
 }
 
 
-@pytest.mark.integration
-def test_ramstkprograminfo_create(test_dao):
-    """ __init__() should create an RAMSTKProgramInfo model. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKProgramInfo).first()
+@pytest.mark.usefixtures('test_program_dao')
+class TestRAMSTKProgramInfo():
+    """Class for testing the RAMSTKProgramInfo model."""
+    @pytest.mark.integration
+    def test_ramstkprograminfo_create(self, test_program_dao):
+        """ __init__() should create an RAMSTKProgramInfo model. """
+        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
 
-    assert isinstance(DUT, RAMSTKProgramInfo)
+        assert isinstance(DUT, RAMSTKProgramInfo)
 
-    # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'ramstk_program_info'
-    assert DUT.revision_id == 1
-    assert DUT.function_active == 1
-    assert DUT.requirement_active == 1
-    assert DUT.hardware_active == 1
-    assert DUT.vandv_active == 1
-    assert DUT.fmea_active == 1
-    assert DUT.software_active == 1
-    assert DUT.testing_active == 1
-    assert DUT.fraca_active == 1
-    assert DUT.survival_active == 1
-    assert DUT.rcm_active == 0
-    assert DUT.rbd_active == 0
-    assert DUT.fta_active == 0
-    assert DUT.created_on == date.today()
-    assert DUT.created_by == ''
-    assert DUT.last_saved == date.today()
-    assert DUT.last_saved_by == ''
-    assert DUT.method == 'STANDARD'
+        # Verify class attributes are properly initialized.
+        assert DUT.__tablename__ == 'ramstk_program_info'
+        assert DUT.revision_id == 1
+        assert DUT.function_active == 1
+        assert DUT.requirement_active == 1
+        assert DUT.hardware_active == 1
+        assert DUT.vandv_active == 1
+        assert DUT.fmea_active == 1
+        assert DUT.software_active == 1
+        assert DUT.testing_active == 1
+        assert DUT.fraca_active == 1
+        assert DUT.survival_active == 1
+        assert DUT.rcm_active == 0
+        assert DUT.rbd_active == 0
+        assert DUT.fta_active == 0
+        assert DUT.created_on == date(2019, 7, 21)
+        assert DUT.created_by == ''
+        assert DUT.last_saved == date(2019, 7, 21)
+        assert DUT.last_saved_by == ''
+        assert DUT.method == 'STANDARD'
 
+    @pytest.mark.integration
+    def test_get_attributes(self, test_program_dao):
+        """ get_attributes() should return a dict of attribute values. """
+        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
 
-@pytest.mark.integration
-def test_get_attributes(test_dao):
-    """ get_attributes() should return a dict of attribute values. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKProgramInfo).first()
+        _attributes = DUT.get_attributes()
+        _attributes['revision_id'] == 1
+        _attributes['function_active'] == 1
+        _attributes['requirement_active'] == 1
+        _attributes['hardware_active'] == 1
+        _attributes['vandv_active'] == 1
+        _attributes['fmea_active'] == 1
+        _attributes['software_active'] == 1
+        _attributes['testing_active'] == 1
+        _attributes['fraca_active'] == 1
+        _attributes['survival_active'] == 1
+        _attributes['rcm_active'] == 0
+        _attributes['rbd_active'] == 0
+        _attributes['fta_active'] == 0
+        _attributes['created_on'] == date(2019, 7, 21)
+        _attributes['created_by'] == ''
+        _attributes['last_saved'] == date(2019, 7, 21)
+        _attributes['last_saved_by'] == ''
+        _attributes['method'] == 'STANDARD'
 
-    assert DUT.get_attributes() == ATTRIBUTES
+    @pytest.mark.integration
+    def test_set_attributes(self, test_program_dao):
+        """ set_attributes() should return a zero error code on success. """
+        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
 
+        assert DUT.set_attributes(ATTRIBUTES) is None
 
-@pytest.mark.integration
-def test_set_attributes(test_dao):
-    """ set_attributes() should return a zero error code on success. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKProgramInfo).first()
+    @pytest.mark.integration
+    def test_set_attributes_none_value(self, test_program_dao):
+        """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
+        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+        ATTRIBUTES['method'] = None
 
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKProgramInfo attributes.")
+        assert DUT.set_attributes(ATTRIBUTES) is None
+        assert DUT.get_attributes()['method'] == 'STANDARD'
 
+    @pytest.mark.integration
+    def test_set_attributes_unknown_attributes(self, test_program_dao):
+        """set_attributes() should raise an AttributeError when passed an unknown attribute."""
+        DUT = test_program_dao.session.query(RAMSTKProgramInfo).first()
 
-@pytest.mark.integration
-def test_set_attributes_too_few_passed(test_dao):
-    """ set_attributes() should return a 40 error code when passed too few attributes. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKProgramInfo).first()
-
-    ATTRIBUTES.pop('vandv_active')
-
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 1
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'vandv_active' in attribute "
-                    "dictionary passed to RAMSTKProgramInfo.set_attributes().")
-
-    ATTRIBUTES['vandv_active'] = 1
+        with pytest.raises(AttributeError):
+            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})

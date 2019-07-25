@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.programdb.RAMSTKProgramImfo.py is part of The RAMSTK Project
+#       ramstk.models.programdb.RAMSTKProgramImfo.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKProgramInfo Table Module."""
 
 # Standard Library Imports
@@ -24,6 +25,25 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
     This table has a one-to-one relationship with RAMSTKProgramStatus.
     """
 
+    __defaults__ = {
+        'function_active': 1,
+        'requirement_active': 1,
+        'hardware_active': 1,
+        'software_active': 1,
+        'vandv_active': 1,
+        'fmea_active': 1,
+        'testing_active': 1,
+        'fraca_active': 1,
+        'survival_active': 1,
+        'rcm_active': 0,
+        'rbd_active': 0,
+        'fta_active': 0,
+        'created_on': date.today(),
+        'created_by': '',
+        'last_saved': date.today(),
+        'last_saved_by': '',
+        'method': 'STANDARD'
+    }
     __tablename__ = 'ramstk_program_info'
     __table_args__ = {'extend_existing': True}
 
@@ -34,23 +54,23 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    function_active = Column('fld_function_active', Integer, default=1)
-    requirement_active = Column('fld_requirement_active', Integer, default=1)
-    hardware_active = Column('fld_hardware_active', Integer, default=1)
-    software_active = Column('fld_software_active', Integer, default=1)
-    vandv_active = Column('fld_vandv_active', Integer, default=1)
-    fmea_active = Column('fld_fmea_active', Integer, default=1)
-    testing_active = Column('fld_testing_active', Integer, default=1)
-    fraca_active = Column('fld_fraca_active', Integer, default=1)
-    survival_active = Column('fld_survival_active', Integer, default=1)
-    rcm_active = Column('fld_rcm_active', Integer, default=0)
-    rbd_active = Column('fld_rbd_active', Integer, default=0)
-    fta_active = Column('fld_fta_active', Integer, default=0)
-    created_on = Column('fld_created_on', Date, default=date.today())
-    created_by = Column('fld_created_by', String(512), default='')
-    last_saved = Column('fld_last_saved_on', Date, default=date.today())
-    last_saved_by = Column('fld_last_saved_by', String(512), default='')
-    method = Column('fld_method', String(512), default='STANDARD')
+    function_active = Column('fld_function_active', Integer, default=__defaults__['function_active'])
+    requirement_active = Column('fld_requirement_active', Integer, default=__defaults__['requirement_active'])
+    hardware_active = Column('fld_hardware_active', Integer, default=__defaults__['hardware_active'])
+    software_active = Column('fld_software_active', Integer, default=__defaults__['software_active'])
+    vandv_active = Column('fld_vandv_active', Integer, default=__defaults__['vandv_active'])
+    fmea_active = Column('fld_fmea_active', Integer, default=__defaults__['fmea_active'])
+    testing_active = Column('fld_testing_active', Integer, default=__defaults__['testing_active'])
+    fraca_active = Column('fld_fraca_active', Integer, default=__defaults__['fraca_active'])
+    survival_active = Column('fld_survival_active', Integer, default=__defaults__['survival_active'])
+    rcm_active = Column('fld_rcm_active', Integer, default=__defaults__['rcm_active'])
+    rbd_active = Column('fld_rbd_active', Integer, default=__defaults__['rbd_active'])
+    fta_active = Column('fld_fta_active', Integer, default=__defaults__['fta_active'])
+    created_on = Column('fld_created_on', Date, default=__defaults__['created_on'])
+    created_by = Column('fld_created_by', String(512), default=__defaults__['created_by'])
+    last_saved = Column('fld_last_saved_on', Date, default=__defaults__['last_saved'])
+    last_saved_by = Column('fld_last_saved_by', String(512), default=__defaults__['last_saved_by'])
+    method = Column('fld_method', String(512), default=__defaults__['method'])
 
     def get_attributes(self):
         """
@@ -88,67 +108,19 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Set the current values of the RAMSTKProgramInfo data model attributes.
+        Set one or more RAMSTKProgramInfo attributes.
 
-        :param dict attributes: dict containing the values to set.
-        :return: (_error_code, _msg)
-        :rtype: (int, str)
+        .. note:: you should pop the revision ID entries from the attributes
+            dict before passing it to this method.
+
+        :param dict attributes: dict of key:value pairs to assign to the
+            instance attributes.
+        :return: None
+        :rtype: None
+        :raise: AttributeError if passed an attribute key that doesn't exist as
+            a table field.
         """
-        _error_code = 0
-        _msg = ("RAMSTK SUCCESS: Updating RAMSTKProgramInfo attributes.")
-
-        try:
-            self.function_active = int(
-                none_to_default(attributes['function_active'], 1),
-            )
-            self.requirement_active = int(
-                none_to_default(attributes['requirement_active'], 1),
-            )
-            self.hardware_active = int(
-                none_to_default(attributes['hardware_active'], 1),
-            )
-            self.vandv_active = int(
-                none_to_default(attributes['vandv_active'], 1),
-            )
-            self.fmea_active = int(
-                none_to_default(attributes['fmea_active'], 1),
-            )
-            self.software_active = int(
-                none_to_default(attributes['software_active'], 1),
-            )
-            self.testing_active = int(
-                none_to_default(attributes['testing_active'], 1),
-            )
-            self.fraca_active = int(
-                none_to_default(attributes['fraca_active'], 1),
-            )
-            self.survival_active = int(
-                none_to_default(attributes['survival_active'], 1),
-            )
-            self.rcm_active = int(none_to_default(attributes['rcm_active'], 0))
-            self.rbd_active = int(none_to_default(attributes['rbd_active'], 0))
-            self.fta_active = int(none_to_default(attributes['fta_active'], 0))
-            self.created_on = none_to_default(
-                attributes['created_on'],
-                date.today(),
-            )
-            self.created_by = str(
-                none_to_default(attributes['created_by'], ''),
-            )
-            self.last_saved = none_to_default(
-                attributes['last_saved'],
-                date.today(),
-            )
-            self.last_saved_by = str(
-                none_to_default(attributes['last_saved_by'], ''),
-            )
-            self.method = str(
-                none_to_default(attributes['method'], 'STANDARD'),
-            )
-        except KeyError as _err:
-            _error_code = 1
-            _msg = "RAMSTK ERROR: Missing attribute {0:s} in attribute " \
-                   "dictionary passed to " \
-                   "RAMSTKProgramInfo.set_attributes().".format(str(_err))
-
-        return _error_code, _msg
+        for _key in attributes:
+            getattr(self, _key)
+            setattr(self, _key,
+                    none_to_default(attributes[_key], self.__defaults__[_key]))

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       tests.dao.progrmdb.test_ramstkprogramstatus.py is part of The RAMSTK Project
+#       tests.moels.progrmdb.test_ramstkprogramstatus.py is part of The RAMSTK Project
 #
 # All rights reserved.
-"""Test class for testing the RAMSTKProgramStatus module algorithms and models."""
+"""Test class for testing RAMSTKProgramStatus module algorithms and models."""
 
 # Standard Library Imports
 from datetime import date
@@ -12,78 +12,66 @@ from datetime import date
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.dao.programdb.RAMSTKProgramStatus import RAMSTKProgramStatus
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
+from ramstk.models.programdb.RAMSTKProgramStatus import RAMSTKProgramStatus
 
 ATTRIBUTES = {
     'cost_remaining': 0.0,
     'date_status': date.today(),
-    'time_remaining': 0.0,
-    'revision_id': 1,
-    'status_id': 1
+    'time_remaining': 0.0
 }
 
 
-@pytest.mark.integration
-def test_ramstkprogramstatus_create(test_dao):
-    """ __init__() should create an RAMSTKProgramStatus model. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKProgramStatus).first()
+@pytest.mark.usefixtures('test_program_dao')
+class TestRAMSTKProgramStatus():
+    """Class for testing the RAMSTKProgramStatus model."""
+    @pytest.mark.integration
+    def test_ramstkprogramstatus_create(self, test_program_dao):
+        """ __init__() should create an RAMSTKProgramStatus model. """
+        DUT = test_program_dao.session.query(RAMSTKProgramStatus).first()
 
-    assert isinstance(DUT, RAMSTKProgramStatus)
+        assert isinstance(DUT, RAMSTKProgramStatus)
 
-    # Verify class attributes are properly initialized.
-    assert DUT.__tablename__ == 'ramstk_program_status'
-    assert DUT.revision_id == 1
-    assert DUT.status_id == 1
-    assert DUT.cost_remaining == 0.0
-    assert DUT.date_status == date.today()
-    assert DUT.time_remaining == 0.0
+        # Verify class attributes are properly initialized.
+        assert DUT.__tablename__ == 'ramstk_program_status'
+        assert DUT.revision_id == 1
+        assert DUT.status_id == 1
+        assert DUT.cost_remaining == 0.0
+        assert DUT.date_status == date(2019, 7, 21)
+        assert DUT.time_remaining == 0.0
 
+    @pytest.mark.integration
+    def test_get_attributes(self, test_program_dao):
+        """ get_attributes() should return a dict of attribute values. """
+        DUT = test_program_dao.session.query(RAMSTKProgramStatus).first()
 
-@pytest.mark.integration
-def test_get_attributes(test_dao):
-    """ get_attributes() should return a dict of attribute values. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKProgramStatus).first()
+        _attributes = DUT.get_attributes()
+        assert _attributes['revision_id'] == 1
+        assert _attributes['status_id'] == 1
+        assert _attributes['cost_remaining'] == 0.0
+        assert _attributes['date_status'] == date(2019, 7, 21)
+        assert _attributes['time_remaining'] == 0.0
 
-    assert DUT.get_attributes() == ATTRIBUTES
+    @pytest.mark.integration
+    def test_set_attributes(self, test_program_dao):
+        """ set_attributes() should return a zero error code on success. """
+        DUT = test_program_dao.session.query(RAMSTKProgramStatus).first()
 
+        assert DUT.set_attributes(ATTRIBUTES) is None
 
-@pytest.mark.integration
-def test_set_attributes(test_dao):
-    """ set_attributes() should return a zero error code on success. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKProgramStatus).first()
+    @pytest.mark.integration
+    def test_set_attributes_none_value(self, test_program_dao):
+        """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
+        DUT = test_program_dao.session.query(RAMSTKProgramStatus).first()
 
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
+        ATTRIBUTES['time_remaining'] = None
 
-    assert _error_code == 0
-    assert _msg == ("RAMSTK SUCCESS: Updating RAMSTKProgramStatus {0:d} "
-                    "attributes.".format(DUT.revision_id))
+        assert DUT.set_attributes(ATTRIBUTES) is None
+        assert DUT.get_attributes()['time_remaining'] == 0.0
 
+    @pytest.mark.integration
+    def test_set_attributes_unknown_attributes(self, test_program_dao):
+        """set_attributes() should raise an AttributeError when passed an unknown attribute."""
+        DUT = test_program_dao.session.query(RAMSTKProgramStatus).first()
 
-@pytest.mark.integration
-def test_set_attributes_missing_key(test_dao):
-    """ set_attributes() should return a 40 error code when passed a dict with a missing key. """
-    _session = test_dao.RAMSTK_SESSION(
-        bind=test_dao.engine, autoflush=False, expire_on_commit=False)
-    DUT = _session.query(RAMSTKProgramStatus).first()
-
-    ATTRIBUTES.pop('time_remaining')
-
-    _error_code, _msg = DUT.set_attributes(ATTRIBUTES)
-
-    assert _error_code == 40
-    assert _msg == ("RAMSTK ERROR: Missing attribute 'time_remaining' in "
-                    "attribute dictionary passed to "
-                    "RAMSTKProgramStatus.set_attributes().")
-
-    ATTRIBUTES['time_remaining'] = 0.0
+        with pytest.raises(AttributeError):
+            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
