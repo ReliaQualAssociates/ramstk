@@ -20,7 +20,7 @@ from ramstk.Utilities import none_to_default
 
 class RAMSTKProgramInfo(RAMSTK_BASE):
     """
-    Class to represent table ramstk_program_info in the RAMSTK Program database.
+    Class to represent table ramstk_program_info in RAMSTK Program database.
 
     This table has a one-to-one relationship with RAMSTKProgramStatus.
     """
@@ -54,22 +54,54 @@ class RAMSTKProgramInfo(RAMSTK_BASE):
         autoincrement=True,
         nullable=False,
     )
-    function_active = Column('fld_function_active', Integer, default=__defaults__['function_active'])
-    requirement_active = Column('fld_requirement_active', Integer, default=__defaults__['requirement_active'])
-    hardware_active = Column('fld_hardware_active', Integer, default=__defaults__['hardware_active'])
-    software_active = Column('fld_software_active', Integer, default=__defaults__['software_active'])
-    vandv_active = Column('fld_vandv_active', Integer, default=__defaults__['vandv_active'])
-    fmea_active = Column('fld_fmea_active', Integer, default=__defaults__['fmea_active'])
-    testing_active = Column('fld_testing_active', Integer, default=__defaults__['testing_active'])
-    fraca_active = Column('fld_fraca_active', Integer, default=__defaults__['fraca_active'])
-    survival_active = Column('fld_survival_active', Integer, default=__defaults__['survival_active'])
-    rcm_active = Column('fld_rcm_active', Integer, default=__defaults__['rcm_active'])
-    rbd_active = Column('fld_rbd_active', Integer, default=__defaults__['rbd_active'])
-    fta_active = Column('fld_fta_active', Integer, default=__defaults__['fta_active'])
-    created_on = Column('fld_created_on', Date, default=__defaults__['created_on'])
-    created_by = Column('fld_created_by', String(512), default=__defaults__['created_by'])
-    last_saved = Column('fld_last_saved_on', Date, default=__defaults__['last_saved'])
-    last_saved_by = Column('fld_last_saved_by', String(512), default=__defaults__['last_saved_by'])
+    function_active = Column('fld_function_active',
+                             Integer,
+                             default=__defaults__['function_active'])
+    requirement_active = Column('fld_requirement_active',
+                                Integer,
+                                default=__defaults__['requirement_active'])
+    hardware_active = Column('fld_hardware_active',
+                             Integer,
+                             default=__defaults__['hardware_active'])
+    software_active = Column('fld_software_active',
+                             Integer,
+                             default=__defaults__['software_active'])
+    vandv_active = Column('fld_vandv_active',
+                          Integer,
+                          default=__defaults__['vandv_active'])
+    fmea_active = Column('fld_fmea_active',
+                         Integer,
+                         default=__defaults__['fmea_active'])
+    testing_active = Column('fld_testing_active',
+                            Integer,
+                            default=__defaults__['testing_active'])
+    fraca_active = Column('fld_fraca_active',
+                          Integer,
+                          default=__defaults__['fraca_active'])
+    survival_active = Column('fld_survival_active',
+                             Integer,
+                             default=__defaults__['survival_active'])
+    rcm_active = Column('fld_rcm_active',
+                        Integer,
+                        default=__defaults__['rcm_active'])
+    rbd_active = Column('fld_rbd_active',
+                        Integer,
+                        default=__defaults__['rbd_active'])
+    fta_active = Column('fld_fta_active',
+                        Integer,
+                        default=__defaults__['fta_active'])
+    created_on = Column('fld_created_on',
+                        Date,
+                        default=__defaults__['created_on'])
+    created_by = Column('fld_created_by',
+                        String(512),
+                        default=__defaults__['created_by'])
+    last_saved = Column('fld_last_saved_on',
+                        Date,
+                        default=__defaults__['last_saved'])
+    last_saved_by = Column('fld_last_saved_by',
+                           String(512),
+                           default=__defaults__['last_saved_by'])
     method = Column('fld_method', String(512), default=__defaults__['method'])
 
     def get_attributes(self):
