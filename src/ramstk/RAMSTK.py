@@ -20,6 +20,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers.function import dmFunction
 from ramstk.controllers.hardware import dmHardware
+from ramstk.controllers.requirement import dmRequirement
 from ramstk.controllers.revision import dmRevision
 from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
 from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
@@ -46,7 +47,6 @@ from ramstk.modules.fmea import dtcFMEA
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.options import dtcOptions
 from ramstk.modules.preferences import dtcPreferences
-from ramstk.modules.requirement import dtcRequirement
 from ramstk.modules.stakeholder import dtcStakeholder
 from ramstk.modules.validation import dtcValidation
 
@@ -799,10 +799,8 @@ class RAMSTK():
             self.dic_controllers['function'] = dmFunction(
                 self.ramstk_model.program_dao
             )
-            self.dic_controllers['requirement'] = dtcRequirement(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
+            self.dic_controllers['requirement'] = dmRequirement(
+                self.ramstk_model.program_dao
             )
             self.dic_controllers['hardware'] = dmHardware(
                 self.ramstk_model.program_dao
