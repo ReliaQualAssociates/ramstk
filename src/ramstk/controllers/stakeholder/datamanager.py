@@ -51,7 +51,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'request_retrieve_stakeholders')
+        pub.subscribe(self.do_select_all, 'succeed_select_revision')
         pub.subscribe(self._do_delete_stakeholder,
                       'request_delete_stakeholder')
         pub.subscribe(self.do_insert_stakeholder, 'request_insert_stakeholder')

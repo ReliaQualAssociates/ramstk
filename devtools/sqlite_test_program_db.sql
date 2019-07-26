@@ -1349,6 +1349,7 @@ CREATE TABLE ramstk_validation (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_validation" VALUES(1,1,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21',X'546573742056616C69646174696F6E','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_validation" VALUES(1,2,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21',X'','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_validation" VALUES(1,3,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21',X'','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 COMMIT;
 PRAGMA foreign_keys=ON;

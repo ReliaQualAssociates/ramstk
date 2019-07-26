@@ -51,7 +51,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, 'request_retrieve_requirements')
+        pub.subscribe(self.do_select_all, 'succeed_select_revision')
         pub.subscribe(self._do_delete_requirement,
                       'request_delete_requirement')
         pub.subscribe(self.do_insert_requirement, 'request_insert_requirement')

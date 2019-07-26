@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_stakeholder.py is part of The RAMSTK Project
@@ -51,7 +51,7 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all,
-                                'request_retrieve_stakeholders')
+                                'succeed_select_revision')
         assert pub.isSubscribed(DUT._do_delete_stakeholder,
                                 'request_delete_stakeholder')
         assert pub.isSubscribed(DUT.do_insert_stakeholder,

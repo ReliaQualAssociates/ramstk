@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_function.py is part of The RAMSTK Project
@@ -56,7 +56,7 @@ class TestCreateControllers():
         assert DUT._tag == 'function'
         assert DUT._root == 0
         assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, 'request_retrieve_functions')
+        assert pub.isSubscribed(DUT.do_select_all, 'succeed_select_revision')
         assert pub.isSubscribed(DUT._do_delete, 'request_delete_function')
         assert pub.isSubscribed(DUT._do_delete_hazard, 'request_delete_hazard')
         assert pub.isSubscribed(DUT.do_insert, 'request_insert_function')
@@ -80,7 +80,7 @@ class TestCreateControllers():
         assert DUT._attributes == {}
         assert DUT._tree is None
         assert pub.isSubscribed(DUT.on_get_all_attributes,
-                      'succeed_get_all_function_attributes')
+                                'succeed_get_all_function_attributes')
         assert pub.isSubscribed(DUT.on_get_tree, 'succeed_get_function_tree')
         assert pub.isSubscribed(DUT.do_calculate_fha, 'request_calculate_fha')
 
@@ -279,7 +279,7 @@ class TestInsertMethods():
         DUT.do_insert_hazard(1)
 
         assert isinstance(DUT.tree.get_node(1).data['hazards'][4],
-                              RAMSTKHazardAnalysis)
+                          RAMSTKHazardAnalysis)
 
     @pytest.mark.integration
     def test_insert_hazard_no_function(self, test_program_dao):
