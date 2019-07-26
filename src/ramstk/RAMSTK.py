@@ -23,6 +23,7 @@ from ramstk.controllers.hardware import dmHardware
 from ramstk.controllers.requirement import dmRequirement
 from ramstk.controllers.revision import dmRevision
 from ramstk.controllers.stakeholder import dmStakeholder
+from ramstk.controllers.validation import dmValidation
 from ramstk.dao.commondb.RAMSTKCategory import RAMSTKCategory
 from ramstk.dao.commondb.RAMSTKFailureMode import RAMSTKFailureMode
 from ramstk.dao.commondb.RAMSTKGroup import RAMSTKGroup
@@ -48,7 +49,6 @@ from ramstk.modules.fmea import dtcFMEA
 from ramstk.modules.imports import dtcImports
 from ramstk.modules.options import dtcOptions
 from ramstk.modules.preferences import dtcPreferences
-from ramstk.modules.validation import dtcValidation
 
 # RAMSTK Local Imports
 from . import Utilities
@@ -805,10 +805,8 @@ class RAMSTK():
             self.dic_controllers['hardware'] = dmHardware(
                 self.ramstk_model.program_dao
             )
-            self.dic_controllers['validation'] = dtcValidation(
-                self.ramstk_model.program_dao,
-                self.RAMSTK_CONFIGURATION,
-                test=False,
+            self.dic_controllers['validation'] = dmValidation(
+                self.ramstk_model.program_dao
             )
             self.dic_controllers['ffmea'] = dtcFMEA(
                 self.ramstk_model.program_dao,
