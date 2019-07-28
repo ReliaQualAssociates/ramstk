@@ -3,6 +3,7 @@
 This is the test class for testing SPLAN model algorithms.
 """
 
+# Standard Library Imports
 # -*- coding: utf-8 -*-
 #
 #       tests.statistics.TestSPLAN.py is part of The RAMSTK Project
@@ -36,21 +37,25 @@ This is the test class for testing SPLAN model algorithms.
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import sys
+import unittest
 from os.path import dirname
+
+# Third Party Imports
+import numpy as np
+from nose.plugins.attrib import attr
+
+# RAMSTK Package Imports
+from analyses.statistics.growth.SPLAN import (
+    calculate_fef, calculate_growth_potential,
+    calculate_management_strategy, calculate_probability
+)
 
 sys.path.insert(
     0,
     dirname(dirname(dirname(__file__))) + "/ramstk",
 )
 
-import unittest
-from nose.plugins.attrib import attr
-import numpy as np
 
-from analyses.statistics.growth.SPLAN import calculate_fef, \
-                                             calculate_growth_potential, \
-                                             calculate_management_strategy, \
-                                             calculate_probability
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'

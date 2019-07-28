@@ -37,24 +37,29 @@ and models.
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Standard Library Imports
 import sys
-from os.path import dirname
+import unittest
+from collections import OrderedDict
 from functools import reduce
+from os.path import dirname
+
+# Third Party Imports
+import numpy as np
+from nose.plugins.attrib import attr
+
+# RAMSTK Package Imports
+import dao.DAO as _dao
+from analyses.survival.MCF import *
+from survival.Record import Model as Record
 
 sys.path.insert(
     0,
     dirname(dirname(dirname(__file__))) + "/ramstk",
 )
 
-from collections import OrderedDict
 
-import unittest
-from nose.plugins.attrib import attr
-import numpy as np
 
-import dao.DAO as _dao
-from survival.Record import Model as Record
-from analyses.survival.MCF import *
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'

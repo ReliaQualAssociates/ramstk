@@ -41,20 +41,24 @@ __copyright__ = 'Copyright 2015 Doyle "weibullguy" Rowland'
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import unittest
-from nose.plugins.attrib import attr
-import numpy as np
-
+# Standard Library Imports
 import sys
+import unittest
 from os.path import dirname
+
+# Third Party Imports
+import numpy as np
+from nose.plugins.attrib import attr
+
+# RAMSTK Package Imports
+import dao.DAO as _dao
+from analyses.statistics.NHPP import *
 
 sys.path.insert(
     0,
     dirname(dirname(dirname(__file__))) + "/ramstk",
 )
 
-import dao.DAO as _dao
-from analyses.statistics.NHPP import *
 
 
 class TestNHPP(unittest.TestCase):

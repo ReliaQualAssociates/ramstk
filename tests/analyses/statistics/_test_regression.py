@@ -36,20 +36,26 @@ This is the test class for testing regression module algorithms and models.
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Standard Library Imports
 import sys
+import unittest
 from os.path import dirname
+
+# Third Party Imports
+import numpy as np
+from nose.plugins.attrib import attr
+
+# RAMSTK Package Imports
+from analyses.statistics.Regression import (
+    adjusted_rank, bernard_ranks, regression
+)
 
 sys.path.insert(
     0,
     dirname(dirname(dirname(__file__))) + "/ramstk",
 )
 
-import unittest
-from nose.plugins.attrib import attr
-import numpy as np
 
-from analyses.statistics.Regression import adjusted_rank, bernard_ranks, \
-                                           regression
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'

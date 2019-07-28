@@ -1,26 +1,18 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.statistics.Bounds.py is part of The RAMSTK Project
+#       ramstk.analyses.statistics.bounds.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Functions for performing calculations associated with statistical bounds."""
 
-# Add NLS support.
-import gettext
-
-# Import mathematical functions.
+# Standard Library Imports
 from math import exp, log, sqrt
-import numpy as np  # pylint: disable=E0401
-from numpy.linalg import inv  # pylint: disable=E0401
-from scipy.stats import chi2, norm  # pylint: disable=E0401,E0611
 
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Doyle "weibullguy" Rowland'
-
-_ = gettext.gettext
+# Third Party Imports
+import numpy as np
+from numpy.linalg import inv
+from scipy.stats import chi2, norm
 
 
 def calculate_variance_covariance(n_failures, max_time, alpha, beta):
@@ -83,18 +75,18 @@ def calculate_nhpp_mean_variance(n_failures, max_time, alpha, beta, metric=1):
                                                beta)
 
     if metric == 1:
-        _del_mean_beta = (-(1.0 / alpha) * max_time**(1.0 - beta) *
-                          log(max_time))
+        _del_mean_beta = (-(1.0 / alpha) * max_time**(1.0 - beta)
+                          * log(max_time))
         _del_mean_alpha = -(1.0 / alpha**2.0) * max_time**(1.0 - beta)
     elif metric == 2:
-        _del_mean_beta = (-(1.0 / (alpha * beta**2.0)) *
-                          max_time**(1.0 - beta) - (1.0 / (alpha * beta)) *
-                          max_time**(1.0 - beta) * log(max_time))
+        _del_mean_beta = (
+            -(1.0 / (alpha * beta**2.0)) * max_time**(1.0 - beta) -
+            (1.0 / (alpha * beta)) * max_time**(1.0 - beta) * log(max_time))
         _del_mean_alpha = -(1.0 / (alpha**2.0 * beta)) * max_time**(1.0 - beta)
 
-    _variance = (_del_mean_beta**2.0 * _var_covar[1][1] +
-                 _del_mean_alpha**2.0 * _var_covar[0][0] +
-                 2.0 * _del_mean_beta * _del_mean_alpha * _var_covar[0][1])
+    _variance = (_del_mean_beta**2.0 * _var_covar[1][1]
+                 + _del_mean_alpha**2.0 * _var_covar[0][0]
+                 + 2.0 * _del_mean_beta * _del_mean_alpha * _var_covar[0][1])
 
     return _variance
 
@@ -211,15 +203,15 @@ def calculate_crow_bounds(n_failures,
     return _crow_l, _crow_u
 
 
-def calculate_beta_bounds(a, m, b, alpha):  # pylint: disable=C0103
+def do_calculate_beta_bounds(minimum, likely, maximum, alpha):
     """
     Calculate the mean, standard error, and bounds of the beta distribution.
 
     These are the project management estimators, not exact calculations.
 
-    :param float a: the minimum expected value.
-    :param float m: most likely value.
-    :param float b: the maximum expected value.
+    :param float minimum: the minimum expected value.
+    :param float likely: most likely value.
+    :param float maximum: the maximum expected value.
     :param float alpha: the desired confidence level.
     :return: _meanll, _mean, _meanul, _sd; the calculated mean, bounds, and
                                            standard error.
@@ -230,8 +222,8 @@ def calculate_beta_bounds(a, m, b, alpha):  # pylint: disable=C0103
     else:
         _z_norm = norm.ppf(1.0 - ((1.0 - alpha) / 2.0))
 
-    _mean = (a + 4.0 * m + b) / 6.0
-    _sd = (b - a) / 6.0
+    _mean = (minimum + 4.0 * likely + maximum) / 6.0
+    _sd = (maximum - minimum) / 6.0
 
     _meanll = _mean - _z_norm * _sd
     _meanul = _mean + _z_norm * _sd

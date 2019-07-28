@@ -4,6 +4,7 @@ This is the test class for testing the statistical distributions module
 algorithms and models.
 """
 
+# Standard Library Imports
 # -*- coding: utf-8 -*-
 #
 #       tests.statistics.TestDistributions.py is part of The RAMSTK Project
@@ -37,22 +38,26 @@ algorithms and models.
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import sys
+import unittest
 from os.path import dirname
+
+# Third Party Imports
+import numpy as np
+from nose.plugins.attrib import attr
+
+# RAMSTK Package Imports
+from analyses.statistics.Distributions import (
+    Exponential, Gaussian, LogNormal, Weibull, time_between_failures
+)
+from survival.Record import Model as Record
 
 sys.path.insert(
     0,
     dirname(dirname(dirname(__file__))) + "/ramstk",
 )
 
-import unittest
-from nose.plugins.attrib import attr
 
-import numpy as np
 
-from analyses.statistics.Distributions import Exponential, Gaussian, \
-                                              LogNormal, Weibull, \
-                                              time_between_failures
-from survival.Record import Model as Record
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'

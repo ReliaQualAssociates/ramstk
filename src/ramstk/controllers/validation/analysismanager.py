@@ -7,10 +7,6 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Controller Package analysis manager."""
 
-# Standard Library Imports
-from collections import OrderedDict
-from math import exp
-
 # Third Party Imports
 from pubsub import pub
 
@@ -54,3 +50,24 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(self.on_get_all_attributes,
                       'succeed_get_all_validation_attributes')
         pub.subscribe(self.on_get_tree, 'succeed_get_validation_tree')
+        pub.subscribe(self.do_calculate_tasks,
+                      'request_calculate_validation_tasks')
+
+    def do_calculate_tasks(self):
+        """
+        Calculate mean, standard error, and bounds on the task time and cost.
+
+        These values are calculated assuming a beta distribution (typical
+        project management assumption).
+
+        :return: None
+        :rtype: None
+        """
+        # Retrieve all the attributes from all the RAMSTK data tables for the
+        # requested function.  We need to build a comprehensive dict of
+        # attributes to pass to the various analysis methods/functions.
+        pub.sendMessage('request_get_validation_tree')
+
+        for _node in self._tree.all_nodes()[1:]:
+            _node.data['validation'].calculate_task_time()
+            _node.data['validation'].calculate_task_cost()

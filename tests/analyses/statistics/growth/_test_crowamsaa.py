@@ -36,29 +36,29 @@ This is the test class for testing Crow-AMSAA model algorithms.
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Standard Library Imports
 import sys
+import unittest
 from os.path import dirname
+
+# Third Party Imports
+from nose.plugins.attrib import attr
+
+# RAMSTK Package Imports
+from analyses.statistics.growth.CrowAMSAA import (
+    calculate_average_mtbf, calculate_cramer_vonmises,
+    calculate_crow_amsaa_chi_square, calculate_crow_amsaa_mean,
+    calculate_crow_amsaa_parameters, calculate_final_mtbf,
+    calculate_growth_rate, calculate_initial_mtbf, calculate_n_failures,
+    calculate_t1, calculate_total_time, cramer_vonmises_critical_value
+)
 
 sys.path.insert(
     0,
     dirname(dirname(dirname(__file__))) + "/ramstk",
 )
 
-import unittest
-from nose.plugins.attrib import attr
 
-from analyses.statistics.growth.CrowAMSAA import calculate_average_mtbf, \
-                                                 calculate_cramer_vonmises, \
-                                                 calculate_crow_amsaa_chi_square, \
-                                                 calculate_crow_amsaa_mean, \
-                                                 calculate_crow_amsaa_parameters, \
-                                                 calculate_final_mtbf, \
-                                                 calculate_growth_rate, \
-                                                 calculate_initial_mtbf, \
-                                                 calculate_n_failures, \
-                                                 calculate_t1, \
-                                                 calculate_total_time, \
-                                                 cramer_vonmises_critical_value
 
 __author__ = 'Doyle Rowland'
 __email__ = 'doyle.rowland@reliaqual.com'
