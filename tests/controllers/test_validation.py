@@ -385,7 +385,7 @@ class TestAnalysisMethods():
         _validation.confidence = 95.0
         DATAMGR.do_update(1)
 
-        pub.sendMessage('request_calculate_validation_tasks', node_id=1)
+        pub.sendMessage('request_calculate_validation_tasks')
 
         assert DUT._tree.get_node(
             1).data['validation'].time_ll == pytest.approx(11.86684674)

@@ -78,8 +78,12 @@ Controllers Package
 .. toctree::
 
     api/controllers/metaclasses
+    api/controllers/function
     api/controllers/hardware
+    api/controllers/requirement
     api/controllers/revision
+    api/controllers/stakeholder
+    api/controllers/validation
 
 Views Package
 -------------
