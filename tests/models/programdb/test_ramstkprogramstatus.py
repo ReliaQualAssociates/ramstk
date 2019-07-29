@@ -12,7 +12,7 @@ from datetime import date
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKProgramStatus import RAMSTKProgramStatus
+from ramstk.models.programdb import RAMSTKProgramStatus
 
 ATTRIBUTES = {
     'cost_remaining': 0.0,

@@ -6,13 +6,17 @@
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Package Data Model."""
 
+# Standard Library Imports
+from datetime import date
+
 # Third Party Imports
 from pubsub import pub
+from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import RAMSTKValidation
+from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
 
 
 class DataManager(RAMSTKDataManager):
@@ -48,6 +52,12 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.status_tree = Tree()
+        self.status_tree.create_node(
+            tag='program_status',
+            identifier=self._root,
+            parent=None,
+        )
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_select_all, 'succeed_select_revision')
@@ -65,6 +75,8 @@ class DataManager(RAMSTKDataManager):
                       'request_set_validation_attributes')
         pub.subscribe(self.do_set_all_attributes,
                       'request_set_all_validation_attributes')
+        pub.subscribe(self._do_update_program_status,
+                      'succeed_calculate_tasks')
 
     def _do_delete(self, node_id):
         """
@@ -89,6 +101,77 @@ class DataManager(RAMSTKDataManager):
             _error_msg = ("Attempted to delete non-existent validation ID "
                           "{0:s}.").format(str(node_id))
             pub.sendMessage('fail_delete_validation', error_msg=_error_msg)
+
+    def _do_insert_status(self):  # pylint: disable=arguments-differ
+        """
+        Add a new program status record.
+
+        :return: _status; the newly inserted RAMSTKProgramStatus record.
+        :rtype: :class:`ramstk.models.programdb.RAMSTKProgramStatus`
+        """
+        _status = RAMSTKProgramStatus(revision_id=self._revision_id)
+
+        _error_code, _msg = self.dao.db_add([_status], None)
+
+        _data_package = {'status': _status}
+        self.status_tree.create_node(tag=_status.status_id,
+                                     identifier=_status.date_status,
+                                     parent=self._root,
+                                     data=_data_package)
+
+        return _status
+
+    def _do_select_all_status_tree(self):
+        """
+        Retrieve all the status updates from the RAMSTK Program database.
+
+        :return: None
+        :rtype: None
+        """
+        for _node in self.status_tree.children(self.status_tree.root):
+            self.status_tree.remove_node(_node.identifier)
+
+        for _status in self.dao.session.query(RAMSTKProgramStatus).filter(
+                RAMSTKProgramStatus.revision_id == self._revision_id).all():
+
+            _data_package = {'status': _status}
+
+            self.status_tree.create_node(tag=_status.status_id,
+                                         identifier=_status.date_status,
+                                         parent=self._root,
+                                         data=_data_package)
+
+    def _do_update_program_status(self, cost_remaining, time_remaining):
+        """
+        Update the remaining cost and time of the selected program.
+
+        .. note:: This method will always update the status for the current
+            day.  If no status record exists for the current day, it will
+            create one.
+
+        :param float cost_remaining: the calculated remaining cost of the
+            program.
+        :param float time_remaining: the calculate remaining time to completion
+            of the program.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _status = self.status_tree.get_node(date.today()).data['status']
+        except AttributeError:
+            _status = self._do_insert_status()
+
+        _status.cost_remaining = cost_remaining
+        _status.time_remaining = time_remaining
+
+        self.dao.session.add(_status)
+        _error_code, _error_msg = self.dao.db_update()
+
+        if _error_code == 0:
+            pub.sendMessage('succeed_update_program_status',
+                            node_id=_status.date_status)
+        else:
+            pub.sendMessage('fail_update_update_program', error_msg=_error_msg)
 
     def do_get_all_attributes(self, node_id):
         """
@@ -188,6 +271,8 @@ class DataManager(RAMSTKDataManager):
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage('succeed_retrieve_validation', tree=self.tree)
+
+        self._do_select_all_status_tree()
 
     def do_set_all_attributes(self, attributes):
         """
