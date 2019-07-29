@@ -9,7 +9,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKMatrix import RAMSTKMatrix
+from ramstk.models.programdb import RAMSTKMatrix
 
 ATTRIBUTES = {
     'revision_id': 1,

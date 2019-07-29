@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKDesignElectric import RAMSTKDesignElectric
+from ramstk.models.programdb import RAMSTKDesignElectric
 
 ATTRIBUTES = {
     'voltage_ac_operating': 0.0,

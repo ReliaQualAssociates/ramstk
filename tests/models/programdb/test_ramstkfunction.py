@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKFunction import RAMSTKFunction
+from ramstk.models.programdb import RAMSTKFunction
 
 ATTRIBUTES = {
     'availability_logistics': 1.0,

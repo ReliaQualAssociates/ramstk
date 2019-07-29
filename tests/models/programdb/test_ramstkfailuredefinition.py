@@ -10,9 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKFailureDefinition import (
-    RAMSTKFailureDefinition
-)
+from ramstk.models.programdb import RAMSTKFailureDefinition
 
 ATTRIBUTES = {
     'definition': b'Failure Definition'

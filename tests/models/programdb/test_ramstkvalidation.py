@@ -12,7 +12,7 @@ from datetime import date, timedelta
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKValidation import RAMSTKValidation
+from ramstk.models.programdb import RAMSTKValidation
 
 ATTRIBUTES = {
     'acceptable_maximum': 0.0,

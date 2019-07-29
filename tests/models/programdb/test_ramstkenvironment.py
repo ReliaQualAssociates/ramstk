@@ -10,7 +10,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.models.programdb.RAMSTKEnvironment import RAMSTKEnvironment
+from ramstk.models.programdb import RAMSTKEnvironment
 
 ATTRIBUTES = {
     'high_dwell_time': 0.0,
