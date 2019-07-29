@@ -19,15 +19,12 @@ from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import (
     RAMSTKNSWC, RAMSTKAction, RAMSTKAllocation, RAMSTKCause, RAMSTKControl,
     RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKEnvironment,
-    RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKGrowthTest, RAMSTKHardware,
-    RAMSTKHazardAnalysis, RAMSTKIncident, RAMSTKIncidentAction,
-    RAMSTKIncidentDetail, RAMSTKMatrix, RAMSTKMechanism, RAMSTKMilHdbkF,
+    RAMSTKFailureDefinition, RAMSTKFunction, RAMSTKHardware,
+    RAMSTKHazardAnalysis, RAMSTKMatrix, RAMSTKMechanism, RAMSTKMilHdbkF,
     RAMSTKMission, RAMSTKMissionPhase, RAMSTKMode, RAMSTKOpLoad,
-    RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus, RAMSTKReliability,
-    RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem, RAMSTKSoftware,
-    RAMSTKSoftwareDevelopment, RAMSTKSoftwareReview, RAMSTKSoftwareTest,
-    RAMSTKStakeholder, RAMSTKSurvival, RAMSTKSurvivalData, RAMSTKTest,
-    RAMSTKTestMethod, RAMSTKUnits, RAMSTKValidation
+    RAMSTKOpStress, RAMSTKProgramInfo, RAMSTKProgramStatus,
+    RAMSTKReliability, RAMSTKRequirement, RAMSTKRevision, RAMSTKSimilarItem,
+    RAMSTKStakeholder, RAMSTKTestMethod, RAMSTKValidation
 )
 
 # RAMSTK Local Imports
@@ -283,12 +280,8 @@ def do_make_programdb_tables(engine):
     RAMSTKEnvironment.__table__.create(bind=engine)
     RAMSTKFailureDefinition.__table__.create(bind=engine)
     RAMSTKFunction.__table__.create(bind=engine)
-    RAMSTKGrowthTest.__table__.create(bind=engine)
     RAMSTKHardware.__table__.create(bind=engine)
     RAMSTKHazardAnalysis.__table__.create(bind=engine)
-    RAMSTKIncident.__table__.create(bind=engine)
-    RAMSTKIncidentAction.__table__.create(bind=engine)
-    RAMSTKIncidentDetail.__table__.create(bind=engine)
     RAMSTKLoadHistory.__table__.create(bind=engine)
     RAMSTKMatrix.__table__.create(bind=engine)
     RAMSTKMechanism.__table__.create(bind=engine)
@@ -305,16 +298,8 @@ def do_make_programdb_tables(engine):
     RAMSTKRequirement.__table__.create(bind=engine)
     RAMSTKRevision.__table__.create(bind=engine)
     RAMSTKSimilarItem.__table__.create(bind=engine)
-    RAMSTKSoftware.__table__.create(bind=engine)
-    RAMSTKSoftwareDevelopment.__table__.create(bind=engine)
-    RAMSTKSoftwareReview.__table__.create(bind=engine)
-    RAMSTKSoftwareTest.__table__.create(bind=engine)
     RAMSTKStakeholder.__table__.create(bind=engine)
-    RAMSTKSurvival.__table__.create(bind=engine)
-    RAMSTKSurvivalData.__table__.create(bind=engine)
-    RAMSTKTest.__table__.create(bind=engine)
     RAMSTKTestMethod.__table__.create(bind=engine)
-    RAMSTKUnits.__table__.create(bind=engine)
     RAMSTKValidation.__table__.create(bind=engine)
 
 

@@ -16,7 +16,7 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk import RAMSTK_BASE
-from ramstk.statistics import calculate_beta_bounds
+from ramstk.analyses.statistics import do_calculate_beta_bounds
 from ramstk.Utilities import none_to_default
 
 
@@ -217,26 +217,14 @@ class RAMSTKValidation(RAMSTK_BASE):
         These values are calculated assuming a beta distribution (typical
         project management assumption).
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        (
-            self.time_ll,
-            self.time_mean,
-            self.time_ul,
-            _sd,
-        ) = calculate_beta_bounds(
-            self.time_minimum,
-            self.time_average,
-            self.time_maximum,
-            self.confidence,
-        )
+        (self.time_ll, self.time_mean, self.time_ul,
+         _sd) = do_calculate_beta_bounds(self.time_minimum, self.time_average,
+                                         self.time_maximum, self.confidence)
 
         self.time_variance = _sd**2.0
-
-        return _return
 
     def calculate_task_cost(self):
         """
@@ -245,23 +233,11 @@ class RAMSTKValidation(RAMSTK_BASE):
         These values are calculated assuming a beta distribution (typical
         project management assumption).
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: None
+        :rtype: None
         """
-        _return = False
-
-        (
-            self.cost_ll,
-            self.cost_mean,
-            self.cost_ul,
-            _sd,
-        ) = calculate_beta_bounds(
-            self.cost_minimum,
-            self.cost_average,
-            self.cost_maximum,
-            self.confidence,
-        )
+        (self.cost_ll, self.cost_mean, self.cost_ul,
+         _sd) = do_calculate_beta_bounds(self.cost_minimum, self.cost_average,
+                                         self.cost_maximum, self.confidence)
 
         self.cost_variance = _sd**2.0
-
-        return _return

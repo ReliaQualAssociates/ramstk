@@ -12,7 +12,7 @@ GH_PAGES_SOURCES = . Makefile
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile
+.PHONY: help Makefile livehtml
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
@@ -31,3 +31,6 @@ gh-pages:
 	rm -rf $(GH_PAGES_SOURCES) _build
 	git add -A
 	git ci -m "Generated gh-pages for `git log master -1 --pretty=short --abbrev-commit`" && git push origin gh-pages ; git checkout develop
+
+livehtml: html
+	livereload $(BUILDDIR)/html

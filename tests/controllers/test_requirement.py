@@ -1,4 +1,4 @@
-# pylint: disable=protected-access, no-self-use
+# pylint: disable=protected-access, no-self-use, missing-docstring
 # -*- coding: utf-8 -*-
 #
 #       tests.controllers.test_requirement.py is part of The RAMSTK Project
@@ -15,7 +15,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers.requirement import dmRequirement, mmRequirement
 from ramstk.dao import DAO
-from ramstk.models.programdb import RAMSTKRequirement, RAMSTKStakeholder
+from ramstk.models.programdb import RAMSTKRequirement
 
 ATTRIBUTES = {
     'availability_logistics': 0.9986,
@@ -62,7 +62,7 @@ class TestCreateControllers():
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all,
-                                'request_retrieve_requirements')
+                                'succeed_select_revision')
         assert pub.isSubscribed(DUT._do_delete_requirement,
                                 'request_delete_requirement')
         assert pub.isSubscribed(DUT.do_insert_requirement,
