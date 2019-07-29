@@ -1,7 +1,8 @@
 # pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_meter.py is part of The RAMSTK Project
+#       tests.analyses.milhdbk217f.models.test_meter.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f.models import Meter
+from ramstk.analyses.milhdbk217f import meter
 
 ATTRIBUTES = {
     'category_id': 9,
@@ -36,7 +37,7 @@ ATTRIBUTES = {
 def test_get_part_count_lambda_b(subcategory_id, type_id,
                                  environment_active_id):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = Meter.get_part_count_lambda_b(subcategory_id, type_id,
+    _lambda_b = meter.get_part_count_lambda_b(subcategory_id, type_id,
                                               environment_active_id)
 
     assert isinstance(_lambda_b, float)
@@ -47,7 +48,7 @@ def test_get_part_count_lambda_b(subcategory_id, type_id,
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Meter.get_part_count_lambda_b(47, 1, 4)
+        _lambda_b = meter.get_part_count_lambda_b(47, 1, 4)
 
 
 @pytest.mark.unit
@@ -55,7 +56,7 @@ def test_get_part_count_lambda_b_no_subcategory():
 def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Meter.get_part_count_lambda_b(1, 12, 4)
+        _lambda_b = meter.get_part_count_lambda_b(1, 12, 4)
 
 
 @pytest.mark.unit
@@ -63,14 +64,14 @@ def test_get_part_count_lambda_b_no_type():
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown subcategory ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Meter.get_part_count_lambda_b(1, 1, 24)
+        _lambda_b = meter.get_part_count_lambda_b(1, 1, 24)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_count():
     """calculate_part_count() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = Meter.calculate_part_count(**ATTRIBUTES)
+    _lambda_b = meter.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == 105.0
@@ -82,7 +83,7 @@ def test_calculate_part_count():
 @pytest.mark.parametrize("type_id", [1, 2, 3])
 def test_get_part_stress_lambda_b(subcategory_id, type_id):
     """get_part_stress_lambda_b() should return a float value for the part stress base hazard rate on success."""
-    _lambda_b = Meter.get_part_stress_lambda_b(subcategory_id, type_id)
+    _lambda_b = meter.get_part_stress_lambda_b(subcategory_id, type_id)
 
     assert isinstance(_lambda_b, float)
     if subcategory_id == 1:
@@ -96,14 +97,14 @@ def test_get_part_stress_lambda_b(subcategory_id, type_id):
 def test_get_part_stress_lambda_b_no_type():
     """get_part_stress_lambda_b() should raise an IndexError when passed an unknown type ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Meter.get_part_stress_lambda_b(1, 4)
+        _lambda_b = meter.get_part_stress_lambda_b(1, 4)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_part_stress_lambda_b_no_subcategory():
     """get_part_stress_lambda_b() should return 0.0 when passed an unknown subcategory ID."""
-    _lambda_b = Meter.get_part_stress_lambda_b(10, 1)
+    _lambda_b = meter.get_part_stress_lambda_b(10, 1)
 
     assert _lambda_b == 0.0
 
@@ -113,7 +114,7 @@ def test_get_part_stress_lambda_b_no_subcategory():
 @pytest.mark.parametrize("temperature_active", [25.0, 40.0, 55.0, 70.0])
 def test_get_temperature_stress_factor(temperature_active):
     """get_temperature_stress_factor() should return a float value for piT on success."""
-    _pi_t = Meter.get_temperature_stress_factor(temperature_active, 75.0)
+    _pi_t = meter.get_temperature_stress_factor(temperature_active, 75.0)
 
     assert isinstance(_pi_t, float)
     assert _pi_t == {
@@ -129,7 +130,7 @@ def test_get_temperature_stress_factor(temperature_active):
 def test_get_temperature_stress_factor_zero_max_rated():
     """get_temperature_stress_factor() should raise a ZeroDivisionError when passed a maximum rated temperature of 0.0."""
     with pytest.raises(ZeroDivisionError):
-        _pi_t = Meter.get_temperature_stress_factor(35.0, 0.0)
+        _pi_t = meter.get_temperature_stress_factor(35.0, 0.0)
 
 
 @pytest.mark.unit
@@ -137,17 +138,17 @@ def test_get_temperature_stress_factor_zero_max_rated():
 def test_get_temperature_stress_factor_wrong_type():
     """get_temperature_stress_factor() should raise a TypeError when passed a string for either temperature."""
     with pytest.raises(TypeError):
-        _pi_t = Meter.get_temperature_stress_factor('35.0', 75.0)
+        _pi_t = meter.get_temperature_stress_factor('35.0', 75.0)
 
     with pytest.raises(TypeError):
-        _pi_t = Meter.get_temperature_stress_factor(35.0, '75.0')
+        _pi_t = meter.get_temperature_stress_factor(35.0, '75.0')
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_elapsed_time_meter():
     """calculate_part_stress() should return a dictionary of updated values on success."""
-    _attributes = Meter.calculate_part_stress(**ATTRIBUTES)
+    _attributes = meter.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == 30.0
@@ -159,7 +160,7 @@ def test_calculate_part_stress_elapsed_time_meter():
 def test_calculate_part_stress_panel_meter():
     """calculate_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['subcategory_id'] = 2
-    _attributes = Meter.calculate_part_stress(**ATTRIBUTES)
+    _attributes = meter.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx(0.09)

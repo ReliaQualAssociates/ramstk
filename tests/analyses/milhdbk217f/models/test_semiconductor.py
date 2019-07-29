@@ -1,8 +1,8 @@
 # pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_semiconductor.py is part of The RAMSTK
-#       Project
+#       tests.analyses.milhdbk217f.models.test_semiconductor.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -12,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f.models import Semiconductor
+from ramstk.analyses.milhdbk217f.models import semiconductor
 
 ATTRIBUTES = {
     'category_id': 2,
@@ -45,7 +45,7 @@ ATTRIBUTES = {
 @pytest.mark.parametrize("type_id", [1, 5])
 def test_get_part_count_quality_factor(subcategory_id, type_id):
     """get_part_count_quality_factor() should return a float value for piQ on success."""
-    _pi_q = Semiconductor.get_part_count_quality_factor(
+    _pi_q = semiconductor.get_part_count_quality_factor(
         subcategory_id, 3, type_id)
 
     assert isinstance(_pi_q, float)
@@ -62,7 +62,7 @@ def test_get_part_count_quality_factor(subcategory_id, type_id):
 def test_get_part_count_quality_factor_no_quality():
     """get_part_count_quality_factor() should raise an IndexError when passed an unknown quality ID."""
     with pytest.raises(IndexError):
-        _pi_q = Semiconductor.get_part_count_quality_factor(2, 31, 1)
+        _pi_q = semiconductor.get_part_count_quality_factor(2, 31, 1)
 
 
 @pytest.mark.unit
@@ -70,7 +70,7 @@ def test_get_part_count_quality_factor_no_quality():
 def test_get_part_count_quality_factor_no_subcategory():
     """get_part_count_quality_factor() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_q = Semiconductor.get_part_count_quality_factor(21, 1, 1)
+        _pi_q = semiconductor.get_part_count_quality_factor(21, 1, 1)
 
 
 @pytest.mark.unit
@@ -78,7 +78,7 @@ def test_get_part_count_quality_factor_no_subcategory():
 @pytest.mark.parametrize("subcategory_id", [1, 4])
 def test_get_part_count_lambda_b(subcategory_id):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = Semiconductor.get_part_count_lambda_b(subcategory_id, 3, 1)
+    _lambda_b = semiconductor.get_part_count_lambda_b(subcategory_id, 3, 1)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == {1: 0.049, 4: 0.16}[subcategory_id]
@@ -89,7 +89,7 @@ def test_get_part_count_lambda_b(subcategory_id):
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError if passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Semiconductor.get_part_count_lambda_b(1, 32, 1)
+        _lambda_b = semiconductor.get_part_count_lambda_b(1, 32, 1)
 
 
 @pytest.mark.unit
@@ -97,7 +97,7 @@ def test_get_part_count_lambda_b_no_environment():
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError if passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Semiconductor.get_part_count_lambda_b(47, 3, 1)
+        _lambda_b = semiconductor.get_part_count_lambda_b(47, 3, 1)
 
 
 @pytest.mark.unit
@@ -105,7 +105,7 @@ def test_get_part_count_lambda_b_no_subcategory():
 def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError if passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Semiconductor.get_part_count_lambda_b(1, 2, 31)
+        _lambda_b = semiconductor.get_part_count_lambda_b(1, 2, 31)
 
 
 @pytest.mark.unit
@@ -116,7 +116,7 @@ def test_calculate_part_count(subcategory_id, type_id):
     """calculate_part_count() should return the semiconductor attributes dict with updated values."""
     ATTRIBUTES['subcategory_id'] = subcategory_id
     ATTRIBUTES['type_id'] = type_id
-    _attributes = Semiconductor.calculate_part_count(**ATTRIBUTES)
+    _attributes = semiconductor.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if subcategory_id == 1 and type_id == 1:
@@ -136,7 +136,7 @@ def test_calculate_part_count(subcategory_id, type_id):
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_get_part_stress_quality_factor(subcategory_id):
     """get_part_stress_quality_factor() should return a float value for piQ on success."""
-    _pi_q = Semiconductor.get_part_stress_quality_factor(subcategory_id, 3, 1)
+    _pi_q = semiconductor.get_part_stress_quality_factor(subcategory_id, 3, 1)
 
     assert isinstance(_pi_q, float)
     assert _pi_q == {1: 2.4, 2: 5.0}[subcategory_id]
@@ -147,7 +147,7 @@ def test_get_part_stress_quality_factor(subcategory_id):
 def test_get_part_stress_quality_factor_no_quality():
     """get_part_stress_quality_factor() should raise an IndexError when passed an unknown quality ID."""
     with pytest.raises(IndexError):
-        _pi_q = Semiconductor.get_part_stress_quality_factor(2, 31, 1)
+        _pi_q = semiconductor.get_part_stress_quality_factor(2, 31, 1)
 
 
 @pytest.mark.unit
@@ -155,7 +155,7 @@ def test_get_part_stress_quality_factor_no_quality():
 def test_get_part_stress_quality_factor_no_subcategory():
     """get_part_stress_quality_factor() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_q = Semiconductor.get_part_stress_quality_factor(21, 1, 1)
+        _pi_q = semiconductor.get_part_stress_quality_factor(21, 1, 1)
 
 
 @pytest.mark.unit
@@ -163,7 +163,7 @@ def test_get_part_stress_quality_factor_no_subcategory():
 def test_get_part_stress_quality_factor_no_type():
     """get_part_stress_quality_factor() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _pi_q = Semiconductor.get_part_stress_quality_factor(2, 1, 21)
+        _pi_q = semiconductor.get_part_stress_quality_factor(2, 1, 21)
 
 
 @pytest.mark.unit
@@ -174,7 +174,7 @@ def test_get_part_stress_quality_factor_no_type():
 def test_calculate_part_stress_lambda_b(subcategory_id, frequency_operating,
                                         application_id):
     """calculate_part_stress_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = Semiconductor.calculate_part_stress_lambda_b(
+    _lambda_b = semiconductor.calculate_part_stress_lambda_b(
         subcategory_id, frequency_operating, 0.05, application_id, 8, 1)
 
     assert isinstance(_lambda_b, float)
@@ -199,7 +199,7 @@ def test_calculate_part_stress_lambda_b(subcategory_id, frequency_operating,
 def test_calculate_part_stress_lambda_b_no_type():
     """calculate_part_stress_lambda_b() should raise an IndexError if passed an unknown type ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Semiconductor.calculate_part_stress_lambda_b(
+        _lambda_b = semiconductor.calculate_part_stress_lambda_b(
             1, 1.5, 0.05, 1, 8, 11)
 
 
@@ -208,7 +208,7 @@ def test_calculate_part_stress_lambda_b_no_type():
 def test_calculate_part_stress_lambda_b_no_subcategory():
     """calculate_part_stress_lambda_b() should raise a KeyError if passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Semiconductor.calculate_part_stress_lambda_b(
+        _lambda_b = semiconductor.calculate_part_stress_lambda_b(
             2300, 1.5, 0.05, 1, 8, 1)
 
 
@@ -216,7 +216,7 @@ def test_calculate_part_stress_lambda_b_no_subcategory():
 @pytest.mark.calculation
 def test_calculate_junction_temperature():
     """calculate_junction_temperature() should return a float value for the junction temperature on success."""
-    __, __, _temperature_junction = Semiconductor.calculate_junction_temperature(
+    __, __, _temperature_junction = semiconductor.calculate_junction_temperature(
         38.2, 1, 105.0, 2, 0.05)
 
     assert isinstance(_temperature_junction, float)
@@ -227,7 +227,7 @@ def test_calculate_junction_temperature():
 @pytest.mark.calculation
 def test_calculate_junction_temperature_zero_case_temp():
     """calculate_junction_temperature() should return a float value for the case temperature and the junction temperature when passed a case temperature <=0.0."""
-    _temperature_case, __, _temperature_junction = Semiconductor.calculate_junction_temperature(
+    _temperature_case, __, _temperature_junction = semiconductor.calculate_junction_temperature(
         -38.2, 1, 105.0, 2, 0.05)
 
     assert isinstance(_temperature_case, float)
@@ -240,7 +240,7 @@ def test_calculate_junction_temperature_zero_case_temp():
 @pytest.mark.calculation
 def test_calculate_junction_temperature_zero_theta_jc():
     """calculate_junction_temperature() should return a float value for the thetaJC and the junction temperature when passed a theta_jc <=0.0."""
-    __, _theta_jc, _temperature_junction = Semiconductor.calculate_junction_temperature(
+    __, _theta_jc, _temperature_junction = semiconductor.calculate_junction_temperature(
         38.2, 1, 0.0, 2, 0.05)
 
     assert isinstance(_theta_jc, float)
@@ -254,7 +254,7 @@ def test_calculate_junction_temperature_zero_theta_jc():
 def test_calculate_junction_temperature_zero_case_temp_no_environment():
     """calculate_junction_temperature() should raise an IndexError when passed a case temperature <=0.0 and an unknown active environment_id."""
     with pytest.raises(IndexError):
-        _temperature_case, __, _temperature_junction = Semiconductor.calculate_junction_temperature(
+        _temperature_case, __, _temperature_junction = semiconductor.calculate_junction_temperature(
             0.0, 31, 105.0, 2, 0.05)
 
 
@@ -263,7 +263,7 @@ def test_calculate_junction_temperature_zero_case_temp_no_environment():
 def test_calculate_junction_temperature_zero_theta_jc_no_package():
     """calculate_junction_temperature() should raise an IndexError when passed a theta_jc <=0.0 and an unknown package ID."""
     with pytest.raises(IndexError):
-        __, _theta_jc, _temperature_junction = Semiconductor.calculate_junction_temperature(
+        __, _theta_jc, _temperature_junction = semiconductor.calculate_junction_temperature(
             38.2, 1, -10.0, 128, 0.05)
 
 
@@ -273,7 +273,7 @@ def test_calculate_junction_temperature_zero_theta_jc_no_package():
 @pytest.mark.parametrize("voltage_ratio", [0.4, 0.8])
 def test_calculate_temperature_factor(subcategory_id, voltage_ratio):
     """calculate_temperature_factor() should return a float value for piT on success."""
-    _pi_t = Semiconductor.calculate_temperature_factor(subcategory_id, 1,
+    _pi_t = semiconductor.calculate_temperature_factor(subcategory_id, 1,
                                                        voltage_ratio, 52.8)
 
     assert isinstance(_pi_t, float)
@@ -292,7 +292,7 @@ def test_calculate_temperature_factor(subcategory_id, voltage_ratio):
 def test_calculate_temperature_factor_no_subcategory():
     """calculate_temperature_factor() should raise a KeyError if passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_t = Semiconductor.calculate_temperature_factor(27, 1, 0.5, 52.8)
+        _pi_t = semiconductor.calculate_temperature_factor(27, 1, 0.5, 52.8)
 
 
 @pytest.mark.unit
@@ -300,7 +300,7 @@ def test_calculate_temperature_factor_no_subcategory():
 def test_calculate_temperature_factor_no_type():
     """calculate_temperature_factor() should raise an IndexError if passed an unknown type ID."""
     with pytest.raises(IndexError):
-        _pi_t = Semiconductor.calculate_temperature_factor(2, 17, 0.5, 52.8)
+        _pi_t = semiconductor.calculate_temperature_factor(2, 17, 0.5, 52.8)
 
 
 @pytest.mark.unit
@@ -309,7 +309,7 @@ def test_calculate_temperature_factor_no_type():
 @pytest.mark.parametrize("application_id", [1, 2])
 def test_calculate_application_factor(subcategory_id, application_id):
     """calculate_application_factor() should return a float value on success."""
-    _pi_a = Semiconductor.calculate_application_factor(subcategory_id,
+    _pi_a = semiconductor.calculate_application_factor(subcategory_id,
                                                        application_id, 65.0)
 
     assert isinstance(_pi_a, float)
@@ -334,7 +334,7 @@ def test_calculate_application_factor(subcategory_id, application_id):
 def test_calculate_application_factor_no_application():
     """calculate_application_factor() should raise an IndexError when passed an unknown application ID."""
     with pytest.raises(IndexError):
-        _pi_a = Semiconductor.calculate_application_factor(3, 11, 65.0)
+        _pi_a = semiconductor.calculate_application_factor(3, 11, 65.0)
 
 
 @pytest.mark.unit
@@ -342,7 +342,7 @@ def test_calculate_application_factor_no_application():
 def test_calculate_application_factor_negative_duty_cycle():
     """calculate_application_factor() should raise a ValueError when passed a negative value for the duty cycle."""
     with pytest.raises(ValueError):
-        _pi_a = Semiconductor.calculate_application_factor(13, 2, -65.0)
+        _pi_a = semiconductor.calculate_application_factor(13, 2, -65.0)
 
 
 @pytest.mark.unit
@@ -352,7 +352,7 @@ def test_calculate_application_factor_negative_duty_cycle():
 @pytest.mark.parametrize("power_rated", [0.075, 10.0])
 def test_calculate_power_rating_factor(subcategory_id, type_id, power_rated):
     """calculate_power_rating_factor() should return a float value for piR on success."""
-    _pi_r = Semiconductor.calculate_power_rating_factor(
+    _pi_r = semiconductor.calculate_power_rating_factor(
         subcategory_id, type_id, power_rated, 0.125)
 
     assert isinstance(_pi_r, float)
@@ -373,11 +373,11 @@ def test_calculate_power_rating_factor(subcategory_id, type_id, power_rated):
 def test_calculate_power_rating_factor_string_input():
     """calculate_power_rating_factor() should raise a TypeError when passed a string value for rated power or rated current."""
     with pytest.raises(TypeError):
-        _pi_r = Semiconductor.calculate_power_rating_factor(
+        _pi_r = semiconductor.calculate_power_rating_factor(
             2, 4, '10.0', 0.125)
 
     with pytest.raises(TypeError):
-        _pi_r = Semiconductor.calculate_power_rating_factor(
+        _pi_r = semiconductor.calculate_power_rating_factor(
             10, 4, 10.0, '0.125')
 
 
@@ -386,7 +386,7 @@ def test_calculate_power_rating_factor_string_input():
 def test_calculate_power_rating_factor_negative_input():
     """calculate_power_rating_factor() should raise a ValueError when passed a negative value for rated power."""
     with pytest.raises(ValueError):
-        _pi_r = Semiconductor.calculate_power_rating_factor(2, 4, -10.0, 0.125)
+        _pi_r = semiconductor.calculate_power_rating_factor(2, 4, -10.0, 0.125)
 
 
 @pytest.mark.unit
@@ -397,7 +397,7 @@ def test_calculate_power_rating_factor_negative_input():
 def test_calculate_electrical_stress_factor(subcategory_id, type_id,
                                             voltage_ratio):
     """calculate_electrical_stress_factor() should return a float value on success."""
-    _pi_s = Semiconductor.calculate_electrical_stress_factor(
+    _pi_s = semiconductor.calculate_electrical_stress_factor(
         subcategory_id, type_id, voltage_ratio)
 
     assert isinstance(_pi_s, float)
@@ -422,7 +422,7 @@ def test_calculate_part_stress(subcategory_id):
     """calculate_part_stress() should return the semiconductor attributes dict with updated values on success."""
     ATTRIBUTES['subcategory_id'] = subcategory_id
     ATTRIBUTES['type_id'] = 1
-    _attributes = Semiconductor.calculate_part_stress(**ATTRIBUTES)
+    _attributes = semiconductor.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if subcategory_id == 1:
@@ -457,7 +457,7 @@ def test_calculate_part_stress_no_construction():
     ATTRIBUTES['subcategory_id'] = 1
     ATTRIBUTES['construction_id'] = 5
     with pytest.raises(IndexError):
-        _attributes = Semiconductor.calculate_part_stress(**ATTRIBUTES)
+        _attributes = semiconductor.calculate_part_stress(**ATTRIBUTES)
 
 
 @pytest.mark.unit
@@ -468,4 +468,4 @@ def test_calculate_part_stress_no_matching():
     ATTRIBUTES['construction_id'] = 1
     ATTRIBUTES['matching_id'] = 6
     with pytest.raises(IndexError):
-        _attributes = Semiconductor.calculate_part_stress(**ATTRIBUTES)
+        _attributes = semiconductor.calculate_part_stress(**ATTRIBUTES)

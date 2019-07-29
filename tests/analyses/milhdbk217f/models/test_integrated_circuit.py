@@ -1,8 +1,8 @@
 # pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_integrated_circuit.py is part of The
-#       RAMSTK Project
+#       tests.analyses.milhdbk217f.models.test_integrated_circuit.py is part of
+#       The RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -12,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f.models import IntegratedCircuit
+from ramstk.analyses.milhdbk217f import integratedcircuit
 
 ATTRIBUTES = {
     'category_id': 1,
@@ -47,7 +47,7 @@ ATTRIBUTES = {
 @pytest.mark.parametrize("n_elements", [100, 300, 1000, 10000])
 def test_get_part_count_lambda_b_linear(environment_active_id, n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = IntegratedCircuit.get_part_count_lambda_b(
+    _lambda_b = integratedcircuit.get_part_count_lambda_b(
         1, environment_active_id, n_elements)
 
     assert isinstance(_lambda_b, float)
@@ -84,7 +84,7 @@ def test_get_part_count_lambda_b_linear(environment_active_id, n_elements):
 def test_get_part_count_lambda_b_logic(technology_id, environment_active_id,
                                        n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = IntegratedCircuit.get_part_count_lambda_b(
+    _lambda_b = integratedcircuit.get_part_count_lambda_b(
         2, environment_active_id, n_elements, technology_id=technology_id)
 
     assert isinstance(_lambda_b, float)
@@ -106,7 +106,7 @@ def test_get_part_count_lambda_b_pal_pla(technology_id, environment_active_id,
         2: [16000, 64000, 256000, 1000000]
     }[technology_id][n_elements_id]
 
-    _lambda_b = IntegratedCircuit.get_part_count_lambda_b(
+    _lambda_b = integratedcircuit.get_part_count_lambda_b(
         3, environment_active_id, _n_elements, technology_id=technology_id)
 
     assert isinstance(_lambda_b, float)
@@ -123,7 +123,7 @@ def test_get_part_count_lambda_b_pal_pla(technology_id, environment_active_id,
 def test_get_part_count_lambda_b_mup_muc(technology_id, environment_active_id,
                                          n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = IntegratedCircuit.get_part_count_lambda_b(
+    _lambda_b = integratedcircuit.get_part_count_lambda_b(
         4, environment_active_id, n_elements, technology_id=technology_id)
 
     assert isinstance(_lambda_b, float)
@@ -144,7 +144,7 @@ def test_get_part_count_lambda_b_mup_muc(technology_id, environment_active_id,
 def test_get_part_count_lambda_b_rom_sram(subcategory_id, technology_id,
                                           environment_active_id, n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = IntegratedCircuit.get_part_count_lambda_b(
+    _lambda_b = integratedcircuit.get_part_count_lambda_b(
         subcategory_id,
         environment_active_id,
         n_elements,
@@ -167,7 +167,7 @@ def test_get_part_count_lambda_b_rom_sram(subcategory_id, technology_id,
 def test_get_part_count_lambda_b_prom_dram(subcategory_id,
                                            environment_active_id, n_elements):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = IntegratedCircuit.get_part_count_lambda_b(
+    _lambda_b = integratedcircuit.get_part_count_lambda_b(
         subcategory_id, environment_active_id, n_elements, technology_id=2)
 
     assert isinstance(_lambda_b, float)
@@ -188,7 +188,7 @@ def test_get_part_count_lambda_b_gaas(environment_active_id, n_elements_id,
         1: [10, 100],
         2: [1000, 10000]
     }[technology_id][n_elements_id]
-    _lambda_b = IntegratedCircuit.get_part_count_lambda_b(
+    _lambda_b = integratedcircuit.get_part_count_lambda_b(
         9, environment_active_id, _n_elements, technology_id=technology_id)
 
     assert isinstance(_lambda_b, float)
@@ -199,7 +199,7 @@ def test_get_part_count_lambda_b_gaas(environment_active_id, n_elements_id,
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment."""
     with pytest.raises(IndexError):
-        _lambda_b = IntegratedCircuit.get_part_count_lambda_b(1, 22, 300)
+        _lambda_b = integratedcircuit.get_part_count_lambda_b(1, 22, 300)
 
 
 @pytest.mark.unit
@@ -207,7 +207,7 @@ def test_get_part_count_lambda_b_no_environment():
 def test_get_part_count_lambda_b_no_technology():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown technology_id."""
     with pytest.raises(KeyError):
-        _lambda_b = IntegratedCircuit.get_part_count_lambda_b(3,
+        _lambda_b = integratedcircuit.get_part_count_lambda_b(3,
                                                               2,
                                                               300,
                                                               technology_id=4)
@@ -217,7 +217,7 @@ def test_get_part_count_lambda_b_no_technology():
 @pytest.mark.calculation
 def test_calculate_part_count_linear():
     """calculate_part_count() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = IntegratedCircuit.calculate_part_count(**ATTRIBUTES)
+    _lambda_b = integratedcircuit.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == 0.039
@@ -242,7 +242,7 @@ def test_get_die_complexity_factor(subcategory_id, technology_id):
     if subcategory_id != 2 and technology_id == 11:
         technology_id = 2
 
-    _c1 = IntegratedCircuit.get_die_complexity_factor(subcategory_id,
+    _c1 = integratedcircuit.get_die_complexity_factor(subcategory_id,
                                                       technology_id, 1,
                                                       _n_elements)
 
@@ -254,7 +254,7 @@ def test_get_die_complexity_factor(subcategory_id, technology_id):
 def test_get_die_complexity_factor_no_subcategory():
     """get_die_complexity_factor() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _c1 = IntegratedCircuit.get_die_complexity_factor(14, 1, 1, 100)
+        _c1 = integratedcircuit.get_die_complexity_factor(14, 1, 1, 100)
 
 
 @pytest.mark.unit
@@ -262,7 +262,7 @@ def test_get_die_complexity_factor_no_subcategory():
 def test_get_die_complexity_factor_no_technology():
     """get_die_complexity_factor() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _c1 = IntegratedCircuit.get_die_complexity_factor(3, 5, 1, 100)
+        _c1 = integratedcircuit.get_die_complexity_factor(3, 5, 1, 100)
 
 
 @pytest.mark.unit
@@ -270,7 +270,7 @@ def test_get_die_complexity_factor_no_technology():
 def test_get_die_complexity_factor_no_application():
     """get_die_complexity_factor() should raise a KeyError when passed an unknown application ID."""
     with pytest.raises(KeyError):
-        _c1 = IntegratedCircuit.get_die_complexity_factor(9, 1, 10, 100)
+        _c1 = integratedcircuit.get_die_complexity_factor(9, 1, 10, 100)
 
 
 @pytest.mark.unit
@@ -278,7 +278,7 @@ def test_get_die_complexity_factor_no_application():
 def test_get_die_complexity_factor_unknown_n_elements():
     """get_die_complexity_factor() should raise a ValueError when passed an unknown number of elements."""
     with pytest.raises(ValueError):
-        _c1 = IntegratedCircuit.get_die_complexity_factor(1, 1, 1, 10930)
+        _c1 = integratedcircuit.get_die_complexity_factor(1, 1, 1, 10930)
 
 
 @pytest.mark.unit
@@ -289,7 +289,7 @@ def test_get_die_complexity_factor_unknown_n_elements():
 )
 def test_calculate_package_factor(package_id):
     """calculate_package_factor() should return a float value for C2 on success."""
-    _c2 = IntegratedCircuit.calculate_package_factor(package_id, 14)
+    _c2 = integratedcircuit.calculate_package_factor(package_id, 14)
 
     assert isinstance(_c2, float)
     if package_id == 1:
@@ -308,7 +308,7 @@ def test_calculate_package_factor(package_id):
 @pytest.mark.calculation
 def test_calculate_junction_temperature():
     """calculate_junction_temperature() should return a float value for Tj on success."""
-    _t_j = IntegratedCircuit.calculate_junction_temperature(48.2, 0.038, 125.0)
+    _t_j = integratedcircuit.calculate_junction_temperature(48.2, 0.038, 125.0)
 
     assert isinstance(_t_j, float)
     assert _t_j == 52.95
@@ -319,7 +319,7 @@ def test_calculate_junction_temperature():
 @pytest.mark.parametrize("subcategory_id", [1, 2, 9])
 def test_calculate_temperature_factor(subcategory_id):
     """calculate_temperature_factor() should return a float value for piT on success."""
-    _pi_t = IntegratedCircuit.calculate_temperature_factor(
+    _pi_t = integratedcircuit.calculate_temperature_factor(
         subcategory_id, 1, 1, 52.95)
 
     assert isinstance(_pi_t, float)
@@ -336,7 +336,7 @@ def test_calculate_temperature_factor(subcategory_id):
 def test_calculate_temperature_factor_no_subcategory():
     """calculate_temperature_factor() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_t = IntegratedCircuit.calculate_temperature_factor(14, 1, 1, 52.95)
+        _pi_t = integratedcircuit.calculate_temperature_factor(14, 1, 1, 52.95)
 
 
 @pytest.mark.unit
@@ -344,7 +344,7 @@ def test_calculate_temperature_factor_no_subcategory():
 def test_calculate_temperature_factor_no_family():
     """calculate_temperature_factor() should raise an IndexError when passed an unknown family ID."""
     with pytest.raises(IndexError):
-        _pi_t = IntegratedCircuit.calculate_temperature_factor(2, 21, 1, 52.95)
+        _pi_t = integratedcircuit.calculate_temperature_factor(2, 21, 1, 52.95)
 
 
 @pytest.mark.unit
@@ -352,14 +352,14 @@ def test_calculate_temperature_factor_no_family():
 def test_calculate_temperature_factor_no_type():
     """calculate_temperature_factor() should raise an IndexError when passed an unknown type ID."""
     with pytest.raises(IndexError):
-        _pi_t = IntegratedCircuit.calculate_temperature_factor(9, 1, 21, 52.95)
+        _pi_t = integratedcircuit.calculate_temperature_factor(9, 1, 21, 52.95)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_get_application_factor():
     """get_application_factor() should return a float value for piA on success."""
-    _pi_a = IntegratedCircuit.get_application_factor(1, 2)
+    _pi_a = integratedcircuit.get_application_factor(1, 2)
 
     assert isinstance(_pi_a, float)
     assert _pi_a == 3.0
@@ -370,7 +370,7 @@ def test_get_application_factor():
 def test_get_application_factor_no_type():
     """get_application_factor() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _pi_a = IntegratedCircuit.get_application_factor(13, 2)
+        _pi_a = integratedcircuit.get_application_factor(13, 2)
 
 
 @pytest.mark.unit
@@ -378,7 +378,7 @@ def test_get_application_factor_no_type():
 def test_get_application_factor_no_application():
     """get_application_factor() should raise an IndexError when passed an unknown application ID."""
     with pytest.raises(IndexError):
-        _pi_a = IntegratedCircuit.get_application_factor(1, 22)
+        _pi_a = integratedcircuit.get_application_factor(1, 22)
 
 
 @pytest.mark.unit
@@ -386,7 +386,7 @@ def test_get_application_factor_no_application():
 @pytest.mark.parametrize("type_id", [1, 2, 3])
 def test_get_error_correction_factor(type_id):
     """get_error_correction_factor() should return a float value for piECC on success."""
-    _pi_ecc = IntegratedCircuit.get_error_correction_factor(type_id)
+    _pi_ecc = integratedcircuit.get_error_correction_factor(type_id)
 
     assert isinstance(_pi_ecc, float)
     if type_id == 1:
@@ -402,7 +402,7 @@ def test_get_error_correction_factor(type_id):
 def test_get_error_correction_factor_no_type():
     """get_error_correction_factor() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _pi_a = IntegratedCircuit.get_error_correction_factor(13)
+        _pi_a = integratedcircuit.get_error_correction_factor(13)
 
 
 @pytest.mark.unit
@@ -412,7 +412,7 @@ def test_get_error_correction_factor_no_type():
 def test_calculate_lambda_cyclic_factors(construction_id, n_cycles):
     """calculate_lambda_cyclic_factors() should return a tuple float values for A1, A2, B1, and B2 on success."""
     (_a_1, _a_2, _b_1,
-     _b_2) = IntegratedCircuit.calculate_lambda_cyclic_factors(
+     _b_2) = integratedcircuit.calculate_lambda_cyclic_factors(
          n_cycles, construction_id, 16000, 52.95)
 
     assert isinstance(_a_1, float)
@@ -446,7 +446,7 @@ def test_calculate_lambda_cyclic_factors(construction_id, n_cycles):
 @pytest.mark.parametrize("type_id", [1, 2])
 def test_get_die_base_hazard_rate(type_id):
     """get_die_base_hazard_rate() should return a float value for lambdaBD on success."""
-    _lambda_bd = IntegratedCircuit.get_die_base_hazard_rate(type_id)
+    _lambda_bd = integratedcircuit.get_die_base_hazard_rate(type_id)
 
     assert isinstance(_lambda_bd, float)
     if type_id == 1:
@@ -460,7 +460,7 @@ def test_get_die_base_hazard_rate(type_id):
 @pytest.mark.parametrize("manufacturing_id", [1, 2])
 def test_get_manufacturing_process_factor(manufacturing_id):
     """get_manufacturing_process_factor() should return a float value for piMFG on success."""
-    _pi_mfg = IntegratedCircuit.get_manufacturing_process_factor(
+    _pi_mfg = integratedcircuit.get_manufacturing_process_factor(
         manufacturing_id)
 
     assert isinstance(_pi_mfg, float)
@@ -474,7 +474,7 @@ def test_get_manufacturing_process_factor(manufacturing_id):
 @pytest.mark.calculation
 def test_calculate_die_complexity_factor():
     """calculate_die_complexity_factor() should return a float value for piCD on success."""
-    _pi_cd = IntegratedCircuit.calculate_die_complexity_factor(0.4, 1.25)
+    _pi_cd = integratedcircuit.calculate_die_complexity_factor(0.4, 1.25)
 
     assert isinstance(_pi_cd, float)
     assert _pi_cd == pytest.approx(3.48076190)
@@ -485,7 +485,7 @@ def test_calculate_die_complexity_factor():
 def test_calculate_die_complexity_factor_zero_feature():
     """calculate_die_complexity_factor() should raise a ZeroDivisionError when passed a feature size=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _pi_cd = IntegratedCircuit.calculate_die_complexity_factor(0.4, 0.0)
+        _pi_cd = integratedcircuit.calculate_die_complexity_factor(0.4, 0.0)
 
 
 @pytest.mark.unit
@@ -493,7 +493,7 @@ def test_calculate_die_complexity_factor_zero_feature():
 @pytest.mark.parametrize("package_id", [1, 2, 3, 7, 8, 9])
 def test_get_package_type_correction_factor(package_id):
     """get_package_type_correction_factor() should return a float value for piPt on success."""
-    _pi_pt = IntegratedCircuit.get_package_type_correction_factor(package_id)
+    _pi_pt = integratedcircuit.get_package_type_correction_factor(package_id)
 
     assert isinstance(_pi_pt, float)
     assert _pi_pt == {
@@ -511,14 +511,14 @@ def test_get_package_type_correction_factor(package_id):
 def test_get_package_type_correction_factor_no_package():
     """get_package_type_correction_factor() should raise a KeyError when passed an unknown package ID."""
     with pytest.raises(KeyError):
-        _pi_pt = IntegratedCircuit.get_package_type_correction_factor(12)
+        _pi_pt = integratedcircuit.get_package_type_correction_factor(12)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_package_base_hazard_rate():
     """calculate_package_base_hazard_rate() should return a float value for lambdaBP on success."""
-    _lambda_bp = IntegratedCircuit.calculate_package_base_hazard_rate(32)
+    _lambda_bp = integratedcircuit.calculate_package_base_hazard_rate(32)
 
     assert isinstance(_lambda_bp, float)
     assert _lambda_bp == 0.0027504
@@ -528,7 +528,7 @@ def test_calculate_package_base_hazard_rate():
 @pytest.mark.calculation
 def test_calculate_eos_hazard_rate():
     """calculate_eos_hazard_rate() should return a float value for lambdaEOS on success."""
-    _lambda_eos = IntegratedCircuit.calculate_eos_hazard_rate(2000)
+    _lambda_eos = integratedcircuit.calculate_eos_hazard_rate(2000)
 
     assert isinstance(_lambda_eos, float)
     assert _lambda_eos == pytest.approx(0.043625050)
@@ -539,7 +539,7 @@ def test_calculate_eos_hazard_rate():
 def test_calculate_part_stress():
     """calculate_part_stress() should return a the attributes dict updated with calculated values."""
     ATTRIBUTES['subcategory_id'] = 1
-    _attributes = IntegratedCircuit.calculate_part_stress(**ATTRIBUTES)
+    _attributes = integratedcircuit.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['piL'] == pytest.approx(0.73699794)
@@ -557,7 +557,7 @@ def test_calculate_part_stress_gaas():
     """calculate_part_stress() should return a the attributes dict updated with calculated values."""
     ATTRIBUTES['subcategory_id'] = 9
     ATTRIBUTES['n_elements'] = 1000
-    _attributes = IntegratedCircuit.calculate_part_stress(**ATTRIBUTES)
+    _attributes = integratedcircuit.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['piL'] == pytest.approx(0.73699794)
@@ -575,7 +575,7 @@ def test_calculate_part_stress_vlsi():
     """calculate_part_stress() should return a the attributes dict updated with calculated values."""
     ATTRIBUTES['subcategory_id'] = 10
     ATTRIBUTES['n_elements'] = 100
-    _attributes = IntegratedCircuit.calculate_part_stress(**ATTRIBUTES)
+    _attributes = integratedcircuit.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambdaBD'] == 0.16

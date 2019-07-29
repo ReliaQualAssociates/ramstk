@@ -1,7 +1,8 @@
 # pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_inductor.py is part of The RAMSTK Project
+#       tests.analyses.milhdbk217f.models.test_inductor.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f.models import Inductor
+from ramstk.analyses.milhdbk217f import inductor
 
 ATTRIBUTES = {
     'category_id': 5,
@@ -46,7 +47,7 @@ def test_get_part_count_lambda_b_xfmr(
         environment_active_id,
 ):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = Inductor.get_part_count_lambda_b(1, family_id,
+    _lambda_b = inductor.get_part_count_lambda_b(1, family_id,
                                                  environment_active_id)
 
     assert isinstance(_lambda_b, float)
@@ -82,7 +83,7 @@ def test_get_part_count_lambda_b_inductor(
         environment_active_id,
 ):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = Inductor.get_part_count_lambda_b(2, family_id,
+    _lambda_b = inductor.get_part_count_lambda_b(2, family_id,
                                                  environment_active_id)
 
     assert isinstance(_lambda_b, float)
@@ -103,7 +104,7 @@ def test_get_part_count_lambda_b_inductor(
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Inductor.get_part_count_lambda_b(20, 1, 3)
+        _lambda_b = inductor.get_part_count_lambda_b(20, 1, 3)
 
 
 @pytest.mark.unit
@@ -111,7 +112,7 @@ def test_get_part_count_lambda_b_no_subcategory():
 def test_get_part_count_lambda_b_no_family():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown family ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Inductor.get_part_count_lambda_b(2, 12, 3)
+        _lambda_b = inductor.get_part_count_lambda_b(2, 12, 3)
 
 
 @pytest.mark.unit
@@ -119,7 +120,7 @@ def test_get_part_count_lambda_b_no_family():
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Inductor.get_part_count_lambda_b(2, 1, 31)
+        _lambda_b = inductor.get_part_count_lambda_b(2, 1, 31)
 
 
 @pytest.mark.unit
@@ -137,7 +138,7 @@ def test_calculate_part_count_inductor(
     ATTRIBUTES['subcategory_id'] = 2
     ATTRIBUTES['family_id'] = family_id
     ATTRIBUTES['environment_active_id'] = environment_active_id
-    _lambda_b = Inductor.calculate_part_count(**ATTRIBUTES)
+    _lambda_b = inductor.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == {
@@ -167,7 +168,7 @@ def test_calculate_part_count_xfmr(
     ATTRIBUTES['subcategory_id'] = 1
     ATTRIBUTES['family_id'] = family_id
     ATTRIBUTES['environment_active_id'] = environment_active_id
-    _lambda_b = Inductor.calculate_part_count(**ATTRIBUTES)
+    _lambda_b = inductor.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == {
@@ -198,7 +199,7 @@ def test_calculate_part_count_xfmr(
 )
 def test_get_temperature_rise_spec_sheet(page_number):
     """get_temperature_rise_spec_sheet() should return a float value for the temperature_rise on success."""
-    _temperature_rise = Inductor.get_temperature_rise_spec_sheet(page_number)
+    _temperature_rise = inductor.get_temperature_rise_spec_sheet(page_number)
 
     assert isinstance(_temperature_rise, float)
     assert _temperature_rise == {
@@ -224,14 +225,14 @@ def test_get_temperature_rise_spec_sheet(page_number):
 def test_get_temperature_rise_no_spec_sheet():
     """get_temperature_rise_spec_sheet() should raise a KeyError when passed an unkown page number."""
     with pytest.raises(KeyError):
-        _temperature_rise = Inductor.get_temperature_rise_spec_sheet(22)
+        _temperature_rise = inductor.get_temperature_rise_spec_sheet(22)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_temperature_rise_input_power_weight():
     """calculate_temperature_rise_input_power_weight() should return a float value on success."""
-    _temperature_rise = Inductor.calculate_temperature_rise_input_power_weight(
+    _temperature_rise = inductor.calculate_temperature_rise_input_power_weight(
         0.387, 0.015)
 
     assert isinstance(_temperature_rise, float)
@@ -243,7 +244,7 @@ def test_calculate_temperature_rise_input_power_weight():
 def test_calculate_temperature_rise_input_power_weight_zero_weight():
     """calculate_temperature_rise_input_power_weight() should raise a ZeroDivisionError when passed a weight=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _temperature_rise = Inductor.calculate_temperature_rise_input_power_weight(
+        _temperature_rise = inductor.calculate_temperature_rise_input_power_weight(
             0.387, 0.0)
 
 
@@ -251,7 +252,7 @@ def test_calculate_temperature_rise_input_power_weight_zero_weight():
 @pytest.mark.calculation
 def test_calculate_temperature_rise_power_loss_surface():
     """calculate_temperature_rise_power_loss_surface() should return a float value on success."""
-    _temperature_rise = Inductor.calculate_temperature_rise_power_loss_surface(
+    _temperature_rise = inductor.calculate_temperature_rise_power_loss_surface(
         0.387, 12.5)
 
     assert isinstance(_temperature_rise, float)
@@ -263,7 +264,7 @@ def test_calculate_temperature_rise_power_loss_surface():
 def test_calculate_temperature_rise_power_loss_surface_zero_area():
     """calculate_temperature_rise_power_loss_surface() should raise a ZeroDivisionError when passed an area=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _temperature_rise = Inductor.calculate_temperature_rise_power_loss_surface(
+        _temperature_rise = inductor.calculate_temperature_rise_power_loss_surface(
             0.387, 0.0)
 
 
@@ -271,7 +272,7 @@ def test_calculate_temperature_rise_power_loss_surface_zero_area():
 @pytest.mark.calculation
 def test_calculate_temperature_rise_power_loss_weight():
     """calculate_temperature_rise_power_loss_radiating_surface() should return a float value on success."""
-    _temperature_rise = Inductor.calculate_temperature_rise_power_loss_weight(
+    _temperature_rise = inductor.calculate_temperature_rise_power_loss_weight(
         0.387, 2.5)
 
     assert isinstance(_temperature_rise, float)
@@ -283,7 +284,7 @@ def test_calculate_temperature_rise_power_loss_weight():
 def test_calculate_temperature_rise_power_loss_weight_zero_weight():
     """calculate_temperature_rise_power_loss_weight() should raise a ZeroDivisionError when passed a weight=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _temperature_rise = Inductor.calculate_temperature_rise_power_loss_weight(
+        _temperature_rise = inductor.calculate_temperature_rise_power_loss_weight(
             0.387, 0.0)
 
 
@@ -291,7 +292,7 @@ def test_calculate_temperature_rise_power_loss_weight_zero_weight():
 @pytest.mark.calculation
 def test_calculate_hot_spot_temperature():
     """calculate_hot_spot_temperature() should return a float value on success."""
-    _temperature_hot_spot = Inductor.calculate_hot_spot_temperature(43.2, 38.7)
+    _temperature_hot_spot = inductor.calculate_hot_spot_temperature(43.2, 38.7)
 
     assert isinstance(_temperature_hot_spot, float)
     assert _temperature_hot_spot == pytest.approx(85.77)
@@ -301,7 +302,7 @@ def test_calculate_hot_spot_temperature():
 @pytest.mark.calculation
 def test_calculate_part_stress_lambda_b():
     """calculate_part_stress_lambda_b() should return a float value on success."""
-    _lambda_b = Inductor.calculate_part_stress_lambda_b(1, 4, 85.77)
+    _lambda_b = inductor.calculate_part_stress_lambda_b(1, 4, 85.77)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == pytest.approx(0.00280133)
@@ -312,7 +313,7 @@ def test_calculate_part_stress_lambda_b():
 def test_calculate_part_stress_lambda_b_no_subcategory():
     """calculate_part_stress_lambda_b() should raise an KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Inductor.calculate_part_stress_lambda_b(101, 4, 85.77)
+        _lambda_b = inductor.calculate_part_stress_lambda_b(101, 4, 85.77)
 
 
 @pytest.mark.unit
@@ -320,7 +321,7 @@ def test_calculate_part_stress_lambda_b_no_subcategory():
 def test_calculate_part_stress_lambda_b_no_insulation():
     """calculate_part_stress_lambda_b() should raise an KeyError when passed an unknown insulation ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Inductor.calculate_part_stress_lambda_b(1, 41, 85.77)
+        _lambda_b = inductor.calculate_part_stress_lambda_b(1, 41, 85.77)
 
 
 @pytest.mark.unit
@@ -328,7 +329,7 @@ def test_calculate_part_stress_lambda_b_no_insulation():
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_get_part_stress_quality_factor(subcategory_id):
     """get_part_stress_quality_factor() should return a float value for piQ on success."""
-    _pi_q = Inductor.get_part_stress_quality_factor(subcategory_id, 1, 1)
+    _pi_q = inductor.get_part_stress_quality_factor(subcategory_id, 1, 1)
 
     assert isinstance(_pi_q, float)
     assert _pi_q == {1: 1.5, 2: 0.03}[subcategory_id]
@@ -340,7 +341,7 @@ def test_calculate_part_stress_inductor():
     """calculate_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['subcategory_id'] = 2
     ATTRIBUTES['construction_id'] = 2
-    _attributes = Inductor.calculate_part_stress(**ATTRIBUTES)
+    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx(0.00046712295)
@@ -354,7 +355,7 @@ def test_calculate_part_stress_xfmr_with_surface_area():
     """calculate_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['subcategory_id'] = 1
     ATTRIBUTES['construction_id'] = 1
-    _attributes = Inductor.calculate_part_stress(**ATTRIBUTES)
+    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx(0.0026358035)
@@ -372,7 +373,7 @@ def test_calculate_part_stress_xfmr_with_weight():
     ATTRIBUTES['voltage_dc_operating'] = 0.0
     ATTRIBUTES['area'] = 0.0
     ATTRIBUTES['weight'] = 2.5
-    _attributes = Inductor.calculate_part_stress(**ATTRIBUTES)
+    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['temperature_rise'] == pytest.approx(2.39421196)
@@ -391,7 +392,7 @@ def test_calculate_part_stress_xfmr_with_input_power():
     ATTRIBUTES['voltage_dc_operating'] = 3.3
     ATTRIBUTES['area'] = 0.0
     ATTRIBUTES['weight'] = 2.5
-    _attributes = Inductor.calculate_part_stress(**ATTRIBUTES)
+    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['temperature_rise'] == pytest.approx(0.0040553804)
@@ -410,7 +411,7 @@ def test_calculate_part_stress_xfmr_no_temperature_rise():
     ATTRIBUTES['voltage_dc_operating'] = 0.0
     ATTRIBUTES['area'] = 0.0
     ATTRIBUTES['weight'] = 0.0
-    _attributes = Inductor.calculate_part_stress(**ATTRIBUTES)
+    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['temperature_rise'] == 0.0

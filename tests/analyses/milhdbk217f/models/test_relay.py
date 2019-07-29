@@ -12,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f.models import Relay
+from ramstk.analyses.milhdbk217f import relay
 
 ATTRIBUTES = {
     'category_id': 6,
@@ -46,7 +46,7 @@ def test_get_part_count_lambda_b(
         environment_active_id,
 ):
     """get_part_count_lambda_b() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = Relay.get_part_count_lambda_b(
+    _lambda_b = relay.get_part_count_lambda_b(
         subcategory_id,
         type_id,
         environment_active_id,
@@ -77,7 +77,7 @@ def test_get_part_count_lambda_b(
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Relay.get_part_count_lambda_b(1.3, 1, 2)
+        _lambda_b = relay.get_part_count_lambda_b(1.3, 1, 2)
 
 
 @pytest.mark.unit
@@ -85,7 +85,7 @@ def test_get_part_count_lambda_b_no_subcategory():
 def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Relay.get_part_count_lambda_b(1, 11, 2)
+        _lambda_b = relay.get_part_count_lambda_b(1, 11, 2)
 
 
 @pytest.mark.unit
@@ -93,14 +93,14 @@ def test_get_part_count_lambda_b_no_type():
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Relay.get_part_count_lambda_b(1, 1, 21)
+        _lambda_b = relay.get_part_count_lambda_b(1, 1, 21)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_count():
     """calculate_part_count() should return a float value for the parts count base hazard rate on success."""
-    _lambda_b = Relay.calculate_part_count(**ATTRIBUTES)
+    _lambda_b = relay.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lambda_b, float)
     assert _lambda_b == 2.1
@@ -112,7 +112,7 @@ def test_calculate_part_count():
 @pytest.mark.parametrize("n_cycles", [0.5, 100.0, 1103.4])
 def test_calculate_cycling_factor(quality_id, n_cycles):
     """calculate_cycling_factor() should return a float value for piCYC on success or 0.0 if passed an unknown combination of arguments."""
-    _pi_cyc = Relay.calculate_cycling_factor(quality_id, n_cycles)
+    _pi_cyc = relay.calculate_cycling_factor(quality_id, n_cycles)
 
     assert isinstance(_pi_cyc, float)
     if quality_id == 1 and n_cycles == 0.5:
@@ -130,7 +130,7 @@ def test_calculate_cycling_factor(quality_id, n_cycles):
 @pytest.mark.parametrize("technology_id", [1, 2, 3, 4])
 def test_calculate_load_stress_factor(technology_id):
     """calculate_load_stress_factor() should return a float value for piL on success."""
-    _pi_l = Relay.calculate_load_stress_factor(technology_id, 0.382)
+    _pi_l = relay.calculate_load_stress_factor(technology_id, 0.382)
 
     assert isinstance(_pi_l, float)
     if technology_id == 1:
@@ -149,7 +149,7 @@ def test_calculate_load_stress_factor(technology_id):
 @pytest.mark.parametrize("quality_id", [1, 7])
 def test_get_environment_factor(subcategory_id, quality_id):
     """get_environment_factor() should return a float value for piE on success."""
-    _pi_e = Relay.get_environment_factor(subcategory_id, quality_id, 1)
+    _pi_e = relay.get_environment_factor(subcategory_id, quality_id, 1)
 
     assert isinstance(_pi_e, float)
     if subcategory_id == 1 and quality_id == 1:
@@ -165,7 +165,7 @@ def test_get_environment_factor(subcategory_id, quality_id):
 def test_get_environment_factor_no_subcategory():
     """get_environment_factor() should raise a KeyError if passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_e = Relay.get_environment_factor(12, 1, 1)
+        _pi_e = relay.get_environment_factor(12, 1, 1)
 
 
 @pytest.mark.unit
@@ -173,7 +173,7 @@ def test_get_environment_factor_no_subcategory():
 def test_get_environment_factor_no_environment():
     """get_environment_factor() should raise an IndexError if passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _pi_e = Relay.get_environment_factor(1, 1, 21)
+        _pi_e = relay.get_environment_factor(1, 1, 21)
 
 
 @pytest.mark.unit
@@ -181,7 +181,7 @@ def test_get_environment_factor_no_environment():
 @pytest.mark.parametrize("quality_id", [1, 7])
 def test_get_application_construction_factor(quality_id):
     """get_application_construction_factor() should return a float value for piF on success."""
-    _pi_f = Relay.get_application_construction_factor(quality_id, 1, 1, 1)
+    _pi_f = relay.get_application_construction_factor(quality_id, 1, 1, 1)
 
     assert isinstance(_pi_f, float)
     assert _pi_f == {1: 4.0, 7: 8.0}[quality_id]
@@ -192,7 +192,7 @@ def test_get_application_construction_factor(quality_id):
 def test_get_application_construction_factor_no_contact_rating():
     """get_application_construction_factor() should raise a KeyError if passed an unknown contact rating ID."""
     with pytest.raises(KeyError):
-        _pi_f = Relay.get_application_construction_factor(1, 15, 1, 1)
+        _pi_f = relay.get_application_construction_factor(1, 15, 1, 1)
 
 
 @pytest.mark.unit
@@ -200,7 +200,7 @@ def test_get_application_construction_factor_no_contact_rating():
 def test_get_application_construction_factor_no_construction():
     """get_application_construction_factor() should raise a KeyError if passed an unknown construction ID."""
     with pytest.raises(KeyError):
-        _pi_f = Relay.get_application_construction_factor(1, 1, 15, 1)
+        _pi_f = relay.get_application_construction_factor(1, 1, 15, 1)
 
 
 @pytest.mark.unit
@@ -208,7 +208,7 @@ def test_get_application_construction_factor_no_construction():
 def test_get_application_construction_factor_no_application():
     """get_application_construction_factor() should raise a KeyError if passed an unknown application ID."""
     with pytest.raises(KeyError):
-        _pi_f = Relay.get_application_construction_factor(1, 1, 1, 15)
+        _pi_f = relay.get_application_construction_factor(1, 1, 1, 15)
 
 
 @pytest.mark.unit
@@ -217,7 +217,7 @@ def test_get_application_construction_factor_no_application():
 @pytest.mark.parametrize("type_id", [1, 2])
 def test_calculate_part_stress_lambda_b(subcategory_id, type_id):
     """calculate_part_stress_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = Relay.calculate_part_stress_lambda_b(subcategory_id, type_id,
+    _lambda_b = relay.calculate_part_stress_lambda_b(subcategory_id, type_id,
                                                      38.2)
 
     assert isinstance(_lambda_b, float)
@@ -236,6 +236,6 @@ def test_calculate_part_stress(subcategory_id):
     """calculate_part_stress() should return the attributes with updated values on success."""
     ATTRIBUTES['type_id'] = 1
     ATTRIBUTES['subcategory_id'] = subcategory_id
-    _attributes = Relay.calculate_part_stress(**ATTRIBUTES)
+    _attributes = relay.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)

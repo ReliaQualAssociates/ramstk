@@ -1,7 +1,8 @@
 # pylint: disable=invalid-name, protected-access
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.prediction.test_lamp.py is part of The RAMSTK Project
+#       tests.analyses.milhdbk217f.models.test_lamp.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,7 +12,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f.models import Lamp
+from ramstk.analyses.milhdbk217f import lamp
 
 ATTRIBUTES = {
     'category_id': 10,
@@ -36,7 +37,7 @@ def test_get_part_count_lambda_b(
         environment_active_id,
 ):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = Lamp.get_part_count_lambda_b(application_id,
+    _lambda_b = lamp.get_part_count_lambda_b(application_id,
                                              environment_active_id)
 
     assert isinstance(_lambda_b, float)
@@ -81,7 +82,7 @@ def test_get_part_count_lambda_b(
 def test_get_part_count_lambda_b_no_application():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown application ID."""
     with pytest.raises(KeyError):
-        _lambda_b = Lamp.get_part_count_lambda_b(5, 2)
+        _lambda_b = lamp.get_part_count_lambda_b(5, 2)
 
 
 @pytest.mark.unit
@@ -89,14 +90,14 @@ def test_get_part_count_lambda_b_no_application():
 def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = Lamp.get_part_count_lambda_b(1, 21)
+        _lambda_b = lamp.get_part_count_lambda_b(1, 21)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_count():
     """calculate_part_count() should return a float for the base hazard rate on success."""
-    _lst_lambda_b = Lamp.calculate_part_count(**ATTRIBUTES)
+    _lst_lambda_b = lamp.calculate_part_count(**ATTRIBUTES)
 
     assert isinstance(_lst_lambda_b, float)
     assert _lst_lambda_b == 12.0
@@ -110,7 +111,7 @@ def test_calculate_part_stress(duty_cycle, application_id):
     """calculate_part_stress() should return the attributes dict updated with the calculated values."""
     ATTRIBUTES['duty_cycle'] = duty_cycle
     ATTRIBUTES['application_id'] = application_id
-    _attributes = Lamp.calculate_part_stress(**ATTRIBUTES)
+    _attributes = lamp.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     assert _attributes['lambda_b'] == pytest.approx(1.82547348)
