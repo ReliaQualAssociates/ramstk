@@ -14,7 +14,7 @@ from collections import OrderedDict
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses import SimilarItem
+from ramstk.analyses import similaritem
 
 TEST_SIA = OrderedDict({
     _key: None
@@ -37,7 +37,7 @@ def test_calculate_topic_633():
     temperature = {'from': 38.0, 'to': 27.5}
 
     (_change_factor_1, _change_factor_2, _change_factor_3,
-     _result_1) = SimilarItem.calculate_topic_633(environment, quality,
+     _result_1) = similaritem.calculate_topic_633(environment, quality,
                                                   temperature, 0.000003335)
     assert _change_factor_1 == 0.6
     assert _change_factor_2 == 3.3
@@ -55,14 +55,14 @@ def test_calculate_topic_633_quality_key_error():
 
     with pytest.raises(KeyError):
         (_change_factor_1, _change_factor_2, _change_factor_3,
-         _result_1) = SimilarItem.calculate_topic_633(environment, quality,
+         _result_1) = similaritem.calculate_topic_633(environment, quality,
                                                       temperature, 0.000003335)
 
     quality = {'from': 2, 'to': '3'}
 
     with pytest.raises(KeyError):
         (_change_factor_1, _change_factor_2, _change_factor_3,
-         _result_1) = SimilarItem.calculate_topic_633(environment, quality,
+         _result_1) = similaritem.calculate_topic_633(environment, quality,
                                                       temperature, 0.000003335)
 
 
@@ -76,14 +76,14 @@ def test_calculate_topic_633_environment_key_error():
 
     with pytest.raises(KeyError):
         (_change_factor_1, _change_factor_2, _change_factor_3,
-         _result_1) = SimilarItem.calculate_topic_633(environment, quality,
+         _result_1) = similaritem.calculate_topic_633(environment, quality,
                                                       temperature, 0.000003335)
 
     environment = {'from': '4', 'to': 6}
 
     with pytest.raises(KeyError):
         (_change_factor_1, _change_factor_2, _change_factor_3,
-         _result_1) = SimilarItem.calculate_topic_633(environment, quality,
+         _result_1) = similaritem.calculate_topic_633(environment, quality,
                                                       temperature, 0.000003335)
 
 
@@ -97,7 +97,7 @@ def test_calculate_topic_633_temperature_key_error():
 
     with pytest.raises(KeyError):
         (_change_factor_1, _change_factor_2, _change_factor_3,
-         _result_1) = SimilarItem.calculate_topic_633(environment, quality,
+         _result_1) = similaritem.calculate_topic_633(environment, quality,
                                                       temperature, 0.000003335)
 
 
@@ -111,7 +111,7 @@ def test_calculate_topic_633_temperature_string_value():
 
     with pytest.raises(TypeError):
         (_change_factor_1, _change_factor_2, _change_factor_3,
-         _result_1) = SimilarItem.calculate_topic_633(environment, quality,
+         _result_1) = similaritem.calculate_topic_633(environment, quality,
                                                       temperature, 0.000003335)
 
 
@@ -119,7 +119,7 @@ def test_calculate_topic_633_temperature_string_value():
 @pytest.mark.calculation
 def test_set_user_defined_change_factors():
     """set_user_defined_change_factors() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_change_factors(
+    _sia = similaritem.set_user_defined_change_factors(
         TEST_SIA, [1.2, 3.4, 5.6, 7.8, 9.10, 11.12, 13.14, 15.16, 17.18, 19.2])
 
     assert isinstance(_sia, dict)
@@ -139,7 +139,7 @@ def test_set_user_defined_change_factors():
 @pytest.mark.calculation
 def test_set_user_defined_change_factors_set_unused_none():
     """set_user_defined_change_factors() should set unused factors to None."""
-    _sia = SimilarItem.set_user_defined_change_factors(
+    _sia = similaritem.set_user_defined_change_factors(
         TEST_SIA, [1.2, 3.4, 5.6, 7.8, 9.10])
 
     assert isinstance(_sia, dict)
@@ -158,7 +158,7 @@ def test_set_user_defined_change_factors_set_unused_none():
 @pytest.mark.calculation
 def test_set_user_defined_floats():
     """set_user_defined_floats() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_floats(
+    _sia = similaritem.set_user_defined_floats(
         TEST_SIA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_sia, dict)
@@ -173,7 +173,7 @@ def test_set_user_defined_floats():
 @pytest.mark.calculation
 def test_set_user_defined_floats_set_unused_none():
     """set_user_defined_floats() should set unused floats to None."""
-    _sia = SimilarItem.set_user_defined_floats(
+    _sia = similaritem.set_user_defined_floats(
         TEST_SIA, [3.4, 7.8])
 
     assert isinstance(_sia, dict)
@@ -188,7 +188,7 @@ def test_set_user_defined_floats_set_unused_none():
 @pytest.mark.calculation
 def test_set_user_defined_ints():
     """set_user_defined_ints() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_ints(
+    _sia = similaritem.set_user_defined_ints(
         TEST_SIA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_sia, dict)
@@ -203,7 +203,7 @@ def test_set_user_defined_ints():
 @pytest.mark.calculation
 def test_set_user_defined_ints_set_unused_none():
     """set_user_defined_ints() should set unused ints to None."""
-    _sia = SimilarItem.set_user_defined_ints(
+    _sia = similaritem.set_user_defined_ints(
         TEST_SIA, [3.4, 7.8, 11.12])
 
     assert isinstance(_sia, dict)
@@ -218,7 +218,7 @@ def test_set_user_defined_ints_set_unused_none():
 @pytest.mark.calculation
 def test_set_user_defined_functions():
     """set_user_defined_functions() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_functions(
+    _sia = similaritem.set_user_defined_functions(
         TEST_SIA, ['hr*pi1*pi2*uf1', 'ui1+ui2', 'res2*pi4', 'res1-uf3', 'hr*(pi3+pi5)'])
 
     assert isinstance(_sia, dict)
@@ -233,7 +233,7 @@ def test_set_user_defined_functions():
 @pytest.mark.calculation
 def test_set_user_defined_functions_set_unused_none():
     """set_user_defined_functions() should set unused functiosn to None."""
-    _sia = SimilarItem.set_user_defined_functions(
+    _sia = similaritem.set_user_defined_functions(
         TEST_SIA, ['hr*pi1*pi2*uf1', 'ui1+ui2'])
 
     assert isinstance(_sia, dict)
@@ -248,7 +248,7 @@ def test_set_user_defined_functions_set_unused_none():
 @pytest.mark.calculation
 def test_set_user_defined_results():
     """set_user_defined_results() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_results(
+    _sia = similaritem.set_user_defined_results(
         TEST_SIA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_sia, dict)
@@ -263,7 +263,7 @@ def test_set_user_defined_results():
 @pytest.mark.calculation
 def test_set_user_defined_results_set_unused_none():
     """set_user_defined_results() should set unused results to None."""
-    _sia = SimilarItem.set_user_defined_results(
+    _sia = similaritem.set_user_defined_results(
         TEST_SIA, [3.4, 7.8, 11.12, 15.16])
 
     assert isinstance(_sia, dict)
@@ -278,11 +278,11 @@ def test_set_user_defined_results_set_unused_none():
 @pytest.mark.calculation
 def test_calculate_user_defined():
     """calculate_user_defined() should return an updated similar item assessment dict on success."""
-    _sia = SimilarItem.set_user_defined_change_factors(
+    _sia = similaritem.set_user_defined_change_factors(
         TEST_SIA, [1.2, 3.4, 5.6, 7.8, 9.10, 11.12, 13.14, 15.16, 17.18, 19.2])
-    _sia = SimilarItem.set_user_defined_functions(
+    _sia = similaritem.set_user_defined_functions(
         _sia, ['hr*pi1*pi2*uf1', 'ui1+ui2', 'res2*pi4', 'res1-uf3', 'hr*(pi3+pi5)'])
-    _sia = SimilarItem.calculate_user_defined(_sia)
+    _sia = similaritem.calculate_user_defined(_sia)
 
     assert isinstance(_sia, dict)
     assert _sia['res1'] == pytest.approx(0.00530604)

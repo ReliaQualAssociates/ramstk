@@ -3,6 +3,6 @@
 
 # RAMSTK Local Imports
 from . import (
-    Allocation, Derating, Dormancy, SimilarItem,
-    Stress, criticality, improvementfactor
+    allocation, criticality, derating, dormancy,
+    fha, improvementfactor, similaritem, stress
 )

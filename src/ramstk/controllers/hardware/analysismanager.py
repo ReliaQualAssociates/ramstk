@@ -15,8 +15,8 @@ from math import exp
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.analyses import Allocation, Derating, Dormancy, SimilarItem, Stress
-from ramstk.analyses.milhdbk217f import MilHdbk217f
+from ramstk.analyses import allocation, derating, dormancy, similaritem, stress
+from ramstk.analyses.milhdbk217f import milhdbk217f
 from ramstk.controllers import RAMSTKAnalysisManager
 
 
@@ -24,7 +24,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
     """
     Contain the attributes and methods of the Hardware analysis manager.
 
-    This class manages the hardware analysis for Allocation, MIL-HDBK-217F,
+    This class manages the hardware analysis for allocation, MIL-HDBK-217F,
     NSWC, and Similar Item.  Attributes of the hardware Analysis Manager are:
 
     :ivar dict _attributes: the dict used to hold the aggregate attributes for
@@ -104,7 +104,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         try:
-            self._attributes['current_ratio'] = Stress.calculate_stress_ratio(
+            self._attributes['current_ratio'] = stress.calculate_stress_ratio(
                 self._attributes['current_operating'],
                 self._attributes['current_rated'])
         except ZeroDivisionError:
@@ -187,7 +187,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         try:
-            self._attributes['power_ratio'] = Stress.calculate_stress_ratio(
+            self._attributes['power_ratio'] = stress.calculate_stress_ratio(
                 self._attributes['power_operating'],
                 self._attributes['power_rated'])
         except ZeroDivisionError:
@@ -254,7 +254,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         (self._attributes['change_factor_1'],
          self._attributes['change_factor_2'],
          self._attributes['change_factor_3'],
-         self._attributes['result_1']) = SimilarItem.calculate_topic_633(
+         self._attributes['result_1']) = similaritem.calculate_topic_633(
              _environment, _quality, _temperature,
              self._attributes['hazard_rate_active'])
 
@@ -278,7 +278,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
 
         _sia['hr'] = self._attributes['hazard_rate_active']
 
-        _sia = SimilarItem.set_user_defined_change_factors(
+        _sia = similaritem.set_user_defined_change_factors(
             _sia, [
                 self._attributes['change_factor_1'],
                 self._attributes['change_factor_2'],
@@ -292,31 +292,31 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 self._attributes['change_factor_10']
             ])
 
-        _sia = SimilarItem.set_user_defined_floats(_sia, [
+        _sia = similaritem.set_user_defined_floats(_sia, [
             self._attributes['user_float_1'], self._attributes['user_float_2'],
             self._attributes['user_float_3'], self._attributes['user_float_4'],
             self._attributes['user_float_5']
         ])
 
-        _sia = SimilarItem.set_user_defined_ints(_sia, [
+        _sia = similaritem.set_user_defined_ints(_sia, [
             self._attributes['user_int_1'], self._attributes['user_int_2'],
             self._attributes['user_int_3'], self._attributes['user_int_4'],
             self._attributes['user_int_5']
         ])
 
-        _sia = SimilarItem.set_user_defined_functions(_sia, [
+        _sia = similaritem.set_user_defined_functions(_sia, [
             self._attributes['function_1'], self._attributes['function_2'],
             self._attributes['function_3'], self._attributes['function_4'],
             self._attributes['function_5']
         ])
 
-        _sia = SimilarItem.set_user_defined_results(_sia, [
+        _sia = similaritem.set_user_defined_results(_sia, [
             self._attributes['result_1'], self._attributes['result_2'],
             self._attributes['result_3'], self._attributes['result_4'],
             self._attributes['result_5']
         ])
 
-        _sia = SimilarItem.calculate_user_defined(_sia)
+        _sia = similaritem.calculate_user_defined(_sia)
 
         self._attributes['result_1'] = _sia['res1']
         self._attributes['result_2'] = _sia['res2']
@@ -335,7 +335,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                               + self._attributes['voltage_dc_operating'])
 
         try:
-            self._attributes['voltage_ratio'] = Stress.calculate_stress_ratio(
+            self._attributes['voltage_ratio'] = stress.calculate_stress_ratio(
                 _voltage_operating, self._attributes['voltage_rated'])
         except ZeroDivisionError:
             pub.sendMessage(
@@ -404,7 +404,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: None
         """
         if self._attributes['hazard_rate_method_id'] in [1, 2]:
-            MilHdbk217f.do_predict_active_hazard_rate(**self._attributes)
+            milhdbk217f.do_predict_active_hazard_rate(**self._attributes)
 
     def _request_do_stress_analysis(self):
         """
@@ -594,7 +594,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
                 _parent_goal = self._attributes['hazard_rate_goal']
                 _cum_weight = self._do_calculate_foo_cumulative_weight(node_id)
 
-            Allocation.do_allocate_reliability(_parent_goal, _cum_weight,
+            allocation.do_allocate_reliability(_parent_goal, _cum_weight,
                                                **_attributes)
 
             _attributes['allocation_method_id'] = _method_old
@@ -607,7 +607,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: None
         :rtype: None
         """
-        self._attributes = Allocation.do_calculate_goals(**self._attributes)
+        self._attributes = allocation.do_calculate_goals(**self._attributes)
 
     def do_calculate_hardware(self, node_id, system=False):
         """
@@ -645,7 +645,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             self._request_do_stress_analysis()
             self._request_do_predict_active_hazard_rate()
             self._attributes['hazard_rate_dormant'] = \
-                Dormancy.do_calculate_dormant_hazard_rate(
+                dormancy.do_calculate_dormant_hazard_rate(
                     self._attributes['category_id'],
                     self._attributes['subcategory_id'],
                     self._attributes['environment_active_id'],
@@ -761,13 +761,13 @@ class AnalysisManager(RAMSTKAnalysisManager):
         }
         _maxt_limits = {'harsh': [0.0, _limits[8]], 'mild': [0.0, _limits[9]]}
 
-        _overstress = Derating.check_overstress(
+        _overstress = derating.check_overstress(
             self._attributes['current_ratio'], _current_limits)
         _do_check(_overstress, "current")
-        _overstress = Derating.check_overstress(
+        _overstress = derating.check_overstress(
             self._attributes['power_ratio'], _power_limits)
         _do_check(_overstress, "power")
-        _overstress = Derating.check_overstress(
+        _overstress = derating.check_overstress(
             self._attributes['voltage_ratio'], _voltage_limits)
         _do_check(_overstress, "voltage")
 
@@ -780,7 +780,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :return: _goal; the allocation goal measure.
         :rtype: float
         """
-        return Allocation.get_allocation_goal(**self._attributes)
+        return allocation.get_allocation_goal(**self._attributes)
 
     def do_roll_up_change_descriptions(self, node_id):
         """

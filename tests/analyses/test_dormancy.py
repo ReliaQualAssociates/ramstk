@@ -11,7 +11,7 @@
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses import Dormancy
+from ramstk.analyses import dormancy
 
 
 @pytest.mark.unit
@@ -20,7 +20,7 @@ from ramstk.analyses import Dormancy
 @pytest.mark.parametrize("subcategory_id", [1, 3])
 def test_dormant_hazard_rate(category_id, subcategory_id):
     """do_calculate_dormant_hazard_rate() should return a float value for the dormant hazard rate on success."""
-    _hr_dormant = Dormancy.do_calculate_dormant_hazard_rate(
+    _hr_dormant = dormancy.do_calculate_dormant_hazard_rate(
         category_id, subcategory_id, 3, 2, 0.008642374)
 
     assert isinstance(_hr_dormant, float)
@@ -35,5 +35,5 @@ def test_dormant_hazard_rate(category_id, subcategory_id):
 def test_dormant_hazard_rate_bad_index():
     """do_calculate_dormant_hazard_rate() should raise an IndexError when a bad index value is passed."""
     with pytest.raises(IndexError):
-        _hr_dormant = Dormancy.do_calculate_dormant_hazard_rate(
+        _hr_dormant = dormancy.do_calculate_dormant_hazard_rate(
             4, 5, 3, 12, 0.008642374)
